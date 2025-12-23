@@ -35,3 +35,9 @@ export {
   validateTool,
 } from './helpers.js';
 
+// Tool builder API
+export {
+  ToolBuilder,
+  toolBuilder,
+} from './builder.js';
+
