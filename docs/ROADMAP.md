@@ -130,11 +130,15 @@
 - [x] Working examples
 - **Total: 54 tests passing**
 
-### 2.3 Memory & Persistence Helpers (1 day)
-- [ ] Checkpointer factory functions
-- [ ] Memory configuration utilities
-- [ ] Thread management helpers
-- [ ] Unit tests (10 tests)
+### 2.3 Memory & Persistence Helpers (1 day) ✅ COMPLETE
+- [x] Checkpointer factory functions (`createMemoryCheckpointer`, `createSqliteCheckpointer`)
+- [x] Memory configuration utilities (`isMemoryCheckpointer`)
+- [x] Thread management helpers (`generateThreadId`, `createThreadConfig`, `createConversationConfig`)
+- [x] Checkpointer utilities (`getCheckpointHistory`, `getLatestCheckpoint`, `clearThread`)
+- [x] Unit tests (26 tests)
+- [x] Complete documentation
+- [x] Working examples
+- **Total: 26 tests passing**
 
 ### 2.4 Observability & Error Handling (1 day)
 - [ ] LangSmith integration helpers
@@ -154,7 +158,7 @@
 - `@agentforge/core` v0.2.0 with LangGraph utilities
 - LangGraph integration examples
 - Complete documentation
-- **Total: 72 tests (18 state + 54 builders/patterns)**
+- **Total: 98 tests (18 state + 54 builders/patterns + 26 persistence)**
 
 ### Key Principle
 **We wrap, don't replace**: AgentForge provides type-safe, ergonomic wrappers around LangGraph/LangChain, not a competing framework.
@@ -274,11 +278,11 @@
 
 ## Current Status
 
-**Phase**: 2.2 - Graph Builder Utilities ✅ COMPLETE
-**Progress**: Phase 1 Complete, Phase 2.1 Complete, Phase 2.2 Complete
-**Next Milestone**: Phase 2.3 - Memory & Persistence Helpers
+**Phase**: 2.3 - Memory & Persistence Helpers ✅ COMPLETE
+**Progress**: Phase 1 Complete, Phase 2.1 Complete, Phase 2.2 Complete, Phase 2.3 Complete
+**Next Milestone**: Phase 2.4 - Observability & Error Handling
 
-**Latest Updates** (2024-12-24):
+**Latest Updates** (2025-12-24):
 
 ### Phase 1 - Tool Registry ✅ COMPLETE
 - ✅ Phase 1.1: Tool Metadata Interface (16 tests)
@@ -311,9 +315,20 @@
 - ✅ Working examples
 - **Phase 2.2 Total: 54 tests passing**
 
-**Overall Total: 185 tests passing** ✅
+### Phase 2.3 - Memory & Persistence Helpers ✅ COMPLETE
+- ✅ Checkpointer factory functions (`createMemoryCheckpointer`, `createSqliteCheckpointer`)
+- ✅ Memory configuration utilities (`isMemoryCheckpointer`)
+- ✅ Thread management helpers (`generateThreadId`, `createThreadConfig`, `createConversationConfig`)
+- ✅ Checkpointer utilities (`getCheckpointHistory`, `getLatestCheckpoint`, `clearThread`)
+- ✅ Comprehensive unit tests (26 tests)
+- ✅ Complete documentation
+- ✅ Working examples
+- **Phase 2.3 Total: 26 tests passing**
+
+**Overall Total: 211 tests passing** ✅
 
 See [FRAMEWORK_DESIGN.md](./FRAMEWORK_DESIGN.md) for architecture details.
 See [PHASE_2_1_COMPLETE.md](./PHASE_2_1_COMPLETE.md) for Phase 2.1 details.
 See [PHASE_2_2_COMPLETE.md](./PHASE_2_2_COMPLETE.md) for Phase 2.2 details.
+See [PHASE_2_3_COMPLETE.md](./PHASE_2_3_COMPLETE.md) for Phase 2.3 details.
 

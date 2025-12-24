@@ -49,3 +49,20 @@ export {
   type TimeoutOptions,
 } from './patterns/index.js';
 
+export {
+  createMemoryCheckpointer,
+  createSqliteCheckpointer,
+  isMemoryCheckpointer,
+  generateThreadId,
+  createThreadConfig,
+  createConversationConfig,
+  getCheckpointHistory,
+  getLatestCheckpoint,
+  clearThread,
+  type CheckpointerOptions,
+  type SqliteCheckpointerOptions,
+  type ThreadConfig,
+  type ConversationConfig,
+  type CheckpointHistoryOptions,
+} from './persistence/index.js';
+
