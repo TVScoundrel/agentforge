@@ -1,0 +1,54 @@
+{
+  "name": "@agentforge/patterns",
+  "version": "0.1.0",
+  "description": "Agent patterns (ReAct, Planner-Executor) for AgentForge framework",
+  "type": "module",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsup src/index.ts --format esm,cjs --dts --clean",
+    "dev": "tsup src/index.ts --format esm,cjs --dts --watch",
+    "test": "vitest",
+    "test:coverage": "vitest --coverage",
+    "typecheck": "tsc --noEmit",
+    "clean": "rm -rf dist *.tsbuildinfo"
+  },
+  "keywords": [
+    "agents",
+    "ai",
+    "langchain",
+    "langgraph",
+    "react",
+    "patterns"
+  ],
+  "author": "AgentForge",
+  "license": "MIT",
+  "dependencies": {
+    "@agentforge/core": "workspace:*",
+    "@langchain/core": "^0.3.29",
+    "@langchain/langgraph": "^0.2.20",
+    "zod": "^3.23.8"
+  },
+  "devDependencies": {
+    "@types/node": "^20.10.6",
+    "tsup": "^8.0.1",
+    "typescript": "^5.3.3",
+    "vitest": "^1.6.1"
+  },
+  "peerDependencies": {
+    "@langchain/core": "^0.3.0",
+    "@langchain/langgraph": "^0.2.0"
+  }
+}
+

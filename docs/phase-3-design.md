@@ -1,7 +1,7 @@
 # Phase 3: Agent Patterns - Detailed Design
 
 **Duration**: 7 days
-**Status**: 🚧 In Progress (3.1.1-3.1.3 Complete)
+**Status**: 🚧 In Progress (3.1 Complete - ReAct Pattern)
 **Goal**: Implement production-ready agent patterns as reusable utilities
 
 **Last Updated**: 2025-12-24
@@ -166,17 +166,22 @@ const result = await agent.invoke({
   - Adds observation messages to state
 - [x] Unit tests (9 tests)
 
-#### 3.1.4 Integration & Examples 🚧 IN PROGRESS
-- [ ] `ReActAgentBuilder` - Fluent builder API (for consistency with Phase 1 tool builder)
-- [ ] Complete workflow with routing logic (`shouldContinue` edge function)
-- [ ] Integration with tool registry (already working, needs examples)
-- [ ] Integration with observability (add metrics and logging)
-- [ ] Example: Simple Q&A agent
-- [ ] Example: Multi-step reasoning agent
-- [ ] Example: Tool chaining agent
-- [ ] Integration tests (7 tests)
+#### 3.1.4 Fluent Builder API & Integration Tests ✅ COMPLETE
+- [x] `ReActAgentBuilder` - Fluent builder API (for consistency with Phase 1 tool builder)
+- [x] Complete workflow with routing logic (`shouldContinue` edge function)
+- [x] Integration with tool registry
+- [x] Builder tests (19 tests)
+- [x] Integration tests (7 tests)
 
-**Total Tests**: 36 tests (29 complete, 7 remaining)
+#### 3.1.5 Package Migration ✅ COMPLETE
+- [x] Created new `@agentforge/patterns` package
+- [x] Migrated all ReAct pattern code from `@agentforge/core`
+- [x] Fixed StateGraph initialization issues
+- [x] All tests passing (55 tests total)
+- [x] Package builds successfully
+- [x] Documentation migrated
+
+**Total Tests**: 55 tests (all passing) ✅
 
 ---
 

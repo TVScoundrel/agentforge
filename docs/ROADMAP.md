@@ -176,16 +176,20 @@
 
 See [phase-3-design.md](./phase-3-design.md) for detailed design.
 
-### 3.1 ReAct Pattern (2 days) 🚧 In Progress
+### 3.1 ReAct Pattern (3 days) ✅ COMPLETE
 - [x] **3.1.1** ReAct state definition with Zod schemas (10 tests) ✅
 - [x] **3.1.2** `createReActAgent()` factory function (10 tests) ✅
 - [x] **3.1.3** Reasoning, action, and observation nodes (9 tests) ✅
-- [ ] **3.1.4** Integration & Examples
-  - [ ] Fluent builder API (consistent with Phase 1 tool builder)
-  - [ ] Complete workflow with routing logic
-  - [ ] Working examples (Q&A, multi-step reasoning, tool chaining)
-  - [ ] Integration tests (7 tests)
-- **Subtotal: 29 tests passing (36 total planned)**
+- [x] **3.1.4** Fluent builder API & Integration tests (19 + 7 tests) ✅
+  - [x] Fluent builder API (consistent with Phase 1 tool builder)
+  - [x] Complete workflow with routing logic
+  - [x] Integration tests (7 tests)
+- [x] **3.1.5** Package Migration to `@agentforge/patterns` ✅
+  - [x] Created new `@agentforge/patterns` package
+  - [x] Migrated all ReAct pattern code
+  - [x] Fixed StateGraph initialization issues
+  - [x] All 55 tests passing
+- **Subtotal: 55 tests passing** ✅
 
 ### 3.2 Plan-and-Execute Pattern (2 days)
 - [ ] Plan-Execute state definition
@@ -214,12 +218,12 @@ See [phase-3-design.md](./phase-3-design.md) for detailed design.
 - [ ] Unit tests (30 tests)
 
 ### Deliverables
-- Agent patterns in `@agentforge/core` v0.3.0
-- 4 core patterns (ReAct, Plan-Execute, Reflection, Multi-Agent)
+- Agent patterns in `@agentforge/patterns` v0.1.0
+- 4 core patterns (ReAct ✅, Plan-Execute, Reflection, Multi-Agent)
 - 8+ working examples
 - Pattern comparison guide
 - Complete API documentation
-- **Total: 135 tests (29 complete, 106 remaining)**
+- **Total: 135 tests (55 complete, 80 remaining)**
 
 ---
 
@@ -319,8 +323,8 @@ See [phase-3-design.md](./phase-3-design.md) for detailed design.
 ## Current Status
 
 **Phase**: 3 - Agent Patterns 🚧 IN PROGRESS
-**Progress**: Phase 1 Complete, Phase 2 Complete, Phase 3.1.1-3.1.3 Complete
-**Next Milestone**: Phase 3.1.4 - ReAct Integration & Examples
+**Progress**: Phase 1 Complete, Phase 2 Complete, Phase 3.1 Complete (ReAct Pattern)
+**Next Milestone**: Phase 3.2 - Plan-and-Execute Pattern
 
 **Latest Updates** (2025-12-24):
 
@@ -375,22 +379,31 @@ See [phase-3-design.md](./phase-3-design.md) for detailed design.
 - ✅ Working examples
 - **Phase 2.4 Total: 60 tests passing**
 
-### Phase 3.1.1-3.1.3 - ReAct Pattern Core ✅ COMPLETE
-- ✅ ReAct state definition with Zod schemas (`ReActState`, `MessageSchema`, `ThoughtSchema`, `ToolCallSchema`, `ToolResultSchema`, `ScratchpadEntrySchema`)
-- ✅ `createReActAgent()` factory function with configuration
-- ✅ Prompt templates (`DEFAULT_REACT_SYSTEM_PROMPT`, `REASONING_PROMPT_TEMPLATE`, `TOOL_SELECTION_PROMPT`)
-- ✅ Reasoning node (`createReasoningNode`) - generates thoughts and tool calls
-- ✅ Action node (`createActionNode`) - executes tools with error handling
-- ✅ Observation node (`createObservationNode`) - processes results and updates scratchpad
-- ✅ Comprehensive unit tests (29 tests: 10 state + 10 agent + 9 nodes)
-- ✅ Full LangGraph integration
-- **Phase 3.1.1-3.1.3 Total: 29 tests passing**
+### Phase 3.1 - ReAct Pattern ✅ COMPLETE
+- ✅ **3.1.1-3.1.3**: ReAct Pattern Core
+  - ✅ ReAct state definition with Zod schemas (`ReActState`, `MessageSchema`, `ThoughtSchema`, `ToolCallSchema`, `ToolResultSchema`, `ScratchpadEntrySchema`)
+  - ✅ `createReActAgent()` factory function with configuration
+  - ✅ Prompt templates (`DEFAULT_REACT_SYSTEM_PROMPT`, `REASONING_PROMPT_TEMPLATE`, `TOOL_SELECTION_PROMPT`)
+  - ✅ Reasoning node (`createReasoningNode`) - generates thoughts and tool calls
+  - ✅ Action node (`createActionNode`) - executes tools with error handling
+  - ✅ Observation node (`createObservationNode`) - processes results and updates scratchpad
+  - ✅ Unit tests (29 tests: 10 state + 10 agent + 9 nodes)
+- ✅ **3.1.4**: Fluent Builder API & Integration Tests
+  - ✅ `ReActAgentBuilder` - Fluent builder API (19 tests)
+  - ✅ Integration tests with complete ReAct loop (7 tests)
+- ✅ **3.1.5**: Package Migration to `@agentforge/patterns`
+  - ✅ Created new `@agentforge/patterns` package
+  - ✅ Migrated all ReAct pattern code from core
+  - ✅ Fixed StateGraph initialization issues
+  - ✅ All tests passing (55 tests total)
+- **Phase 3.1 Total: 55 tests passing** ✅
 
-**Overall Total: 300 tests passing** ✅
+**Overall Total: 326 tests passing** ✅
 
 See [FRAMEWORK_DESIGN.md](./FRAMEWORK_DESIGN.md) for architecture details.
 See [PHASE_2_1_COMPLETE.md](./PHASE_2_1_COMPLETE.md) for Phase 2.1 details.
 See [PHASE_2_2_COMPLETE.md](./PHASE_2_2_COMPLETE.md) for Phase 2.2 details.
 See [PHASE_2_3_COMPLETE.md](./PHASE_2_3_COMPLETE.md) for Phase 2.3 details.
 See [phase-3-design.md](./phase-3-design.md) for Phase 3 design.
+See [PHASE_3_1_5_SUMMARY.md](./PHASE_3_1_5_SUMMARY.md) for Phase 3.1.5 details.
 
