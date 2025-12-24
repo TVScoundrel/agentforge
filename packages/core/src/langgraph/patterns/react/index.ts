@@ -16,4 +16,5 @@ export * from './types.js';
 export * from './prompts.js';
 export * from './nodes.js';
 export * from './agent.js';
+export * from './builder.js';
 

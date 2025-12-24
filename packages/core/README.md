@@ -4,9 +4,9 @@ Core abstractions for AgentForge - production-ready deep agents framework.
 
 ## Status
 
-✅ **Phase 1 & 2 Complete** | 🚧 **Phase 3 In Progress** - Foundation + ReAct Core Ready
+✅ **Phase 1 & 2 Complete** | 🚧 **Phase 3.1 In Progress** - ReAct Pattern Nearly Complete
 
-**300 tests passing** | **Full TypeScript support** | **Comprehensive documentation**
+**326 tests passing** | **Full TypeScript support** | **Comprehensive documentation**
 
 ## Features
 
@@ -37,11 +37,17 @@ Core abstractions for AgentForge - production-ready deep agents framework.
 - **Action Node** - Executes tools with error handling
 - **Observation Node** - Processes results and updates scratchpad
 
-**Phase 3.1.4: ReAct Integration** (In Progress)
-- Fluent builder API (consistent with Phase 1 tool builder)
-- Complete workflow with routing logic
-- Working examples (Q&A, multi-step reasoning, tool chaining)
-- Integration tests
+**Phase 3.1.4: ReAct Builder & Integration** (26 tests) ✅
+- **Fluent Builder API** - `ReActAgentBuilder` with method chaining
+- **Factory Function** - `createReActAgentBuilder()` alternative
+- **Integration Tests** - 7 end-to-end scenarios
+- **Validation** - Runtime validation of required fields
+- **Type Safety** - Full TypeScript support with inference
+
+**Phase 3.1.5: Documentation** (In Progress)
+- Usage guide with examples
+- API documentation
+- Migration guide
 
 ### 📋 Coming Soon
 
