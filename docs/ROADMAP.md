@@ -100,23 +100,54 @@
 
 ---
 
-## Phase 2: Agent Core (1 week)
+## Phase 2: LangGraph Integration & Agent Utilities (1 week)
 
-**Duration**: 7 days  
-**Status**: 📋 Planned
+**Duration**: 7 days
+**Status**: � In Progress
+**Philosophy**: Leverage LangGraph/LangChain fully - don't reinvent the wheel!
 
-### Features
-- [ ] Base Agent abstraction
-- [ ] State management utilities
-- [ ] Memory management
-- [ ] Event system for observability
-- [ ] Error handling utilities
-- [ ] Agent lifecycle hooks
+### 2.1 LangGraph State Utilities (2 days)
+- [ ] TypeScript-friendly state type helpers
+- [ ] State schema validation with Zod
+- [ ] State reducer utilities
+- [ ] Typed state annotations
+- [ ] Unit tests (15 tests)
+
+### 2.2 Agent Builder with LangGraph (2 days)
+- [ ] Fluent builder for LangGraph StateGraph
+- [ ] Tool registry integration
+- [ ] Automatic tool binding
+- [ ] Checkpointer configuration helpers
+- [ ] Unit tests (20 tests)
+
+### 2.3 Memory & Persistence Helpers (1 day)
+- [ ] Checkpointer factory functions
+- [ ] Memory configuration utilities
+- [ ] Thread management helpers
+- [ ] Unit tests (10 tests)
+
+### 2.4 Observability & Error Handling (1 day)
+- [ ] LangSmith integration helpers
+- [ ] Error handling middleware
+- [ ] Retry utilities
+- [ ] Logging utilities
+- [ ] Unit tests (10 tests)
+
+### 2.5 Testing & Documentation (1 day)
+- [ ] Comprehensive unit tests (55 tests total)
+- [ ] Integration tests with LangGraph
+- [ ] Example agents (3 examples)
+- [ ] API documentation
+- [ ] Migration guide from raw LangGraph
 
 ### Deliverables
-- `@agentforge/core` v0.2.0 with agent core
-- Agent examples
-- Documentation
+- `@agentforge/core` v0.2.0 with LangGraph utilities
+- LangGraph integration examples
+- Complete documentation
+- **Total: ~55 tests**
+
+### Key Principle
+**We wrap, don't replace**: AgentForge provides type-safe, ergonomic wrappers around LangGraph/LangChain, not a competing framework.
 
 ---
 
