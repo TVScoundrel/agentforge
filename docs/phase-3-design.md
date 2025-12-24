@@ -1,14 +1,24 @@
 # Phase 3: Agent Patterns - Detailed Design
 
-**Duration**: 7 days  
-**Status**: 📋 Planning  
+**Duration**: 7 days
+**Status**: 📋 Planning
 **Goal**: Implement production-ready agent patterns as reusable utilities
+
+**Last Updated**: 2025-12-24
+**Based On**: LangChain 1.0 & LangGraph 1.0 (October 2025 releases)
 
 ---
 
 ## Overview
 
-Phase 3 focuses on implementing common agent patterns as reusable, type-safe utilities that work seamlessly with our existing tool registry and LangGraph utilities. We'll implement 4 core patterns based on proven research and LangChain's implementations.
+Phase 3 focuses on implementing common agent patterns as reusable, type-safe utilities that work seamlessly with our existing tool registry and LangGraph utilities. We'll implement 4 core patterns based on proven research and LangChain's latest implementations.
+
+### Key Changes in LangChain/LangGraph 1.0 (October 2025)
+
+- **`create_react_agent` moved** from `langgraph.prebuilt` to `langchain.agents.create_agent`
+- **LangChain 1.0** focuses on high-level agent abstractions with middleware support
+- **LangGraph 1.0** provides low-level graph control with durable state and HITL patterns
+- Our patterns will be built on **LangGraph** for maximum flexibility and control
 
 ---
 
@@ -345,15 +355,23 @@ Multi-agent patterns enable collaboration between specialized agents:
 ## Notes
 
 ### Design Philosophy
-- **Leverage LangGraph**: Use LangGraph's StateGraph, not custom implementations
+- **Leverage LangGraph 1.0**: Use LangGraph's StateGraph with durable state and HITL
 - **Composable**: Patterns should work together (e.g., ReAct + Reflection)
 - **Configurable**: Sensible defaults, but highly customizable
 - **Observable**: Built-in tracing and metrics
+- **Production-Ready**: Persistence, error handling, and human-in-the-loop support
 
 ### Future Enhancements (Post-Phase 3)
 - Tree of Thoughts pattern
-- LLMCompiler pattern (parallel tool execution)
-- ReWOO pattern (reasoning without observation)
-- LATS pattern (Language Agent Tree Search)
+- LLMCompiler pattern (parallel tool execution from LangChain blog Feb 2024)
+- ReWOO pattern (reasoning without observation from LangChain blog Feb 2024)
+- LATS pattern (Language Agent Tree Search from LangChain blog Feb 2024)
 - Custom pattern builder API
+- Integration with LangChain 1.0's middleware system
+
+### References
+- LangChain 1.0 & LangGraph 1.0 Release (October 2025)
+- Plan-and-Execute Agents (LangChain Blog, Feb 2024)
+- Reflection Agents (LangChain Blog, Feb 2024)
+- LangGraph Workflow Updates (June 2025)
 
