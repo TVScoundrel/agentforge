@@ -31,11 +31,11 @@
 
 | Package | Description | Status |
 |---------|-------------|--------|
-| [@agentforge/core](./packages/core) | Core abstractions (tools, registry, agents) | 🚧 In Development |
-| @agentforge/patterns | Agent patterns (ReAct, Planner-Executor) | 📋 Planned |
-| @agentforge/tools | Standard tool library | 📋 Planned |
-| @agentforge/testing | Testing utilities | 📋 Planned |
-| @agentforge/cli | CLI tool | 📋 Planned |
+| [@agentforge/core](./packages/core) | Core abstractions (tools, registry, LangGraph utilities) | ✅ Phase 1 & 2 Complete |
+| @agentforge/patterns | Agent patterns (ReAct, Planner-Executor) | 📋 Planned (Phase 3) |
+| @agentforge/tools | Standard tool library | 📋 Planned (Phase 6) |
+| @agentforge/testing | Testing utilities | 📋 Planned (Phase 6) |
+| @agentforge/cli | CLI tool | 📋 Planned (Phase 6) |
 
 ---
 
@@ -108,15 +108,23 @@ pnpm clean          # Clean all build artifacts
 ## 🎯 Current Status
 
 **Phase:** 2 - LangGraph Integration & Agent Utilities ✅ COMPLETE
-**Progress:**
-- ✅ Phase 1: Tool Registry (113 tests)
-- ✅ Phase 2.1: LangGraph State Management (18 tests)
-- ✅ Phase 2.2: Workflow Builders & Error Handling (54 tests)
-- ✅ Phase 2.3: Memory & Persistence Helpers (26 tests)
-- ✅ Phase 2.4: Observability & Error Handling (60 tests)
-- **Total: 271 tests passing**
 
-**Next:** Phase 3 - Agent Patterns
+**What's Ready for Production:**
+- ✅ **Phase 1**: Tool Registry (113 tests)
+  - Rich tool metadata, builder API, registry with events
+  - LangChain integration, prompt generation
+- ✅ **Phase 2**: LangGraph Utilities (158 tests)
+  - State management, workflow builders, error handling
+  - Memory & persistence, observability & logging
+- **Total: 271 tests passing** with comprehensive coverage
+
+**What's Next:**
+- 📋 **Phase 3**: Agent Patterns (ReAct, Planner-Executor, etc.)
+- 📋 **Phase 4**: Middleware System (logging, tracing, caching)
+- 📋 **Phase 5**: Production Features (streaming, monitoring)
+- 📋 **Phase 6**: Developer Experience (CLI, testing utils, standard tools)
+
+**Current State:** The core foundation is production-ready! You can build agents with tools, state management, workflows, persistence, and observability. Agent patterns and middleware are coming next.
 
 See [ROADMAP.md](./docs/ROADMAP.md) for detailed progress.
 

@@ -4,27 +4,45 @@ Core abstractions for AgentForge - production-ready deep agents framework.
 
 ## Status
 
-✅ **Phase 2 Complete** - Production Ready
+✅ **Phase 1 & 2 Complete** - Foundation Ready for Production
+
+**271 tests passing** | **Full TypeScript support** | **Comprehensive documentation**
 
 ## Features
 
-### ✅ Implemented
+### ✅ Production Ready (Phase 1 & 2)
 
-- **Tool System** - Type-safe tool definitions with Zod schemas
-- **Tool Registry** - Centralized tool management with querying and events
-- **LangChain Integration** - Seamless conversion between AgentForge and LangChain tools
-- **LangGraph State Management** - Type-safe state annotations with Zod validation
-- **Workflow Builders** - Sequential, parallel, and conditional workflow patterns
-- **Error Handling Patterns** - Retry, error handling, and timeout utilities
+**Phase 1: Tool System** (113 tests)
+- **Tool Metadata** - Rich metadata with categories, tags, examples
+- **Tool Builder** - Fluent API for creating tools
+- **Tool Registry** - Centralized management with querying and events
+- **LangChain Integration** - Seamless conversion to LangChain tools
+- **Prompt Generation** - Automatic LLM prompt generation
+
+**Phase 2: LangGraph Utilities** (158 tests)
+- **State Management** - Type-safe state annotations with Zod validation
+- **Workflow Builders** - Sequential, parallel, and conditional patterns
+- **Error Handling** - Retry, error handling, and timeout utilities
 - **Subgraph Composition** - Reusable subgraph utilities
-- **Memory & Persistence** - Checkpointer and thread management utilities
-- **Observability** - LangSmith integration, metrics, logging, and error handling
+- **Memory & Persistence** - Checkpointer and thread management
+- **Observability** - LangSmith integration, metrics, logging, error reporting
 
-### 📋 Planned
+### 📋 Coming Soon
 
-- **Agent Patterns** - ReAct, Planner-Executor, and other common patterns
-- **Middleware System** - Logging, tracing, caching, and rate limiting
-- **Standard Tools** - Common tool library
+**Phase 3: Agent Patterns**
+- ReAct pattern
+- Planner-Executor pattern
+- Reflection pattern
+- Multi-agent coordination
+
+**Phase 4: Middleware System**
+- Logging, tracing, caching middleware
+- Rate limiting and retry middleware
+
+**Phase 5: Production Features**
+- Streaming support
+- Performance monitoring
+- Production deployment guides
 
 ## Installation
 
