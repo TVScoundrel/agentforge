@@ -2,6 +2,11 @@
 
 > Production-ready framework for building deep agents with LangGraph
 
+[![GitHub](https://img.shields.io/badge/GitHub-TVScoundrel%2Fagentforge-blue?logo=github)](https://github.com/TVScoundrel/agentforge)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.9-blue?logo=typescript)](https://www.typescriptlang.org/)
+[![Tests](https://img.shields.io/badge/tests-271%20passing-success)](./packages/core)
+[![License](https://img.shields.io/badge/license-MIT-green)](./LICENSE)
+
 **AgentForge** is a TypeScript framework that provides production-grade abstractions for building autonomous agents with LangGraph. It focuses on developer experience, type safety, and real-world production needs.
 
 ---
@@ -78,7 +83,7 @@ pnpm test:coverage
 
 ```bash
 # Clone the repository
-git clone <repository-url>
+git clone https://github.com/TVScoundrel/agentforge.git
 cd agentforge
 
 # Install dependencies
