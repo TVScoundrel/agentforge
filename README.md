@@ -8,12 +8,20 @@
 
 ## ✨ Features
 
+### ✅ Implemented
 - 🛠️ **Rich Tool Registry** - Metadata-driven tools with automatic prompt generation
-- 🎯 **Agent Patterns** - Pre-built patterns (ReAct, Planner-Executor, etc.)
+- 🔗 **LangChain Integration** - Seamless conversion between AgentForge and LangChain tools
+- 📊 **LangGraph State Management** - Type-safe state utilities with Zod validation
 - 🔒 **Type Safety** - Full TypeScript support with Zod schemas
-- 🧪 **Testing First** - Built-in testing utilities and patterns
-- 📦 **Modular** - Use only what you need
-- 🚀 **Production Ready** - Middleware, error handling, observability
+- 🧪 **Testing First** - Comprehensive test coverage (131 tests)
+
+### 🚧 In Progress
+- 🎯 **Graph Builders** - High-level utilities for common LangGraph patterns
+
+### 📋 Planned
+- 🎭 **Agent Patterns** - Pre-built patterns (ReAct, Planner-Executor, etc.)
+- 📦 **Standard Tools** - Common tool library
+- 🚀 **Production Features** - Middleware, error handling, observability
 
 ---
 
@@ -97,8 +105,13 @@ pnpm clean          # Clean all build artifacts
 
 ## 🎯 Current Status
 
-**Phase:** MVP - Tool Registry  
-**Progress:** Monorepo setup complete, implementing tool registry
+**Phase:** 2.1 - LangGraph State Utilities ✅ COMPLETE
+**Progress:**
+- ✅ Phase 1: Tool Registry (113 tests)
+- ✅ Phase 2.1: LangGraph State Management (18 tests)
+- **Total: 131 tests passing**
+
+**Next:** Phase 2.2 - Graph Builder Utilities
 
 See [ROADMAP.md](./docs/ROADMAP.md) for detailed progress.
 

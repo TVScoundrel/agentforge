@@ -47,27 +47,27 @@ import type { Tool } from '../tools/types.js';
  * });
  * ```
  */
-export function toLangChainTool<TInput = any, TOutput = any>(
-  tool: Tool<TInput, TOutput>
-): DynamicStructuredTool {
-  return new DynamicStructuredTool({
+export function toLangChainTool(
+  tool: Tool<any, any>
+): DynamicStructuredTool<any> {
+  return new DynamicStructuredTool<any>({
     name: tool.metadata.name,
     description: tool.metadata.description,
-    schema: tool.schema,
-    func: async (input: TInput) => {
+    schema: tool.schema as any,
+    func: async (input: any) => {
       const result = await tool.execute(input);
-      
+
       // LangChain tools must return strings
       // Convert result to string if it's not already
       if (typeof result === 'string') {
         return result;
       }
-      
+
       // For objects/arrays, return JSON string
       if (typeof result === 'object' && result !== null) {
         return JSON.stringify(result, null, 2);
       }
-      
+
       // For primitives, convert to string
       return String(result);
     },
@@ -93,7 +93,7 @@ export function toLangChainTool<TInput = any, TOutput = any>(
  */
 export function toLangChainTools(
   tools: Tool<any, any>[]
-): DynamicStructuredTool[] {
+): DynamicStructuredTool<any>[] {
   return tools.map(toLangChainTool);
 }
 

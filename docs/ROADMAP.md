@@ -103,21 +103,29 @@
 ## Phase 2: LangGraph Integration & Agent Utilities (1 week)
 
 **Duration**: 7 days
-**Status**: � In Progress
+**Status**: � In Progress (Phase 2.1 Complete!)
 **Philosophy**: Leverage LangGraph/LangChain fully - don't reinvent the wheel!
 
-### 2.1 LangGraph State Utilities (2 days)
-- [ ] TypeScript-friendly state type helpers
-- [ ] State schema validation with Zod
-- [ ] State reducer utilities
-- [ ] Typed state annotations
-- [ ] Unit tests (15 tests)
+### 2.1 LangGraph State Utilities (2 days) ✅ COMPLETE
+- [x] TypeScript-friendly state type helpers
+- [x] State schema validation with Zod
+- [x] State reducer utilities
+- [x] Typed state annotations (`createStateAnnotation`)
+- [x] State validation utilities (`validateState`)
+- [x] State merging utilities (`mergeState`)
+- [x] Unit tests (14 tests)
+- [x] Integration tests (4 tests)
+- [x] Complete documentation
+- [x] Working examples
+- **Total: 18 tests passing**
 
-### 2.2 Agent Builder with LangGraph (2 days)
-- [ ] Fluent builder for LangGraph StateGraph
-- [ ] Tool registry integration
-- [ ] Automatic tool binding
-- [ ] Checkpointer configuration helpers
+### 2.2 Graph Builder Utilities (2 days)
+- [ ] Fluent builder for common LangGraph patterns
+- [ ] Sequential workflow builder
+- [ ] Parallel execution builder
+- [ ] Conditional routing builder
+- [ ] Subgraph composition utilities
+- [ ] Error handling patterns
 - [ ] Unit tests (20 tests)
 
 ### 2.3 Memory & Persistence Helpers (1 day)
@@ -134,7 +142,7 @@
 - [ ] Unit tests (10 tests)
 
 ### 2.5 Testing & Documentation (1 day)
-- [ ] Comprehensive unit tests (55 tests total)
+- [ ] Comprehensive unit tests (60+ tests total)
 - [ ] Integration tests with LangGraph
 - [ ] Example agents (3 examples)
 - [ ] API documentation
@@ -144,7 +152,7 @@
 - `@agentforge/core` v0.2.0 with LangGraph utilities
 - LangGraph integration examples
 - Complete documentation
-- **Total: ~55 tests**
+- **Total: ~60+ tests**
 
 ### Key Principle
 **We wrap, don't replace**: AgentForge provides type-safe, ergonomic wrappers around LangGraph/LangChain, not a competing framework.
@@ -264,19 +272,34 @@
 
 ## Current Status
 
-**Phase**: 1 - Tool Registry ✅ COMPLETE
-**Progress**: 100% (All phases complete!)
-**Next Milestone**: Phase 2 - Agent Core
+**Phase**: 2.1 - LangGraph State Utilities ✅ COMPLETE
+**Progress**: Phase 1 Complete, Phase 2.1 Complete
+**Next Milestone**: Phase 2.2 - Graph Builder Utilities
 
-**Latest Updates** (2025-12-24):
+**Latest Updates** (2024-12-24):
+
+### Phase 1 - Tool Registry ✅ COMPLETE
 - ✅ Phase 1.1: Tool Metadata Interface (16 tests)
 - ✅ Phase 1.2: Tool Builder API (15 tests)
 - ✅ Phase 1.3: Tool Registry (37 tests)
 - ✅ Phase 1.4: Prompt Generation (included in 1.3)
 - ✅ Phase 1.5: LangChain Integration (12 tests)
 - ✅ Phase 1.6: Testing & Documentation (Migration Guide)
-- **Total: 113 tests passing**
-- **Phase 1 Complete! 🎉**
+- **Phase 1 Total: 113 tests passing**
+
+### Phase 2.1 - LangGraph State Utilities ✅ COMPLETE
+- ✅ `createStateAnnotation()` - Type-safe state annotations
+- ✅ `validateState()` - Runtime state validation with Zod
+- ✅ `mergeState()` - State merging with custom reducers
+- ✅ Unit tests (14 tests)
+- ✅ Integration tests (4 tests)
+- ✅ Complete documentation (API docs + Quick Reference)
+- ✅ Working examples (2 examples)
+- ✅ Fixed TypeScript build issues
+- **Phase 2.1 Total: 18 tests passing**
+
+**Overall Total: 131 tests passing** ✅
 
 See [FRAMEWORK_DESIGN.md](./FRAMEWORK_DESIGN.md) for architecture details.
+See [phase-2.1-summary.md](./phase-2.1-summary.md) for Phase 2.1 details.
 
