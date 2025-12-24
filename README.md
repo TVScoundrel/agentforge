@@ -12,16 +12,17 @@
 - 🛠️ **Rich Tool Registry** - Metadata-driven tools with automatic prompt generation
 - 🔗 **LangChain Integration** - Seamless conversion between AgentForge and LangChain tools
 - 📊 **LangGraph State Management** - Type-safe state utilities with Zod validation
+- 🏗️ **Workflow Builders** - Sequential, parallel, and conditional workflow patterns
+- 🔄 **Error Handling Patterns** - Retry, error handling, and timeout utilities
+- 🧩 **Subgraph Composition** - Reusable subgraph utilities
 - 🔒 **Type Safety** - Full TypeScript support with Zod schemas
-- 🧪 **Testing First** - Comprehensive test coverage (131 tests)
-
-### 🚧 In Progress
-- 🎯 **Graph Builders** - High-level utilities for common LangGraph patterns
+- 🧪 **Testing First** - Comprehensive test coverage (185 tests)
 
 ### 📋 Planned
+- 💾 **Memory & Persistence** - Checkpointer and thread management utilities
+- 📈 **Observability** - LangSmith integration and logging utilities
 - 🎭 **Agent Patterns** - Pre-built patterns (ReAct, Planner-Executor, etc.)
 - 📦 **Standard Tools** - Common tool library
-- 🚀 **Production Features** - Middleware, error handling, observability
 
 ---
 
@@ -105,13 +106,14 @@ pnpm clean          # Clean all build artifacts
 
 ## 🎯 Current Status
 
-**Phase:** 2.1 - LangGraph State Utilities ✅ COMPLETE
+**Phase:** 2.2 - Graph Builder Utilities ✅ COMPLETE
 **Progress:**
 - ✅ Phase 1: Tool Registry (113 tests)
 - ✅ Phase 2.1: LangGraph State Management (18 tests)
-- **Total: 131 tests passing**
+- ✅ Phase 2.2: Workflow Builders & Error Handling (54 tests)
+- **Total: 185 tests passing**
 
-**Next:** Phase 2.2 - Graph Builder Utilities
+**Next:** Phase 2.3 - Memory & Persistence Helpers
 
 See [ROADMAP.md](./docs/ROADMAP.md) for detailed progress.
 

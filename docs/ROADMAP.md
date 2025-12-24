@@ -103,7 +103,7 @@
 ## Phase 2: LangGraph Integration & Agent Utilities (1 week)
 
 **Duration**: 7 days
-**Status**: � In Progress (Phase 2.1 Complete!)
+**Status**: � In Progress (Phase 2.1 & 2.2 Complete!)
 **Philosophy**: Leverage LangGraph/LangChain fully - don't reinvent the wheel!
 
 ### 2.1 LangGraph State Utilities (2 days) ✅ COMPLETE
@@ -119,14 +119,16 @@
 - [x] Working examples
 - **Total: 18 tests passing**
 
-### 2.2 Graph Builder Utilities (2 days)
-- [ ] Fluent builder for common LangGraph patterns
-- [ ] Sequential workflow builder
-- [ ] Parallel execution builder
-- [ ] Conditional routing builder
-- [ ] Subgraph composition utilities
-- [ ] Error handling patterns
-- [ ] Unit tests (20 tests)
+### 2.2 Graph Builder Utilities (2 days) ✅ COMPLETE
+- [x] Sequential workflow builder (`createSequentialWorkflow`, `sequentialBuilder`)
+- [x] Parallel execution builder (`createParallelWorkflow`)
+- [x] Conditional routing utilities (`createConditionalRouter`, `createBinaryRouter`, `createMultiRouter`)
+- [x] Subgraph composition utilities (`createSubgraph`, `composeGraphs`)
+- [x] Error handling patterns (`withRetry`, `withErrorHandler`, `withTimeout`)
+- [x] Unit tests (54 tests: 26 builders + 28 patterns)
+- [x] Complete documentation
+- [x] Working examples
+- **Total: 54 tests passing**
 
 ### 2.3 Memory & Persistence Helpers (1 day)
 - [ ] Checkpointer factory functions
@@ -152,7 +154,7 @@
 - `@agentforge/core` v0.2.0 with LangGraph utilities
 - LangGraph integration examples
 - Complete documentation
-- **Total: ~60+ tests**
+- **Total: 72 tests (18 state + 54 builders/patterns)**
 
 ### Key Principle
 **We wrap, don't replace**: AgentForge provides type-safe, ergonomic wrappers around LangGraph/LangChain, not a competing framework.
@@ -272,9 +274,9 @@
 
 ## Current Status
 
-**Phase**: 2.1 - LangGraph State Utilities ✅ COMPLETE
-**Progress**: Phase 1 Complete, Phase 2.1 Complete
-**Next Milestone**: Phase 2.2 - Graph Builder Utilities
+**Phase**: 2.2 - Graph Builder Utilities ✅ COMPLETE
+**Progress**: Phase 1 Complete, Phase 2.1 Complete, Phase 2.2 Complete
+**Next Milestone**: Phase 2.3 - Memory & Persistence Helpers
 
 **Latest Updates** (2024-12-24):
 
@@ -298,8 +300,20 @@
 - ✅ Fixed TypeScript build issues
 - **Phase 2.1 Total: 18 tests passing**
 
-**Overall Total: 131 tests passing** ✅
+### Phase 2.2 - Graph Builder Utilities ✅ COMPLETE
+- ✅ Sequential workflow builder (`createSequentialWorkflow`, `sequentialBuilder`)
+- ✅ Parallel execution builder (`createParallelWorkflow`)
+- ✅ Conditional routing (`createConditionalRouter`, `createBinaryRouter`, `createMultiRouter`)
+- ✅ Subgraph composition (`createSubgraph`, `composeGraphs`)
+- ✅ Error handling patterns (`withRetry`, `withErrorHandler`, `withTimeout`)
+- ✅ Comprehensive unit tests (54 tests)
+- ✅ Complete documentation
+- ✅ Working examples
+- **Phase 2.2 Total: 54 tests passing**
+
+**Overall Total: 185 tests passing** ✅
 
 See [FRAMEWORK_DESIGN.md](./FRAMEWORK_DESIGN.md) for architecture details.
-See [phase-2.1-summary.md](./phase-2.1-summary.md) for Phase 2.1 details.
+See [PHASE_2_1_COMPLETE.md](./PHASE_2_1_COMPLETE.md) for Phase 2.1 details.
+See [PHASE_2_2_COMPLETE.md](./PHASE_2_2_COMPLETE.md) for Phase 2.2 details.
 

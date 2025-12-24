@@ -11,13 +11,18 @@ Core abstractions for AgentForge - production-ready deep agents framework.
 ### ✅ Implemented
 
 - **Tool System** - Type-safe tool definitions with Zod schemas
+- **Tool Registry** - Centralized tool management with querying and events
 - **LangChain Integration** - Seamless conversion between AgentForge and LangChain tools
-- **LangGraph Integration** - Type-safe state management utilities
+- **LangGraph State Management** - Type-safe state annotations with Zod validation
+- **Workflow Builders** - Sequential, parallel, and conditional workflow patterns
+- **Error Handling Patterns** - Retry, error handling, and timeout utilities
+- **Subgraph Composition** - Reusable subgraph utilities
 
 ### 🚧 Planned
 
-- **Agent Core** - Base agent abstractions
-- **Advanced Workflows** - Complex agent orchestration patterns
+- **Memory & Persistence** - Checkpointer and thread management utilities
+- **Observability** - LangSmith integration and logging utilities
+- **Agent Patterns** - ReAct, Planner-Executor, and other common patterns
 
 ## Installation
 
@@ -47,24 +52,26 @@ const weatherTool = createTool({
 });
 ```
 
-### LangGraph State Management
+### LangGraph Workflow Builders
 
 ```typescript
-import { StateGraph } from '@langchain/langgraph';
-import { createStateAnnotation } from '@agentforge/core';
+import { createSequentialWorkflow, withRetry } from '@agentforge/core';
 import { z } from 'zod';
 
-const AgentState = createStateAnnotation({
-  messages: {
-    schema: z.array(z.string()),
-    reducer: (left, right) => [...left, ...right],
-    default: () => []
-  }
+// Create a sequential workflow
+const workflow = createSequentialWorkflow(AgentState, [
+  { name: 'fetch', node: fetchNode },
+  { name: 'process', node: processNode },
+  { name: 'save', node: saveNode },
+]);
+
+// Add error handling
+const robustNode = withRetry(myNode, {
+  maxAttempts: 3,
+  backoff: 'exponential',
 });
 
-const workflow = new StateGraph(AgentState)
-  .addNode('process', (state) => ({ messages: ['processed'] }))
-  .compile();
+const app = workflow.compile();
 ```
 
 ## Documentation
