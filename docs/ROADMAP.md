@@ -170,19 +170,54 @@
 
 ## Phase 3: Agent Patterns (1 week)
 
-**Duration**: 7 days  
+**Duration**: 7 days
 **Status**: 📋 Planned
+**Goal**: Implement production-ready agent patterns as reusable utilities
 
-### Patterns
-- [ ] ReAct pattern
-- [ ] Planner-Executor pattern
-- [ ] Reflection pattern
-- [ ] Multi-agent coordination
+See [phase-3-design.md](./phase-3-design.md) for detailed design.
+
+### 3.1 ReAct Pattern (2 days)
+- [ ] ReAct state definition with Zod schemas
+- [ ] `createReActAgent()` factory function
+- [ ] ReAct agent builder (fluent API)
+- [ ] Reasoning, action, and observation nodes
+- [ ] Integration with tool registry
+- [ ] Examples: Q&A agent, research agent
+- [ ] Unit tests (30 tests)
+
+### 3.2 Plan-and-Execute Pattern (2 days)
+- [ ] Plan-Execute state definition
+- [ ] `createPlanner()` - Planning node
+- [ ] `createExecutor()` - Execution node with parallel support
+- [ ] `createReplanner()` - Re-planning logic
+- [ ] `createPlanExecuteAgent()` - Main factory
+- [ ] Examples: Multi-step research, data analysis
+- [ ] Unit tests (40 tests)
+
+### 3.3 Reflection Pattern (2 days)
+- [ ] Reflection state definition
+- [ ] `createGenerator()` - Initial response generator
+- [ ] `createReflector()` - Critique generator
+- [ ] `createReviser()` - Response improver
+- [ ] `createReflectionAgent()` - Main factory
+- [ ] Examples: Essay writing, code generation
+- [ ] Unit tests (35 tests)
+
+### 3.4 Multi-Agent Coordination (1 day)
+- [ ] Multi-agent state definition
+- [ ] `createSupervisor()` - Supervisor agent with routing
+- [ ] `createWorkerAgent()` - Specialized worker agents
+- [ ] `createMultiAgentSystem()` - Main factory
+- [ ] Examples: Research team, customer support
+- [ ] Unit tests (30 tests)
 
 ### Deliverables
-- `@agentforge/patterns` v0.1.0
-- Pattern examples
+- Agent patterns in `@agentforge/core` v0.3.0
+- 4 core patterns (ReAct, Plan-Execute, Reflection, Multi-Agent)
+- 8+ working examples
 - Pattern comparison guide
+- Complete API documentation
+- **Total: 135 tests**
 
 ---
 
