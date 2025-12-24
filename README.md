@@ -4,7 +4,7 @@
 
 [![GitHub](https://img.shields.io/badge/GitHub-TVScoundrel%2Fagentforge-blue?logo=github)](https://github.com/TVScoundrel/agentforge)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.9-blue?logo=typescript)](https://www.typescriptlang.org/)
-[![Tests](https://img.shields.io/badge/tests-271%20passing-success)](./packages/core)
+[![Tests](https://img.shields.io/badge/tests-300%20passing-success)](./packages/core)
 [![License](https://img.shields.io/badge/license-MIT-green)](./LICENSE)
 
 **AgentForge** is a TypeScript framework that provides production-grade abstractions for building autonomous agents with LangGraph. It focuses on developer experience, type safety, and real-world production needs.
@@ -22,11 +22,15 @@
 - 🧩 **Subgraph Composition** - Reusable subgraph utilities
 - 💾 **Memory & Persistence** - Checkpointer and thread management utilities
 - 📈 **Observability** - LangSmith integration, metrics, logging, and error handling
+- 🤖 **ReAct Pattern (Core)** - State, agent builder, and reasoning/action/observation nodes
 - 🔒 **Type Safety** - Full TypeScript support with Zod schemas
-- 🧪 **Testing First** - Comprehensive test coverage (271 tests)
+- 🧪 **Testing First** - Comprehensive test coverage (300 tests)
+
+### 🚧 In Progress
+- 🎭 **ReAct Pattern (Integration)** - Complete workflow and examples
 
 ### 📋 Planned
-- 🎭 **Agent Patterns** - Pre-built patterns (ReAct, Planner-Executor, etc.)
+- 🎭 **More Agent Patterns** - Plan-Execute, Reflection, Multi-Agent
 - 📦 **Standard Tools** - Common tool library
 - 🔌 **Middleware System** - Logging, tracing, caching, and rate limiting
 
@@ -36,8 +40,8 @@
 
 | Package | Description | Status |
 |---------|-------------|--------|
-| [@agentforge/core](./packages/core) | Core abstractions (tools, registry, LangGraph utilities) | ✅ Phase 1 & 2 Complete |
-| @agentforge/patterns | Agent patterns (ReAct, Planner-Executor) | 📋 Planned (Phase 3) |
+| [@agentforge/core](./packages/core) | Core abstractions (tools, registry, LangGraph utilities, agent patterns) | ✅ Phase 1 & 2 Complete, 🚧 Phase 3 In Progress |
+| @agentforge/patterns | Agent patterns (ReAct, Planner-Executor) | 🚧 In Progress (Phase 3) |
 | @agentforge/tools | Standard tool library | 📋 Planned (Phase 6) |
 | @agentforge/testing | Testing utilities | 📋 Planned (Phase 6) |
 | @agentforge/cli | CLI tool | 📋 Planned (Phase 6) |
@@ -112,7 +116,7 @@ pnpm clean          # Clean all build artifacts
 
 ## 🎯 Current Status
 
-**Phase:** 2 - LangGraph Integration & Agent Utilities ✅ COMPLETE
+**Phase:** 3 - Agent Patterns 🚧 IN PROGRESS
 
 **What's Ready for Production:**
 - ✅ **Phase 1**: Tool Registry (113 tests)
@@ -121,15 +125,22 @@ pnpm clean          # Clean all build artifacts
 - ✅ **Phase 2**: LangGraph Utilities (158 tests)
   - State management, workflow builders, error handling
   - Memory & persistence, observability & logging
-- **Total: 271 tests passing** with comprehensive coverage
+- 🚧 **Phase 3.1.1-3.1.3**: ReAct Pattern Core (29 tests)
+  - State definition with Zod schemas
+  - Agent builder with configuration
+  - Reasoning, action, and observation nodes
+- **Total: 300 tests passing** with comprehensive coverage
+
+**What's In Progress:**
+- 🚧 **Phase 3.1.4**: ReAct Integration & Examples (workflow, examples, integration tests)
 
 **What's Next:**
-- 📋 **Phase 3**: Agent Patterns (ReAct, Planner-Executor, etc.)
+- 📋 **Phase 3.2-3.4**: More Agent Patterns (Plan-Execute, Reflection, Multi-Agent)
 - 📋 **Phase 4**: Middleware System (logging, tracing, caching)
 - 📋 **Phase 5**: Production Features (streaming, monitoring)
 - 📋 **Phase 6**: Developer Experience (CLI, testing utils, standard tools)
 
-**Current State:** The core foundation is production-ready! You can build agents with tools, state management, workflows, persistence, and observability. Agent patterns and middleware are coming next.
+**Current State:** The core foundation is production-ready! You can build agents with tools, state management, workflows, persistence, and observability. The ReAct pattern core is complete, with integration and examples coming next.
 
 See [ROADMAP.md](./docs/ROADMAP.md) for detailed progress.
 

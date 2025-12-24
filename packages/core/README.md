@@ -4,9 +4,9 @@ Core abstractions for AgentForge - production-ready deep agents framework.
 
 ## Status
 
-✅ **Phase 1 & 2 Complete** - Foundation Ready for Production
+✅ **Phase 1 & 2 Complete** | 🚧 **Phase 3 In Progress** - Foundation + ReAct Core Ready
 
-**271 tests passing** | **Full TypeScript support** | **Comprehensive documentation**
+**300 tests passing** | **Full TypeScript support** | **Comprehensive documentation**
 
 ## Features
 
@@ -27,11 +27,25 @@ Core abstractions for AgentForge - production-ready deep agents framework.
 - **Memory & Persistence** - Checkpointer and thread management
 - **Observability** - LangSmith integration, metrics, logging, error reporting
 
+### 🚧 In Progress (Phase 3)
+
+**Phase 3.1.1-3.1.3: ReAct Pattern Core** (29 tests) ✅
+- **ReAct State** - State definition with Zod schemas
+- **Agent Builder** - `createReActAgent()` factory function
+- **Prompt Templates** - System prompts and reasoning templates
+- **Reasoning Node** - Generates thoughts and decides on actions
+- **Action Node** - Executes tools with error handling
+- **Observation Node** - Processes results and updates scratchpad
+
+**Phase 3.1.4: ReAct Integration** (In Progress)
+- Complete workflow with routing logic
+- Working examples (Q&A, multi-step reasoning, tool chaining)
+- Integration tests
+
 ### 📋 Coming Soon
 
-**Phase 3: Agent Patterns**
-- ReAct pattern
-- Planner-Executor pattern
+**Phase 3.2-3.4: More Agent Patterns**
+- Plan-Execute pattern
 - Reflection pattern
 - Multi-agent coordination
 

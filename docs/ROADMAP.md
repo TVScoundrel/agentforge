@@ -171,19 +171,17 @@
 ## Phase 3: Agent Patterns (1 week)
 
 **Duration**: 7 days
-**Status**: 📋 Planned
+**Status**: � In Progress (3.1.1-3.1.3 Complete)
 **Goal**: Implement production-ready agent patterns as reusable utilities
 
 See [phase-3-design.md](./phase-3-design.md) for detailed design.
 
-### 3.1 ReAct Pattern (2 days)
-- [ ] ReAct state definition with Zod schemas
-- [ ] `createReActAgent()` factory function
-- [ ] ReAct agent builder (fluent API)
-- [ ] Reasoning, action, and observation nodes
-- [ ] Integration with tool registry
-- [ ] Examples: Q&A agent, research agent
-- [ ] Unit tests (30 tests)
+### 3.1 ReAct Pattern (2 days) 🚧 In Progress
+- [x] **3.1.1** ReAct state definition with Zod schemas (10 tests) ✅
+- [x] **3.1.2** `createReActAgent()` factory function (10 tests) ✅
+- [x] **3.1.3** Reasoning, action, and observation nodes (9 tests) ✅
+- [ ] **3.1.4** Integration & Examples (workflow, examples, integration tests)
+- **Subtotal: 29 tests passing**
 
 ### 3.2 Plan-and-Execute Pattern (2 days)
 - [ ] Plan-Execute state definition
@@ -217,7 +215,7 @@ See [phase-3-design.md](./phase-3-design.md) for detailed design.
 - 8+ working examples
 - Pattern comparison guide
 - Complete API documentation
-- **Total: 135 tests**
+- **Total: 135 tests (29 complete, 106 remaining)**
 
 ---
 
@@ -316,9 +314,9 @@ See [phase-3-design.md](./phase-3-design.md) for detailed design.
 
 ## Current Status
 
-**Phase**: 2 - LangGraph Integration & Agent Utilities ✅ COMPLETE
-**Progress**: Phase 1 Complete, Phase 2 Complete (all 5 sub-phases)
-**Next Milestone**: Phase 3 - Agent Patterns
+**Phase**: 3 - Agent Patterns 🚧 IN PROGRESS
+**Progress**: Phase 1 Complete, Phase 2 Complete, Phase 3.1.1-3.1.3 Complete
+**Next Milestone**: Phase 3.1.4 - ReAct Integration & Examples
 
 **Latest Updates** (2025-12-24):
 
@@ -373,10 +371,22 @@ See [phase-3-design.md](./phase-3-design.md) for detailed design.
 - ✅ Working examples
 - **Phase 2.4 Total: 60 tests passing**
 
-**Overall Total: 271 tests passing** ✅
+### Phase 3.1.1-3.1.3 - ReAct Pattern Core ✅ COMPLETE
+- ✅ ReAct state definition with Zod schemas (`ReActState`, `MessageSchema`, `ThoughtSchema`, `ToolCallSchema`, `ToolResultSchema`, `ScratchpadEntrySchema`)
+- ✅ `createReActAgent()` factory function with configuration
+- ✅ Prompt templates (`DEFAULT_REACT_SYSTEM_PROMPT`, `REASONING_PROMPT_TEMPLATE`, `TOOL_SELECTION_PROMPT`)
+- ✅ Reasoning node (`createReasoningNode`) - generates thoughts and tool calls
+- ✅ Action node (`createActionNode`) - executes tools with error handling
+- ✅ Observation node (`createObservationNode`) - processes results and updates scratchpad
+- ✅ Comprehensive unit tests (29 tests: 10 state + 10 agent + 9 nodes)
+- ✅ Full LangGraph integration
+- **Phase 3.1.1-3.1.3 Total: 29 tests passing**
+
+**Overall Total: 300 tests passing** ✅
 
 See [FRAMEWORK_DESIGN.md](./FRAMEWORK_DESIGN.md) for architecture details.
 See [PHASE_2_1_COMPLETE.md](./PHASE_2_1_COMPLETE.md) for Phase 2.1 details.
 See [PHASE_2_2_COMPLETE.md](./PHASE_2_2_COMPLETE.md) for Phase 2.2 details.
 See [PHASE_2_3_COMPLETE.md](./PHASE_2_3_COMPLETE.md) for Phase 2.3 details.
+See [phase-3-design.md](./phase-3-design.md) for Phase 3 design.
 
