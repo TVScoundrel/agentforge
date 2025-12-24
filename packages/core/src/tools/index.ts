@@ -41,3 +41,11 @@ export {
   toolBuilder,
 } from './builder.js';
 
+// Tool registry
+export {
+  ToolRegistry,
+  RegistryEvent,
+  type EventHandler,
+  type PromptOptions,
+} from './registry.js';
+
