@@ -66,3 +66,29 @@ export {
   type CheckpointHistoryOptions,
 } from './persistence/index.js';
 
+export {
+  configureLangSmith,
+  getLangSmithConfig,
+  isTracingEnabled,
+  withTracing,
+  createLogger,
+  LogLevel,
+  createMetrics,
+  withMetrics,
+  MetricType,
+  AgentError,
+  createErrorReporter,
+  type LangSmithConfig,
+  type TracingOptions,
+  type Logger,
+  type LoggerOptions,
+  type LogEntry,
+  type Metrics,
+  type MetricEntry,
+  type Timer,
+  type MetricsNodeOptions,
+  type ErrorContext,
+  type ErrorReporter,
+  type ErrorReporterOptions,
+} from './observability/index.js';
+

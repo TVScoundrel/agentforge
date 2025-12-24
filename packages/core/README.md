@@ -4,7 +4,7 @@ Core abstractions for AgentForge - production-ready deep agents framework.
 
 ## Status
 
-🚧 **In Development** - MVP Phase
+✅ **Phase 2 Complete** - Production Ready
 
 ## Features
 
@@ -17,12 +17,14 @@ Core abstractions for AgentForge - production-ready deep agents framework.
 - **Workflow Builders** - Sequential, parallel, and conditional workflow patterns
 - **Error Handling Patterns** - Retry, error handling, and timeout utilities
 - **Subgraph Composition** - Reusable subgraph utilities
-
-### 🚧 Planned
-
 - **Memory & Persistence** - Checkpointer and thread management utilities
-- **Observability** - LangSmith integration and logging utilities
+- **Observability** - LangSmith integration, metrics, logging, and error handling
+
+### 📋 Planned
+
 - **Agent Patterns** - ReAct, Planner-Executor, and other common patterns
+- **Middleware System** - Logging, tracing, caching, and rate limiting
+- **Standard Tools** - Common tool library
 
 ## Installation
 

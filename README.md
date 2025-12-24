@@ -16,13 +16,14 @@
 - 🔄 **Error Handling Patterns** - Retry, error handling, and timeout utilities
 - 🧩 **Subgraph Composition** - Reusable subgraph utilities
 - 💾 **Memory & Persistence** - Checkpointer and thread management utilities
+- 📈 **Observability** - LangSmith integration, metrics, logging, and error handling
 - 🔒 **Type Safety** - Full TypeScript support with Zod schemas
-- 🧪 **Testing First** - Comprehensive test coverage (211 tests)
+- 🧪 **Testing First** - Comprehensive test coverage (271 tests)
 
 ### 📋 Planned
-- 📈 **Observability** - LangSmith integration and logging utilities
 - 🎭 **Agent Patterns** - Pre-built patterns (ReAct, Planner-Executor, etc.)
 - 📦 **Standard Tools** - Common tool library
+- 🔌 **Middleware System** - Logging, tracing, caching, and rate limiting
 
 ---
 
@@ -106,15 +107,16 @@ pnpm clean          # Clean all build artifacts
 
 ## 🎯 Current Status
 
-**Phase:** 2.3 - Memory & Persistence Helpers ✅ COMPLETE
+**Phase:** 2 - LangGraph Integration & Agent Utilities ✅ COMPLETE
 **Progress:**
 - ✅ Phase 1: Tool Registry (113 tests)
 - ✅ Phase 2.1: LangGraph State Management (18 tests)
 - ✅ Phase 2.2: Workflow Builders & Error Handling (54 tests)
 - ✅ Phase 2.3: Memory & Persistence Helpers (26 tests)
-- **Total: 211 tests passing**
+- ✅ Phase 2.4: Observability & Error Handling (60 tests)
+- **Total: 271 tests passing**
 
-**Next:** Phase 2.4 - Observability & Error Handling
+**Next:** Phase 3 - Agent Patterns
 
 See [ROADMAP.md](./docs/ROADMAP.md) for detailed progress.
 
