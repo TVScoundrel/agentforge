@@ -183,17 +183,20 @@ All features working correctly:
 
 ```bash
 $ pnpm build
-ESM dist/index.js 28.02 KB
-CJS dist/index.cjs 30.57 KB
-✓ Build success
+ESM dist/index.js 27.97 KB
+CJS dist/index.cjs 30.52 KB
+DTS dist/index.d.ts  37.80 KB
+DTS dist/index.d.cts 37.80 KB
+✓ Build success (including TypeScript definitions)
 ```
 
-## Known Issues
+### ✅ TypeScript Build Fixed
 
-1. **Pre-existing TypeScript error in `converter.ts`**
-   - Not introduced by Phase 2.1
-   - Does not affect Phase 2.1 functionality
-   - Should be addressed separately
+The pre-existing TypeScript error in `converter.ts` has been resolved:
+- Fixed "Type instantiation is excessively deep" error
+- Added explicit generic type parameters to `DynamicStructuredTool`
+- All TypeScript definitions now build successfully
+- Zero TypeScript errors across the entire codebase
 
 ## Next Steps
 
