@@ -25,10 +25,52 @@ Phase 3 focuses on implementing common agent patterns as reusable, type-safe uti
 ## Architecture Principles
 
 1. **Composable**: Patterns should work with our existing utilities (tools, state, workflows)
-2. **Type-Safe**: Full TypeScript support with Zod schemas
+2. **Type-Safe**: Full TypeScript support with LangGraph's `Annotation` + optional Zod validation
 3. **Configurable**: Flexible configuration for different use cases
 4. **Observable**: Integration with our observability utilities
 5. **Testable**: Comprehensive test coverage for each pattern
+
+---
+
+## State Management Approach
+
+**We use LangGraph's `Annotation.Root()` for state definition** (via our `createStateAnnotation()` wrapper from Phase 2.1).
+
+### Why This Hybrid Approach?
+
+- **LangGraph's `Annotation`**: Provides the core state management (channels, reducers, TypeScript types)
+- **Optional Zod Schemas**: Add runtime validation, better error messages, and documentation
+- **Our Wrapper**: Simplifies the API while maintaining full LangGraph compatibility
+
+### Example: State Definition
+
+```typescript
+import { createStateAnnotation } from '@agentforge/core';
+import { z } from 'zod';
+
+// Define state using LangGraph's Annotation (via our wrapper)
+const AgentState = createStateAnnotation({
+  messages: {
+    schema: z.array(MessageSchema),  // ← Optional: Runtime validation
+    reducer: (left, right) => [...left, ...right],  // ← LangGraph reducer
+    default: () => [],
+    description: 'Chat message history'
+  },
+  context: {
+    schema: z.record(z.any()),  // ← Optional: Runtime validation
+    default: () => ({}),
+    description: 'Agent context'
+  }
+});
+
+// This returns Annotation.Root() under the hood
+// Works perfectly with LangGraph's StateGraph
+const workflow = new StateGraph(AgentState)
+  .addNode('myNode', (state) => ({ messages: ['hello'] }))
+  .compile();
+```
+
+**Key Point**: The Zod schemas are **optional**. You can omit them and still get full LangGraph functionality. They're there when you need runtime validation or better DX.
 
 ---
 
@@ -44,14 +86,35 @@ The Reasoning and Action (ReAct) pattern is the most common agent pattern. It us
 ### Implementation Tasks
 
 #### 3.1.1 ReAct State Definition
-- [ ] Define `ReActState` interface with Zod schema
-  - `messages`: conversation history
-  - `thoughts`: reasoning steps
-  - `actions`: tool calls made
-  - `observations`: tool results
-  - `scratchpad`: intermediate reasoning
-- [ ] Create state annotation helpers
+- [ ] Define `ReActState` using `createStateAnnotation()` (wraps LangGraph's `Annotation.Root()`)
+  - `messages`: conversation history (with optional Zod validation)
+  - `thoughts`: reasoning steps (with optional Zod validation)
+  - `actions`: tool calls made (with optional Zod validation)
+  - `observations`: tool results (with optional Zod validation)
+  - `scratchpad`: intermediate reasoning (with optional Zod validation)
+- [ ] Create Zod schemas for each state channel
 - [ ] Unit tests (5 tests)
+
+**Example**:
+```typescript
+const ReActState = createStateAnnotation({
+  messages: {
+    schema: z.array(MessageSchema),
+    reducer: (left, right) => [...left, ...right],
+    default: () => []
+  },
+  thoughts: {
+    schema: z.array(z.string()),
+    reducer: (left, right) => [...left, ...right],
+    default: () => []
+  },
+  actions: {
+    schema: z.array(ToolCallSchema),
+    reducer: (left, right) => [...left, ...right],
+    default: () => []
+  }
+});
+```
 
 #### 3.1.2 ReAct Agent Builder
 - [ ] `createReActAgent(config)` - Main factory function
@@ -63,6 +126,25 @@ The Reasoning and Action (ReAct) pattern is the most common agent pattern. It us
 - [ ] `ReActAgentBuilder` - Fluent builder API
 - [ ] Prompt templates for ReAct pattern
 - [ ] Unit tests (10 tests)
+
+**Example**:
+```typescript
+import { createReActAgent } from '@agentforge/patterns';
+import { ChatOpenAI } from '@langchain/openai';
+
+const agent = createReActAgent({
+  llm: new ChatOpenAI({ model: 'gpt-4' }),
+  tools: toolRegistry,  // From Phase 1
+  systemPrompt: 'You are a helpful assistant.',
+  maxIterations: 10,
+  returnIntermediateSteps: true
+});
+
+// Returns a compiled LangGraph StateGraph
+const result = await agent.invoke({
+  messages: [{ role: 'user', content: 'What is the weather?' }]
+});
+```
 
 #### 3.1.3 ReAct Nodes
 - [ ] `reasoningNode` - Generate thought and action
@@ -93,14 +175,39 @@ Plan-and-Execute separates planning from execution for better performance:
 ### Implementation Tasks
 
 #### 3.2.1 Plan-and-Execute State
-- [ ] Define `PlanExecuteState` interface
+- [ ] Define `PlanExecuteState` using `createStateAnnotation()`
   - `input`: Original user query
   - `plan`: List of steps to execute
   - `pastSteps`: Completed steps with results
   - `currentStep`: Step being executed
   - `response`: Final response
-- [ ] Create state helpers
+- [ ] Create Zod schemas for plan steps
 - [ ] Unit tests (5 tests)
+
+**Example**:
+```typescript
+const PlanExecuteState = createStateAnnotation({
+  input: {
+    schema: z.string(),
+    default: () => ''
+  },
+  plan: {
+    schema: z.array(PlanStepSchema),
+    default: () => []
+  },
+  pastSteps: {
+    schema: z.array(CompletedStepSchema),
+    reducer: (left, right) => [...left, ...right],
+    default: () => []
+  },
+  currentStep: {
+    schema: z.number().optional()
+  },
+  response: {
+    schema: z.string().optional()
+  }
+});
+```
 
 #### 3.2.2 Planner Implementation
 - [ ] `createPlanner(config)` - Create planning node
@@ -130,6 +237,31 @@ Plan-and-Execute separates planning from execution for better performance:
 - [ ] Example: Data analysis workflow
 - [ ] Integration tests (10 tests)
 
+**Example**:
+```typescript
+import { createPlanExecuteAgent } from '@agentforge/patterns';
+
+const agent = createPlanExecuteAgent({
+  planner: {
+    llm: new ChatOpenAI({ model: 'gpt-4' }),
+    systemPrompt: 'Create a step-by-step plan to solve the task.',
+    maxSteps: 5
+  },
+  executor: {
+    tools: toolRegistry,
+    parallel: false  // Execute steps sequentially
+  },
+  replanner: {
+    llm: new ChatOpenAI({ model: 'gpt-4' }),
+    replanThreshold: 0.7  // Replan if confidence < 70%
+  }
+});
+
+const result = await agent.invoke({
+  input: 'Research and summarize the latest AI trends'
+});
+```
+
 **Total Tests**: 40 tests
 
 ---
@@ -146,13 +278,37 @@ Reflection improves output quality through self-critique:
 ### Implementation Tasks
 
 #### 3.3.1 Reflection State
-- [ ] Define `ReflectionState` interface
+- [ ] Define `ReflectionState` using `createStateAnnotation()`
   - `input`: Original query
   - `draft`: Current draft response
   - `reflections`: List of critiques
   - `iterations`: Number of reflection loops
-- [ ] State helpers
+- [ ] Create Zod schemas for reflections
 - [ ] Unit tests (5 tests)
+
+**Example**:
+```typescript
+const ReflectionState = createStateAnnotation({
+  input: {
+    schema: z.string(),
+    default: () => ''
+  },
+  draft: {
+    schema: z.string(),
+    default: () => ''
+  },
+  reflections: {
+    schema: z.array(ReflectionSchema),
+    reducer: (left, right) => [...left, ...right],
+    default: () => []
+  },
+  iterations: {
+    schema: z.number(),
+    reducer: (left, right) => left + right,
+    default: () => 0
+  }
+});
+```
 
 #### 3.3.2 Generator Node
 - [ ] `createGenerator(config)` - Initial response generator
@@ -179,6 +335,33 @@ Reflection improves output quality through self-critique:
 - [ ] Example: Code generation with critique
 - [ ] Integration tests (9 tests)
 
+**Example**:
+```typescript
+import { createReflectionAgent } from '@agentforge/patterns';
+
+const agent = createReflectionAgent({
+  generator: {
+    llm: new ChatOpenAI({ model: 'gpt-4' }),
+    systemPrompt: 'Generate a high-quality response.'
+  },
+  reflector: {
+    llm: new ChatOpenAI({ model: 'gpt-4' }),
+    systemPrompt: 'Critique the response for accuracy and clarity.',
+    criteria: ['accuracy', 'clarity', 'completeness']
+  },
+  reviser: {
+    llm: new ChatOpenAI({ model: 'gpt-4' }),
+    systemPrompt: 'Improve the response based on feedback.'
+  },
+  maxIterations: 3,
+  stopCondition: (state) => state.reflections.every(r => r.score > 0.8)
+});
+
+const result = await agent.invoke({
+  input: 'Write a technical blog post about LangGraph'
+});
+```
+
 **Total Tests**: 35 tests
 
 ---
@@ -194,13 +377,35 @@ Multi-agent patterns enable collaboration between specialized agents:
 ### Implementation Tasks
 
 #### 3.4.1 Multi-Agent State
-- [ ] Define `MultiAgentState` interface
+- [ ] Define `MultiAgentState` using `createStateAnnotation()`
   - `messages`: Shared message history
   - `currentAgent`: Active agent
   - `agentOutputs`: Results from each agent
   - `nextAgent`: Agent to route to
-- [ ] State helpers
+- [ ] Create Zod schemas for agent outputs
 - [ ] Unit tests (5 tests)
+
+**Example**:
+```typescript
+const MultiAgentState = createStateAnnotation({
+  messages: {
+    schema: z.array(MessageSchema),
+    reducer: (left, right) => [...left, ...right],
+    default: () => []
+  },
+  currentAgent: {
+    schema: z.string().optional()
+  },
+  agentOutputs: {
+    schema: z.record(z.any()),
+    reducer: (left, right) => ({ ...left, ...right }),
+    default: () => ({})
+  },
+  nextAgent: {
+    schema: z.string().optional()
+  }
+});
+```
 
 #### 3.4.2 Supervisor Pattern
 - [ ] `createSupervisor(config)` - Supervisor agent
@@ -222,6 +427,39 @@ Multi-agent patterns enable collaboration between specialized agents:
 - [ ] Example: Research team (researcher + writer + reviewer)
 - [ ] Example: Customer support (triage + specialist + escalation)
 - [ ] Integration tests (10 tests)
+
+**Example**:
+```typescript
+import { createMultiAgentSystem } from '@agentforge/patterns';
+
+const system = createMultiAgentSystem({
+  supervisor: {
+    llm: new ChatOpenAI({ model: 'gpt-4' }),
+    routingStrategy: 'llm-based'  // or 'rule-based'
+  },
+  agents: {
+    researcher: {
+      llm: new ChatOpenAI({ model: 'gpt-4' }),
+      tools: [searchTool, scrapeTool],
+      description: 'Finds and gathers information from the web'
+    },
+    writer: {
+      llm: new ChatOpenAI({ model: 'gpt-4' }),
+      tools: [],
+      description: 'Writes clear, engaging content'
+    },
+    reviewer: {
+      llm: new ChatOpenAI({ model: 'gpt-4' }),
+      tools: [],
+      description: 'Reviews content for quality and accuracy'
+    }
+  }
+});
+
+const result = await system.invoke({
+  messages: [{ role: 'user', content: 'Research and write about quantum computing' }]
+});
+```
 
 **Total Tests**: 30 tests
 
@@ -246,6 +484,77 @@ Multi-agent patterns enable collaboration between specialized agents:
 - Benchmark against baselines
 
 **Total Phase 3 Tests**: 135 tests (30 + 40 + 35 + 30)
+
+---
+
+## Complete Example: Composing Patterns
+
+Here's how you can **compose multiple patterns** together:
+
+```typescript
+import {
+  createReActAgent,
+  createReflectionAgent,
+  createMultiAgentSystem
+} from '@agentforge/patterns';
+import { ChatOpenAI } from '@langchain/openai';
+
+// 1. Create a ReAct agent with reflection
+const researchAgent = createReActAgent({
+  llm: new ChatOpenAI({ model: 'gpt-4' }),
+  tools: [searchTool, scrapeTool],
+  systemPrompt: 'You are a thorough researcher.',
+  maxIterations: 5
+});
+
+// 2. Wrap it in reflection for quality improvement
+const reflectiveResearcher = createReflectionAgent({
+  generator: {
+    agent: researchAgent  // Use the ReAct agent as the generator
+  },
+  reflector: {
+    llm: new ChatOpenAI({ model: 'gpt-4' }),
+    criteria: ['accuracy', 'completeness', 'citations']
+  },
+  maxIterations: 2
+});
+
+// 3. Combine multiple agents in a multi-agent system
+const researchTeam = createMultiAgentSystem({
+  supervisor: {
+    llm: new ChatOpenAI({ model: 'gpt-4' })
+  },
+  agents: {
+    researcher: reflectiveResearcher,  // Our composed agent
+    writer: createReActAgent({
+      llm: new ChatOpenAI({ model: 'gpt-4' }),
+      tools: [],
+      systemPrompt: 'You write clear, engaging content.'
+    }),
+    reviewer: createReflectionAgent({
+      generator: { llm: new ChatOpenAI({ model: 'gpt-4' }) },
+      reflector: {
+        llm: new ChatOpenAI({ model: 'gpt-4' }),
+        criteria: ['clarity', 'grammar', 'structure']
+      }
+    })
+  }
+});
+
+// 4. Execute the composed system
+const result = await researchTeam.invoke({
+  messages: [{
+    role: 'user',
+    content: 'Research quantum computing and write a blog post'
+  }]
+});
+```
+
+**Key Takeaway**: All patterns return compiled LangGraph `StateGraph` instances, so they can be:
+- **Composed** together (agents within agents)
+- **Extended** with custom nodes
+- **Monitored** with our observability utilities
+- **Persisted** with checkpointers
 
 ---
 
