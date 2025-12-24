@@ -38,6 +38,7 @@ Core abstractions for AgentForge - production-ready deep agents framework.
 - **Observation Node** - Processes results and updates scratchpad
 
 **Phase 3.1.4: ReAct Integration** (In Progress)
+- Fluent builder API (consistent with Phase 1 tool builder)
 - Complete workflow with routing logic
 - Working examples (Q&A, multi-step reasoning, tool chaining)
 - Integration tests

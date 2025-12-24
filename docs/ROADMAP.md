@@ -180,8 +180,12 @@ See [phase-3-design.md](./phase-3-design.md) for detailed design.
 - [x] **3.1.1** ReAct state definition with Zod schemas (10 tests) ✅
 - [x] **3.1.2** `createReActAgent()` factory function (10 tests) ✅
 - [x] **3.1.3** Reasoning, action, and observation nodes (9 tests) ✅
-- [ ] **3.1.4** Integration & Examples (workflow, examples, integration tests)
-- **Subtotal: 29 tests passing**
+- [ ] **3.1.4** Integration & Examples
+  - [ ] Fluent builder API (consistent with Phase 1 tool builder)
+  - [ ] Complete workflow with routing logic
+  - [ ] Working examples (Q&A, multi-step reasoning, tool chaining)
+  - [ ] Integration tests (7 tests)
+- **Subtotal: 29 tests passing (36 total planned)**
 
 ### 3.2 Plan-and-Execute Pattern (2 days)
 - [ ] Plan-Execute state definition

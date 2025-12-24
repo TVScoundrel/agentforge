@@ -1,7 +1,7 @@
 # Phase 3: Agent Patterns - Detailed Design
 
 **Duration**: 7 days
-**Status**: 📋 Planning
+**Status**: 🚧 In Progress (3.1.1-3.1.3 Complete)
 **Goal**: Implement production-ready agent patterns as reusable utilities
 
 **Last Updated**: 2025-12-24
@@ -85,15 +85,15 @@ The Reasoning and Action (ReAct) pattern is the most common agent pattern. It us
 
 ### Implementation Tasks
 
-#### 3.1.1 ReAct State Definition
-- [ ] Define `ReActState` using `createStateAnnotation()` (wraps LangGraph's `Annotation.Root()`)
-  - `messages`: conversation history (with optional Zod validation)
-  - `thoughts`: reasoning steps (with optional Zod validation)
-  - `actions`: tool calls made (with optional Zod validation)
-  - `observations`: tool results (with optional Zod validation)
-  - `scratchpad`: intermediate reasoning (with optional Zod validation)
-- [ ] Create Zod schemas for each state channel
-- [ ] Unit tests (5 tests)
+#### 3.1.1 ReAct State Definition ✅ COMPLETE
+- [x] Define `ReActState` using `createStateAnnotation()` (wraps LangGraph's `Annotation.Root()`)
+  - `messages`: conversation history (with Zod validation)
+  - `thoughts`: reasoning steps (with Zod validation)
+  - `toolCalls`: tool calls made (with Zod validation)
+  - `toolResults`: tool results (with Zod validation)
+  - `scratchpad`: intermediate reasoning (with Zod validation)
+- [x] Create Zod schemas for each state channel
+- [x] Unit tests (10 tests - 5 state + 5 schemas)
 
 **Example**:
 ```typescript
@@ -116,16 +116,20 @@ const ReActState = createStateAnnotation({
 });
 ```
 
-#### 3.1.2 ReAct Agent Builder
-- [ ] `createReActAgent(config)` - Main factory function
+#### 3.1.2 ReAct Agent Builder ✅ COMPLETE
+- [x] `createReActAgent(config)` - Main factory function
   - `llm`: Language model to use
   - `tools`: Tool registry or tool list
   - `systemPrompt`: Optional system prompt
   - `maxIterations`: Max thought-action loops (default: 10)
   - `returnIntermediateSteps`: Include reasoning in output
-- [ ] `ReActAgentBuilder` - Fluent builder API
-- [ ] Prompt templates for ReAct pattern
-- [ ] Unit tests (10 tests)
+  - `stopCondition`: Custom stop logic
+- [x] Prompt templates for ReAct pattern
+  - `DEFAULT_REACT_SYSTEM_PROMPT`
+  - `REASONING_PROMPT_TEMPLATE`
+  - `TOOL_SELECTION_PROMPT`
+- [x] Unit tests (10 tests)
+- [ ] `ReActAgentBuilder` - Fluent builder API (moved to 3.1.4 for consistency with Phase 1)
 
 **Example**:
 ```typescript
@@ -146,21 +150,33 @@ const result = await agent.invoke({
 });
 ```
 
-#### 3.1.3 ReAct Nodes
-- [ ] `reasoningNode` - Generate thought and action
-- [ ] `actionNode` - Execute tool calls
-- [ ] `observationNode` - Process tool results
-- [ ] `shouldContinue` - Conditional routing logic
-- [ ] Unit tests (8 tests)
+#### 3.1.3 ReAct Nodes ✅ COMPLETE
+- [x] `createReasoningNode()` - Generate thought and decide on actions
+  - Binds tools to LLM
+  - Invokes LLM with message history
+  - Parses tool calls from response
+  - Manages iteration count and stop conditions
+- [x] `createActionNode()` - Execute tool calls
+  - Executes tools from registry
+  - Handles tool not found errors
+  - Handles tool execution errors
+- [x] `createObservationNode()` - Process tool results
+  - Updates scratchpad with step history
+  - Formats observations (success and error)
+  - Adds observation messages to state
+- [x] Unit tests (9 tests)
 
-#### 3.1.4 Integration & Examples
-- [ ] Integration with tool registry
-- [ ] Integration with observability
+#### 3.1.4 Integration & Examples 🚧 IN PROGRESS
+- [ ] `ReActAgentBuilder` - Fluent builder API (for consistency with Phase 1 tool builder)
+- [ ] Complete workflow with routing logic (`shouldContinue` edge function)
+- [ ] Integration with tool registry (already working, needs examples)
+- [ ] Integration with observability (add metrics and logging)
 - [ ] Example: Simple Q&A agent
-- [ ] Example: Research agent with search
+- [ ] Example: Multi-step reasoning agent
+- [ ] Example: Tool chaining agent
 - [ ] Integration tests (7 tests)
 
-**Total Tests**: 30 tests
+**Total Tests**: 36 tests (29 complete, 7 remaining)
 
 ---
 
