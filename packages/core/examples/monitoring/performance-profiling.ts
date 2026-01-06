@@ -59,18 +59,18 @@ async function main() {
   console.log('\nProfiling Report:');
   for (const [name, stats] of Object.entries(report)) {
     console.log(`\n${name}:`);
-    console.log(`  Calls: ${stats.calls}`);
-    console.log(`  Total Time: ${stats.totalTime.toFixed(2)}ms`);
-    console.log(`  Avg Time: ${stats.avgTime.toFixed(2)}ms`);
-    console.log(`  Min Time: ${stats.minTime.toFixed(2)}ms`);
-    console.log(`  Max Time: ${stats.maxTime.toFixed(2)}ms`);
-    console.log(`  P50: ${stats.p50.toFixed(2)}ms`);
-    console.log(`  P95: ${stats.p95.toFixed(2)}ms`);
-    console.log(`  P99: ${stats.p99.toFixed(2)}ms`);
+    console.log(`  Calls: ${(stats as any).calls}`);
+    console.log(`  Total Time: ${(stats as any).totalTime.toFixed(2)}ms`);
+    console.log(`  Avg Time: ${(stats as any).avgTime.toFixed(2)}ms`);
+    console.log(`  Min Time: ${(stats as any).minTime.toFixed(2)}ms`);
+    console.log(`  Max Time: ${(stats as any).maxTime.toFixed(2)}ms`);
+    console.log(`  P50: ${(stats as any).p50.toFixed(2)}ms`);
+    console.log(`  P95: ${(stats as any).p95.toFixed(2)}ms`);
+    console.log(`  P99: ${(stats as any).p99.toFixed(2)}ms`);
 
-    if (stats.memory) {
-      console.log(`  Avg Heap: ${(stats.memory.avgHeapUsed / 1024 / 1024).toFixed(2)}MB`);
-      console.log(`  Max Heap: ${(stats.memory.maxHeapUsed / 1024 / 1024).toFixed(2)}MB`);
+    if ((stats as any).memory) {
+      console.log(`  Avg Heap: ${((stats as any).memory.avgHeapUsed / 1024 / 1024).toFixed(2)}MB`);
+      console.log(`  Max Heap: ${((stats as any).memory.maxHeapUsed / 1024 / 1024).toFixed(2)}MB`);
     }
   }
 
@@ -93,7 +93,7 @@ async function main() {
   }
 
   const samplingReport = samplingProfiler.getReport();
-  const sampledStats = samplingReport.sampledOperation;
+  const sampledStats = samplingReport.sampledOperation as any;
   console.log(`\nSampled ${sampledStats.calls} out of 100 calls (${(sampledStats.calls / 100 * 100).toFixed(1)}%)`);
   console.log(`Avg Time: ${sampledStats.avgTime.toFixed(2)}ms`);
 
@@ -120,7 +120,7 @@ async function main() {
   const wrapReport = wrapProfiler.getReport();
   console.log('\nWrapped Operations Report:');
   for (const [name, stats] of Object.entries(wrapReport)) {
-    console.log(`${name}: ${stats.avgTime.toFixed(2)}ms avg (${stats.calls} calls)`);
+    console.log(`${name}: ${(stats as any).avgTime.toFixed(2)}ms avg (${(stats as any).calls} calls)`);
   }
 
   // Example 4: Bottleneck identification
@@ -150,13 +150,13 @@ async function main() {
   }
 
   const bottleneckReport = bottleneckProfiler.getReport();
-  const totalTime = Object.values(bottleneckReport).reduce((sum, stats) => sum + stats.totalTime, 0);
+  const totalTime = Object.values(bottleneckReport).reduce((sum, stats) => sum + (stats as any).totalTime, 0) as number;
 
   console.log('\nPipeline Analysis:');
   for (const [name, stats] of Object.entries(bottleneckReport)) {
-    const percentage = (stats.totalTime / totalTime * 100).toFixed(1);
+    const percentage = ((stats as any).totalTime / totalTime * 100).toFixed(1);
     const icon = parseFloat(percentage) > 50 ? '🔴' : parseFloat(percentage) > 30 ? '🟡' : '🟢';
-    console.log(`${icon} ${name}: ${stats.totalTime.toFixed(2)}ms (${percentage}% of total)`);
+    console.log(`${icon} ${name}: ${(stats as any).totalTime.toFixed(2)}ms (${percentage}% of total)`);
   }
 
   // Example 5: Export report
