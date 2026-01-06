@@ -4,7 +4,7 @@
 
 [![GitHub](https://img.shields.io/badge/GitHub-TVScoundrel%2Fagentforge-blue?logo=github)](https://github.com/TVScoundrel/agentforge)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.9-blue?logo=typescript)](https://www.typescriptlang.org/)
-[![Tests](https://img.shields.io/badge/tests-300%20passing-success)](./packages/core)
+[![Tests](https://img.shields.io/badge/tests-384%20passing-success)](./packages)
 [![License](https://img.shields.io/badge/license-MIT-green)](./LICENSE)
 
 **AgentForge** is a TypeScript framework that provides production-grade abstractions for building autonomous agents with LangGraph. It focuses on developer experience, type safety, and real-world production needs.
@@ -22,17 +22,15 @@
 - 🧩 **Subgraph Composition** - Reusable subgraph utilities
 - 💾 **Memory & Persistence** - Checkpointer and thread management utilities
 - 📈 **Observability** - LangSmith integration, metrics, logging, and error handling
-- 🤖 **ReAct Pattern (Core)** - State, agent builder, and reasoning/action/observation nodes
+- 🤖 **Agent Patterns** - ReAct, Plan-Execute, Reflection, Multi-Agent (all complete!)
 - 🔒 **Type Safety** - Full TypeScript support with Zod schemas
-- 🧪 **Testing First** - Comprehensive test coverage (300 tests)
-
-### 🚧 In Progress
-- 🎭 **ReAct Pattern (Integration)** - Complete workflow and examples
+- 🧪 **Testing First** - Comprehensive test coverage (384 tests)
+- 📚 **Documentation** - 6000+ lines of guides, examples, and API docs
 
 ### 📋 Planned
-- 🎭 **More Agent Patterns** - Plan-Execute, Reflection, Multi-Agent
 - 📦 **Standard Tools** - Common tool library
 - 🔌 **Middleware System** - Logging, tracing, caching, and rate limiting
+- 🛠️ **CLI Tool** - Project scaffolding and development utilities
 
 ---
 
@@ -40,11 +38,70 @@
 
 | Package | Description | Status |
 |---------|-------------|--------|
-| [@agentforge/core](./packages/core) | Core abstractions (tools, registry, LangGraph utilities, agent patterns) | ✅ Phase 1 & 2 Complete, 🚧 Phase 3 In Progress |
-| @agentforge/patterns | Agent patterns (ReAct, Planner-Executor) | 🚧 In Progress (Phase 3) |
+| [@agentforge/core](./packages/core) | Core abstractions (tools, registry, LangGraph utilities) | ✅ Complete (Phase 1 & 2) |
+| [@agentforge/patterns](./packages/patterns) | Agent patterns (ReAct, Plan-Execute, Reflection, Multi-Agent) | ✅ Complete (Phase 3) |
 | @agentforge/tools | Standard tool library | 📋 Planned (Phase 6) |
 | @agentforge/testing | Testing utilities | 📋 Planned (Phase 6) |
 | @agentforge/cli | CLI tool | 📋 Planned (Phase 6) |
+
+---
+
+## 🤖 Agent Patterns
+
+AgentForge provides 4 production-ready agent patterns:
+
+### 1. ReAct (Reasoning and Action)
+Think → Act → Observe loop for exploratory tasks
+```typescript
+import { ReActAgentBuilder } from '@agentforge/patterns';
+
+const agent = new ReActAgentBuilder()
+  .withLLM(llm)
+  .withTools([searchTool, calculatorTool])
+  .build();
+```
+
+### 2. Plan-Execute
+Structured planning with parallel execution
+```typescript
+import { createPlanExecuteAgent } from '@agentforge/patterns';
+
+const agent = createPlanExecuteAgent({
+  planner: { llm, maxSteps: 5 },
+  executor: { tools, parallel: true },
+});
+```
+
+### 3. Reflection
+Iterative self-improvement through critique
+```typescript
+import { createReflectionAgent } from '@agentforge/patterns';
+
+const agent = createReflectionAgent({
+  generator: { llm },
+  reflector: { llm },
+  maxIterations: 3,
+});
+```
+
+### 4. Multi-Agent
+Coordinate specialized agents
+```typescript
+import { createMultiAgentSystem, registerWorkers } from '@agentforge/patterns';
+
+const system = createMultiAgentSystem({
+  supervisor: { llm, routingStrategy: 'skill-based' },
+  workers: [],
+  aggregator: { llm },
+});
+
+registerWorkers(system, [
+  { name: 'tech_support', capabilities: ['technical'], tools: [...] },
+  { name: 'billing_support', capabilities: ['billing'], tools: [...] },
+]);
+```
+
+See the [Pattern Comparison Guide](./packages/patterns/docs/pattern-comparison.md) to choose the right pattern.
 
 ---
 
@@ -68,11 +125,25 @@ pnpm test:coverage
 
 ## 📖 Documentation
 
+### Framework
 - [Framework Design](./docs/FRAMEWORK_DESIGN.md) - Architecture and design decisions
 - [Roadmap](./docs/ROADMAP.md) - Development roadmap and milestones
 - [Tool Registry Spec](./docs/TOOL_REGISTRY_SPEC.md) - Tool registry specification
 - [Monorepo Setup](./docs/MONOREPO_SETUP.md) - Monorepo structure and setup
 - [Diagrams](./docs/DIAGRAMS.md) - Visual diagrams and architecture
+
+### Agent Patterns
+- [Pattern Comparison Guide](./packages/patterns/docs/pattern-comparison.md) - Choose the right pattern
+- [ReAct Pattern Guide](./packages/patterns/docs/react-agent-guide.md) - Comprehensive ReAct guide
+- [Plan-Execute Pattern Guide](./packages/patterns/docs/plan-execute-pattern.md) - Comprehensive Plan-Execute guide
+- [Reflection Pattern Guide](./packages/patterns/docs/reflection-pattern.md) - Comprehensive Reflection guide
+- [Multi-Agent Pattern Guide](./packages/patterns/docs/multi-agent-pattern.md) - Comprehensive Multi-Agent guide
+
+### Examples
+- [ReAct Examples](./packages/patterns/examples/react/) - 4 ReAct examples
+- [Plan-Execute Examples](./packages/patterns/examples/plan-execute/) - 4 Plan-Execute examples
+- [Reflection Examples](./packages/patterns/examples/reflection/) - 4 Reflection examples
+- [Multi-Agent Examples](./packages/patterns/examples/multi-agent/) - 4 Multi-Agent examples
 
 ---
 

@@ -1,12 +1,12 @@
 # @agentforge/patterns
 
-Agent patterns (ReAct, Plan-Execute, Reflection) for the AgentForge framework.
+Agent patterns (ReAct, Plan-Execute, Reflection, Multi-Agent) for the AgentForge framework.
 
 ## Status
 
-🚧 **Phase 3 In Progress** - ReAct & Plan-Execute Patterns Complete
+✅ **Phase 3 Complete** - All Core Patterns Implemented
 
-**65+ tests passing** | **Full TypeScript support** | **Comprehensive documentation**
+**100+ tests passing** | **Full TypeScript support** | **Comprehensive documentation**
 
 ## Features
 
@@ -40,22 +40,35 @@ The Plan-Execute pattern separates planning from execution for better performanc
 - **Adaptive Replanning** - Adjust plan based on results
 - **Progress Tracking** - Monitor execution progress
 
-### 📋 Coming Soon
+### ✅ Reflection Pattern (Phase 3.3)
 
-**Phase 3.3: Reflection Pattern**
-- Self-critique and improvement
-- Iterative refinement
-- Quality assessment
+The Reflection pattern implements iterative self-improvement through generation, critique, and revision:
+1. **Generate** - Create initial response
+2. **Reflect** - Critique the response
+3. **Revise** - Improve based on critique
+4. **Repeat** - Continue until quality threshold met
 
-**Phase 3.3: Reflection Pattern**
-- Self-critique and improvement
-- Iterative refinement
-- Quality assessment
+**Features**:
+- **Iterative Improvement** - Multiple revision cycles
+- **Self-Critique** - Agent evaluates its own output
+- **Quality Focus** - Optimizes for output quality
+- **Flexible Criteria** - Custom reflection criteria
+- **Configurable Iterations** - Control refinement depth
 
-**Phase 3.4: Multi-Agent Pattern**
-- Agent coordination
-- Task delegation
-- Collaborative problem solving
+### ✅ Multi-Agent Pattern (Phase 3.4)
+
+The Multi-Agent pattern coordinates multiple specialized agents for complex tasks:
+1. **Supervisor** - Routes tasks to appropriate workers
+2. **Workers** - Execute specialized tasks
+3. **Aggregator** - Combines results from workers
+4. **Routing** - Intelligent task distribution
+
+**Features**:
+- **Specialized Agents** - Workers with distinct capabilities
+- **Flexible Routing** - LLM-based, skill-based, rule-based, round-robin, load-balanced
+- **Parallel Execution** - Workers can run concurrently
+- **Result Aggregation** - Combine outputs intelligently
+- **Scalable Coordination** - Add workers dynamically
 
 ## Installation
 
@@ -168,11 +181,90 @@ console.log(result.pastSteps); // Executed steps
 console.log(result.response); // Final synthesized response
 ```
 
+### Reflection Agent
+
+Iterative self-improvement:
+
+```typescript
+import { createReflectionAgent } from '@agentforge/patterns';
+import { ChatOpenAI } from '@langchain/openai';
+
+// Create the agent
+const agent = createReflectionAgent({
+  generator: {
+    llm: new ChatOpenAI({ model: 'gpt-4' }),
+    systemPrompt: 'You are a professional writer. Create high-quality content.',
+  },
+  reflector: {
+    llm: new ChatOpenAI({ model: 'gpt-4' }),
+    systemPrompt: 'Critique the content for clarity, engagement, and professionalism.',
+  },
+  maxIterations: 3,
+  verbose: true,
+});
+
+// Use the agent
+const result = await agent.invoke({
+  messages: [{ role: 'user', content: 'Write a blog post about AI' }],
+});
+
+console.log(result.reflections); // All critiques
+console.log(result.response); // Final refined response
+```
+
+### Multi-Agent System
+
+Coordinate specialized agents:
+
+```typescript
+import { createMultiAgentSystem, registerWorkers } from '@agentforge/patterns';
+import { ChatOpenAI } from '@langchain/openai';
+
+const llm = new ChatOpenAI({ model: 'gpt-4' });
+
+// Create the system
+const system = createMultiAgentSystem({
+  supervisor: {
+    llm,
+    routingStrategy: 'skill-based', // or 'llm-based', 'round-robin', etc.
+  },
+  workers: [],
+  aggregator: { llm },
+});
+
+// Register specialized workers
+registerWorkers(system, [
+  {
+    name: 'tech_support',
+    description: 'Handles technical issues',
+    capabilities: ['technical', 'troubleshooting'],
+    tools: [diagnosticTool, troubleshootTool],
+  },
+  {
+    name: 'billing_support',
+    description: 'Handles billing inquiries',
+    capabilities: ['billing', 'payments'],
+    tools: [checkAccountTool, processRefundTool],
+  },
+]);
+
+// Use the system
+const result = await system.invoke({
+  input: 'My app keeps crashing and I need a refund',
+});
+
+console.log(result.workerResults); // Results from each worker
+console.log(result.response); // Aggregated response
+```
+
 ## Documentation
 
 ### Guides
 - [ReAct Agent Guide](./docs/react-agent-guide.md) - Comprehensive ReAct usage guide
 - [Plan-Execute Pattern Guide](./docs/plan-execute-pattern.md) - Comprehensive Plan-Execute guide
+- [Reflection Pattern Guide](./docs/reflection-pattern.md) - Comprehensive Reflection guide
+- [Multi-Agent Pattern Guide](./docs/multi-agent-pattern.md) - Comprehensive Multi-Agent guide
+- [Pattern Comparison Guide](./docs/pattern-comparison.md) - Choose the right pattern
 
 ### Implementation Details
 - [Phase 3.1 Summary](./docs/phase-3.1.4-summary.md) - ReAct implementation details
@@ -180,6 +272,8 @@ console.log(result.response); // Final synthesized response
 ### Examples
 - [ReAct Examples](./examples/react/) - ReAct pattern examples
 - [Plan-Execute Examples](./examples/plan-execute/) - Plan-Execute pattern examples
+- [Reflection Examples](./examples/reflection/) - Reflection pattern examples
+- [Multi-Agent Examples](./examples/multi-agent/) - Multi-Agent pattern examples
 
 ## API Reference
 
@@ -251,6 +345,112 @@ import {
 - `createExecutorNode(config)` - Create executor node
 - `createReplannerNode(config)` - Create replanner node
 - `createFinisherNode()` - Create finisher node
+
+### Reflection Pattern
+
+```typescript
+import {
+  createReflectionAgent,
+  createGeneratorNode,
+  createReflectorNode,
+  createReviserNode,
+} from '@agentforge/patterns';
+```
+
+**Main API**:
+- `createReflectionAgent(config)` - Create a complete Reflection agent
+
+**Configuration**:
+```typescript
+{
+  generator: {
+    llm: BaseChatModel,           // LLM for generation
+    systemPrompt?: string,         // Custom generation prompt
+  },
+  reflector: {
+    llm: BaseChatModel,            // LLM for reflection
+    systemPrompt?: string,         // Custom reflection prompt
+    criteria?: string[],           // Reflection criteria
+  },
+  maxIterations?: number,          // Max reflection cycles (default: 3)
+  qualityThreshold?: number,       // Quality score threshold (0-1)
+  returnIntermediateSteps?: boolean,
+  verbose?: boolean,
+}
+```
+
+**Node Creators** (for custom workflows):
+- `createGeneratorNode(config)` - Create generator node
+- `createReflectorNode(config)` - Create reflector node
+- `createReviserNode(config)` - Create reviser node
+
+### Multi-Agent Pattern
+
+```typescript
+import {
+  createMultiAgentSystem,
+  registerWorkers,
+  createSupervisorNode,
+  createWorkerNode,
+  createAggregatorNode,
+} from '@agentforge/patterns';
+```
+
+**Main API**:
+- `createMultiAgentSystem(config)` - Create a complete Multi-Agent system
+- `registerWorkers(system, workers)` - Register workers with the system
+
+**Configuration**:
+```typescript
+{
+  supervisor: {
+    llm: BaseChatModel,           // LLM for routing decisions
+    routingStrategy: RoutingStrategy, // Routing strategy
+    systemPrompt?: string,         // Custom supervisor prompt
+  },
+  workers: WorkerConfig[],        // Worker configurations
+  aggregator: {
+    llm: BaseChatModel,            // LLM for aggregation
+    systemPrompt?: string,         // Custom aggregator prompt
+  },
+  maxIterations?: number,          // Max coordination iterations
+  verbose?: boolean,
+}
+```
+
+**Routing Strategies**:
+- `'llm-based'` - LLM analyzes task and selects worker
+- `'skill-based'` - Match task to worker capabilities
+- `'round-robin'` - Distribute tasks evenly
+- `'load-balanced'` - Route to least busy worker
+- Custom rule-based routing
+
+**Worker Configuration**:
+```typescript
+{
+  name: string,                   // Unique worker identifier
+  description: string,            // Worker description
+  capabilities: string[],         // Worker capabilities/skills
+  tools: Tool[],                  // Available tools
+  systemPrompt?: string,          // Worker-specific prompt
+}
+```
+
+**Node Creators** (for custom workflows):
+- `createSupervisorNode(config)` - Create supervisor node
+- `createWorkerNode(config)` - Create worker node
+- `createAggregatorNode(config)` - Create aggregator node
+
+## Pattern Selection Guide
+
+| Pattern | Best For | Key Strength | Main Limitation |
+|---------|----------|--------------|-----------------|
+| **ReAct** | Exploration, flexibility | Dynamic adaptation | Sequential only |
+| **Plan-Execute** | Structured workflows | Parallel execution | Requires planning |
+| **Reflection** | Quality-critical outputs | Iterative improvement | Slow, expensive |
+| **Multi-Agent** | Specialized tasks | Coordinated expertise | High complexity |
+
+See the [Pattern Comparison Guide](./docs/pattern-comparison.md) for detailed guidance.
 
 ## Development
 

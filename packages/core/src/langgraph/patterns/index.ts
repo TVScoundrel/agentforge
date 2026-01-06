@@ -10,13 +10,3 @@
 export { withRetry, type RetryOptions, type BackoffStrategy } from './retry.js';
 export { withErrorHandler, type ErrorHandlerOptions } from './error-handler.js';
 export { withTimeout, TimeoutError, type TimeoutOptions } from './timeout.js';
-
-// ReAct agent pattern
-export {
-  createReActAgent,
-  ReActAgentBuilder,
-  createReActAgentBuilder,
-  type ReActAgentConfig,
-  type ReActAgentOptions,
-} from './react/index.js';
-
