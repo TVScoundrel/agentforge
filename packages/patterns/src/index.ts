@@ -76,3 +76,51 @@ export {
   // Agent creation
   createPlanExecuteAgent,
 } from './plan-execute/index.js';
+
+// Reflection pattern
+export {
+  // State and schemas
+  ReflectionState,
+  ReflectionStateConfig,
+  ReflectionSchema,
+  RevisionSchema,
+  ReflectionStatusSchema,
+  QualityCriteriaSchema,
+  ReflectionConfigSchema,
+  type ReflectionStateType,
+  type Reflection,
+  type Revision,
+  type ReflectionStatus,
+  type QualityCriteria,
+  type ReflectionConfig,
+
+  // Types
+  type GeneratorConfig,
+  type ReflectorConfig,
+  type ReviserConfig,
+  type ReflectionAgentConfig,
+  type ReflectionNode,
+  type ReflectionRoute,
+  type ReflectionRouter,
+
+  // Prompts
+  DEFAULT_GENERATOR_SYSTEM_PROMPT,
+  DEFAULT_REFLECTOR_SYSTEM_PROMPT,
+  DEFAULT_REVISER_SYSTEM_PROMPT,
+  GENERATION_PROMPT_TEMPLATE,
+  REFLECTION_PROMPT_TEMPLATE,
+  REVISION_PROMPT_TEMPLATE,
+  QUALITY_CRITERIA_TEMPLATE,
+  REFLECTION_HISTORY_TEMPLATE,
+  REFLECTION_ENTRY_TEMPLATE,
+  REVISION_ENTRY_TEMPLATE,
+
+  // Node creators
+  createGeneratorNode,
+  createReflectorNode,
+  createReviserNode,
+  createFinisherNode as createReflectionFinisherNode,
+
+  // Agent creation
+  createReflectionAgent,
+} from './reflection/index.js';
