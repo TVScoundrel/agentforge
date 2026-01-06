@@ -71,4 +71,6 @@ export { createLogger, LogLevel, type Logger } from '../observability/logger.js'
 // Export new middleware
 export { withCache, createSharedCache, type CachingOptions, type CacheKeyGenerator, type EvictionStrategy } from './caching.js';
 export { withRateLimit, createSharedRateLimiter, type RateLimitOptions, type RateLimitStrategy } from './rate-limiting.js';
+export { withValidation, type ValidationOptions, type ValidationMode, type ValidatorFunction, type ValidationErrorHandler } from './validation.js';
+export { withConcurrency, createSharedConcurrencyController, type ConcurrencyOptions, type Priority } from './concurrency.js';
 

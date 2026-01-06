@@ -278,11 +278,12 @@ See [phase-4-design.md](./phase-4-design.md) for detailed design.
 - [x] Middleware presets system (16 tests)
 - **Subtotal: 30 tests passing** ✅
 
-### 4.2 New Middleware (2 days) 🚧 IN PROGRESS
+### 4.2 New Middleware (2 days) ✅ COMPLETE
 - [x] Caching middleware (12 tests) ✅
 - [x] Rate limiting middleware (13 tests) ✅
-- [ ] Validation middleware (10 tests)
-- [ ] Concurrency control middleware (10 tests)
+- [x] Validation middleware (12 tests) ✅
+- [x] Concurrency control middleware (9 tests) ✅
+- **Subtotal: 46 tests passing** ✅
 
 ### 4.3 Enhance Existing Middleware (1 day)
 - [ ] Enhance logging middleware (8 tests)
@@ -388,8 +389,8 @@ See [phase-4-design.md](./phase-4-design.md) for detailed design.
 ## Current Status
 
 **Phase**: 4 - Middleware System 🚧 IN PROGRESS
-**Progress**: Phase 1 Complete, Phase 2 Complete, Phase 3 Complete, Phase 4.1 Complete
-**Next Milestone**: Phase 4.2 - New Middleware (caching, rate limiting, validation, concurrency control)
+**Progress**: Phase 1 Complete, Phase 2 Complete, Phase 3 Complete, Phase 4.1 Complete, Phase 4.2 Complete
+**Next Milestone**: Phase 4.3 - Enhance Existing Middleware (logging, tracing, retry, error handling, timeout, metrics)
 
 **Latest Updates** (2026-01-06):
 
@@ -548,7 +549,7 @@ See [phase-4-design.md](./phase-4-design.md) for detailed design.
   - ✅ ESM/CJS builds successful
 - **Phase 4.1 Total: 30 tests passing (14 compose + 16 presets)** ✅
 
-### Phase 4.2 - New Middleware 🚧 IN PROGRESS
+### Phase 4.2 - New Middleware ✅ COMPLETE
 - ✅ **Caching Middleware** (`caching.ts` - 12 tests)
   - ✅ `withCache()` - Cache node results with TTL and eviction strategies
   - ✅ `createSharedCache()` - Shared cache across multiple nodes
@@ -567,9 +568,25 @@ See [phase-4-design.md](./phase-4-design.md) for detailed design.
   - ✅ Custom key generation for per-user/per-resource rate limiting
   - ✅ Rate limit callbacks (`onRateLimitExceeded`, `onRateLimitReset`)
   - ✅ Comprehensive unit tests (13 tests)
-- **Phase 4.2 Total: 25 tests passing (12 caching + 13 rate limiting)** ✅
+- ✅ **Validation Middleware** (`validation.ts` - 12 tests)
+  - ✅ `withValidation()` - Validate node inputs and outputs
+  - ✅ Zod schema validation support
+  - ✅ Custom validator functions
+  - ✅ Multiple validation modes (input-only, output-only, both)
+  - ✅ Error transformation and handling
+  - ✅ Validation callbacks (`onValidationError`)
+  - ✅ Comprehensive unit tests (12 tests)
+- ✅ **Concurrency Control Middleware** (`concurrency.ts` - 9 tests)
+  - ✅ `withConcurrency()` - Limit concurrent node executions
+  - ✅ `createSharedConcurrencyController()` - Shared concurrency control
+  - ✅ Priority-based queue management (high, normal, low)
+  - ✅ Queue size limits and rejection handling
+  - ✅ Queue timeout support
+  - ✅ Execution callbacks (`onQueued`, `onExecutionStart`, `onExecutionEnd`)
+  - ✅ Comprehensive unit tests (9 tests)
+- **Phase 4.2 Total: 46 tests passing (12 caching + 13 rate limiting + 12 validation + 9 concurrency)** ✅
 
-**Overall Total: 439 tests passing + comprehensive documentation** ✅
+**Overall Total: 460 tests passing + comprehensive documentation** ✅
 
 See [FRAMEWORK_DESIGN.md](./FRAMEWORK_DESIGN.md) for architecture details.
 See [PHASE_2_1_COMPLETE.md](./PHASE_2_1_COMPLETE.md) for Phase 2.1 details.
