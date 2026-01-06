@@ -268,14 +268,15 @@ See [phase-3-design.md](./phase-3-design.md) for detailed design.
 ## Phase 4: Middleware System (1 week)
 
 **Duration**: 7 days
-**Status**: 📋 Planned
+**Status**: � In Progress
 
 See [phase-4-design.md](./phase-4-design.md) for detailed design.
 
-### 4.1 Core Middleware Infrastructure (2 days)
-- [ ] Middleware type definitions and interfaces (10 tests)
-- [ ] Compose utility and middleware chain (10 tests)
-- [ ] Middleware presets system (8 tests)
+### 4.1 Core Middleware Infrastructure (2 days) ✅ COMPLETE
+- [x] Middleware type definitions and interfaces (14 tests)
+- [x] Compose utility and middleware chain (14 tests)
+- [x] Middleware presets system (16 tests)
+- **Subtotal: 30 tests passing** ✅
 
 ### 4.2 New Middleware (2 days)
 - [ ] Caching middleware (12 tests)
@@ -386,9 +387,9 @@ See [phase-4-design.md](./phase-4-design.md) for detailed design.
 
 ## Current Status
 
-**Phase**: 3 - Agent Patterns ✅ COMPLETE
-**Progress**: Phase 1 Complete, Phase 2 Complete, Phase 3 Complete (All 4 patterns: ReAct, Plan-Execute, Reflection, Multi-Agent)
-**Next Milestone**: Phase 4 - Middleware System
+**Phase**: 4 - Middleware System 🚧 IN PROGRESS
+**Progress**: Phase 1 Complete, Phase 2 Complete, Phase 3 Complete, Phase 4.1 Complete
+**Next Milestone**: Phase 4.2 - New Middleware (caching, rate limiting, validation, concurrency control)
 
 **Latest Updates** (2026-01-06):
 
@@ -522,7 +523,32 @@ See [phase-4-design.md](./phase-4-design.md) for detailed design.
   - ✅ Updated main patterns README
 - **Phase 3.4 Total: 58 tests passing + 4 examples + 1100+ lines of documentation** ✅
 
-**Overall Total: 384 tests passing + comprehensive documentation** ✅
+### Phase 4.1 - Core Middleware Infrastructure ✅ COMPLETE
+- ✅ **Type Definitions** (`types.ts`)
+  - ✅ `NodeFunction<State>` - Core node function type
+  - ✅ `Middleware<State, Options>` - Middleware function type
+  - ✅ `SimpleMiddleware<State>` - Middleware without options
+  - ✅ `MiddlewareFactory<State, Options>` - Factory pattern for middleware
+  - ✅ `ComposeOptions` - Configuration for middleware composition
+  - ✅ `MiddlewareMetadata` & `MiddlewareContext` - Execution metadata and context
+- ✅ **Composition Utilities** (`compose.ts` - 14 tests)
+  - ✅ `compose()` - Compose multiple middleware into a single function
+  - ✅ `composeWithOptions()` - Compose with configuration options
+  - ✅ `MiddlewareChain` - Fluent API for building middleware chains
+  - ✅ `chain()` - Create a new middleware chain builder
+  - ✅ `createMiddlewareContext()` - Create execution context
+- ✅ **Presets** (`presets.ts` - 16 tests)
+  - ✅ `production()` - Production-ready middleware stack (error handling, retry, timeout, metrics, tracing)
+  - ✅ `development()` - Development middleware with verbose logging
+  - ✅ `testing()` - Testing middleware with mocking capabilities
+- ✅ **Integration**
+  - ✅ Updated exports in `@agentforge/core`
+  - ✅ All middleware composable with existing patterns
+  - ✅ TypeScript compilation and type definitions
+  - ✅ ESM/CJS builds successful
+- **Phase 4.1 Total: 30 tests passing (14 compose + 16 presets)** ✅
+
+**Overall Total: 414 tests passing + comprehensive documentation** ✅
 
 See [FRAMEWORK_DESIGN.md](./FRAMEWORK_DESIGN.md) for architecture details.
 See [PHASE_2_1_COMPLETE.md](./PHASE_2_1_COMPLETE.md) for Phase 2.1 details.
