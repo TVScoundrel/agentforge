@@ -9,7 +9,7 @@
  * - Profile reports
  */
 
-import { createProfiler } from '../../src/monitoring';
+import { createProfiler } from '../../src/monitoring/profiler.js';
 
 // Simulated operations with varying performance
 async function fastOperation(input: string): Promise<string> {

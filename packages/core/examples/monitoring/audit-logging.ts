@@ -9,7 +9,7 @@
  * - Export to JSON/CSV
  */
 
-import { createAuditLogger } from '../../src/monitoring';
+import { createAuditLogger } from '../../src/monitoring/audit.js';
 
 // Simulated user actions
 const users = ['user-123', 'user-456', 'user-789'];

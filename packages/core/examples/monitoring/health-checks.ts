@@ -9,7 +9,7 @@
  * - Integration with Express endpoints
  */
 
-import { createHealthChecker } from '../../src/monitoring';
+import { createHealthChecker } from '../../src/monitoring/health.js';
 
 // Simulated dependencies
 const database = {

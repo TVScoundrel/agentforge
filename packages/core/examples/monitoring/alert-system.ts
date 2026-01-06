@@ -9,7 +9,7 @@
  * - Metric-based monitoring
  */
 
-import { createAlertManager } from '../../src/monitoring';
+import { createAlertManager } from '../../src/monitoring/alerts.js';
 
 // Simulated metrics
 let errorCount = 0;
