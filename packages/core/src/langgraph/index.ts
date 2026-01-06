@@ -92,3 +92,26 @@ export {
   type ErrorReporterOptions,
 } from './observability/index.js';
 
+export {
+  compose,
+  composeWithOptions,
+  chain,
+  MiddlewareChain,
+  createMiddlewareContext,
+  presets,
+  production,
+  development,
+  testing,
+  type NodeFunction,
+  type Middleware,
+  type MiddlewareFactory,
+  type SimpleMiddleware,
+  type ComposeOptions,
+  type MiddlewareMetadata,
+  type MiddlewareWithMetadata,
+  type MiddlewareContext,
+  type NodeFunctionWithContext,
+  type ProductionPresetOptions,
+  type DevelopmentPresetOptions,
+  type TestingPresetOptions,
+} from './middleware/index.js';
