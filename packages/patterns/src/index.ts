@@ -35,3 +35,44 @@ export {
   createReActAgentBuilder,
 } from './react/index.js';
 
+// Plan-and-Execute pattern
+export {
+  // State and schemas
+  PlanExecuteState,
+  PlanExecuteStateConfig,
+  PlanStepSchema,
+  CompletedStepSchema,
+  PlanSchema,
+  ReplanDecisionSchema,
+  ExecutionStatusSchema,
+  type PlanExecuteStateType,
+  type PlanStep,
+  type CompletedStep,
+  type Plan,
+  type ReplanDecision,
+  type ExecutionStatus,
+
+  // Types
+  type PlannerConfig,
+  type ExecutorConfig,
+  type ReplannerConfig,
+  type PlanExecuteAgentConfig,
+  type PlanExecuteNode,
+  type PlanExecuteRoute,
+  type PlanExecuteRouter,
+
+  // Prompts
+  DEFAULT_PLANNER_SYSTEM_PROMPT,
+  DEFAULT_REPLANNER_SYSTEM_PROMPT,
+  PLANNING_PROMPT_TEMPLATE,
+  REPLANNING_PROMPT_TEMPLATE,
+
+  // Node creators
+  createPlannerNode,
+  createExecutorNode,
+  createReplannerNode,
+  createFinisherNode,
+
+  // Agent creation
+  createPlanExecuteAgent,
+} from './plan-execute/index.js';

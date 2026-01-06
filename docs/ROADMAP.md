@@ -191,14 +191,15 @@ See [phase-3-design.md](./phase-3-design.md) for detailed design.
   - [x] All 55 tests passing
 - **Subtotal: 55 tests passing** ✅
 
-### 3.2 Plan-and-Execute Pattern (2 days)
-- [ ] Plan-Execute state definition
-- [ ] `createPlanner()` - Planning node
-- [ ] `createExecutor()` - Execution node with parallel support
-- [ ] `createReplanner()` - Re-planning logic
-- [ ] `createPlanExecuteAgent()` - Main factory
-- [ ] Examples: Multi-step research, data analysis
-- [ ] Unit tests (40 tests)
+### 3.2 Plan-and-Execute Pattern (2 days) ✅ COMPLETE
+- [x] Plan-Execute state definition with Zod schemas (10 tests) ✅
+- [x] `createPlannerNode()` - Planning node ✅
+- [x] `createExecutorNode()` - Execution node with parallel support ✅
+- [x] `createReplannerNode()` - Re-planning logic ✅
+- [x] `createFinisherNode()` - Completion node ✅
+- [x] `createPlanExecuteAgent()` - Main factory ✅
+- [x] Integration tests (6 tests) ✅
+- **Subtotal: 31 tests passing** ✅
 
 ### 3.3 Reflection Pattern (2 days)
 - [ ] Reflection state definition
