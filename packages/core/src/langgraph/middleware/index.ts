@@ -68,3 +68,7 @@ export { withMetrics, type MetricsNodeOptions } from '../observability/metrics.j
 export { withTracing, type TracingOptions } from '../observability/langsmith.js';
 export { createLogger, LogLevel, type Logger } from '../observability/logger.js';
 
+// Export new middleware
+export { withCache, createSharedCache, type CachingOptions, type CacheKeyGenerator, type EvictionStrategy } from './caching.js';
+export { withRateLimit, createSharedRateLimiter, type RateLimitOptions, type RateLimitStrategy } from './rate-limiting.js';
+

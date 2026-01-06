@@ -278,9 +278,9 @@ See [phase-4-design.md](./phase-4-design.md) for detailed design.
 - [x] Middleware presets system (16 tests)
 - **Subtotal: 30 tests passing** ✅
 
-### 4.2 New Middleware (2 days)
-- [ ] Caching middleware (12 tests)
-- [ ] Rate limiting middleware (12 tests)
+### 4.2 New Middleware (2 days) 🚧 IN PROGRESS
+- [x] Caching middleware (12 tests) ✅
+- [x] Rate limiting middleware (13 tests) ✅
 - [ ] Validation middleware (10 tests)
 - [ ] Concurrency control middleware (10 tests)
 
@@ -548,7 +548,28 @@ See [phase-4-design.md](./phase-4-design.md) for detailed design.
   - ✅ ESM/CJS builds successful
 - **Phase 4.1 Total: 30 tests passing (14 compose + 16 presets)** ✅
 
-**Overall Total: 414 tests passing + comprehensive documentation** ✅
+### Phase 4.2 - New Middleware 🚧 IN PROGRESS
+- ✅ **Caching Middleware** (`caching.ts` - 12 tests)
+  - ✅ `withCache()` - Cache node results with TTL and eviction strategies
+  - ✅ `createSharedCache()` - Shared cache across multiple nodes
+  - ✅ LRU Cache implementation with FIFO, LRU, and LFU eviction strategies
+  - ✅ TTL (Time To Live) support with automatic expiration
+  - ✅ Custom cache key generation
+  - ✅ Cache callbacks (`onCacheHit`, `onCacheMiss`, `onEviction`)
+  - ✅ Error caching support (optional)
+  - ✅ Comprehensive unit tests (12 tests)
+- ✅ **Rate Limiting Middleware** (`rate-limiting.ts` - 13 tests)
+  - ✅ `withRateLimit()` - Rate limit node execution
+  - ✅ `createSharedRateLimiter()` - Shared rate limiter across multiple nodes
+  - ✅ Token Bucket strategy with automatic token refill
+  - ✅ Sliding Window strategy with time-based request tracking
+  - ✅ Fixed Window strategy with periodic reset
+  - ✅ Custom key generation for per-user/per-resource rate limiting
+  - ✅ Rate limit callbacks (`onRateLimitExceeded`, `onRateLimitReset`)
+  - ✅ Comprehensive unit tests (13 tests)
+- **Phase 4.2 Total: 25 tests passing (12 caching + 13 rate limiting)** ✅
+
+**Overall Total: 439 tests passing + comprehensive documentation** ✅
 
 See [FRAMEWORK_DESIGN.md](./FRAMEWORK_DESIGN.md) for architecture details.
 See [PHASE_2_1_COMPLETE.md](./PHASE_2_1_COMPLETE.md) for Phase 2.1 details.
