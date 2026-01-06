@@ -15,3 +15,6 @@ export * from './langgraph/index.js';
 
 // Streaming utilities
 export * from './streaming/index.js';
+
+// Resource management
+export * from './resources/index.js';
