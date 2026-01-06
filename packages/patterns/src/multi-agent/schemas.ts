@@ -68,7 +68,7 @@ export const AgentMessageSchema = z.object({
   /**
    * Timestamp when message was created
    */
-  timestamp: z.string().datetime().describe('ISO timestamp when message was created'),
+  timestamp: z.number().describe('Timestamp when message was created'),
 });
 
 export type AgentMessage = z.infer<typeof AgentMessageSchema>;
@@ -109,6 +109,11 @@ export const RoutingDecisionSchema = z.object({
    * Strategy used for routing
    */
   strategy: RoutingStrategySchema.describe('Strategy used for this decision'),
+
+  /**
+   * Timestamp of the routing decision
+   */
+  timestamp: z.number().optional().describe('Timestamp of the decision'),
 });
 
 export type RoutingDecision = z.infer<typeof RoutingDecisionSchema>;
@@ -117,21 +122,6 @@ export type RoutingDecision = z.infer<typeof RoutingDecisionSchema>;
  * Schema for worker agent capabilities
  */
 export const WorkerCapabilitiesSchema = z.object({
-  /**
-   * Agent identifier
-   */
-  agentId: z.string().describe('Unique agent identifier'),
-
-  /**
-   * Agent name
-   */
-  name: z.string().describe('Human-readable agent name'),
-
-  /**
-   * Description of what the agent does
-   */
-  description: z.string().describe('Description of agent capabilities'),
-
   /**
    * Skills/capabilities the agent has
    */
@@ -150,7 +140,7 @@ export const WorkerCapabilitiesSchema = z.object({
   /**
    * Current workload (number of active tasks)
    */
-  workload: z.number().int().nonnegative().default(0).describe('Current number of active tasks'),
+  currentWorkload: z.number().int().nonnegative().default(0).describe('Current number of active tasks'),
 });
 
 export type WorkerCapabilities = z.infer<typeof WorkerCapabilitiesSchema>;
@@ -160,24 +150,19 @@ export type WorkerCapabilities = z.infer<typeof WorkerCapabilitiesSchema>;
  */
 export const TaskAssignmentSchema = z.object({
   /**
-   * Unique task identifier
+   * Unique assignment identifier
    */
-  taskId: z.string().describe('Unique task identifier'),
+  id: z.string().describe('Unique assignment identifier'),
 
   /**
-   * Agent assigned to the task
+   * Worker ID assigned to the task
    */
-  assignedTo: z.string().describe('Agent identifier assigned to task'),
+  workerId: z.string().describe('Worker identifier assigned to task'),
 
   /**
    * Task description
    */
-  description: z.string().describe('Description of the task'),
-
-  /**
-   * Task input/context
-   */
-  input: z.any().describe('Input data for the task'),
+  task: z.string().describe('Description of the task'),
 
   /**
    * Task priority (1-10, higher is more urgent)
@@ -187,12 +172,12 @@ export const TaskAssignmentSchema = z.object({
   /**
    * Timestamp when task was assigned
    */
-  assignedAt: z.string().datetime().describe('ISO timestamp when task was assigned'),
+  assignedAt: z.number().describe('Timestamp when task was assigned'),
 
   /**
    * Optional deadline for task completion
    */
-  deadline: z.string().datetime().optional().describe('Optional task deadline'),
+  deadline: z.number().optional().describe('Optional task deadline timestamp'),
 });
 
 export type TaskAssignment = z.infer<typeof TaskAssignmentSchema>;
@@ -202,14 +187,14 @@ export type TaskAssignment = z.infer<typeof TaskAssignmentSchema>;
  */
 export const TaskResultSchema = z.object({
   /**
-   * Task identifier
+   * Assignment identifier
    */
-  taskId: z.string().describe('Task identifier'),
+  assignmentId: z.string().describe('Assignment identifier'),
 
   /**
-   * Agent that completed the task
+   * Worker that completed the task
    */
-  completedBy: z.string().describe('Agent that completed the task'),
+  workerId: z.string().describe('Worker that completed the task'),
 
   /**
    * Whether the task succeeded
@@ -219,7 +204,7 @@ export const TaskResultSchema = z.object({
   /**
    * Task result/output
    */
-  result: z.any().describe('Task result or output'),
+  result: z.string().describe('Task result or output'),
 
   /**
    * Optional error message if task failed
@@ -229,7 +214,7 @@ export const TaskResultSchema = z.object({
   /**
    * Timestamp when task was completed
    */
-  completedAt: z.string().datetime().describe('ISO timestamp when task was completed'),
+  completedAt: z.number().describe('Timestamp when task was completed'),
 
   /**
    * Optional metadata about execution

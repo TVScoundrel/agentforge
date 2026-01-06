@@ -151,4 +151,33 @@ export {
   type TaskResult,
   type MultiAgentStatus,
   type HandoffRequest,
+
+  // Types
+  type SupervisorConfig,
+  type WorkerConfig,
+  type AggregatorConfig,
+  type MultiAgentSystemConfig,
+  type MultiAgentNode,
+  type MultiAgentRoute,
+  type MultiAgentRouter,
+  type RoutingStrategyImpl,
+
+  // Routing strategies
+  DEFAULT_SUPERVISOR_SYSTEM_PROMPT,
+  llmBasedRouting,
+  roundRobinRouting,
+  skillBasedRouting,
+  loadBalancedRouting,
+  ruleBasedRouting,
+  getRoutingStrategy,
+
+  // Node creators
+  DEFAULT_AGGREGATOR_SYSTEM_PROMPT,
+  createSupervisorNode,
+  createWorkerNode,
+  createAggregatorNode,
+
+  // Agent creation
+  createMultiAgentSystem,
+  registerWorkers,
 } from './multi-agent/index.js';

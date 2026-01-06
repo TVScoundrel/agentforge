@@ -66,7 +66,7 @@ describe('Multi-Agent State', () => {
         from: 'supervisor',
         to: 'worker-1',
         content: 'Please analyze this data',
-        timestamp: new Date().toISOString(),
+        timestamp: Date.now(),
       };
 
       const result = AgentMessageSchema.safeParse(validMessage);
@@ -80,7 +80,7 @@ describe('Multi-Agent State', () => {
         from: 'supervisor',
         to: ['worker-1', 'worker-2'],
         content: 'Parallel task',
-        timestamp: new Date().toISOString(),
+        timestamp: Date.now(),
       };
 
       const result = AgentMessageSchema.safeParse(validMessage);
@@ -95,7 +95,7 @@ describe('Multi-Agent State', () => {
         to: 'supervisor',
         content: 'Task completed',
         metadata: { duration: 1500, tokensUsed: 250 },
-        timestamp: new Date().toISOString(),
+        timestamp: Date.now(),
       };
 
       const result = AgentMessageSchema.safeParse(validMessage);
@@ -161,9 +161,6 @@ describe('Multi-Agent State', () => {
 
     it('should validate WorkerCapabilities with defaults', () => {
       const validWorker = {
-        agentId: 'worker-2',
-        name: 'Writer Agent',
-        description: 'Writes content',
         skills: ['writing'],
         tools: [],
       };
@@ -172,19 +169,18 @@ describe('Multi-Agent State', () => {
       expect(result.success).toBe(true);
       if (result.success) {
         expect(result.data.available).toBe(true);
-        expect(result.data.workload).toBe(0);
+        expect(result.data.currentWorkload).toBe(0);
       }
     });
 
     it('should validate TaskAssignment schema', () => {
       const validAssignment = {
-        taskId: 'task-1',
-        assignedTo: 'worker-1',
-        description: 'Research quantum computing',
-        input: { topic: 'quantum computing', depth: 'detailed' },
+        id: 'assignment-1',
+        workerId: 'worker-1',
+        task: 'Research quantum computing',
         priority: 8,
-        assignedAt: new Date().toISOString(),
-        deadline: new Date(Date.now() + 3600000).toISOString(),
+        assignedAt: Date.now(),
+        deadline: Date.now() + 3600000,
       };
 
       const result = TaskAssignmentSchema.safeParse(validAssignment);
@@ -193,11 +189,10 @@ describe('Multi-Agent State', () => {
 
     it('should validate TaskAssignment with default priority', () => {
       const validAssignment = {
-        taskId: 'task-2',
-        assignedTo: 'worker-2',
-        description: 'Write summary',
-        input: 'Some data',
-        assignedAt: new Date().toISOString(),
+        id: 'assignment-2',
+        workerId: 'worker-2',
+        task: 'Write summary',
+        assignedAt: Date.now(),
       };
 
       const result = TaskAssignmentSchema.safeParse(validAssignment);
@@ -209,11 +204,11 @@ describe('Multi-Agent State', () => {
 
     it('should validate TaskResult schema', () => {
       const validResult = {
-        taskId: 'task-1',
-        completedBy: 'worker-1',
+        assignmentId: 'assignment-1',
+        workerId: 'worker-1',
         success: true,
-        result: { summary: 'Quantum computing is...', sources: 5 },
-        completedAt: new Date().toISOString(),
+        result: 'Quantum computing is...',
+        completedAt: Date.now(),
         metadata: { duration: 2500, retries: 0 },
       };
 
@@ -223,12 +218,12 @@ describe('Multi-Agent State', () => {
 
     it('should validate TaskResult with error', () => {
       const validResult = {
-        taskId: 'task-2',
-        completedBy: 'worker-2',
+        assignmentId: 'assignment-2',
+        workerId: 'worker-2',
         success: false,
-        result: null,
+        result: '',
         error: 'Tool execution failed',
-        completedAt: new Date().toISOString(),
+        completedAt: Date.now(),
       };
 
       const result = TaskResultSchema.safeParse(validResult);

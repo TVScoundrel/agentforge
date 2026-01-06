@@ -37,3 +37,39 @@ export {
   type HandoffRequest,
 } from './schemas.js';
 
+// Export types
+export {
+  type SupervisorConfig,
+  type WorkerConfig,
+  type AggregatorConfig,
+  type MultiAgentSystemConfig,
+  type MultiAgentNode,
+  type MultiAgentRoute,
+  type MultiAgentRouter,
+  type RoutingStrategyImpl,
+} from './types.js';
+
+// Export routing strategies
+export {
+  DEFAULT_SUPERVISOR_SYSTEM_PROMPT,
+  llmBasedRouting,
+  roundRobinRouting,
+  skillBasedRouting,
+  loadBalancedRouting,
+  ruleBasedRouting,
+  getRoutingStrategy,
+} from './routing.js';
+
+// Export node creators
+export {
+  DEFAULT_AGGREGATOR_SYSTEM_PROMPT,
+  createSupervisorNode,
+  createWorkerNode,
+  createAggregatorNode,
+} from './nodes.js';
+
+// Export agent creation
+export {
+  createMultiAgentSystem,
+  registerWorkers,
+} from './agent.js';
