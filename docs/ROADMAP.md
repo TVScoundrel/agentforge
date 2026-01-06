@@ -227,21 +227,39 @@ See [phase-3-design.md](./phase-3-design.md) for detailed design.
   - [x] Examples README with usage instructions ✅
 - **Subtotal: 30 tests passing** ✅
 
-### 3.4 Multi-Agent Coordination (1 day)
-- [ ] Multi-agent state definition
-- [ ] `createSupervisor()` - Supervisor agent with routing
-- [ ] `createWorkerAgent()` - Specialized worker agents
-- [ ] `createMultiAgentSystem()` - Main factory
-- [ ] Examples: Research team, customer support
-- [ ] Unit tests (30 tests)
+### 3.4 Multi-Agent Coordination (2 days)
+- [ ] **3.4.1** Multi-agent state definition with Zod schemas
+  - [ ] Multi-agent state definition (`MultiAgentState`)
+  - [ ] Message routing schemas
+  - [ ] Worker agent schemas
+  - [ ] Supervisor schemas
+  - [ ] Unit tests (10 tests)
+- [ ] **3.4.2** Core Components
+  - [ ] `createSupervisor()` - Supervisor agent with routing logic
+  - [ ] `createWorkerAgent()` - Specialized worker agents
+  - [ ] `createMultiAgentSystem()` - Main factory function
+  - [ ] Routing strategies (round-robin, skill-based, load-balanced)
+  - [ ] Unit tests (15 tests)
+- [ ] **3.4.3** Integration Tests
+  - [ ] Complete multi-agent workflow tests
+  - [ ] Worker coordination tests
+  - [ ] Error handling and fallback tests
+  - [ ] Integration tests (5 tests)
+- [ ] **3.4.4** Examples and Documentation
+  - [ ] Create 4 examples (basic coordination, research team, customer support, specialized workers)
+  - [ ] Write comprehensive pattern guide (multi-agent-pattern.md)
+  - [ ] Update pattern comparison guide
+  - [ ] Add examples README
+  - [ ] Update main patterns README
+- **Subtotal: 30 tests planned**
 
 ### Deliverables
 - Agent patterns in `@agentforge/patterns` v0.1.0
 - 4 core patterns (ReAct ✅, Plan-Execute ✅, Reflection ✅, Multi-Agent 📋)
-- 12+ working examples (4 ReAct + 4 Plan-Execute + 4 Reflection)
-- Pattern comparison guide ✅
+- 16+ working examples (4 ReAct + 4 Plan-Execute + 4 Reflection + 4 Multi-Agent)
+- Pattern comparison guide ✅ (will be updated for Multi-Agent)
 - Complete API documentation ✅
-- **Total: 3 patterns complete with comprehensive documentation**
+- **Total: 3 patterns complete with comprehensive documentation, 1 remaining**
 
 ---
 
