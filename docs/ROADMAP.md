@@ -189,6 +189,10 @@ See [phase-3-design.md](./phase-3-design.md) for detailed design.
   - [x] Migrated all ReAct pattern code
   - [x] Fixed StateGraph initialization issues
   - [x] All 55 tests passing
+- [ ] **3.1.6** Examples and Documentation (TODO)
+  - [ ] Create 4 examples (basic, multi-step, tool chaining, custom workflow)
+  - [ ] Write comprehensive pattern guide
+  - [ ] Add examples README
 - **Subtotal: 55 tests passing** ✅
 
 ### 3.2 Plan-and-Execute Pattern (2 days) ✅ COMPLETE
@@ -199,6 +203,10 @@ See [phase-3-design.md](./phase-3-design.md) for detailed design.
 - [x] `createFinisherNode()` - Completion node ✅
 - [x] `createPlanExecuteAgent()` - Main factory ✅
 - [x] Integration tests (6 tests) ✅
+- [ ] **3.2.7** Examples and Documentation (TODO)
+  - [ ] Create 4 examples (basic, research task, complex planning, custom workflow)
+  - [ ] Write comprehensive pattern guide
+  - [ ] Add examples README
 - **Subtotal: 31 tests passing** ✅
 
 ### 3.3 Reflection Pattern (2 days) ✅ COMPLETE
@@ -209,6 +217,10 @@ See [phase-3-design.md](./phase-3-design.md) for detailed design.
 - [x] `createFinisherNode()` - Completion node ✅
 - [x] `createReflectionAgent()` - Main factory ✅
 - [x] Integration tests (5 tests) ✅
+- [x] **3.3.7** Examples and Documentation ✅
+  - [x] Created 4 examples (basic, essay writing, code generation, custom workflow) ✅
+  - [x] Comprehensive pattern guide (reflection-pattern.md) ✅
+  - [x] Examples README with usage instructions ✅
 - **Subtotal: 30 tests passing** ✅
 
 ### 3.4 Multi-Agent Coordination (1 day)
