@@ -49,3 +49,46 @@ export {
   type PromptOptions,
 } from './registry.js';
 
+// Tool executor (async execution)
+export {
+  createToolExecutor,
+  type Priority,
+  type BackoffStrategy,
+  type RetryPolicy,
+  type ToolExecutorConfig,
+  type ToolExecution,
+  type ExecutionMetrics,
+} from './executor.js';
+
+// Tool lifecycle management
+export {
+  ManagedTool,
+  createManagedTool,
+  type HealthCheckResult,
+  type ManagedToolConfig,
+  type ManagedToolStats,
+} from './lifecycle.js';
+
+// Tool composition
+export {
+  sequential,
+  parallel,
+  conditional,
+  composeTool,
+  retry,
+  timeout,
+  cache,
+  type ComposedTool,
+  type ConditionalConfig,
+  type ComposeToolConfig,
+} from './composition.js';
+
+// Tool testing utilities
+export {
+  createMockTool,
+  createToolSimulator,
+  type MockToolResponse,
+  type MockToolConfig,
+  type ToolInvocation,
+  type ToolSimulatorConfig,
+} from './testing.js';
