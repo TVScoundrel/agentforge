@@ -124,3 +124,31 @@ export {
   // Agent creation
   createReflectionAgent,
 } from './reflection/index.js';
+
+// Multi-Agent Coordination pattern
+export {
+  // State and schemas
+  MultiAgentState,
+  MultiAgentStateConfig,
+  AgentRoleSchema,
+  MessageTypeSchema,
+  AgentMessageSchema,
+  RoutingStrategySchema,
+  RoutingDecisionSchema,
+  WorkerCapabilitiesSchema,
+  TaskAssignmentSchema,
+  TaskResultSchema,
+  MultiAgentStatusSchema,
+  HandoffRequestSchema,
+  type MultiAgentStateType,
+  type AgentRole,
+  type MessageType,
+  type AgentMessage,
+  type RoutingStrategy,
+  type RoutingDecision,
+  type WorkerCapabilities,
+  type TaskAssignment,
+  type TaskResult,
+  type MultiAgentStatus,
+  type HandoffRequest,
+} from './multi-agent/index.js';
