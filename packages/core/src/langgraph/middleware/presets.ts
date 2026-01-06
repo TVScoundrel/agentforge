@@ -14,6 +14,7 @@ import { withTimeout as _withTimeout, type TimeoutOptions } from '../patterns/ti
 import { withMetrics as _withMetrics, type MetricsNodeOptions } from '../observability/metrics.js';
 import { withTracing as _withTracing, type TracingOptions } from '../observability/langsmith.js';
 import { createLogger, LogLevel, type Logger } from '../observability/logger.js';
+import { withLogging as _withLogging, type LoggingOptions } from './logging.js';
 
 /**
  * Convert existing middleware to the new middleware pattern.
@@ -38,6 +39,10 @@ function withMetrics<State>(options: MetricsNodeOptions): SimpleMiddleware<State
 
 function withTracing<State>(options: TracingOptions): SimpleMiddleware<State> {
   return (node) => _withTracing(node, options);
+}
+
+function withLogging<State>(options: LoggingOptions): SimpleMiddleware<State> {
+  return (node) => _withLogging<State>(options)(node);
 }
 
 /**
@@ -126,11 +131,22 @@ export function production<State>(
 
   const middleware: SimpleMiddleware<State>[] = [];
 
-  // Error handling (outermost)
+  // Logging (outermost for visibility)
+  middleware.push(
+    withLogging({
+      logger: actualLogger,
+      name: nodeName,
+      logInput: false, // Don't log input in production by default
+      logOutput: false, // Don't log output in production by default
+      logDuration: true,
+      logErrors: true,
+    })
+  );
+
+  // Error handling
   middleware.push(
     withErrorHandler({
       onError: (error, state) => {
-        actualLogger.error(`[${nodeName}] Error:`, { error: error.message });
         return state; // Return state on error
       },
       ...errorOptions,
@@ -144,9 +160,6 @@ export function production<State>(
         maxAttempts: 3,
         backoff: 'exponential',
         initialDelay: 1000,
-        onRetry: (error, attempt) => {
-          actualLogger.warn(`[${nodeName}] Retry ${attempt}:`, { error: error.message });
-        },
         ...retryOptions,
       })
     );
@@ -157,7 +170,6 @@ export function production<State>(
     withTimeout({
       timeout,
       onTimeout: (state) => {
-        actualLogger.error(`[${nodeName}] Timeout after ${timeout}ms`);
         return state;
       },
     })
@@ -238,32 +250,15 @@ export function development<State>(
 
   const actualLogger = logger || createLogger(nodeName, { level: LogLevel.DEBUG });
 
-  // Simple logging wrapper for development
-  return async (state: State) => {
-    if (verbose) {
-      actualLogger.debug(`[${nodeName}] Input:`, state as any);
-    }
-
-    const startTime = Date.now();
-
-    try {
-      const result = await Promise.resolve(node(state));
-
-      if (verbose) {
-        const duration = Date.now() - startTime;
-        actualLogger.debug(`[${nodeName}] Output (${duration}ms):`, result as any);
-      }
-
-      return result;
-    } catch (error) {
-      const duration = Date.now() - startTime;
-      actualLogger.error(`[${nodeName}] Error (${duration}ms):`, {
-        error: error instanceof Error ? error.message : String(error),
-        stack: error instanceof Error ? error.stack : undefined,
-      });
-      throw error;
-    }
-  };
+  // Use withLogging middleware for development
+  return withLogging<State>({
+    logger: actualLogger,
+    name: nodeName,
+    logInput: verbose,
+    logOutput: verbose,
+    logDuration: true,
+    logErrors: true,
+  })(node);
 }
 
 /**

@@ -73,4 +73,5 @@ export { withCache, createSharedCache, type CachingOptions, type CacheKeyGenerat
 export { withRateLimit, createSharedRateLimiter, type RateLimitOptions, type RateLimitStrategy } from './rate-limiting.js';
 export { withValidation, type ValidationOptions, type ValidationMode, type ValidatorFunction, type ValidationErrorHandler } from './validation.js';
 export { withConcurrency, createSharedConcurrencyController, type ConcurrencyOptions, type Priority } from './concurrency.js';
+export { withLogging, type LoggingOptions } from './logging.js';
 

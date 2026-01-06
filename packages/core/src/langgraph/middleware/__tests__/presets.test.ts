@@ -142,7 +142,7 @@ describe('Middleware Presets', () => {
 
     it('should log input and output when verbose', async () => {
       const logger = createLogger({ level: LogLevel.DEBUG });
-      const debugSpy = vi.spyOn(logger, 'debug');
+      const infoSpy = vi.spyOn(logger, 'info');
 
       const devNode = development(testNode, {
         nodeName: 'test-node',
@@ -152,16 +152,16 @@ describe('Middleware Presets', () => {
 
       await devNode({ value: 5 });
 
-      expect(debugSpy).toHaveBeenCalledWith('[test-node] Input:', { value: 5 });
-      expect(debugSpy).toHaveBeenCalledWith(
-        expect.stringContaining('[test-node] Output'),
-        expect.objectContaining({ result: 'processed-5' })
+      expect(infoSpy).toHaveBeenCalledWith('Node execution started', expect.objectContaining({ state: { value: 5 } }));
+      expect(infoSpy).toHaveBeenCalledWith(
+        expect.stringContaining('Node execution completed'),
+        expect.objectContaining({ result: expect.objectContaining({ result: 'processed-5' }) })
       );
     });
 
     it('should not log when verbose is false', async () => {
       const logger = createLogger({ level: LogLevel.DEBUG });
-      const debugSpy = vi.spyOn(logger, 'debug');
+      const infoSpy = vi.spyOn(logger, 'info');
 
       const devNode = development(testNode, {
         nodeName: 'test-node',
@@ -171,7 +171,13 @@ describe('Middleware Presets', () => {
 
       await devNode({ value: 5 });
 
-      expect(debugSpy).not.toHaveBeenCalled();
+      // Should not log input/output, but may log duration
+      const calls = infoSpy.mock.calls;
+      const hasInputLog = calls.some(call => call[0].includes('started'));
+      const hasOutputLog = calls.some(call => call[0].includes('completed') && call[1]?.result);
+
+      expect(hasInputLog).toBe(false);
+      expect(hasOutputLog).toBe(false);
     });
 
     it('should log errors with stack trace', async () => {
@@ -189,7 +195,7 @@ describe('Middleware Presets', () => {
 
       await expect(devNode({ value: 1 })).rejects.toThrow('Dev error');
       expect(errorSpy).toHaveBeenCalledWith(
-        expect.stringContaining('[error-node] Error'),
+        expect.stringContaining('Node execution failed'),
         expect.objectContaining({
           error: 'Dev error',
           stack: expect.any(String),
