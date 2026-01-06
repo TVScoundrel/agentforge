@@ -189,10 +189,10 @@ See [phase-3-design.md](./phase-3-design.md) for detailed design.
   - [x] Migrated all ReAct pattern code
   - [x] Fixed StateGraph initialization issues
   - [x] All 55 tests passing
-- [ ] **3.1.6** Examples and Documentation (TODO)
-  - [ ] Create 4 examples (basic, multi-step, tool chaining, custom workflow)
-  - [ ] Write comprehensive pattern guide
-  - [ ] Add examples README
+- [x] **3.1.6** Examples and Documentation ✅
+  - [x] Create 4 examples (basic, multi-step, tool chaining, custom workflow)
+  - [x] Write comprehensive pattern guide (670 lines)
+  - [x] Add examples README
 - **Subtotal: 55 tests passing** ✅
 
 ### 3.2 Plan-and-Execute Pattern (2 days) ✅ COMPLETE
