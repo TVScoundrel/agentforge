@@ -4,7 +4,7 @@
 
 [![GitHub](https://img.shields.io/badge/GitHub-TVScoundrel%2Fagentforge-blue?logo=github)](https://github.com/TVScoundrel/agentforge)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.9-blue?logo=typescript)](https://www.typescriptlang.org/)
-[![Tests](https://img.shields.io/badge/tests-384%20passing-success)](./packages)
+[![Tests](https://img.shields.io/badge/tests-478%20passing-success)](./packages)
 [![License](https://img.shields.io/badge/license-MIT-green)](./LICENSE)
 
 **AgentForge** is a TypeScript framework that provides production-grade abstractions for building autonomous agents with LangGraph. It focuses on developer experience, type safety, and real-world production needs.
@@ -23,13 +23,13 @@
 - 💾 **Memory & Persistence** - Checkpointer and thread management utilities
 - 📈 **Observability** - LangSmith integration, metrics, logging, and error handling
 - 🤖 **Agent Patterns** - ReAct, Plan-Execute, Reflection, Multi-Agent (all complete!)
+- 🔌 **Middleware System** - Composable middleware for caching, rate limiting, validation, and more
 - 🔒 **Type Safety** - Full TypeScript support with Zod schemas
-- 🧪 **Testing First** - Comprehensive test coverage (384 tests)
-- 📚 **Documentation** - 6000+ lines of guides, examples, and API docs
+- 🧪 **Testing First** - Comprehensive test coverage (478 tests)
+- 📚 **Documentation** - 8000+ lines of guides, examples, and API docs
 
 ### 📋 Planned
 - 📦 **Standard Tools** - Common tool library
-- 🔌 **Middleware System** - Logging, tracing, caching, and rate limiting
 - 🛠️ **CLI Tool** - Project scaffolding and development utilities
 
 ---
@@ -38,7 +38,7 @@
 
 | Package | Description | Status |
 |---------|-------------|--------|
-| [@agentforge/core](./packages/core) | Core abstractions (tools, registry, LangGraph utilities) | ✅ Complete (Phase 1 & 2) |
+| [@agentforge/core](./packages/core) | Core abstractions (tools, registry, LangGraph utilities, middleware) | ✅ Complete (Phase 1, 2 & 4) |
 | [@agentforge/patterns](./packages/patterns) | Agent patterns (ReAct, Plan-Execute, Reflection, Multi-Agent) | ✅ Complete (Phase 3) |
 | @agentforge/tools | Standard tool library | 📋 Planned (Phase 6) |
 | @agentforge/testing | Testing utilities | 📋 Planned (Phase 6) |
@@ -105,6 +105,52 @@ See the [Pattern Comparison Guide](./packages/patterns/docs/pattern-comparison.m
 
 ---
 
+## 🔌 Middleware System
+
+AgentForge provides a powerful middleware system for adding cross-cutting concerns to your LangGraph nodes:
+
+### Built-in Middleware
+- **Caching** - TTL-based caching with LRU eviction
+- **Rate Limiting** - Token bucket, sliding window, and fixed window strategies
+- **Validation** - Zod schema validation for inputs and outputs
+- **Concurrency Control** - Semaphore-based concurrency limiting
+- **Logging** - Structured logging with customizable levels
+- **Retry** - Exponential backoff retry logic
+- **Error Handling** - Graceful error handling with fallbacks
+- **Timeout** - Execution timeouts for long-running operations
+- **Metrics** - Performance metrics collection
+- **Tracing** - Distributed tracing support
+
+### Quick Example
+```typescript
+import { compose, withCache, withValidation, withRateLimit } from '@agentforge/core/middleware';
+import { z } from 'zod';
+
+const schema = z.object({ query: z.string() }).strict();
+
+const enhancedNode = compose(
+  withValidation({ inputSchema: schema }),
+  withCache({ ttl: 3600000 }),
+  withRateLimit({ maxRequests: 100, windowMs: 60000 }),
+  myNode
+);
+```
+
+### Production Presets
+```typescript
+import { productionPreset } from '@agentforge/core/middleware';
+
+const productionNode = productionPreset(myNode, {
+  cache: { ttl: 3600000 },
+  rateLimit: { maxRequests: 100, windowMs: 60000 },
+  retry: { maxAttempts: 3 },
+});
+```
+
+See the [Middleware Guide](./docs/guides/middleware-guide.md) for comprehensive documentation.
+
+---
+
 ## 🚀 Quick Start
 
 ```bash
@@ -138,6 +184,12 @@ pnpm test:coverage
 - [Plan-Execute Pattern Guide](./packages/patterns/docs/plan-execute-pattern.md) - Comprehensive Plan-Execute guide
 - [Reflection Pattern Guide](./packages/patterns/docs/reflection-pattern.md) - Comprehensive Reflection guide
 - [Multi-Agent Pattern Guide](./packages/patterns/docs/multi-agent-pattern.md) - Comprehensive Multi-Agent guide
+
+### Middleware
+- [Middleware Guide](./docs/guides/middleware-guide.md) - Comprehensive middleware guide
+- [Middleware API Reference](./docs/api/middleware.md) - Complete API documentation
+- [Middleware Best Practices](./docs/guides/middleware-best-practices.md) - Production best practices
+- [Phase 4 Complete](./docs/PHASE_4_COMPLETE.md) - Implementation details
 
 ### Examples
 - [ReAct Examples](./packages/patterns/examples/react/) - 4 ReAct examples
