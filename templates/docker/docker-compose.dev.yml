@@ -1,0 +1,40 @@
+version: '3.8'
+
+# Development-specific Docker Compose configuration
+# Usage: docker-compose -f docker-compose.yml -f docker-compose.dev.yml up
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    volumes:
+      # Mount source code for hot reload
+      - ./src:/app/src:ro
+      - ./package.json:/app/package.json:ro
+      - ./tsconfig.json:/app/tsconfig.json:ro
+      # Use named volume for node_modules to avoid conflicts
+      - node_modules:/app/node_modules
+    environment:
+      - NODE_ENV=development
+      - LOG_LEVEL=debug
+      - DEBUG=*
+    command: npm run dev
+    ports:
+      - "3000:3000"
+      - "9229:9229"  # Node.js debugger port
+
+  postgres:
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_PASSWORD=dev_password
+
+  redis:
+    ports:
+      - "6379:6379"
+    command: redis-server --appendonly yes  # No password in dev
+
+volumes:
+  node_modules:
+
