@@ -42,7 +42,7 @@ function withTracing<State>(options: TracingOptions): SimpleMiddleware<State> {
 }
 
 function withLogging<State>(options: LoggingOptions): SimpleMiddleware<State> {
-  return (node) => _withLogging<State>(options)(node);
+  return (node) => _withLogging(options)(node);
 }
 
 /**

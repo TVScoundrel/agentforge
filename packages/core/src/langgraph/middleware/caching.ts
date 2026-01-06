@@ -254,7 +254,7 @@ export function withCache<State>(
     } catch (error) {
       // Cache errors if configured
       if (cacheErrors && error instanceof Error) {
-        const errorResult = { error: error.message } as Partial<State>;
+        const errorResult = { error: error.message } as any as Partial<State>;
         cache.set(cacheKey, errorResult);
       }
       throw error;
@@ -327,7 +327,7 @@ export function createSharedCache<State>(
         } catch (error) {
           // Cache errors if configured
           if (cacheErrors && error instanceof Error) {
-            const errorResult = { error: error.message } as Partial<State>;
+            const errorResult = { error: error.message } as any as Partial<State>;
             cache.set(cacheKey, errorResult);
           }
           throw error;

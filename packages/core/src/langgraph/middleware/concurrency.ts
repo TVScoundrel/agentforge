@@ -1,4 +1,4 @@
-import type { NodeFunction } from '../types.js';
+import type { NodeFunction } from './types.js';
 
 /**
  * Priority level for queued tasks
@@ -232,7 +232,7 @@ export function withConcurrency<State>(
 
   return async (state: State): Promise<State | Partial<State>> => {
     const priority = priorityFn(state);
-    return controller.execute(state, priority, node);
+    return controller.execute(state, priority, async (s) => await node(s));
   };
 }
 
@@ -271,7 +271,7 @@ export function createSharedConcurrencyController<State>(
     withConcurrency: (node: NodeFunction<State>) => {
       return async (state: State): Promise<State | Partial<State>> => {
         const priority = priorityFn(state);
-        return controller.execute(state, priority, node);
+        return controller.execute(state, priority, async (s) => await node(s));
       };
     },
     getStats: () => controller.getStats(),

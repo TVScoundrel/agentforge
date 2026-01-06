@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import type { NodeFunction } from '../types.js';
+import type { NodeFunction } from './types.js';
 
 /**
  * Validation mode
@@ -98,9 +98,7 @@ export function withValidation<State>(
       try {
         // Zod schema validation
         if (inputSchema) {
-          const validated = stripUnknown
-            ? inputSchema.parse(state)
-            : inputSchema.strict().parse(state);
+          const validated = inputSchema.parse(state);
           state = validated as State;
         }
 
@@ -135,14 +133,12 @@ export function withValidation<State>(
       try {
         // Zod schema validation
         if (outputSchema) {
-          const validated = stripUnknown
-            ? outputSchema.parse(result)
-            : outputSchema.strict().parse(result);
-          
+          const validated = outputSchema.parse(result);
+
           if (onValidationSuccess) {
             onValidationSuccess(validated, 'output');
           }
-          
+
           return validated;
         }
 

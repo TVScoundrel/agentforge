@@ -1,4 +1,4 @@
-import type { NodeFunction } from '../types.js';
+import type { NodeFunction } from './types.js';
 
 /**
  * Rate limiting strategy
@@ -229,7 +229,7 @@ export function createSharedRateLimiter(
   const limiters = new Map<string, RateLimiter>();
 
   return {
-    withRateLimit: <State>(node: NodeFunction<State>, keyGenerator = () => 'global') => {
+    withRateLimit: <State>(node: NodeFunction<State>, keyGenerator = (state: State) => 'global') => {
       return async (state: State): Promise<State | Partial<State>> => {
         const key = keyGenerator(state);
 

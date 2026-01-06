@@ -13,3 +13,5 @@ export * from './langchain/index.js';
 // LangGraph integration
 export * from './langgraph/index.js';
 
+// Streaming utilities
+export * from './streaming/index.js';
