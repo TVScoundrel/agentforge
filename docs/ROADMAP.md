@@ -267,21 +267,47 @@ See [phase-3-design.md](./phase-3-design.md) for detailed design.
 
 ## Phase 4: Middleware System (1 week)
 
-**Duration**: 7 days  
+**Duration**: 7 days
 **Status**: 📋 Planned
 
-### Middleware
-- [ ] Logging middleware
-- [ ] Tracing middleware (LangSmith)
-- [ ] Error handling middleware
-- [ ] Rate limiting middleware
-- [ ] Caching middleware
-- [ ] Retry middleware
+See [phase-4-design.md](./phase-4-design.md) for detailed design.
+
+### 4.1 Core Middleware Infrastructure (2 days)
+- [ ] Middleware type definitions and interfaces (10 tests)
+- [ ] Compose utility and middleware chain (10 tests)
+- [ ] Middleware presets system (8 tests)
+
+### 4.2 New Middleware (2 days)
+- [ ] Caching middleware (12 tests)
+- [ ] Rate limiting middleware (12 tests)
+- [ ] Validation middleware (10 tests)
+- [ ] Concurrency control middleware (10 tests)
+
+### 4.3 Enhance Existing Middleware (1 day)
+- [ ] Enhance logging middleware (8 tests)
+- [ ] Enhance tracing middleware (8 tests)
+- [ ] Enhance retry middleware (8 tests)
+- [ ] Enhance error handling middleware (8 tests)
+- [ ] Enhance timeout middleware (6 tests)
+- [ ] Enhance metrics middleware (8 tests)
+
+### 4.4 Integration & Examples (1 day)
+- [ ] Integration tests (15 tests)
+- [ ] Create 4 comprehensive examples
+
+### 4.5 Documentation (1 day)
+- [ ] API documentation
+- [ ] Middleware guide (comprehensive)
+- [ ] Best practices guide
+- [ ] Update existing docs
 
 ### Deliverables
 - Middleware system in `@agentforge/core` v0.3.0
-- Middleware examples
-- Best practices guide
+- 10 middleware implementations (4 new + 6 enhanced)
+- Composition utilities and presets
+- 133+ tests (118 unit + 15 integration)
+- Comprehensive documentation (1000+ lines)
+- 4 working examples
 
 ---
 
