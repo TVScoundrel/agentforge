@@ -1,5 +1,5 @@
 import { describe, it, expect, vi } from 'vitest';
-import { chunk, batch, throttle } from '../transformers';
+import { chunk, batch, throttle } from '../transformers.js';
 
 // Helper to create async iterable from array
 async function* createStream<T>(items: T[]): AsyncIterable<T> {

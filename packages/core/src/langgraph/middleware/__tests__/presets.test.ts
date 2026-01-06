@@ -24,7 +24,7 @@ describe('Middleware Presets', () => {
 
   describe('production preset', () => {
     it('should apply production middleware stack', async () => {
-      const logger = createLogger({ level: LogLevel.ERROR });
+      const logger = createLogger('test-logger', { level: LogLevel.ERROR });
       const productionNode = production(testNode, {
         nodeName: 'test-node',
         logger,
@@ -40,7 +40,7 @@ describe('Middleware Presets', () => {
         throw new Error('Test error');
       };
 
-      const logger = createLogger({ level: LogLevel.ERROR });
+      const logger = createLogger('test-logger', { level: LogLevel.ERROR });
       const logSpy = vi.spyOn(logger, 'error');
 
       const productionNode = production(errorNode, {
@@ -66,7 +66,7 @@ describe('Middleware Presets', () => {
         return { ...state, result: 'success' };
       };
 
-      const logger = createLogger({ level: LogLevel.ERROR });
+      const logger = createLogger('test-logger', { level: LogLevel.ERROR });
       const productionNode = production(flakyNode, {
         nodeName: 'flaky-node',
         logger,
@@ -89,7 +89,7 @@ describe('Middleware Presets', () => {
         return state;
       };
 
-      const logger = createLogger({ level: LogLevel.ERROR });
+      const logger = createLogger('test-logger', { level: LogLevel.ERROR });
       const productionNode = production(slowNode, {
         nodeName: 'slow-node',
         logger,
@@ -128,7 +128,7 @@ describe('Middleware Presets', () => {
 
   describe('development preset', () => {
     it('should apply development middleware', async () => {
-      const logger = createLogger({ level: LogLevel.DEBUG });
+      const logger = createLogger('test-logger', { level: LogLevel.DEBUG });
       const devNode = development(testNode, {
         nodeName: 'test-node',
         logger,
@@ -141,7 +141,7 @@ describe('Middleware Presets', () => {
     });
 
     it('should log input and output when verbose', async () => {
-      const logger = createLogger({ level: LogLevel.DEBUG });
+      const logger = createLogger('test-logger', { level: LogLevel.DEBUG });
       const infoSpy = vi.spyOn(logger, 'info');
 
       const devNode = development(testNode, {
@@ -160,7 +160,7 @@ describe('Middleware Presets', () => {
     });
 
     it('should not log when verbose is false', async () => {
-      const logger = createLogger({ level: LogLevel.DEBUG });
+      const logger = createLogger('test-logger', { level: LogLevel.DEBUG });
       const infoSpy = vi.spyOn(logger, 'info');
 
       const devNode = development(testNode, {
@@ -185,7 +185,7 @@ describe('Middleware Presets', () => {
         throw new Error('Dev error');
       };
 
-      const logger = createLogger({ level: LogLevel.DEBUG });
+      const logger = createLogger('test-logger', { level: LogLevel.DEBUG });
       const errorSpy = vi.spyOn(logger, 'error');
 
       const devNode = development(errorNode, {

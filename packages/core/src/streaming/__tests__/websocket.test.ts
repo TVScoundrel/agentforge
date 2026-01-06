@@ -1,5 +1,5 @@
 import { describe, it, expect, vi } from 'vitest';
-import { createWebSocketHandler, sendMessage, broadcast, createMessage } from '../websocket';
+import { createWebSocketHandler, sendMessage, broadcast, createMessage } from '../websocket.js';
 
 // Mock WebSocket
 class MockWebSocket {

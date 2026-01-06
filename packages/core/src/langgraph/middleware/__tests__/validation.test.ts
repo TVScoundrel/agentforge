@@ -1,5 +1,6 @@
 import { describe, it, expect, vi } from 'vitest';
 import { z } from 'zod';
+import type { NodeFunction } from '../types.js';
 import { withValidation, type ValidationOptions } from '../validation.js';
 
 interface TestState {
@@ -17,7 +18,7 @@ const TestStateSchema = z.object({
 describe('Validation Middleware', () => {
   describe('Input Validation', () => {
     it('should validate input with Zod schema', async () => {
-      const node = vi.fn(async (state: TestState) => ({ ...state, output: 'result' }));
+      const node: NodeFunction<TestState> = vi.fn(async (state: TestState) => ({ ...state, output: 'result' }));
 
       const validatedNode = withValidation(node, {
         inputSchema: TestStateSchema,
@@ -31,7 +32,7 @@ describe('Validation Middleware', () => {
     });
 
     it('should reject invalid input', async () => {
-      const node = vi.fn(async (state: TestState) => ({ ...state, output: 'result' }));
+      const node: NodeFunction<TestState> = vi.fn(async (state: TestState) => ({ ...state, output: 'result' }));
 
       const validatedNode = withValidation(node, {
         inputSchema: TestStateSchema,
@@ -45,7 +46,8 @@ describe('Validation Middleware', () => {
     });
 
     it('should use custom input validator', async () => {
-      const node = vi.fn(async (state: TestState) => ({ ...state, output: 'result' }));
+      const nodeMock = vi.fn(async (state: TestState) => ({ ...state, output: 'result' }));
+      const node: NodeFunction<TestState> = nodeMock;
       const customValidator = vi.fn((state: TestState) => state.input.length > 3);
 
       const validatedNode = withValidation(node, {
@@ -56,18 +58,18 @@ describe('Validation Middleware', () => {
       // Valid input
       await validatedNode({ input: 'test' });
       expect(customValidator).toHaveBeenCalled();
-      expect(node).toHaveBeenCalled();
+      expect(nodeMock).toHaveBeenCalled();
 
       // Invalid input
       customValidator.mockClear();
-      node.mockClear();
+      nodeMock.mockClear();
       await expect(validatedNode({ input: 'ab' })).rejects.toThrow('custom validator returned false');
       expect(customValidator).toHaveBeenCalled();
-      expect(node).not.toHaveBeenCalled();
+      expect(nodeMock).not.toHaveBeenCalled();
     });
 
     it('should call onValidationSuccess for valid input', async () => {
-      const node = vi.fn(async (state: TestState) => ({ ...state, output: 'result' }));
+      const node: NodeFunction<TestState> = vi.fn(async (state: TestState) => ({ ...state, output: 'result' }));
       const onValidationSuccess = vi.fn();
 
       const validatedNode = withValidation(node, {
@@ -85,7 +87,7 @@ describe('Validation Middleware', () => {
 
   describe('Output Validation', () => {
     it('should validate output with Zod schema', async () => {
-      const node = vi.fn(async (state: TestState) => ({ ...state, output: 'result' }));
+      const node: NodeFunction<TestState> = vi.fn(async (state: TestState) => ({ ...state, output: 'result' }));
 
       const validatedNode = withValidation(node, {
         outputSchema: TestStateSchema,
@@ -97,7 +99,7 @@ describe('Validation Middleware', () => {
     });
 
     it('should reject invalid output', async () => {
-      const node = vi.fn(async (state: TestState) => ({ ...state, output: 123 } as any));
+      const node: NodeFunction<TestState> = vi.fn(async (state: TestState) => ({ ...state, output: 123 } as any));
 
       const validatedNode = withValidation(node, {
         outputSchema: TestStateSchema,
@@ -108,7 +110,7 @@ describe('Validation Middleware', () => {
     });
 
     it('should use custom output validator', async () => {
-      const node = vi.fn(async (state: TestState) => ({ ...state, output: 'result' }));
+      const node: NodeFunction<TestState> = vi.fn(async (state: TestState) => ({ ...state, output: 'result' }));
       const customValidator = vi.fn((state: TestState | Partial<TestState>) => 
         state.output !== undefined && state.output.length > 3
       );
@@ -123,7 +125,7 @@ describe('Validation Middleware', () => {
     });
 
     it('should call onValidationSuccess for valid output', async () => {
-      const node = vi.fn(async (state: TestState) => ({ ...state, output: 'result' }));
+      const node: NodeFunction<TestState> = vi.fn(async (state: TestState) => ({ ...state, output: 'result' }));
       const onValidationSuccess = vi.fn();
 
       const validatedNode = withValidation(node, {
@@ -140,7 +142,7 @@ describe('Validation Middleware', () => {
 
   describe('Both Input and Output Validation', () => {
     it('should validate both input and output', async () => {
-      const node = vi.fn(async (state: TestState) => ({ ...state, output: 'result' }));
+      const node: NodeFunction<TestState> = vi.fn(async (state: TestState) => ({ ...state, output: 'result' }));
 
       const validatedNode = withValidation(node, {
         inputSchema: TestStateSchema,
@@ -155,7 +157,7 @@ describe('Validation Middleware', () => {
 
   describe('Error Handling', () => {
     it('should use custom error handler', async () => {
-      const node = vi.fn(async (state: TestState) => ({ ...state, output: 'result' }));
+      const node: NodeFunction<TestState> = vi.fn(async (state: TestState) => ({ ...state, output: 'result' }));
       const onValidationError = vi.fn((error, state) => ({ ...state, error: 'validation failed' }));
 
       const validatedNode = withValidation(node, {
@@ -172,7 +174,7 @@ describe('Validation Middleware', () => {
     });
 
     it('should not throw when throwOnError is false', async () => {
-      const node = vi.fn(async (state: TestState) => ({ ...state, output: 'result' }));
+      const node: NodeFunction<TestState> = vi.fn(async (state: TestState) => ({ ...state, output: 'result' }));
 
       const validatedNode = withValidation(node, {
         inputSchema: TestStateSchema,
@@ -191,7 +193,7 @@ describe('Validation Middleware', () => {
 
   describe('Strip Unknown Properties', () => {
     it('should strip unknown properties when enabled', async () => {
-      const node = vi.fn(async (state: TestState) => state);
+      const node: NodeFunction<TestState> = vi.fn(async (state: TestState) => state);
 
       const validatedNode = withValidation(node, {
         inputSchema: TestStateSchema,

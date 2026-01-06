@@ -29,17 +29,17 @@ export function createReasoningNode(
 ) {
   // Bind tools to the LLM
   const langchainTools = toLangChainTools(tools);
-  const llmWithTools = llm.bindTools(langchainTools);
+  const llmWithTools = llm.bindTools?.(langchainTools) ?? llm;
 
   return async (state: ReActStateType) => {
     if (verbose) {
-      console.log(`[reasoning] Iteration ${state.iteration + 1}/${maxIterations}`);
+      console.log(`[reasoning] Iteration ${(state.iteration as number) + 1}/${maxIterations}`);
     }
 
     // Build messages for the LLM
     const messages = [
       new SystemMessage(systemPrompt),
-      ...state.messages.map((msg) => {
+      ...(state.messages as any[]).map((msg: any) => {
         if (msg.role === 'user') return new HumanMessage(msg.content);
         if (msg.role === 'assistant') return new AIMessage(msg.content);
         if (msg.role === 'system') return new SystemMessage(msg.content);
@@ -48,8 +48,8 @@ export function createReasoningNode(
     ];
 
     // Add context about current state
-    if (state.scratchpad.length > 0) {
-      const scratchpadText = formatScratchpad(state.scratchpad);
+    if ((state.scratchpad as any[]).length > 0) {
+      const scratchpadText = formatScratchpad(state.scratchpad as any);
       messages.push(new SystemMessage(`Previous steps:\n${scratchpadText}`));
     }
 
@@ -73,7 +73,7 @@ export function createReasoningNode(
     }
 
     // Determine if we should continue
-    const shouldContinue = toolCalls.length > 0 && state.iteration + 1 < maxIterations;
+    const shouldContinue = toolCalls.length > 0 && (state.iteration as number) + 1 < maxIterations;
 
     // Update state
     return {
@@ -102,11 +102,11 @@ export function createActionNode(
 
   return async (state: ReActStateType) => {
     if (verbose) {
-      console.log(`[action] Executing ${state.actions.length} tool calls`);
+      console.log(`[action] Executing ${(state.actions as any[]).length} tool calls`);
     }
 
     // Get the most recent actions (from the last reasoning step)
-    const recentActions = state.actions.slice(-10); // Last 10 actions
+    const recentActions = (state.actions as any[]).slice(-10); // Last 10 actions
     const observations: ToolResult[] = [];
 
     // Execute each tool call
@@ -170,25 +170,25 @@ export function createObservationNode(
 ) {
   return async (state: ReActStateType) => {
     if (verbose) {
-      console.log(`[observation] Processing ${state.observations.length} observations`);
+      console.log(`[observation] Processing ${(state.observations as any[]).length} observations`);
     }
 
     // Get the most recent observations
-    const recentObservations = state.observations.slice(-10);
+    const recentObservations = (state.observations as any[]).slice(-10);
 
     // Update scratchpad with the latest step
-    const currentStep = state.iteration;
-    const latestThought = state.thoughts[state.thoughts.length - 1]?.content || '';
-    const latestActions = state.actions.slice(-10);
+    const currentStep = state.iteration as number;
+    const latestThought = (state.thoughts as any[])[(state.thoughts as any[]).length - 1]?.content || '';
+    const latestActions = (state.actions as any[]).slice(-10);
     const latestObservations = recentObservations;
 
     // Create scratchpad entry
     const scratchpadEntry = {
       step: currentStep,
       thought: latestThought,
-      action: latestActions.map((a) => `${a.name}(${JSON.stringify(a.arguments)})`).join(', '),
+      action: latestActions.map((a: any) => `${a.name}(${JSON.stringify(a.arguments)})`).join(', '),
       observation: latestObservations
-        .map((obs) => {
+        .map((obs: any) => {
           if (obs.error) {
             return `Error: ${obs.error}`;
           }
@@ -201,7 +201,7 @@ export function createObservationNode(
     };
 
     // Add observation results as messages
-    const observationMessages = latestObservations.map((obs) => {
+    const observationMessages = latestObservations.map((obs: any) => {
       const content = obs.error
         ? `Error: ${obs.error}`
         : typeof obs.result === 'string'
@@ -211,7 +211,7 @@ export function createObservationNode(
       return {
         role: 'tool' as const,
         content,
-        name: latestActions.find((a) => a.id === obs.toolCallId)?.name,
+        name: latestActions.find((a: any) => a.id === obs.toolCallId)?.name,
       };
     });
 

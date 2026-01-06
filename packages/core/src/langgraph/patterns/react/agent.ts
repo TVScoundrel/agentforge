@@ -45,7 +45,7 @@ import { createReasoningNode, createActionNode, createObservationNode } from './
 export function createReActAgent(
   config: ReActAgentConfig,
   options?: ReActBuilderOptions
-): CompiledStateGraph<ReActStateType> {
+) {
   // Extract configuration with defaults
   const {
     llm,
@@ -97,7 +97,7 @@ export function createReActAgent(
     }
 
     // Check max iterations
-    if (state.iteration >= maxIterations) {
+    if ((state.iteration as number) >= maxIterations) {
       return END;
     }
 

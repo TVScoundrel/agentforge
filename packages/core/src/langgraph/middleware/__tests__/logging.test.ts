@@ -25,7 +25,7 @@ describe('Logging Middleware', () => {
         withContext: vi.fn(),
       };
 
-      const loggedNode = withLogging<TestState>({
+      const loggedNode = withLogging({
         logger,
         name: 'test-node',
       })(node);
@@ -53,7 +53,7 @@ describe('Logging Middleware', () => {
         withContext: vi.fn(),
       };
 
-      const loggedNode = withLogging<TestState>({
+      const loggedNode = withLogging({
         logger,
         logDuration: true,
       })(node);
@@ -82,7 +82,7 @@ describe('Logging Middleware', () => {
         withContext: vi.fn(),
       };
 
-      const loggedNode = withLogging<TestState>({
+      const loggedNode = withLogging({
         logger,
         logErrors: true,
       })(node);
@@ -108,7 +108,7 @@ describe('Logging Middleware', () => {
         withContext: vi.fn(),
       };
 
-      const loggedNode = withLogging<TestState>({
+      const loggedNode = withLogging({
         logger,
         logInput: false,
         logOutput: true,
@@ -132,7 +132,7 @@ describe('Logging Middleware', () => {
         withContext: vi.fn(),
       };
 
-      const loggedNode = withLogging<TestState>({
+      const loggedNode = withLogging({
         logger,
         logInput: true,
         logOutput: false,
@@ -159,9 +159,9 @@ describe('Logging Middleware', () => {
         withContext: vi.fn(),
       };
 
-      const extractData = (state: TestState) => ({ value: state.value });
+      const extractData = <State,>(state: State) => ({ value: (state as TestState).value });
 
-      const loggedNode = withLogging<TestState>({
+      const loggedNode = withLogging({
         logger,
         extractData,
       })(node);
@@ -189,7 +189,7 @@ describe('Logging Middleware', () => {
         withContext: vi.fn(),
       };
 
-      const loggedNode = withLogging<TestState>({
+      const loggedNode = withLogging({
         logger,
         onStart,
       })(node);
@@ -214,7 +214,7 @@ describe('Logging Middleware', () => {
         withContext: vi.fn(),
       };
 
-      const loggedNode = withLogging<TestState>({
+      const loggedNode = withLogging({
         logger,
         onComplete,
       })(node);
@@ -243,7 +243,7 @@ describe('Logging Middleware', () => {
         withContext: vi.fn(),
       };
 
-      const loggedNode = withLogging<TestState>({
+      const loggedNode = withLogging({
         logger,
         onError,
       })(node);

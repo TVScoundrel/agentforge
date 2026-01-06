@@ -1,13 +1,13 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { z } from 'zod';
-import { withCache, createSharedCache } from '../caching';
-import { withValidation } from '../validation';
-import { withRateLimit } from '../rate-limiting';
-import { withConcurrency, createSharedConcurrencyController } from '../concurrency';
-import { withLogging } from '../logging';
-import { compose, MiddlewareChain } from '../compose';
-import { production, development, testing } from '../presets';
-import type { NodeFunction, SimpleMiddleware } from '../types';
+import { withCache, createSharedCache } from '../caching.js';
+import { withValidation } from '../validation.js';
+import { withRateLimit } from '../rate-limiting.js';
+import { withConcurrency, createSharedConcurrencyController } from '../concurrency.js';
+import { withLogging } from '../logging.js';
+import { compose, MiddlewareChain } from '../compose.js';
+import { production, development, testing } from '../presets.js';
+import type { NodeFunction, SimpleMiddleware } from '../types.js';
 
 interface TestState {
   value: number;
@@ -78,7 +78,7 @@ describe('Middleware Integration Tests', () => {
         value: z.number().min(0),
       }).strict();
 
-      const enhanced = compose(
+      const enhanced = compose<TestState>(
         (n) => withValidation(n, { inputSchema }),
         (n) => withCache(n, { ttl: 1000 })
       )(node);
@@ -106,7 +106,7 @@ describe('Middleware Integration Tests', () => {
         return { ...state, result: 'done' };
       };
 
-      const enhanced = compose(
+      const enhanced = compose<TestState>(
         (n) => withRateLimit(n, { maxRequests: 5, windowMs: 1000 }),
         (n) => withConcurrency(n, { maxConcurrent: 2 })
       )(slowNode);
@@ -217,6 +217,7 @@ describe('Middleware Integration Tests', () => {
     it('should use mock response', async () => {
       const mockResponse = { value: 99, result: 'mocked' };
       const enhanced = testing(node, {
+        nodeName: 'test-node',
         mockResponse,
       });
 
@@ -227,6 +228,7 @@ describe('Middleware Integration Tests', () => {
 
     it('should track invocations', async () => {
       const enhanced = testing(node, {
+        nodeName: 'test-node',
         trackInvocations: true,
       });
 
@@ -240,6 +242,7 @@ describe('Middleware Integration Tests', () => {
 
     it('should simulate errors', async () => {
       const enhanced = testing(node, {
+        nodeName: 'test-node',
         simulateError: new Error('Simulated error'),
       });
 
@@ -314,16 +317,18 @@ describe('Middleware Integration Tests', () => {
         return { ...state, result: 'node2' };
       };
 
+      // Use keyGenerator to share rate limit
+      const keyGen = () => 'shared-key';
       const enhanced1 = withRateLimit(node1, {
         maxRequests: 5,
         windowMs: 1000,
-        key: 'shared-limiter',
+        keyGenerator: keyGen,
       });
 
       const enhanced2 = withRateLimit(node2, {
         maxRequests: 5,
         windowMs: 1000,
-        key: 'shared-limiter',
+        keyGenerator: keyGen,
       });
 
       // Both should share the same rate limit
@@ -334,7 +339,7 @@ describe('Middleware Integration Tests', () => {
     });
 
     it('should share concurrency controller across multiple nodes', async () => {
-      const controller = createSharedConcurrencyController({ maxConcurrent: 2 });
+      const controller = createSharedConcurrencyController<TestState>({ maxConcurrent: 2 });
 
       const slowNode1: NodeFunction<TestState> = async (state) => {
         await new Promise(resolve => setTimeout(resolve, 50));
@@ -346,8 +351,8 @@ describe('Middleware Integration Tests', () => {
         return { ...state, result: 'node2' };
       };
 
-      const enhanced1 = withConcurrency(slowNode1, { controller });
-      const enhanced2 = withConcurrency(slowNode2, { controller });
+      const enhanced1 = controller.withConcurrency(slowNode1);
+      const enhanced2 = controller.withConcurrency(slowNode2);
 
       const start = Date.now();
       await Promise.all([

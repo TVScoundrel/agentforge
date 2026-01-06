@@ -100,14 +100,16 @@ describe('Metrics Collection', () => {
       await new Promise((resolve) => setTimeout(resolve, 50));
       const duration = timer.end();
 
-      expect(duration).toBeGreaterThanOrEqual(50);
+      // Allow for timing imprecision - setTimeout is not guaranteed to be exact
+      // We just need to verify it's a reasonable duration (at least 45ms for a 50ms wait)
+      expect(duration).toBeGreaterThanOrEqual(45);
 
       const recorded = metrics.getMetrics();
       const histogramMetrics = recorded.filter((m) => m.type === MetricType.HISTOGRAM);
 
       expect(histogramMetrics.length).toBe(1);
       expect(histogramMetrics[0].name).toBe('test.operation');
-      expect(histogramMetrics[0].value).toBeGreaterThanOrEqual(50);
+      expect(histogramMetrics[0].value).toBeGreaterThanOrEqual(45);
     });
 
     it('should clear metrics', () => {

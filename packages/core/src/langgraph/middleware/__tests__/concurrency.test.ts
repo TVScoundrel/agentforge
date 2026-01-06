@@ -1,5 +1,6 @@
 import { describe, it, expect, vi } from 'vitest';
 import { withConcurrency, createSharedConcurrencyController, type Priority } from '../concurrency.js';
+import type { NodeFunction } from '../types.js';
 
 interface TestState {
   input: string;
@@ -13,7 +14,7 @@ describe('Concurrency Control Middleware', () => {
       let activeCount = 0;
       let maxActive = 0;
 
-      const node = vi.fn(async (state: TestState) => {
+      const node: NodeFunction<TestState> = vi.fn(async (state: TestState) => {
         activeCount++;
         maxActive = Math.max(maxActive, activeCount);
         await new Promise((resolve) => setTimeout(resolve, 50));
@@ -39,7 +40,7 @@ describe('Concurrency Control Middleware', () => {
 
     it('should queue tasks when at max concurrency', async () => {
       const onQueued = vi.fn();
-      const node = vi.fn(async (state: TestState) => {
+      const node: NodeFunction<TestState> = vi.fn(async (state: TestState) => {
         await new Promise((resolve) => setTimeout(resolve, 50));
         return { ...state, output: 'result' };
       });
@@ -67,7 +68,7 @@ describe('Concurrency Control Middleware', () => {
 
     it('should respect priority ordering', async () => {
       const executionOrder: string[] = [];
-      const node = vi.fn(async (state: TestState) => {
+      const node: NodeFunction<TestState> = vi.fn(async (state: TestState) => {
         executionOrder.push(state.input);
         await new Promise((resolve) => setTimeout(resolve, 50));
         return { ...state, output: 'result' };
@@ -94,7 +95,7 @@ describe('Concurrency Control Middleware', () => {
 
     it('should reject when queue is full', async () => {
       const onQueueFull = vi.fn();
-      const node = vi.fn(async (state: TestState) => {
+      const node: NodeFunction<TestState> = vi.fn(async (state: TestState) => {
         await new Promise((resolve) => setTimeout(resolve, 100));
         return { ...state, output: 'result' };
       });
@@ -122,7 +123,7 @@ describe('Concurrency Control Middleware', () => {
     });
 
     it('should timeout queued tasks', async () => {
-      const node = vi.fn(async (state: TestState) => {
+      const node: NodeFunction<TestState> = vi.fn(async (state: TestState) => {
         await new Promise((resolve) => setTimeout(resolve, 100));
         return { ...state, output: 'result' };
       });
@@ -144,7 +145,7 @@ describe('Concurrency Control Middleware', () => {
       const onExecutionStart = vi.fn();
       const onExecutionComplete = vi.fn();
 
-      const node = vi.fn(async (state: TestState) => {
+      const node: NodeFunction<TestState> = vi.fn(async (state: TestState) => {
         await new Promise((resolve) => setTimeout(resolve, 10));
         return { ...state, output: 'result' };
       });
@@ -209,7 +210,7 @@ describe('Concurrency Control Middleware', () => {
         maxConcurrent: 1,
       });
 
-      const node = vi.fn(async (state: TestState) => {
+      const node: NodeFunction<TestState> = vi.fn(async (state: TestState) => {
         await new Promise((resolve) => setTimeout(resolve, 50));
         return { ...state, output: 'result' };
       });
@@ -235,7 +236,7 @@ describe('Concurrency Control Middleware', () => {
         maxConcurrent: 1,
       });
 
-      const node = vi.fn(async (state: TestState) => {
+      const node: NodeFunction<TestState> = vi.fn(async (state: TestState) => {
         await new Promise((resolve) => setTimeout(resolve, 100));
         return { ...state, output: 'result' };
       });

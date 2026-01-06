@@ -1,5 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { withCache, createSharedCache, type CachingOptions } from '../caching.js';
+import type { NodeFunction } from '../types.js';
 
 interface TestState {
   input: string;
@@ -11,7 +12,7 @@ describe('Caching Middleware', () => {
   describe('withCache()', () => {
     it('should cache node results', async () => {
       let callCount = 0;
-      const node = vi.fn(async (state: TestState) => {
+      const node: NodeFunction<TestState> = vi.fn(async (state: TestState) => {
         callCount++;
         return { ...state, output: `Result ${callCount}` };
       });
@@ -33,7 +34,7 @@ describe('Caching Middleware', () => {
 
     it('should respect TTL and expire cached entries', async () => {
       let callCount = 0;
-      const node = vi.fn(async (state: TestState) => {
+      const node: NodeFunction<TestState> = vi.fn(async (state: TestState) => {
         callCount++;
         return { ...state, output: `Result ${callCount}` };
       });
@@ -56,7 +57,7 @@ describe('Caching Middleware', () => {
 
     it('should use custom key generator', async () => {
       let callCount = 0;
-      const node = vi.fn(async (state: TestState) => {
+      const node: NodeFunction<TestState> = vi.fn(async (state: TestState) => {
         callCount++;
         return { ...state, output: `Result ${callCount}` };
       });
@@ -74,7 +75,7 @@ describe('Caching Middleware', () => {
     });
 
     it('should call onCacheHit callback', async () => {
-      const node = vi.fn(async (state: TestState) => ({ ...state, output: 'result' }));
+      const node: NodeFunction<TestState> = vi.fn(async (state: TestState) => ({ ...state, output: 'result' }));
       const onCacheHit = vi.fn();
 
       const cachedNode = withCache(node, { ttl: 1000, onCacheHit });
@@ -92,7 +93,7 @@ describe('Caching Middleware', () => {
     });
 
     it('should call onCacheMiss callback', async () => {
-      const node = vi.fn(async (state: TestState) => ({ ...state, output: 'result' }));
+      const node: NodeFunction<TestState> = vi.fn(async (state: TestState) => ({ ...state, output: 'result' }));
       const onCacheMiss = vi.fn();
 
       const cachedNode = withCache(node, { ttl: 1000, onCacheMiss });
@@ -104,7 +105,7 @@ describe('Caching Middleware', () => {
     });
 
     it('should respect maxSize and evict entries', async () => {
-      const node = vi.fn(async (state: TestState) => ({ ...state, output: 'result' }));
+      const node: NodeFunction<TestState> = vi.fn(async (state: TestState) => ({ ...state, output: 'result' }));
       const onEviction = vi.fn();
 
       const cachedNode = withCache(node, {
@@ -127,7 +128,7 @@ describe('Caching Middleware', () => {
     });
 
     it('should use LRU eviction strategy', async () => {
-      const node = vi.fn(async (state: TestState) => ({ ...state, output: 'result' }));
+      const node: NodeFunction<TestState> = vi.fn(async (state: TestState) => ({ ...state, output: 'result' }));
 
       const cachedNode = withCache(node, {
         ttl: 10000,
@@ -159,7 +160,7 @@ describe('Caching Middleware', () => {
     });
 
     it('should use LFU eviction strategy', async () => {
-      const node = vi.fn(async (state: TestState) => ({ ...state, output: 'result' }));
+      const node: NodeFunction<TestState> = vi.fn(async (state: TestState) => ({ ...state, output: 'result' }));
 
       const cachedNode = withCache(node, {
         ttl: 10000,
@@ -185,7 +186,7 @@ describe('Caching Middleware', () => {
 
     it('should not cache errors by default', async () => {
       let callCount = 0;
-      const node = vi.fn(async (state: TestState) => {
+      const node: NodeFunction<TestState> = vi.fn(async (state: TestState) => {
         callCount++;
         if (callCount === 1) {
           throw new Error('Test error');
@@ -208,7 +209,7 @@ describe('Caching Middleware', () => {
 
     it('should cache errors when enabled', async () => {
       let callCount = 0;
-      const node = vi.fn(async (state: TestState) => {
+      const node: NodeFunction<TestState> = vi.fn(async (state: TestState) => {
         callCount++;
         throw new Error('Test error');
       });
@@ -232,13 +233,13 @@ describe('Caching Middleware', () => {
       const sharedCache = createSharedCache<TestState>({ ttl: 1000, maxSize: 10 });
 
       let callCount1 = 0;
-      const node1 = vi.fn(async (state: TestState) => {
+      const node1: NodeFunction<TestState> = vi.fn(async (state: TestState) => {
         callCount1++;
         return { ...state, output: 'node1' };
       });
 
       let callCount2 = 0;
-      const node2 = vi.fn(async (state: TestState) => {
+      const node2: NodeFunction<TestState> = vi.fn(async (state: TestState) => {
         callCount2++;
         return { ...state, output: 'node2' };
       });
@@ -258,7 +259,7 @@ describe('Caching Middleware', () => {
     it('should clear shared cache', async () => {
       const sharedCache = createSharedCache<TestState>({ ttl: 1000 });
 
-      const node = vi.fn(async (state: TestState) => ({ ...state, output: 'result' }));
+      const node: NodeFunction<TestState> = vi.fn(async (state: TestState) => ({ ...state, output: 'result' }));
       const cachedNode = sharedCache.withCache(node);
 
       await cachedNode({ input: 'test1' });

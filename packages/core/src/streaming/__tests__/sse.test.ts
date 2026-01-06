@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { createSSEFormatter, createHeartbeat, parseSSEEvent } from '../sse';
+import { createSSEFormatter, createHeartbeat, parseSSEEvent } from '../sse.js';
 
 // Helper to create async iterable from array
 async function* createStream<T>(items: T[]): AsyncIterable<T> {

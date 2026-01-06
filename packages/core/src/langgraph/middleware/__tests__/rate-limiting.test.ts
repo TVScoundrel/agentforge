@@ -1,5 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { withRateLimit, createSharedRateLimiter, type RateLimitOptions } from '../rate-limiting.js';
+import type { NodeFunction } from '../types.js';
 
 interface TestState {
   input: string;
@@ -11,7 +12,7 @@ describe('Rate Limiting Middleware', () => {
   describe('withRateLimit()', () => {
     describe('Token Bucket Strategy', () => {
       it('should allow requests within rate limit', async () => {
-        const node = vi.fn(async (state: TestState) => ({ ...state, output: 'result' }));
+        const node: NodeFunction<TestState> = vi.fn(async (state: TestState) => ({ ...state, output: 'result' }));
 
         const rateLimitedNode = withRateLimit(node, {
           maxRequests: 5,
@@ -28,7 +29,7 @@ describe('Rate Limiting Middleware', () => {
       });
 
       it('should reject requests exceeding rate limit', async () => {
-        const node = vi.fn(async (state: TestState) => ({ ...state, output: 'result' }));
+        const node: NodeFunction<TestState> = vi.fn(async (state: TestState) => ({ ...state, output: 'result' }));
 
         const rateLimitedNode = withRateLimit(node, {
           maxRequests: 3,
@@ -47,7 +48,7 @@ describe('Rate Limiting Middleware', () => {
       });
 
       it('should refill tokens over time', async () => {
-        const node = vi.fn(async (state: TestState) => ({ ...state, output: 'result' }));
+        const node: NodeFunction<TestState> = vi.fn(async (state: TestState) => ({ ...state, output: 'result' }));
 
         const rateLimitedNode = withRateLimit(node, {
           maxRequests: 2,
@@ -68,7 +69,7 @@ describe('Rate Limiting Middleware', () => {
       });
 
       it('should call onRateLimitExceeded callback', async () => {
-        const node = vi.fn(async (state: TestState) => ({ ...state, output: 'result' }));
+        const node: NodeFunction<TestState> = vi.fn(async (state: TestState) => ({ ...state, output: 'result' }));
         const onRateLimitExceeded = vi.fn();
 
         const rateLimitedNode = withRateLimit(node, {
@@ -87,7 +88,7 @@ describe('Rate Limiting Middleware', () => {
 
     describe('Sliding Window Strategy', () => {
       it('should allow requests within sliding window', async () => {
-        const node = vi.fn(async (state: TestState) => ({ ...state, output: 'result' }));
+        const node: NodeFunction<TestState> = vi.fn(async (state: TestState) => ({ ...state, output: 'result' }));
 
         const rateLimitedNode = withRateLimit(node, {
           maxRequests: 3,
@@ -104,7 +105,7 @@ describe('Rate Limiting Middleware', () => {
       });
 
       it('should reject requests exceeding sliding window', async () => {
-        const node = vi.fn(async (state: TestState) => ({ ...state, output: 'result' }));
+        const node: NodeFunction<TestState> = vi.fn(async (state: TestState) => ({ ...state, output: 'result' }));
 
         const rateLimitedNode = withRateLimit(node, {
           maxRequests: 2,
@@ -120,7 +121,7 @@ describe('Rate Limiting Middleware', () => {
       });
 
       it('should allow requests after window expires', async () => {
-        const node = vi.fn(async (state: TestState) => ({ ...state, output: 'result' }));
+        const node: NodeFunction<TestState> = vi.fn(async (state: TestState) => ({ ...state, output: 'result' }));
 
         const rateLimitedNode = withRateLimit(node, {
           maxRequests: 2,
@@ -143,7 +144,7 @@ describe('Rate Limiting Middleware', () => {
 
     describe('Fixed Window Strategy', () => {
       it('should allow requests within fixed window', async () => {
-        const node = vi.fn(async (state: TestState) => ({ ...state, output: 'result' }));
+        const node: NodeFunction<TestState> = vi.fn(async (state: TestState) => ({ ...state, output: 'result' }));
 
         const rateLimitedNode = withRateLimit(node, {
           maxRequests: 3,
@@ -159,7 +160,7 @@ describe('Rate Limiting Middleware', () => {
       });
 
       it('should reject requests exceeding fixed window', async () => {
-        const node = vi.fn(async (state: TestState) => ({ ...state, output: 'result' }));
+        const node: NodeFunction<TestState> = vi.fn(async (state: TestState) => ({ ...state, output: 'result' }));
 
         const rateLimitedNode = withRateLimit(node, {
           maxRequests: 2,
@@ -175,7 +176,7 @@ describe('Rate Limiting Middleware', () => {
       });
 
       it('should reset count when window expires', async () => {
-        const node = vi.fn(async (state: TestState) => ({ ...state, output: 'result' }));
+        const node: NodeFunction<TestState> = vi.fn(async (state: TestState) => ({ ...state, output: 'result' }));
 
         const rateLimitedNode = withRateLimit(node, {
           maxRequests: 2,
@@ -198,13 +199,13 @@ describe('Rate Limiting Middleware', () => {
 
     describe('Custom Key Generator', () => {
       it('should rate limit per user', async () => {
-        const node = vi.fn(async (state: TestState) => ({ ...state, output: 'result' }));
+        const node: NodeFunction<TestState> = vi.fn(async (state: TestState) => ({ ...state, output: 'result' }));
 
         const rateLimitedNode = withRateLimit(node, {
           maxRequests: 2,
           windowMs: 1000,
           strategy: 'token-bucket',
-          keyGenerator: (state) => state.userId || 'anonymous',
+          keyGenerator: <State,>(state: State) => (state as TestState).userId || 'anonymous',
         });
 
         // User1 makes 2 requests (should succeed)
@@ -231,19 +232,19 @@ describe('Rate Limiting Middleware', () => {
         strategy: 'token-bucket',
       });
 
-      const node1 = vi.fn(async (state: TestState) => ({ ...state, output: 'node1' }));
-      const node2 = vi.fn(async (state: TestState) => ({ ...state, output: 'node2' }));
+      const node1: NodeFunction<TestState> = vi.fn(async (state: TestState) => ({ ...state, output: 'node1' }));
+      const node2: NodeFunction<TestState> = vi.fn(async (state: TestState) => ({ ...state, output: 'node2' }));
 
       const rateLimitedNode1 = sharedLimiter.withRateLimit(node1);
       const rateLimitedNode2 = sharedLimiter.withRateLimit(node2);
 
       // Both nodes share the same rate limit
-      await rateLimitedNode1({ input: 'test1' });
-      await rateLimitedNode2({ input: 'test2' });
-      await rateLimitedNode1({ input: 'test3' });
+      await rateLimitedNode1({ input: 'test1', output: '' });
+      await rateLimitedNode2({ input: 'test2', output: '' });
+      await rateLimitedNode1({ input: 'test3', output: '' });
 
       // 4th request should fail (shared limit of 3)
-      await expect(rateLimitedNode2({ input: 'test4' })).rejects.toThrow('Rate limit exceeded');
+      await expect(rateLimitedNode2({ input: 'test4', output: '' })).rejects.toThrow('Rate limit exceeded');
 
       expect(node1).toHaveBeenCalledTimes(2);
       expect(node2).toHaveBeenCalledTimes(1);
@@ -258,7 +259,7 @@ describe('Rate Limiting Middleware', () => {
         onRateLimitReset,
       });
 
-      const node = vi.fn(async (state: TestState) => ({ ...state, output: 'result' }));
+      const node: NodeFunction<TestState> = vi.fn(async (state: TestState) => ({ ...state, output: 'result' }));
       const rateLimitedNode = sharedLimiter.withRateLimit(node);
 
       // Use up all tokens

@@ -32,13 +32,13 @@ describe('Middleware Composition', () => {
       const middleware1: SimpleMiddleware<TestState> = (node) => async (state) => {
         const newState = { ...state, logs: [...state.logs, 'mw1-before'] };
         const result = await node(newState);
-        return { ...result, logs: [...result.logs, 'mw1-after'] };
+        return { ...result, logs: [...(result.logs || []), 'mw1-after'] };
       };
 
       const middleware2: SimpleMiddleware<TestState> = (node) => async (state) => {
         const newState = { ...state, logs: [...state.logs, 'mw2-before'] };
         const result = await node(newState);
-        return { ...result, logs: [...result.logs, 'mw2-after'] };
+        return { ...result, logs: [...(result.logs || []), 'mw2-after'] };
       };
 
       const enhanced = compose(middleware1, middleware2)(testNode);
@@ -56,7 +56,7 @@ describe('Middleware Composition', () => {
     it('should work with single middleware', async () => {
       const middleware: SimpleMiddleware<TestState> = (node) => async (state) => {
         const result = await node(state);
-        return { ...result, logs: [...result.logs, 'middleware'] };
+        return { ...result, logs: [...(result.logs || []), 'middleware'] };
       };
 
       const enhanced = compose(middleware)(testNode);
@@ -67,7 +67,7 @@ describe('Middleware Composition', () => {
     });
 
     it('should work with no middleware', async () => {
-      const enhanced = compose()(testNode);
+      const enhanced = compose<TestState>()(testNode);
       const result = await enhanced({ value: 4, logs: [] });
 
       expect(result.logs).toEqual([]);
@@ -78,7 +78,7 @@ describe('Middleware Composition', () => {
       const asyncMiddleware: SimpleMiddleware<TestState> = (node) => async (state) => {
         await new Promise((resolve) => setTimeout(resolve, 10));
         const result = await node(state);
-        return { ...result, logs: [...result.logs, 'async'] };
+        return { ...result, logs: [...(result.logs || []), 'async'] };
       };
 
       const enhanced = compose(asyncMiddleware)(testNode);
@@ -112,12 +112,12 @@ describe('Middleware Composition', () => {
     it('should reverse middleware order when reverse=true', async () => {
       const middleware1: SimpleMiddleware<TestState> = (node) => async (state) => {
         const result = await node(state);
-        return { ...result, logs: [...result.logs, 'mw1'] };
+        return { ...result, logs: [...(result.logs || []), 'mw1'] };
       };
 
       const middleware2: SimpleMiddleware<TestState> = (node) => async (state) => {
         const result = await node(state);
-        return { ...result, logs: [...result.logs, 'mw2'] };
+        return { ...result, logs: [...(result.logs || []), 'mw2'] };
       };
 
       const enhanced = composeWithOptions(
@@ -137,7 +137,7 @@ describe('Middleware Composition', () => {
         throw new Error('Original error');
       };
 
-      const enhanced = composeWithOptions(
+      const enhanced = composeWithOptions<TestState>(
         { name: 'test-chain', catchErrors: true },
       )(errorNode);
 
@@ -149,7 +149,7 @@ describe('Middleware Composition', () => {
         throw new Error('Original error');
       };
 
-      const enhanced = composeWithOptions(
+      const enhanced = composeWithOptions<TestState>(
         { catchErrors: false },
       )(errorNode);
 
@@ -161,12 +161,12 @@ describe('Middleware Composition', () => {
     it('should build middleware chain fluently', async () => {
       const middleware1: SimpleMiddleware<TestState> = (node) => async (state) => {
         const result = await node(state);
-        return { ...result, logs: [...result.logs, 'mw1'] };
+        return { ...result, logs: [...(result.logs || []), 'mw1'] };
       };
 
       const middleware2: SimpleMiddleware<TestState> = (node) => async (state) => {
         const result = await node(state);
-        return { ...result, logs: [...result.logs, 'mw2'] };
+        return { ...result, logs: [...(result.logs || []), 'mw2'] };
       };
 
       const enhanced = chain<TestState>()

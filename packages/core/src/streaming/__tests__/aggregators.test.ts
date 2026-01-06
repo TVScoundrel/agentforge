@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { collect, reduce, merge, filter, map, take } from '../aggregators';
+import { collect, reduce, merge, filter, map, take } from '../aggregators.js';
 
 // Helper to create async iterable from array
 async function* createStream<T>(items: T[]): AsyncIterable<T> {

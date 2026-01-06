@@ -53,7 +53,7 @@ export {
 export {
   createToolExecutor,
   type Priority,
-  type BackoffStrategy,
+  type BackoffStrategy as ToolBackoffStrategy,
   type RetryPolicy,
   type ToolExecutorConfig,
   type ToolExecution,

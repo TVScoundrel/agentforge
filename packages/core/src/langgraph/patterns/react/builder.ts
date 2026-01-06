@@ -17,7 +17,7 @@
 
 import type { BaseChatModel } from '@langchain/core/language_models/chat_models';
 import type { CompiledStateGraph } from '@langchain/langgraph';
-import type { ReActAgentConfig, ReActBuilderOptions, StopConditionFn } from './types.js';
+import type { ReActAgentConfig, ReActBuilderOptions } from './types.js';
 import type { ReActStateType } from './state.js';
 import { createReActAgent } from './agent.js';
 import { ToolRegistry } from '../../../tools/registry.js';
@@ -89,7 +89,7 @@ export class ReActAgentBuilder {
    *
    * @param stopCondition - Function that determines when to stop the agent
    */
-  withStopCondition(stopCondition: StopConditionFn): this {
+  withStopCondition(stopCondition: (state: ReActStateType) => boolean): this {
     this.config.stopCondition = stopCondition;
     return this;
   }
@@ -120,7 +120,7 @@ export class ReActAgentBuilder {
    * @returns A compiled LangGraph StateGraph
    * @throws Error if required configuration is missing
    */
-  build(): CompiledStateGraph<ReActStateType> {
+  build() {
     // Validate required fields
     if (!this.config.llm) {
       throw new Error('ReActAgentBuilder: llm is required. Use withLLM() to set it.');
