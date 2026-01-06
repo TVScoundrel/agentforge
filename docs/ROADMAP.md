@@ -6,9 +6,19 @@
 
 ## Timeline Overview
 
-**Total Duration**: ~6 weeks (MVP to Production-Ready)  
-**Current Phase**: Phase 1 - Tool Registry (MVP)  
+**Total Duration**: ~10 weeks (MVP to Production-Ready)
+**Current Phase**: Phase 4 - Middleware System (✅ Complete)
 **Start Date**: 2025-12-23
+
+### Phase Summary
+- **Phase 0**: Planning & Setup (1 day) ✅
+- **Phase 1**: Tool Registry (10 days) ✅
+- **Phase 2**: LangGraph Integration (7 days) ✅
+- **Phase 3**: Agent Patterns (14 days) ✅
+- **Phase 4**: Middleware System (14 days) ✅
+- **Phase 5**: Production Features (14 days) 📋
+- **Phase 6**: Developer Experience (14 days) 📋
+- **Total**: ~10 weeks
 
 ---
 
@@ -320,44 +330,256 @@ See [phase-4-design.md](./phase-4-design.md) for detailed design.
 
 ---
 
-## Phase 5: Production Features (1 week)
+## Phase 5: Production Features (2 weeks)
 
-**Duration**: 7 days  
+**Duration**: 14 days
 **Status**: 📋 Planned
 
-### Features
-- [ ] Streaming support
-- [ ] Async tool execution
-- [ ] Tool timeout handling
-- [ ] Resource management
-- [ ] Performance monitoring
-- [ ] Production deployment guide
+See [phase-5-design.md](./phase-5-design.md) for detailed design.
+
+### 5.1 Streaming & Real-time Features (3 days)
+- [ ] Streaming response utilities (8 tests)
+  - [ ] Stream transformers (chunk, batch, throttle)
+  - [ ] Stream aggregators (collect, reduce, merge)
+  - [ ] Stream error handling
+  - [ ] Backpressure management
+- [ ] Server-Sent Events (SSE) support (6 tests)
+  - [ ] SSE formatter for LangGraph streams
+  - [ ] Event types (token, thought, action, observation, error)
+  - [ ] Connection management
+  - [ ] Reconnection handling
+- [ ] WebSocket support (6 tests)
+  - [ ] Bidirectional streaming
+  - [ ] Message framing
+  - [ ] Heartbeat/keepalive
+  - [ ] Error recovery
+- [ ] Progress tracking (4 tests)
+  - [ ] Progress events
+  - [ ] Percentage completion
+  - [ ] ETA calculation
+  - [ ] Cancellation support
+- **Subtotal: 24 tests**
+
+### 5.2 Advanced Tool Features (3 days)
+- [ ] Async tool execution (8 tests)
+  - [ ] Parallel tool execution
+  - [ ] Tool execution pools
+  - [ ] Priority-based scheduling
+  - [ ] Resource-aware execution
+- [ ] Tool lifecycle management (6 tests)
+  - [ ] Tool initialization/cleanup hooks
+  - [ ] Resource pooling (DB connections, API clients)
+  - [ ] Health checks
+  - [ ] Graceful degradation
+- [ ] Tool composition (6 tests)
+  - [ ] Sequential tool chains
+  - [ ] Parallel tool execution
+  - [ ] Conditional tool execution
+  - [ ] Tool result transformation
+- [ ] Tool mocking & testing (6 tests)
+  - [ ] Mock tool factory
+  - [ ] Deterministic responses
+  - [ ] Latency simulation
+  - [ ] Error injection
+- **Subtotal: 26 tests**
+
+### 5.3 Resource Management & Optimization (3 days)
+- [ ] Connection pooling (8 tests)
+  - [ ] Database connection pools
+  - [ ] HTTP client pools
+  - [ ] Pool size management
+  - [ ] Connection health checks
+- [ ] Memory management (6 tests)
+  - [ ] Memory usage tracking
+  - [ ] Automatic cleanup
+  - [ ] Memory limits
+  - [ ] Leak detection
+- [ ] Batch processing (6 tests)
+  - [ ] Request batching
+  - [ ] Batch size optimization
+  - [ ] Batch timeout handling
+  - [ ] Partial batch results
+- [ ] Circuit breaker pattern (6 tests)
+  - [ ] Failure detection
+  - [ ] Automatic recovery
+  - [ ] Fallback strategies
+  - [ ] Health monitoring
+- **Subtotal: 26 tests**
+
+### 5.4 Production Monitoring & Observability (3 days)
+- [ ] Health check system (6 tests)
+  - [ ] Liveness probes
+  - [ ] Readiness probes
+  - [ ] Dependency health checks
+  - [ ] Health check endpoints
+- [ ] Performance profiling (6 tests)
+  - [ ] Execution time profiling
+  - [ ] Memory profiling
+  - [ ] Bottleneck detection
+  - [ ] Performance reports
+- [ ] Alert system (6 tests)
+  - [ ] Threshold-based alerts
+  - [ ] Alert channels (email, Slack, webhook)
+  - [ ] Alert aggregation
+  - [ ] Alert suppression
+- [ ] Audit logging (6 tests)
+  - [ ] Action logging
+  - [ ] User tracking
+  - [ ] Compliance logging
+  - [ ] Log retention
+- **Subtotal: 24 tests**
+
+### 5.5 Deployment & Infrastructure (2 days)
+- [ ] Docker support
+  - [ ] Dockerfile templates
+  - [ ] Multi-stage builds
+  - [ ] Health check integration
+  - [ ] Environment configuration
+- [ ] Kubernetes manifests
+  - [ ] Deployment templates
+  - [ ] Service definitions
+  - [ ] ConfigMaps and Secrets
+  - [ ] Horizontal Pod Autoscaling
+- [ ] Cloud deployment guides
+  - [ ] AWS deployment (Lambda, ECS, EKS)
+  - [ ] Google Cloud deployment (Cloud Run, GKE)
+  - [ ] Azure deployment (Container Apps, AKS)
+  - [ ] Vercel/Netlify deployment
+- [ ] Production checklist
+  - [ ] Security hardening
+  - [ ] Performance optimization
+  - [ ] Monitoring setup
+  - [ ] Disaster recovery
+- **Subtotal: Documentation and templates**
 
 ### Deliverables
-- `@agentforge/core` v0.4.0
-- Production checklist
-- Deployment examples
+- `@agentforge/core` v0.4.0 with production features
+- 100+ tests (24 streaming + 26 tools + 26 resources + 24 monitoring)
+- Streaming utilities and SSE/WebSocket support
+- Advanced tool execution and lifecycle management
+- Resource management and optimization utilities
+- Production monitoring and observability
+- Deployment templates and guides
+- Production readiness checklist
+- 2000+ lines of documentation
 
 ---
 
-## Phase 6: Developer Experience (1 week)
+## Phase 6: Developer Experience (2 weeks)
 
-**Duration**: 7 days  
+**Duration**: 14 days
 **Status**: 📋 Planned
 
-### Features
-- [ ] CLI tool (`@agentforge/cli`)
-- [ ] Testing utilities (`@agentforge/testing`)
-- [ ] Standard tools (`@agentforge/tools`)
-- [ ] Project templates
+See [phase-6-design.md](./phase-6-design.md) for detailed design.
+
+### 6.1 CLI Tool (`@agentforge/cli`) (4 days)
+- [ ] Project scaffolding (8 tests)
+  - [ ] `create` command with templates
+  - [ ] Interactive project setup
+  - [ ] Dependency installation
+  - [ ] Git initialization
+- [ ] Development commands (8 tests)
+  - [ ] `dev` command with hot reload
+  - [ ] `build` command with optimization
+  - [ ] `test` command with coverage
+  - [ ] `lint` command with auto-fix
+- [ ] Agent management (6 tests)
+  - [ ] `agent:create` command
+  - [ ] `agent:list` command
+  - [ ] `agent:test` command
+  - [ ] `agent:deploy` command
+- [ ] Tool management (6 tests)
+  - [ ] `tool:create` command
+  - [ ] `tool:list` command
+  - [ ] `tool:test` command
+  - [ ] `tool:publish` command
+- **Subtotal: 28 tests**
+
+### 6.2 Testing Utilities (`@agentforge/testing`) (3 days)
+- [ ] Test helpers (10 tests)
+  - [ ] Mock LLM factory
+  - [ ] Mock tool factory
+  - [ ] State builders
+  - [ ] Assertion helpers
+- [ ] Test fixtures (6 tests)
+  - [ ] Sample agents
+  - [ ] Sample tools
+  - [ ] Sample conversations
+  - [ ] Sample data
+- [ ] Integration testing (8 tests)
+  - [ ] Agent test runner
+  - [ ] Conversation simulator
+  - [ ] Performance testing
+  - [ ] Snapshot testing
+- **Subtotal: 24 tests**
+
+### 6.3 Standard Tools (`@agentforge/tools`) (3 days)
+- [ ] Web tools (8 tests)
+  - [ ] HTTP client
+  - [ ] Web scraper
+  - [ ] HTML parser
+  - [ ] URL validator
+- [ ] Data tools (8 tests)
+  - [ ] JSON processor
+  - [ ] CSV parser
+  - [ ] XML parser
+  - [ ] Data transformer
+- [ ] File tools (6 tests)
+  - [ ] File reader/writer
+  - [ ] Directory scanner
+  - [ ] File search
+  - [ ] Archive handler
+- [ ] Utility tools (6 tests)
+  - [ ] Calculator
+  - [ ] Date/time utilities
+  - [ ] String utilities
+  - [ ] Validation utilities
+- **Subtotal: 28 tests**
+
+### 6.4 Documentation & Tutorials (2 days)
+- [ ] Documentation site
+  - [ ] Interactive examples
+  - [ ] API reference
+  - [ ] Guides and tutorials
+  - [ ] Search functionality
 - [ ] Interactive tutorials
-- [ ] VS Code extension (optional)
+  - [ ] Getting started tutorial
+  - [ ] Building your first agent
+  - [ ] Advanced patterns
+  - [ ] Production deployment
+- [ ] Video tutorials
+  - [ ] Quick start (5 min)
+  - [ ] Deep dive (30 min)
+  - [ ] Best practices (15 min)
+  - [ ] Troubleshooting (10 min)
+
+### 6.5 Project Templates & Examples (2 days)
+- [ ] Project templates
+  - [ ] Minimal starter
+  - [ ] Full-featured app
+  - [ ] API service
+  - [ ] CLI tool
+- [ ] Example applications
+  - [ ] Research assistant
+  - [ ] Code reviewer
+  - [ ] Data analyst
+  - [ ] Customer support bot
+- [ ] Integration examples
+  - [ ] Express.js integration
+  - [ ] Next.js integration
+  - [ ] Fastify integration
+  - [ ] NestJS integration
 
 ### Deliverables
-- `@agentforge/cli` v0.1.0
-- `@agentforge/testing` v0.1.0
-- `@agentforge/tools` v0.1.0
-- Complete documentation site
+- `@agentforge/cli` v0.1.0 with full project management
+- `@agentforge/testing` v0.1.0 with comprehensive test utilities
+- `@agentforge/tools` v0.1.0 with 20+ standard tools
+- 80+ tests (28 CLI + 24 testing + 28 tools)
+- Interactive documentation site
+- 4+ project templates
+- 4+ example applications
+- Video tutorials
+- 1500+ lines of documentation
 
 ---
 
