@@ -7,6 +7,20 @@ export default defineConfig({
   // GitHub Pages deployment base path
   base: '/agentforge/',
 
+  // Favicon and meta tags
+  head: [
+    ['link', { rel: 'icon', type: 'image/svg+xml', href: '/agentforge/favicon.svg' }],
+    ['link', { rel: 'icon', type: 'image/png', href: '/agentforge/favicon.png' }],
+    ['meta', { name: 'theme-color', content: '#3b82f6' }],
+    ['meta', { property: 'og:type', content: 'website' }],
+    ['meta', { property: 'og:title', content: 'AgentForge' }],
+    ['meta', { property: 'og:description', content: 'Production-ready AI agent framework built on LangGraph' }],
+    ['meta', { property: 'og:url', content: 'https://tvscoundrel.github.io/agentforge/' }],
+    ['meta', { name: 'twitter:card', content: 'summary_large_image' }],
+    ['meta', { name: 'twitter:title', content: 'AgentForge' }],
+    ['meta', { name: 'twitter:description', content: 'Production-ready AI agent framework built on LangGraph' }]
+  ],
+
   ignoreDeadLinks: true, // Allow dead links during development
 
   themeConfig: {
