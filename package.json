@@ -4,6 +4,14 @@
   "private": true,
   "type": "module",
   "description": "Production-ready framework for building deep agents with LangGraph",
+  "homepage": "https://tvscoundrel.github.io/agentforge/",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/TVScoundrel/agentforge.git"
+  },
+  "bugs": {
+    "url": "https://github.com/TVScoundrel/agentforge/issues"
+  },
   "keywords": [
     "agents",
     "ai",
