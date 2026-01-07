@@ -2,7 +2,7 @@ import path from 'path';
 import chalk from 'chalk';
 import { logger } from '../utils/logger.js';
 import { promptProjectSetup } from '../utils/prompts.js';
-import { copyTemplate, ensureDir, isEmptyDir, writeJson, getTemplatePath } from '../utils/fs.js';
+import { copyTemplate, ensureDir, isEmptyDir, writeJson, readJson, getTemplatePath } from '../utils/fs.js';
 import { installDependencies, getRunCommand, type PackageManager } from '../utils/package-manager.js';
 import { initGitRepository, createInitialCommit, isGitInstalled } from '../utils/git.js';
 
@@ -68,15 +68,15 @@ export async function createCommand(
     // Update package.json
     logger.startSpinner('Updating package.json...');
     const packageJsonPath = path.join(targetPath, 'package.json');
-    const packageJson = await import(packageJsonPath, { assert: { type: 'json' } });
-    packageJson.default.name = answers.projectName;
+    const packageJson = await readJson<any>(packageJsonPath);
+    packageJson.name = answers.projectName;
     if (answers.author) {
-      packageJson.default.author = answers.author;
+      packageJson.author = answers.author;
     }
     if (answers.description) {
-      packageJson.default.description = answers.description;
+      packageJson.description = answers.description;
     }
-    await writeJson(packageJsonPath, packageJson.default);
+    await writeJson(packageJsonPath, packageJson);
     logger.succeedSpinner('package.json updated');
 
     // Install dependencies
