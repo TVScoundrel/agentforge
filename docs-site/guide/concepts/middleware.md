@@ -2,6 +2,12 @@
 
 Middleware are composable functions that wrap agent nodes to add cross-cutting concerns like logging, caching, validation, and error handling. They enable you to enhance agent behavior without modifying core logic.
 
+::: tip Related Concepts
+- **[Middleware Examples](/examples/middleware)** - See middleware in action
+- **[Testing Strategies](/tutorials/testing)** - Learn how to test middleware
+- **[Advanced Patterns](/tutorials/advanced-patterns)** - Combine middleware with patterns
+:::
+
 ## What is Middleware?
 
 Middleware is a function that wraps a node function to add additional behavior:
@@ -507,8 +513,8 @@ const llmCall = compose(
 ## Next Steps
 
 - [API Reference](/api/core#middleware) - Complete middleware API
-- [Custom Middleware Tutorial](/tutorials/custom-middleware) - Build your own
 - [Middleware Examples](/examples/middleware) - Working examples
-- [Testing Guide](/guide/testing) - Testing with middleware
+- [Testing Strategies](/tutorials/testing) - Testing with middleware
+- [Advanced Patterns](/tutorials/advanced-patterns) - Combining middleware with patterns
 
 

@@ -824,13 +824,12 @@ describe('SSE Endpoint', () => {
 - [Resource Management](/guide/advanced/resources) - Memory and token optimization
 - [Monitoring](/guide/advanced/monitoring) - Track streaming performance
 - [Deployment](/guide/advanced/deployment) - Production streaming setup
-- [API Reference](/api/streaming) - Complete streaming API
+- [Core API Reference](/api/core) - Core streaming utilities
 
 ## Further Reading
 
 - [Server-Sent Events Spec](https://html.spec.whatwg.org/multipage/server-sent-events.html)
 - [WebSocket Protocol](https://datatracker.ietf.org/doc/html/rfc6455)
 - [LangChain Streaming](https://js.langchain.com/docs/expression_language/streaming)
-- [Examples](/examples/streaming) - Working streaming examples
 
 

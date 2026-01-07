@@ -23,10 +23,14 @@ This pattern is inspired by the [Reflexion paper](https://arxiv.org/abs/2303.113
 - Self-improving systems
 
 ❌ **Not ideal for:**
-- Simple lookup or calculation tasks
-- Real-time applications (adds latency)
-- When first-draft quality is sufficient
-- Tasks with objective, verifiable answers
+- Simple lookup or calculation tasks (use [ReAct](/guide/patterns/react) instead)
+- Real-time applications (adds latency) (use [ReAct](/guide/patterns/react) instead)
+- When first-draft quality is sufficient (use [ReAct](/guide/patterns/react) or [Plan-Execute](/guide/patterns/plan-execute) instead)
+- Tasks with objective, verifiable answers (use [ReAct](/guide/patterns/react) instead)
+
+::: tip Pattern Comparison
+Not sure which pattern to use? See the [Agent Patterns Overview](/guide/concepts/patterns) for a detailed comparison of all patterns.
+:::
 
 ## Basic Usage
 

@@ -2,6 +2,21 @@
 
 Agent patterns are proven architectural approaches for building AI agents. AgentForge provides four production-ready patterns, each optimized for different types of tasks.
 
+::: tip Detailed Guides
+This page provides an overview. For in-depth guides, see:
+- **[ReAct Pattern Guide](/guide/patterns/react)** - Complete ReAct documentation
+- **[Plan-Execute Pattern Guide](/guide/patterns/plan-execute)** - Complete Plan-Execute documentation
+- **[Reflection Pattern Guide](/guide/patterns/reflection)** - Complete Reflection documentation
+- **[Multi-Agent Pattern Guide](/guide/patterns/multi-agent)** - Complete Multi-Agent documentation
+:::
+
+::: info Code Examples
+Code examples on this page assume the following imports from the first example:
+```typescript
+import { ChatOpenAI } from '@langchain/openai';
+```
+:::
+
 ## Overview
 
 | Pattern | Best For | Key Strength | Complexity |

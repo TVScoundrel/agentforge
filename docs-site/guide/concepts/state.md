@@ -2,6 +2,12 @@
 
 State is the data that flows through your agent as it processes tasks. AgentForge provides type-safe state management built on LangGraph's annotation system with Zod validation.
 
+::: tip Related Concepts
+- **[Memory & Persistence](/guide/concepts/memory)** - Learn how to persist state across sessions
+- **[Agent Patterns](/guide/concepts/patterns)** - See how state is used in different patterns
+- **[Advanced Patterns](/tutorials/advanced-patterns)** - Complex state management patterns
+:::
+
 ## What is State?
 
 State is a collection of **channels** (key-value pairs) that represent your agent's current context:
@@ -481,6 +487,6 @@ const myNode = (state: StateType) => {
 - [Memory & Persistence](/guide/concepts/memory) - Persisting state across sessions
 - [Agent Patterns](/guide/concepts/patterns) - Using state in different patterns
 - [API Reference](/api/core#state-management) - Complete state API
-- [LangGraph Integration](/guide/langgraph) - Deep dive into LangGraph
+- [Advanced Patterns](/tutorials/advanced-patterns) - Complex state management patterns
 
 

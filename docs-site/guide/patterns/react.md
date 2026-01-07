@@ -23,9 +23,13 @@ This pattern is inspired by the [ReAct paper](https://arxiv.org/abs/2210.03629) 
 - Interactive applications
 
 ❌ **Not ideal for:**
-- Tasks requiring complex multi-step planning
-- When you need guaranteed execution order
-- Tasks that benefit from self-critique and revision
+- Tasks requiring complex multi-step planning (use [Plan-Execute](/guide/patterns/plan-execute) instead)
+- When you need guaranteed execution order (use [Plan-Execute](/guide/patterns/plan-execute) instead)
+- Tasks that benefit from self-critique and revision (use [Reflection](/guide/patterns/reflection) instead)
+
+::: tip Pattern Comparison
+Not sure which pattern to use? See the [Agent Patterns Overview](/guide/concepts/patterns) for a detailed comparison of all patterns.
+:::
 
 ## Basic Usage
 

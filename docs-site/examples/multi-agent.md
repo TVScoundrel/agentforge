@@ -155,14 +155,6 @@ const builder = new MultiAgentSystemBuilder({
   },
   aggregator: { llm },
 });
-      .addEdge('research', 'analyze')
-      .addEdge('analyze', 'write')
-      .addConditionalEdge('write', (state) => {
-        // Rerun research if quality is low
-        return state.quality > 0.8 ? 'end' : 'research';
-      });
-  }
-});
 ```
 
 ## When to Use Multi-Agent

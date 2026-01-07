@@ -966,7 +966,7 @@ spec:
 - [Monitoring](/guide/advanced/monitoring) - Production monitoring
 - [Resource Management](/guide/advanced/resources) - Optimize resources
 - [Streaming](/guide/advanced/streaming) - Real-time deployment
-- [Examples](/examples/deployment) - Deployment examples
+- [Production Deployment Tutorial](/tutorials/production-deployment) - Step-by-step deployment guide
 
 ## Further Reading
 

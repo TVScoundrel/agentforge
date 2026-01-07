@@ -22,10 +22,14 @@ This pattern is inspired by classical AI planning systems and the [Plan-and-Solv
 - Long-running workflows
 
 ❌ **Not ideal for:**
-- Simple, single-step tasks
-- Highly exploratory tasks
-- When flexibility is more important than structure
-- Real-time interactive applications
+- Simple, single-step tasks (use [ReAct](/guide/patterns/react) instead)
+- Highly exploratory tasks (use [ReAct](/guide/patterns/react) instead)
+- When flexibility is more important than structure (use [ReAct](/guide/patterns/react) instead)
+- Real-time interactive applications (use [ReAct](/guide/patterns/react) instead)
+
+::: tip Pattern Comparison
+Not sure which pattern to use? See the [Agent Patterns Overview](/guide/concepts/patterns) for a detailed comparison of all patterns.
+:::
 
 ## Basic Usage
 

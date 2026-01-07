@@ -23,10 +23,14 @@ This pattern is inspired by organizational structures and the [AutoGen framework
 - Scalable, modular systems
 
 ❌ **Not ideal for:**
-- Simple, single-domain tasks
-- When coordination overhead exceeds benefits
-- Real-time applications (adds latency)
-- When a single agent is sufficient
+- Simple, single-domain tasks (use [ReAct](/guide/patterns/react) instead)
+- When coordination overhead exceeds benefits (use [ReAct](/guide/patterns/react) or [Plan-Execute](/guide/patterns/plan-execute) instead)
+- Real-time applications (adds latency) (use [ReAct](/guide/patterns/react) instead)
+- When a single agent is sufficient (use [ReAct](/guide/patterns/react), [Plan-Execute](/guide/patterns/plan-execute), or [Reflection](/guide/patterns/reflection) instead)
+
+::: tip Pattern Comparison
+Not sure which pattern to use? See the [Agent Patterns Overview](/guide/concepts/patterns) for a detailed comparison of all patterns.
+:::
 
 ## Basic Usage
 

@@ -848,7 +848,7 @@ Build real-time dashboards for visibility.
 - [Deployment](/guide/advanced/deployment) - Production deployment
 - [Resource Management](/guide/advanced/resources) - Optimize resources
 - [Streaming](/guide/advanced/streaming) - Real-time monitoring
-- [API Reference](/api/monitoring) - Monitoring API
+- [Core API Reference](/api/core) - Core monitoring utilities
 
 ## Further Reading
 
@@ -856,6 +856,5 @@ Build real-time dashboards for visibility.
 - [Prometheus](https://prometheus.io/) - Metrics and alerting
 - [Grafana](https://grafana.com/) - Visualization and dashboards
 - [LangSmith](https://docs.smith.langchain.com/) - LLM tracing
-- [Examples](/examples/monitoring) - Working examples
 
 

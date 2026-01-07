@@ -135,12 +135,22 @@ node dist/index.js
 
 ## What's Next?
 
-Now that you have a basic agent running, explore:
+Now that you have a basic agent running, here's your learning path:
 
-- **[Quick Start Guide](/guide/quick-start)** - Build more complex agents
-- **[Core Concepts](/guide/concepts/tools)** - Understand the fundamentals
-- **[Agent Patterns](/guide/patterns/react)** - Learn different patterns
-- **[Custom Tools](/tutorials/custom-tools)** - Create your own tools
+### 📚 Learn the Fundamentals
+- **[Quick Start Guide](/guide/quick-start)** - Build more complex agents step-by-step
+- **[Core Concepts](/guide/concepts/tools)** - Understand tools, state, middleware, and memory
+- **[Agent Patterns](/guide/concepts/patterns)** - Compare all 4 agent patterns
+
+### 🎯 Choose Your Pattern
+- **[ReAct Pattern](/guide/patterns/react)** - Best for exploration and flexibility
+- **[Plan-Execute Pattern](/guide/patterns/plan-execute)** - Best for structured workflows
+- **[Reflection Pattern](/guide/patterns/reflection)** - Best for quality-critical outputs
+- **[Multi-Agent Pattern](/guide/patterns/multi-agent)** - Best for specialized tasks
+
+### 🛠️ Build Custom Solutions
+- **[Custom Tools Tutorial](/tutorials/custom-tools)** - Create your own tools
+- **[Advanced Patterns Tutorial](/tutorials/advanced-patterns)** - Combine patterns
 - **[Examples](/examples/react-agent)** - See real-world examples
 
 ## Common Issues

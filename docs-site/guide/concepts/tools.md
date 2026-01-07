@@ -2,6 +2,12 @@
 
 Tools are the building blocks that allow AI agents to interact with the world. AgentForge provides a comprehensive tool system with rich metadata, automatic validation, and seamless LangChain integration.
 
+::: tip Related Concepts
+- **[Agent Patterns](/guide/concepts/patterns)** - Learn how tools are used in different agent patterns
+- **[Custom Tools Tutorial](/tutorials/custom-tools)** - Step-by-step guide to building your own tools
+- **[Standard Tools API](/api/tools)** - Browse 68+ pre-built tools
+:::
+
 ## What is a Tool?
 
 A **tool** is a function that an AI agent can call to perform actions or retrieve information. Tools enable agents to:

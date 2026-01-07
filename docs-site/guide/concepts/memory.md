@@ -2,6 +2,12 @@
 
 Memory allows agents to remember past interactions and maintain context across multiple conversations. AgentForge provides utilities for working with LangGraph's checkpointing system.
 
+::: tip Related Concepts
+- **[State Management](/guide/concepts/state)** - Understand state before learning about persistence
+- **[Production Deployment](/tutorials/production-deployment)** - Deploy agents with persistent memory
+- **[Monitoring](/guide/advanced/monitoring)** - Monitor memory usage and performance
+:::
+
 ## What is Memory?
 
 Memory in AgentForge refers to:
@@ -557,6 +563,6 @@ const thread2 = createTenantThreadId('tenant-b', 'user-1', 'session-1');
 - [State Management](/guide/concepts/state) - Understanding state
 - [Agent Patterns](/guide/concepts/patterns) - Using memory in patterns
 - [API Reference](/api/core#memory-persistence) - Complete memory API
-- [Production Guide](/guide/production) - Deploying with persistence
+- [Production Deployment](/tutorials/production-deployment) - Deploying with persistence
 
 

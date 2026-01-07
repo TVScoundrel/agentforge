@@ -791,13 +791,12 @@ Track resource usage and set up alerts:
 - [Monitoring](/guide/advanced/monitoring) - Detailed observability
 - [Deployment](/guide/advanced/deployment) - Production optimization
 - [Streaming](/guide/advanced/streaming) - Efficient data transfer
-- [API Reference](/api/resources) - Resource management API
+- [Core API Reference](/api/core) - Core resource utilities
 
 ## Further Reading
 
 - [OpenAI Rate Limits](https://platform.openai.com/docs/guides/rate-limits)
 - [Node.js Memory Management](https://nodejs.org/en/docs/guides/simple-profiling/)
 - [Redis Caching](https://redis.io/docs/manual/client-side-caching/)
-- [Examples](/examples/resource-management) - Working examples
 
 
