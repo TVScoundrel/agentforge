@@ -1,0 +1,74 @@
+{
+  "name": "@agentforge/tools",
+  "version": "0.1.0",
+  "description": "Standard tools collection for AgentForge framework - web, data, file, and utility tools",
+  "type": "module",
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch",
+    "test": "vitest",
+    "test:watch": "vitest --watch",
+    "test:ui": "vitest --ui",
+    "test:coverage": "vitest --coverage",
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "clean": "rm -rf dist"
+  },
+  "dependencies": {
+    "@agentforge/core": "workspace:*",
+    "zod": "^3.24.1",
+    "axios": "^1.7.9",
+    "cheerio": "^1.0.0",
+    "csv-parse": "^5.6.0",
+    "csv-stringify": "^6.5.2",
+    "fast-xml-parser": "^4.5.0",
+    "date-fns": "^4.1.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.2",
+    "@vitest/ui": "^2.1.8",
+    "eslint": "^9.17.0",
+    "tsup": "^8.3.5",
+    "typescript": "^5.7.2",
+    "vitest": "^2.1.8"
+  },
+  "keywords": [
+    "agentforge",
+    "tools",
+    "web-tools",
+    "data-tools",
+    "file-tools",
+    "utilities",
+    "ai",
+    "agents",
+    "http",
+    "scraper",
+    "parser",
+    "csv",
+    "json",
+    "xml"
+  ],
+  "author": "AgentForge Team",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/agentforge/agentforge.git",
+    "directory": "packages/tools"
+  }
+}
+
