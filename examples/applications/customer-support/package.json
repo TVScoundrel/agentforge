@@ -1,0 +1,29 @@
+{
+  "name": "customer-support-example",
+  "version": "0.1.0",
+  "description": "AI-powered customer support bot with FAQ handling and ticket management",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "dev": "tsx watch src/index.ts",
+    "start": "tsx src/index.ts",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@agentforge/core": "workspace:*",
+    "@agentforge/patterns": "workspace:*",
+    "@agentforge/tools": "workspace:*",
+    "@langchain/openai": "^0.3.14",
+    "langchain": "^0.3.7",
+    "zod": "^3.24.1",
+    "dotenv": "^16.4.7",
+    "inquirer": "^12.3.0",
+    "chalk": "^5.3.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.2",
+    "tsx": "^4.21.0",
+    "typescript": "^5.7.2"
+  }
+}
+

@@ -1,0 +1,33 @@
+{
+  "name": "express-api-integration",
+  "version": "0.1.0",
+  "description": "Express.js REST API integration with AgentForge",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "dev": "tsx watch src/server.ts",
+    "start": "tsx src/server.ts",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@agentforge/core": "workspace:*",
+    "@agentforge/patterns": "workspace:*",
+    "@agentforge/tools": "workspace:*",
+    "@langchain/openai": "^0.3.14",
+    "langchain": "^0.3.7",
+    "zod": "^3.24.1",
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2",
+    "cors": "^2.8.5",
+    "helmet": "^8.0.0",
+    "express-rate-limit": "^7.5.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.2",
+    "@types/express": "^5.0.0",
+    "@types/cors": "^2.8.17",
+    "tsx": "^4.21.0",
+    "typescript": "^5.7.2"
+  }
+}
+
