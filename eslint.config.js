@@ -1,18 +1,26 @@
-import eslint from '@eslint/js';
+import js from '@eslint/js';
 import tseslint from 'typescript-eslint';
 
 export default tseslint.config(
-  eslint.configs.recommended,
-  ...tseslint.configs.recommendedTypeChecked,
+  js.configs.recommended,
+  ...tseslint.configs.recommended,
   {
-    files: ['src/**/*.{ts,tsx}'],
-    languageOptions: {
-      parserOptions: {
-        project: './tsconfig.json'
-      }
-    },
+    ignores: [
+      'dist/**',
+      'node_modules/**',
+      '*.config.ts',
+      '*.config.js',
+      'packages/**/dist/**',
+      'packages/**/node_modules/**',
+      'docs-site/.vitepress/cache/**',
+      'docs-site/.vitepress/dist/**',
+    ],
+  },
+  {
     rules: {
-      'no-console': 'off'
-    }
+      '@typescript-eslint/no-explicit-any': 'warn',
+      '@typescript-eslint/no-unused-vars': ['warn', { argsIgnorePattern: '^_' }],
+      'no-console': 'off',
+    },
   }
 );
