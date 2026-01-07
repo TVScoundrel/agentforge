@@ -9,8 +9,8 @@ export default defineConfig({
 
   // Favicon and meta tags
   head: [
-    ['link', { rel: 'icon', type: 'image/svg+xml', href: '/favicon.svg' }],
-    ['link', { rel: 'icon', type: 'image/png', href: '/favicon.png' }],
+    ['link', { rel: 'icon', type: 'image/svg+xml', href: '/agentforge/favicon.svg' }],
+    ['link', { rel: 'icon', type: 'image/png', href: '/agentforge/favicon.png' }],
     ['meta', { name: 'theme-color', content: '#3b82f6' }],
     ['meta', { property: 'og:type', content: 'website' }],
     ['meta', { property: 'og:title', content: 'AgentForge' }],
@@ -147,16 +147,6 @@ export default defineConfig({
       dark: 'github-dark'
     },
     lineNumbers: true
-  },
-
-  head: [
-    ['link', { rel: 'icon', type: 'image/svg+xml', href: '/favicon.svg' }],
-    ['meta', { name: 'theme-color', content: '#667eea' }],
-    ['meta', { name: 'og:type', content: 'website' }],
-    ['meta', { name: 'og:locale', content: 'en' }],
-    ['meta', { name: 'og:site_name', content: 'AgentForge' }],
-    ['meta', { name: 'og:image', content: '/logo.svg' }],
-    ['meta', { name: 'og:description', content: 'Production-ready AI agent framework built on LangGraph' }]
-  ]
+  }
 });
 
