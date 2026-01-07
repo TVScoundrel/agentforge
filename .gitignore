@@ -7,6 +7,10 @@ dist/
 build/
 *.tsbuildinfo
 
+# VitePress
+.vitepress/dist/
+.vitepress/cache/
+
 # Testing
 coverage/
 .vitest/
