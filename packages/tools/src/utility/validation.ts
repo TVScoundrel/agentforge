@@ -73,6 +73,7 @@ export const phoneValidator = toolBuilder()
   }))
   .implement(async (input) => {
     // Basic phone validation - matches common formats
+    // eslint-disable-next-line no-useless-escape
     const basicRegex = /^[\d\s\-\+\(\)]+$/;
     const strictRegex = /^\+?[1-9]\d{1,14}$/; // E.164 format
     
@@ -100,6 +101,7 @@ export const creditCardValidator = toolBuilder()
   }))
   .implement(async (input) => {
     // Remove spaces and dashes
+    // eslint-disable-next-line no-useless-escape
     const cleaned = input.cardNumber.replace(/[\s\-]/g, '');
     
     // Check if it's all digits
