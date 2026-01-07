@@ -1,0 +1,83 @@
+import fs from 'fs-extra';
+import path from 'path';
+import { glob } from 'glob';
+
+export async function ensureDir(dir: string): Promise<void> {
+  await fs.ensureDir(dir);
+}
+
+export async function copyTemplate(
+  templatePath: string,
+  targetPath: string,
+  replacements: Record<string, string> = {}
+): Promise<void> {
+  await fs.ensureDir(targetPath);
+
+  const files = await glob('**/*', {
+    cwd: templatePath,
+    dot: true,
+    nodir: true,
+  });
+
+  for (const file of files) {
+    const sourcePath = path.join(templatePath, file);
+    const destPath = path.join(targetPath, file);
+
+    await fs.ensureDir(path.dirname(destPath));
+
+    let content = await fs.readFile(sourcePath, 'utf-8');
+
+    // Apply replacements
+    for (const [key, value] of Object.entries(replacements)) {
+      content = content.replace(new RegExp(`{{${key}}}`, 'g'), value);
+    }
+
+    await fs.writeFile(destPath, content);
+  }
+}
+
+export async function writeJson(filePath: string, data: any): Promise<void> {
+  await fs.writeJson(filePath, data, { spaces: 2 });
+}
+
+export async function readJson<T = any>(filePath: string): Promise<T> {
+  return fs.readJson(filePath);
+}
+
+export async function pathExists(filePath: string): Promise<boolean> {
+  return fs.pathExists(filePath);
+}
+
+export async function removeDir(dir: string): Promise<void> {
+  await fs.remove(dir);
+}
+
+export async function findFiles(
+  pattern: string,
+  cwd: string = process.cwd()
+): Promise<string[]> {
+  return glob(pattern, { cwd });
+}
+
+export async function readFile(filePath: string): Promise<string> {
+  return fs.readFile(filePath, 'utf-8');
+}
+
+export async function writeFile(filePath: string, content: string): Promise<void> {
+  await fs.ensureDir(path.dirname(filePath));
+  await fs.writeFile(filePath, content);
+}
+
+export function getTemplatePath(template: string): string {
+  return path.join(__dirname, '..', '..', 'templates', template);
+}
+
+export async function isEmptyDir(dir: string): Promise<boolean> {
+  if (!(await pathExists(dir))) {
+    return true;
+  }
+
+  const files = await fs.readdir(dir);
+  return files.length === 0;
+}
+

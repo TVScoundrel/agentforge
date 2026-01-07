@@ -1,0 +1,40 @@
+{
+  "name": "{{PROJECT_NAME}}",
+  "version": "0.1.0",
+  "description": "{{PROJECT_DESCRIPTION}}",
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "dev": "tsx watch src/index.ts",
+    "build": "tsup",
+    "test": "vitest",
+    "test:watch": "vitest --watch",
+    "test:ui": "vitest --ui",
+    "test:coverage": "vitest --coverage",
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "format": "prettier --write .",
+    "clean": "rm -rf dist"
+  },
+  "dependencies": {
+    "@agentforge/core": "workspace:*",
+    "@agentforge/patterns": "workspace:*",
+    "@langchain/openai": "^0.3.14",
+    "langchain": "^0.3.7",
+    "zod": "^3.24.1",
+    "dotenv": "^16.4.7"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.2",
+    "@vitest/ui": "^2.1.8",
+    "eslint": "^9.17.0",
+    "prettier": "^3.4.2",
+    "tsup": "^8.3.5",
+    "tsx": "^4.21.0",
+    "typescript": "^5.7.2",
+    "vitest": "^2.1.8"
+  }
+}
+
