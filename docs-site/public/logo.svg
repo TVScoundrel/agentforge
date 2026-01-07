@@ -1,69 +1,111 @@
 <svg width="400" height="400" viewBox="0 0 400 400" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <!-- Background circle with gradient -->
   <defs>
+    <!-- Keep existing IDs for compatibility -->
     <linearGradient id="bgGradient" x1="0%" y1="0%" x2="100%" y2="100%">
       <stop offset="0%" style="stop-color:#667eea;stop-opacity:1" />
       <stop offset="100%" style="stop-color:#764ba2;stop-opacity:1" />
     </linearGradient>
+
     <linearGradient id="accentGradient" x1="0%" y1="0%" x2="100%" y2="100%">
       <stop offset="0%" style="stop-color:#f093fb;stop-opacity:1" />
       <stop offset="100%" style="stop-color:#f5576c;stop-opacity:1" />
     </linearGradient>
-  </defs>
-  
-  <!-- Main circle background -->
-  <circle cx="200" cy="200" r="180" fill="url(#bgGradient)" opacity="0.1"/>
-  
-  <!-- Anvil base (representing "Forge") -->
-  <rect x="120" y="260" width="160" height="30" rx="5" fill="url(#bgGradient)"/>
-  
-  <!-- Anvil body -->
-  <path d="M 140 260 L 140 220 L 260 220 L 260 260 Z" fill="url(#bgGradient)"/>
-  
-  <!-- Anvil horn (left side) -->
-  <path d="M 140 220 L 120 200 L 120 220 Z" fill="url(#bgGradient)" opacity="0.8"/>
-  
-  <!-- Agent symbol - Neural network nodes -->
-  <g id="neural-network">
-    <!-- Top layer (3 nodes) -->
-    <circle cx="150" cy="120" r="12" fill="url(#accentGradient)"/>
-    <circle cx="200" cy="100" r="12" fill="url(#accentGradient)"/>
-    <circle cx="250" cy="120" r="12" fill="url(#accentGradient)"/>
-    
-    <!-- Middle layer (2 nodes) -->
-    <circle cx="175" cy="170" r="12" fill="url(#accentGradient)"/>
-    <circle cx="225" cy="170" r="12" fill="url(#accentGradient)"/>
-    
-    <!-- Connections (lines between nodes) -->
-    <line x1="150" y1="120" x2="175" y2="170" stroke="url(#accentGradient)" stroke-width="2" opacity="0.6"/>
-    <line x1="150" y1="120" x2="225" y2="170" stroke="url(#accentGradient)" stroke-width="2" opacity="0.6"/>
-    <line x1="200" y1="100" x2="175" y2="170" stroke="url(#accentGradient)" stroke-width="2" opacity="0.6"/>
-    <line x1="200" y1="100" x2="225" y2="170" stroke="url(#accentGradient)" stroke-width="2" opacity="0.6"/>
-    <line x1="250" y1="120" x2="175" y2="170" stroke="url(#accentGradient)" stroke-width="2" opacity="0.6"/>
-    <line x1="250" y1="120" x2="225" y2="170" stroke="url(#accentGradient)" stroke-width="2" opacity="0.6"/>
-    
-    <!-- Connection to anvil -->
-    <line x1="175" y1="170" x2="175" y2="220" stroke="url(#accentGradient)" stroke-width="3" opacity="0.6"/>
-    <line x1="225" y1="170" x2="225" y2="220" stroke="url(#accentGradient)" stroke-width="3" opacity="0.6"/>
-  </g>
-  
-  <!-- Hammer (representing the "forging" action) -->
-  <g id="hammer" transform="translate(280, 140) rotate(-30)">
-    <!-- Hammer head -->
-    <rect x="0" y="0" width="40" height="15" rx="2" fill="url(#bgGradient)"/>
-    <!-- Hammer handle -->
-    <rect x="15" y="15" width="10" height="50" rx="2" fill="url(#bgGradient)" opacity="0.8"/>
-  </g>
-  
-  <!-- Sparkles/particles (representing creation/forging) -->
-  <circle cx="290" cy="130" r="3" fill="#f5576c" opacity="0.8"/>
-  <circle cx="310" cy="150" r="2" fill="#f093fb" opacity="0.8"/>
-  <circle cx="300" cy="170" r="2.5" fill="#667eea" opacity="0.8"/>
-  <circle cx="270" cy="160" r="2" fill="#764ba2" opacity="0.8"/>
-  
-  <!-- Additional accent elements -->
-  <circle cx="100" cy="150" r="2" fill="#f5576c" opacity="0.6"/>
-  <circle cx="90" cy="180" r="3" fill="#f093fb" opacity="0.6"/>
-  <circle cx="320" cy="200" r="2" fill="#667eea" opacity="0.6"/>
-</svg>
 
+    <!-- Soft glow for nodes/edges -->
+    <filter id="softGlow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="3" result="b"/>
+      <feMerge>
+        <feMergeNode in="b"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+
+    <!-- Subtle vignette to add depth on dark backgrounds -->
+    <radialGradient id="vignette" cx="50%" cy="55%" r="55%">
+      <stop offset="0%" stop-color="#000" stop-opacity="0" />
+      <stop offset="100%" stop-color="#000" stop-opacity="0.25" />
+    </radialGradient>
+
+    <!-- Optional: tiny shadow so the hammer “belongs” -->
+    <filter id="hammerShadow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="2.5" result="b"/>
+      <feOffset dx="0" dy="1" result="o"/>
+      <feMerge>
+        <feMergeNode in="o"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+
+  <!-- Main circle background (subtle) -->
+  <circle cx="200" cy="200" r="180" fill="url(#bgGradient)" opacity="0.10"/>
+  <circle cx="200" cy="200" r="180" fill="url(#vignette)"/>
+
+  <!-- Agent composition graph (tightened + more “composed”) -->
+  <g id="agent-graph" stroke="url(#accentGradient)" stroke-width="2.5" stroke-linecap="round" opacity="0.65">
+    <!-- Edges -->
+    <line x1="200" y1="118" x2="160" y2="146"/>
+    <line x1="200" y1="118" x2="240" y2="146"/>
+    <line x1="160" y1="146" x2="185" y2="186"/>
+    <line x1="240" y1="146" x2="215" y2="186"/>
+    <line x1="185" y1="186" x2="215" y2="186"/>
+    <!-- Cross-link for “composition” feel -->
+    <line x1="160" y1="146" x2="215" y2="186" opacity="0.45"/>
+  </g>
+
+  <!-- Nodes -->
+  <g id="agent-nodes" filter="url(#softGlow)">
+    <circle cx="200" cy="118" r="11" fill="url(#accentGradient)"/>
+    <circle cx="160" cy="146" r="10" fill="url(#accentGradient)"/>
+    <circle cx="240" cy="146" r="10" fill="url(#accentGradient)"/>
+    <circle cx="185" cy="186" r="10" fill="url(#accentGradient)"/>
+    <circle cx="215" cy="186" r="10" fill="url(#accentGradient)"/>
+  </g>
+
+  <!-- “Forging” down-strokes (connect graph to anvil, shorter than before to reduce tall feel) -->
+  <g opacity="0.55" stroke="url(#accentGradient)" stroke-width="3" stroke-linecap="round">
+    <line x1="185" y1="196" x2="185" y2="224"/>
+    <line x1="215" y1="196" x2="215" y2="224"/>
+  </g>
+
+  <!-- Anvil (wider + flatter; reads better as a logo) -->
+  <g id="anvil" opacity="0.98">
+    <!-- Top body -->
+    <path d="M120 236 H280 L258 268 H142 L120 236 Z" fill="url(#bgGradient)"/>
+    <!-- Horn -->
+    <path d="M120 236 L168 236 L142 262 Z" fill="url(#bgGradient)" opacity="0.85"/>
+    <!-- Base -->
+    <rect x="150" y="268" width="100" height="28" rx="7" fill="url(#bgGradient)" opacity="0.95"/>
+    <!-- Highlight -->
+    <path d="M140 244 H265" stroke="#ffffff" stroke-opacity="0.18" stroke-width="4" stroke-linecap="round"/>
+  </g>
+
+  <!-- Hammer (REBALANCED) -->
+  <!-- Changes:
+       - moved inward: translate(292,150) -> translate(260,148)
+       - less tilt:     rotate(-22)       -> rotate(-15)
+       - slightly smaller: scale(0.92)
+       - head/handle aligned so center-of-mass reads stable
+  -->
+  <g id="hammer" filter="url(#hammerShadow)" transform="translate(260 148) rotate(-15) scale(0.92)">
+    <!-- Head -->
+    <path d="M0 10 C0 4 4 0 10 0 H66 C72 0 76 4 76 10 V26 H0 V10 Z" fill="url(#bgGradient)"/>
+    <!-- Back weight (small cap for balance) -->
+    <rect x="58" y="4" width="18" height="18" rx="7" fill="url(#bgGradient)" opacity="0.70"/>
+    <!-- Handle (centered under head) -->
+    <rect x="32" y="26" width="10" height="68" rx="5" fill="url(#bgGradient)" opacity="0.85"/>
+    <!-- Small accent notch -->
+    <rect x="60" y="26" width="12" height="8" rx="4" fill="url(#accentGradient)" opacity="0.45"/>
+  </g>
+
+  <!-- Spark/particles (kept but slightly more intentional) -->
+  <g id="particles" opacity="0.85">
+    <circle cx="292" cy="146" r="3" fill="#f5576c"/>
+    <circle cx="314" cy="162" r="2.2" fill="#f093fb"/>
+    <circle cx="300" cy="182" r="2.6" fill="#667eea"/>
+    <circle cx="272" cy="172" r="2.0" fill="#764ba2"/>
+    <circle cx="120" cy="162" r="2.0" fill="#f5576c" opacity="0.7"/>
+    <circle cx="105" cy="190" r="2.8" fill="#f093fb" opacity="0.7"/>
+    <circle cx="320" cy="210" r="2.0" fill="#667eea" opacity="0.65"/>
+  </g>
+</svg>
