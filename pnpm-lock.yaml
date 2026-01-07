@@ -124,18 +124,33 @@ importers:
         specifier: ^3.25.0
         version: 3.25.0(zod@3.25.76)
     devDependencies:
+      '@eslint/js':
+        specifier: ^9.17.0
+        version: 9.39.2
       '@langchain/core':
         specifier: ^1.1.8
         version: 1.1.8(openai@6.14.0(zod@3.25.76))
       '@langchain/langgraph':
         specifier: ^1.0.7
         version: 1.0.7(@langchain/core@1.1.8(openai@6.14.0(zod@3.25.76)))(zod-to-json-schema@3.25.0(zod@3.25.76))(zod@3.25.76)
+      '@types/node':
+        specifier: ^22.10.2
+        version: 22.19.3
+      eslint:
+        specifier: ^9.17.0
+        version: 9.39.2
+      prettier:
+        specifier: ^3.4.2
+        version: 3.7.4
       tsup:
         specifier: ^8.0.1
         version: 8.5.1(postcss@8.5.6)(tsx@4.21.0)(typescript@5.9.3)
       typescript:
         specifier: ^5.3.3
         version: 5.9.3
+      typescript-eslint:
+        specifier: ^8.19.1
+        version: 8.52.0(eslint@9.39.2)(typescript@5.9.3)
       vitest:
         specifier: ^1.1.0
         version: 1.6.1(@types/node@22.19.3)(@vitest/ui@1.6.1)
@@ -155,18 +170,30 @@ importers:
         specifier: ^3.23.8
         version: 3.25.76
     devDependencies:
+      '@eslint/js':
+        specifier: ^9.17.0
+        version: 9.39.2
       '@types/node':
-        specifier: ^20.10.6
-        version: 20.19.27
+        specifier: ^22.10.2
+        version: 22.19.3
+      eslint:
+        specifier: ^9.17.0
+        version: 9.39.2
+      prettier:
+        specifier: ^3.4.2
+        version: 3.7.4
       tsup:
         specifier: ^8.0.1
         version: 8.5.1(postcss@8.5.6)(tsx@4.21.0)(typescript@5.9.3)
       typescript:
         specifier: ^5.3.3
         version: 5.9.3
+      typescript-eslint:
+        specifier: ^8.19.1
+        version: 8.52.0(eslint@9.39.2)(typescript@5.9.3)
       vitest:
         specifier: ^1.6.1
-        version: 1.6.1(@types/node@20.19.27)(@vitest/ui@1.6.1)
+        version: 1.6.1(@types/node@22.19.3)(@vitest/ui@1.6.1)
 
   packages/testing:
     dependencies:
@@ -4021,7 +4048,7 @@ snapshots:
   '@types/fs-extra@11.0.4':
     dependencies:
       '@types/jsonfile': 6.1.4
-      '@types/node': 20.19.27
+      '@types/node': 22.19.3
 
   '@types/hast@3.0.4':
     dependencies:

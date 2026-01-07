@@ -4,9 +4,9 @@ import { createWebSocketHandler, sendMessage, broadcast, createMessage } from '.
 // Mock WebSocket
 class MockWebSocket {
   readyState = 1; // OPEN
-  handlers: Record<string, Function[]> = {};
+  handlers: Record<string, ((...args: any[]) => void)[]> = {};
 
-  on(event: string, handler: Function) {
+  on(event: string, handler: (...args: any[]) => void) {
     if (!this.handlers[event]) {
       this.handlers[event] = [];
     }

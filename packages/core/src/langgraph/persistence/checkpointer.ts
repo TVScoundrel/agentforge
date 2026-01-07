@@ -12,6 +12,7 @@ import type { BaseCheckpointSaver } from '@langchain/langgraph';
 /**
  * Serializer protocol for checkpoint data
  */
+// eslint-disable-next-line @typescript-eslint/no-empty-object-type
 export interface SerializerProtocol {
   // Placeholder for serializer interface
   // LangGraph's actual interface may differ
@@ -102,7 +103,7 @@ export async function createSqliteCheckpointer(
 
   try {
     // Dynamically import the SQLite checkpointer
-    // @ts-ignore - Optional peer dependency
+    // @ts-expect-error - Optional peer dependency
     const { SqliteSaver } = await import('@langchain/langgraph-checkpoint-sqlite');
 
     // Create the checkpointer
