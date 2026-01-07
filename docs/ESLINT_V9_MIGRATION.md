@@ -168,6 +168,28 @@ pnpm test
 
 ---
 
+## 📝 Known Issues
+
+### whatwg-encoding Deprecation Warning
+
+**Status**: ⏳ Waiting for upstream fix
+
+When running `pnpm install`, you may see:
+```
+npm warn deprecated whatwg-encoding@3.1.1: Use @exodus/bytes instead for a more spec-conformant and faster implementation
+```
+
+**Details**:
+- **Source**: Transitive dependency via `cheerio` → `encoding-sniffer` → `whatwg-encoding@3.1.1`
+- **Impact**: Low priority - just a deprecation warning, not a security issue
+- **Fix in progress**:
+  - GitHub Issue: [cheeriojs/cheerio#4977](https://github.com/cheeriojs/cheerio/issues/4977)
+  - Pull Request: [fb55/encoding-sniffer#1206](https://github.com/fb55/encoding-sniffer/pull/1206)
+- **Action**: Wait for upstream fix, then update `cheerio` when new version is released
+- **Package**: `@agentforge/tools` (uses `cheerio@^1.0.0`)
+
+---
+
 ## 📚 Related Documentation
 
 - [ESLint v9 Flat Config](https://eslint.org/docs/latest/use/configure/configuration-files-new)
