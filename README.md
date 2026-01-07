@@ -4,7 +4,8 @@
 
 [![GitHub](https://img.shields.io/badge/GitHub-TVScoundrel%2Fagentforge-blue?logo=github)](https://github.com/TVScoundrel/agentforge)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.9-blue?logo=typescript)](https://www.typescriptlang.org/)
-[![Tests](https://img.shields.io/badge/tests-671%20passing-success)](./packages)
+[![Tests](https://img.shields.io/badge/tests-696%20passing-success)](./packages)
+[![Coverage](https://img.shields.io/badge/CLI%20coverage-98.11%25-brightgreen)](./packages/cli)
 [![License](https://img.shields.io/badge/license-MIT-green)](./LICENSE)
 
 **AgentForge** is a TypeScript framework that provides production-grade abstractions for building autonomous agents with LangGraph. It focuses on developer experience, type safety, and real-world production needs.
@@ -30,7 +31,7 @@
 - 📊 **Monitoring** - Health checks, profiling, alerts, audit logging
 - 🚀 **Deployment** - Docker, Kubernetes, CI/CD templates, multi-cloud guides
 - 🔒 **Type Safety** - Full TypeScript support with Zod schemas
-- 🧪 **Testing First** - Comprehensive test coverage (671 tests)
+- 🧪 **Testing First** - Comprehensive test coverage (696 tests, 98.11% CLI coverage)
 - 📚 **Documentation** - 10,000+ lines of guides, examples, and API docs
 
 
@@ -43,9 +44,9 @@
 |---------|-------------|--------|
 | [@agentforge/core](./packages/core) | Core abstractions (tools, registry, LangGraph utilities, middleware, streaming, resources, monitoring) | ✅ Complete (Phase 1, 2, 4 & 5) |
 | [@agentforge/patterns](./packages/patterns) | Agent patterns (ReAct, Plan-Execute, Reflection, Multi-Agent) | ✅ Complete (Phase 3) |
-| [@agentforge/tools](./packages/tools) | Standard tool library (web, file, data, utility tools) | ✅ Complete (Phase 6.3) |
+| [@agentforge/tools](./packages/tools) | Standard tool library (68 production-ready tools) | ✅ Complete (Phase 6.3) |
 | [@agentforge/testing](./packages/testing) | Testing utilities (mocks, assertions, fixtures) | ✅ Complete (Phase 6.2) |
-| [@agentforge/cli](./packages/cli) | CLI tool (scaffolding, dev server, testing) | ✅ Complete (Phase 6.1) |
+| [@agentforge/cli](./packages/cli) | CLI tool (156 tests, 98.11% coverage) | ✅ Complete (Phase 6.1) |
 
 ---
 
@@ -281,12 +282,12 @@ pnpm clean          # Clean all build artifacts
   - **5.5**: Deployment - Docker, Kubernetes, CI/CD, configuration management
   - 20 working examples demonstrating all features
 - ✅ **Phase 6**: Developer Experience
-  - **6.1**: CLI Tool - Project scaffolding, dev server, testing commands
+  - **6.1**: CLI Tool - 156 tests (98.11% coverage), 13 commands, 4 templates
   - **6.2**: Testing Utilities - Mocks, assertions, fixtures, test helpers
-  - **6.3**: Standard Tools - 20+ production-ready tools (web, file, data, utility)
-  - **6.4**: Documentation Site - Comprehensive guides, API docs, tutorials
+  - **6.3**: Standard Tools - 68 production-ready tools (web, file, data, utility)
+  - **6.4**: Documentation Site - 17 pages, comprehensive guides, API docs, tutorials
   - **6.5**: Templates & Examples - 4 applications + 2 framework integrations
-- **Total: 671 tests passing** with comprehensive coverage
+- **Total: 696 tests passing** with comprehensive coverage (98.11% CLI coverage)
 - **Documentation: 10,000+ lines** of guides, examples, and API docs
 - **Examples: 30+ files, 2,500+ lines** of real-world code
 
