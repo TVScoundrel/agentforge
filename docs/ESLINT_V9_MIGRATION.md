@@ -2,9 +2,9 @@
 
 > Complete migration of all AgentForge packages to ESLint v9 with flat config
 
-**Date**: January 7, 2026  
-**Status**: ✅ Complete  
-**Packages Migrated**: 5/5 (100%)
+**Date**: January 7, 2026
+**Status**: ✅ Complete (Including Root Package)
+**Packages Migrated**: 5/5 (100%) + Root Package
 
 ---
 
@@ -81,7 +81,16 @@ export default tseslint.config(
 - Updated `eslint.config.js` to use warnings instead of errors
 - Fixed regex escape errors in validation.ts
 
-### 3. Code Fixes
+### 3. Root Package
+- Upgraded ESLint from 8.56.0 to 9.17.0
+- Removed deprecated `@typescript-eslint/eslint-plugin` and `@typescript-eslint/parser`
+- Added `@eslint/js@^9.17.0` and `typescript-eslint@^8.19.1`
+- Updated all dev dependencies to latest versions
+- Updated root `eslint.config.js` to use modern flat config
+- Changed lint scripts to use `pnpm -r lint`
+- **Result**: ✅ No more ESLint 8 deprecation warnings!
+
+### 4. Code Fixes
 
 **packages/core/src/langgraph/persistence/checkpointer.ts**:
 - Added `eslint-disable-next-line` for empty interface
