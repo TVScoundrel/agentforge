@@ -133,11 +133,13 @@ export default defineConfig({
   },
 
   head: [
-    ['link', { rel: 'icon', type: 'image/svg+xml', href: '/logo.svg' }],
-    ['meta', { name: 'theme-color', content: '#3eaf7c' }],
+    ['link', { rel: 'icon', type: 'image/svg+xml', href: '/favicon.svg' }],
+    ['meta', { name: 'theme-color', content: '#667eea' }],
     ['meta', { name: 'og:type', content: 'website' }],
     ['meta', { name: 'og:locale', content: 'en' }],
-    ['meta', { name: 'og:site_name', content: 'AgentForge' }]
+    ['meta', { name: 'og:site_name', content: 'AgentForge' }],
+    ['meta', { name: 'og:image', content: '/logo.svg' }],
+    ['meta', { name: 'og:description', content: 'Production-ready AI agent framework built on LangGraph' }]
   ]
 });
 

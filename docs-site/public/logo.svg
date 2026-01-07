@@ -1,0 +1,69 @@
+<svg width="400" height="400" viewBox="0 0 400 400" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background circle with gradient -->
+  <defs>
+    <linearGradient id="bgGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#667eea;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#764ba2;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="accentGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#f093fb;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#f5576c;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Main circle background -->
+  <circle cx="200" cy="200" r="180" fill="url(#bgGradient)" opacity="0.1"/>
+  
+  <!-- Anvil base (representing "Forge") -->
+  <rect x="120" y="260" width="160" height="30" rx="5" fill="url(#bgGradient)"/>
+  
+  <!-- Anvil body -->
+  <path d="M 140 260 L 140 220 L 260 220 L 260 260 Z" fill="url(#bgGradient)"/>
+  
+  <!-- Anvil horn (left side) -->
+  <path d="M 140 220 L 120 200 L 120 220 Z" fill="url(#bgGradient)" opacity="0.8"/>
+  
+  <!-- Agent symbol - Neural network nodes -->
+  <g id="neural-network">
+    <!-- Top layer (3 nodes) -->
+    <circle cx="150" cy="120" r="12" fill="url(#accentGradient)"/>
+    <circle cx="200" cy="100" r="12" fill="url(#accentGradient)"/>
+    <circle cx="250" cy="120" r="12" fill="url(#accentGradient)"/>
+    
+    <!-- Middle layer (2 nodes) -->
+    <circle cx="175" cy="170" r="12" fill="url(#accentGradient)"/>
+    <circle cx="225" cy="170" r="12" fill="url(#accentGradient)"/>
+    
+    <!-- Connections (lines between nodes) -->
+    <line x1="150" y1="120" x2="175" y2="170" stroke="url(#accentGradient)" stroke-width="2" opacity="0.6"/>
+    <line x1="150" y1="120" x2="225" y2="170" stroke="url(#accentGradient)" stroke-width="2" opacity="0.6"/>
+    <line x1="200" y1="100" x2="175" y2="170" stroke="url(#accentGradient)" stroke-width="2" opacity="0.6"/>
+    <line x1="200" y1="100" x2="225" y2="170" stroke="url(#accentGradient)" stroke-width="2" opacity="0.6"/>
+    <line x1="250" y1="120" x2="175" y2="170" stroke="url(#accentGradient)" stroke-width="2" opacity="0.6"/>
+    <line x1="250" y1="120" x2="225" y2="170" stroke="url(#accentGradient)" stroke-width="2" opacity="0.6"/>
+    
+    <!-- Connection to anvil -->
+    <line x1="175" y1="170" x2="175" y2="220" stroke="url(#accentGradient)" stroke-width="3" opacity="0.6"/>
+    <line x1="225" y1="170" x2="225" y2="220" stroke="url(#accentGradient)" stroke-width="3" opacity="0.6"/>
+  </g>
+  
+  <!-- Hammer (representing the "forging" action) -->
+  <g id="hammer" transform="translate(280, 140) rotate(-30)">
+    <!-- Hammer head -->
+    <rect x="0" y="0" width="40" height="15" rx="2" fill="url(#bgGradient)"/>
+    <!-- Hammer handle -->
+    <rect x="15" y="15" width="10" height="50" rx="2" fill="url(#bgGradient)" opacity="0.8"/>
+  </g>
+  
+  <!-- Sparkles/particles (representing creation/forging) -->
+  <circle cx="290" cy="130" r="3" fill="#f5576c" opacity="0.8"/>
+  <circle cx="310" cy="150" r="2" fill="#f093fb" opacity="0.8"/>
+  <circle cx="300" cy="170" r="2.5" fill="#667eea" opacity="0.8"/>
+  <circle cx="270" cy="160" r="2" fill="#764ba2" opacity="0.8"/>
+  
+  <!-- Additional accent elements -->
+  <circle cx="100" cy="150" r="2" fill="#f5576c" opacity="0.6"/>
+  <circle cx="90" cy="180" r="3" fill="#f093fb" opacity="0.6"/>
+  <circle cx="320" cy="200" r="2" fill="#667eea" opacity="0.6"/>
+</svg>
+
