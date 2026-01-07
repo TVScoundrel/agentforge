@@ -39,7 +39,9 @@
 - **Phase 5**: Production Features (14 days) ✅
 - **Phase 6**: Developer Experience (14 days) ✅ (All sub-phases complete!)
 - **Phase 7**: Documentation Completion (8-10 days) 📚 PLANNED
-- **Total**: ~12 weeks (framework + docs)
+- **Phase 8**: Advanced Features 📋 FUTURE
+- **Phase 9**: Ecosystem 📋 FUTURE
+- **Total**: ~12 weeks (framework + docs) + future phases
 
 ---
 
@@ -1514,6 +1516,46 @@ Final quality assurance:
 - ✅ SEO-optimized
 
 **Total**: 35 complete documentation pages
+
+---
+
+---
+
+## Future Phases (Post-MVP)
+
+### Phase 7: Documentation Completion 📚
+
+**Status**: 📋 Planned (see above for details)
+**Priority**: High (for developer experience)
+**Duration**: 8-10 days
+
+Complete all missing documentation pages (18 pages) to provide comprehensive guides, tutorials, and examples for all AgentForge features.
+
+See [docs-site/DOCUMENTATION_ROADMAP.md](../docs-site/DOCUMENTATION_ROADMAP.md) for detailed tracking.
+
+### Phase 8: Advanced Features
+
+**Status**: 📋 Future
+**Priority**: Medium
+
+Potential advanced features:
+- Multi-modal support (vision, audio)
+- Advanced memory systems (vector stores, semantic search)
+- Agent collaboration patterns (hierarchical, swarm)
+- Custom LLM integrations (local models, custom APIs)
+- Advanced tool features (tool learning, dynamic tool generation)
+
+### Phase 9: Ecosystem
+
+**Status**: 📋 Future
+**Priority**: Low
+
+Community and ecosystem development:
+- Community tools registry
+- Plugin system
+- Integration marketplace
+- Example applications gallery
+- Community templates
 
 ---
 
