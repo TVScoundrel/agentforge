@@ -1,6 +1,6 @@
 # Documentation Site Roadmap (Phase 7)
 
-**Status**: 48% Complete (17/35 pages)
+**Status**: 60% Complete (21/35 pages)
 **Last Updated**: January 7, 2026
 **Phase**: 7 - Documentation Completion
 
@@ -54,11 +54,11 @@ This roadmap tracks the completion of the AgentForge documentation site (Phase 7
 - [ ] `/guide/concepts/state.md` - State management
 - [ ] `/guide/concepts/memory.md` - Memory & persistence
 
-#### Pattern Guides (0/4) - 0% ❌
-- [ ] `/guide/patterns/react.md` - ReAct pattern guide
-- [ ] `/guide/patterns/plan-execute.md` - Plan-Execute guide
-- [ ] `/guide/patterns/reflection.md` - Reflection guide
-- [ ] `/guide/patterns/multi-agent.md` - Multi-Agent guide
+#### Pattern Guides (4/4) - 100% ✅
+- [x] `/guide/patterns/react.md` - ReAct pattern guide
+- [x] `/guide/patterns/plan-execute.md` - Plan-Execute guide
+- [x] `/guide/patterns/reflection.md` - Reflection guide
+- [x] `/guide/patterns/multi-agent.md` - Multi-Agent guide
 
 #### Advanced Topics (0/4) - 0% ❌
 - [ ] `/guide/advanced/streaming.md` - Streaming & real-time
