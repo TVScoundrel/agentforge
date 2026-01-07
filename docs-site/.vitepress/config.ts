@@ -4,6 +4,9 @@ export default defineConfig({
   title: 'AgentForge',
   description: 'Production-ready AI agent framework built on LangGraph',
 
+  // GitHub Pages deployment base path
+  base: '/agentforge/',
+
   ignoreDeadLinks: true, // Allow dead links during development
 
   themeConfig: {
