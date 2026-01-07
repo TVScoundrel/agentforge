@@ -357,5 +357,5 @@ See the [Examples](/examples/react-agent) section for complete working examples 
 
 ## Type Definitions
 
-All exports include full TypeScript definitions. See the [source code](https://github.com/agentforge/agentforge/tree/main/packages/patterns/src) for complete type information.
+All exports include full TypeScript definitions. See the [source code](https://github.com/TVScoundrel/agentforge/tree/main/packages/patterns/src) for complete type information.
 

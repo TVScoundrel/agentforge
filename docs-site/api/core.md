@@ -261,5 +261,5 @@ metrics.histogram('response_time', 150);
 
 ## Type Definitions
 
-All exports include full TypeScript definitions. See the [source code](https://github.com/agentforge/agentforge/tree/main/packages/core/src) for complete type information.
+All exports include full TypeScript definitions. See the [source code](https://github.com/TVScoundrel/agentforge/tree/main/packages/core/src) for complete type information.
 

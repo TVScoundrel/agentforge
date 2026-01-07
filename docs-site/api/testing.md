@@ -279,5 +279,5 @@ describe('Calculator Agent', () => {
 
 ## Type Definitions
 
-All exports include full TypeScript definitions. See the [source code](https://github.com/agentforge/agentforge/tree/main/packages/testing/src) for complete type information.
+All exports include full TypeScript definitions. See the [source code](https://github.com/TVScoundrel/agentforge/tree/main/packages/testing/src) for complete type information.
 

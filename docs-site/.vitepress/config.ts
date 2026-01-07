@@ -106,7 +106,7 @@ export default defineConfig({
     },
 
     socialLinks: [
-      { icon: 'github', link: 'https://github.com/agentforge/agentforge' }
+      { icon: 'github', link: 'https://github.com/TVScoundrel/agentforge' }
     ],
 
     footer: {
@@ -119,7 +119,7 @@ export default defineConfig({
     },
 
     editLink: {
-      pattern: 'https://github.com/agentforge/agentforge/edit/main/docs-site/:path',
+      pattern: 'https://github.com/TVScoundrel/agentforge/edit/main/docs-site/:path',
       text: 'Edit this page on GitHub'
     }
   },

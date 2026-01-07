@@ -316,5 +316,5 @@ import {
 
 ## Complete Tool List
 
-See the [Tools README](https://github.com/agentforge/agentforge/tree/main/packages/tools) for the complete list of all 68 tools with detailed documentation.
+See the [Tools README](https://github.com/TVScoundrel/agentforge/tree/main/packages/tools) for the complete list of all 68 tools with detailed documentation.
 

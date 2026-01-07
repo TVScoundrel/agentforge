@@ -14,7 +14,7 @@ hero:
       link: /guide/getting-started
     - theme: alt
       text: View on GitHub
-      link: https://github.com/agentforge/agentforge
+      link: https://github.com/TVScoundrel/agentforge
     - theme: alt
       text: API Reference
       link: /api/core
@@ -123,7 +123,7 @@ Built-in resource management, monitoring, and deployment templates for productio
 
 ## Community
 
-- [GitHub Discussions](https://github.com/agentforge/agentforge/discussions)
+- [GitHub Discussions](https://github.com/TVScoundrel/agentforge/discussions)
 - [Discord Server](https://discord.gg/agentforge)
 - [Twitter](https://twitter.com/agentforge)
 
