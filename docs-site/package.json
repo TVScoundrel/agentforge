@@ -1,0 +1,25 @@
+{
+  "name": "@agentforge/docs",
+  "version": "0.1.0",
+  "description": "AgentForge documentation site",
+  "type": "module",
+  "scripts": {
+    "dev": "vitepress dev",
+    "build": "vitepress build",
+    "preview": "vitepress preview"
+  },
+  "keywords": [
+    "agentforge",
+    "documentation",
+    "ai",
+    "agents",
+    "langgraph"
+  ],
+  "author": "AgentForge Team",
+  "license": "MIT",
+  "devDependencies": {
+    "vitepress": "^1.5.0",
+    "vue": "^3.5.13"
+  },
+  "packageManager": "pnpm@10.26.0"
+}

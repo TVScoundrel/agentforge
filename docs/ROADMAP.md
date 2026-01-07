@@ -700,11 +700,11 @@ See [phase-6-design.md](./phase-6-design.md) for detailed design.
 ## Current Status
 
 **Phase**: 6 - Developer Experience 🚧 IN PROGRESS
-**Progress**: Phase 1 ✅, Phase 2 ✅, Phase 3 ✅, Phase 4 ✅, Phase 5 ✅, Phase 6.1 ✅, Phase 6.2 ✅, Phase 6.3 ✅
-**Current Focus**: Phase 6.3 Complete - Ready for Phase 6.4 (Documentation & Tutorials)
-**Next Milestone**: Phase 6.4 - Documentation & Tutorials
+**Progress**: Phase 1 ✅, Phase 2 ✅, Phase 3 ✅, Phase 4 ✅, Phase 5 ✅, Phase 6.1 ✅, Phase 6.2 ✅, Phase 6.3 ✅, Phase 6.4 ✅
+**Current Focus**: Phase 6.4 Complete - Ready for Phase 6.5 (Project Templates & Examples)
+**Next Milestone**: Phase 6.5 - Project Templates & Examples
 
-**Latest Updates** (2026-01-06):
+**Latest Updates** (2026-01-07):
 
 ### Phase 1 - Tool Registry ✅ COMPLETE
 - ✅ Phase 1.1: Tool Metadata Interface (16 tests)
@@ -1267,6 +1267,43 @@ See [phase-6-design.md](./phase-6-design.md) for detailed design.
   - ✅ Production-ready with proper error responses
 - **Phase 6.3 Complete: 68 production-ready tools, ~66 KB (ESM), ~70 KB (CJS)** ✅
 
+### Phase 6.4 - Documentation & Tutorials ✅ COMPLETE
+- ✅ **Documentation Site** (@agentforge/docs) (2026-01-07)
+  - ✅ VitePress 1.6.4 setup with TypeScript
+  - ✅ Site configuration with navigation and search
+  - ✅ Dark/light mode support
+  - ✅ Mobile responsive design
+  - ✅ Local search functionality
+  - ✅ Successfully builds in 2.3 seconds
+  - ✅ 17 HTML pages, 2.8 MB total size
+- ✅ **Getting Started Guide** (4 pages)
+  - ✅ What is AgentForge? (philosophy, features, comparisons)
+  - ✅ Getting Started (installation, first agent, common issues)
+  - ✅ Installation (requirements, packages, configuration)
+  - ✅ Quick Start (10-minute complete tutorial)
+- ✅ **API Reference** (5 pages)
+  - ✅ @agentforge/core (tools, middleware, streaming, resources, monitoring)
+  - ✅ @agentforge/patterns (ReAct, Plan-Execute, Reflection, Multi-Agent)
+  - ✅ @agentforge/cli (all commands, configuration, programmatic API)
+  - ✅ @agentforge/testing (mocks, helpers, assertions, fixtures)
+  - ✅ @agentforge/tools (all 68 tools with examples)
+- ✅ **Tutorials** (2 comprehensive tutorials)
+  - ✅ Your First Agent (15-minute weather assistant tutorial)
+  - ✅ Building Custom Tools (calculator, database, API, file system examples)
+- ✅ **Examples** (4 pattern examples)
+  - ✅ ReAct Agent (complete with streaming, persistence, error handling)
+  - ✅ Plan-Execute Agent (research and report generation)
+  - ✅ Reflection Agent (content creation with self-improvement)
+  - ✅ Multi-Agent System (specialized agents, workflows, communication)
+- ✅ **Features**
+  - ✅ Syntax highlighting with line numbers
+  - ✅ Code copy buttons
+  - ✅ Breadcrumb navigation
+  - ✅ Version selector
+  - ✅ Edit on GitHub links
+  - ✅ Hot reload in dev mode
+- **Phase 6.4 Complete: 17 pages, comprehensive documentation, production-ready site** ✅
+
 See [FRAMEWORK_DESIGN.md](./FRAMEWORK_DESIGN.md) for architecture details.
 See [PHASE_2_1_COMPLETE.md](./PHASE_2_1_COMPLETE.md) for Phase 2.1 details.
 See [PHASE_2_2_COMPLETE.md](./PHASE_2_2_COMPLETE.md) for Phase 2.2 details.
@@ -1278,4 +1315,5 @@ See [PHASE_3_1_5_SUMMARY.md](./PHASE_3_1_5_SUMMARY.md) for Phase 3.1.5 details.
 See [PHASE_6_1_COMPLETE.md](./PHASE_6_1_COMPLETE.md) for Phase 6.1 completion details.
 See [PHASE_6_1_PROGRESS.md](./PHASE_6_1_PROGRESS.md) for Phase 6.1 progress tracking.
 See [PHASE_6_3_SUMMARY.md](./PHASE_6_3_SUMMARY.md) for Phase 6.3 completion details.
+See [PHASE_6_4_SUMMARY.md](./PHASE_6_4_SUMMARY.md) for Phase 6.4 completion details.
 

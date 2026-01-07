@@ -1,0 +1,94 @@
+# Reflection Agent Example
+
+A Reflection agent that critiques and improves its own outputs through self-reflection.
+
+## Overview
+
+The Reflection pattern:
+1. **Generate** - Create initial response
+2. **Reflect** - Critique the response
+3. **Improve** - Generate improved version
+4. **Repeat** - Continue until quality threshold met
+
+## Complete Example
+
+```typescript
+import { createReflectionAgent } from '@agentforge/patterns';
+import { ChatOpenAI } from '@langchain/openai';
+import { webSearch, calculator } from '@agentforge/tools';
+
+const agent = createReflectionAgent({
+  llm: new ChatOpenAI({ model: 'gpt-4' }),
+  
+  tools: [webSearch, calculator],
+  
+  maxReflections: 3,
+  
+  reflectionPrompt: `Critique the previous response:
+- Is it accurate and complete?
+- Is it well-structured and clear?
+- Are there any errors or omissions?
+- How can it be improved?`,
+
+  improvementThreshold: 0.8 // Quality score 0-1
+});
+
+// Use the agent
+const result = await agent.invoke({
+  messages: [{
+    role: 'user',
+    content: 'Write a comprehensive blog post about the future of AI'
+  }]
+});
+
+console.log('Final Output:', result.messages[result.messages.length - 1].content);
+```
+
+## Output Example
+
+```
+📝 Initial Draft:
+AI is transforming industries...
+
+🤔 Reflection 1:
+The draft is too generic. It needs:
+- Specific examples
+- Recent developments
+- Expert opinions
+- Future predictions
+
+✍️ Improved Version 1:
+AI is transforming industries with recent breakthroughs like GPT-4...
+
+🤔 Reflection 2:
+Better, but still needs:
+- More concrete data
+- Balanced perspective
+- Actionable insights
+
+✍️ Final Version:
+[Comprehensive, well-researched blog post with examples, data, and insights]
+
+✅ Quality threshold met (0.85)
+```
+
+## When to Use Reflection
+
+Best for:
+- Content creation
+- Code generation
+- Report writing
+- Quality-critical tasks
+- Creative work
+
+## Key Features
+
+- ✅ **Self-Critique** - Identify weaknesses
+- ✅ **Iterative Improvement** - Multiple refinement cycles
+- ✅ **Quality Control** - Meet quality thresholds
+- ✅ **Learning** - Improve over iterations
+
+## Next Steps
+
+- [Multi-Agent System](/examples/multi-agent) - Combine with other patterns
+
