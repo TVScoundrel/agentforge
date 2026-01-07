@@ -1,6 +1,6 @@
 # Documentation Site Roadmap (Phase 7)
 
-**Status**: 60% Complete (21/35 pages)
+**Status**: 71% Complete (25/35 pages)
 **Last Updated**: January 7, 2026
 **Phase**: 7 - Documentation Completion
 
@@ -60,11 +60,11 @@ This roadmap tracks the completion of the AgentForge documentation site (Phase 7
 - [x] `/guide/patterns/reflection.md` - Reflection guide
 - [x] `/guide/patterns/multi-agent.md` - Multi-Agent guide
 
-#### Advanced Topics (0/4) - 0% ❌
-- [ ] `/guide/advanced/streaming.md` - Streaming & real-time
-- [ ] `/guide/advanced/resources.md` - Resource management
-- [ ] `/guide/advanced/monitoring.md` - Monitoring & observability
-- [ ] `/guide/advanced/deployment.md` - Deployment strategies
+#### Advanced Topics (4/4) - 100% ✅
+- [x] `/guide/advanced/streaming.md` - Streaming & real-time
+- [x] `/guide/advanced/resources.md` - Resource management
+- [x] `/guide/advanced/monitoring.md` - Monitoring & observability
+- [x] `/guide/advanced/deployment.md` - Deployment strategies
 
 ## Phase 7: Documentation Completion
 
