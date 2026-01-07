@@ -5,131 +5,156 @@ A multi-agent system where specialized agents work together to accomplish comple
 ## Overview
 
 The Multi-Agent pattern:
-1. **Coordinator** - Routes tasks to appropriate agents
-2. **Specialized Agents** - Each handles specific tasks
-3. **Communication** - Agents share information
-4. **Aggregation** - Combine results
+1. **Supervisor** - Routes tasks to appropriate workers
+2. **Specialized Workers** - Each handles specific tasks
+3. **Routing Strategy** - Determines task assignment
+4. **Aggregation** - Combines results
 
 ## Complete Example
 
 ```typescript
-import { 
-  createMultiAgentSystem,
-  createReActAgent,
-  createReflectionAgent 
-} from '@agentforge/patterns';
+import { MultiAgentSystemBuilder } from '@agentforge/patterns';
 import { ChatOpenAI } from '@langchain/openai';
-import { webSearch, calculator, fileWriter } from '@agentforge/tools';
+import { searchTool, calculatorTool, fileWriterTool } from '@agentforge/tools';
 
-// Create specialized agents
-const researchAgent = createReActAgent({
-  llm: new ChatOpenAI({ model: 'gpt-4' }),
-  tools: [webSearch],
-  systemPrompt: 'You are a research specialist. Find accurate information.'
-});
+const llm = new ChatOpenAI({ model: 'gpt-4' });
 
-const analysisAgent = createReActAgent({
-  llm: new ChatOpenAI({ model: 'gpt-4' }),
-  tools: [calculator],
-  systemPrompt: 'You are a data analyst. Analyze and interpret data.'
-});
-
-const writerAgent = createReflectionAgent({
-  llm: new ChatOpenAI({ model: 'gpt-4' }),
-  tools: [fileWriter],
-  systemPrompt: 'You are a professional writer. Create clear, engaging content.',
-  maxReflections: 2
-});
-
-// Create multi-agent system
-const system = createMultiAgentSystem({
-  agents: {
-    researcher: researchAgent,
-    analyst: analysisAgent,
-    writer: writerAgent
+// Create builder
+const builder = new MultiAgentSystemBuilder({
+  supervisor: {
+    llm,
+    strategy: 'skill-based',
   },
-  
-  coordinator: new ChatOpenAI({ model: 'gpt-4' }),
-  
-  workflow: 'sequential', // or 'parallel' or 'custom'
-  
-  maxRounds: 5
+  aggregator: {
+    llm,
+    systemPrompt: 'Combine results into a comprehensive report',
+  },
+  maxIterations: 10,
 });
 
-// Use the system
+// Register specialized workers
+builder.registerWorkers([
+  {
+    id: 'researcher',
+    name: 'Research Specialist',
+    description: 'Conducts research and gathers information',
+    capabilities: {
+      skills: ['research', 'web_search', 'data_collection'],
+      tools: ['search'],
+      available: true,
+    },
+    llm,
+    tools: [searchTool],
+    systemPrompt: 'You are a research specialist. Find accurate information.',
+  },
+  {
+    id: 'analyst',
+    name: 'Data Analyst',
+    description: 'Analyzes data and identifies patterns',
+    capabilities: {
+      skills: ['analysis', 'statistics', 'calculations'],
+      tools: ['calculator'],
+      available: true,
+    },
+    llm,
+    tools: [calculatorTool],
+    systemPrompt: 'You are a data analyst. Analyze and interpret data.',
+  },
+  {
+    id: 'writer',
+    name: 'Content Writer',
+    description: 'Creates professional reports and documents',
+    capabilities: {
+      skills: ['writing', 'documentation', 'reporting'],
+      tools: ['file_writer'],
+      available: true,
+    },
+    llm,
+    tools: [fileWriterTool],
+    systemPrompt: 'You are a professional writer. Create clear, engaging content.',
+  },
+]);
+
+// Build and use the system
+const system = builder.build();
+
 const result = await system.invoke({
-  messages: [{
-    role: 'user',
-    content: 'Create a market analysis report for AI startups in 2024'
-  }]
+  input: 'Create a market analysis report for AI startups in 2024',
 });
 
-console.log('Final Report:', result.messages[result.messages.length - 1].content);
+console.log('Final Report:', result.response);
 ```
 
 ## Output Example
 
 ```
-🎯 Coordinator: Routing to researcher agent...
+[Supervisor] Routing iteration 1/10
+[Supervisor] Routing to researcher: Best skill match with score 3 (skills: research, web_search, data_collection)
 
-🔍 Researcher: Searching for AI startup data...
-✅ Found: 150+ AI startups, $50B funding, key trends
+[Worker: researcher] Executing task...
+[Worker: researcher] Task completed
 
-🎯 Coordinator: Routing to analyst agent...
+[Supervisor] Routing iteration 2/10
+[Supervisor] Routing to analyst: Best skill match with score 2 (skills: analysis, statistics, calculations)
 
-📊 Analyst: Analyzing market data...
-✅ Growth rate: 45% YoY, Top sectors: Healthcare, Finance
+[Worker: analyst] Executing task...
+[Worker: analyst] Task completed
 
-🎯 Coordinator: Routing to writer agent...
+[Supervisor] Routing iteration 3/10
+[Supervisor] Routing to writer: Best skill match with score 2 (skills: writing, documentation, reporting)
 
-✍️ Writer: Creating report (Draft 1)...
-🤔 Writer: Reflecting on draft...
-✍️ Writer: Creating improved version...
-✅ Final report complete
+[Worker: writer] Executing task...
+[Worker: writer] Task completed
+
+[Supervisor] All tasks completed, moving to aggregation
+[Aggregator] Combining results from 3 workers
 
 📄 Final Report: [Comprehensive market analysis with data and insights]
 ```
 
-## Parallel Workflow
+## Routing Strategies
+
+### Skill-Based Routing
+
+Routes tasks based on matching worker skills:
 
 ```typescript
-const system = createMultiAgentSystem({
-  agents: {
-    researcher1: researchAgent,
-    researcher2: researchAgent,
-    researcher3: researchAgent
+const builder = new MultiAgentSystemBuilder({
+  supervisor: {
+    llm,
+    strategy: 'skill-based', // Routes by matching skills
   },
-  coordinator: new ChatOpenAI({ model: 'gpt-4' }),
-  workflow: 'parallel' // Execute in parallel
-});
-
-// All agents work simultaneously
-const result = await system.invoke({
-  messages: [{
-    role: 'user',
-    content: 'Research AI, blockchain, and quantum computing trends'
-  }]
+  aggregator: { llm },
 });
 ```
 
-## Custom Workflow
+### Round-Robin Routing
+
+Distributes tasks evenly across workers:
 
 ```typescript
-const system = createMultiAgentSystem({
-  agents: {
-    researcher: researchAgent,
-    analyst: analysisAgent,
-    writer: writerAgent
+const builder = new MultiAgentSystemBuilder({
+  supervisor: {
+    llm,
+    strategy: 'round-robin', // Distributes evenly
   },
-  coordinator: new ChatOpenAI({ model: 'gpt-4' }),
-  workflow: 'custom',
-  
-  // Define custom workflow
-  workflowGraph: (builder) => {
-    builder
-      .addNode('research', 'researcher')
-      .addNode('analyze', 'analyst')
-      .addNode('write', 'writer')
+  aggregator: { llm },
+});
+```
+
+### LLM-Based Routing
+
+Let the LLM decide which worker to route to:
+
+```typescript
+const builder = new MultiAgentSystemBuilder({
+  supervisor: {
+    llm,
+    strategy: 'llm-based', // LLM decides routing
+    systemPrompt: 'Route tasks based on worker expertise and current workload',
+  },
+  aggregator: { llm },
+});
       .addEdge('research', 'analyze')
       .addEdge('analyze', 'write')
       .addConditionalEdge('write', (state) => {

@@ -217,43 +217,55 @@ console.log(result.response); // Final refined response
 Coordinate specialized agents:
 
 ```typescript
-import { createMultiAgentSystem, registerWorkers } from '@agentforge/patterns';
+import { MultiAgentSystemBuilder } from '@agentforge/patterns';
 import { ChatOpenAI } from '@langchain/openai';
 
 const llm = new ChatOpenAI({ model: 'gpt-4' });
 
-// Create the system
-const system = createMultiAgentSystem({
+// Create builder
+const builder = new MultiAgentSystemBuilder({
   supervisor: {
     llm,
-    routingStrategy: 'skill-based', // or 'llm-based', 'round-robin', etc.
+    strategy: 'skill-based', // or 'llm-based', 'round-robin', etc.
   },
-  workers: [],
   aggregator: { llm },
 });
 
 // Register specialized workers
-registerWorkers(system, [
+builder.registerWorkers([
   {
-    name: 'tech_support',
+    id: 'tech_support',
+    name: 'Tech Support',
     description: 'Handles technical issues',
-    capabilities: ['technical', 'troubleshooting'],
+    capabilities: {
+      skills: ['technical', 'troubleshooting', 'debugging'],
+      tools: ['diagnostic', 'troubleshoot'],
+      available: true,
+    },
+    llm,
     tools: [diagnosticTool, troubleshootTool],
   },
   {
-    name: 'billing_support',
+    id: 'billing_support',
+    name: 'Billing Support',
     description: 'Handles billing inquiries',
-    capabilities: ['billing', 'payments'],
+    capabilities: {
+      skills: ['billing', 'payments', 'refunds'],
+      tools: ['account_check', 'refund_process'],
+      available: true,
+    },
+    llm,
     tools: [checkAccountTool, processRefundTool],
   },
 ]);
 
-// Use the system
+// Build and use the system
+const system = builder.build();
+
 const result = await system.invoke({
   input: 'My app keeps crashing and I need a refund',
 });
 
-console.log(result.workerResults); // Results from each worker
 console.log(result.response); // Aggregated response
 ```
 

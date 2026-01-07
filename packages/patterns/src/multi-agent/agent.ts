@@ -6,11 +6,12 @@
  * @module patterns/multi-agent/agent
  */
 
-import { StateGraph, END } from '@langchain/langgraph';
+import { StateGraph, END, CompiledStateGraph } from '@langchain/langgraph';
 import { MultiAgentState } from './state.js';
 import type { MultiAgentStateType } from './state.js';
-import type { MultiAgentSystemConfig, MultiAgentRouter } from './types.js';
+import type { MultiAgentSystemConfig, MultiAgentRouter, WorkerConfig } from './types.js';
 import { createSupervisorNode, createWorkerNode, createAggregatorNode } from './nodes.js';
+import type { WorkerCapabilities } from './schemas.js';
 
 /**
  * Create a multi-agent coordination system
@@ -71,10 +72,7 @@ export function createMultiAgentSystem(config: MultiAgentSystemConfig) {
     verbose = false,
   } = config;
 
-  // Validate configuration
-  if (workers.length === 0) {
-    throw new Error('At least one worker must be configured');
-  }
+  // Note: Empty workers array is allowed - workers can be registered later with registerWorkers()
 
   // Create the graph
   // @ts-expect-error - LangGraph's complex generic types don't infer well with createStateAnnotation
@@ -88,8 +86,10 @@ export function createMultiAgentSystem(config: MultiAgentSystemConfig) {
   });
   workflow.addNode('supervisor', supervisorNode);
 
-  // Add worker nodes
+  // Add worker nodes and collect capabilities
   const workerIds: string[] = [];
+  const workerCapabilities: Record<string, WorkerCapabilities> = {};
+
   for (const workerConfig of workers) {
     const workerNode = createWorkerNode({
       ...workerConfig,
@@ -97,6 +97,9 @@ export function createMultiAgentSystem(config: MultiAgentSystemConfig) {
     });
     workflow.addNode(workerConfig.id, workerNode);
     workerIds.push(workerConfig.id);
+
+    // Store worker capabilities for state initialization
+    workerCapabilities[workerConfig.id] = workerConfig.capabilities;
   }
 
   // Add aggregator node
@@ -159,18 +162,219 @@ export function createMultiAgentSystem(config: MultiAgentSystemConfig) {
   // @ts-expect-error - LangGraph's complex generic types don't infer well with createStateAnnotation
   workflow.addConditionalEdges('aggregator', aggregatorRouter, [END]);
 
-  // Compile and return
-  return workflow.compile();
+  // Compile the graph
+  const compiled = workflow.compile();
+
+  // Wrap the invoke method to inject worker capabilities into the initial state
+  const originalInvoke = compiled.invoke.bind(compiled);
+  compiled.invoke = async function(input: Partial<MultiAgentStateType>, config?: any) {
+    // Merge worker capabilities with any workers in the input
+    const mergedInput = {
+      ...input,
+      workers: {
+        ...workerCapabilities,
+        ...(input.workers || {}),
+      },
+    };
+
+    return originalInvoke(mergedInput, config);
+  } as any;
+
+  return compiled;
 }
 
 /**
- * Helper function to register workers dynamically in state
+ * Multi-agent system builder for dynamic worker registration
  *
- * @param workers - Worker configurations
+ * This builder allows you to register workers before compiling the graph.
+ * Once compiled, the graph is immutable and workers cannot be added.
+ */
+export class MultiAgentSystemBuilder {
+  private config: MultiAgentSystemConfig;
+  private additionalWorkers: WorkerConfig[] = [];
+  private compiled: boolean = false;
+
+  constructor(config: Omit<MultiAgentSystemConfig, 'workers'> & { workers?: WorkerConfig[] }) {
+    this.config = {
+      ...config,
+      workers: config.workers || [],
+    };
+  }
+
+  /**
+   * Register workers with the system builder
+   *
+   * @param workers - Array of worker configurations
+   * @returns this builder for chaining
+   *
+   * @example
+   * ```typescript
+   * const builder = new MultiAgentSystemBuilder({
+   *   supervisor: { llm, strategy: 'skill-based' },
+   *   aggregator: { llm },
+   * });
+   *
+   * builder.registerWorkers([
+   *   {
+   *     name: 'math_worker',
+   *     capabilities: ['math', 'calculations'],
+   *     tools: [calculatorTool],
+   *   },
+   * ]);
+   *
+   * const system = builder.build();
+   * ```
+   */
+  registerWorkers(workers: Array<{
+    name: string;
+    description?: string;
+    capabilities: string[];
+    tools?: any[];
+    systemPrompt?: string;
+    llm?: any;
+  }>): this {
+    if (this.compiled) {
+      throw new Error('Cannot register workers after the system has been compiled');
+    }
+
+    // Convert to WorkerConfig format
+    for (const worker of workers) {
+      this.additionalWorkers.push({
+        id: worker.name,
+        capabilities: {
+          skills: worker.capabilities,
+          tools: worker.tools?.map(t => t.name || 'unknown') || [],
+          available: true,
+          currentWorkload: 0,
+        },
+        llm: worker.llm || this.config.supervisor.llm,
+        tools: worker.tools,
+        systemPrompt: worker.systemPrompt,
+      });
+    }
+    return this;
+  }
+
+  /**
+   * Build and compile the multi-agent system
+   *
+   * @returns Compiled LangGraph workflow
+   */
+  build() {
+    if (this.compiled) {
+      throw new Error('System has already been compiled');
+    }
+
+    // Merge configured workers with registered workers
+    const allWorkers = [...this.config.workers, ...this.additionalWorkers];
+
+    if (allWorkers.length === 0) {
+      throw new Error('At least one worker must be registered before building the system');
+    }
+
+    this.compiled = true;
+
+    return createMultiAgentSystem({
+      ...this.config,
+      workers: allWorkers,
+    });
+  }
+}
+
+/**
+ * Extended multi-agent system with worker registration support
+ */
+export interface MultiAgentSystemWithRegistry extends CompiledStateGraph<MultiAgentStateType, Partial<MultiAgentStateType>, '__start__' | 'supervisor' | 'aggregator' | string> {
+  _workerRegistry?: Record<string, WorkerCapabilities>;
+  _originalInvoke?: typeof CompiledStateGraph.prototype.invoke;
+}
+
+/**
+ * Register workers with a compiled multi-agent system
+ *
+ * **Important**: This function only registers worker *capabilities* in the state.
+ * It does NOT add worker nodes to the graph (which is impossible after compilation).
+ *
+ * This means:
+ * - Workers must already exist as nodes in the compiled graph
+ * - This function only updates their capabilities in the state
+ * - For true dynamic worker registration, use `MultiAgentSystemBuilder` instead
+ *
+ * **Recommended**: Use `MultiAgentSystemBuilder` for a cleaner approach:
+ * ```typescript
+ * const builder = new MultiAgentSystemBuilder({
+ *   supervisor: { llm, strategy: 'skill-based' },
+ *   aggregator: { llm },
+ * });
+ *
+ * builder.registerWorkers([...]);
+ * const system = builder.build();
+ * ```
+ *
+ * @param system - The compiled multi-agent system
+ * @param workers - Array of worker configurations
+ *
+ * @deprecated Use `MultiAgentSystemBuilder` instead for proper worker registration
+ */
+export function registerWorkers(
+  system: MultiAgentSystemWithRegistry,
+  workers: Array<{
+    name: string;
+    description?: string;
+    capabilities: string[];
+    tools?: any[];
+    systemPrompt?: string;
+  }>
+): void {
+  console.warn(
+    '[AgentForge] registerWorkers() on a compiled system only updates worker capabilities in state.\n' +
+    'It does NOT add worker nodes to the graph. Use MultiAgentSystemBuilder for proper worker registration.\n' +
+    'See: https://github.com/agentforge/agentforge/blob/main/packages/patterns/docs/multi-agent-pattern.md'
+  );
+
+  // Initialize registry if it doesn't exist
+  if (!system._workerRegistry) {
+    system._workerRegistry = {};
+  }
+
+  // Convert worker configs to capabilities format
+  for (const worker of workers) {
+    system._workerRegistry[worker.name] = {
+      skills: worker.capabilities,
+      tools: worker.tools?.map(t => t.name || 'unknown') || [],
+      available: true,
+      currentWorkload: 0,
+    };
+  }
+
+  // Wrap the invoke method to inject workers into state (only once)
+  if (!system._originalInvoke) {
+    system._originalInvoke = system.invoke.bind(system);
+
+    system.invoke = async function(input: Partial<MultiAgentStateType>, config?: any) {
+      // Merge registered workers with any workers in the input
+      const mergedInput = {
+        ...input,
+        workers: {
+          ...(system._workerRegistry || {}),
+          ...(input.workers || {}),
+        },
+      };
+
+      return system._originalInvoke!(mergedInput, config);
+    } as any;
+  }
+}
+
+/**
+ * Helper function to create workers registry for initial state
+ *
+ * @deprecated Use registerWorkers(system, workers) instead
+ * @param workers - Worker configurations with id and capabilities
  * @returns Workers registry for initial state
  */
-export function registerWorkers(workers: Array<{ id: string; capabilities: any }>) {
-  const registry: Record<string, any> = {};
+export function createWorkersRegistry(workers: Array<{ id: string; capabilities: WorkerCapabilities }>) {
+  const registry: Record<string, WorkerCapabilities> = {};
   for (const worker of workers) {
     registry[worker.id] = worker.capabilities;
   }

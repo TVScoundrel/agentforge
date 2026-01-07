@@ -5,6 +5,7 @@
 ## Table of Contents
 
 - [Overview](#overview)
+- [Quick Start](#quick-start)
 - [When to Use](#when-to-use)
 - [Architecture](#architecture)
 - [Core Concepts](#core-concepts)
@@ -33,6 +34,97 @@ Input → Supervisor → Worker(s) → Aggregator → Output
          ↓                ↓
     Routing Logic    Specialized
                      Execution
+```
+
+## Quick Start
+
+### Using MultiAgentSystemBuilder (Recommended)
+
+The builder pattern allows you to dynamically register workers before compiling the system:
+
+```typescript
+import { MultiAgentSystemBuilder } from '@agentforge/patterns';
+import { ChatOpenAI } from '@langchain/openai';
+
+const llm = new ChatOpenAI({ modelName: 'gpt-4' });
+
+// Create builder
+const builder = new MultiAgentSystemBuilder({
+  supervisor: {
+    llm,
+    strategy: 'skill-based',
+  },
+  aggregator: {
+    llm,
+  },
+});
+
+// Register workers dynamically
+builder.registerWorkers([
+  {
+    id: 'math_specialist',
+    name: 'Math Specialist',
+    description: 'Solves mathematical problems',
+    capabilities: {
+      skills: ['mathematics', 'calculations', 'algebra'],
+      tools: ['calculator'],
+      available: true,
+    },
+    llm,
+    tools: [calculatorTool],
+  },
+  {
+    id: 'researcher',
+    name: 'Researcher',
+    description: 'Conducts research and gathers information',
+    capabilities: {
+      skills: ['research', 'web_search', 'data_collection'],
+      tools: ['search', 'fetch'],
+      available: true,
+    },
+    llm,
+    tools: [searchTool, fetchTool],
+  },
+]);
+
+// Build the system
+const system = builder.build();
+
+// Use the system
+const result = await system.invoke({
+  input: 'What is the square root of 144?',
+});
+
+console.log(result.response);
+```
+
+### Using createMultiAgentSystem (Static Workers)
+
+For systems with a fixed set of workers, you can use the factory function:
+
+```typescript
+import { createMultiAgentSystem } from '@agentforge/patterns';
+
+const system = createMultiAgentSystem({
+  supervisor: {
+    llm,
+    strategy: 'skill-based',
+  },
+  workers: [
+    {
+      id: 'math_specialist',
+      name: 'Math Specialist',
+      capabilities: { skills: ['math'], tools: ['calculator'], available: true },
+      llm,
+      tools: [calculatorTool],
+    },
+  ],
+  aggregator: { llm },
+});
+
+const result = await system.invoke({
+  input: 'Calculate 123 * 456',
+});
 ```
 
 ## When to Use
@@ -305,12 +397,98 @@ const system = createMultiAgentSystem({
 
 ## API Reference
 
-### createMultiAgentSystem()
+### MultiAgentSystemBuilder (Recommended)
 
-Creates a complete multi-agent coordination system.
+Builder class for creating multi-agent systems with dynamic worker registration.
 
 ```typescript
-function createMultiAgentSystem(config: MultiAgentConfig): CompiledStateGraph
+class MultiAgentSystemBuilder {
+  constructor(config: Omit<MultiAgentSystemConfig, 'workers'>);
+  registerWorkers(workers: WorkerConfig[]): void;
+  build(): CompiledStateGraph;
+}
+```
+
+**Constructor Parameters**:
+
+```typescript
+interface MultiAgentSystemConfig {
+  supervisor: SupervisorConfig;
+  aggregator?: AggregatorConfig;
+  maxIterations?: number;
+  verbose?: boolean;
+}
+
+interface SupervisorConfig {
+  llm: BaseChatModel;
+  strategy: RoutingStrategy;
+  systemPrompt?: string;
+}
+
+interface AggregatorConfig {
+  llm: BaseChatModel;
+  systemPrompt?: string;
+}
+```
+
+**Methods**:
+
+#### registerWorkers(workers: WorkerConfig[])
+
+Registers workers with the system. Must be called before `build()`.
+
+```typescript
+interface WorkerConfig {
+  id: string;
+  name: string;
+  description: string;
+  capabilities: WorkerCapabilities;
+  llm: BaseChatModel;
+  tools: StructuredTool[];
+  systemPrompt?: string;
+}
+
+interface WorkerCapabilities {
+  skills: string[];
+  tools: string[];
+  available: boolean;
+}
+```
+
+#### build(): CompiledStateGraph
+
+Compiles the system into an executable graph. After calling `build()`, the system is immutable and workers cannot be added.
+
+**Example**:
+
+```typescript
+const builder = new MultiAgentSystemBuilder({
+  supervisor: { llm, strategy: 'skill-based' },
+  aggregator: { llm },
+  maxIterations: 10,
+  verbose: true,
+});
+
+builder.registerWorkers([
+  {
+    id: 'worker1',
+    name: 'Worker 1',
+    description: 'First worker',
+    capabilities: { skills: ['skill1'], tools: ['tool1'], available: true },
+    llm,
+    tools: [tool1],
+  },
+]);
+
+const system = builder.build();
+```
+
+### createMultiAgentSystem()
+
+Creates a complete multi-agent coordination system with a fixed set of workers.
+
+```typescript
+function createMultiAgentSystem(config: MultiAgentSystemConfig): CompiledStateGraph
 ```
 
 **Parameters**:
@@ -351,15 +529,36 @@ const system = createMultiAgentSystem({
 });
 ```
 
-### registerWorkers()
+### registerWorkers() (Deprecated)
 
-Registers workers with the multi-agent system.
+> ⚠️ **DEPRECATED**: This function only updates worker capabilities in the state, but does not add worker nodes to the graph. Use `MultiAgentSystemBuilder` instead for proper dynamic worker registration.
+
+Registers workers with the multi-agent system. This function has a fundamental limitation: it can only update the worker capabilities in the state, but cannot add new nodes to the compiled graph (LangGraph graphs are immutable after compilation).
 
 ```typescript
 function registerWorkers(
   system: CompiledStateGraph,
   workers: WorkerConfig[]
 ): void
+```
+
+**Limitations**:
+- ❌ Does NOT add worker nodes to the graph
+- ❌ Only updates worker capabilities in state
+- ❌ Workers must already exist as nodes in the graph
+- ✅ Can update capabilities of existing workers
+
+**Recommended Alternative**: Use `MultiAgentSystemBuilder` instead:
+
+```typescript
+// ❌ Old way (deprecated)
+const system = createMultiAgentSystem({ workers: [] });
+registerWorkers(system, [worker1, worker2]); // Only updates state, no nodes added!
+
+// ✅ New way (recommended)
+const builder = new MultiAgentSystemBuilder({ supervisor, aggregator });
+builder.registerWorkers([worker1, worker2]); // Properly adds nodes
+const system = builder.build();
 ```
 
 **Parameters**:
@@ -374,7 +573,7 @@ interface WorkerConfig {
 }
 ```
 
-**Example**:
+**Example** (for updating existing workers only):
 
 ```typescript
 registerWorkers(system, [
@@ -479,41 +678,54 @@ const aggregator = createAggregatorNode({
 
 ## Examples
 
-### Example 1: Basic Coordination
+### Example 1: Basic Coordination with Builder
 
 ```typescript
-import { createMultiAgentSystem, registerWorkers } from '@agentforge/patterns';
+import { MultiAgentSystemBuilder } from '@agentforge/patterns';
 import { ChatOpenAI } from '@langchain/openai';
 
 const llm = new ChatOpenAI({ modelName: 'gpt-4' });
 
-// Create system
-const system = createMultiAgentSystem({
+// Create builder
+const builder = new MultiAgentSystemBuilder({
   supervisor: {
     llm,
-    routingStrategy: 'skill-based',
+    strategy: 'skill-based',
   },
-  workers: [],
   aggregator: { llm },
 });
 
 // Register workers
-registerWorkers(system, [
+builder.registerWorkers([
   {
-    name: 'math_expert',
+    id: 'math_expert',
+    name: 'Math Expert',
     description: 'Solves mathematical problems',
-    capabilities: ['mathematics', 'calculations'],
+    capabilities: {
+      skills: ['mathematics', 'calculations', 'arithmetic'],
+      tools: ['calculator'],
+      available: true,
+    },
+    llm,
     tools: [calculatorTool],
   },
   {
-    name: 'weather_expert',
+    id: 'weather_expert',
+    name: 'Weather Expert',
     description: 'Provides weather information',
-    capabilities: ['weather', 'forecasts'],
+    capabilities: {
+      skills: ['weather', 'forecasts', 'meteorology'],
+      tools: ['weather_api'],
+      available: true,
+    },
+    llm,
     tools: [weatherTool],
   },
 ]);
 
-// Execute
+// Build and execute
+const system = builder.build();
+
 const result = await system.invoke({
   input: 'What is 25 * 4 and what is the weather in Paris?',
 });
@@ -521,60 +733,77 @@ const result = await system.invoke({
 console.log(result.response);
 ```
 
-### Example 2: Customer Support
+### Example 2: Customer Support with Static Workers
+
+For systems with a fixed set of workers, you can use `createMultiAgentSystem`:
 
 ```typescript
 const system = createMultiAgentSystem({
   supervisor: {
     llm,
-    routingStrategy: 'llm-based',
+    strategy: 'llm-based',
     systemPrompt: `Route customer inquiries:
       - Technical issues → tech_support
       - Billing questions → billing_support
       - General questions → general_support`,
   },
-  workers: [],
+  workers: [
+    {
+      id: 'tech_support',
+      name: 'Tech Support',
+      description: 'Handles technical issues',
+      capabilities: {
+        skills: ['technical', 'troubleshooting', 'debugging'],
+        tools: ['diagnostic', 'troubleshoot'],
+        available: true,
+      },
+      llm,
+      tools: [diagnosticTool, troubleshootTool],
+    },
+    {
+      id: 'billing_support',
+      name: 'Billing Support',
+      description: 'Handles billing inquiries',
+      capabilities: {
+        skills: ['billing', 'payments', 'refunds'],
+        tools: ['account_check', 'refund_process'],
+        available: true,
+      },
+      llm,
+      tools: [checkAccountTool, processRefundTool],
+    },
+    {
+      id: 'general_support',
+      name: 'General Support',
+      description: 'Handles general questions',
+      capabilities: {
+        skills: ['general', 'faq', 'information'],
+        tools: ['faq_search', 'ticket_create'],
+        available: true,
+      },
+      llm,
+      tools: [faqSearchTool, createTicketTool],
+    },
+  ],
   aggregator: {
     llm,
     systemPrompt: 'Provide helpful, empathetic customer support',
   },
 });
 
-registerWorkers(system, [
-  {
-    name: 'tech_support',
-    description: 'Handles technical issues',
-    capabilities: ['technical', 'troubleshooting'],
-    tools: [diagnosticTool, troubleshootTool],
-  },
-  {
-    name: 'billing_support',
-    description: 'Handles billing inquiries',
-    capabilities: ['billing', 'payments'],
-    tools: [checkAccountTool, processRefundTool],
-  },
-  {
-    name: 'general_support',
-    description: 'Handles general questions',
-    capabilities: ['general', 'faq'],
-    tools: [faqSearchTool, createTicketTool],
-  },
-]);
-
 const result = await system.invoke({
   input: 'My app keeps crashing when I upload files',
 });
 ```
 
-### Example 3: Research Team
+### Example 3: Research Team with Builder
 
 ```typescript
-const system = createMultiAgentSystem({
+const builder = new MultiAgentSystemBuilder({
   supervisor: {
     llm,
-    routingStrategy: 'skill-based',
+    strategy: 'skill-based',
   },
-  workers: [],
   aggregator: {
     llm,
     systemPrompt: 'Synthesize research findings into comprehensive report',
@@ -582,9 +811,10 @@ const system = createMultiAgentSystem({
   maxIterations: 10,
 });
 
-registerWorkers(system, [
+builder.registerWorkers([
   {
-    name: 'data_collector',
+    id: 'data_collector',
+    name: 'Data Collector',
     description: 'Gathers information from sources',
     capabilities: ['search', 'data_collection'],
     tools: [searchTool, fetchDataTool],
@@ -817,21 +1047,25 @@ const parallelWorkflow = new StateGraph({ channels: MultiAgentState })
 
 ### Dynamic Worker Registration
 
-Add workers dynamically:
+Use `MultiAgentSystemBuilder` for dynamic worker registration:
 
 ```typescript
-const system = createMultiAgentSystem({
-  supervisor: { llm, routingStrategy: 'skill-based' },
-  workers: [],
+const builder = new MultiAgentSystemBuilder({
+  supervisor: { llm, strategy: 'skill-based' },
   aggregator: { llm },
 });
 
 // Register initial workers
-registerWorkers(system, [worker1Config, worker2Config]);
+builder.registerWorkers([worker1Config, worker2Config]);
 
-// Add more workers later
-registerWorkers(system, [worker3Config]);
+// Add more workers before building
+builder.registerWorkers([worker3Config]);
+
+// Build the system (after this, no more workers can be added)
+const system = builder.build();
 ```
+
+**Important**: Workers must be registered BEFORE calling `build()`. Once the system is compiled, it's immutable and workers cannot be added.
 
 ### Worker Priority
 

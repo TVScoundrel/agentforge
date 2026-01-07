@@ -72,4 +72,5 @@ export {
 export {
   createMultiAgentSystem,
   registerWorkers,
+  MultiAgentSystemBuilder,
 } from './agent.js';

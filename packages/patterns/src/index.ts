@@ -180,4 +180,5 @@ export {
   // Agent creation
   createMultiAgentSystem,
   registerWorkers,
+  MultiAgentSystemBuilder,
 } from './multi-agent/index.js';
