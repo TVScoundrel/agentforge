@@ -34,3 +34,7 @@ pnpm-debug.log*
 dist
 .env
 .DS_Store
+
+# Learning playground (local experiments, not tracked)
+playground/
+learning/
