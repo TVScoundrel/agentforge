@@ -8,8 +8,8 @@ build/
 *.tsbuildinfo
 
 # VitePress
-.vitepress/dist/
-.vitepress/cache/
+docs-site/.vitepress/dist/
+docs-site/.vitepress/cache/
 
 # Testing
 coverage/
