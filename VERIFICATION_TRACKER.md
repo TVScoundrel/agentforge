@@ -172,7 +172,12 @@
 
 ### Suggestions for Improvement
 ```
-[Ideas for making the docs better]
+[Ideas for making the docs better for your future users]
+```
+
+### Questions to Research
+```
+[Things you need to look up or verify in the codebase]
 ```
 
 ---

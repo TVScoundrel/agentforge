@@ -328,10 +328,11 @@ As you verify, you'll learn:
 - Discuss with team
 
 ### Unclear Issues
-- Mark as "Needs Clarification"
-- Add questions to tracker
-- Continue with verification
-- Come back later
+- Mark as "Needs Research"
+- Check the actual codebase implementation
+- Look at the source code
+- Test different approaches
+- Document what you find
 
 ---
 
@@ -381,11 +382,13 @@ You're done when:
 
 ---
 
-## 📞 Need Help?
+## 📝 Notes for Future You
 
-- **Discord**: https://discord.gg/U9twuFu4PQ
-- **GitHub Discussions**: https://github.com/TVScoundrel/agentforge/discussions
-- **GitHub Issues**: For bugs and problems
+As you verify, document:
+- **Confusing parts** - Areas that need better explanation
+- **Missing examples** - Where more examples would help
+- **Common patterns** - Things you see repeated
+- **Improvement ideas** - How to make docs better for users
 
 ---
 
