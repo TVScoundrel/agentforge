@@ -18,8 +18,6 @@ const agent = createReActAgent({
   systemPrompt: 'You are a helpful AI assistant API.',
 });
 
-const compiledAgent = agent.compile();
-
 // POST /api/agent/chat
 router.post('/chat', async (req, res) => {
   try {
@@ -31,7 +29,7 @@ router.post('/chat', async (req, res) => {
 
     logger.info('Processing chat request');
 
-    const result = await compiledAgent.invoke({
+    const result = await agent.invoke({
       messages: [{ role: 'user', content: message }],
     });
 

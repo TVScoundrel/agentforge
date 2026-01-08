@@ -23,7 +23,6 @@ export async function chatCommand(options: ChatOptions) {
     systemPrompt: 'You are a helpful AI assistant in a CLI chat session.',
   });
 
-  const compiledAgent = agent.compile();
   const messages: any[] = [];
 
   while (true) {
@@ -49,7 +48,7 @@ export async function chatCommand(options: ChatOptions) {
     try {
       messages.push({ role: 'user', content: message });
 
-      const result = await compiledAgent.invoke({ messages });
+      const result = await agent.invoke({ messages });
       const response = result.messages[result.messages.length - 1].content;
 
       messages.push({ role: 'assistant', content: response });

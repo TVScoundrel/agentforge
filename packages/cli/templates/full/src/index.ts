@@ -54,12 +54,9 @@ async function main() {
     maxIterations: 10,
   });
 
-  // Compile the agent
-  const compiledAgent = agent.compile();
-
   // Run the agent
   logger.info('Running agent...');
-  const result = await compiledAgent.invoke({
+  const result = await agent.invoke({
     messages: [
       {
         role: 'user',
