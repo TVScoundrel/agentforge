@@ -40,7 +40,7 @@ describe('Multi-Agent System Factory', () => {
       expect(typeof system.invoke).toBe('function');
     });
 
-    it('should throw error if no workers configured', () => {
+    it('should allow empty workers array (workers can be registered later)', () => {
       const config: MultiAgentSystemConfig = {
         supervisor: {
           strategy: 'round-robin',
@@ -48,8 +48,9 @@ describe('Multi-Agent System Factory', () => {
         workers: [],
       };
 
-      expect(() => createMultiAgentSystem(config))
-        .toThrow('At least one worker must be configured');
+      const system = createMultiAgentSystem(config);
+      expect(system).toBeDefined();
+      expect(typeof system.invoke).toBe('function');
     });
 
     it('should create system with aggregator', () => {
@@ -126,30 +127,41 @@ describe('Multi-Agent System Factory', () => {
 
   describe('registerWorkers', () => {
     it('should create workers registry', () => {
+      const config: MultiAgentSystemConfig = {
+        supervisor: {
+          strategy: 'round-robin',
+        },
+        workers: [
+          {
+            id: 'initial',
+            capabilities: {
+              skills: ['initial'],
+              tools: [],
+              available: true,
+              currentWorkload: 0,
+            },
+          },
+        ],
+      };
+
+      const system = createMultiAgentSystem(config);
+
       const workers = [
         {
-          id: 'worker1',
-          capabilities: {
-            skills: ['skill1'],
-            tools: ['tool1'],
-            available: true,
-            currentWorkload: 0,
-          },
+          name: 'worker1',
+          capabilities: ['skill1'],
+          tools: [{ name: 'tool1' }],
         },
         {
-          id: 'worker2',
-          capabilities: {
-            skills: ['skill2'],
-            tools: ['tool2'],
-            available: true,
-            currentWorkload: 1,
-          },
+          name: 'worker2',
+          capabilities: ['skill2'],
+          tools: [{ name: 'tool2' }],
         },
       ];
 
-      const registry = registerWorkers(workers);
+      registerWorkers(system, workers);
 
-      expect(registry).toEqual({
+      expect(system._workerRegistry).toEqual({
         worker1: {
           skills: ['skill1'],
           tools: ['tool1'],
@@ -160,32 +172,66 @@ describe('Multi-Agent System Factory', () => {
           skills: ['skill2'],
           tools: ['tool2'],
           available: true,
-          currentWorkload: 1,
+          currentWorkload: 0,
         },
       });
     });
 
     it('should handle empty workers array', () => {
-      const registry = registerWorkers([]);
-      expect(registry).toEqual({});
+      const config: MultiAgentSystemConfig = {
+        supervisor: {
+          strategy: 'round-robin',
+        },
+        workers: [
+          {
+            id: 'initial',
+            capabilities: {
+              skills: ['initial'],
+              tools: [],
+              available: true,
+              currentWorkload: 0,
+            },
+          },
+        ],
+      };
+
+      const system = createMultiAgentSystem(config);
+      registerWorkers(system, []);
+
+      expect(system._workerRegistry).toEqual({});
     });
 
     it('should handle single worker', () => {
+      const config: MultiAgentSystemConfig = {
+        supervisor: {
+          strategy: 'round-robin',
+        },
+        workers: [
+          {
+            id: 'initial',
+            capabilities: {
+              skills: ['initial'],
+              tools: [],
+              available: true,
+              currentWorkload: 0,
+            },
+          },
+        ],
+      };
+
+      const system = createMultiAgentSystem(config);
+
       const workers = [
         {
-          id: 'solo',
-          capabilities: {
-            skills: ['everything'],
-            tools: ['all'],
-            available: true,
-            currentWorkload: 0,
-          },
+          name: 'solo',
+          capabilities: ['everything'],
+          tools: [{ name: 'all' }],
         },
       ];
 
-      const registry = registerWorkers(workers);
+      registerWorkers(system, workers);
 
-      expect(registry).toEqual({
+      expect(system._workerRegistry).toEqual({
         solo: {
           skills: ['everything'],
           tools: ['all'],

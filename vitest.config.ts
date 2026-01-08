@@ -4,6 +4,11 @@ export default defineConfig({
   test: {
     globals: true,
     environment: 'node',
+    exclude: [
+      '**/node_modules/**',
+      '**/dist/**',
+      '**/packages/cli/templates/**/tests/**', // Exclude template tests - they're for generated projects
+    ],
     coverage: {
       provider: 'v8',
       reporter: ['text', 'json', 'html'],
