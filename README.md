@@ -138,9 +138,9 @@ Coordinate specialized agents
 import { createMultiAgentSystem, registerWorkers } from '@agentforge/patterns';
 
 const system = createMultiAgentSystem({
-  supervisor: { llm, routingStrategy: 'skill-based' },
+  supervisor: { model: llm, strategy: 'skill-based' },
   workers: [],
-  aggregator: { llm },
+  aggregator: { model: llm },
 });
 
 registerWorkers(system, [

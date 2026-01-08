@@ -28,7 +28,7 @@ describe('ReAct Agent Builder', () => {
     const registry = new ToolRegistry();
 
     const agent = createReActAgent({
-      llm: mockLLM,
+      model: mockLLM,
       tools: registry,
     });
 
@@ -51,7 +51,7 @@ describe('ReAct Agent Builder', () => {
     registry.register(tool);
 
     const agent = createReActAgent({
-      llm: mockLLM,
+      model: mockLLM,
       tools: registry,
     });
 
@@ -70,7 +70,7 @@ describe('ReAct Agent Builder', () => {
       .build();
 
     const agent = createReActAgent({
-      llm: mockLLM,
+      model: mockLLM,
       tools: [tool],
     });
 
@@ -82,7 +82,7 @@ describe('ReAct Agent Builder', () => {
     const registry = new ToolRegistry();
 
     const agent = createReActAgent({
-      llm: mockLLM,
+      model: mockLLM,
       tools: registry,
     });
 
@@ -95,7 +95,7 @@ describe('ReAct Agent Builder', () => {
     const registry = new ToolRegistry();
 
     const agent = createReActAgent({
-      llm: mockLLM,
+      model: mockLLM,
       tools: registry,
       systemPrompt: 'Custom system prompt',
     });
@@ -108,7 +108,7 @@ describe('ReAct Agent Builder', () => {
     const registry = new ToolRegistry();
 
     const agent = createReActAgent({
-      llm: mockLLM,
+      model: mockLLM,
       tools: registry,
       maxIterations: 5,
     });
@@ -121,7 +121,7 @@ describe('ReAct Agent Builder', () => {
     const registry = new ToolRegistry();
 
     const agent = createReActAgent({
-      llm: mockLLM,
+      model: mockLLM,
       tools: registry,
       returnIntermediateSteps: true,
     });
@@ -136,7 +136,7 @@ describe('ReAct Agent Builder', () => {
     const stopCondition = vi.fn((state) => state.iteration >= 3);
 
     const agent = createReActAgent({
-      llm: mockLLM,
+      model: mockLLM,
       tools: registry,
       stopCondition,
     });
@@ -150,7 +150,7 @@ describe('ReAct Agent Builder', () => {
 
     const agent = createReActAgent(
       {
-        llm: mockLLM,
+        model: mockLLM,
         tools: registry,
       },
       {
@@ -172,7 +172,7 @@ describe('ReAct Agent Builder', () => {
 
     const agent = createReActAgent(
       {
-        llm: mockLLM,
+        model: mockLLM,
         tools: registry,
         systemPrompt: 'Custom prompt',
         maxIterations: 5,

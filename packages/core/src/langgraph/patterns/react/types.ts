@@ -16,7 +16,7 @@ export interface ReActAgentConfig {
   /**
    * Language model to use for reasoning
    */
-  llm: BaseChatModel;
+  model: BaseChatModel;
 
   /**
    * Tools available to the agent

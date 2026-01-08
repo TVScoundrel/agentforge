@@ -130,11 +130,11 @@ const llm = new ChatOpenAI({ model: 'gpt-4' });
 // Create builder
 const builder = new MultiAgentSystemBuilder({
   supervisor: {
-    llm,
+    model: llm,
     strategy: 'skill-based', // or 'round-robin', 'llm-based', etc.
   },
   aggregator: {
-    llm,
+    model: llm,
   },
   maxIterations: 10,
   verbose: true,
@@ -151,7 +151,7 @@ builder.registerWorkers([
       tools: ['search'],
       available: true,
     },
-    llm,
+    model: llm,
     tools: [searchTool],
   },
   {
@@ -163,7 +163,7 @@ builder.registerWorkers([
       tools: ['calculator'],
       available: true,
     },
-    llm,
+    model: llm,
     tools: [calculatorTool],
   },
 ]);
@@ -251,11 +251,11 @@ const system = createMultiAgentSystem({
       id: 'researcher',
       name: 'Researcher',
       capabilities: { skills: ['research'], tools: ['search'], available: true },
-      llm,
+      model: llm,
       tools: [searchTool],
     },
   ],
-  aggregator: { llm },
+  aggregator: { model: llm },
 });
 
 const result = await system.invoke({

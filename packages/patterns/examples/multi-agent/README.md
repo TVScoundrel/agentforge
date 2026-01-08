@@ -87,12 +87,12 @@ import { createMultiAgentSystem, registerWorkers } from '@agentforge/patterns';
 // Create the system
 const system = createMultiAgentSystem({
   supervisor: {
-    llm: ChatOpenAI,
+    model: ChatOpenAI,
     routingStrategy: 'skill-based',
   },
   workers: [],
   aggregator: {
-    llm: ChatOpenAI,
+    model: ChatOpenAI,
   },
 });
 
@@ -167,13 +167,13 @@ routingStrategy: 'load-balanced'
 ```typescript
 const system = createMultiAgentSystem({
   supervisor: {
-    llm: ChatOpenAI,              // LLM for routing decisions
+    model: ChatOpenAI,              // LLM for routing decisions
     routingStrategy: 'skill-based', // Routing strategy
     systemPrompt: string,          // Custom supervisor prompt
   },
   workers: WorkerConfig[],        // Worker configurations
   aggregator: {
-    llm: ChatOpenAI,              // LLM for aggregation
+    model: ChatOpenAI,              // LLM for aggregation
     systemPrompt: string,          // Custom aggregator prompt
   },
   maxIterations: 10,              // Max coordination iterations

@@ -51,11 +51,11 @@ const llm = new ChatOpenAI({ modelName: 'gpt-4' });
 // Create builder
 const builder = new MultiAgentSystemBuilder({
   supervisor: {
-    llm,
+    model: llm,
     strategy: 'skill-based',
   },
   aggregator: {
-    llm,
+    model: llm,
   },
 });
 
@@ -70,8 +70,7 @@ builder.registerWorkers([
       tools: ['calculator'],
       available: true,
     },
-    llm,
-    tools: [calculatorTool],
+    model: llm,    tools: [calculatorTool],
   },
   {
     id: 'researcher',
@@ -82,8 +81,7 @@ builder.registerWorkers([
       tools: ['search', 'fetch'],
       available: true,
     },
-    llm,
-    tools: [searchTool, fetchTool],
+    model: llm,    tools: [searchTool, fetchTool],
   },
 ]);
 
@@ -107,19 +105,17 @@ import { createMultiAgentSystem } from '@agentforge/patterns';
 
 const system = createMultiAgentSystem({
   supervisor: {
-    llm,
-    strategy: 'skill-based',
+    model: llm,    strategy: 'skill-based',
   },
   workers: [
     {
       id: 'math_specialist',
       name: 'Math Specialist',
       capabilities: { skills: ['math'], tools: ['calculator'], available: true },
-      llm,
-      tools: [calculatorTool],
+      model: llm,      tools: [calculatorTool],
     },
   ],
-  aggregator: { llm },
+  aggregator: { model: llm },
 });
 
 const result = await system.invoke({
@@ -259,8 +255,7 @@ Uses an LLM to analyze the task and select the best worker.
 ```typescript
 const system = createMultiAgentSystem({
   supervisor: {
-    llm,
-    routingStrategy: 'llm-based',
+    model: llm,    routingStrategy: 'llm-based',
     systemPrompt: `Analyze the task and route to the most appropriate worker:
       - Worker A: handles X
       - Worker B: handles Y
@@ -289,8 +284,7 @@ Matches task requirements to worker capabilities.
 ```typescript
 const system = createMultiAgentSystem({
   supervisor: {
-    llm,
-    routingStrategy: 'skill-based',
+    model: llm,    routingStrategy: 'skill-based',
   },
   // ...
 });
@@ -314,8 +308,7 @@ Distributes tasks evenly across all workers.
 ```typescript
 const system = createMultiAgentSystem({
   supervisor: {
-    llm,
-    routingStrategy: 'round-robin',
+    model: llm,    routingStrategy: 'round-robin',
   },
   // ...
 });
@@ -339,8 +332,7 @@ Uses custom rules to determine routing.
 ```typescript
 const system = createMultiAgentSystem({
   supervisor: {
-    llm,
-    routingStrategy: {
+    model: llm,    routingStrategy: {
       type: 'rule-based',
       rules: [
         {
@@ -377,8 +369,7 @@ Routes to the least busy worker.
 ```typescript
 const system = createMultiAgentSystem({
   supervisor: {
-    llm,
-    routingStrategy: 'load-balanced',
+    model: llm,    routingStrategy: 'load-balanced',
   },
   // ...
 });
@@ -463,8 +454,8 @@ Compiles the system into an executable graph. After calling `build()`, the syste
 
 ```typescript
 const builder = new MultiAgentSystemBuilder({
-  supervisor: { llm, strategy: 'skill-based' },
-  aggregator: { llm },
+  supervisor: { model: llm, strategy: 'skill-based' },
+  aggregator: { model: llm },
   maxIterations: 10,
   verbose: true,
 });
@@ -475,8 +466,7 @@ builder.registerWorkers([
     name: 'Worker 1',
     description: 'First worker',
     capabilities: { skills: ['skill1'], tools: ['tool1'], available: true },
-    llm,
-    tools: [tool1],
+    model: llm,    tools: [tool1],
   },
 ]);
 
@@ -689,10 +679,9 @@ const llm = new ChatOpenAI({ modelName: 'gpt-4' });
 // Create builder
 const builder = new MultiAgentSystemBuilder({
   supervisor: {
-    llm,
-    strategy: 'skill-based',
+    model: llm,    strategy: 'skill-based',
   },
-  aggregator: { llm },
+  aggregator: { model: llm },
 });
 
 // Register workers
@@ -706,8 +695,7 @@ builder.registerWorkers([
       tools: ['calculator'],
       available: true,
     },
-    llm,
-    tools: [calculatorTool],
+    model: llm,    tools: [calculatorTool],
   },
   {
     id: 'weather_expert',
@@ -718,8 +706,7 @@ builder.registerWorkers([
       tools: ['weather_api'],
       available: true,
     },
-    llm,
-    tools: [weatherTool],
+    model: llm,    tools: [weatherTool],
   },
 ]);
 
@@ -740,8 +727,7 @@ For systems with a fixed set of workers, you can use `createMultiAgentSystem`:
 ```typescript
 const system = createMultiAgentSystem({
   supervisor: {
-    llm,
-    strategy: 'llm-based',
+    model: llm,    strategy: 'llm-based',
     systemPrompt: `Route customer inquiries:
       - Technical issues → tech_support
       - Billing questions → billing_support
@@ -757,8 +743,7 @@ const system = createMultiAgentSystem({
         tools: ['diagnostic', 'troubleshoot'],
         available: true,
       },
-      llm,
-      tools: [diagnosticTool, troubleshootTool],
+      model: llm,      tools: [diagnosticTool, troubleshootTool],
     },
     {
       id: 'billing_support',
@@ -769,8 +754,7 @@ const system = createMultiAgentSystem({
         tools: ['account_check', 'refund_process'],
         available: true,
       },
-      llm,
-      tools: [checkAccountTool, processRefundTool],
+      model: llm,      tools: [checkAccountTool, processRefundTool],
     },
     {
       id: 'general_support',
@@ -781,13 +765,11 @@ const system = createMultiAgentSystem({
         tools: ['faq_search', 'ticket_create'],
         available: true,
       },
-      llm,
-      tools: [faqSearchTool, createTicketTool],
+      model: llm,      tools: [faqSearchTool, createTicketTool],
     },
   ],
   aggregator: {
-    llm,
-    systemPrompt: 'Provide helpful, empathetic customer support',
+    model: llm,    systemPrompt: 'Provide helpful, empathetic customer support',
   },
 });
 
@@ -801,12 +783,10 @@ const result = await system.invoke({
 ```typescript
 const builder = new MultiAgentSystemBuilder({
   supervisor: {
-    llm,
-    strategy: 'skill-based',
+    model: llm,    strategy: 'skill-based',
   },
   aggregator: {
-    llm,
-    systemPrompt: 'Synthesize research findings into comprehensive report',
+    model: llm,    systemPrompt: 'Synthesize research findings into comprehensive report',
   },
   maxIterations: 10,
 });
@@ -851,8 +831,7 @@ import {
 
 // Create nodes
 const supervisor = createSupervisorNode({
-  llm,
-  routingStrategy: {
+  model: llm,  routingStrategy: {
     type: 'rule-based',
     rules: [
       { condition: (s) => s.iterations === 0, workerId: 'validator' },
@@ -1016,8 +995,7 @@ const customStrategy: CustomRoutingStrategy = {
 
 const system = createMultiAgentSystem({
   supervisor: {
-    llm,
-    routingStrategy: customStrategy,
+    model: llm,    routingStrategy: customStrategy,
   },
   // ...
 });
@@ -1051,8 +1029,8 @@ Use `MultiAgentSystemBuilder` for dynamic worker registration:
 
 ```typescript
 const builder = new MultiAgentSystemBuilder({
-  supervisor: { llm, strategy: 'skill-based' },
-  aggregator: { llm },
+  supervisor: { model: llm, strategy: 'skill-based' },
+  aggregator: { model: llm },
 });
 
 // Register initial workers
@@ -1168,11 +1146,10 @@ const healthAwareRouting = {
 // Debug routing
 const system = createMultiAgentSystem({
   supervisor: {
-    llm,
-    routingStrategy: 'skill-based',
+    model: llm,    routingStrategy: 'skill-based',
   },
   workers: [],
-  aggregator: { llm },
+  aggregator: { model: llm },
   verbose: true, // Enable logging
 });
 ```
@@ -1205,8 +1182,7 @@ const system = createMultiAgentSystem({
 ```typescript
 const system = createMultiAgentSystem({
   supervisor: {
-    llm,
-    routingStrategy: 'llm-based',
+    model: llm,    routingStrategy: 'llm-based',
     systemPrompt: `Detailed routing instructions:
       - For X tasks, use worker A because...
       - For Y tasks, use worker B because...
@@ -1232,8 +1208,7 @@ const system = createMultiAgentSystem({
 // Fast routing
 const system = createMultiAgentSystem({
   supervisor: {
-    llm,
-    routingStrategy: 'skill-based', // Faster than LLM-based
+    model: llm,    routingStrategy: 'skill-based', // Faster than LLM-based
   },
   // ...
 });

@@ -437,13 +437,13 @@ import {
 ```typescript
 {
   supervisor: {
-    llm: BaseChatModel,           // LLM for routing decisions
-    routingStrategy: RoutingStrategy, // Routing strategy
+    model: BaseChatModel,          // LLM for routing decisions
+    strategy: RoutingStrategy,     // Routing strategy
     systemPrompt?: string,         // Custom supervisor prompt
   },
   workers: WorkerConfig[],        // Worker configurations
   aggregator: {
-    llm: BaseChatModel,            // LLM for aggregation
+    model: BaseChatModel,          // LLM for aggregation
     systemPrompt?: string,         // Custom aggregator prompt
   },
   maxIterations?: number,          // Max coordination iterations
