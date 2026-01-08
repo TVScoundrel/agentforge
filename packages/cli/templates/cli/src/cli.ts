@@ -5,6 +5,34 @@ import chalk from 'chalk';
 import { chatCommand } from './commands/chat.js';
 import { analyzeCommand } from './commands/analyze.js';
 
+/**
+ * Validate required environment variables
+ */
+function validateEnvironment(): void {
+  const missingVars: string[] = [];
+
+  if (!process.env.OPENAI_API_KEY) {
+    missingVars.push('OPENAI_API_KEY');
+  }
+
+  if (missingVars.length > 0) {
+    console.error(chalk.red('❌ Error: Missing required environment variables\n'));
+    console.error('Missing variables:');
+    missingVars.forEach((varName) => {
+      console.error(chalk.yellow(`  - ${varName}`));
+    });
+    console.error(chalk.cyan('\n📝 To fix this:'));
+    console.error('  1. Copy .env.example to .env:');
+    console.error(chalk.gray('     cp .env.example .env'));
+    console.error('  2. Edit .env and add your API keys');
+    console.error('  3. Run the application again\n');
+    process.exit(1);
+  }
+}
+
+// Validate environment before starting
+validateEnvironment();
+
 const program = new Command();
 
 program
