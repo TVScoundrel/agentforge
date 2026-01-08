@@ -356,7 +356,7 @@ builder.registerWorkers([
     id: 'writer',
     name: 'Quality Writer',
     capabilities: { skills: ['writing'], tools: [], available: true },
-    llm,
+    model: llm,
     tools: [],
     // Custom node that uses reflection agent
     customNode: async (state) => {
@@ -411,8 +411,7 @@ All patterns support error handling:
 
 ```typescript
 const agent = createReActAgent({
-  llm,
-  tools,
+  model: llm,  tools,
   maxIterations: 10,
   onError: (error, state) => {
     console.error('Agent error:', error);

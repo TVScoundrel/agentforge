@@ -31,7 +31,7 @@ import { createReasoningNode, createActionNode, createObservationNode } from './
  * import { ChatOpenAI } from '@langchain/openai';
  *
  * const agent = createReActAgent({
- *   llm: new ChatOpenAI({ model: 'gpt-4' }),
+ *   model: new ChatOpenAI({ model: 'gpt-4' }),
  *   tools: toolRegistry,
  *   systemPrompt: 'You are a helpful assistant.',
  *   maxIterations: 10
@@ -48,7 +48,7 @@ export function createReActAgent(
 ) {
   // Extract configuration with defaults
   const {
-    llm,
+    model,
     tools,
     systemPrompt = DEFAULT_REACT_SYSTEM_PROMPT,
     maxIterations = 10,
@@ -74,7 +74,7 @@ export function createReActAgent(
   // ===== Node Implementations =====
 
   const reasoningNode = createReasoningNode(
-    llm,
+    model,
     toolArray,
     systemPrompt,
     maxIterations,

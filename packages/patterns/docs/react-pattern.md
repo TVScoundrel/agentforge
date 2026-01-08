@@ -1129,7 +1129,7 @@ function createReActAgent(
 #### Parameters
 
 **config: ReActAgentConfig**
-- `llm: BaseChatModel` - Language model instance
+- `model: BaseChatModel` - Language model instance
 - `tools: ToolRegistry | Tool[]` - Available tools
 - `systemPrompt?: string` - System prompt (default: standard ReAct prompt)
 - `maxIterations?: number` - Maximum iterations (default: 10)

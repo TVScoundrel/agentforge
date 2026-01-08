@@ -114,7 +114,7 @@ describe('ReActAgentBuilder', () => {
     it('should throw error if LLM is missing', () => {
       const builder = new ReActAgentBuilder().withTools([mockTool]);
 
-      expect(() => builder.build()).toThrow('llm is required');
+      expect(() => builder.build()).toThrow('model is required');
     });
 
     it('should throw error if tools are missing', () => {
