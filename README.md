@@ -195,7 +195,7 @@ const productionNode = productionPreset(myNode, {
 });
 ```
 
-See the [Middleware Guide](./docs/guides/middleware-guide.md) for comprehensive documentation.
+See the [Middleware Guide](https://tvscoundrel.github.io/agentforge/guide/concepts/middleware) for comprehensive documentation.
 
 ---
 
@@ -219,25 +219,21 @@ pnpm test:coverage
 
 ## 📖 Documentation
 
-### Framework
+### 🌐 User Documentation (GitHub Pages)
+- 🚀 **[Quick Start](https://tvscoundrel.github.io/agentforge/guide/quick-start)** - Get started in 5 minutes
+- 📚 **[Full Documentation](https://tvscoundrel.github.io/agentforge/)** - Complete guides and API reference
+- 🤖 **[Pattern Guides](https://tvscoundrel.github.io/agentforge/guide/patterns/react)** - ReAct, Plan-Execute, Reflection, Multi-Agent
+- 🔧 **[Middleware Guide](https://tvscoundrel.github.io/agentforge/guide/concepts/middleware)** - Comprehensive middleware guide
+- 💡 **[Examples](https://tvscoundrel.github.io/agentforge/examples/react-agent)** - Working code examples
+- 📖 **[API Reference](https://tvscoundrel.github.io/agentforge/api/core)** - Complete API documentation
+
+### 📂 Developer Documentation (Repository)
+For contributors and advanced users:
 - [Framework Design](./docs/FRAMEWORK_DESIGN.md) - Architecture and design decisions
 - [Roadmap](./docs/ROADMAP.md) - Development roadmap and milestones
 - [Tool Registry Spec](./docs/TOOL_REGISTRY_SPEC.md) - Tool registry specification
 - [Monorepo Setup](./docs/MONOREPO_SETUP.md) - Monorepo structure and setup
-- [Diagrams](./docs/DIAGRAMS.md) - Visual diagrams and architecture
-
-### Agent Patterns
-- [Pattern Comparison Guide](./packages/patterns/docs/pattern-comparison.md) - Choose the right pattern
-- [ReAct Pattern Guide](./packages/patterns/docs/react-agent-guide.md) - Comprehensive ReAct guide
-- [Plan-Execute Pattern Guide](./packages/patterns/docs/plan-execute-pattern.md) - Comprehensive Plan-Execute guide
-- [Reflection Pattern Guide](./packages/patterns/docs/reflection-pattern.md) - Comprehensive Reflection guide
-- [Multi-Agent Pattern Guide](./packages/patterns/docs/multi-agent-pattern.md) - Comprehensive Multi-Agent guide
-
-### Middleware
-- [Middleware Guide](./docs/guides/middleware-guide.md) - Comprehensive middleware guide
-- [Middleware API Reference](./docs/api/middleware.md) - Complete API documentation
-- [Middleware Best Practices](./docs/guides/middleware-best-practices.md) - Production best practices
-- [Phase 4 Complete](./docs/PHASE_4_COMPLETE.md) - Implementation details
+- [Pattern Comparison](./packages/patterns/docs/pattern-comparison.md) - Detailed pattern comparison
 
 ### Examples & Templates
 
