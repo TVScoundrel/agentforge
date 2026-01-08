@@ -240,7 +240,7 @@ Want to add an example? Great! Please:
 
 ## 📝 License
 
-MIT
+MIT © 2026 Tom Van Schoor
 
 ---
 

@@ -20,7 +20,7 @@
     "llm",
     "tools"
   ],
-  "author": "Paymentology",
+  "author": "Tom Van Schoor",
   "license": "MIT",
   "scripts": {
     "build": "pnpm -r build",

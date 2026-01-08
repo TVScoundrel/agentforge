@@ -261,5 +261,5 @@ agentforge tool:publish myTool --tag beta --dry-run
 
 ## License
 
-MIT
+MIT © 2026 Tom Van Schoor
 
