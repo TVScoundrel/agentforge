@@ -44,7 +44,4 @@ playground/
 learning/
 
 # Personal verification documents (not part of the project)
-DOCUMENTATION_VERIFICATION_ROADMAP.md
-VERIFICATION_TRACKER.md
-VERIFICATION_QUICK_START.md
-verification-tests/
+docs/verification/
