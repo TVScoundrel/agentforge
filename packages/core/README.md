@@ -153,5 +153,5 @@ pnpm typecheck
 
 ## License
 
-MIT © Paymentology
+MIT © Tom Van Schoor
 
