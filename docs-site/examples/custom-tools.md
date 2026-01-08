@@ -195,9 +195,11 @@ const queryDatabaseTool = toolBuilder()
   .build();
 ```
 
-## Registering Tools
+## Tool Registry & Auto-Prompt Generation
 
-Once you've created your tools, register them with a `ToolRegistry`:
+The **Tool Registry** is AgentForge's killer feature - it manages your tools and automatically generates LLM-ready prompts.
+
+### Basic Registration
 
 ```typescript
 import { ToolRegistry } from '@agentforge/core';
@@ -216,30 +218,134 @@ registry.registerMany([
   weatherTool,
   queryDatabaseTool
 ]);
-
-// Query tools
-const allTools = registry.getAll();
-const fileTools = registry.getByCategory(ToolCategory.FILE_SYSTEM);
-const weatherTools = registry.getByTag('weather');
 ```
 
-## Using Tools with Agents
+### Querying Tools
 
-Use your custom tools with any AgentForge pattern:
+```typescript
+// Get all tools
+const allTools = registry.getAll();
+
+// Query by category
+const fileTools = registry.getByCategory(ToolCategory.FILE_SYSTEM);
+const webTools = registry.getByCategory(ToolCategory.WEB);
+
+// Query by tag
+const weatherTools = registry.getByTag('weather');
+const apiTools = registry.getByTag('api');
+
+// Search by name or description
+const searchResults = registry.search('file');
+
+// Check if tool exists
+if (registry.has('calculator')) {
+  const tool = registry.get('calculator');
+}
+```
+
+### Auto-Generate LLM Prompts
+
+The registry can automatically generate formatted tool descriptions for your LLM:
+
+```typescript
+// Basic prompt
+const basicPrompt = registry.generatePrompt();
+console.log(basicPrompt);
+// Available Tools:
+//
+// - calculator: Perform basic arithmetic operations
+//   Parameters: operation (enum), a (number), b (number)
+// - read-file: Read a file from the file system
+//   Parameters: path (string)
+// ...
+
+// Detailed prompt with examples
+const detailedPrompt = registry.generatePrompt({
+  includeExamples: true,
+  includeNotes: true,
+  includeLimitations: true,
+  groupByCategory: true,
+  maxExamplesPerTool: 2
+});
+
+console.log(detailedPrompt);
+// Available Tools:
+//
+// UTILITY TOOLS:
+// - calculator: Perform basic arithmetic operations
+//   Parameters: operation (enum), a (number), b (number)
+//   Example: Add two numbers
+//     Input: { "operation": "add", "a": 5, "b": 3 }
+//     Explanation: Returns 8
+//
+// FILE SYSTEM TOOLS:
+// - read-file: Read a file from the file system
+//   Parameters: path (string)
+//   Example: Read a text file
+//     Input: { "path": "./README.md" }
+// ...
+
+// Filter by category
+const fileToolsPrompt = registry.generatePrompt({
+  categories: [ToolCategory.FILE_SYSTEM],
+  includeExamples: true
+});
+```
+
+### Using with Agents
+
+Use the registry with any AgentForge pattern - the auto-generated prompt saves you from manual prompt engineering:
 
 ```typescript
 import { createReActAgent } from '@agentforge/patterns';
 import { ChatOpenAI } from '@langchain/openai';
 
+// Generate the tool prompt automatically
+const toolPrompt = registry.generatePrompt({
+  includeExamples: true,
+  groupByCategory: true
+});
+
 const agent = createReActAgent({
   model: new ChatOpenAI({ model: 'gpt-4' }),
   tools: registry.toLangChainTools(), // Convert all tools
-  systemPrompt: 'You are a helpful assistant with access to various tools.'
+  systemPrompt: `You are a helpful assistant with access to various tools.
+
+${toolPrompt}
+
+Use these tools to help answer user questions.`
 });
 
 // Run the agent
 const result = await agent.invoke({
-  input: 'What is the weather in San Francisco?'
+  messages: [{
+    role: 'user',
+    content: 'What is the weather in San Francisco?'
+  }]
+});
+```
+
+### Event Listeners
+
+Monitor registry changes with event listeners:
+
+```typescript
+import { RegistryEvent } from '@agentforge/core';
+
+registry.on(RegistryEvent.TOOL_REGISTERED, (tool) => {
+  console.log(`✅ Registered: ${tool.metadata.name}`);
+});
+
+registry.on(RegistryEvent.TOOL_REMOVED, (tool) => {
+  console.log(`❌ Removed: ${tool.metadata.name}`);
+});
+
+registry.on(RegistryEvent.TOOL_UPDATED, (tool) => {
+  console.log(`🔄 Updated: ${tool.metadata.name}`);
+});
+
+registry.on(RegistryEvent.REGISTRY_CLEARED, () => {
+  console.log('🗑️  Registry cleared');
 });
 ```
 

@@ -21,9 +21,9 @@ hero:
 
 features:
   - icon: 🛠️
-    title: Rich Tool System
-    details: Comprehensive tool builder with metadata, validation, and LangChain integration. 68+ standard tools included.
-  
+    title: Tool Registry & Auto-Prompt Generation
+    details: Register tools once, generate LLM-ready prompts automatically. Organize by category, search by tags, and convert to LangChain tools seamlessly.
+
   - icon: 🎯
     title: Agent Patterns
     details: Production-ready patterns - ReAct, Plan-Execute, Reflection, and Multi-Agent coordination.
@@ -96,13 +96,62 @@ const result = await agent.invoke({
 console.log(result.messages[result.messages.length - 1].content);
 ```
 
+## Example: Tool Registry with Auto-Prompt Generation
+
+```typescript
+import { ToolRegistry, toolBuilder, ToolCategory } from '@agentforge/core';
+import { z } from 'zod';
+
+// Create a registry
+const registry = new ToolRegistry();
+
+// Register tools with rich metadata
+registry.register(
+  toolBuilder()
+    .name('search-web')
+    .description('Search the web for information')
+    .category(ToolCategory.WEB)
+    .tag('search')
+    .tag('internet')
+    .schema(z.object({ query: z.string() }))
+    .example('Search for TypeScript tutorials', { query: 'TypeScript tutorials' })
+    .implement(async ({ query }) => {
+      // Implementation here
+      return `Results for: ${query}`;
+    })
+    .build()
+);
+
+// Automatically generate LLM-ready prompts
+const prompt = registry.generatePrompt({
+  includeExamples: true,
+  groupByCategory: true
+});
+
+console.log(prompt);
+// Available Tools:
+//
+// WEB TOOLS:
+// - search-web: Search the web for information
+//   Parameters: query (string)
+//   Example: Search for TypeScript tutorials
+//     Input: { "query": "TypeScript tutorials" }
+
+// Use with any agent
+const agent = createReActAgent({
+  model: new ChatOpenAI({ model: 'gpt-4' }),
+  tools: registry.toLangChainTools(), // Seamless conversion!
+  systemPrompt: prompt // Use auto-generated prompt!
+});
+```
+
 ## Why AgentForge?
 
 ### 🎯 **Production-Ready Patterns**
 Don't reinvent the wheel. Use battle-tested agent patterns that work in production.
 
-### 🛠️ **Comprehensive Tooling**
-From CLI to testing utilities, everything you need to build, test, and deploy agents.
+### 🛠️ **Smart Tool Management**
+Register tools once with rich metadata, then automatically generate LLM prompts, query by category/tags, and convert to LangChain tools. No manual prompt engineering needed.
 
 ### 📚 **Extensive Documentation**
 Interactive tutorials, API reference, and real-world examples to get you started quickly.

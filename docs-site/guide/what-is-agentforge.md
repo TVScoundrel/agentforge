@@ -13,12 +13,32 @@ AgentForge follows a simple philosophy: **We wrap, don't replace**. Instead of c
 
 ## Key Features
 
-### 🛠️ Rich Tool System
-- Fluent builder API for creating tools
-- Rich metadata (categories, tags, examples)
-- Zod schema validation
-- LangChain integration
-- 68+ standard tools included
+### 🛠️ Tool Registry & Auto-Prompt Generation
+AgentForge's **killer feature** - a centralized tool registry that automatically generates LLM-ready prompts:
+
+- **Register Once, Use Everywhere** - Define tools with rich metadata (categories, tags, examples)
+- **Auto-Generate Prompts** - Automatically create formatted tool descriptions for LLMs
+- **Smart Querying** - Search by name, category, or tags
+- **Seamless Integration** - Convert to LangChain tools with one method call
+- **68+ Standard Tools** - Production-ready tools included out of the box
+
+```typescript
+const registry = new ToolRegistry();
+registry.register(myTool);
+
+// Automatically generate LLM-ready prompts
+const prompt = registry.generatePrompt({
+  includeExamples: true,
+  groupByCategory: true
+});
+
+// Use with any agent
+const agent = createReActAgent({
+  model: llm,
+  tools: registry.toLangChainTools(),
+  systemPrompt: prompt // Auto-generated!
+});
+```
 
 ### 🎯 Agent Patterns
 Four production-ready patterns:
@@ -60,7 +80,8 @@ AgentForge is organized into five packages:
 
 ### @agentforge/core
 The foundation package containing:
-- Tool builder and registry
+- **Tool Registry** - Centralized tool management with auto-prompt generation
+- **Tool Builder** - Fluent API for creating tools with rich metadata
 - LangGraph utilities
 - Middleware system
 - Streaming utilities
@@ -99,11 +120,12 @@ Standard tools library:
 
 AgentForge is ideal when you need:
 
-✅ **Production-ready agents** - Not just prototypes  
-✅ **Type safety** - Full TypeScript support  
-✅ **Proven patterns** - Battle-tested architectures  
-✅ **Developer experience** - CLI, testing, docs  
-✅ **LangChain ecosystem** - Leverage existing tools  
+✅ **Production-ready agents** - Not just prototypes
+✅ **Type safety** - Full TypeScript support
+✅ **Proven patterns** - Battle-tested architectures
+✅ **Smart tool management** - Auto-generate prompts, no manual prompt engineering
+✅ **Developer experience** - CLI, testing, docs
+✅ **LangChain ecosystem** - Leverage existing tools
 
 ## When NOT to Use AgentForge
 
@@ -120,6 +142,7 @@ AgentForge might not be the best fit if:
 - ✅ Higher-level abstractions
 - ✅ Production-ready patterns
 - ✅ Better TypeScript support
+- ✅ **Auto-prompt generation** - No manual tool description writing
 - ✅ More comprehensive tooling
 - ❌ Less flexibility for custom patterns
 
