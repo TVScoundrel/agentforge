@@ -14,8 +14,14 @@ import type { ReActStateType } from './state.js';
 export interface ReActAgentConfig {
   /**
    * Language model to use for reasoning
+   * @deprecated Use 'llm' instead. 'model' is supported for backward compatibility.
    */
-  llm: BaseChatModel;
+  model?: BaseChatModel;
+
+  /**
+   * Language model to use for reasoning
+   */
+  llm?: BaseChatModel;
 
   /**
    * Tools available to the agent
