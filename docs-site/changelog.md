@@ -5,6 +5,15 @@ All notable changes to AgentForge will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.1.6] - 2026-01-08
+
+### Added
+- Changelog and Contributing guide pages
+
+### Fixed
+- **CLI**: Fixed `__dirname` error in ES modules by using `import.meta.url` instead
+- Template copying now works correctly when creating new projects
+
 ## [0.1.5] - 2026-01-08
 
 ### Added
@@ -127,6 +136,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Version History
 
+- **0.1.6** (2026-01-08) - CLI ES module fix, changelog and contributing pages
 - **0.1.5** (2026-01-08) - Documentation updates
 - **0.1.0** (2026-01-07) - Initial release
 
