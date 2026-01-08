@@ -55,7 +55,7 @@ export class ReActAgentBuilder {
    *
    * @param tools - Tool registry or array of tools
    */
-  withTools(tools: ToolRegistry | Tool[]): this {
+  withTools(tools: ToolRegistry | Tool<any, any>[]): this {
     this.config.tools = tools;
     return this;
   }

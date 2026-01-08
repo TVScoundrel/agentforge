@@ -42,7 +42,7 @@ export interface ExecutorConfig {
   /**
    * Available tools for execution
    */
-  tools: Tool[];
+  tools: Tool<any, any>[];
 
   /**
    * Optional language model for sub-tasks

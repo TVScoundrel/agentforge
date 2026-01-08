@@ -68,7 +68,7 @@ export interface WorkerConfig {
   /**
    * Available tools for this worker
    */
-  tools?: Tool[];
+  tools?: Tool<any, any>[];
 
   /**
    * System prompt for the worker

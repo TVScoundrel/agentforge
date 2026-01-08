@@ -21,7 +21,7 @@ export interface ReActAgentConfig {
    * Tools available to the agent
    * Can be a ToolRegistry or an array of Tools
    */
-  tools: ToolRegistry | Tool[];
+  tools: ToolRegistry | Tool<any, any>[];
 
   /**
    * System prompt for the agent
