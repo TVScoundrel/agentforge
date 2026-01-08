@@ -1,6 +1,11 @@
 import fs from 'fs-extra';
 import path from 'path';
+import { fileURLToPath } from 'url';
 import { glob } from 'glob';
+
+// Get __dirname equivalent in ES modules
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 export async function ensureDir(dir: string): Promise<void> {
   await fs.ensureDir(dir);
