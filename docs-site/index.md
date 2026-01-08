@@ -124,7 +124,7 @@ Built-in resource management, monitoring, and deployment templates for productio
 ## Community
 
 - [GitHub Discussions](https://github.com/TVScoundrel/agentforge/discussions)
-- [Discord Server](https://discord.gg/agentforge)
+- [Discord Server](https://discord.gg/qWfPK2NyET)
 - [Twitter](https://twitter.com/agentforge)
 
 ## License
