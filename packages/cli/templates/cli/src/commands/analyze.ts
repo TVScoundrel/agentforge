@@ -30,10 +30,8 @@ export async function analyzeCommand(file: string, options: AnalyzeOptions) {
       systemPrompt: 'You are a code analysis expert. Analyze the provided file and give insights.',
     });
 
-    const compiledAgent = agent.compile();
-
     // Analyze
-    const result = await compiledAgent.invoke({
+    const result = await agent.invoke({
       messages: [
         {
           role: 'user',

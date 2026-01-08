@@ -49,11 +49,8 @@ async function main() {
     systemPrompt: 'You are a helpful AI assistant.',
   });
 
-  // Compile the agent
-  const compiledAgent = agent.compile();
-
   // Run the agent
-  const result = await compiledAgent.invoke({
+  const result = await agent.invoke({
     messages: [{ role: 'user', content: 'Hello! What can you help me with?' }],
   });
 
