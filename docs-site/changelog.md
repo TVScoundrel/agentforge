@@ -5,6 +5,21 @@ All notable changes to AgentForge will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.2.0] - 2026-01-08
+
+### Changed
+- **BREAKING**: Updated to LangChain v1.x (from v0.3.x)
+  - `@langchain/core@^1.1.0` (was `^0.3.x`)
+  - `@langchain/langgraph@^1.0.0` (was `^0.2.x`)
+  - `langchain@^1.2.0` (was `^0.3.x`)
+  - `@langchain/openai@^1.2.0` (was `^0.3.x`)
+- All packages now use consistent LangChain v1.x peer dependencies
+- Templates updated to use latest LangChain versions
+
+### Fixed
+- Resolved peer dependency conflicts between packages
+- Fixed `workspace:*` dependencies in published packages
+
 ## [0.1.9] - 2026-01-08
 
 ### Fixed
@@ -149,6 +164,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Version History
 
+- **0.2.0** (2026-01-08) - **BREAKING**: Updated to LangChain v1.x, fixed peer dependencies
 - **0.1.9** (2026-01-08) - Fixed workspace:* dependencies in all packages
 - **0.1.8** (2026-01-08) - CLI template path and dependency fixes
 - **0.1.6** (2026-01-08) - CLI ES module fix, changelog and contributing pages

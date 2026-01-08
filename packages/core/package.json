@@ -1,6 +1,6 @@
 {
   "name": "@agentforge/core",
-  "version": "0.1.9",
+  "version": "0.2.0",
   "description": "Core abstractions for AgentForge - production-ready deep agents framework",
   "type": "module",
   "main": "./dist/index.cjs",
@@ -58,9 +58,9 @@
     "vitest": "^1.1.0"
   },
   "peerDependencies": {
-    "@langchain/core": "^1.1.8",
-    "@langchain/langgraph": "^1.0.7",
-    "zod": "^3.25.76"
+    "@langchain/core": "^1.1.0",
+    "@langchain/langgraph": "^1.0.0",
+    "zod": "^3.23.0"
   },
   "dependencies": {
     "zod-to-json-schema": "^3.25.0"
