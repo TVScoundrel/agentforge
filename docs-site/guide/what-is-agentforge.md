@@ -24,7 +24,10 @@ AgentForge's **killer feature** - a centralized tool registry that automatically
 
 ```typescript
 const registry = new ToolRegistry();
-registry.register(myTool);
+
+// Mix custom tools with 68+ standard tools
+import { calculator, httpGet, fileReader } from '@agentforge/tools';
+registry.registerMany([myTool, calculator, httpGet, fileReader]);
 
 // Automatically generate LLM-ready prompts
 const prompt = registry.generatePrompt({
@@ -38,6 +41,11 @@ const agent = createReActAgent({
   tools: registry.toLangChainTools(),
   systemPrompt: prompt // Auto-generated!
 });
+
+// Create specialized registries for different agents
+const webScraperRegistry = new ToolRegistry();
+const dataAnalystRegistry = new ToolRegistry();
+// Each agent gets its own focused toolset!
 ```
 
 ### 🎯 Agent Patterns

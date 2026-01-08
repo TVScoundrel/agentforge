@@ -220,6 +220,49 @@ registry.registerMany([
 ]);
 ```
 
+### Using Standard Tools from @agentforge/tools
+
+All 68+ tools from `@agentforge/tools` can be registered directly - they're already built with the tool builder API:
+
+```typescript
+import { ToolRegistry } from '@agentforge/core';
+import {
+  calculator,
+  currentDateTime,
+  httpGet,
+  jsonParser,
+  fileReader,
+  fileWriter,
+  stringCase,
+  validateEmail
+} from '@agentforge/tools';
+
+const registry = new ToolRegistry();
+
+// Mix custom tools with standard library tools
+registry.registerMany([
+  // Your custom tools
+  weatherTool,
+  queryDatabaseTool,
+
+  // Standard library tools
+  calculator,
+  currentDateTime,
+  httpGet,
+  jsonParser,
+  fileReader,
+  fileWriter,
+  stringCase,
+  validateEmail
+]);
+
+// Auto-generate prompts for all tools (custom + standard)
+const prompt = registry.generatePrompt({
+  includeExamples: true,
+  groupByCategory: true
+});
+```
+
 ### Querying Tools
 
 ```typescript
@@ -324,6 +367,83 @@ const result = await agent.invoke({
   }]
 });
 ```
+
+### Multiple Registries for Different Agents
+
+You can create **separate registries for different agents** to give each agent a specialized toolset:
+
+```typescript
+import { ToolRegistry, ToolCategory } from '@agentforge/core';
+import { createReActAgent } from '@agentforge/patterns';
+import {
+  httpGet,
+  httpPost,
+  jsonParser,
+  calculator,
+  fileReader,
+  fileWriter,
+  currentDateTime
+} from '@agentforge/tools';
+
+// Registry for a web scraping agent
+const webScraperRegistry = new ToolRegistry();
+webScraperRegistry.registerMany([
+  httpGet,
+  jsonParser,
+  stringCase,
+  fileWriter  // Save scraped data
+]);
+
+// Registry for a data analysis agent
+const dataAnalystRegistry = new ToolRegistry();
+dataAnalystRegistry.registerMany([
+  fileReader,
+  jsonParser,
+  calculator,
+  currentDateTime
+]);
+
+// Registry for a general assistant
+const generalRegistry = new ToolRegistry();
+generalRegistry.registerMany([
+  calculator,
+  currentDateTime,
+  httpGet,
+  validateEmail
+]);
+
+// Create specialized agents with different toolsets
+const webScraperAgent = createReActAgent({
+  model: llm,
+  tools: webScraperRegistry.toLangChainTools(),
+  systemPrompt: `You are a web scraping specialist.
+
+${webScraperRegistry.generatePrompt({ includeExamples: true, groupByCategory: true })}`
+});
+
+const dataAnalystAgent = createReActAgent({
+  model: llm,
+  tools: dataAnalystRegistry.toLangChainTools(),
+  systemPrompt: `You are a data analysis expert.
+
+${dataAnalystRegistry.generatePrompt({ includeExamples: true, groupByCategory: true })}`
+});
+
+const generalAgent = createReActAgent({
+  model: llm,
+  tools: generalRegistry.toLangChainTools(),
+  systemPrompt: `You are a helpful general assistant.
+
+${generalRegistry.generatePrompt({ includeExamples: true, groupByCategory: true })}`
+});
+```
+
+**Benefits of multiple registries:**
+- ✅ **Focused agents** - Each agent only has tools relevant to its purpose
+- ✅ **Better performance** - Smaller tool sets = faster LLM decision making
+- ✅ **Clearer prompts** - Auto-generated prompts are more concise and relevant
+- ✅ **Easier maintenance** - Tools are organized by agent responsibility
+- ✅ **Cost optimization** - Smaller prompts = lower token costs
 
 ### Event Listeners
 

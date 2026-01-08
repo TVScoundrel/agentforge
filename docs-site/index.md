@@ -143,6 +143,17 @@ const agent = createReActAgent({
   tools: registry.toLangChainTools(), // Seamless conversion!
   systemPrompt: prompt // Use auto-generated prompt!
 });
+
+// Mix custom tools with 68+ standard tools from @agentforge/tools
+import { calculator, httpGet, fileReader } from '@agentforge/tools';
+registry.registerMany([calculator, httpGet, fileReader]);
+
+// Create specialized registries for different agents
+const webScraperRegistry = new ToolRegistry();
+webScraperRegistry.registerMany([httpGet, jsonParser]);
+
+const dataAnalystRegistry = new ToolRegistry();
+dataAnalystRegistry.registerMany([fileReader, calculator]);
 ```
 
 ## Why AgentForge?
