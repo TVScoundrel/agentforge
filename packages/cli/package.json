@@ -39,8 +39,12 @@
     "langchain",
     "langgraph"
   ],
-  "author": "AgentForge Team",
+  "author": "Tom Van Schoor",
   "license": "MIT",
+  "homepage": "https://tvscoundrel.github.io/agentforge/",
+  "bugs": {
+    "url": "https://github.com/TVScoundrel/agentforge/issues"
+  },
   "dependencies": {
     "commander": "^12.1.0",
     "inquirer": "^12.3.0",
@@ -71,7 +75,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/agentforge/agentforge.git",
+    "url": "https://github.com/TVScoundrel/agentforge.git",
     "directory": "packages/cli"
   }
 }

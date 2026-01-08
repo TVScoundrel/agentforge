@@ -34,8 +34,17 @@
     "langgraph",
     "tools"
   ],
-  "author": "Paymentology",
+  "author": "Tom Van Schoor",
   "license": "MIT",
+  "homepage": "https://tvscoundrel.github.io/agentforge/",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/TVScoundrel/agentforge.git",
+    "directory": "packages/core"
+  },
+  "bugs": {
+    "url": "https://github.com/TVScoundrel/agentforge/issues"
+  },
   "devDependencies": {
     "@eslint/js": "^9.17.0",
     "@langchain/core": "^1.1.8",

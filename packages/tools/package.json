@@ -66,12 +66,16 @@
     "json",
     "xml"
   ],
-  "author": "AgentForge Team",
+  "author": "Tom Van Schoor",
   "license": "MIT",
+  "homepage": "https://tvscoundrel.github.io/agentforge/",
   "repository": {
     "type": "git",
-    "url": "https://github.com/agentforge/agentforge.git",
+    "url": "https://github.com/TVScoundrel/agentforge.git",
     "directory": "packages/tools"
+  },
+  "bugs": {
+    "url": "https://github.com/TVScoundrel/agentforge/issues"
   }
 }
 
