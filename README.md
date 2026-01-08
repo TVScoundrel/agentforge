@@ -67,11 +67,11 @@ All packages are **published on npm** and ready for production use!
 
 | Package | Version | Description | npm |
 |---------|---------|-------------|-----|
-| [@agentforge/core](./packages/core) | 0.1.0 | Core abstractions (tools, registry, LangGraph utilities, middleware, streaming, resources, monitoring) | [![npm](https://img.shields.io/npm/v/@agentforge/core)](https://www.npmjs.com/package/@agentforge/core) |
-| [@agentforge/patterns](./packages/patterns) | 0.1.0 | Agent patterns (ReAct, Plan-Execute, Reflection, Multi-Agent) | [![npm](https://img.shields.io/npm/v/@agentforge/patterns)](https://www.npmjs.com/package/@agentforge/patterns) |
-| [@agentforge/tools](./packages/tools) | 0.1.0 | Standard tool library (68 production-ready tools) | [![npm](https://img.shields.io/npm/v/@agentforge/tools)](https://www.npmjs.com/package/@agentforge/tools) |
-| [@agentforge/testing](./packages/testing) | 0.1.0 | Testing utilities (mocks, assertions, fixtures) | [![npm](https://img.shields.io/npm/v/@agentforge/testing)](https://www.npmjs.com/package/@agentforge/testing) |
-| [@agentforge/cli](./packages/cli) | 0.1.0 | CLI tool (156 tests, 98.11% coverage) | [![npm](https://img.shields.io/npm/v/@agentforge/cli)](https://www.npmjs.com/package/@agentforge/cli) |
+| [@agentforge/core](./packages/core) | 0.3.8 | Core abstractions (tools, registry, LangGraph utilities, middleware, streaming, resources, monitoring) | [![npm](https://img.shields.io/npm/v/@agentforge/core)](https://www.npmjs.com/package/@agentforge/core) |
+| [@agentforge/patterns](./packages/patterns) | 0.3.8 | Agent patterns (ReAct, Plan-Execute, Reflection, Multi-Agent) | [![npm](https://img.shields.io/npm/v/@agentforge/patterns)](https://www.npmjs.com/package/@agentforge/patterns) |
+| [@agentforge/tools](./packages/tools) | 0.3.8 | Standard tool library (68 production-ready tools) | [![npm](https://img.shields.io/npm/v/@agentforge/tools)](https://www.npmjs.com/package/@agentforge/tools) |
+| [@agentforge/testing](./packages/testing) | 0.3.8 | Testing utilities (mocks, assertions, fixtures) | [![npm](https://img.shields.io/npm/v/@agentforge/testing)](https://www.npmjs.com/package/@agentforge/testing) |
+| [@agentforge/cli](./packages/cli) | 0.3.8 | CLI tool (156 tests, 98.11% coverage) | [![npm](https://img.shields.io/npm/v/@agentforge/cli)](https://www.npmjs.com/package/@agentforge/cli) |
 
 ### Installation
 
@@ -101,12 +101,14 @@ AgentForge provides 4 production-ready agent patterns:
 ### 1. ReAct (Reasoning and Action)
 Think → Act → Observe loop for exploratory tasks
 ```typescript
-import { ReActAgentBuilder } from '@agentforge/patterns';
+import { createReActAgent } from '@agentforge/patterns';
+import { ChatOpenAI } from '@langchain/openai';
 
-const agent = new ReActAgentBuilder()
-  .withLLM(llm)
-  .withTools([searchTool, calculatorTool])
-  .build();
+const agent = createReActAgent({
+  model: new ChatOpenAI({ model: 'gpt-4' }),
+  tools: [searchTool, calculatorTool],
+  maxIterations: 5
+});
 ```
 
 ### 2. Plan-Execute
@@ -308,7 +310,7 @@ pnpm clean          # Clean all build artifacts
 
 ## 🎯 Current Status
 
-**🎉 AgentForge v0.1.0 - Published on npm and Production-Ready!**
+**🎉 AgentForge v0.3.8 - Published on npm and Production-Ready!**
 
 **All 7 Phases Complete:**
 
