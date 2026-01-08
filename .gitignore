@@ -32,6 +32,7 @@ coverage/
 *.log
 npm-debug.log*
 pnpm-debug.log*
+test-results.log
 
 # Temporary files
 *.tmp
@@ -45,3 +46,6 @@ learning/
 
 # Personal verification documents (not part of the project)
 docs/verification/
+
+# Internal development documentation (not for public repo)
+.dev-docs/
