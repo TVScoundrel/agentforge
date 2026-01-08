@@ -128,12 +128,12 @@ Standard tools library:
 
 AgentForge is ideal when you need:
 
-✅ **Production-ready agents** - Not just prototypes
-✅ **Type safety** - Full TypeScript support
-✅ **Proven patterns** - Battle-tested architectures
-✅ **Smart tool management** - Auto-generate prompts, no manual prompt engineering
-✅ **Developer experience** - CLI, testing, docs
-✅ **LangChain ecosystem** - Leverage existing tools
+✅ **Production-ready agents** - Not just prototypes  
+✅ **Type safety** - Full TypeScript support  
+✅ **Proven patterns** - Battle-tested architectures  
+✅ **Smart tool management** - Auto-generate prompts, no manual prompt engineering  
+✅ **Developer experience** - CLI, testing, docs  
+✅ **LangChain ecosystem** - Leverage existing tools  
 
 ## When NOT to Use AgentForge
 
