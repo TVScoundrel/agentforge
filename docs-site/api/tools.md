@@ -278,7 +278,7 @@ const results = await fileSearch.invoke({
 ### Date/Time
 
 ```typescript
-import { formatDate, parseDate, dateAdd, dateDiff, getCurrentTime } from '@agentforge/tools';
+import { dateFormatter, currentDateTime, dateArithmetic, dateDifference } from '@agentforge/tools';
 ```
 
 ### String Utilities

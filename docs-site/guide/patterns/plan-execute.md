@@ -321,11 +321,11 @@ const researchAgent = createPlanExecuteAgent({
 ### Data Pipeline
 
 ```typescript
-import { fileRead, dataTransform, databaseWrite } from './custom-tools';
+import { fileReader, jsonParser, csvParser } from '@agentforge/tools';
 
 const pipelineAgent = createPlanExecuteAgent({
   model: new ChatOpenAI({ model: 'gpt-4' }),
-  tools: [fileRead, dataTransform, databaseWrite],
+  tools: [fileReader, jsonParser, csvParser],
   planningPrompt: `Create a data processing plan:
 
 1. Read source data

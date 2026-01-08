@@ -15,7 +15,7 @@ The Multi-Agent pattern:
 ```typescript
 import { MultiAgentSystemBuilder } from '@agentforge/patterns';
 import { ChatOpenAI } from '@langchain/openai';
-import { searchTool, calculatorTool, fileWriterTool } from '@agentforge/tools';
+import { webScraper, calculator, fileWriter } from '@agentforge/tools';
 
 const model = new ChatOpenAI({ model: 'gpt-4' });
 
@@ -39,12 +39,12 @@ builder.registerWorkers([
     name: 'Research Specialist',
     description: 'Conducts research and gathers information',
     capabilities: {
-      skills: ['research', 'web_search', 'data_collection'],
-      tools: ['search'],
+      skills: ['research', 'web_scraping', 'data_collection'],
+      tools: ['scraper'],
       available: true,
     },
     model,
-    tools: [searchTool],
+    tools: [webScraper],
     systemPrompt: 'You are a research specialist. Find accurate information.',
   },
   {
@@ -57,7 +57,7 @@ builder.registerWorkers([
       available: true,
     },
     model,
-    tools: [calculatorTool],
+    tools: [calculator],
     systemPrompt: 'You are a data analyst. Analyze and interpret data.',
   },
   {
@@ -70,7 +70,7 @@ builder.registerWorkers([
       available: true,
     },
     model,
-    tools: [fileWriterTool],
+    tools: [fileWriter],
     systemPrompt: 'You are a professional writer. Create clear, engaging content.',
   },
 ]);
