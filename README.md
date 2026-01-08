@@ -240,24 +240,35 @@ pnpm test:coverage
 - [Phase 4 Complete](./docs/PHASE_4_COMPLETE.md) - Implementation details
 
 ### Examples & Templates
-- **[Examples Directory](./examples/)** - Real-world applications and integrations
-  - [Research Assistant](./examples/applications/research-assistant/) - ReAct pattern for research
-  - [Code Reviewer](./examples/applications/code-reviewer/) - Reflection pattern for code quality
-  - [Data Analyst](./examples/applications/data-analyst/) - Plan-Execute pattern for data analysis
-  - [Customer Support Bot](./examples/applications/customer-support/) - Multi-Agent pattern for support
-  - [Express.js Integration](./examples/integrations/express-api/) - REST API with streaming
-  - [Next.js Integration](./examples/integrations/nextjs-app/) - Full-stack app with chat UI
-- **Pattern Examples**
-  - [ReAct Examples](./packages/patterns/examples/react/) - 4 ReAct examples
-  - [Plan-Execute Examples](./packages/patterns/examples/plan-execute/) - 4 Plan-Execute examples
-  - [Reflection Examples](./packages/patterns/examples/reflection/) - 4 Reflection examples
-  - [Multi-Agent Examples](./packages/patterns/examples/multi-agent/) - 4 Multi-Agent examples
-- **Feature Examples**
-  - [Streaming Examples](./packages/core/examples/streaming/) - 5 streaming examples (32+ demonstrations)
-  - [Advanced Tools Examples](./packages/core/examples/tools/) - 4 tool examples
-  - [Resource Management Examples](./packages/core/examples/resources/) - 4 resource examples
-  - [Monitoring Examples](./packages/core/examples/monitoring/) - 4 monitoring examples
-  - [Deployment Examples](./packages/core/examples/deployment/) - 4 deployment examples
+
+#### 🚀 [Deployment Templates](./templates/)
+Production-ready templates for deploying your agents:
+- **[Docker Templates](./templates/docker/)** - Containerization with docker-compose
+- **[Kubernetes Manifests](./templates/kubernetes/)** - Production K8s deployment
+- **[CI/CD Pipelines](./templates/ci-cd/)** - GitHub Actions & GitLab CI
+- **[Cloud Guides](./templates/deployment/)** - AWS, GCP, Azure deployment guides
+
+#### 💡 [Application Examples](./examples/)
+Real-world applications and integrations:
+- [Research Assistant](./examples/applications/research-assistant/) - ReAct pattern for research
+- [Code Reviewer](./examples/applications/code-reviewer/) - Reflection pattern for code quality
+- [Data Analyst](./examples/applications/data-analyst/) - Plan-Execute pattern for data analysis
+- [Customer Support Bot](./examples/applications/customer-support/) - Multi-Agent pattern for support
+- [Express.js Integration](./examples/integrations/express-api/) - REST API with streaming
+- [Next.js Integration](./examples/integrations/nextjs-app/) - Full-stack app with chat UI
+
+#### 📚 Pattern Examples
+- [ReAct Examples](./packages/patterns/examples/react/) - 4 ReAct examples
+- [Plan-Execute Examples](./packages/patterns/examples/plan-execute/) - 4 Plan-Execute examples
+- [Reflection Examples](./packages/patterns/examples/reflection/) - 4 Reflection examples
+- [Multi-Agent Examples](./packages/patterns/examples/multi-agent/) - 4 Multi-Agent examples
+
+#### 🔧 Feature Examples
+- [Streaming Examples](./packages/core/examples/streaming/) - 5 streaming examples (32+ demonstrations)
+- [Advanced Tools Examples](./packages/core/examples/tools/) - 4 tool examples
+- [Resource Management Examples](./packages/core/examples/resources/) - 4 resource examples
+- [Monitoring Examples](./packages/core/examples/monitoring/) - 4 monitoring examples
+- [Deployment Examples](./packages/core/examples/deployment/) - 4 deployment examples
 
 ---
 
