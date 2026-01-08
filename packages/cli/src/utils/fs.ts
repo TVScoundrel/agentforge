@@ -16,6 +16,11 @@ export async function copyTemplate(
   targetPath: string,
   replacements: Record<string, string> = {}
 ): Promise<void> {
+  // Verify template path exists
+  if (!(await fs.pathExists(templatePath))) {
+    throw new Error(`Template path does not exist: ${templatePath}`);
+  }
+
   await fs.ensureDir(targetPath);
 
   const files = await glob('**/*', {
@@ -23,6 +28,10 @@ export async function copyTemplate(
     dot: true,
     nodir: true,
   });
+
+  if (files.length === 0) {
+    throw new Error(`No files found in template: ${templatePath}`);
+  }
 
   for (const file of files) {
     const sourcePath = path.join(templatePath, file);
@@ -74,7 +83,9 @@ export async function writeFile(filePath: string, content: string): Promise<void
 }
 
 export function getTemplatePath(template: string): string {
-  return path.join(__dirname, '..', '..', 'templates', template);
+  // __dirname is in dist/, so we go up one level to the package root
+  // then into templates directory
+  return path.join(__dirname, '..', 'templates', template);
 }
 
 export async function isEmptyDir(dir: string): Promise<boolean> {
