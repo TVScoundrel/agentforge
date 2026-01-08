@@ -116,7 +116,7 @@ export function createReActAgent(
 
   // ===== Build the Graph =====
 
-  // @ts-expect-error - LangGraph's complex generic types don't infer well with createStateAnnotation
+  // @ts-ignore - LangGraph's complex generic types don't infer well with createStateAnnotation
   const workflow: StateGraph<ReActStateType> = new StateGraph(ReActState)
     .addNode(REASONING_NODE, reasoningNode)
     .addNode(ACTION_NODE, actionNode)

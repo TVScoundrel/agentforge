@@ -19,12 +19,24 @@ pnpm install
 
 ## Step 2: Set Up Environment
 
-Create `.env`:
+**⚠️ Important: Do this BEFORE running your agent!**
+
+First, copy the example environment file:
+
+```bash
+cp .env.example .env
+```
+
+Then edit `.env` and add your OpenAI API key:
 
 ```bash
 OPENAI_API_KEY=your-api-key-here
 LANGCHAIN_TRACING_V2=true  # Optional: for debugging
 ```
+
+> **What happens if you skip this step?**
+>
+> If you don't set up your `.env` file with the required API keys, you'll get a clear error message telling you exactly what's missing and how to fix it. The agent won't start until all required environment variables are configured.
 
 ## Step 3: Create Custom Tools
 

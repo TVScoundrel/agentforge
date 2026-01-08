@@ -118,7 +118,7 @@ importers:
   packages/core:
     dependencies:
       zod:
-        specifier: ^3.25.76
+        specifier: ^3.23.0
         version: 3.25.76
       zod-to-json-schema:
         specifier: ^3.25.0
@@ -158,14 +158,14 @@ importers:
   packages/patterns:
     dependencies:
       '@agentforge/core':
-        specifier: workspace:*
-        version: link:../core
+        specifier: ^0.3.0
+        version: 0.3.2(@langchain/core@1.1.8(openai@6.14.0(zod@3.25.76)))(@langchain/langgraph@1.0.7(@langchain/core@1.1.8(openai@6.14.0(zod@3.25.76)))(zod-to-json-schema@3.25.0(zod@3.25.76))(zod@3.25.76))(zod@3.25.76)
       '@langchain/core':
-        specifier: ^0.3.29
-        version: 0.3.80(openai@6.14.0(zod@3.25.76))
+        specifier: ^1.1.0
+        version: 1.1.8(openai@6.14.0(zod@3.25.76))
       '@langchain/langgraph':
-        specifier: ^0.2.20
-        version: 0.2.74(@langchain/core@0.3.80(openai@6.14.0(zod@3.25.76)))(zod-to-json-schema@3.25.0(zod@3.25.76))
+        specifier: ^1.0.0
+        version: 1.0.7(@langchain/core@1.1.8(openai@6.14.0(zod@3.25.76)))(zod-to-json-schema@3.25.0(zod@3.25.76))(zod@3.25.76)
       zod:
         specifier: ^3.23.8
         version: 3.25.76
@@ -334,6 +334,13 @@ importers:
         version: 5.9.3
 
 packages:
+
+  '@agentforge/core@0.3.2':
+    resolution: {integrity: sha512-t8qLWIQa6nsUAWKkktv2VI5KtImGd/UyPVZyY/rti9SaW7cVIF2N1HggWB95hhCXY6pgfa7kGCkQ2bxQ9ymj2g==}
+    peerDependencies:
+      '@langchain/core': ^1.1.0
+      '@langchain/langgraph': ^1.0.0
+      zod: ^3.23.0
 
   '@algolia/abtesting@1.12.2':
     resolution: {integrity: sha512-oWknd6wpfNrmRcH0vzed3UPX0i17o4kYLM5OMITyMVM2xLgaRbIafoxL0e8mcrNNb0iORCJA0evnNDKRYth5WQ==}
@@ -3199,6 +3206,13 @@ packages:
     resolution: {integrity: sha512-bXE4cR/kVZhKZX/RjPEflHaKVhUVl85noU3v6b8apfQEc1x4A+zBxjZ4lN8LqGd6WZ3dl98pY4o717VFmoPp+A==}
 
 snapshots:
+
+  '@agentforge/core@0.3.2(@langchain/core@1.1.8(openai@6.14.0(zod@3.25.76)))(@langchain/langgraph@1.0.7(@langchain/core@1.1.8(openai@6.14.0(zod@3.25.76)))(zod-to-json-schema@3.25.0(zod@3.25.76))(zod@3.25.76))(zod@3.25.76)':
+    dependencies:
+      '@langchain/core': 1.1.8(openai@6.14.0(zod@3.25.76))
+      '@langchain/langgraph': 1.0.7(@langchain/core@1.1.8(openai@6.14.0(zod@3.25.76)))(zod-to-json-schema@3.25.0(zod@3.25.76))(zod@3.25.76)
+      zod: 3.25.76
+      zod-to-json-schema: 3.25.0(zod@3.25.76)
 
   '@algolia/abtesting@1.12.2':
     dependencies:

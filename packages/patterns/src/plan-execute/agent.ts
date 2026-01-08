@@ -65,7 +65,7 @@ export function createPlanExecuteAgent(config: PlanExecuteAgentConfig) {
     : async (state: PlanExecuteStateType) => ({ status: 'executing' as const });
 
   // Create the graph
-  // @ts-expect-error - LangGraph's complex generic types don't infer well with createStateAnnotation
+  // @ts-ignore - LangGraph's complex generic types don't infer well with createStateAnnotation
   const workflow = new StateGraph(PlanExecuteState)
     .addNode('planner', plannerNode)
     .addNode('executor', executorNode)

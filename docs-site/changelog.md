@@ -5,6 +5,21 @@ All notable changes to AgentForge will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.3.3] - 2026-01-08
+
+### Added
+- **CLI Templates**: Added environment validation to all templates (minimal, full, cli, api)
+  - Validates required environment variables (OPENAI_API_KEY) before starting
+  - Provides clear, helpful error messages when variables are missing
+  - Includes step-by-step instructions on how to fix missing environment variables
+  - Prevents cryptic OpenAI SDK errors when API key is not configured
+
+### Improved
+- **Documentation**: Enhanced quick-start guide with more explicit environment setup instructions
+  - Added warning about setting up .env BEFORE running the agent
+  - Clarified the importance of copying .env.example to .env
+  - Added explanation of what happens if environment setup is skipped
+
 ## [0.3.2] - 2026-01-08
 
 ### Fixed
@@ -186,6 +201,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Version History
 
+- **0.3.3** (2026-01-08) - Added environment validation to all CLI templates with helpful error messages
 - **0.3.2** (2026-01-08) - Fixed minimal template missing dotenv configuration
 - **0.3.1** (2026-01-08) - Fixed CLI template version references
 - **0.3.0** (2026-01-08) - Initial public release with all core packages
