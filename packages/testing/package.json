@@ -1,6 +1,6 @@
 {
   "name": "@agentforge/testing",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Testing utilities and helpers for AgentForge framework",
   "type": "module",
   "main": "./dist/index.js",
@@ -68,4 +68,3 @@
     "url": "https://github.com/TVScoundrel/agentforge/issues"
   }
 }
-

@@ -1,6 +1,6 @@
 {
   "name": "@agentforge/cli",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "CLI tool for AgentForge - scaffolding, development, and deployment",
   "type": "module",
   "bin": {
@@ -79,4 +79,3 @@
     "directory": "packages/cli"
   }
 }
-
