@@ -36,11 +36,11 @@ Not sure which pattern to use? See the [Agent Patterns Overview](/guide/concepts
 ```typescript
 import { createPlanExecuteAgent } from '@agentforge/patterns';
 import { ChatOpenAI } from '@langchain/openai';
-import { webSearch, calculator, fileWrite } from '@agentforge/tools';
+import { webScraper, calculator, fileWriter } from '@agentforge/tools';
 
 const agent = createPlanExecuteAgent({
   model: new ChatOpenAI({ model: 'gpt-4' }),
-  tools: [webSearch, calculator, fileWrite],
+  tools: [webScraper, calculator, fileWriter],
   maxExecutionSteps: 20
 });
 
@@ -78,8 +78,8 @@ interface PlanExecuteConfig {
 ```typescript
 const agent = createPlanExecuteAgent({
   model: new ChatOpenAI({ model: 'gpt-4' }),
-  tools: [webSearch, calculator, fileWrite],
-  
+  tools: [webScraper, calculator, fileWriter],
+
   // Execution limits
   maxExecutionSteps: 30,
   maxPlanningIterations: 5,
@@ -302,11 +302,11 @@ const agent = withCheckpointing(
 ### Research & Report Generation
 
 ```typescript
-import { webSearch, wikipediaSearch, fileWrite } from '@agentforge/tools';
+import { webScraper, htmlParser, fileWriter } from '@agentforge/tools';
 
 const researchAgent = createPlanExecuteAgent({
   model: new ChatOpenAI({ model: 'gpt-4' }),
-  tools: [webSearch, wikipediaSearch, fileWrite],
+  tools: [webScraper, htmlParser, fileWriter],
   maxExecutionSteps: 30,
   planningPrompt: `Create a research plan:
 

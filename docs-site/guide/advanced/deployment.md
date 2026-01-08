@@ -31,7 +31,7 @@ const agent = createReActAgent({
     model: 'gpt-4',
     apiKey: process.env.OPENAI_API_KEY
   }),
-  tools: [webSearch, calculator]
+  tools: [webScraper, calculator]
 });
 
 export default async function handler(req: Request) {

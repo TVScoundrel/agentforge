@@ -36,21 +36,21 @@ Not sure which pattern to use? See the [Agent Patterns Overview](/guide/concepts
 ```typescript
 import { createReActAgent } from '@agentforge/patterns';
 import { ChatOpenAI } from '@langchain/openai';
-import { calculator, webSearch, fileRead } from '@agentforge/tools';
+import { calculator, webScraper, fileReader } from '@agentforge/tools';
 
 const agent = createReActAgent({
-  model: new ChatOpenAI({ 
+  model: new ChatOpenAI({
     model: 'gpt-4',
-    temperature: 0 
+    temperature: 0
   }),
-  tools: [calculator, webSearch, fileRead],
+  tools: [calculator, webScraper, fileReader],
   maxIterations: 10
 });
 
 const result = await agent.invoke({
   messages: [{
     role: 'user',
-    content: 'What is the population of Tokyo and how does it compare to New York?'
+    content: 'Calculate 15 * 7 and read the contents of data.txt'
   }]
 });
 
@@ -80,8 +80,8 @@ interface ReActConfig {
 ```typescript
 const agent = createReActAgent({
   model: new ChatOpenAI({ model: 'gpt-4' }),
-  tools: [calculator, webSearch],
-  
+  tools: [calculator, currentDateTime],
+
   // Limit iterations to prevent infinite loops
   maxIterations: 20,
   
@@ -127,11 +127,11 @@ const agent = createReActAgent({
   tools: async (state) => {
     // Only provide expensive tools if needed
     const basicTools = [calculator, dateTime];
-    
-    if (state.messages.some(m => m.content.includes('search'))) {
-      return [...basicTools, webSearch, wikipediaSearch];
+
+    if (state.messages.some(m => m.content.includes('scrape'))) {
+      return [...basicTools, webScraper, htmlParser];
     }
-    
+
     return basicTools;
   }
 });
@@ -248,11 +248,11 @@ const result = await agent.invoke(input, {
 
 ```typescript
 import { createReActAgent } from '@agentforge/patterns';
-import { webSearch, wikipediaSearch, calculator } from '@agentforge/tools';
+import { webScraper, htmlParser, calculator } from '@agentforge/tools';
 
 const researchAgent = createReActAgent({
   model: new ChatOpenAI({ model: 'gpt-4' }),
-  tools: [webSearch, wikipediaSearch, calculator],
+  tools: [webScraper, htmlParser, calculator],
   maxIterations: 20,
   systemMessage: `You are a thorough research assistant.
 
@@ -267,11 +267,11 @@ For each query:
 ### Data Analysis Agent
 
 ```typescript
-import { fileRead, pythonREPL, calculator } from '@agentforge/tools';
+import { fileReader, csvParser, calculator } from '@agentforge/tools';
 
 const dataAgent = createReActAgent({
   model: new ChatOpenAI({ model: 'gpt-4' }),
-  tools: [fileRead, pythonREPL, calculator],
+  tools: [fileReader, csvParser, calculator],
   systemMessage: `You are a data analysis expert.
 
 When analyzing data:
@@ -368,14 +368,14 @@ const agent = createReActAgent({
 ```typescript
 import { withCache } from '@agentforge/core';
 
-const cachedWebSearch = withCache(webSearch, {
+const cachedWebScraper = withCache(webScraper, {
   ttl: 3600,  // Cache for 1 hour
-  keyFn: (input) => input.query
+  keyFn: (input) => input.url
 });
 
 const agent = createReActAgent({
   model,
-  tools: [cachedWebSearch, calculator]
+  tools: [cachedWebScraper, calculator]
 });
 ```
 

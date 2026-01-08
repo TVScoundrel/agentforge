@@ -78,18 +78,18 @@ pnpm dev
 ```typescript
 import { createReActAgent } from '@agentforge/patterns';
 import { ChatOpenAI } from '@langchain/openai';
-import { calculator, webSearch } from '@agentforge/tools';
+import { calculator, currentDateTime } from '@agentforge/tools';
 
 const agent = createReActAgent({
   model: new ChatOpenAI({ model: 'gpt-4' }),
-  tools: [calculator, webSearch],
+  tools: [calculator, currentDateTime],
   maxIterations: 5
 });
 
 const result = await agent.invoke({
   messages: [{
     role: 'user',
-    content: 'What is the population of Tokyo multiplied by 2?'
+    content: 'What is 25 multiplied by 4, and what time is it?'
   }]
 });
 

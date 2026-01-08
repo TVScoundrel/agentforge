@@ -41,7 +41,7 @@ import { ChatOpenAI } from '@langchain/openai';
 
 const agent = createReActAgent({
   model: new ChatOpenAI({ model: 'gpt-4', streaming: true }),
-  tools: [webSearch, calculator]
+  tools: [webScraper, calculator]
 });
 
 // Stream the agent's execution
@@ -119,7 +119,7 @@ import { createPlanExecuteAgent } from '@agentforge/patterns';
 
 const agent = createPlanExecuteAgent({
   model: new ChatOpenAI({ model: 'gpt-4', streaming: true }),
-  tools: [webSearch, dataAnalysis, fileWrite]
+  tools: [webScraper, csvParser, fileWriter]
 });
 
 const stream = await agent.stream(input);

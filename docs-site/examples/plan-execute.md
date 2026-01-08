@@ -15,16 +15,16 @@ The Plan-Execute pattern:
 ```typescript
 import { createPlanExecuteAgent } from '@agentforge/patterns';
 import { ChatOpenAI } from '@langchain/openai';
-import { 
-  webSearch, 
+import {
+  webScraper,
   fileWriter,
-  jsonProcessor 
+  jsonParser
 } from '@agentforge/tools';
 
 const agent = createPlanExecuteAgent({
   model: new ChatOpenAI({ model: 'gpt-4' }),
 
-  tools: [webSearch, fileWriter, jsonProcessor],
+  tools: [webScraper, fileWriter, jsonParser],
 
   plannerPrompt: `Create a detailed step-by-step plan to accomplish the task.
 Each step should be clear and actionable.

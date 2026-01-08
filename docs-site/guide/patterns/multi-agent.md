@@ -42,7 +42,7 @@ const system = createMultiAgentSystem({
   agents: {
     researcher: {
       model: new ChatOpenAI({ model: 'gpt-4' }),
-      tools: [webSearch, wikipediaSearch],
+      tools: [webScraper, htmlParser],
       systemMessage: 'You are a research specialist. Find accurate information.'
     },
     analyst: {
@@ -112,7 +112,7 @@ Agents work in a defined sequence:
 const system = createMultiAgentSystem({
   agents: {
     planner: { llm, role: 'Create plan' },
-    executor: { llm, tools: [webSearch, calculator], role: 'Execute plan' },
+    executor: { llm, tools: [webScraper, calculator], role: 'Execute plan' },
     validator: { llm, role: 'Validate results' }
   },
   
@@ -203,9 +203,9 @@ interface MultiAgentConfig {
 ```typescript
 const system = createMultiAgentSystem({
   agents: {
-    researcher: { llm, tools: [webSearch] },
+    researcher: { llm, tools: [webScraper] },
     analyst: { llm, tools: [calculator] },
-    writer: { llm, tools: [fileWrite] }
+    writer: { llm, tools: [fileWriter] }
   },
   
   strategy: 'supervisor',
@@ -242,7 +242,7 @@ const researchAgent = agentBuilder()
   .name('researcher')
   .role('Research Specialist')
   .model(new ChatOpenAI({ model: 'gpt-4' }))
-  .tools([webSearch, wikipediaSearch, arxivSearch])
+  .tools([webScraper, htmlParser, httpGet])
   .systemMessage(`You are an expert researcher.
 
 Your responsibilities:
@@ -410,7 +410,7 @@ const researchTeam = createMultiAgentSystem({
   agents: {
     literatureReviewer: {
       model,
-      tools: [arxivSearch, googleScholar],
+      tools: [webScraper, httpGet],
       role: 'Find and review academic papers'
     },
     dataCollector: {
@@ -550,9 +550,9 @@ Only initialize agents when needed:
 ```typescript
 const system = createMultiAgentSystem({
   agents: {
-    researcher: { llm, tools: [webSearch], lazy: true },
+    researcher: { llm, tools: [webScraper], lazy: true },
     analyst: { llm, tools: [calculator], lazy: true },
-    writer: { llm, tools: [fileWrite], lazy: true }
+    writer: { llm, tools: [fileWriter], lazy: true }
   },
   lazyLoading: true
 });
