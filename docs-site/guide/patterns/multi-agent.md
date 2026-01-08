@@ -47,12 +47,12 @@ const system = createMultiAgentSystem({
     },
     analyst: {
       model: new ChatOpenAI({ model: 'gpt-4' }),
-      tools: [calculator, dataAnalysis],
+      tools: [calculator, csvParser],
       systemMessage: 'You are a data analyst. Analyze and interpret data.'
     },
     writer: {
       model: new ChatOpenAI({ model: 'gpt-4' }),
-      tools: [fileWrite],
+      tools: [fileWriter],
       systemMessage: 'You are a technical writer. Create clear, structured reports.'
     }
   },
