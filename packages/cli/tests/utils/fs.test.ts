@@ -129,6 +129,7 @@ describe('File System Utils', () => {
 
   describe('copyTemplate', () => {
     it('should copy template files without replacements', async () => {
+      vi.mocked(fs.pathExists).mockResolvedValue(true);
       vi.mocked(fs.ensureDir).mockResolvedValue(undefined);
       vi.mocked(glob).mockResolvedValueOnce(['file1.txt', 'file2.txt']);
       vi.mocked(fs.readFile).mockResolvedValue('content');
@@ -146,6 +147,7 @@ describe('File System Utils', () => {
     });
 
     it('should copy template files with replacements', async () => {
+      vi.mocked(fs.pathExists).mockResolvedValue(true);
       vi.mocked(fs.ensureDir).mockResolvedValue(undefined);
       vi.mocked(glob).mockResolvedValueOnce(['package.json']);
       vi.mocked(fs.readFile).mockResolvedValue('{"name": "{{projectName}}"}');
@@ -160,6 +162,7 @@ describe('File System Utils', () => {
     });
 
     it('should handle multiple replacements', async () => {
+      vi.mocked(fs.pathExists).mockResolvedValue(true);
       vi.mocked(fs.ensureDir).mockResolvedValue(undefined);
       vi.mocked(glob).mockResolvedValueOnce(['README.md']);
       vi.mocked(fs.readFile).mockResolvedValue('# {{title}}\n{{description}}');
@@ -177,6 +180,7 @@ describe('File System Utils', () => {
     });
 
     it('should create nested directories', async () => {
+      vi.mocked(fs.pathExists).mockResolvedValue(true);
       vi.mocked(fs.ensureDir).mockResolvedValue(undefined);
       vi.mocked(glob).mockResolvedValueOnce(['src/index.ts', 'src/utils/helper.ts']);
       vi.mocked(fs.readFile).mockResolvedValue('content');
