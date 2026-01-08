@@ -1,6 +1,6 @@
 {
   "name": "@agentforge/tools",
-  "version": "0.3.7",
+  "version": "0.3.8",
   "description": "Standard tools collection for AgentForge framework - web, data, file, and utility tools",
   "type": "module",
   "main": "./dist/index.js",
