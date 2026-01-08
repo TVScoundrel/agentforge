@@ -411,7 +411,8 @@ All patterns support error handling:
 
 ```typescript
 const agent = createReActAgent({
-  model: llm,  tools,
+  model: llm,
+  tools,
   maxIterations: 10,
   onError: (error, state) => {
     console.error('Agent error:', error);
