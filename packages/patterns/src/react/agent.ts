@@ -48,12 +48,20 @@ export function createReActAgent(
   // Extract configuration with defaults
   const {
     llm,
+    model,
     tools,
     systemPrompt = DEFAULT_REACT_SYSTEM_PROMPT,
     maxIterations = 10,
     returnIntermediateSteps = false,
     stopCondition,
   } = config;
+
+  // Support both 'model' and 'llm' for backward compatibility
+  const chatModel = llm || model;
+
+  if (!chatModel) {
+    throw new Error('Either "llm" or "model" must be provided in the configuration');
+  }
 
   const {
     verbose = false,
@@ -73,7 +81,7 @@ export function createReActAgent(
   // ===== Node Implementations =====
 
   const reasoningNode = createReasoningNode(
-    llm,
+    chatModel,
     toolArray,
     systemPrompt,
     maxIterations,

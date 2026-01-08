@@ -5,6 +5,15 @@ All notable changes to AgentForge will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.3.4] - 2026-01-08
+
+### Fixed
+- **Critical Bug Fix**: Fixed `createReActAgent` to accept both `model` and `llm` parameters for backward compatibility
+  - Templates use `model` but type definition only accepted `llm`, causing runtime errors
+  - Added support for both parameters with proper validation
+  - Updated `ReActAgentConfig` interface to accept both `model` (deprecated) and `llm`
+  - All existing code using `model` will continue to work
+
 ## [0.3.3] - 2026-01-08
 
 ### Added
