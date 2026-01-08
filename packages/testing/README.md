@@ -368,9 +368,28 @@ describe('ReAct Agent Integration Tests', () => {
 - `calculatorTool` - Calculator tool
 - `searchTool` - Search tool
 
+## 📖 Documentation
+
+- 📚 **[Full Documentation](https://tvscoundrel.github.io/agentforge/)**
+- 🚀 **[Quick Start](https://tvscoundrel.github.io/agentforge/guide/quick-start)**
+- 🧪 **[Testing API Reference](https://tvscoundrel.github.io/agentforge/api/testing)**
+- 💡 **[Testing Tutorial](https://tvscoundrel.github.io/agentforge/tutorials/testing)**
+
+## 🔗 Links
+
+- [GitHub Repository](https://github.com/TVScoundrel/agentforge)
+- [npm Package](https://www.npmjs.com/package/@agentforge/testing)
+- [Report Issues](https://github.com/TVScoundrel/agentforge/issues)
+
+## 📚 Related Packages
+
+- [@agentforge/core](https://www.npmjs.com/package/@agentforge/core) - Core abstractions
+- [@agentforge/patterns](https://www.npmjs.com/package/@agentforge/patterns) - Agent patterns
+- [@agentforge/tools](https://www.npmjs.com/package/@agentforge/tools) - Standard tools
+- [@agentforge/cli](https://www.npmjs.com/package/@agentforge/cli) - CLI tool
+
 ## License
 
 MIT
-```
 
 

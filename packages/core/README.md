@@ -119,13 +119,21 @@ const app = workflow.compile();
 
 ## Documentation
 
-- [Tool System](./docs/TOOL_SYSTEM.md)
-- [LangChain Integration](./docs/LANGCHAIN_INTEGRATION.md)
-- [LangGraph Integration](./docs/LANGGRAPH_INTEGRATION.md)
+📚 **[Full Documentation](https://tvscoundrel.github.io/agentforge/)**
+
+### Core Guides
+- [Getting Started](https://tvscoundrel.github.io/agentforge/guide/getting-started)
+- [Core Concepts](https://tvscoundrel.github.io/agentforge/guide/concepts/tools)
+- [API Reference](https://tvscoundrel.github.io/agentforge/api/core)
+
+### Tutorials
+- [Building Your First Agent](https://tvscoundrel.github.io/agentforge/tutorials/first-agent)
+- [Creating Custom Tools](https://tvscoundrel.github.io/agentforge/tutorials/custom-tools)
+- [Advanced Patterns](https://tvscoundrel.github.io/agentforge/tutorials/advanced-patterns)
 
 ## Examples
 
-See the [examples](./examples) directory for complete working examples.
+See the [examples documentation](https://tvscoundrel.github.io/agentforge/examples/react-agent) for complete working examples.
 
 ## Development
 

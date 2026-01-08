@@ -479,7 +479,17 @@ import {
 | **Reflection** | Quality-critical outputs | Iterative improvement | Slow, expensive |
 | **Multi-Agent** | Specialized tasks | Coordinated expertise | High complexity |
 
-See the [Pattern Comparison Guide](./docs/pattern-comparison.md) for detailed guidance.
+📚 **[Pattern Comparison Guide](https://tvscoundrel.github.io/agentforge/guide/patterns/comparison)** - Detailed guidance on choosing the right pattern
+
+## Documentation
+
+- 📖 **[Full Documentation](https://tvscoundrel.github.io/agentforge/)**
+- 🚀 **[Quick Start](https://tvscoundrel.github.io/agentforge/guide/quick-start)**
+- 🤖 **[ReAct Pattern Guide](https://tvscoundrel.github.io/agentforge/guide/patterns/react)**
+- 📋 **[Plan-Execute Pattern Guide](https://tvscoundrel.github.io/agentforge/guide/patterns/plan-execute)**
+- 🔄 **[Reflection Pattern Guide](https://tvscoundrel.github.io/agentforge/guide/patterns/reflection)**
+- 👥 **[Multi-Agent Pattern Guide](https://tvscoundrel.github.io/agentforge/guide/patterns/multi-agent)**
+- 💡 **[Examples](https://tvscoundrel.github.io/agentforge/examples/react-agent)**
 
 ## Development
 

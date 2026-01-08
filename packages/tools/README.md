@@ -453,11 +453,26 @@ Contributions are welcome! Please see the main AgentForge repository for contrib
 
 MIT
 
+## 📖 Documentation
+
+- 📚 **[Full Documentation](https://tvscoundrel.github.io/agentforge/)**
+- 🚀 **[Quick Start](https://tvscoundrel.github.io/agentforge/guide/quick-start)**
+- 🛠️ **[Tools API Reference](https://tvscoundrel.github.io/agentforge/api/tools)**
+- 💡 **[Custom Tools Tutorial](https://tvscoundrel.github.io/agentforge/tutorials/custom-tools)**
+- 📦 **[Examples](https://tvscoundrel.github.io/agentforge/examples/custom-tools)**
+
 ## 🔗 Links
 
-- [AgentForge Documentation](https://github.com/agentforge/agentforge)
-- [Tool Builder API](../core/docs/TOOL_BUILDER.md)
-- [LangChain Integration](../core/docs/LANGCHAIN_INTEGRATION.md)
+- [GitHub Repository](https://github.com/TVScoundrel/agentforge)
+- [npm Package](https://www.npmjs.com/package/@agentforge/tools)
+- [Report Issues](https://github.com/TVScoundrel/agentforge/issues)
+
+## 📚 Related Packages
+
+- [@agentforge/core](https://www.npmjs.com/package/@agentforge/core) - Core abstractions
+- [@agentforge/patterns](https://www.npmjs.com/package/@agentforge/patterns) - Agent patterns
+- [@agentforge/testing](https://www.npmjs.com/package/@agentforge/testing) - Testing utilities
+- [@agentforge/cli](https://www.npmjs.com/package/@agentforge/cli) - CLI tool
 
 ---
 

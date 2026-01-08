@@ -239,6 +239,26 @@ agentforge tool:publish myTool --tag beta --dry-run
 - `--tag <tag>` - npm tag [default: latest]
 - `--dry-run` - Dry run without actual publishing
 
+## 📖 Documentation
+
+- 📚 **[Full Documentation](https://tvscoundrel.github.io/agentforge/)**
+- 🚀 **[Quick Start](https://tvscoundrel.github.io/agentforge/guide/quick-start)**
+- 🛠️ **[CLI API Reference](https://tvscoundrel.github.io/agentforge/api/cli)**
+- 💡 **[Getting Started Tutorial](https://tvscoundrel.github.io/agentforge/tutorials/first-agent)**
+
+## 🔗 Links
+
+- [GitHub Repository](https://github.com/TVScoundrel/agentforge)
+- [npm Package](https://www.npmjs.com/package/@agentforge/cli)
+- [Report Issues](https://github.com/TVScoundrel/agentforge/issues)
+
+## 📚 Related Packages
+
+- [@agentforge/core](https://www.npmjs.com/package/@agentforge/core) - Core abstractions
+- [@agentforge/patterns](https://www.npmjs.com/package/@agentforge/patterns) - Agent patterns
+- [@agentforge/tools](https://www.npmjs.com/package/@agentforge/tools) - Standard tools
+- [@agentforge/testing](https://www.npmjs.com/package/@agentforge/testing) - Testing utilities
+
 ## License
 
 MIT
