@@ -187,6 +187,6 @@ pnpm add -D typescript@latest
 ## Getting Help
 
 - **[GitHub Discussions](https://github.com/TVScoundrel/agentforge/discussions)** - Ask questions
-- **[Discord](https://discord.gg/qWfPK2NyET)** - Chat with the community
+- **[Discord](https://discord.gg/U9twuFu4PQ)** - Chat with the community
 - **[Examples](https://github.com/TVScoundrel/agentforge/tree/main/examples)** - Browse code examples
 
