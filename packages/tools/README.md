@@ -1,6 +1,14 @@
 # @agentforge/tools
 
-> Standard tools collection for AgentForge framework - 68 production-ready tools for web, data, file, and utility operations.
+> Production-ready tools collection for AgentForge - 68 tools for web, data, file, and utility operations
+
+[![npm version](https://img.shields.io/npm/v/@agentforge/tools)](https://www.npmjs.com/package/@agentforge/tools)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.9-blue)](https://www.typescriptlang.org/)
+[![License](https://img.shields.io/badge/license-MIT-green)](../../LICENSE)
+
+## 🎉 Status: Production Ready & Published
+
+**68 production-ready tools** | **Full TypeScript support** | **Comprehensive documentation** | **LangChain compatible**
 
 ## 📦 Installation
 
@@ -14,19 +22,20 @@ yarn add @agentforge/tools
 
 ## 🎯 Overview
 
-This package provides a comprehensive collection of **68 ready-to-use tools** organized into four categories:
+This package provides **68 ready-to-use tools** organized into 4 categories:
 
 - **🌐 Web Tools** (10 tools) - HTTP requests, web scraping, HTML parsing, URL manipulation
 - **📊 Data Tools** (18 tools) - JSON, CSV, XML processing and data transformation
 - **📁 File Tools** (18 tools) - File operations, directory management, path utilities
 - **🔧 Utility Tools** (22 tools) - Date/time, strings, math, validation
 
-All tools are built using the AgentForge tool builder API with:
-- ✅ Full TypeScript support
+All tools feature:
+- ✅ Full TypeScript support with type inference
 - ✅ Zod schema validation
 - ✅ Comprehensive error handling
-- ✅ Detailed documentation
+- ✅ Detailed documentation and examples
 - ✅ LangChain compatibility
+- ✅ Production-tested and ready
 
 ## 🚀 Quick Start
 

@@ -1,8 +1,16 @@
 # @agentforge/testing
 
-Testing utilities and helpers for the AgentForge framework.
+> Testing utilities and helpers for the AgentForge framework
 
-## Installation
+[![npm version](https://img.shields.io/npm/v/@agentforge/testing)](https://www.npmjs.com/package/@agentforge/testing)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.9-blue)](https://www.typescriptlang.org/)
+[![License](https://img.shields.io/badge/license-MIT-green)](../../LICENSE)
+
+## 🎉 Status: Production Ready & Published
+
+**Complete testing toolkit** | **Full TypeScript support** | **Comprehensive documentation**
+
+## 📦 Installation
 
 ```bash
 npm install --save-dev @agentforge/testing
@@ -12,13 +20,15 @@ pnpm add -D @agentforge/testing
 yarn add -D @agentforge/testing
 ```
 
-## Features
+## ✨ Features
 
 - 🎭 **Mock Factories** - Create mock LLMs, tools, and states for testing
 - 🔧 **Test Helpers** - Assertion helpers and state builders
 - 📦 **Fixtures** - Pre-built sample agents, tools, and conversations
 - 🏃 **Test Runners** - Agent test runner and conversation simulator
 - 📸 **Snapshot Testing** - State and message snapshot utilities
+- ✅ **Full TypeScript** - Complete type safety and inference
+- 🧪 **Vitest Integration** - Works seamlessly with Vitest
 
 ## Quick Start
 

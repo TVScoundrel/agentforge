@@ -1,69 +1,71 @@
 # @agentforge/core
 
-Core abstractions for AgentForge - production-ready deep agents framework.
+> Core abstractions for AgentForge - production-ready framework for building deep agents with LangGraph
 
-## Status
+[![npm version](https://img.shields.io/npm/v/@agentforge/core)](https://www.npmjs.com/package/@agentforge/core)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.9-blue)](https://www.typescriptlang.org/)
+[![License](https://img.shields.io/badge/license-MIT-green)](../../LICENSE)
 
-✅ **Phase 1 & 2 Complete** | 🚧 **Phase 3.1 In Progress** - ReAct Pattern Nearly Complete
+## 🎉 Status: Production Ready & Published
 
-**326 tests passing** | **Full TypeScript support** | **Comprehensive documentation**
+**All features complete** | **500+ tests passing** | **Full TypeScript support** | **Comprehensive documentation**
 
-## Features
+## ✨ Features
 
-### ✅ Production Ready (Phase 1 & 2)
-
-**Phase 1: Tool System** (113 tests)
-- **Tool Metadata** - Rich metadata with categories, tags, examples
-- **Tool Builder** - Fluent API for creating tools
+### 🛠️ Tool System (Phase 1)
+- **Rich Metadata** - Categories, tags, examples, and detailed descriptions
+- **Fluent Builder API** - Easy tool creation with `createTool()`
 - **Tool Registry** - Centralized management with querying and events
-- **LangChain Integration** - Seamless conversion to LangChain tools
-- **Prompt Generation** - Automatic LLM prompt generation
+- **LangChain Integration** - Seamless conversion to/from LangChain tools
+- **Prompt Generation** - Automatic LLM-friendly prompt generation
+- **113 tests** - Comprehensive test coverage
 
-**Phase 2: LangGraph Utilities** (158 tests)
+### 📊 LangGraph Utilities (Phase 2)
 - **State Management** - Type-safe state annotations with Zod validation
 - **Workflow Builders** - Sequential, parallel, and conditional patterns
 - **Error Handling** - Retry, error handling, and timeout utilities
 - **Subgraph Composition** - Reusable subgraph utilities
 - **Memory & Persistence** - Checkpointer and thread management
 - **Observability** - LangSmith integration, metrics, logging, error reporting
+- **158 tests** - Full coverage of all utilities
 
-### 🚧 In Progress (Phase 3)
+### � Middleware System (Phase 4)
+- **Composable Middleware** - Caching, rate limiting, validation, concurrency control
+- **Production Presets** - Ready-to-use middleware stacks
+- **Development Tools** - Logging, debugging, and testing middleware
+- **94 tests** - Comprehensive middleware testing
 
-**Phase 3.1.1-3.1.3: ReAct Pattern Core** (29 tests) ✅
-- **ReAct State** - State definition with Zod schemas
-- **Agent Builder** - `createReActAgent()` factory function
-- **Prompt Templates** - System prompts and reasoning templates
-- **Reasoning Node** - Generates thoughts and decides on actions
-- **Action Node** - Executes tools with error handling
-- **Observation Node** - Processes results and updates scratchpad
+### 🌊 Streaming & Real-time (Phase 5.1)
+- **Stream Transformers** - Filter, map, batch, debounce, throttle
+- **Stream Aggregators** - Collect, reduce, window operations
+- **SSE Support** - Server-Sent Events for real-time updates
+- **WebSocket Support** - Bidirectional streaming
+- **Progress Tracking** - Monitor long-running operations
+- **68 tests** - Full streaming coverage
 
-**Phase 3.1.4: ReAct Builder & Integration** (26 tests) ✅
-- **Fluent Builder API** - `ReActAgentBuilder` with method chaining
-- **Factory Function** - `createReActAgentBuilder()` alternative
-- **Integration Tests** - 7 end-to-end scenarios
-- **Validation** - Runtime validation of required fields
-- **Type Safety** - Full TypeScript support with inference
+### 🛠️ Advanced Tools (Phase 5.2)
+- **Async Execution** - Parallel and sequential tool execution
+- **Lifecycle Management** - Setup, teardown, and cleanup hooks
+- **Tool Composition** - Combine tools into pipelines
+- **Testing Utilities** - Mock tools and test helpers
 
-**Phase 3.1.5: Documentation** (In Progress)
-- Usage guide with examples
-- API documentation
-- Migration guide
+### 📦 Resource Management (Phase 5.3)
+- **Connection Pooling** - Efficient resource reuse
+- **Memory Management** - Automatic cleanup and limits
+- **Batch Processing** - Efficient bulk operations
+- **Circuit Breaker** - Fault tolerance and resilience
 
-### 📋 Coming Soon
+### � Monitoring (Phase 5.4)
+- **Health Checks** - System and component health monitoring
+- **Profiling** - Performance metrics and bottleneck detection
+- **Alerts** - Configurable alerting system
+- **Audit Logging** - Comprehensive activity tracking
 
-**Phase 3.2-3.4: More Agent Patterns**
-- Plan-Execute pattern
-- Reflection pattern
-- Multi-agent coordination
-
-**Phase 4: Middleware System**
-- Logging, tracing, caching middleware
-- Rate limiting and retry middleware
-
-**Phase 5: Production Features**
-- Streaming support
-- Performance monitoring
-- Production deployment guides
+### 🚀 Deployment (Phase 5.5)
+- **Docker Support** - Production-ready containers
+- **Kubernetes** - Deployment manifests and guides
+- **CI/CD Templates** - GitHub Actions, GitLab CI
+- **Configuration Management** - Environment-based config
 
 ## Installation
 

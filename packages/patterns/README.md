@@ -1,74 +1,91 @@
 # @agentforge/patterns
 
-Agent patterns (ReAct, Plan-Execute, Reflection, Multi-Agent) for the AgentForge framework.
+> Production-ready agent patterns for the AgentForge framework
 
-## Status
+[![npm version](https://img.shields.io/npm/v/@agentforge/patterns)](https://www.npmjs.com/package/@agentforge/patterns)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.9-blue)](https://www.typescriptlang.org/)
+[![License](https://img.shields.io/badge/license-MIT-green)](../../LICENSE)
 
-✅ **Phase 3 Complete** - All Core Patterns Implemented
+## 🎉 Status: Production Ready & Published
 
-**100+ tests passing** | **Full TypeScript support** | **Comprehensive documentation**
+**All 4 patterns complete** | **143 tests passing** | **Full TypeScript support** | **Comprehensive documentation**
 
-## Features
+## 🤖 Agent Patterns
 
-### ✅ ReAct Pattern (Phase 3.1)
+### ✅ ReAct Pattern (Reasoning and Action)
 
-The ReAct (Reasoning and Action) pattern implements a thought-action-observation loop where the agent:
-1. **Thinks** about what to do next
-2. **Acts** by calling a tool or responding
-3. **Observes** the result
-4. **Repeats** until the task is complete
+The ReAct pattern implements a thought-action-observation loop for exploratory tasks:
 
-**Components**:
-- **State Management** - Type-safe state with Zod schemas (10 tests)
-- **Node Implementations** - Reasoning, action, and observation nodes (9 tests)
-- **Agent Factory** - `createReActAgent()` function (10 tests)
-- **Fluent Builder** - `ReActAgentBuilder` with method chaining (19 tests)
-- **Integration Tests** - End-to-end scenarios (7 tests)
+1. **Think** - Reason about what to do next
+2. **Act** - Execute a tool or provide final answer
+3. **Observe** - Process the result
+4. **Repeat** - Continue until task complete
 
-### ✅ Plan-Execute Pattern (Phase 3.2)
-
-The Plan-Execute pattern separates planning from execution for better performance on complex tasks:
-1. **Plan** - Create a structured, multi-step plan
-2. **Execute** - Execute each step of the plan
-3. **Replan** (optional) - Adjust the plan based on results
-4. **Finish** - Synthesize results into final response
+**Best for**: Research, exploration, problem-solving, multi-step reasoning
 
 **Features**:
-- **Structured Planning** - Multi-step plan generation
-- **Sequential & Parallel Execution** - Execute steps in order or parallel
-- **Dependency Management** - Handle step dependencies
-- **Adaptive Replanning** - Adjust plan based on results
-- **Progress Tracking** - Monitor execution progress
+- Type-safe state with Zod schemas
+- Fluent builder API (`ReActAgentBuilder`)
+- Configurable max iterations and timeouts
+- Comprehensive error handling
+- **55 tests** - Full coverage
 
-### ✅ Reflection Pattern (Phase 3.3)
+### ✅ Plan-Execute Pattern
 
-The Reflection pattern implements iterative self-improvement through generation, critique, and revision:
+The Plan-Execute pattern separates planning from execution for complex, structured tasks:
+
+1. **Plan** - Create a multi-step plan
+2. **Execute** - Execute each step (sequential or parallel)
+3. **Replan** (optional) - Adjust based on results
+4. **Finish** - Synthesize final response
+
+**Best for**: Complex workflows, data analysis, structured problem-solving
+
+**Features**:
+- Structured multi-step planning
+- Sequential & parallel execution
+- Dependency management
+- Adaptive replanning
+- Progress tracking
+- **35+ tests** - Comprehensive coverage
+
+### ✅ Reflection Pattern
+
+The Reflection pattern implements iterative self-improvement through critique and revision:
+
 1. **Generate** - Create initial response
-2. **Reflect** - Critique the response
+2. **Reflect** - Critique the output
 3. **Revise** - Improve based on critique
 4. **Repeat** - Continue until quality threshold met
 
-**Features**:
-- **Iterative Improvement** - Multiple revision cycles
-- **Self-Critique** - Agent evaluates its own output
-- **Quality Focus** - Optimizes for output quality
-- **Flexible Criteria** - Custom reflection criteria
-- **Configurable Iterations** - Control refinement depth
+**Best for**: Content generation, code review, quality optimization
 
-### ✅ Multi-Agent Pattern (Phase 3.4)
+**Features**:
+- Iterative improvement cycles
+- Self-critique capabilities
+- Quality-focused optimization
+- Flexible reflection criteria
+- Configurable iteration limits
+- **30+ tests** - Full coverage
+
+### ✅ Multi-Agent Pattern
 
 The Multi-Agent pattern coordinates multiple specialized agents for complex tasks:
-1. **Supervisor** - Routes tasks to appropriate workers
+
+1. **Supervisor** - Routes tasks to workers
 2. **Workers** - Execute specialized tasks
-3. **Aggregator** - Combines results from workers
+3. **Aggregator** - Combines results
 4. **Routing** - Intelligent task distribution
 
+**Best for**: Customer support, complex workflows, specialized task distribution
+
 **Features**:
-- **Specialized Agents** - Workers with distinct capabilities
-- **Flexible Routing** - LLM-based, skill-based, rule-based, round-robin, load-balanced
-- **Parallel Execution** - Workers can run concurrently
-- **Result Aggregation** - Combine outputs intelligently
-- **Scalable Coordination** - Add workers dynamically
+- Specialized worker agents
+- Flexible routing strategies (LLM-based, skill-based, rule-based, round-robin, load-balanced)
+- Parallel execution support
+- Intelligent result aggregation
+- Dynamic worker registration
+- **22+ tests** - Comprehensive coverage
 
 ## Installation
 

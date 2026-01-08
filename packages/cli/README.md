@@ -1,16 +1,36 @@
 # @agentforge/cli
 
-> CLI tool for AgentForge - scaffolding, development, and deployment
+> CLI tool for AgentForge - scaffolding, development, testing, and deployment
 
-## Installation
+[![npm version](https://img.shields.io/npm/v/@agentforge/cli)](https://www.npmjs.com/package/@agentforge/cli)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.9-blue)](https://www.typescriptlang.org/)
+[![Coverage](https://img.shields.io/badge/coverage-98.11%25-brightgreen)](https://www.npmjs.com/package/@agentforge/cli)
+[![License](https://img.shields.io/badge/license-MIT-green)](../../LICENSE)
+
+## 🎉 Status: Production Ready & Published
+
+**156 tests passing** | **98.11% coverage** | **13 commands** | **4 project templates**
+
+## 📦 Installation
 
 ```bash
-# Global installation
+# Global installation (recommended)
 npm install -g @agentforge/cli
 
-# Or use with npx
+# Or use with npx (no installation needed)
 npx @agentforge/cli create my-agent-project
 ```
+
+## ✨ Features
+
+- 🚀 **Project Scaffolding** - 4 templates (minimal, full, api, cli)
+- 🛠️ **Development Tools** - Dev server, build, test commands
+- 📦 **Deployment** - Deploy to Docker, Kubernetes, cloud platforms
+- 🔧 **Code Generation** - Generate agents, tools, middleware
+- ✅ **Validation** - Project structure and configuration validation
+- 📊 **Diagnostics** - Health checks and issue detection
+- 🔄 **Upgrades** - Dependency and framework upgrades
+- 📝 **Configuration** - Manage project settings
 
 ## Commands
 
