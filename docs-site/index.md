@@ -128,5 +128,5 @@ Built-in resource management, monitoring, and deployment templates for productio
 
 ## License
 
-MIT © 2026 AgentForge Team
+MIT © 2026 Tom Van Schoor
 

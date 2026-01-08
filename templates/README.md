@@ -165,5 +165,5 @@ Found an issue or have an improvement? Please open an issue or PR!
 
 ## 📄 License
 
-MIT © Tom Van Schoor
+MIT © 2026 Tom Van Schoor
 

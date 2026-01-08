@@ -390,6 +390,6 @@ describe('ReAct Agent Integration Tests', () => {
 
 ## License
 
-MIT
+MIT © 2026 Tom Van Schoor
 
 

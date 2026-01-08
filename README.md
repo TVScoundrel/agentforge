@@ -398,7 +398,7 @@ This is currently an internal Paymentology project. Contributions from team memb
 
 ## 📄 License
 
-MIT © Paymentology
+MIT © 2026 Tom Van Schoor
 
 ---
 

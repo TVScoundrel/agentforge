@@ -153,5 +153,5 @@ pnpm typecheck
 
 ## License
 
-MIT © Tom Van Schoor
+MIT © 2026 Tom Van Schoor
 

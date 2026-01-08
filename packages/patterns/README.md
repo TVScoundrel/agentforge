@@ -516,5 +516,5 @@ pnpm typecheck
 
 ## License
 
-MIT
+MIT © 2026 Tom Van Schoor
 

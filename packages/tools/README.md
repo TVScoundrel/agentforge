@@ -451,7 +451,7 @@ Contributions are welcome! Please see the main AgentForge repository for contrib
 
 ## 📄 License
 
-MIT
+MIT © 2026 Tom Van Schoor
 
 ## 📖 Documentation
 
