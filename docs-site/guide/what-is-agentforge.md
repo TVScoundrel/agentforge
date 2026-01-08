@@ -139,10 +139,10 @@ AgentForge is ideal when you need:
 
 AgentForge might not be the best fit if:
 
-❌ You need a framework-agnostic solution
-❌ You're building simple chatbots (use LangChain directly)
-❌ You want to avoid the LangChain ecosystem
-❌ You need Python (AgentForge is TypeScript-only)
+❌ You need a framework-agnostic solution  
+❌ You're building simple chatbots (use LangChain directly)  
+❌ You want to avoid the LangChain ecosystem  
+❌ You need Python (AgentForge is TypeScript-only)  
 
 **Note:** AgentForge is built **on top of** LangGraph, not instead of it. You have full access to LangGraph's flexibility and can create custom patterns using AgentForge's utilities while still leveraging all of LangGraph's capabilities.
 
