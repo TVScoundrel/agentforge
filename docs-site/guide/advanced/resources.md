@@ -761,7 +761,7 @@ const simpleAgent = createReActAgent({
 // ✅ Use expensive models only when needed
 const complexAgent = createReActAgent({
   model: new ChatOpenAI({ model: 'gpt-4' }),  // $0.03/1K tokens
-  tools: [webSearch, codeExecutor]
+  tools: [webScraper, calculator]
 });
 ```
 

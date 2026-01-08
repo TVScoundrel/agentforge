@@ -1,6 +1,6 @@
 # ReAct Agent Example
 
-A complete example of a ReAct (Reasoning and Acting) agent that can search the web, perform calculations, and answer questions.
+A complete example of a ReAct (Reasoning and Acting) agent that can perform calculations, scrape web data, and answer questions.
 
 ## Overview
 
@@ -15,15 +15,15 @@ The ReAct pattern alternates between reasoning and acting:
 ```typescript
 import { createReActAgent } from '@agentforge/patterns';
 import { ChatOpenAI } from '@langchain/openai';
-import { 
-  calculator, 
-  webSearch, 
-  getCurrentTime 
+import {
+  calculator,
+  webScraper,
+  currentDateTime
 } from '@agentforge/tools';
-import { 
-  caching, 
-  rateLimiting, 
-  logging 
+import {
+  caching,
+  rateLimiting,
+  logging
 } from '@agentforge/core/middleware';
 
 // Create the agent
@@ -32,11 +32,11 @@ const agent = createReActAgent({
     model: 'gpt-4',
     temperature: 0
   }),
-  
+
   tools: [
     calculator,
-    webSearch,
-    getCurrentTime
+    webScraper,
+    currentDateTime
   ],
   
   maxIterations: 10,
@@ -127,7 +127,7 @@ import { createReActAgent } from '@agentforge/patterns';
 
 const agent = createReActAgent({
   model: new ChatOpenAI({ model: 'gpt-4' }),
-  tools: [calculator, webSearch],
+  tools: [calculator, currentDateTime],
   maxIterations: 5
 });
 
@@ -158,7 +158,7 @@ const checkpointSaver = new MemorySaver();
 
 const agent = createReActAgent({
   model: new ChatOpenAI({ model: 'gpt-4' }),
-  tools: [calculator, webSearch],
+  tools: [calculator, currentDateTime],
   checkpointSaver,
   maxIterations: 5
 });
@@ -186,7 +186,7 @@ import { retry, timeout } from '@agentforge/core/middleware';
 
 const agent = createReActAgent({
   model: new ChatOpenAI({ model: 'gpt-4' }),
-  tools: [calculator, webSearch],
+  tools: [calculator, currentDateTime],
   maxIterations: 5,
 
   middleware: [

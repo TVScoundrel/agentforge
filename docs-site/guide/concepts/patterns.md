@@ -43,7 +43,7 @@ import { ChatOpenAI } from '@langchain/openai';
 
 const agent = createReActAgent({
   model: new ChatOpenAI({ model: 'gpt-4' }),
-  tools: [calculator, webSearch, fileReader],
+  tools: [calculator, webScraper, fileReader],
   maxIterations: 10,
 });
 
@@ -225,7 +225,7 @@ builder.registerWorkers([
       available: true,
     },
     model: new ChatOpenAI({ model: 'gpt-4' }),
-    tools: [webSearch, databaseQuery],
+    tools: [webScraper, httpGet],
   },
   {
     id: 'writer',
@@ -374,7 +374,7 @@ const agent = createPlanExecuteAgent({
   planner: { llm, maxSteps: 5 },
   executor: {
     // Each step uses ReAct pattern
-    tools: [calculator, webSearch],
+    tools: [calculator, webScraper],
     useReActForSteps: true,
   },
 });

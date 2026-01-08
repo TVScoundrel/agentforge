@@ -801,8 +801,8 @@ await profiler.profile('agent.invoke', async () => {
   return await agent.invoke(input);
 });
 
-await profiler.profile('tool.webSearch', async () => {
-  return await webSearch.invoke({ query: 'test' });
+await profiler.profile('tool.webScraper', async () => {
+  return await webScraper.invoke({ url: 'https://example.com' });
 });
 
 console.log('Performance Report:');

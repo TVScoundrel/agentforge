@@ -15,12 +15,12 @@ The Reflection pattern:
 ```typescript
 import { createReflectionAgent } from '@agentforge/patterns';
 import { ChatOpenAI } from '@langchain/openai';
-import { webSearch, calculator } from '@agentforge/tools';
+import { webScraper, calculator } from '@agentforge/tools';
 
 const agent = createReflectionAgent({
   model: new ChatOpenAI({ model: 'gpt-4' }),
 
-  tools: [webSearch, calculator],
+  tools: [webScraper, calculator],
 
   maxReflections: 3,
 
