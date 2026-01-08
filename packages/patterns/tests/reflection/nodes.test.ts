@@ -15,7 +15,7 @@ describe('Reflection Nodes', () => {
         responses: ['This is a generated response.'],
       });
 
-      const node = createGeneratorNode({ llm });
+      const node = createGeneratorNode({ model: llm });
 
       const state: ReflectionStateType = {
         input: 'Write a short story',
@@ -40,7 +40,7 @@ describe('Reflection Nodes', () => {
         responses: ['Improved response with more detail.'],
       });
 
-      const node = createGeneratorNode({ llm });
+      const node = createGeneratorNode({ model: llm });
 
       const state: ReflectionStateType = {
         input: 'Write a short story',
@@ -73,7 +73,7 @@ describe('Reflection Nodes', () => {
       // Mock the invoke to throw an error
       vi.spyOn(llm, 'invoke').mockRejectedValue(new Error('LLM error'));
 
-      const node = createGeneratorNode({ llm });
+      const node = createGeneratorNode({ model: llm });
 
       const state: ReflectionStateType = {
         input: 'Test',
@@ -106,7 +106,7 @@ describe('Reflection Nodes', () => {
         responses: [reflectionJSON],
       });
 
-      const node = createReflectorNode({ llm });
+      const node = createReflectorNode({ model: llm });
 
       const state: ReflectionStateType = {
         input: 'Write an essay',
@@ -140,7 +140,7 @@ describe('Reflection Nodes', () => {
         responses: [reflectionJSON],
       });
 
-      const node = createReflectorNode({ llm });
+      const node = createReflectorNode({ model: llm });
 
       const state: ReflectionStateType = {
         input: 'Write an essay',
@@ -164,7 +164,7 @@ describe('Reflection Nodes', () => {
         responses: ['This is a plain text critique without JSON.'],
       });
 
-      const node = createReflectorNode({ llm });
+      const node = createReflectorNode({ model: llm });
 
       const state: ReflectionStateType = {
         input: 'Write an essay',
@@ -188,7 +188,7 @@ describe('Reflection Nodes', () => {
         responses: ['{}'],
       });
 
-      const node = createReflectorNode({ llm });
+      const node = createReflectorNode({ model: llm });
 
       const state: ReflectionStateType = {
         input: 'Write an essay',
@@ -213,7 +213,7 @@ describe('Reflection Nodes', () => {
         responses: ['This is a revised and improved response with more detail.'],
       });
 
-      const node = createReviserNode({ llm });
+      const node = createReviserNode({ model: llm });
 
       const state: ReflectionStateType = {
         input: 'Write an essay',
@@ -248,7 +248,7 @@ describe('Reflection Nodes', () => {
         responses: ['Third revision with even more improvements.'],
       });
 
-      const node = createReviserNode({ llm });
+      const node = createReviserNode({ model: llm });
 
       const state: ReflectionStateType = {
         input: 'Write an essay',
@@ -280,7 +280,7 @@ describe('Reflection Nodes', () => {
         responses: ['Revised'],
       });
 
-      const node = createReviserNode({ llm });
+      const node = createReviserNode({ model: llm });
 
       const state: ReflectionStateType = {
         input: 'Write an essay',
@@ -310,7 +310,7 @@ describe('Reflection Nodes', () => {
         responses: ['Revised'],
       });
 
-      const node = createReviserNode({ llm });
+      const node = createReviserNode({ model: llm });
 
       const state: ReflectionStateType = {
         input: 'Write an essay',

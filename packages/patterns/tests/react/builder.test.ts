@@ -47,7 +47,7 @@ describe('ReActAgentBuilder', () => {
 
     it('should support method chaining', () => {
       const builder = new ReActAgentBuilder()
-        .withLLM(mockLLM)
+        .withModel(mockLLM)
         .withTools([mockTool])
         .withSystemPrompt('Test prompt')
         .withMaxIterations(5);
@@ -57,8 +57,8 @@ describe('ReActAgentBuilder', () => {
   });
 
   describe('Configuration', () => {
-    it('should set LLM', () => {
-      const builder = new ReActAgentBuilder().withLLM(mockLLM);
+    it('should set model', () => {
+      const builder = new ReActAgentBuilder().withModel(mockLLM);
       expect(builder).toBeInstanceOf(ReActAgentBuilder);
     });
 
@@ -111,21 +111,21 @@ describe('ReActAgentBuilder', () => {
   });
 
   describe('Validation', () => {
-    it('should throw error if LLM is missing', () => {
+    it('should throw error if model is missing', () => {
       const builder = new ReActAgentBuilder().withTools([mockTool]);
 
-      expect(() => builder.build()).toThrow('llm is required');
+      expect(() => builder.build()).toThrow('model is required');
     });
 
     it('should throw error if tools are missing', () => {
-      const builder = new ReActAgentBuilder().withLLM(mockLLM);
+      const builder = new ReActAgentBuilder().withModel(mockLLM);
 
       expect(() => builder.build()).toThrow('tools are required');
     });
 
     it('should build successfully with required fields', () => {
       const builder = new ReActAgentBuilder()
-        .withLLM(mockLLM)
+        .withModel(mockLLM)
         .withTools([mockTool]);
 
       const agent = builder.build();
@@ -137,7 +137,7 @@ describe('ReActAgentBuilder', () => {
   describe('Defaults', () => {
     it('should use default system prompt if not provided', () => {
       const builder = new ReActAgentBuilder()
-        .withLLM(mockLLM)
+        .withModel(mockLLM)
         .withTools([mockTool]);
 
       const agent = builder.build();
@@ -146,7 +146,7 @@ describe('ReActAgentBuilder', () => {
 
     it('should use default max iterations (10) if not provided', () => {
       const builder = new ReActAgentBuilder()
-        .withLLM(mockLLM)
+        .withModel(mockLLM)
         .withTools([mockTool]);
 
       const agent = builder.build();
@@ -155,7 +155,7 @@ describe('ReActAgentBuilder', () => {
 
     it('should use default returnIntermediateSteps (false) if not provided', () => {
       const builder = new ReActAgentBuilder()
-        .withLLM(mockLLM)
+        .withModel(mockLLM)
         .withTools([mockTool]);
 
       const agent = builder.build();
@@ -168,7 +168,7 @@ describe('ReActAgentBuilder', () => {
       const stopCondition = (state: any) => state.iteration > 5;
 
       const agent = new ReActAgentBuilder()
-        .withLLM(mockLLM)
+        .withModel(mockLLM)
         .withTools([mockTool])
         .withSystemPrompt('You are a helpful assistant')
         .withMaxIterations(20)

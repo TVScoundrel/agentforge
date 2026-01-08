@@ -27,7 +27,7 @@ const mockLLM = new MockLLM({
 
 // Use in agent
 const agent = createReActAgent({
-  llm: mockLLM as any,
+  model: mockLLM as any,
   tools: [myTool]
 });
 
@@ -166,7 +166,7 @@ import {
 } from '@agentforge/testing/fixtures';
 
 const agent = createReActAgent({
-  llm: mockLLM,
+  model: mockLLM,
   tools: [calculatorFixture, searchFixture]
 });
 ```
@@ -244,7 +244,7 @@ describe('Calculator Agent', () => {
   });
 
   const agent = createReActAgent({
-    llm: mockLLM as any,
+    model: mockLLM as any,
     tools: [calculator],
     maxIterations: 3
   });

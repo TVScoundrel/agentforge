@@ -255,13 +255,13 @@ describe('Multi-Agent Routing Strategies', () => {
   });
 
   describe('LLM-Based Routing', () => {
-    it('should throw error if no LLM provided', async () => {
+    it('should throw error if no model provided', async () => {
       const config: SupervisorConfig = {
         strategy: 'llm-based',
       };
 
       await expect(llmBasedRouting.route(mockState, config))
-        .rejects.toThrow('requires an LLM');
+        .rejects.toThrow('requires a model');
     });
   });
 

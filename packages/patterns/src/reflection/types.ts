@@ -17,7 +17,7 @@ export interface GeneratorConfig {
   /**
    * Language model for generation
    */
-  llm: BaseChatModel;
+  model: BaseChatModel;
 
   /**
    * System prompt for the generator
@@ -37,7 +37,7 @@ export interface ReflectorConfig {
   /**
    * Language model for reflection
    */
-  llm: BaseChatModel;
+  model: BaseChatModel;
 
   /**
    * System prompt for the reflector
@@ -62,7 +62,7 @@ export interface ReviserConfig {
   /**
    * Language model for revision
    */
-  llm: BaseChatModel;
+  model: BaseChatModel;
 
   /**
    * System prompt for the reviser

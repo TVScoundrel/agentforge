@@ -173,7 +173,7 @@ Routes tasks to appropriate workers based on the routing strategy.
 
 ```typescript
 const supervisorNode = createSupervisorNode({
-  llm: ChatOpenAI,
+  model: ChatOpenAI,
   routingStrategy: 'skill-based',
   systemPrompt: 'Custom supervisor instructions',
 });
@@ -197,7 +197,7 @@ Combines results from multiple workers.
 
 ```typescript
 const aggregatorNode = createAggregatorNode({
-  llm: ChatOpenAI,
+  model: ChatOpenAI,
   systemPrompt: 'Combine results into coherent response',
 });
 ```
@@ -420,13 +420,13 @@ interface MultiAgentSystemConfig {
 }
 
 interface SupervisorConfig {
-  llm: BaseChatModel;
+  model: BaseChatModel;
   strategy: RoutingStrategy;
   systemPrompt?: string;
 }
 
 interface AggregatorConfig {
-  llm: BaseChatModel;
+  model: BaseChatModel;
   systemPrompt?: string;
 }
 ```
@@ -443,7 +443,7 @@ interface WorkerConfig {
   name: string;
   description: string;
   capabilities: WorkerCapabilities;
-  llm: BaseChatModel;
+  model: BaseChatModel;
   tools: StructuredTool[];
   systemPrompt?: string;
 }
@@ -496,13 +496,13 @@ function createMultiAgentSystem(config: MultiAgentSystemConfig): CompiledStateGr
 ```typescript
 interface MultiAgentConfig {
   supervisor: {
-    llm: BaseChatModel;
+    model: BaseChatModel;
     routingStrategy: RoutingStrategy;
     systemPrompt?: string;
   };
   workers: WorkerConfig[];
   aggregator: {
-    llm: BaseChatModel;
+    model: BaseChatModel;
     systemPrompt?: string;
   };
   maxIterations?: number;
@@ -517,12 +517,12 @@ interface MultiAgentConfig {
 ```typescript
 const system = createMultiAgentSystem({
   supervisor: {
-    llm: new ChatOpenAI({ modelName: 'gpt-4' }),
+    model: new ChatOpenAI({ modelName: 'gpt-4' }),
     routingStrategy: 'skill-based',
   },
   workers: [],
   aggregator: {
-    llm: new ChatOpenAI({ modelName: 'gpt-4' }),
+    model: new ChatOpenAI({ modelName: 'gpt-4' }),
   },
   maxIterations: 10,
   verbose: true,
@@ -606,7 +606,7 @@ function createSupervisorNode(config: SupervisorConfig): NodeFunction
 
 ```typescript
 interface SupervisorConfig {
-  llm: BaseChatModel;
+  model: BaseChatModel;
   routingStrategy: RoutingStrategy;
   systemPrompt?: string;
 }
@@ -616,7 +616,7 @@ interface SupervisorConfig {
 
 ```typescript
 const supervisor = createSupervisorNode({
-  llm: new ChatOpenAI({ modelName: 'gpt-4' }),
+  model: new ChatOpenAI({ modelName: 'gpt-4' }),
   routingStrategy: 'llm-based',
   systemPrompt: 'Route tasks to appropriate specialists',
 });
@@ -662,7 +662,7 @@ function createAggregatorNode(config: AggregatorConfig): NodeFunction
 
 ```typescript
 interface AggregatorConfig {
-  llm: BaseChatModel;
+  model: BaseChatModel;
   systemPrompt?: string;
 }
 ```
@@ -671,7 +671,7 @@ interface AggregatorConfig {
 
 ```typescript
 const aggregator = createAggregatorNode({
-  llm: new ChatOpenAI({ modelName: 'gpt-4' }),
+  model: new ChatOpenAI({ modelName: 'gpt-4' }),
   systemPrompt: 'Combine results into a coherent response',
 });
 ```

@@ -18,12 +18,12 @@ import { ChatOpenAI } from '@langchain/openai';
 import { webSearch, calculator } from '@agentforge/tools';
 
 const agent = createReflectionAgent({
-  llm: new ChatOpenAI({ model: 'gpt-4' }),
-  
+  model: new ChatOpenAI({ model: 'gpt-4' }),
+
   tools: [webSearch, calculator],
-  
+
   maxReflections: 3,
-  
+
   reflectionPrompt: `Critique the previous response:
 - Is it accurate and complete?
 - Is it well-structured and clear?

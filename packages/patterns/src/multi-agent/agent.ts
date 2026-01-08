@@ -29,7 +29,7 @@ import type { WorkerCapabilities } from './schemas.js';
  * const system = createMultiAgentSystem({
  *   supervisor: {
  *     strategy: 'skill-based',
- *     llm: chatModel,
+ *     model: chatModel,
  *   },
  *   workers: [
  *     {
@@ -40,7 +40,7 @@ import type { WorkerCapabilities } from './schemas.js';
  *         available: true,
  *         currentWorkload: 0,
  *       },
- *       llm: chatModel,
+ *       model: chatModel,
  *     },
  *     {
  *       id: 'writer',
@@ -50,11 +50,11 @@ import type { WorkerCapabilities } from './schemas.js';
  *         available: true,
  *         currentWorkload: 0,
  *       },
- *       llm: chatModel,
+ *       model: chatModel,
  *     },
  *   ],
  *   aggregator: {
- *     llm: chatModel,
+ *     model: chatModel,
  *   },
  * });
  *
@@ -231,7 +231,7 @@ export class MultiAgentSystemBuilder {
     capabilities: string[];
     tools?: any[];
     systemPrompt?: string;
-    llm?: any;
+    model?: any;
   }>): this {
     if (this.compiled) {
       throw new Error('Cannot register workers after the system has been compiled');
@@ -247,7 +247,7 @@ export class MultiAgentSystemBuilder {
           available: true,
           currentWorkload: 0,
         },
-        llm: worker.llm || this.config.supervisor.llm,
+        model: worker.model || this.config.supervisor.model,
         tools: worker.tools,
         systemPrompt: worker.systemPrompt,
       });

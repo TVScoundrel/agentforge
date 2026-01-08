@@ -15,9 +15,9 @@ import type { PlanExecuteStateType } from './state.js';
  */
 export interface PlannerConfig {
   /**
-   * LLM to use for planning
+   * Language model to use for planning
    */
-  llm: BaseChatModel;
+  model: BaseChatModel;
 
   /**
    * System prompt for the planner
@@ -45,9 +45,9 @@ export interface ExecutorConfig {
   tools: Tool[];
 
   /**
-   * Optional LLM for sub-tasks
+   * Optional language model for sub-tasks
    */
-  llm?: BaseChatModel;
+  model?: BaseChatModel;
 
   /**
    * Enable parallel execution of independent steps
@@ -65,9 +65,9 @@ export interface ExecutorConfig {
  */
 export interface ReplannerConfig {
   /**
-   * LLM to use for replanning decisions
+   * Language model to use for replanning decisions
    */
-  llm: BaseChatModel;
+  model: BaseChatModel;
 
   /**
    * Confidence threshold for replanning (0-1)

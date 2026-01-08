@@ -25,7 +25,7 @@ import {
  */
 export function createPlannerNode(config: PlannerConfig) {
   const {
-    llm,
+    model,
     systemPrompt = DEFAULT_PLANNER_SYSTEM_PROMPT,
     maxSteps = 7,
     includeToolDescriptions = false,
@@ -50,7 +50,7 @@ export function createPlannerNode(config: PlannerConfig) {
         new HumanMessage(userPrompt),
       ];
 
-      const response = await llm.invoke(messages);
+      const response = await model.invoke(messages);
       const content = response.content.toString();
 
       // Parse the plan from JSON
@@ -88,7 +88,7 @@ export function createPlannerNode(config: PlannerConfig) {
 export function createExecutorNode(config: ExecutorConfig) {
   const {
     tools,
-    llm,
+    model,
     parallel = false,
     stepTimeout = 30000,
   } = config;
@@ -182,7 +182,7 @@ export function createExecutorNode(config: ExecutorConfig) {
  */
 export function createReplannerNode(config: ReplannerConfig) {
   const {
-    llm,
+    model,
     replanThreshold = 0.7,
     systemPrompt = DEFAULT_REPLANNER_SYSTEM_PROMPT,
   } = config;
@@ -228,7 +228,7 @@ export function createReplannerNode(config: ReplannerConfig) {
         new HumanMessage(userPrompt),
       ];
 
-      const response = await llm.invoke(messages);
+      const response = await model.invoke(messages);
       const content = response.content.toString();
 
       // Parse the decision

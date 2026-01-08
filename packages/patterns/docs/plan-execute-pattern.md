@@ -139,7 +139,7 @@ import { ChatOpenAI } from '@langchain/openai';
 // Create agent
 const agent = createPlanExecuteAgent({
   planner: {
-    llm: new ChatOpenAI({ model: 'gpt-4' }),
+    model: new ChatOpenAI({ model: 'gpt-4' }),
     maxSteps: 5,
   },
   executor: {
@@ -160,14 +160,14 @@ console.log(result.response);
 ```typescript
 const agent = createPlanExecuteAgent({
   planner: {
-    llm: new ChatOpenAI({ model: 'gpt-4' }),
+    model: new ChatOpenAI({ model: 'gpt-4' }),
     maxSteps: 5,
   },
   executor: {
     tools: [searchTool, calculatorTool],
   },
   replanner: {
-    llm: new ChatOpenAI({ model: 'gpt-4' }),
+    model: new ChatOpenAI({ model: 'gpt-4' }),
     replanThreshold: 0.7, // Replan if confidence < 0.7
   },
 });
@@ -178,7 +178,7 @@ const agent = createPlanExecuteAgent({
 ```typescript
 const agent = createPlanExecuteAgent({
   planner: {
-    llm: new ChatOpenAI({ model: 'gpt-4' }),
+    model: new ChatOpenAI({ model: 'gpt-4' }),
     maxSteps: 10,
   },
   executor: {
@@ -295,7 +295,7 @@ For straightforward multi-step tasks:
 ```typescript
 const agent = createPlanExecuteAgent({
   planner: {
-    llm: new ChatOpenAI({ model: 'gpt-4', temperature: 0 }),
+    model: new ChatOpenAI({ model: 'gpt-4', temperature: 0 }),
     maxSteps: 5,
     systemPrompt: 'Create a clear, sequential plan.',
   },
@@ -315,7 +315,7 @@ For gathering and synthesizing information:
 ```typescript
 const agent = createPlanExecuteAgent({
   planner: {
-    llm: new ChatOpenAI({ model: 'gpt-4' }),
+    model: new ChatOpenAI({ model: 'gpt-4' }),
     maxSteps: 8,
     systemPrompt: `Create a research plan:
       1. Identify information sources
@@ -327,7 +327,7 @@ const agent = createPlanExecuteAgent({
     tools: [searchTool, validateTool, synthesizeTool],
   },
   replanner: {
-    llm: new ChatOpenAI({ model: 'gpt-4' }),
+    model: new ChatOpenAI({ model: 'gpt-4' }),
     replanThreshold: 0.8,
   },
 });
@@ -342,7 +342,7 @@ For ETL and data processing:
 ```typescript
 const agent = createPlanExecuteAgent({
   planner: {
-    llm: new ChatOpenAI({ model: 'gpt-4' }),
+    model: new ChatOpenAI({ model: 'gpt-4' }),
     maxSteps: 10,
     systemPrompt: `Create a data pipeline plan:
       1. Extract data from sources
@@ -367,7 +367,7 @@ For complex, multi-stage workflows:
 ```typescript
 const agent = createPlanExecuteAgent({
   planner: {
-    llm: new ChatOpenAI({ model: 'gpt-4' }),
+    model: new ChatOpenAI({ model: 'gpt-4' }),
     maxSteps: 15,
     includeToolDescriptions: true,
     systemPrompt: `Create an optimized workflow:
@@ -382,7 +382,7 @@ const agent = createPlanExecuteAgent({
     stepTimeout: 5000,
   },
   replanner: {
-    llm: new ChatOpenAI({ model: 'gpt-4' }),
+    model: new ChatOpenAI({ model: 'gpt-4' }),
     replanThreshold: 0.7,
     systemPrompt: 'Replan if steps fail or produce unexpected results',
   },
@@ -636,7 +636,7 @@ Optimize for performance:
 ```typescript
 const agent = createPlanExecuteAgent({
   planner: {
-    llm: new ChatOpenAI({ model: 'gpt-4', temperature: 0 }),
+    model: new ChatOpenAI({ model: 'gpt-4', temperature: 0 }),
     maxSteps: 10,
     systemPrompt: `Optimize for performance:
       - Identify steps that can run in parallel
@@ -660,7 +660,7 @@ const agent = createPlanExecuteAgent({
 ```typescript
 const etlAgent = createPlanExecuteAgent({
   planner: {
-    llm: new ChatOpenAI({ model: 'gpt-4' }),
+    model: new ChatOpenAI({ model: 'gpt-4' }),
     maxSteps: 8,
     systemPrompt: `Create an ETL pipeline plan:
       1. Extract from sources (can parallel)
@@ -681,7 +681,7 @@ const etlAgent = createPlanExecuteAgent({
 ```typescript
 const researchAgent = createPlanExecuteAgent({
   planner: {
-    llm: new ChatOpenAI({ model: 'gpt-4' }),
+    model: new ChatOpenAI({ model: 'gpt-4' }),
     maxSteps: 10,
     systemPrompt: `Create a research plan:
       1. Identify key topics
@@ -696,7 +696,7 @@ const researchAgent = createPlanExecuteAgent({
     parallel: true,
   },
   replanner: {
-    llm: new ChatOpenAI({ model: 'gpt-4' }),
+    model: new ChatOpenAI({ model: 'gpt-4' }),
     replanThreshold: 0.8,
   },
 });
@@ -707,7 +707,7 @@ const researchAgent = createPlanExecuteAgent({
 ```typescript
 const workflowAgent = createPlanExecuteAgent({
   planner: {
-    llm: new ChatOpenAI({ model: 'gpt-4' }),
+    model: new ChatOpenAI({ model: 'gpt-4' }),
     maxSteps: 15,
     systemPrompt: `Create a multi-stage workflow:
       Stage 1: Data Collection (parallel)
@@ -1000,7 +1000,7 @@ describe('Plan-Execute Agent Integration', () => {
   it('should execute complete workflow', async () => {
     const agent = createPlanExecuteAgent({
       planner: {
-        llm: new ChatOpenAI({ model: 'gpt-4', temperature: 0 }),
+        model: new ChatOpenAI({ model: 'gpt-4', temperature: 0 }),
         maxSteps: 5,
       },
       executor: {
@@ -1135,7 +1135,7 @@ function createPlanExecuteAgent(
 ```typescript
 const agent = createPlanExecuteAgent({
   planner: {
-    llm: new ChatOpenAI({ model: 'gpt-4' }),
+    model: new ChatOpenAI({ model: 'gpt-4' }),
     maxSteps: 7,
     systemPrompt: 'Create efficient plans',
   },
@@ -1145,7 +1145,7 @@ const agent = createPlanExecuteAgent({
     stepTimeout: 5000,
   },
   replanner: {
-    llm: new ChatOpenAI({ model: 'gpt-4' }),
+    model: new ChatOpenAI({ model: 'gpt-4' }),
     replanThreshold: 0.7,
   },
   verbose: true,

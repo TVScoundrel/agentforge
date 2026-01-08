@@ -754,13 +754,13 @@ Choose the right model for the task:
 ```typescript
 // ✅ Use cheaper models for simple tasks
 const simpleAgent = createReActAgent({
-  llm: new ChatOpenAI({ model: 'gpt-3.5-turbo' }),  // $0.002/1K tokens
+  model: new ChatOpenAI({ model: 'gpt-3.5-turbo' }),  // $0.002/1K tokens
   tools: [calculator]
 });
 
 // ✅ Use expensive models only when needed
 const complexAgent = createReActAgent({
-  llm: new ChatOpenAI({ model: 'gpt-4' }),  // $0.03/1K tokens
+  model: new ChatOpenAI({ model: 'gpt-4' }),  // $0.03/1K tokens
   tools: [webSearch, codeExecutor]
 });
 ```

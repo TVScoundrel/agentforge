@@ -8,7 +8,7 @@ import { ChatOpenAI } from '@langchain/openai';
 
 const agent = createPlanExecuteAgent({
   planner: {
-    llm: new ChatOpenAI({ model: 'gpt-4' }),
+    model: new ChatOpenAI({ model: 'gpt-4' }),
     maxSteps: 5,
   },
   executor: {
@@ -25,7 +25,7 @@ const result = await agent.invoke({ input: 'Your task here' });
 
 ```typescript
 planner: {
-  llm: BaseChatModel,              // Required: LLM for planning
+  model: BaseChatModel,              // Required: LLM for planning
   systemPrompt?: string,            // Custom planning prompt
   maxSteps?: number,                // Max steps (default: 10)
   includeToolDescriptions?: boolean, // Include tool info
@@ -49,7 +49,7 @@ executor: {
 
 ```typescript
 replanner?: {
-  llm: BaseChatModel,               // Required: LLM for replanning
+  model: BaseChatModel,               // Required: LLM for replanning
   replanThreshold?: number,         // Confidence threshold (0-1)
   systemPrompt?: string,            // Custom replanning prompt
 }

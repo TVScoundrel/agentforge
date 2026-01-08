@@ -19,7 +19,7 @@ import { createReActAgent } from '@agentforge/patterns';
 import { ChatOpenAI } from '@langchain/openai';
 
 const agent = createReActAgent({
-  llm: new ChatOpenAI({ model: 'gpt-4' }),
+  model: new ChatOpenAI({ model: 'gpt-4' }),
   tools: [tool1, tool2],
   maxIterations: 5,
   systemPrompt: 'You are a helpful assistant.'
@@ -34,7 +34,7 @@ const result = await agent.invoke({
 
 ```typescript
 interface ReActAgentOptions {
-  llm: BaseChatModel;              // LLM instance
+  model: BaseChatModel;              // LLM instance
   tools: Tool[];                   // Available tools
   maxIterations?: number;          // Max reasoning cycles (default: 10)
   systemPrompt?: string;           // System prompt
@@ -53,7 +53,7 @@ Plan first, then execute steps sequentially.
 import { createPlanExecuteAgent } from '@agentforge/patterns';
 
 const agent = createPlanExecuteAgent({
-  llm: new ChatOpenAI({ model: 'gpt-4' }),
+  model: new ChatOpenAI({ model: 'gpt-4' }),
   tools: [tool1, tool2],
   plannerPrompt: 'Create a detailed plan to solve the task.',
   executorPrompt: 'Execute the current step.'
@@ -68,7 +68,7 @@ const result = await agent.invoke({
 
 ```typescript
 interface PlanExecuteAgentOptions {
-  llm: BaseChatModel;
+  model: BaseChatModel;
   tools: Tool[];
   plannerPrompt?: string;          // Planner system prompt
   executorPrompt?: string;         // Executor system prompt
@@ -88,7 +88,7 @@ Self-critique and improvement through reflection.
 import { createReflectionAgent } from '@agentforge/patterns';
 
 const agent = createReflectionAgent({
-  llm: new ChatOpenAI({ model: 'gpt-4' }),
+  model: new ChatOpenAI({ model: 'gpt-4' }),
   tools: [tool1, tool2],
   maxReflections: 3,
   reflectionPrompt: 'Critique your previous response and improve it.'
@@ -103,7 +103,7 @@ const result = await agent.invoke({
 
 ```typescript
 interface ReflectionAgentOptions {
-  llm: BaseChatModel;
+  model: BaseChatModel;
   tools: Tool[];
   maxReflections?: number;         // Max reflection cycles (default: 3)
   reflectionPrompt?: string;       // Reflection prompt
@@ -188,13 +188,13 @@ interface MultiAgentSystemConfig {
 }
 
 interface SupervisorConfig {
-  llm: BaseChatModel;
+  model: BaseChatModel;
   strategy: RoutingStrategy;
   systemPrompt?: string;
 }
 
 interface AggregatorConfig {
-  llm: BaseChatModel;
+  model: BaseChatModel;
   systemPrompt?: string;
 }
 
@@ -218,7 +218,7 @@ interface WorkerConfig {
   name: string;
   description: string;
   capabilities: WorkerCapabilities;
-  llm: BaseChatModel;
+  model: BaseChatModel;
   tools: StructuredTool[];
   systemPrompt?: string;
 }
@@ -243,7 +243,7 @@ import { createMultiAgentSystem } from '@agentforge/patterns';
 
 const system = createMultiAgentSystem({
   supervisor: {
-    llm: new ChatOpenAI({ model: 'gpt-4' }),
+    model: new ChatOpenAI({ model: 'gpt-4' }),
     strategy: 'skill-based',
   },
   workers: [
@@ -285,7 +285,7 @@ Build your own pattern:
 import { createCustomPattern } from '@agentforge/patterns';
 
 const customAgent = createCustomPattern({
-  llm: new ChatOpenAI({ model: 'gpt-4' }),
+  model: new ChatOpenAI({ model: 'gpt-4' }),
   tools: [tool1, tool2],
   graph: (builder) => {
     builder

@@ -81,7 +81,7 @@ import { ChatOpenAI } from '@langchain/openai';
 import { calculator, webSearch } from '@agentforge/tools';
 
 const agent = createReActAgent({
-  llm: new ChatOpenAI({ model: 'gpt-4' }),
+  model: new ChatOpenAI({ model: 'gpt-4' }),
   tools: [calculator, webSearch],
   maxIterations: 5
 });

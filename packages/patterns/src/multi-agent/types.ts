@@ -18,7 +18,7 @@ export interface SupervisorConfig {
   /**
    * Language model for routing decisions (used for LLM-based routing)
    */
-  llm?: BaseChatModel;
+  model?: BaseChatModel;
 
   /**
    * Routing strategy to use
@@ -63,7 +63,7 @@ export interface WorkerConfig {
   /**
    * Language model for the worker
    */
-  llm?: BaseChatModel;
+  model?: BaseChatModel;
 
   /**
    * Available tools for this worker
@@ -93,7 +93,7 @@ export interface AggregatorConfig {
   /**
    * Language model for aggregation (optional)
    */
-  llm?: BaseChatModel;
+  model?: BaseChatModel;
 
   /**
    * System prompt for aggregation

@@ -58,7 +58,7 @@ describe('Plan-Execute Agent Integration', () => {
   it('should create a plan-execute agent', () => {
     const llm = new MockPlannerLLM() as any;
     const agent = createPlanExecuteAgent({
-      planner: { llm },
+      planner: { model: llm },
       executor: { tools: [calculatorTool, formatterTool] },
     });
 
@@ -68,7 +68,7 @@ describe('Plan-Execute Agent Integration', () => {
   it('should execute a complete plan', async () => {
     const llm = new MockPlannerLLM() as any;
     const agent = createPlanExecuteAgent({
-      planner: { llm },
+      planner: { model: llm },
       executor: { tools: [calculatorTool, formatterTool] },
     });
 
@@ -87,7 +87,7 @@ describe('Plan-Execute Agent Integration', () => {
   it('should handle plan with dependencies', async () => {
     const llm = new MockPlannerLLM() as any;
     const agent = createPlanExecuteAgent({
-      planner: { llm },
+      planner: { model: llm },
       executor: { tools: [calculatorTool, formatterTool] },
     });
 
@@ -107,7 +107,7 @@ describe('Plan-Execute Agent Integration', () => {
   it('should work without replanner', async () => {
     const llm = new MockPlannerLLM() as any;
     const agent = createPlanExecuteAgent({
-      planner: { llm },
+      planner: { model: llm },
       executor: { tools: [calculatorTool, formatterTool] },
       // No replanner configured
     });
@@ -125,9 +125,9 @@ describe('Plan-Execute Agent Integration', () => {
     const replannerLLM = new MockReplannerLLM() as any;
     
     const agent = createPlanExecuteAgent({
-      planner: { llm: plannerLLM },
+      planner: { model: plannerLLM },
       executor: { tools: [calculatorTool, formatterTool] },
-      replanner: { llm: replannerLLM },
+      replanner: { model: replannerLLM },
     });
 
     const result = await agent.invoke({
@@ -150,7 +150,7 @@ describe('Plan-Execute Agent Integration', () => {
     } as any;
 
     const agent = createPlanExecuteAgent({
-      planner: { llm },
+      planner: { model: llm },
       executor: { tools: [] },
     });
 

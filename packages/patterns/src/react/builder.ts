@@ -36,11 +36,18 @@ export class ReActAgentBuilder {
   /**
    * Set the language model (required)
    *
-   * @param llm - LangChain chat model to use for reasoning
+   * @param model - LangChain chat model to use for reasoning
+   */
+  withModel(model: BaseChatModel): this {
+    this.config.model = model;
+    return this;
+  }
+
+  /**
+   * @deprecated Use withModel() instead
    */
   withLLM(llm: BaseChatModel): this {
-    this.config.llm = llm;
-    return this;
+    return this.withModel(llm);
   }
 
   /**
@@ -121,8 +128,8 @@ export class ReActAgentBuilder {
    */
   build(): CompiledStateGraph<any, any> {
     // Validate required fields
-    if (!this.config.llm) {
-      throw new Error('ReActAgentBuilder: llm is required. Use withLLM() to set it.');
+    if (!this.config.model) {
+      throw new Error('ReActAgentBuilder: model is required. Use withModel() to set it.');
     }
 
     if (!this.config.tools) {
@@ -131,7 +138,7 @@ export class ReActAgentBuilder {
 
     // Create the agent with defaults
     const finalConfig: ReActAgentConfig = {
-      llm: this.config.llm,
+      model: this.config.model,
       tools: this.config.tools,
       systemPrompt: this.config.systemPrompt || DEFAULT_REACT_SYSTEM_PROMPT,
       maxIterations: this.config.maxIterations ?? 10,

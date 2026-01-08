@@ -7,12 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [0.3.4] - 2026-01-08
 
-### Fixed
-- **Critical Bug Fix**: Fixed `createReActAgent` to accept both `model` and `llm` parameters for backward compatibility
-  - Templates use `model` but type definition only accepted `llm`, causing runtime errors
-  - Added support for both parameters with proper validation
-  - Updated `ReActAgentConfig` interface to accept both `model` (deprecated) and `llm`
-  - All existing code using `model` will continue to work
+### Changed
+- **Breaking Change**: Standardized on `model` parameter across all agent patterns
+  - Changed all config interfaces to use `model` instead of `llm`
+  - Affects: ReAct, Reflection, Plan-Execute, and Multi-Agent patterns
+  - Updated all documentation and examples to use `model`
+  - This provides a consistent, modern API across the framework
 
 ## [0.3.3] - 2026-01-08
 

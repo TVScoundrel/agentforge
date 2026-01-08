@@ -124,7 +124,7 @@ export function createWorkerNode(config: WorkerConfig) {
   const {
     id,
     capabilities,
-    llm,
+    model,
     tools = [],
     systemPrompt,
     verbose = false,
@@ -159,8 +159,8 @@ export function createWorkerNode(config: WorkerConfig) {
       }
 
       // Default execution using LLM
-      if (!llm) {
-        throw new Error(`Worker ${id} requires either an LLM or custom execution function`);
+      if (!model) {
+        throw new Error(`Worker ${id} requires either a model or custom execution function`);
       }
 
       const defaultSystemPrompt = `You are a specialized worker agent with the following capabilities:
@@ -175,13 +175,13 @@ Execute the assigned task using your skills and tools. Provide a clear, actionab
       ];
 
       // Bind tools if available
-      let llmToUse: any = llm;
-      if (tools.length > 0 && llm.bindTools) {
+      let modelToUse: any = model;
+      if (tools.length > 0 && model.bindTools) {
         const langchainTools = toLangChainTools(tools);
-        llmToUse = llm.bindTools(langchainTools);
+        modelToUse = model.bindTools(langchainTools);
       }
 
-      const response = await llmToUse.invoke(messages);
+      const response = await modelToUse.invoke(messages);
       const result = typeof response.content === 'string' 
         ? response.content 
         : JSON.stringify(response.content);
@@ -270,7 +270,7 @@ Execute the assigned task using your skills and tools. Provide a clear, actionab
  */
 export function createAggregatorNode(config: AggregatorConfig = {}) {
   const {
-    llm,
+    model,
     systemPrompt = DEFAULT_AGGREGATOR_SYSTEM_PROMPT,
     aggregateFn,
     verbose = false,
@@ -299,8 +299,8 @@ export function createAggregatorNode(config: AggregatorConfig = {}) {
         };
       }
 
-      // If no LLM, just concatenate results
-      if (!llm) {
+      // If no model, just concatenate results
+      if (!model) {
         const combinedResults = state.completedTasks
           .filter(task => task.success)
           .map(task => task.result)
@@ -312,7 +312,7 @@ export function createAggregatorNode(config: AggregatorConfig = {}) {
         };
       }
 
-      // Use LLM to intelligently aggregate results
+      // Use model to intelligently aggregate results
       const taskResults = state.completedTasks
         .map((task, idx) => {
           const status = task.success ? '✓' : '✗';
@@ -333,7 +333,7 @@ Please synthesize these results into a comprehensive response that addresses the
         new HumanMessage(userPrompt),
       ];
 
-      const response = await llm.invoke(messages);
+      const response = await model.invoke(messages);
       const aggregatedResponse = typeof response.content === 'string'
         ? response.content
         : JSON.stringify(response.content);

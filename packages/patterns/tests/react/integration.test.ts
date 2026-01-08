@@ -73,7 +73,7 @@ describe('ReAct Agent Integration', () => {
     const mockLLM = new MockLLMWithToolCalls() as any;
 
     const agent = createReActAgent({
-      llm: mockLLM,
+      model: mockLLM,
       tools: [calculatorTool],
       maxIterations: 5,
     });
@@ -133,7 +133,7 @@ describe('ReAct Agent Integration', () => {
     const mockLLM = new AlwaysCallToolsLLM() as any;
 
     const agent = createReActAgent({
-      llm: mockLLM,
+      model: mockLLM,
       tools: [calculatorTool],
       maxIterations: 3,
     });
@@ -194,7 +194,7 @@ describe('ReAct Agent Integration', () => {
     const mockLLM = new CallErrorToolLLM() as any;
 
     const agent = createReActAgent({
-      llm: mockLLM,
+      model: mockLLM,
       tools: [errorTool],
       maxIterations: 5,
     });
@@ -246,7 +246,7 @@ describe('ReAct Agent Integration', () => {
     const mockLLM = new CallNonExistentToolLLM() as any;
 
     const agent = createReActAgent({
-      llm: mockLLM,
+      model: mockLLM,
       tools: [calculatorTool],
       maxIterations: 5,
     });
@@ -265,7 +265,7 @@ describe('ReAct Agent Integration', () => {
     const stopCondition = vi.fn((state) => state.iteration >= 1);
 
     const agent = createReActAgent({
-      llm: mockLLM,
+      model: mockLLM,
       tools: [calculatorTool],
       maxIterations: 10,
       stopCondition,
@@ -284,7 +284,7 @@ describe('ReAct Agent Integration', () => {
     const mockLLM = new MockLLMWithToolCalls() as any;
 
     const agent = createReActAgent({
-      llm: mockLLM,
+      model: mockLLM,
       tools: [calculatorTool],
       maxIterations: 5,
       returnIntermediateSteps: true,
