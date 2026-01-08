@@ -15,6 +15,20 @@
 pnpm install
 ```
 
+### Configuration
+
+Create a `.env` file from the example:
+
+```bash
+cp .env.example .env
+```
+
+Then edit `.env` and add your OpenAI API key:
+
+```bash
+OPENAI_API_KEY=your-api-key-here
+```
+
 ### Development
 
 ```bash

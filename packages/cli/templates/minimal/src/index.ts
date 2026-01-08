@@ -1,3 +1,4 @@
+import 'dotenv/config';
 import { ChatOpenAI } from '@langchain/openai';
 import { createReActAgent } from '@agentforge/patterns';
 
