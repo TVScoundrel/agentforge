@@ -232,7 +232,7 @@ import { createReActAgent } from '@agentforge/patterns';
 import { ChatOpenAI } from '@langchain/openai';
 
 const agent = createReActAgent({
-  llm: new ChatOpenAI({ model: 'gpt-4' }),
+  model: new ChatOpenAI({ model: 'gpt-4' }),
   tools: registry.toLangChainTools(), // Convert all tools
   systemPrompt: 'You are a helpful assistant with access to various tools.'
 });

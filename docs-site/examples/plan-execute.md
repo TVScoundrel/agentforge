@@ -22,10 +22,10 @@ import {
 } from '@agentforge/tools';
 
 const agent = createPlanExecuteAgent({
-  llm: new ChatOpenAI({ model: 'gpt-4' }),
-  
+  model: new ChatOpenAI({ model: 'gpt-4' }),
+
   tools: [webSearch, fileWriter, jsonProcessor],
-  
+
   plannerPrompt: `Create a detailed step-by-step plan to accomplish the task.
 Each step should be clear and actionable.
 Consider dependencies between steps.`,

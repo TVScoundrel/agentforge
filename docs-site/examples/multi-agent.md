@@ -17,16 +17,16 @@ import { MultiAgentSystemBuilder } from '@agentforge/patterns';
 import { ChatOpenAI } from '@langchain/openai';
 import { searchTool, calculatorTool, fileWriterTool } from '@agentforge/tools';
 
-const llm = new ChatOpenAI({ model: 'gpt-4' });
+const model = new ChatOpenAI({ model: 'gpt-4' });
 
 // Create builder
 const builder = new MultiAgentSystemBuilder({
   supervisor: {
-    llm,
+    model,
     strategy: 'skill-based',
   },
   aggregator: {
-    llm,
+    model,
     systemPrompt: 'Combine results into a comprehensive report',
   },
   maxIterations: 10,
@@ -43,7 +43,7 @@ builder.registerWorkers([
       tools: ['search'],
       available: true,
     },
-    llm,
+    model,
     tools: [searchTool],
     systemPrompt: 'You are a research specialist. Find accurate information.',
   },
@@ -56,7 +56,7 @@ builder.registerWorkers([
       tools: ['calculator'],
       available: true,
     },
-    llm,
+    model,
     tools: [calculatorTool],
     systemPrompt: 'You are a data analyst. Analyze and interpret data.',
   },
@@ -69,7 +69,7 @@ builder.registerWorkers([
       tools: ['file_writer'],
       available: true,
     },
-    llm,
+    model,
     tools: [fileWriterTool],
     systemPrompt: 'You are a professional writer. Create clear, engaging content.',
   },
@@ -121,10 +121,10 @@ Routes tasks based on matching worker skills:
 ```typescript
 const builder = new MultiAgentSystemBuilder({
   supervisor: {
-    llm,
+    model,
     strategy: 'skill-based', // Routes by matching skills
   },
-  aggregator: { llm },
+  aggregator: { model },
 });
 ```
 
@@ -135,10 +135,10 @@ Distributes tasks evenly across workers:
 ```typescript
 const builder = new MultiAgentSystemBuilder({
   supervisor: {
-    llm,
+    model,
     strategy: 'round-robin', // Distributes evenly
   },
-  aggregator: { llm },
+  aggregator: { model },
 });
 ```
 
@@ -149,11 +149,11 @@ Let the LLM decide which worker to route to:
 ```typescript
 const builder = new MultiAgentSystemBuilder({
   supervisor: {
-    llm,
+    model,
     strategy: 'llm-based', // LLM decides routing
     systemPrompt: 'Route tasks based on worker expertise and current workload',
   },
-  aggregator: { llm },
+  aggregator: { model },
 });
 ```
 

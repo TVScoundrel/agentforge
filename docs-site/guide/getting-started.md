@@ -84,7 +84,7 @@ import { ChatOpenAI } from '@langchain/openai';
 import { calculator } from '@agentforge/tools';
 
 export const agent = createReActAgent({
-  llm: new ChatOpenAI({
+  model: new ChatOpenAI({
     model: 'gpt-4',
     temperature: 0
   }),

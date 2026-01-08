@@ -300,15 +300,15 @@ const essayAgent = createReflectionAgent({
 ```typescript
 const codeAgent = createReflectionAgent({
   generator: {
-    llm: new ChatOpenAI({ temperature: 0.3 }),
+    model: new ChatOpenAI({ temperature: 0.3 }),
     systemPrompt: 'Expert software engineer writing production code',
   },
   reflector: {
-    llm: new ChatOpenAI({ temperature: 0.3 }),
+    model: new ChatOpenAI({ temperature: 0.3 }),
     systemPrompt: 'Senior code reviewer checking quality, security, performance',
   },
   reviser: {
-    llm: new ChatOpenAI({ temperature: 0.3 }),
+    model: new ChatOpenAI({ temperature: 0.3 }),
     systemPrompt: 'Code refactorer improving based on review',
   },
   maxIterations: 3,

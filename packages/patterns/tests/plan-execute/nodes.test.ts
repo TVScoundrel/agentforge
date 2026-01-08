@@ -56,14 +56,14 @@ describe('Plan-Execute Nodes', () => {
   describe('createPlannerNode', () => {
     it('should create a planner node', () => {
       const llm = new MockPlannerLLM() as any;
-      const planner = createPlannerNode({ llm });
+      const planner = createPlannerNode({ model: llm });
       expect(planner).toBeDefined();
       expect(typeof planner).toBe('function');
     });
 
     it('should generate a plan from user input', async () => {
       const llm = new MockPlannerLLM() as any;
-      const planner = createPlannerNode({ llm });
+      const planner = createPlannerNode({ model: llm });
 
       const state: Partial<PlanExecuteStateType> = {
         input: 'Calculate 1 + 2',
@@ -92,7 +92,7 @@ describe('Plan-Execute Nodes', () => {
         }),
       } as any;
 
-      const planner = createPlannerNode({ llm, maxSteps: 3 });
+      const planner = createPlannerNode({ model: llm, maxSteps: 3 });
       const state: Partial<PlanExecuteStateType> = { input: 'Test', status: 'planning' };
       const result = await planner(state as PlanExecuteStateType);
 
@@ -106,7 +106,7 @@ describe('Plan-Execute Nodes', () => {
         },
       } as any;
 
-      const planner = createPlannerNode({ llm });
+      const planner = createPlannerNode({ model: llm });
       const state: Partial<PlanExecuteStateType> = { input: 'Test', status: 'planning' };
       const result = await planner(state as PlanExecuteStateType);
 
@@ -119,7 +119,7 @@ describe('Plan-Execute Nodes', () => {
         invoke: async () => new AIMessage({ content: 'Not valid JSON' }),
       } as any;
 
-      const planner = createPlannerNode({ llm });
+      const planner = createPlannerNode({ model: llm });
       const state: Partial<PlanExecuteStateType> = { input: 'Test', status: 'planning' };
       const result = await planner(state as PlanExecuteStateType);
 
@@ -253,14 +253,14 @@ describe('Plan-Execute Nodes', () => {
   describe('createReplannerNode', () => {
     it('should create a replanner node', () => {
       const llm = new MockReplannerLLM() as any;
-      const replanner = createReplannerNode({ llm });
+      const replanner = createReplannerNode({ model: llm });
       expect(replanner).toBeDefined();
       expect(typeof replanner).toBe('function');
     });
 
     it('should decide to continue with current plan', async () => {
       const llm = new MockReplannerLLM(false) as any;
-      const replanner = createReplannerNode({ llm });
+      const replanner = createReplannerNode({ model: llm });
 
       const state: Partial<PlanExecuteStateType> = {
         plan: {
@@ -290,7 +290,7 @@ describe('Plan-Execute Nodes', () => {
 
     it('should decide to replan', async () => {
       const llm = new MockReplannerLLM(true) as any;
-      const replanner = createReplannerNode({ llm });
+      const replanner = createReplannerNode({ model: llm });
 
       const state: Partial<PlanExecuteStateType> = {
         plan: {
@@ -322,7 +322,7 @@ describe('Plan-Execute Nodes', () => {
 
     it('should handle missing plan', async () => {
       const llm = new MockReplannerLLM() as any;
-      const replanner = createReplannerNode({ llm });
+      const replanner = createReplannerNode({ model: llm });
 
       const state: Partial<PlanExecuteStateType> = {
         status: 'replanning',

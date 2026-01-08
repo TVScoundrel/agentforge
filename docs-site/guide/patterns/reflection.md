@@ -39,7 +39,7 @@ import { createReflectionAgent } from '@agentforge/patterns';
 import { ChatOpenAI } from '@langchain/openai';
 
 const agent = createReflectionAgent({
-  llm: new ChatOpenAI({ model: 'gpt-4' }),
+  model: new ChatOpenAI({ model: 'gpt-4' }),
   maxIterations: 3,
   reflectionPrompt: `Review the response and provide constructive criticism:
   
@@ -67,8 +67,8 @@ console.log('Iterations:', result.iterations);
 ```typescript
 interface ReflectionConfig {
   // Required
-  llm: BaseChatModel;           // The language model
-  
+  model: BaseChatModel;           // The language model
+
   // Optional
   maxIterations?: number;       // Max reflection cycles (default: 3)
   reflectionPrompt?: string;    // Custom reflection prompt
@@ -82,7 +82,7 @@ interface ReflectionConfig {
 
 ```typescript
 const agent = createReflectionAgent({
-  llm: new ChatOpenAI({ model: 'gpt-4', temperature: 0.7 }),
+  model: new ChatOpenAI({ model: 'gpt-4', temperature: 0.7 }),
   
   // Iteration control
   maxIterations: 5,
@@ -174,7 +174,7 @@ while (quality < threshold && iterations < maxIterations) {
 
 ```typescript
 const agent = createReflectionAgent({
-  llm,
+  model,
   qualityMetrics: {
     accuracy: { weight: 0.4, threshold: 0.9 },
     completeness: { weight: 0.3, threshold: 0.8 },
@@ -191,8 +191,8 @@ Use a different model for reflection:
 
 ```typescript
 const agent = createReflectionAgent({
-  llm: new ChatOpenAI({ model: 'gpt-4' }),  // For generation
-  reflectionLLM: new ChatOpenAI({ 
+  model: new ChatOpenAI({ model: 'gpt-4' }),  // For generation
+  reflectionModel: new ChatOpenAI({
     model: 'gpt-4',  // For critique
     temperature: 0  // More critical/consistent
   })
@@ -204,7 +204,7 @@ const agent = createReflectionAgent({
 ```typescript
 // Code review reflection
 const codeReflectionAgent = createReflectionAgent({
-  llm,
+  model,
   reflectionPrompt: `Review this code:
   
 1. Correctness: Does it work as intended?
@@ -218,7 +218,7 @@ Provide specific improvements.`
 
 // Writing reflection
 const writingReflectionAgent = createReflectionAgent({
-  llm,
+  model,
   reflectionPrompt: `Critique this writing:
   
 1. Grammar and spelling
@@ -260,7 +260,7 @@ for await (const chunk of stream) {
 
 ```typescript
 const agent = createReflectionAgent({
-  llm,
+  model,
   maxIterations: 3,  // Usually 2-4 iterations is optimal
   qualityThreshold: 0.85  // Stop early if quality is good enough
 });
@@ -270,7 +270,7 @@ const agent = createReflectionAgent({
 
 ```typescript
 const agent = createReflectionAgent({
-  llm,
+  model,
   reflectionPrompt: `Evaluate on these specific criteria:
 
 1. Technical Accuracy (0-1): ${criterion1}
@@ -288,7 +288,7 @@ Improvement Suggestions: [list]`
 ```typescript
 // Use cheaper model for drafts, expensive for final
 const agent = createReflectionAgent({
-  llm: new ChatOpenAI({ model: 'gpt-3.5-turbo' }),  // Fast drafts
+  model: new ChatOpenAI({ model: 'gpt-3.5-turbo' }),  // Fast drafts
   reflectionLLM: new ChatOpenAI({ model: 'gpt-4' }),  // Quality critique
   maxIterations: 2  // Limit iterations to control cost
 });
@@ -314,7 +314,7 @@ result.reflections.forEach((reflection, i) => {
 
 ```typescript
 const contentAgent = createReflectionAgent({
-  llm: new ChatOpenAI({ model: 'gpt-4' }),
+  model: new ChatOpenAI({ model: 'gpt-4' }),
   maxIterations: 3,
   reflectionPrompt: `Review this content:
 
@@ -334,7 +334,7 @@ Suggestions:`
 
 ```typescript
 const codeAgent = createReflectionAgent({
-  llm: new ChatOpenAI({ model: 'gpt-4' }),
+  model: new ChatOpenAI({ model: 'gpt-4' }),
   maxIterations: 4,
   reflectionPrompt: `Review this code:
 
@@ -359,7 +359,7 @@ Provide the complete, improved code.`
 
 ```typescript
 const researchAgent = createReflectionAgent({
-  llm: new ChatOpenAI({ model: 'gpt-4' }),
+  model: new ChatOpenAI({ model: 'gpt-4' }),
   maxIterations: 3,
   reflectionPrompt: `Evaluate this research:
 
@@ -432,7 +432,7 @@ for (let i = 1; i < result.reflections.length; i++) {
 
 ```typescript
 const agent = createReflectionAgent({
-  llm,
+  model,
   qualityThreshold: 0.9,  // Stop when quality is good enough
   maxIterations: 5,  // But don't exceed this
 
@@ -451,7 +451,7 @@ Reflect on multiple aspects simultaneously:
 
 ```typescript
 const agent = createReflectionAgent({
-  llm,
+  model,
   parallelReflection: true,
   reflectionAspects: [
     'accuracy',
@@ -468,7 +468,7 @@ Only revise parts that need improvement:
 
 ```typescript
 const agent = createReflectionAgent({
-  llm,
+  model,
   revisionStrategy: 'incremental',  // Only revise problematic sections
   minQualityForSection: 0.8  // Don't revise sections above this
 });
@@ -494,15 +494,15 @@ import { createMultiAgentSystem } from '@agentforge/patterns';
 const system = createMultiAgentSystem({
   agents: {
     writer: createReflectionAgent({
-      llm,
+      model,
       role: 'content creator'
     }),
     reviewer: createReflectionAgent({
-      llm,
+      model,
       role: 'critical reviewer'
     }),
     editor: createReflectionAgent({
-      llm,
+      model,
       role: 'final editor'
     })
   },

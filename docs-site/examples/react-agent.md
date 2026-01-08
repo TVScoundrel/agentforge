@@ -28,7 +28,7 @@ import {
 
 // Create the agent
 const agent = createReActAgent({
-  llm: new ChatOpenAI({
+  model: new ChatOpenAI({
     model: 'gpt-4',
     temperature: 0
   }),
@@ -126,7 +126,7 @@ main().catch(console.error);
 import { createReActAgent } from '@agentforge/patterns';
 
 const agent = createReActAgent({
-  llm: new ChatOpenAI({ model: 'gpt-4' }),
+  model: new ChatOpenAI({ model: 'gpt-4' }),
   tools: [calculator, webSearch],
   maxIterations: 5
 });
@@ -157,7 +157,7 @@ import { MemorySaver } from '@langchain/langgraph';
 const checkpointSaver = new MemorySaver();
 
 const agent = createReActAgent({
-  llm: new ChatOpenAI({ model: 'gpt-4' }),
+  model: new ChatOpenAI({ model: 'gpt-4' }),
   tools: [calculator, webSearch],
   checkpointSaver,
   maxIterations: 5
@@ -185,10 +185,10 @@ import { createReActAgent } from '@agentforge/patterns';
 import { retry, timeout } from '@agentforge/core/middleware';
 
 const agent = createReActAgent({
-  llm: new ChatOpenAI({ model: 'gpt-4' }),
+  model: new ChatOpenAI({ model: 'gpt-4' }),
   tools: [calculator, webSearch],
   maxIterations: 5,
-  
+
   middleware: [
     // Retry on failures
     retry({
@@ -231,7 +231,7 @@ describe('ReAct Agent', () => {
   });
 
   const agent = createReActAgent({
-    llm: mockLLM as any,
+    model: mockLLM as any,
     tools: [calculator],
     maxIterations: 3
   });

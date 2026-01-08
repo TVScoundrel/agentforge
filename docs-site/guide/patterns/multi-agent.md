@@ -41,17 +41,17 @@ import { ChatOpenAI } from '@langchain/openai';
 const system = createMultiAgentSystem({
   agents: {
     researcher: {
-      llm: new ChatOpenAI({ model: 'gpt-4' }),
+      model: new ChatOpenAI({ model: 'gpt-4' }),
       tools: [webSearch, wikipediaSearch],
       systemMessage: 'You are a research specialist. Find accurate information.'
     },
     analyst: {
-      llm: new ChatOpenAI({ model: 'gpt-4' }),
+      model: new ChatOpenAI({ model: 'gpt-4' }),
       tools: [calculator, dataAnalysis],
       systemMessage: 'You are a data analyst. Analyze and interpret data.'
     },
     writer: {
-      llm: new ChatOpenAI({ model: 'gpt-4' }),
+      model: new ChatOpenAI({ model: 'gpt-4' }),
       tools: [fileWrite],
       systemMessage: 'You are a technical writer. Create clear, structured reports.'
     }
@@ -62,7 +62,7 @@ const system = createMultiAgentSystem({
   
   // Supervisor configuration
   supervisor: {
-    llm: new ChatOpenAI({ model: 'gpt-4' }),
+    model: new ChatOpenAI({ model: 'gpt-4' }),
     systemMessage: 'Route tasks to the most appropriate agent.'
   }
 });
@@ -91,7 +91,7 @@ const system = createMultiAgentSystem({
   
   strategy: 'supervisor',
   supervisor: {
-    llm: new ChatOpenAI({ model: 'gpt-4' }),
+    model: new ChatOpenAI({ model: 'gpt-4' }),
     systemMessage: `You are a project manager.
     
 Route tasks to agents:
@@ -151,19 +151,19 @@ const system = createMultiAgentSystem({
   agents: {
     // Top level
     ceo: {
-      llm,
+      model,
       role: 'Strategic decisions',
       subordinates: ['manager1', 'manager2']
     },
     
     // Middle level
     manager1: {
-      llm,
+      model,
       role: 'Manage team 1',
       subordinates: ['worker1', 'worker2']
     },
     manager2: {
-      llm,
+      model,
       role: 'Manage team 2',
       subordinates: ['worker3', 'worker4']
     },
@@ -241,7 +241,7 @@ import { agentBuilder } from '@agentforge/patterns';
 const researchAgent = agentBuilder()
   .name('researcher')
   .role('Research Specialist')
-  .llm(new ChatOpenAI({ model: 'gpt-4' }))
+  .model(new ChatOpenAI({ model: 'gpt-4' }))
   .tools([webSearch, wikipediaSearch, arxivSearch])
   .systemMessage(`You are an expert researcher.
 
@@ -296,17 +296,17 @@ const system = createMultiAgentSystem({
   agents: {
     // ✅ Clear, specific roles
     dataCollector: {
-      llm,
+      model,
       tools: [apiCall, webScrape],
       role: 'Collect data from external sources'
     },
     dataProcessor: {
-      llm,
+      model,
       tools: [dataTransform, calculator],
       role: 'Clean and transform data'
     },
     dataAnalyst: {
-      llm,
+      model,
       tools: [statisticalAnalysis, chartGenerate],
       role: 'Analyze data and create visualizations'
     }
@@ -374,22 +374,22 @@ const system = createMultiAgentSystem({
 const devTeam = createMultiAgentSystem({
   agents: {
     productManager: {
-      llm,
+      model,
       role: 'Define requirements and priorities',
       tools: []
     },
     developer: {
-      llm,
+      model,
       role: 'Write code',
       tools: [codeExecutor, fileWrite]
     },
     tester: {
-      llm,
+      model,
       role: 'Write and run tests',
       tools: [testRunner, coverageAnalyzer]
     },
     reviewer: {
-      llm,
+      model,
       role: 'Review code quality',
       tools: [linter, securityScanner]
     }
@@ -397,7 +397,7 @@ const devTeam = createMultiAgentSystem({
 
   strategy: 'supervisor',
   supervisor: {
-    llm,
+    model,
     systemMessage: 'Coordinate the development team to build high-quality software.'
   }
 });
@@ -409,22 +409,22 @@ const devTeam = createMultiAgentSystem({
 const researchTeam = createMultiAgentSystem({
   agents: {
     literatureReviewer: {
-      llm,
+      model,
       tools: [arxivSearch, googleScholar],
       role: 'Find and review academic papers'
     },
     dataCollector: {
-      llm,
+      model,
       tools: [apiCall, webScrape],
       role: 'Gather experimental data'
     },
     statistician: {
-      llm,
+      model,
       tools: [statisticalAnalysis, rScript],
       role: 'Perform statistical analysis'
     },
     writer: {
-      llm,
+      model,
       tools: [latexCompiler, fileWrite],
       role: 'Write research paper'
     }
@@ -441,22 +441,22 @@ const researchTeam = createMultiAgentSystem({
 const supportTeam = createMultiAgentSystem({
   agents: {
     triageAgent: {
-      llm,
+      model,
       tools: [ticketClassifier],
       role: 'Classify and prioritize tickets'
     },
     technicalSupport: {
-      llm,
+      model,
       tools: [knowledgeBase, diagnosticTools],
       role: 'Resolve technical issues'
     },
     billingSupport: {
-      llm,
+      model,
       tools: [billingSystem, paymentProcessor],
       role: 'Handle billing inquiries'
     },
     escalationAgent: {
-      llm,
+      model,
       tools: [emailSend, slackNotify],
       role: 'Escalate complex issues'
     }
@@ -464,7 +464,7 @@ const supportTeam = createMultiAgentSystem({
 
   strategy: 'supervisor',
   supervisor: {
-    llm,
+    model,
     systemMessage: 'Route customer inquiries to the appropriate support agent.'
   }
 });

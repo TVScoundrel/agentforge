@@ -39,8 +39,8 @@ export const llmBasedRouting: RoutingStrategyImpl = {
   name: 'llm-based',
   
   async route(state: MultiAgentStateType, config: SupervisorConfig): Promise<RoutingDecision> {
-    if (!config.llm) {
-      throw new Error('LLM-based routing requires an LLM to be configured');
+    if (!config.model) {
+      throw new Error('LLM-based routing requires a model to be configured');
     }
 
     const systemPrompt = config.systemPrompt || DEFAULT_SUPERVISOR_SYSTEM_PROMPT;
@@ -71,7 +71,7 @@ Select the best worker for this task and explain your reasoning.`;
       new HumanMessage(userPrompt),
     ];
 
-    const response = await config.llm.invoke(messages);
+    const response = await config.model.invoke(messages);
     const content = typeof response.content === 'string' 
       ? response.content 
       : JSON.stringify(response.content);

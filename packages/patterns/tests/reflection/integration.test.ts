@@ -9,9 +9,9 @@ describe('Reflection Agent Integration', () => {
     });
 
     const agent = createReflectionAgent({
-      generator: { llm },
-      reflector: { llm },
-      reviser: { llm },
+      generator: { model: llm },
+      reflector: { model: llm },
+      reviser: { model: llm },
     });
 
     expect(agent).toBeDefined();
@@ -33,9 +33,9 @@ describe('Reflection Agent Integration', () => {
     });
 
     const agent = createReflectionAgent({
-      generator: { llm },
-      reflector: { llm },
-      reviser: { llm },
+      generator: { model: llm },
+      reflector: { model: llm },
+      reviser: { model: llm },
       maxIterations: 3,
     });
 
@@ -72,9 +72,9 @@ describe('Reflection Agent Integration', () => {
     });
 
     const agent = createReflectionAgent({
-      generator: { llm },
-      reflector: { llm },
-      reviser: { llm },
+      generator: { model: llm },
+      reflector: { model: llm },
+      reviser: { model: llm },
       maxIterations: 3,
     });
 
@@ -119,9 +119,9 @@ describe('Reflection Agent Integration', () => {
     });
 
     const agent = createReflectionAgent({
-      generator: { llm },
-      reflector: { llm },
-      reviser: { llm },
+      generator: { model: llm },
+      reflector: { model: llm },
+      reviser: { model: llm },
       maxIterations: 2,
     });
 
@@ -149,9 +149,9 @@ describe('Reflection Agent Integration', () => {
     });
 
     const agent = createReflectionAgent({
-      generator: { llm },
-      reflector: { llm },
-      reviser: { llm },
+      generator: { model: llm },
+      reflector: { model: llm },
+      reviser: { model: llm },
       maxIterations: 3,
       qualityCriteria: {
         minScore: 8,

@@ -42,7 +42,7 @@ import { createReActAgent } from '@agentforge/patterns';
 import { ChatOpenAI } from '@langchain/openai';
 
 const agent = createReActAgent({
-  llm: new ChatOpenAI({ model: 'gpt-4' }),
+  model: new ChatOpenAI({ model: 'gpt-4' }),
   tools: [calculator, webSearch, fileReader],
   maxIterations: 10,
 });
@@ -90,7 +90,7 @@ import { createPlanExecuteAgent } from '@agentforge/patterns';
 
 const agent = createPlanExecuteAgent({
   planner: {
-    llm: new ChatOpenAI({ model: 'gpt-4' }),
+    model: new ChatOpenAI({ model: 'gpt-4' }),
     maxSteps: 10,
   },
   executor: {
@@ -98,7 +98,7 @@ const agent = createPlanExecuteAgent({
     parallel: true, // Enable parallel execution
   },
   replanner: {
-    llm: new ChatOpenAI({ model: 'gpt-4' }),
+    model: new ChatOpenAI({ model: 'gpt-4' }),
     replanThreshold: 0.7,
   },
 });
@@ -146,15 +146,15 @@ import { createReflectionAgent } from '@agentforge/patterns';
 
 const agent = createReflectionAgent({
   generator: {
-    llm: new ChatOpenAI({ model: 'gpt-4' }),
+    model: new ChatOpenAI({ model: 'gpt-4' }),
     systemPrompt: 'Expert content writer',
   },
   reflector: {
-    llm: new ChatOpenAI({ model: 'gpt-4' }),
+    model: new ChatOpenAI({ model: 'gpt-4' }),
     systemPrompt: 'Critical reviewer checking quality',
   },
   reviser: {
-    llm: new ChatOpenAI({ model: 'gpt-4' }),
+    model: new ChatOpenAI({ model: 'gpt-4' }),
     systemPrompt: 'Editor improving based on feedback',
   },
   maxIterations: 3,
@@ -207,11 +207,11 @@ import { MultiAgentSystemBuilder } from '@agentforge/patterns';
 
 const builder = new MultiAgentSystemBuilder({
   supervisor: {
-    llm: new ChatOpenAI({ model: 'gpt-4' }),
+    model: new ChatOpenAI({ model: 'gpt-4' }),
     strategy: 'skill-based', // or 'llm-based', 'round-robin', 'load-balanced'
   },
   aggregator: {
-    llm: new ChatOpenAI({ model: 'gpt-4' }),
+    model: new ChatOpenAI({ model: 'gpt-4' }),
   },
 });
 
@@ -224,7 +224,7 @@ builder.registerWorkers([
       tools: ['web-search', 'database-query'],
       available: true,
     },
-    llm: new ChatOpenAI({ model: 'gpt-4' }),
+    model: new ChatOpenAI({ model: 'gpt-4' }),
     tools: [webSearch, databaseQuery],
   },
   {
@@ -235,7 +235,7 @@ builder.registerWorkers([
       tools: ['text-formatter', 'grammar-check'],
       available: true,
     },
-    llm: new ChatOpenAI({ model: 'gpt-4' }),
+    model: new ChatOpenAI({ model: 'gpt-4' }),
     tools: [textFormatter, grammarCheck],
   },
 ]);

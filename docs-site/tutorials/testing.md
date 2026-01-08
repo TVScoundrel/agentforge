@@ -122,7 +122,7 @@ describe('Agent', () => {
     });
     
     const agent = createReActAgent({
-      llm: mockLLM as any,
+      model: mockLLM as any,
       tools: [searchTool],
       maxIterations: 5
     });
@@ -147,7 +147,7 @@ describe('Agent', () => {
     });
     
     const agent = createReActAgent({
-      llm: mockLLM as any,
+      model: mockLLM as any,
       tools: [searchTool],
       maxIterations: 10
     });
@@ -178,7 +178,7 @@ describe('Agent with Mock Tools', () => {
     });
     
     const agent = createReActAgent({
-      llm: mockLLM as any,
+      model: mockLLM as any,
       tools: [calcTool],
       maxIterations: 5
     });
@@ -202,7 +202,7 @@ describe('Agent with Mock Tools', () => {
     });
     
     const agent = createReActAgent({
-      llm: mockLLM as any,
+      model: mockLLM as any,
       tools: [errorTool],
       maxIterations: 5
     });
@@ -489,7 +489,7 @@ describe('ReAct Agent', () => {
     });
 
     const agent = createReActAgent({
-      llm: mockLLM as any,
+      model: mockLLM as any,
       tools: [searchTool],
       maxIterations: 10,
     });
@@ -518,7 +518,7 @@ describe('Plan-Execute Agent', () => {
     });
 
     const agent = createPlanExecuteAgent({
-      planner: { llm: mockLLM as any, maxSteps: 5 },
+      planner: { model: mockLLM as any, maxSteps: 5 },
       executor: { tools: sampleTools },
     });
 

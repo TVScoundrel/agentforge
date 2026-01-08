@@ -84,7 +84,7 @@ import { calculator } from '@agentforge/tools';
 import { webSearch } from './tools.js';
 
 export const researchAgent = createReActAgent({
-  llm: new ChatOpenAI({
+  model: new ChatOpenAI({
     model: 'gpt-4',
     temperature: 0
   }),
@@ -190,7 +190,7 @@ describe('Research Agent', () => {
     });
 
     const agent = createReActAgent({
-      llm: mockLLM as any,
+      model: mockLLM as any,
       tools: [calculator],
       maxIterations: 3
     });

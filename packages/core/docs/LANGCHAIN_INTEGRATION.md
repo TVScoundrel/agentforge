@@ -30,7 +30,7 @@ import { ChatOpenAI } from '@langchain/openai';
 import { createReactAgent } from '@langchain/langgraph/prebuilt';
 
 const agent = createReactAgent({
-  llm: new ChatOpenAI({ model: 'gpt-4' }),
+  model: new ChatOpenAI({ model: 'gpt-4' }),
   tools: [langchainTool],
 });
 ```

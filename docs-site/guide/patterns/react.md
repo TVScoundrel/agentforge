@@ -39,7 +39,7 @@ import { ChatOpenAI } from '@langchain/openai';
 import { calculator, webSearch, fileRead } from '@agentforge/tools';
 
 const agent = createReActAgent({
-  llm: new ChatOpenAI({ 
+  model: new ChatOpenAI({ 
     model: 'gpt-4',
     temperature: 0 
   }),
@@ -64,9 +64,9 @@ console.log(result.messages[result.messages.length - 1].content);
 ```typescript
 interface ReActConfig {
   // Required
-  llm: BaseChatModel;           // The language model
+  model: BaseChatModel;           // The language model
   tools: StructuredTool[];      // Available tools
-  
+
   // Optional
   maxIterations?: number;       // Max reasoning loops (default: 15)
   returnIntermediateSteps?: boolean;  // Include reasoning steps (default: false)
@@ -79,7 +79,7 @@ interface ReActConfig {
 
 ```typescript
 const agent = createReActAgent({
-  llm: new ChatOpenAI({ model: 'gpt-4' }),
+  model: new ChatOpenAI({ model: 'gpt-4' }),
   tools: [calculator, webSearch],
   
   // Limit iterations to prevent infinite loops
@@ -104,7 +104,7 @@ const agent = createReActAgent({
 import { createReActAgent } from '@agentforge/patterns';
 
 const agent = createReActAgent({
-  llm,
+  model,
   tools,
   systemMessage: `You are a helpful research assistant.
   
@@ -123,7 +123,7 @@ Always be thorough and accurate.`
 ```typescript
 // Conditional tool availability
 const agent = createReActAgent({
-  llm,
+  model,
   tools: async (state) => {
     // Only provide expensive tools if needed
     const basicTools = [calculator, dateTime];
@@ -162,7 +162,7 @@ for await (const chunk of stream) {
 import { createReActAgent } from '@agentforge/patterns';
 
 const agent = createReActAgent({
-  llm,
+  model,
   tools,
   
   // Option 1: Boolean - use default error message
@@ -187,7 +187,7 @@ Always set a reasonable `maxIterations` to prevent infinite loops:
 
 ```typescript
 const agent = createReActAgent({
-  llm,
+  model,
   tools,
   maxIterations: 15  // Prevent runaway loops
 });
@@ -220,7 +220,7 @@ For deterministic behavior, use temperature 0:
 
 ```typescript
 const agent = createReActAgent({
-  llm: new ChatOpenAI({
+  model: new ChatOpenAI({
     model: 'gpt-4',
     temperature: 0  // Deterministic reasoning
   }),
@@ -251,7 +251,7 @@ import { createReActAgent } from '@agentforge/patterns';
 import { webSearch, wikipediaSearch, calculator } from '@agentforge/tools';
 
 const researchAgent = createReActAgent({
-  llm: new ChatOpenAI({ model: 'gpt-4' }),
+  model: new ChatOpenAI({ model: 'gpt-4' }),
   tools: [webSearch, wikipediaSearch, calculator],
   maxIterations: 20,
   systemMessage: `You are a thorough research assistant.
@@ -270,7 +270,7 @@ For each query:
 import { fileRead, pythonREPL, calculator } from '@agentforge/tools';
 
 const dataAgent = createReActAgent({
-  llm: new ChatOpenAI({ model: 'gpt-4' }),
+  model: new ChatOpenAI({ model: 'gpt-4' }),
   tools: [fileRead, pythonREPL, calculator],
   systemMessage: `You are a data analysis expert.
 
@@ -288,7 +288,7 @@ When analyzing data:
 import { knowledgeBaseSearch, ticketCreate, emailSend } from './custom-tools';
 
 const supportAgent = createReActAgent({
-  llm: new ChatOpenAI({ model: 'gpt-4' }),
+  model: new ChatOpenAI({ model: 'gpt-4' }),
   tools: [knowledgeBaseSearch, ticketCreate, emailSend],
   maxIterations: 10,
   systemMessage: `You are a helpful customer support agent.
@@ -307,7 +307,7 @@ Always:
 
 ```typescript
 const agent = createReActAgent({
-  llm,
+  model,
   tools,
   returnIntermediateSteps: true
 });
@@ -344,7 +344,7 @@ Reduce token usage by keeping only recent steps:
 
 ```typescript
 const agent = createReActAgent({
-  llm,
+  model,
   tools,
   trimIntermediateSteps: 5  // Keep only last 5 steps
 });
@@ -354,7 +354,7 @@ const agent = createReActAgent({
 
 ```typescript
 const agent = createReActAgent({
-  llm: new ChatOpenAI({
+  model: new ChatOpenAI({
     model: 'gpt-3.5-turbo',  // Faster and cheaper
     temperature: 0
   }),
@@ -374,7 +374,7 @@ const cachedWebSearch = withCache(webSearch, {
 });
 
 const agent = createReActAgent({
-  llm,
+  model,
   tools: [cachedWebSearch, calculator]
 });
 ```

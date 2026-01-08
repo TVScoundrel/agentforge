@@ -27,7 +27,7 @@ export const config = {
 };
 
 const agent = createReActAgent({
-  llm: new ChatOpenAI({
+  model: new ChatOpenAI({
     model: 'gpt-4',
     apiKey: process.env.OPENAI_API_KEY
   }),

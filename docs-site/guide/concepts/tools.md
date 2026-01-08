@@ -198,7 +198,7 @@ import { ChatOpenAI } from '@langchain/openai';
 import { createReActAgent } from '@agentforge/patterns';
 
 const agent = createReActAgent({
-  llm: new ChatOpenAI({ model: 'gpt-4' }),
+  model: new ChatOpenAI({ model: 'gpt-4' }),
   tools: registry.toLangChainTools(), // All tools from registry
 });
 ```

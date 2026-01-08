@@ -25,12 +25,12 @@ import type { ReflectionAgentConfig, ReflectionRoute } from './types.js';
  * import { createReflectionAgent } from '@agentforge/patterns';
  * import { ChatOpenAI } from '@langchain/openai';
  *
- * const llm = new ChatOpenAI({ model: 'gpt-4' });
+ * const model = new ChatOpenAI({ model: 'gpt-4' });
  *
  * const agent = createReflectionAgent({
- *   generator: { llm },
- *   reflector: { llm },
- *   reviser: { llm },
+ *   generator: { model },
+ *   reflector: { model },
+ *   reviser: { model },
  *   maxIterations: 3,
  *   qualityCriteria: {
  *     minScore: 8,

@@ -28,7 +28,7 @@ import {
  */
 export function createGeneratorNode(config: GeneratorConfig) {
   const {
-    llm,
+    model,
     systemPrompt = DEFAULT_GENERATOR_SYSTEM_PROMPT,
     verbose = false,
   } = config;
@@ -56,7 +56,7 @@ export function createGeneratorNode(config: GeneratorConfig) {
         new HumanMessage(userPrompt),
       ];
 
-      const response = await llm.invoke(messages);
+      const response = await model.invoke(messages);
       const content = typeof response.content === 'string' 
         ? response.content 
         : JSON.stringify(response.content);
@@ -85,7 +85,7 @@ export function createGeneratorNode(config: GeneratorConfig) {
  */
 export function createReflectorNode(config: ReflectorConfig) {
   const {
-    llm,
+    model,
     systemPrompt = DEFAULT_REFLECTOR_SYSTEM_PROMPT,
     qualityCriteria,
     verbose = false,
@@ -149,7 +149,7 @@ export function createReflectorNode(config: ReflectorConfig) {
         new HumanMessage(userPrompt),
       ];
 
-      const response = await llm.invoke(messages);
+      const response = await model.invoke(messages);
       const content = typeof response.content === 'string'
         ? response.content
         : JSON.stringify(response.content);
@@ -206,7 +206,7 @@ export function createReflectorNode(config: ReflectorConfig) {
  */
 export function createReviserNode(config: ReviserConfig) {
   const {
-    llm,
+    model,
     systemPrompt = DEFAULT_REVISER_SYSTEM_PROMPT,
     verbose = false,
   } = config;
@@ -254,7 +254,7 @@ export function createReviserNode(config: ReviserConfig) {
         new HumanMessage(userPrompt),
       ];
 
-      const response = await llm.invoke(messages);
+      const response = await model.invoke(messages);
       const content = typeof response.content === 'string'
         ? response.content
         : JSON.stringify(response.content);

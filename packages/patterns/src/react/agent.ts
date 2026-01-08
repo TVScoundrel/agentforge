@@ -30,7 +30,7 @@ import { createReasoningNode, createActionNode, createObservationNode } from './
  * import { ChatOpenAI } from '@langchain/openai';
  *
  * const agent = createReActAgent({
- *   llm: new ChatOpenAI({ model: 'gpt-4' }),
+ *   model: new ChatOpenAI({ model: 'gpt-4' }),
  *   tools: toolRegistry,
  *   systemPrompt: 'You are a helpful assistant.',
  *   maxIterations: 10
@@ -47,7 +47,6 @@ export function createReActAgent(
 ): CompiledStateGraph<any, any> {
   // Extract configuration with defaults
   const {
-    llm,
     model,
     tools,
     systemPrompt = DEFAULT_REACT_SYSTEM_PROMPT,
@@ -55,13 +54,6 @@ export function createReActAgent(
     returnIntermediateSteps = false,
     stopCondition,
   } = config;
-
-  // Support both 'model' and 'llm' for backward compatibility
-  const chatModel = llm || model;
-
-  if (!chatModel) {
-    throw new Error('Either "llm" or "model" must be provided in the configuration');
-  }
 
   const {
     verbose = false,
@@ -81,7 +73,7 @@ export function createReActAgent(
   // ===== Node Implementations =====
 
   const reasoningNode = createReasoningNode(
-    chatModel,
+    model,
     toolArray,
     systemPrompt,
     maxIterations,

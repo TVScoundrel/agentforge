@@ -213,7 +213,7 @@ import { createReactAgent } from '@langchain/langgraph/prebuilt';
 import { ChatOpenAI } from '@langchain/openai';
 
 const agent = createReactAgent({
-  llm: new ChatOpenAI(),
+  model: new ChatOpenAI(),
   tools: [langchainTool], // Works seamlessly!
 });
 ```
@@ -853,7 +853,7 @@ const newsTool = new DynamicStructuredTool({
 
 // Create agent
 const agent = createReactAgent({
-  llm: new ChatOpenAI(),
+  model: new ChatOpenAI(),
   tools: [weatherTool, newsTool],
 });
 ```
@@ -926,7 +926,7 @@ console.log('Tool descriptions for LLM:\n', toolPrompt);
 
 // Convert to LangChain and create agent
 const agent = createReactAgent({
-  llm: new ChatOpenAI(),
+  model: new ChatOpenAI(),
   tools: registry.toLangChainTools(), // Seamless conversion!
 });
 ```

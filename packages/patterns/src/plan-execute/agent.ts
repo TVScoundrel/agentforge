@@ -27,7 +27,7 @@ import type { PlanExecuteAgentConfig, PlanExecuteRoute } from './types.js';
  *
  * const agent = createPlanExecuteAgent({
  *   planner: {
- *     llm: new ChatOpenAI({ model: 'gpt-4' }),
+ *     model: new ChatOpenAI({ model: 'gpt-4' }),
  *     maxSteps: 5
  *   },
  *   executor: {
@@ -35,7 +35,7 @@ import type { PlanExecuteAgentConfig, PlanExecuteRoute } from './types.js';
  *     parallel: false
  *   },
  *   replanner: {
- *     llm: new ChatOpenAI({ model: 'gpt-4' }),
+ *     model: new ChatOpenAI({ model: 'gpt-4' }),
  *     replanThreshold: 0.7
  *   }
  * });

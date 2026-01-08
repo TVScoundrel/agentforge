@@ -127,7 +127,7 @@ import { getWeather } from './tools/weather.js';
 import { convertTemperature } from './tools/converter.js';
 
 export const weatherAgent = createReActAgent({
-  llm: new ChatOpenAI({
+  model: new ChatOpenAI({
     model: 'gpt-4',
     temperature: 0
   }),
@@ -250,7 +250,7 @@ describe('Weather Agent', () => {
   });
 
   const agent = createReActAgent({
-    llm: mockLLM as any,
+    model: mockLLM as any,
     tools: [getWeather, convertTemperature],
     maxIterations: 3
   });

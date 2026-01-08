@@ -40,7 +40,7 @@ import { createReActAgent } from '@agentforge/patterns';
 import { ChatOpenAI } from '@langchain/openai';
 
 const agent = createReActAgent({
-  llm: new ChatOpenAI({ model: 'gpt-4', streaming: true }),
+  model: new ChatOpenAI({ model: 'gpt-4', streaming: true }),
   tools: [webSearch, calculator]
 });
 
@@ -118,7 +118,7 @@ Show progress during long-running tasks:
 import { createPlanExecuteAgent } from '@agentforge/patterns';
 
 const agent = createPlanExecuteAgent({
-  llm: new ChatOpenAI({ model: 'gpt-4', streaming: true }),
+  model: new ChatOpenAI({ model: 'gpt-4', streaming: true }),
   tools: [webSearch, dataAnalysis, fileWrite]
 });
 
