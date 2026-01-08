@@ -288,21 +288,25 @@ console.log(result.response); // Aggregated response
 
 ## Documentation
 
-### Guides
-- [ReAct Agent Guide](./docs/react-agent-guide.md) - Comprehensive ReAct usage guide
-- [Plan-Execute Pattern Guide](./docs/plan-execute-pattern.md) - Comprehensive Plan-Execute guide
-- [Reflection Pattern Guide](./docs/reflection-pattern.md) - Comprehensive Reflection guide
-- [Multi-Agent Pattern Guide](./docs/multi-agent-pattern.md) - Comprehensive Multi-Agent guide
-- [Pattern Comparison Guide](./docs/pattern-comparison.md) - Choose the right pattern
+### 📖 Pattern Guides (GitHub Pages)
+- 🤖 **[ReAct Pattern Guide](https://tvscoundrel.github.io/agentforge/guide/patterns/react)** - Comprehensive ReAct usage guide
+- 📋 **[Plan-Execute Pattern Guide](https://tvscoundrel.github.io/agentforge/guide/patterns/plan-execute)** - Comprehensive Plan-Execute guide
+- 🔄 **[Reflection Pattern Guide](https://tvscoundrel.github.io/agentforge/guide/patterns/reflection)** - Comprehensive Reflection guide
+- 👥 **[Multi-Agent Pattern Guide](https://tvscoundrel.github.io/agentforge/guide/patterns/multi-agent)** - Comprehensive Multi-Agent guide
 
-### Implementation Details
-- [Phase 3.1 Summary](./docs/phase-3.1.4-summary.md) - ReAct implementation details
+### 💡 Examples (GitHub Pages)
+- **[ReAct Examples](https://tvscoundrel.github.io/agentforge/examples/react-agent)** - ReAct pattern examples
+- **[Plan-Execute Examples](https://tvscoundrel.github.io/agentforge/examples/plan-execute)** - Plan-Execute pattern examples
+- **[Reflection Examples](https://tvscoundrel.github.io/agentforge/examples/reflection)** - Reflection pattern examples
+- **[Multi-Agent Examples](https://tvscoundrel.github.io/agentforge/examples/multi-agent)** - Multi-Agent pattern examples
 
-### Examples
-- [ReAct Examples](./examples/react/) - ReAct pattern examples
-- [Plan-Execute Examples](./examples/plan-execute/) - Plan-Execute pattern examples
-- [Reflection Examples](./examples/reflection/) - Reflection pattern examples
-- [Multi-Agent Examples](./examples/multi-agent/) - Multi-Agent pattern examples
+### 📂 Source Documentation
+For contributors and advanced users, detailed implementation docs are available in the repository:
+- [Pattern Comparison](./docs/pattern-comparison.md) - Detailed pattern comparison
+- [ReAct Implementation](./docs/react-pattern.md) - ReAct implementation details
+- [Plan-Execute Implementation](./docs/plan-execute-pattern.md) - Plan-Execute implementation details
+- [Reflection Implementation](./docs/reflection-pattern.md) - Reflection implementation details
+- [Multi-Agent Implementation](./docs/multi-agent-pattern.md) - Multi-Agent implementation details
 
 ## API Reference
 
