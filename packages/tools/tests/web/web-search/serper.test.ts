@@ -162,6 +162,25 @@ describe('Serper Provider', () => {
         'Invalid Serper API key'
       );
     });
+
+    it('should handle 429 rate limit errors', async () => {
+      mockedAxios.post.mockRejectedValueOnce({
+        response: { status: 429 },
+        message: 'Too Many Requests',
+      });
+
+      await expect(provider.search('test', 10)).rejects.toThrow(
+        'Serper API rate limit exceeded'
+      );
+    });
+
+    it('should handle generic network errors', async () => {
+      mockedAxios.post.mockRejectedValueOnce(new Error('Network timeout'));
+
+      await expect(provider.search('test', 10)).rejects.toThrow(
+        'Serper search failed: Network timeout'
+      );
+    });
   });
 });
 
