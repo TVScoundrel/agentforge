@@ -226,6 +226,48 @@ console.log(`Response time: ${premiumResult.metadata?.responseTime}ms`);
 SERPER_API_KEY=your-serper-api-key-here
 ```
 
+**Input Schema:**
+```typescript
+{
+  query: string;           // Search query (required)
+  maxResults?: number;     // Max results to return (default: 10)
+  preferSerper?: boolean;  // Prefer Serper over DuckDuckGo (default: false)
+}
+```
+
+**Output Schema:**
+```typescript
+{
+  results: Array<{
+    title: string;      // Result title
+    link: string;       // Result URL
+    snippet: string;    // Result description/snippet
+    position: number;   // Result position (1-based)
+  }>;
+  source: 'duckduckgo' | 'serper';  // Which provider was used
+  metadata?: {
+    fallbackUsed: boolean;    // Whether fallback to DuckDuckGo occurred
+    responseTime: number;     // Response time in milliseconds
+  };
+}
+```
+
+**DuckDuckGo vs Serper:**
+
+| Feature | DuckDuckGo (Free) | Serper (Premium) |
+|---------|-------------------|------------------|
+| **API Key** | ❌ Not required | ✅ Required ([get key](https://serper.dev)) |
+| **Cost** | 🆓 Free | 💰 Paid (see [pricing](https://serper.dev/pricing)) |
+| **Search Engine** | DuckDuckGo | Google |
+| **Rate Limits** | Generous | Based on plan |
+| **Result Quality** | Good | Excellent (Google results) |
+| **Use Case** | Development, testing, low-volume | Production, high-quality results |
+| **Fallback** | N/A | Auto-fallback to DuckDuckGo on error |
+
+**When to use each:**
+- **DuckDuckGo**: Default choice, no setup needed, great for development and testing
+- **Serper**: Production use cases requiring Google-quality results, set `preferSerper: true`
+
 ### Web Scraping Example
 
 ```typescript
