@@ -144,7 +144,7 @@ const agent = createReActAgent({
   systemPrompt: prompt // Use auto-generated prompt!
 });
 
-// Mix custom tools with 68+ standard tools from @agentforge/tools
+// Mix custom tools with 69+ standard tools from @agentforge/tools
 import { calculator, httpGet, fileReader } from '@agentforge/tools';
 registry.registerMany([calculator, httpGet, fileReader]);
 
@@ -179,7 +179,7 @@ Built-in resource management, monitoring, and deployment templates for productio
 - **@agentforge/patterns** - ReAct, Plan-Execute, Reflection, Multi-Agent patterns
 - **@agentforge/cli** - Project scaffolding and development tools
 - **@agentforge/testing** - Mock factories, test helpers, and fixtures
-- **@agentforge/tools** - 68+ production-ready tools for common tasks
+- **@agentforge/tools** - 69+ production-ready tools for common tasks
 
 ## Community
 
