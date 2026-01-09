@@ -18,8 +18,8 @@ describe('Web Search Performance Tests', () => {
     }
 
     const startTime = Date.now();
-    
-    const result = await webSearch.invoke({
+
+    const result = await webSearch.execute({
       query: 'TypeScript programming language',
       maxResults: 10,
     });
@@ -31,7 +31,7 @@ describe('Web Search Performance Tests', () => {
     expect(result.metadata?.responseTime).toBeDefined();
     
     console.log(`Query completed in ${duration}ms (API response: ${result.metadata?.responseTime}ms)`);
-  });
+  }, 10000); // 10 second timeout for API call
 
   it('should handle large result sets efficiently (maxResults=50)', async () => {
     if (skipInCI) {
@@ -40,8 +40,8 @@ describe('Web Search Performance Tests', () => {
     }
 
     const startTime = Date.now();
-    
-    const result = await webSearch.invoke({
+
+    const result = await webSearch.execute({
       query: 'JavaScript frameworks 2026',
       maxResults: 50,
     });
@@ -53,7 +53,7 @@ describe('Web Search Performance Tests', () => {
     
     console.log(`Large query (50 results) completed in ${duration}ms`);
     console.log(`Actual results returned: ${result.results.length}`);
-  });
+  }, 15000); // 15 second timeout for large result sets
 
   it('should respect custom timeout', async () => {
     if (skipInCI) {
@@ -61,7 +61,7 @@ describe('Web Search Performance Tests', () => {
       return;
     }
 
-    const result = await webSearch.invoke({
+    const result = await webSearch.execute({
       query: 'Python programming',
       maxResults: 5,
       timeout: 5000, // 5 second timeout
@@ -71,7 +71,7 @@ describe('Web Search Performance Tests', () => {
     expect(result.metadata?.responseTime).toBeLessThan(5000);
     
     console.log(`Custom timeout test completed in ${result.metadata?.responseTime}ms`);
-  });
+  }, 10000); // 10 second timeout for test
 
   it('should handle timeout gracefully', async () => {
     if (skipInCI) {
@@ -80,7 +80,7 @@ describe('Web Search Performance Tests', () => {
     }
 
     // Set a very short timeout to test timeout handling
-    const result = await webSearch.invoke({
+    const result = await webSearch.execute({
       query: 'Machine learning algorithms',
       maxResults: 10,
       timeout: 1, // 1ms timeout - should fail
@@ -95,7 +95,7 @@ describe('Web Search Performance Tests', () => {
     } else {
       console.log('Timeout test succeeded with retry mechanism');
     }
-  });
+  }, 10000); // 10 second timeout for test
 
   it('should measure response time accurately', async () => {
     if (skipInCI) {
@@ -104,8 +104,8 @@ describe('Web Search Performance Tests', () => {
     }
 
     const startTime = Date.now();
-    
-    const result = await webSearch.invoke({
+
+    const result = await webSearch.execute({
       query: 'React hooks tutorial',
       maxResults: 10,
     });
@@ -119,7 +119,7 @@ describe('Web Search Performance Tests', () => {
     
     console.log(`Total duration: ${totalDuration}ms, API duration: ${apiDuration}ms`);
     console.log(`Overhead: ${totalDuration - apiDuration}ms`);
-  });
+  }, 10000); // 10 second timeout for test
 
   it('should handle concurrent requests efficiently', async () => {
     if (skipInCI) {
@@ -139,7 +139,7 @@ describe('Web Search Performance Tests', () => {
     
     const results = await Promise.all(
       queries.map((query) =>
-        webSearch.invoke({
+        webSearch.execute({
           query,
           maxResults: 5,
         })
@@ -155,6 +155,6 @@ describe('Web Search Performance Tests', () => {
     
     console.log(`5 concurrent queries completed in ${duration}ms`);
     console.log(`Average per query: ${duration / 5}ms`);
-  });
+  }, 20000); // 20 second timeout for concurrent requests
 });
 

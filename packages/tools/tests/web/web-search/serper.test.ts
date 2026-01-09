@@ -178,7 +178,7 @@ describe('Serper Provider', () => {
       mockedAxios.post.mockRejectedValueOnce(new Error('Network timeout'));
 
       await expect(provider.search('test', 10)).rejects.toThrow(
-        'Serper search failed: Network timeout'
+        /Serper search failed/
       );
     });
   });

@@ -5,7 +5,7 @@
 [![GitHub](https://img.shields.io/badge/GitHub-TVScoundrel%2Fagentforge-blue?logo=github)](https://github.com/TVScoundrel/agentforge)
 [![Documentation](https://img.shields.io/badge/docs-live-brightgreen?logo=readthedocs)](https://tvscoundrel.github.io/agentforge/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.9-blue?logo=typescript)](https://www.typescriptlang.org/)
-[![Tests](https://img.shields.io/badge/tests-846%20passing-success)](./packages)
+[![Tests](https://img.shields.io/badge/tests-897%20passing-success)](./packages)
 [![Coverage](https://img.shields.io/badge/CLI%20coverage-98.11%25-brightgreen)](./packages/cli)
 [![License](https://img.shields.io/badge/license-MIT-green)](./LICENSE)
 
@@ -48,7 +48,7 @@
 - 🧪 **Testing Utilities** - Mocks, assertions, fixtures for agent testing
 - 📦 **Standard Tools** - 69 production-ready tools across 8 categories
 - 🔒 **Type Safety** - Full TypeScript support with Zod schemas
-- 📚 **Comprehensive Tests** - 846 tests passing across all packages
+- 📚 **Comprehensive Tests** - 897 tests passing across all packages
 
 **Phase 7: Documentation**
 - 📖 **Complete Documentation** - 34 pages, 10,000+ lines of guides, tutorials, and API docs
@@ -363,7 +363,7 @@ pnpm clean          # Clean all build artifacts
 
 ## 📊 Project Metrics
 
-- **Total Tests**: 846 passing across all packages
+- **Total Tests**: 897 passing across all packages
 - **Test Coverage**: 98.11% (CLI package)
 - **Documentation**: 34 pages, 10,000+ lines
 - **Examples**: 30+ files, 2,500+ lines of real-world code
