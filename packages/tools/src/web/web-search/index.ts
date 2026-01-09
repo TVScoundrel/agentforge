@@ -23,7 +23,7 @@ import { toolBuilder, ToolCategory } from '@agentforge/core';
 import { webSearchSchema } from './schemas.js';
 import { createDuckDuckGoProvider } from './providers/duckduckgo.js';
 import { createSerperProvider } from './providers/serper.js';
-import { measureTime, sanitizeQuery } from './utils.js';
+import { measureTime, sanitizeQuery, DEFAULT_TIMEOUT } from './utils.js';
 import type { WebSearchInput, WebSearchOutput, SearchProvider } from './types.js';
 
 /**
@@ -40,7 +40,12 @@ export const webSearch = toolBuilder()
   .tags(['search', 'web', 'google', 'duckduckgo', 'serper', 'internet'])
   .schema(webSearchSchema)
   .implement(async (input: WebSearchInput): Promise<WebSearchOutput> => {
-    const { query, maxResults = 10, preferSerper = false } = input;
+    const {
+      query,
+      maxResults = 10,
+      preferSerper = false,
+      timeout = DEFAULT_TIMEOUT
+    } = input;
 
     // Sanitize query
     const sanitizedQuery = sanitizeQuery(query);
@@ -64,7 +69,7 @@ export const webSearch = toolBuilder()
     try {
       // Try primary provider
       const { result: results, duration } = await measureTime(() =>
-        primaryProvider.search(sanitizedQuery, maxResults)
+        primaryProvider.search(sanitizedQuery, maxResults, timeout)
       );
 
       // If primary provider returns results, return them
@@ -86,7 +91,7 @@ export const webSearch = toolBuilder()
       if (fallbackProvider) {
         const { result: fallbackResults, duration: fallbackDuration } =
           await measureTime(() =>
-            fallbackProvider!.search(sanitizedQuery, maxResults)
+            fallbackProvider!.search(sanitizedQuery, maxResults, timeout)
           );
 
         return {
