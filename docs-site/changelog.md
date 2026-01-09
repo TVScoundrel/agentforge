@@ -5,6 +5,38 @@ All notable changes to AgentForge will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.3.9] - 2026-01-09
+
+### Added
+- **Tool Relations**: Define relationships between tools to guide LLM workflows
+  - `.requires(tools)` - Tools that must be called before this tool
+  - `.suggests(tools)` - Tools that work well with this tool
+  - `.conflicts(tools)` - Tools that conflict with this tool
+  - `.follows(tools)` - Tools this typically follows in a workflow
+  - `.precedes(tools)` - Tools this typically precedes in a workflow
+  - Full TypeScript support with `ToolRelations` interface and `ToolRelationsSchema` validation
+  - Helps LLMs make better decisions about tool selection and ordering
+
+- **Minimal Prompt Mode**: Reduce token usage with native tool calling providers
+  - New `minimal` option in `ToolRegistry.generatePrompt()`
+  - Only includes supplementary context (relations, examples, notes, limitations)
+  - Excludes basic tool definitions (name, description, parameters) sent via API
+  - Reduces token usage by up to 67% when using OpenAI, Anthropic, Gemini, or Mistral
+  - Backward compatible - opt-in via `minimal: true` flag
+
+- **Enhanced Prompt Generation**: New options for `ToolRegistry.generatePrompt()`
+  - `includeRelations` - Include tool relations in prompts
+  - `minimal` - Enable minimal prompt mode for native tool calling
+
+### Improved
+- **Tool Builder API**: Added 5 new fluent methods for defining tool relations
+- **Documentation**: Updated API docs and examples with tool relations and minimal mode
+- **Type Safety**: Full TypeScript support for all new features with validation
+
+### Tests
+- Added 106 new tests for tool relations and minimal prompt mode
+- All 516 tests passing across the core package
+
 ## [0.3.5] - 2026-01-08
 
 ### Fixed

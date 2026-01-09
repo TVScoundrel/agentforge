@@ -652,5 +652,110 @@ describe('ToolRegistry', () => {
       expect(prompt).toContain('url');
       expect(prompt).toContain('method');
     });
+
+    it('should include relations when requested', () => {
+      const editFileTool = toolBuilder()
+        .name('edit-file')
+        .description('Edit a file using string replacement')
+        .category(ToolCategory.FILE_SYSTEM)
+        .requires(['read-file'])
+        .suggests(['run-tests'])
+        .follows(['search-codebase'])
+        .schema(z.object({
+          path: z.string().describe('File path'),
+        }))
+        .implement(async ({ path }) => `Editing ${path}`)
+        .build();
+
+      registry.register(editFileTool);
+
+      const prompt = registry.generatePrompt({ includeRelations: true });
+
+      expect(prompt).toContain('Requires: read-file');
+      expect(prompt).toContain('Suggests: run-tests');
+      expect(prompt).toContain('Follows: search-codebase');
+    });
+
+    it('should not include relations when not requested', () => {
+      const editFileTool = toolBuilder()
+        .name('edit-file-2')
+        .description('Edit a file using string replacement')
+        .category(ToolCategory.FILE_SYSTEM)
+        .requires(['read-file'])
+        .schema(z.object({
+          path: z.string().describe('File path'),
+        }))
+        .implement(async ({ path }) => `Editing ${path}`)
+        .build();
+
+      registry.register(editFileTool);
+
+      const prompt = registry.generatePrompt({ includeRelations: false });
+
+      expect(prompt).not.toContain('Requires:');
+    });
+
+    it('should generate minimal prompt', () => {
+      const toolWithExtras = toolBuilder()
+        .name('tool-with-extras')
+        .description('A tool with examples and notes')
+        .category(ToolCategory.UTILITY)
+        .requires(['other-tool'])
+        .example({
+          description: 'Example usage',
+          input: { x: 1 },
+        })
+        .usageNotes('Some important notes')
+        .schema(z.object({
+          x: z.number().describe('Input'),
+        }))
+        .implement(async ({ x }) => x)
+        .build();
+
+      registry.register(toolWithExtras);
+
+      const prompt = registry.generatePrompt({
+        minimal: true,
+        includeRelations: true,
+        includeExamples: true,
+        includeNotes: true,
+      });
+
+      // Should use ## header format
+      expect(prompt).toContain('## tool-with-extras');
+
+      // Should NOT include basic description/parameters (those come from API)
+      expect(prompt).not.toContain('A tool with examples and notes');
+      expect(prompt).not.toContain('Parameters:');
+
+      // Should include supplementary context
+      expect(prompt).toContain('Requires: other-tool');
+      expect(prompt).toContain('Example: Example usage');
+      expect(prompt).toContain('Notes: Some important notes');
+    });
+
+    it('should exclude tools with no supplementary content in minimal mode', () => {
+      const basicTool = toolBuilder()
+        .name('basic-tool')
+        .description('A basic tool with no extras')
+        .category(ToolCategory.UTILITY)
+        .schema(z.object({
+          x: z.number().describe('Input'),
+        }))
+        .implement(async ({ x }) => x)
+        .build();
+
+      const emptyRegistry = new ToolRegistry();
+      emptyRegistry.register(basicTool);
+
+      const prompt = emptyRegistry.generatePrompt({
+        minimal: true,
+        includeRelations: true,
+        includeExamples: true,
+      });
+
+      // Should not include the tool since it has no supplementary content
+      expect(prompt).not.toContain('basic-tool');
+    });
   });
 });

@@ -267,5 +267,122 @@ describe('ToolBuilder', () => {
       expect(result.count).toBe(0);
     });
   });
+
+  describe('tool relations', () => {
+    it('should support requires relation', () => {
+      const tool = toolBuilder()
+        .name('edit-file')
+        .description('Edit a file')
+        .category(ToolCategory.FILE_SYSTEM)
+        .requires(['view-file'])
+        .schema(z.object({
+          path: z.string().describe('File path'),
+        }))
+        .implement(async ({ path }) => `Editing ${path}`)
+        .build();
+
+      expect(tool.metadata.relations?.requires).toEqual(['view-file']);
+    });
+
+    it('should support suggests relation', () => {
+      const tool = toolBuilder()
+        .name('edit-file')
+        .description('Edit a file')
+        .category(ToolCategory.FILE_SYSTEM)
+        .suggests(['run-tests', 'format-code'])
+        .schema(z.object({
+          path: z.string().describe('File path'),
+        }))
+        .implement(async ({ path }) => `Editing ${path}`)
+        .build();
+
+      expect(tool.metadata.relations?.suggests).toEqual(['run-tests', 'format-code']);
+    });
+
+    it('should support conflicts relation', () => {
+      const tool = toolBuilder()
+        .name('create-file')
+        .description('Create a file')
+        .category(ToolCategory.FILE_SYSTEM)
+        .conflicts(['delete-file'])
+        .schema(z.object({
+          path: z.string().describe('File path'),
+        }))
+        .implement(async ({ path }) => `Creating ${path}`)
+        .build();
+
+      expect(tool.metadata.relations?.conflicts).toEqual(['delete-file']);
+    });
+
+    it('should support follows relation', () => {
+      const tool = toolBuilder()
+        .name('edit-file')
+        .description('Edit a file')
+        .category(ToolCategory.FILE_SYSTEM)
+        .follows(['search-codebase', 'view-file'])
+        .schema(z.object({
+          path: z.string().describe('File path'),
+        }))
+        .implement(async ({ path }) => `Editing ${path}`)
+        .build();
+
+      expect(tool.metadata.relations?.follows).toEqual(['search-codebase', 'view-file']);
+    });
+
+    it('should support precedes relation', () => {
+      const tool = toolBuilder()
+        .name('view-file')
+        .description('View a file')
+        .category(ToolCategory.FILE_SYSTEM)
+        .precedes(['edit-file'])
+        .schema(z.object({
+          path: z.string().describe('File path'),
+        }))
+        .implement(async ({ path }) => `Viewing ${path}`)
+        .build();
+
+      expect(tool.metadata.relations?.precedes).toEqual(['edit-file']);
+    });
+
+    it('should support multiple relations', () => {
+      const tool = toolBuilder()
+        .name('edit-file')
+        .description('Edit a file')
+        .category(ToolCategory.FILE_SYSTEM)
+        .requires(['view-file'])
+        .suggests(['run-tests', 'format-code'])
+        .follows(['search-codebase'])
+        .precedes(['run-tests'])
+        .schema(z.object({
+          path: z.string().describe('File path'),
+        }))
+        .implement(async ({ path }) => `Editing ${path}`)
+        .build();
+
+      expect(tool.metadata.relations).toEqual({
+        requires: ['view-file'],
+        suggests: ['run-tests', 'format-code'],
+        follows: ['search-codebase'],
+        precedes: ['run-tests'],
+      });
+    });
+
+    it('should allow empty relations arrays', () => {
+      const tool = toolBuilder()
+        .name('test-tool')
+        .description('Test tool with empty relations')
+        .category(ToolCategory.UTILITY)
+        .requires([])
+        .suggests([])
+        .schema(z.object({
+          input: z.string().describe('Input'),
+        }))
+        .implement(async ({ input }) => input)
+        .build();
+
+      expect(tool.metadata.relations?.requires).toEqual([]);
+      expect(tool.metadata.relations?.suggests).toEqual([]);
+    });
+  });
 });
 

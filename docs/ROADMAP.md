@@ -117,18 +117,24 @@ Complete documentation coverage with core concepts, pattern guides, advanced top
 
 ## Future Phases (Post-MVP)
 
-### Phase 8: Advanced Features 📋 PLANNED
-**Status**: 📋 Planned | **Priority**: Medium | **Duration**: 4-6 weeks
+### Phase 8: Advanced Features 🔄 IN PROGRESS
+**Status**: 🔄 In Progress | **Priority**: Medium | **Duration**: 4-6 weeks
 
 Advanced features to enhance the framework:
 
-#### Phase 8.1: Tool Relations & Minimal Prompt Mode (1-2 weeks)
-- Tool relations (requires, suggests, conflicts, follows, precedes)
-- Minimal prompt mode for providers with native tool calling
-- Reduce token usage by 30-50% for OpenAI/Anthropic/Gemini
-- Improve LLM tool selection with workflow hints
+#### Phase 8.1: Tool Relations & Minimal Prompt Mode ✅ COMPLETE
+**Status**: ✅ Complete | **Completed**: 2026-01-09 | **Duration**: 2.5 hours
 
-📄 [View Phase 8.1 Details](../.dev-docs/phase-8.1-design.md)
+Implemented tool relations and minimal prompt mode:
+- ✅ Tool relations (requires, suggests, conflicts, follows, precedes)
+- ✅ Minimal prompt mode for providers with native tool calling
+- ✅ Reduce token usage by up to 67% for OpenAI/Anthropic/Gemini
+- ✅ Improve LLM tool selection with workflow hints
+- ✅ Fluent builder API for defining relations
+- ✅ Full TypeScript support with validation
+- ✅ 106 tests passing (24 types + 41 builder + 41 registry)
+
+📄 [View Phase 8.1 Details](../.dev-docs/phase-8.1-design.md) | 📄 [Completion Summary](../.dev-docs/PHASE_8_1_COMPLETE.md)
 
 #### Phase 8.2: Multi-Modal Support (1-2 weeks)
 - Vision support (image analysis, OCR)

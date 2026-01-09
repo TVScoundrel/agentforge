@@ -270,6 +270,78 @@ export const rateLimitedAPI = toolBuilder()
   .build();
 ```
 
+## Tool Relations (NEW in v0.3.9)
+
+Define relationships between tools to guide LLM workflows:
+
+```typescript
+import { toolBuilder, ToolCategory } from '@agentforge/core';
+import { z } from 'zod';
+
+// Step 1: Search tool
+const searchCodebase = toolBuilder()
+  .name('search-codebase')
+  .description('Search for files or code patterns')
+  .category(ToolCategory.FILE_SYSTEM)
+  .precedes(['view-file', 'edit-file'])  // Typically called before these
+  .schema(z.object({
+    pattern: z.string().describe('Search pattern')
+  }))
+  .implement(async ({ pattern }) => {
+    // Implementation
+    return { files: ['app.ts', 'utils.ts'] };
+  })
+  .build();
+
+// Step 2: View tool
+const viewFile = toolBuilder()
+  .name('view-file')
+  .description('View file contents')
+  .category(ToolCategory.FILE_SYSTEM)
+  .follows(['search-codebase'])  // Often follows search
+  .precedes(['edit-file'])        // Typically before editing
+  .schema(z.object({
+    path: z.string().describe('File path')
+  }))
+  .implement(async ({ path }) => {
+    // Implementation
+    return { content: '...' };
+  })
+  .build();
+
+// Step 3: Edit tool
+const editFile = toolBuilder()
+  .name('edit-file')
+  .description('Edit a file')
+  .category(ToolCategory.FILE_SYSTEM)
+  .requires(['view-file'])        // MUST view first
+  .suggests(['run-tests'])         // Suggest testing after
+  .follows(['search-codebase', 'view-file'])
+  .precedes(['run-tests'])
+  .schema(z.object({
+    path: z.string().describe('File path'),
+    content: z.string().describe('New content')
+  }))
+  .implement(async ({ path, content }) => {
+    // Implementation
+    return { success: true };
+  })
+  .build();
+```
+
+**Relation Types:**
+- **`requires`** - Must be called before (enforced by LLM understanding)
+- **`suggests`** - Recommended to use together
+- **`conflicts`** - Should not be used together
+- **`follows`** - Typically called after
+- **`precedes`** - Typically called before
+
+**Benefits:**
+- ✅ Better LLM decision making
+- ✅ Fewer workflow errors
+- ✅ Improved tool discovery
+- ✅ Clear usage patterns
+
 ## Testing Custom Tools
 
 ```typescript
@@ -278,7 +350,7 @@ import { calculator } from './calculator.js';
 
 describe('Calculator Tool', () => {
   it('should perform addition', async () => {
-    const result = await calculator.invoke({
+    const result = await calculator.execute({
       expression: '2 + 2'
     });
 
@@ -287,26 +359,35 @@ describe('Calculator Tool', () => {
   });
 
   it('should handle errors', async () => {
-    const result = await calculator.invoke({
+    const result = await calculator.execute({
       expression: 'invalid'
     });
 
     expect(result.success).toBe(false);
     expect(result.error).toBeDefined();
   });
+
+  it('should have correct relations', () => {
+    const metadata = editFile.metadata;
+
+    expect(metadata.relations?.requires).toContain('view-file');
+    expect(metadata.relations?.suggests).toContain('run-tests');
+  });
 });
 ```
 
 ## Best Practices
 
-1. **Always validate inputs** - Use Zod schemas
+1. **Always validate inputs** - Use Zod schemas with `.describe()` on all fields
 2. **Handle errors gracefully** - Return structured error responses
-3. **Add metadata** - Categories, tags, examples
-4. **Document thoroughly** - Clear descriptions
-5. **Test extensively** - Unit and integration tests
-6. **Consider security** - Validate paths, sanitize inputs
-7. **Rate limit** - Prevent abuse
-8. **Log operations** - For debugging and monitoring
+3. **Add metadata** - Categories, tags, examples, usage notes, limitations
+4. **Define relations** - Use tool relations to guide LLM workflows (NEW in v0.3.9)
+5. **Document thoroughly** - Clear descriptions that help LLMs understand when to use the tool
+6. **Test extensively** - Unit and integration tests, including relation validation
+7. **Consider security** - Validate paths, sanitize inputs, check permissions
+8. **Rate limit** - Prevent abuse of expensive operations
+9. **Log operations** - For debugging and monitoring
+10. **Use minimal mode** - When using native tool calling providers to reduce token costs
 
 ## Next Steps
 

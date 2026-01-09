@@ -109,6 +109,66 @@ export interface ToolExample {
 }
 
 /**
+ * ToolRelations - Defines relationships between tools
+ *
+ * Helps LLMs understand tool workflows and dependencies.
+ *
+ * Why tool relations?
+ * - Express dependencies: "Must call tool X before tool Y"
+ * - Suggest workflows: "After X, consider calling Y"
+ * - Prevent conflicts: "Don't use X and Y together"
+ * - Guide LLM decisions: Better tool selection and ordering
+ *
+ * Example:
+ * ```ts
+ * const relations: ToolRelations = {
+ *   requires: ['view-file'],      // Must call this first
+ *   suggests: ['run-tests'],       // Often used together
+ *   conflicts: ['delete-file'],    // Don't use together
+ *   follows: ['search-codebase'],  // Typically called after
+ *   precedes: ['edit-file']        // Typically called before
+ * };
+ * ```
+ */
+export interface ToolRelations {
+  /**
+   * Tools that should be called before this tool
+   *
+   * Example: 'edit-file' requires 'view-file' to be called first
+   * to ensure you know the file contents before editing.
+   */
+  requires?: string[];
+
+  /**
+   * Tools that work well with this tool
+   *
+   * Example: 'edit-file' suggests 'run-tests' to verify changes.
+   */
+  suggests?: string[];
+
+  /**
+   * Tools that conflict with this tool
+   *
+   * Example: 'create-file' conflicts with 'delete-file' on the same path.
+   */
+  conflicts?: string[];
+
+  /**
+   * Tools this typically follows in a workflow
+   *
+   * Example: 'edit-file' typically follows 'view-file' or 'search-codebase'.
+   */
+  follows?: string[];
+
+  /**
+   * Tools this typically precedes in a workflow
+   *
+   * Example: 'view-file' typically precedes 'edit-file'.
+   */
+  precedes?: string[];
+}
+
+/**
  * ToolMetadata - Rich metadata for a tool
  * 
  * Why so much metadata?
@@ -216,6 +276,26 @@ export interface ToolMetadata {
    * Example: 'read-file-v2'
    */
   replacedBy?: string;
+
+  /**
+   * Tool relations (optional)
+   * Defines relationships with other tools
+   *
+   * Helps LLMs understand:
+   * - Which tools should be called before/after this tool
+   * - Which tools work well together
+   * - Which tools conflict with this tool
+   *
+   * Example:
+   * ```ts
+   * relations: {
+   *   requires: ['view-file'],
+   *   suggests: ['run-tests'],
+   *   follows: ['search-codebase']
+   * }
+   * ```
+   */
+  relations?: ToolRelations;
 }
 
 /**

@@ -195,6 +195,87 @@ const queryDatabaseTool = toolBuilder()
   .build();
 ```
 
+## Example 5: Tools with Relations (NEW in v0.3.9)
+
+Define tool workflows and dependencies to help LLMs make better decisions:
+
+```typescript
+import { toolBuilder, ToolCategory } from '@agentforge/core';
+import { z } from 'zod';
+
+// Step 1: Search for files
+const searchCodebaseTool = toolBuilder()
+  .name('search-codebase')
+  .description('Search for files or code patterns in the codebase')
+  .category(ToolCategory.FILE_SYSTEM)
+  .precedes(['view-file', 'edit-file'])  // Typically called before viewing/editing
+  .schema(z.object({
+    pattern: z.string().describe('Search pattern or file name')
+  }))
+  .implement(async ({ pattern }) => {
+    // Implementation
+    return { files: ['src/app.ts', 'src/utils.ts'] };
+  })
+  .build();
+
+// Step 2: View file contents
+const viewFileTool = toolBuilder()
+  .name('view-file')
+  .description('View the contents of a file')
+  .category(ToolCategory.FILE_SYSTEM)
+  .follows(['search-codebase'])  // Often follows search
+  .precedes(['edit-file'])        // Typically before editing
+  .schema(z.object({
+    path: z.string().describe('File path')
+  }))
+  .implement(async ({ path }) => {
+    // Implementation
+    return { content: 'file contents...' };
+  })
+  .build();
+
+// Step 3: Edit file
+const editFileTool = toolBuilder()
+  .name('edit-file')
+  .description('Edit a file using string replacement')
+  .category(ToolCategory.FILE_SYSTEM)
+  .requires(['view-file'])        // MUST view file first
+  .suggests(['run-tests'])         // Suggest testing after edit
+  .follows(['search-codebase', 'view-file'])  // Typical workflow
+  .precedes(['run-tests'])         // Usually test after editing
+  .schema(z.object({
+    path: z.string().describe('File path'),
+    oldStr: z.string().describe('String to replace'),
+    newStr: z.string().describe('Replacement string')
+  }))
+  .implement(async ({ path, oldStr, newStr }) => {
+    // Implementation
+    return { success: true };
+  })
+  .build();
+
+// Step 4: Run tests
+const runTestsTool = toolBuilder()
+  .name('run-tests')
+  .description('Run test suite to verify changes')
+  .category(ToolCategory.CODE)
+  .follows(['edit-file'])  // Typically follows editing
+  .schema(z.object({
+    path: z.string().optional().describe('Specific test file (optional)')
+  }))
+  .implement(async ({ path }) => {
+    // Implementation
+    return { passed: true, failures: 0 };
+  })
+  .build();
+```
+
+**Benefits of Tool Relations:**
+- ✅ **Better LLM decisions** - Relations guide the LLM through proper workflows
+- ✅ **Fewer errors** - `requires` prevents calling tools in wrong order
+- ✅ **Improved suggestions** - `suggests` helps LLM discover related tools
+- ✅ **Workflow hints** - `follows`/`precedes` show typical usage patterns
+
 ## Tool Registry & Auto-Prompt Generation
 
 The **Tool Registry** is AgentForge's killer feature - it manages your tools and automatically generates LLM-ready prompts.
@@ -302,11 +383,12 @@ console.log(basicPrompt);
 //   Parameters: path (string)
 // ...
 
-// Detailed prompt with examples
+// Detailed prompt with examples and relations
 const detailedPrompt = registry.generatePrompt({
   includeExamples: true,
   includeNotes: true,
   includeLimitations: true,
+  includeRelations: true,  // NEW in v0.3.9
   groupByCategory: true,
   maxExamplesPerTool: 2
 });
@@ -322,16 +404,40 @@ console.log(detailedPrompt);
 //     Explanation: Returns 8
 //
 // FILE SYSTEM TOOLS:
-// - read-file: Read a file from the file system
-//   Parameters: path (string)
-//   Example: Read a text file
-//     Input: { "path": "./README.md" }
+// - edit-file: Edit a file using string replacement
+//   Parameters: path (string), oldStr (string), newStr (string)
+//   Requires: view-file
+//   Suggests: run-tests
+//   Follows: search-codebase, view-file
+//   Precedes: run-tests
+//   Example: Edit a configuration file
+//     Input: { "path": "./config.json", ... }
+// ...
+
+// Minimal mode for providers with native tool calling (NEW in v0.3.9)
+// Use with OpenAI, Anthropic, Gemini, Mistral - reduces token usage by up to 67%
+const minimalPrompt = registry.generatePrompt({
+  minimal: true,              // Only supplementary context
+  includeRelations: true,     // Include workflow hints
+  includeExamples: true,      // Include usage examples
+  includeNotes: true          // Include usage notes
+});
+
+console.log(minimalPrompt);
+// ## edit-file
+//   Requires: view-file
+//   Suggests: run-tests
+//   Follows: search-codebase, view-file
+//   Example: Edit a configuration file
+//     Input: { "path": "./config.json", ... }
+//   Notes: Use exact string matching
 // ...
 
 // Filter by category
 const fileToolsPrompt = registry.generatePrompt({
   categories: [ToolCategory.FILE_SYSTEM],
-  includeExamples: true
+  includeExamples: true,
+  includeRelations: true
 });
 ```
 
