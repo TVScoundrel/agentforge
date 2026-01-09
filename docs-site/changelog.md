@@ -199,7 +199,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - `ToolRegistry` for managing and discovering tools
   - `ToolExecutor` with retry logic and error handling
   - LangChain tool conversion utilities
-  - 68+ built-in tools across 8 categories
+  - 69+ built-in tools across 8 categories
 
 - **Middleware System**
   - Composable middleware architecture
@@ -259,7 +259,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Integration testing support
 
 #### Tools Package (@agentforge/tools)
-- 68+ production-ready tools
+- 69+ production-ready tools
 - Categories: web, file system, data processing, API, database, math, text, utilities
 - Full TypeScript support with Zod validation
 
