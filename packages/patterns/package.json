@@ -1,6 +1,6 @@
 {
   "name": "@agentforge/patterns",
-  "version": "0.3.9",
+  "version": "0.4.0",
   "description": "Agent patterns (ReAct, Planner-Executor) for AgentForge framework",
   "type": "module",
   "main": "./dist/index.cjs",
@@ -47,7 +47,7 @@
     "url": "https://github.com/TVScoundrel/agentforge/issues"
   },
   "dependencies": {
-    "@agentforge/core": "^0.3.9",
+    "@agentforge/core": "^0.4.0",
     "@langchain/core": "^1.1.0",
     "@langchain/langgraph": "^1.0.0",
     "zod": "^3.23.8"
