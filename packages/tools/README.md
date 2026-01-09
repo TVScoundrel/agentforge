@@ -521,8 +521,8 @@ pnpm lint
 
 ## 📊 Tool Statistics
 
-- **Total Tools**: 68
-- **Web Tools**: 10
+- **Total Tools**: 69
+- **Web Tools**: 11
 - **Data Tools**: 18
 - **File Tools**: 18
 - **Utility Tools**: 22
