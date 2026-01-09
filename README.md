@@ -389,12 +389,13 @@ See [ROADMAP.md](./docs/ROADMAP.md) for complete development history.
 
 ## 🤝 Contributing
 
-This is currently an internal Paymentology project. Contributions from team members are welcome!
+Contributions are welcome! Please follow these steps:
 
-1. Create a feature branch
-2. Make your changes
-3. Write tests
-4. Submit a pull request
+1. Fork the repository
+2. Create a feature branch
+3. Make your changes
+4. Write tests
+5. Submit a pull request
 
 ---
 
