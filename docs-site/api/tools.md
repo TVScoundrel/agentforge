@@ -1,6 +1,6 @@
 # @agentforge/tools
 
-Standard tools library with 68+ production-ready tools.
+Standard tools library with 69+ production-ready tools.
 
 ## Installation
 
@@ -8,7 +8,51 @@ Standard tools library with 68+ production-ready tools.
 pnpm add @agentforge/tools
 ```
 
-## Web Tools (10)
+## Web Tools (11)
+
+### Web Search
+
+```typescript
+import { webSearch } from '@agentforge/tools';
+
+// Basic search (no API key needed - uses DuckDuckGo)
+const result = await webSearch.execute({
+  query: 'TypeScript programming language',
+  maxResults: 10
+});
+
+console.log(`Found ${result.results.length} results from ${result.source}`);
+result.results.forEach(r => {
+  console.log(`${r.title}: ${r.link}`);
+  console.log(`  ${r.snippet}`);
+});
+
+// Premium search with Serper API (requires SERPER_API_KEY env var)
+// Get your API key at: https://serper.dev
+const premiumResult = await webSearch.execute({
+  query: 'Latest AI developments 2026',
+  maxResults: 5,
+  preferSerper: true  // Use Serper for Google search results
+});
+
+// Check metadata
+console.log(`Source: ${premiumResult.source}`);
+console.log(`Fallback used: ${premiumResult.metadata?.fallbackUsed}`);
+console.log(`Response time: ${premiumResult.metadata?.responseTime}ms`);
+```
+
+**Features:**
+- No API key required for basic searches (uses DuckDuckGo)
+- Optional Serper API for premium Google search results
+- Smart fallback: automatically switches providers when needed
+- Returns structured results with titles, links, and snippets
+- Tracks metadata (source, fallback usage, response time)
+
+**Environment Setup:**
+```bash
+# Optional: Add to your .env file for premium Google search
+SERPER_API_KEY=your-serper-api-key-here
+```
 
 ### HTTP Client
 
@@ -316,5 +360,5 @@ import {
 
 ## Complete Tool List
 
-See the [Tools README](https://github.com/TVScoundrel/agentforge/tree/main/packages/tools) for the complete list of all 68 tools with detailed documentation.
+See the [Tools README](https://github.com/TVScoundrel/agentforge/tree/main/packages/tools) for the complete list of all 69 tools with detailed documentation.
 

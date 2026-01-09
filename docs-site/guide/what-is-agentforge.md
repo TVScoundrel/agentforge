@@ -20,14 +20,14 @@ AgentForge's **killer feature** - a centralized tool registry that automatically
 - **Auto-Generate Prompts** - Automatically create formatted tool descriptions for LLMs
 - **Smart Querying** - Search by name, category, or tags
 - **Seamless Integration** - Convert to LangChain tools with one method call
-- **68+ Standard Tools** - Production-ready tools included out of the box
+- **69+ Standard Tools** - Production-ready tools included out of the box
 
 ```typescript
 const registry = new ToolRegistry();
 
-// Mix custom tools with 68+ standard tools
-import { calculator, httpGet, fileReader } from '@agentforge/tools';
-registry.registerMany([myTool, calculator, httpGet, fileReader]);
+// Mix custom tools with 69+ standard tools
+import { calculator, httpGet, fileReader, webSearch } from '@agentforge/tools';
+registry.registerMany([myTool, calculator, httpGet, fileReader, webSearch]);
 
 // Automatically generate LLM-ready prompts
 const prompt = registry.generatePrompt({
