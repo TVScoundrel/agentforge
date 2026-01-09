@@ -406,6 +406,6 @@ MIT © 2026 Tom Van Schoor
 
 ## 🙏 Acknowledgments
 
-- Inspired by [DeepAgents](https://github.com/deepagents/deepagents)
+- Inspired by [DeepAgents](https://github.com/langchain-ai/deepagentsjs)
 - Built on [LangGraph](https://langchain-ai.github.io/langgraph/)
 - Powered by [LangChain](https://js.langchain.com/)
