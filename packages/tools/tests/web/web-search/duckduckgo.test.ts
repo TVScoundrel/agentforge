@@ -159,6 +159,115 @@ describe('DuckDuckGo Provider', () => {
         })
       );
     });
+
+    it('should return search results from Results array', async () => {
+      const mockResponse = {
+        data: {
+          Abstract: '',
+          RelatedTopics: [],
+          Results: [
+            {
+              Text: 'TypeScript Documentation - Official Docs',
+              FirstURL: 'https://www.typescriptlang.org/docs/',
+            },
+            {
+              Text: 'TypeScript Handbook - Learn TypeScript',
+              FirstURL: 'https://www.typescriptlang.org/docs/handbook/',
+            },
+          ],
+        },
+      };
+
+      mockedAxios.get.mockResolvedValueOnce(mockResponse);
+
+      const results = await provider.search('TypeScript docs', 10);
+
+      expect(results).toHaveLength(2);
+      expect(results[0]).toEqual({
+        title: 'TypeScript Documentation',
+        link: 'https://www.typescriptlang.org/docs/',
+        snippet: 'TypeScript Documentation - Official Docs',
+        position: 1,
+      });
+      expect(results[1]).toEqual({
+        title: 'TypeScript Handbook',
+        link: 'https://www.typescriptlang.org/docs/handbook/',
+        snippet: 'TypeScript Handbook - Learn TypeScript',
+        position: 2,
+      });
+    });
+
+    it('should combine Abstract, RelatedTopics, and Results', async () => {
+      const mockResponse = {
+        data: {
+          Abstract: 'TypeScript is a typed superset of JavaScript',
+          AbstractURL: 'https://www.typescriptlang.org/',
+          Heading: 'TypeScript',
+          RelatedTopics: [
+            {
+              Text: 'JavaScript - The base language',
+              FirstURL: 'https://developer.mozilla.org/JavaScript',
+            },
+          ],
+          Results: [
+            {
+              Text: 'TypeScript Tutorial - Learn TS',
+              FirstURL: 'https://www.typescriptlang.org/tutorial',
+            },
+          ],
+        },
+      };
+
+      mockedAxios.get.mockResolvedValueOnce(mockResponse);
+
+      const results = await provider.search('TypeScript', 10);
+
+      expect(results).toHaveLength(3);
+      expect(results[0].title).toBe('TypeScript');
+      expect(results[1].title).toBe('JavaScript');
+      expect(results[2].title).toBe('TypeScript Tutorial');
+    });
+
+    it('should use fallback title when Heading is missing', async () => {
+      const mockResponse = {
+        data: {
+          Abstract: 'Some abstract text',
+          AbstractURL: 'https://example.com',
+          Heading: '', // Empty heading
+          RelatedTopics: [],
+          Results: [],
+        },
+      };
+
+      mockedAxios.get.mockResolvedValueOnce(mockResponse);
+
+      const results = await provider.search('test', 10);
+
+      expect(results).toHaveLength(1);
+      expect(results[0].title).toBe('Result'); // Fallback title
+    });
+
+    it('should handle topic text without separator', async () => {
+      const mockResponse = {
+        data: {
+          Abstract: '',
+          RelatedTopics: [
+            {
+              Text: 'Simple topic without separator',
+              FirstURL: 'https://example.com',
+            },
+          ],
+          Results: [],
+        },
+      };
+
+      mockedAxios.get.mockResolvedValueOnce(mockResponse);
+
+      const results = await provider.search('test', 10);
+
+      expect(results).toHaveLength(1);
+      expect(results[0].title).toBe('Simple topic without separator');
+    });
   });
 });
 
