@@ -19,6 +19,12 @@ export const webSearchSchema = z.object({
     .boolean()
     .default(false)
     .describe('Prefer Serper API if available (requires SERPER_API_KEY)'),
+  timeout: z
+    .number()
+    .min(1000)
+    .max(60000)
+    .default(30000)
+    .describe('Request timeout in milliseconds (1000-60000, default: 30000)'),
 });
 
 /**

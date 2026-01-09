@@ -19,6 +19,7 @@ export interface WebSearchInput {
   query: string;
   maxResults?: number;
   preferSerper?: boolean;
+  timeout?: number; // Request timeout in milliseconds (default: 30000)
 }
 
 /**
@@ -42,7 +43,17 @@ export interface WebSearchOutput {
  */
 export interface SearchProvider {
   name: 'duckduckgo' | 'serper';
-  search(query: string, maxResults: number): Promise<SearchResult[]>;
+  search(query: string, maxResults: number, timeout?: number): Promise<SearchResult[]>;
   isAvailable(): boolean;
+}
+
+/**
+ * Retry configuration
+ */
+export interface RetryConfig {
+  maxRetries: number;
+  initialDelay: number; // milliseconds
+  maxDelay: number; // milliseconds
+  backoffMultiplier: number;
 }
 
