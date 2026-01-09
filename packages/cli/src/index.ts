@@ -97,6 +97,8 @@ tool
   .command('create <name>')
   .description('Create a new tool')
   .option('-c, --category <category>', 'Tool category (web, data, file, utility)', 'utility')
+  .option('-s, --structure <structure>', 'Tool structure (single, multi)', 'single')
+  .option('-d, --description <description>', 'Tool description')
   .option('--no-test', 'Skip test generation')
   .action(toolCreateCommand);
 
