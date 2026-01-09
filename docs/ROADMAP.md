@@ -117,15 +117,36 @@ Complete documentation coverage with core concepts, pattern guides, advanced top
 
 ## Future Phases (Post-MVP)
 
-### Phase 8: Advanced Features 📋 FUTURE
-**Status**: 📋 Planned | **Priority**: Medium
+### Phase 8: Advanced Features 📋 PLANNED
+**Status**: 📋 Planned | **Priority**: Medium | **Duration**: 4-6 weeks
 
-Potential advanced features:
-- Multi-modal support (vision, audio)
-- Advanced memory systems (vector stores, semantic search)
-- Agent collaboration patterns (hierarchical, swarm)
-- Custom LLM integrations (local models, custom APIs)
-- Advanced tool features (tool learning, dynamic tool generation)
+Advanced features to enhance the framework:
+
+#### Phase 8.1: Tool Relations & Minimal Prompt Mode (1-2 weeks)
+- Tool relations (requires, suggests, conflicts, follows, precedes)
+- Minimal prompt mode for providers with native tool calling
+- Reduce token usage by 30-50% for OpenAI/Anthropic/Gemini
+- Improve LLM tool selection with workflow hints
+
+📄 [View Phase 8.1 Details](../.dev-docs/phase-8.1-design.md)
+
+#### Phase 8.2: Multi-Modal Support (1-2 weeks)
+- Vision support (image analysis, OCR)
+- Audio support (transcription, TTS)
+- Multi-modal tool definitions
+- Example multi-modal agents
+
+#### Phase 8.3: Advanced Memory Systems (1-2 weeks)
+- Vector store integrations (Pinecone, Weaviate, Chroma)
+- Semantic search capabilities
+- Long-term memory patterns
+- Memory compression strategies
+
+#### Phase 8.4: Advanced Collaboration (1-2 weeks)
+- Hierarchical agent patterns
+- Swarm intelligence patterns
+- Agent-to-agent communication protocols
+- Collaborative decision making
 
 ---
 
