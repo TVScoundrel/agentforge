@@ -8,6 +8,7 @@ export default defineConfig({
       '**/node_modules/**',
       '**/dist/**',
       '**/packages/cli/templates/**/tests/**', // Exclude template tests - they're for generated projects
+      '**/packages/cli/templates/**/__tests__/**', // Exclude template __tests__ - they're for generated projects
     ],
     coverage: {
       provider: 'v8',
