@@ -158,8 +158,8 @@ importers:
   packages/patterns:
     dependencies:
       '@agentforge/core':
-        specifier: ^0.3.8
-        version: 0.3.8(@langchain/core@1.1.8(openai@6.14.0(zod@3.25.76)))(@langchain/langgraph@1.0.7(@langchain/core@1.1.8(openai@6.14.0(zod@3.25.76)))(zod-to-json-schema@3.25.0(zod@3.25.76))(zod@3.25.76))(zod@3.25.76)
+        specifier: workspace:*
+        version: link:../core
       '@langchain/core':
         specifier: ^1.1.0
         version: 1.1.8(openai@6.14.0(zod@3.25.76))
@@ -334,13 +334,6 @@ importers:
         version: 5.9.3
 
 packages:
-
-  '@agentforge/core@0.3.8':
-    resolution: {integrity: sha512-h+Ds73TkXXfFL5Qfg9AjE8gVJvgUkibGRTvXNqoO8c1+d6c0PujGEDuNGiMpjRfyVf29q5PBo16SdXNklFQ7hA==}
-    peerDependencies:
-      '@langchain/core': ^1.1.0
-      '@langchain/langgraph': ^1.0.0
-      zod: ^3.23.0
 
   '@algolia/abtesting@1.12.2':
     resolution: {integrity: sha512-oWknd6wpfNrmRcH0vzed3UPX0i17o4kYLM5OMITyMVM2xLgaRbIafoxL0e8mcrNNb0iORCJA0evnNDKRYth5WQ==}
@@ -3206,13 +3199,6 @@ packages:
     resolution: {integrity: sha512-bXE4cR/kVZhKZX/RjPEflHaKVhUVl85noU3v6b8apfQEc1x4A+zBxjZ4lN8LqGd6WZ3dl98pY4o717VFmoPp+A==}
 
 snapshots:
-
-  '@agentforge/core@0.3.8(@langchain/core@1.1.8(openai@6.14.0(zod@3.25.76)))(@langchain/langgraph@1.0.7(@langchain/core@1.1.8(openai@6.14.0(zod@3.25.76)))(zod-to-json-schema@3.25.0(zod@3.25.76))(zod@3.25.76))(zod@3.25.76)':
-    dependencies:
-      '@langchain/core': 1.1.8(openai@6.14.0(zod@3.25.76))
-      '@langchain/langgraph': 1.0.7(@langchain/core@1.1.8(openai@6.14.0(zod@3.25.76)))(zod-to-json-schema@3.25.0(zod@3.25.76))(zod@3.25.76)
-      zod: 3.25.76
-      zod-to-json-schema: 3.25.0(zod@3.25.76)
 
   '@algolia/abtesting@1.12.2':
     dependencies:
