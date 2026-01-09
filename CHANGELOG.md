@@ -5,6 +5,52 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.4.0] - 2026-01-09
+
+### Added
+
+#### Web Search Tool (@agentforge/tools)
+- **New `webSearch` tool** - Intelligent web search with dual provider support
+  - **DuckDuckGo provider** - Free, no API key required
+  - **Serper provider** - Premium Google search results (optional, requires API key)
+  - **Smart fallback mechanism** - Automatically falls back to alternative provider if primary returns no results
+  - **Configurable timeout** - Default 30s, configurable from 1-60 seconds
+  - **Retry logic** - Exponential backoff with 3 retries for transient failures
+  - **Performance optimizations** - Efficient result parsing and processing
+  - **Comprehensive testing** - 45 tests with 100% statement coverage, 92.5% branch coverage
+  - **Full documentation** - README, JSDoc comments, and usage examples
+
+#### Features
+- Support for custom search queries with configurable result limits (1-50 results)
+- Metadata tracking (response time, source provider, fallback usage)
+- Environment variable support (`SERPER_API_KEY` for premium features)
+- TypeScript type definitions for all inputs and outputs
+- Zod schema validation for inputs
+
+#### Documentation
+- Updated tools README with webSearch documentation
+- Added comparison table: DuckDuckGo vs Serper
+- Created usage examples for both providers
+- Added environment setup instructions
+
+### Changed
+- Tool count increased from 68 to 69 tools
+- Updated all package versions to 0.4.0
+- Updated VitePress documentation site to display v0.4.0
+- Marked docs-site package as private (not published to npm)
+
+### Fixed
+- Updated pnpm lockfile to use `workspace:*` for internal dependencies
+- Fixed GitHub Actions CI deployment issue with frozen lockfile
+
+### Published
+- All packages published to npm registry at version 0.4.0:
+  - @agentforge/core@0.4.0
+  - @agentforge/patterns@0.4.0
+  - @agentforge/tools@0.4.0 (includes webSearch)
+  - @agentforge/testing@0.4.0
+  - @agentforge/cli@0.4.0
+
 ## [Unreleased]
 
 ### Added - Phase 2.2 (2024-12-24)
