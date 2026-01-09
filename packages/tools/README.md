@@ -1,6 +1,6 @@
 # @agentforge/tools
 
-> Production-ready tools collection for AgentForge - 68 tools for web, data, file, and utility operations
+> Production-ready tools collection for AgentForge - 69 tools for web, data, file, and utility operations
 
 [![npm version](https://img.shields.io/npm/v/@agentforge/tools)](https://www.npmjs.com/package/@agentforge/tools)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.9-blue)](https://www.typescriptlang.org/)
@@ -8,7 +8,7 @@
 
 ## 🎉 Status: Production Ready & Published
 
-**68 production-ready tools** | **Full TypeScript support** | **Comprehensive documentation** | **LangChain compatible**
+**69 production-ready tools** | **Full TypeScript support** | **Comprehensive documentation** | **LangChain compatible**
 
 ## 📦 Installation
 
@@ -22,9 +22,9 @@ yarn add @agentforge/tools
 
 ## 🎯 Overview
 
-This package provides **68 ready-to-use tools** organized into 4 categories:
+This package provides **69 ready-to-use tools** organized into 4 categories:
 
-- **🌐 Web Tools** (10 tools) - HTTP requests, web scraping, HTML parsing, URL manipulation
+- **🌐 Web Tools** (11 tools) - HTTP requests, web search, web scraping, HTML parsing, URL manipulation
 - **📊 Data Tools** (18 tools) - JSON, CSV, XML processing and data transformation
 - **📁 File Tools** (18 tools) - File operations, directory management, path utilities
 - **🔧 Utility Tools** (22 tools) - Date/time, strings, math, validation
@@ -68,9 +68,16 @@ const result = await calculator.execute({
 
 ## 📚 Tool Categories
 
-### 🌐 Web Tools (10 tools)
+### 🌐 Web Tools (11 tools)
 
 Tools for web interactions and HTTP operations.
+
+#### Web Search
+- **`webSearch`** - Search the web using DuckDuckGo (free) or Serper API (optional premium)
+  - No API key required for basic searches (uses DuckDuckGo)
+  - Optional Serper API for premium Google search results
+  - Smart fallback: automatically switches providers when needed
+  - Returns structured results with titles, links, and snippets
 
 #### HTTP Client Tools
 - **`httpClient`** - Full-featured HTTP client with all methods (GET, POST, PUT, DELETE, PATCH)
@@ -181,6 +188,43 @@ General utility tools for common operations.
 - **`uuidValidator`** - Validate UUIDs
 
 ## 💡 Usage Examples
+
+### Web Search Example
+
+```typescript
+import { webSearch } from '@agentforge/tools';
+
+// Basic search (no API key needed - uses DuckDuckGo)
+const result = await webSearch.execute({
+  query: 'TypeScript programming language',
+  maxResults: 10
+});
+
+console.log(`Found ${result.results.length} results from ${result.source}`);
+result.results.forEach(r => {
+  console.log(`${r.title}: ${r.link}`);
+  console.log(`  ${r.snippet}`);
+});
+
+// Premium search with Serper API (requires SERPER_API_KEY env var)
+// Get your API key at: https://serper.dev
+const premiumResult = await webSearch.execute({
+  query: 'Latest AI developments 2026',
+  maxResults: 5,
+  preferSerper: true  // Use Serper for Google search results
+});
+
+// Check metadata
+console.log(`Source: ${premiumResult.source}`);
+console.log(`Fallback used: ${premiumResult.metadata?.fallbackUsed}`);
+console.log(`Response time: ${premiumResult.metadata?.responseTime}ms`);
+```
+
+**Environment Setup:**
+```bash
+# Optional: Add to your .env file for premium Google search
+SERPER_API_KEY=your-serper-api-key-here
+```
 
 ### Web Scraping Example
 
