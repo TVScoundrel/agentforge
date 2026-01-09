@@ -68,6 +68,50 @@ export const ToolExampleSchema = z.object({
 });
 
 /**
+ * Schema for ToolRelations
+ *
+ * Validates tool relationship definitions.
+ * All fields are optional arrays of tool names.
+ *
+ * Example:
+ * ```ts
+ * ToolRelationsSchema.parse({
+ *   requires: ['view-file'],
+ *   suggests: ['run-tests', 'format-code'],
+ *   conflicts: ['delete-file'],
+ *   follows: ['search-codebase'],
+ *   precedes: ['run-tests']
+ * });
+ * ```
+ */
+export const ToolRelationsSchema = z.object({
+  /**
+   * Tools that must be called before this tool
+   */
+  requires: z.array(z.string().min(1)).optional(),
+
+  /**
+   * Tools that work well with this tool
+   */
+  suggests: z.array(z.string().min(1)).optional(),
+
+  /**
+   * Tools that conflict with this tool
+   */
+  conflicts: z.array(z.string().min(1)).optional(),
+
+  /**
+   * Tools this typically follows in a workflow
+   */
+  follows: z.array(z.string().min(1)).optional(),
+
+  /**
+   * Tools this typically precedes in a workflow
+   */
+  precedes: z.array(z.string().min(1)).optional(),
+});
+
+/**
  * Schema for tool names
  * 
  * Tool names must be:
@@ -178,6 +222,11 @@ export const ToolMetadataSchema = z.object({
    * Replacement tool name - if provided, must be valid tool name
    */
   replacedBy: ToolNameSchema.optional(),
+
+  /**
+   * Tool relations - defines relationships with other tools
+   */
+  relations: ToolRelationsSchema.optional(),
 });
 
 /**

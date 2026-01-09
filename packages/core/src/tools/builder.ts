@@ -21,7 +21,7 @@
  */
 
 import { z } from 'zod';
-import { Tool, ToolCategory, ToolExample, ToolMetadata } from './types.js';
+import { Tool, ToolCategory, ToolExample, ToolMetadata, ToolRelations } from './types.js';
 import { createTool } from './helpers.js';
 
 /**
@@ -156,11 +156,96 @@ export class ToolBuilder<TInput = unknown, TOutput = unknown> {
 
   /**
    * Set author (optional)
-   * 
+   *
    * @param author - Tool author name
    */
   author(author: string): this {
     this.metadata.author = author;
+    return this;
+  }
+
+  /**
+   * Set tools that must be called before this tool (optional)
+   *
+   * @param tools - Array of tool names that are required
+   * @example
+   * ```ts
+   * .requires(['view-file', 'search-codebase'])
+   * ```
+   */
+  requires(tools: string[]): this {
+    if (!this.metadata.relations) {
+      this.metadata.relations = {};
+    }
+    this.metadata.relations.requires = tools;
+    return this;
+  }
+
+  /**
+   * Set tools that work well with this tool (optional)
+   *
+   * @param tools - Array of tool names that are suggested
+   * @example
+   * ```ts
+   * .suggests(['run-tests', 'format-code'])
+   * ```
+   */
+  suggests(tools: string[]): this {
+    if (!this.metadata.relations) {
+      this.metadata.relations = {};
+    }
+    this.metadata.relations.suggests = tools;
+    return this;
+  }
+
+  /**
+   * Set tools that conflict with this tool (optional)
+   *
+   * @param tools - Array of tool names that conflict
+   * @example
+   * ```ts
+   * .conflicts(['delete-file'])
+   * ```
+   */
+  conflicts(tools: string[]): this {
+    if (!this.metadata.relations) {
+      this.metadata.relations = {};
+    }
+    this.metadata.relations.conflicts = tools;
+    return this;
+  }
+
+  /**
+   * Set tools this typically follows in a workflow (optional)
+   *
+   * @param tools - Array of tool names this follows
+   * @example
+   * ```ts
+   * .follows(['search-codebase', 'view-file'])
+   * ```
+   */
+  follows(tools: string[]): this {
+    if (!this.metadata.relations) {
+      this.metadata.relations = {};
+    }
+    this.metadata.relations.follows = tools;
+    return this;
+  }
+
+  /**
+   * Set tools this typically precedes in a workflow (optional)
+   *
+   * @param tools - Array of tool names this precedes
+   * @example
+   * ```ts
+   * .precedes(['run-tests'])
+   * ```
+   */
+  precedes(tools: string[]): this {
+    if (!this.metadata.relations) {
+      this.metadata.relations = {};
+    }
+    this.metadata.relations.precedes = tools;
     return this;
   }
 

@@ -24,24 +24,54 @@ const myTool = toolBuilder()
   .category(ToolCategory.UTILITY)
   .tags(['tag1', 'tag2'])
   .schema(z.object({
-    input: z.string()
+    input: z.string().describe('Input parameter')
   }))
   .implement(async ({ input }) => {
     return { success: true, data: input };
+  })
+  .build();
+
+// Tool with relations (NEW in v0.3.9)
+const editFileTool = toolBuilder()
+  .name('edit-file')
+  .description('Edit a file using string replacement')
+  .category(ToolCategory.FILE_SYSTEM)
+  .requires(['view-file'])        // Must view file first
+  .suggests(['run-tests'])         // Suggest testing after edit
+  .follows(['search-codebase'])    // Typically follows search
+  .precedes(['run-tests'])         // Typically before tests
+  .schema(z.object({
+    path: z.string().describe('File path'),
+    oldStr: z.string().describe('String to replace'),
+    newStr: z.string().describe('Replacement string')
+  }))
+  .implement(async ({ path, oldStr, newStr }) => {
+    // Implementation
+    return { success: true };
   })
   .build();
 ```
 
 #### Methods
 
+**Basic Configuration:**
 - **`.name(name: string)`** - Set tool name (required)
 - **`.description(desc: string)`** - Set description (required)
-- **`.category(category: ToolCategory)`** - Set category
+- **`.category(category: ToolCategory)`** - Set category (required)
 - **`.tags(tags: string[])`** - Add tags for discovery
 - **`.schema(schema: ZodSchema)`** - Define input schema (required)
 - **`.examples(examples: Example[])`** - Add usage examples
 - **`.implement(fn: ToolFunction)`** - Implement tool logic (required)
-- **`.build()`** - Build the tool
+
+**Tool Relations (NEW in v0.3.9):**
+- **`.requires(tools: string[])`** - Tools that must be called before this tool
+- **`.suggests(tools: string[])`** - Tools that work well with this tool
+- **`.conflicts(tools: string[])`** - Tools that conflict with this tool
+- **`.follows(tools: string[])`** - Tools this typically follows in a workflow
+- **`.precedes(tools: string[])`** - Tools this typically precedes in a workflow
+
+**Build:**
+- **`.build()`** - Build the tool with validation
 
 ### ToolCategory
 
@@ -72,13 +102,43 @@ registry.register(myTool);
 registry.registerMany([tool1, tool2, tool3]);
 
 // Find tools
-const webTools = registry.findByCategory(ToolCategory.WEB);
-const searchTools = registry.findByTag('search');
+const webTools = registry.getByCategory(ToolCategory.FILE_SYSTEM);
+const searchTools = registry.getByTag('search');
 const tool = registry.get('tool-name');
 
 // List all tools
-const allTools = registry.list();
+const allTools = registry.getAll();
+
+// Generate prompts for LLMs
+const fullPrompt = registry.generatePrompt({
+  includeExamples: true,
+  includeNotes: true,
+  includeLimitations: true,
+  includeRelations: true,  // NEW in v0.3.8
+  groupByCategory: true
+});
+
+// Minimal prompt mode (NEW in v0.3.9)
+// Use with providers that have native tool calling (OpenAI, Anthropic, Gemini)
+// Reduces token usage by up to 67%
+const minimalPrompt = registry.generatePrompt({
+  minimal: true,              // Only supplementary context
+  includeRelations: true,     // Include workflow hints
+  includeExamples: true,      // Include usage examples
+  includeNotes: true          // Include usage notes
+});
 ```
+
+#### Prompt Generation Options
+
+- **`includeExamples`** - Include usage examples
+- **`includeNotes`** - Include usage notes
+- **`includeLimitations`** - Include known limitations
+- **`includeRelations`** - Include tool relations (NEW in v0.3.9)
+- **`groupByCategory`** - Group tools by category
+- **`categories`** - Filter by specific categories
+- **`maxExamplesPerTool`** - Limit examples per tool
+- **`minimal`** - Minimal mode for native tool calling (NEW in v0.3.9)
 
 ## Middleware System
 

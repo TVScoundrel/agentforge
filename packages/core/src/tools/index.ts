@@ -6,6 +6,7 @@
 export {
   ToolCategory,
   type ToolExample,
+  type ToolRelations,
   type ToolMetadata,
   type Tool,
 } from './types.js';
@@ -14,6 +15,7 @@ export {
 export {
   ToolCategorySchema,
   ToolExampleSchema,
+  ToolRelationsSchema,
   ToolNameSchema,
   ToolMetadataSchema,
   validateToolMetadata,

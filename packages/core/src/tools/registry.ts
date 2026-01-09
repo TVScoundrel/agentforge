@@ -16,7 +16,7 @@
  * ```
  */
 
-import { Tool, ToolCategory } from './types.js';
+import { Tool, ToolCategory, ToolRelations } from './types.js';
 import { toLangChainTools as convertToLangChainTools } from '../langchain/converter.js';
 import type { DynamicStructuredTool } from '@langchain/core/tools';
 
@@ -45,12 +45,29 @@ export interface PromptOptions {
   includeNotes?: boolean;
   /** Include limitations in the prompt */
   includeLimitations?: boolean;
+  /** Include tool relations in the prompt */
+  includeRelations?: boolean;
   /** Group tools by category */
   groupByCategory?: boolean;
   /** Filter by specific categories */
   categories?: ToolCategory[];
   /** Maximum number of examples to include per tool */
   maxExamplesPerTool?: number;
+  /**
+   * Minimal mode - only supplementary context, not full definitions
+   *
+   * Use this when tool definitions are sent via API (OpenAI, Anthropic, etc.)
+   *
+   * When true:
+   * - Excludes basic tool name/description/parameters
+   * - Includes only relations, examples, notes, limitations
+   * - Tool names are used as headers for matching
+   *
+   * When false (default):
+   * - Includes full tool definitions (current behavior)
+   * - Backward compatible
+   */
+  minimal?: boolean;
 }
 
 /**
@@ -459,9 +476,11 @@ export class ToolRegistry {
       includeExamples = false,
       includeNotes = false,
       includeLimitations = false,
+      includeRelations = false,
       groupByCategory = false,
       categories,
       maxExamplesPerTool,
+      minimal = false,
     } = options;
 
     // Get tools to include
@@ -499,7 +518,9 @@ export class ToolRegistry {
             includeExamples,
             includeNotes,
             includeLimitations,
+            includeRelations,
             maxExamplesPerTool,
+            minimal,
           }));
         }
 
@@ -512,7 +533,9 @@ export class ToolRegistry {
           includeExamples,
           includeNotes,
           includeLimitations,
+          includeRelations,
           maxExamplesPerTool,
+          minimal,
         }));
         lines.push('');
       }
@@ -535,12 +558,70 @@ export class ToolRegistry {
       includeExamples?: boolean;
       includeNotes?: boolean;
       includeLimitations?: boolean;
+      includeRelations?: boolean;
       maxExamplesPerTool?: number;
+      minimal?: boolean;
     }
   ): string[] {
     const { metadata } = tool;
     const lines: string[] = [];
 
+    // In minimal mode, only include supplementary context
+    if (options.minimal) {
+      // Tool name as header for matching with API-provided definitions
+      lines.push(`## ${metadata.name}`);
+
+      // Only include supplementary information not in the API definition
+      let hasContent = false;
+
+      // Relations
+      if (options.includeRelations && metadata.relations) {
+        const relationLines = this.formatRelations(metadata.relations);
+        if (relationLines.length > 0) {
+          lines.push(...relationLines);
+          hasContent = true;
+        }
+      }
+
+      // Examples
+      if (options.includeExamples && metadata.examples && metadata.examples.length > 0) {
+        const maxExamples = options.maxExamplesPerTool || metadata.examples.length;
+        const examples = metadata.examples.slice(0, maxExamples);
+
+        for (const example of examples) {
+          lines.push(`  Example: ${example.description}`);
+          lines.push(`    Input: ${JSON.stringify(example.input)}`);
+          if (example.explanation) {
+            lines.push(`    ${example.explanation}`);
+          }
+          hasContent = true;
+        }
+      }
+
+      // Usage notes
+      if (options.includeNotes && metadata.usageNotes) {
+        lines.push(`  Notes: ${metadata.usageNotes}`);
+        hasContent = true;
+      }
+
+      // Limitations
+      if (options.includeLimitations && metadata.limitations && metadata.limitations.length > 0) {
+        lines.push(`  Limitations:`);
+        for (const limitation of metadata.limitations) {
+          lines.push(`    - ${limitation}`);
+        }
+        hasContent = true;
+      }
+
+      // If no supplementary content, don't include this tool
+      if (!hasContent) {
+        return [];
+      }
+
+      return lines;
+    }
+
+    // Full mode: include complete tool definition
     // Tool name and description
     lines.push(`- ${metadata.name}: ${metadata.description}`);
 
@@ -555,6 +636,14 @@ export class ToolRegistry {
           return `${param} (${type})`;
         });
         lines.push(`  Parameters: ${paramDescriptions.join(', ')}`);
+      }
+    }
+
+    // Relations
+    if (options.includeRelations && metadata.relations) {
+      const relationLines = this.formatRelations(metadata.relations);
+      if (relationLines.length > 0) {
+        lines.push(...relationLines);
       }
     }
 
@@ -583,6 +672,39 @@ export class ToolRegistry {
       for (const limitation of metadata.limitations) {
         lines.push(`    - ${limitation}`);
       }
+    }
+
+    return lines;
+  }
+
+  /**
+   * Format tool relations for inclusion in a prompt
+   *
+   * @param relations - The relations to format
+   * @returns Array of formatted lines
+   * @private
+   */
+  private formatRelations(relations: ToolRelations): string[] {
+    const lines: string[] = [];
+
+    if (relations.requires && relations.requires.length > 0) {
+      lines.push(`  Requires: ${relations.requires.join(', ')}`);
+    }
+
+    if (relations.suggests && relations.suggests.length > 0) {
+      lines.push(`  Suggests: ${relations.suggests.join(', ')}`);
+    }
+
+    if (relations.conflicts && relations.conflicts.length > 0) {
+      lines.push(`  Conflicts: ${relations.conflicts.join(', ')}`);
+    }
+
+    if (relations.follows && relations.follows.length > 0) {
+      lines.push(`  Follows: ${relations.follows.join(', ')}`);
+    }
+
+    if (relations.precedes && relations.precedes.length > 0) {
+      lines.push(`  Precedes: ${relations.precedes.join(', ')}`);
     }
 
     return lines;
