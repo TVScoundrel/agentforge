@@ -125,16 +125,18 @@ export interface ToolPromptAnswers {
   name: string;
   category: 'web' | 'data' | 'file' | 'utility';
   description: string;
+  structure: 'single' | 'multi';
   generateTests: boolean;
 }
 
 export async function promptToolSetup(defaults: Partial<ToolPromptAnswers> = {}): Promise<ToolPromptAnswers> {
-  return inquirer.prompt([
+  const answers = await inquirer.prompt([
     {
       type: 'input',
       name: 'name',
       message: 'Tool name:',
       default: defaults.name,
+      when: () => !defaults.name,
       validate: (input: string) => {
         if (!input) return 'Tool name is required';
         if (!/^[a-zA-Z][a-zA-Z0-9]*$/.test(input)) {
@@ -154,23 +156,52 @@ export async function promptToolSetup(defaults: Partial<ToolPromptAnswers> = {})
         { name: 'Utility - General utilities', value: 'utility' },
       ],
       default: defaults.category || 'utility',
+      when: () => !defaults.category,
     },
     {
       type: 'input',
       name: 'description',
       message: 'Tool description:',
       default: defaults.description,
+      when: () => !defaults.description,
       validate: (input: string) => {
         if (!input) return 'Tool description is required';
         return true;
       },
     },
     {
+      type: 'list',
+      name: 'structure',
+      message: 'Tool structure:',
+      choices: [
+        {
+          name: 'Single file - Simple tools (<150 lines, single responsibility)',
+          value: 'single'
+        },
+        {
+          name: 'Multi-file - Complex tools (multiple providers, >150 lines)',
+          value: 'multi'
+        },
+      ],
+      default: defaults.structure || 'single',
+      when: () => !defaults.structure,
+    },
+    {
       type: 'confirm',
       name: 'generateTests',
       message: 'Generate tests?',
       default: defaults.generateTests !== false,
+      when: () => defaults.generateTests === undefined,
     },
   ]);
+
+  // Merge defaults with answers (for skipped prompts)
+  return {
+    name: defaults.name || answers.name,
+    category: defaults.category || answers.category,
+    description: defaults.description || answers.description,
+    structure: defaults.structure || answers.structure,
+    generateTests: defaults.generateTests !== undefined ? defaults.generateTests : answers.generateTests,
+  };
 }
 
