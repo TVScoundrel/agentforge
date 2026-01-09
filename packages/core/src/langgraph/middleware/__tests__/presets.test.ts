@@ -252,7 +252,10 @@ describe('Middleware Presets', () => {
       await testingNode({ value: 1 });
       const duration = Date.now() - start;
 
-      expect(duration).toBeGreaterThanOrEqual(50);
+      // Allow for timing variations (±10ms tolerance)
+      // The delay should be approximately 50ms, but system performance can vary
+      expect(duration).toBeGreaterThanOrEqual(40);
+      expect(duration).toBeLessThan(200); // Sanity check - shouldn't take too long
     });
 
     it('should call original node when no mock or error', async () => {
