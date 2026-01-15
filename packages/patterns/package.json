@@ -1,6 +1,6 @@
 {
   "name": "@agentforge/patterns",
-  "version": "0.4.0",
+  "version": "0.4.1",
   "description": "Agent patterns (ReAct, Planner-Executor) for AgentForge framework",
   "type": "module",
   "main": "./dist/index.cjs",
