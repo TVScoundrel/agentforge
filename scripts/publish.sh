@@ -1,0 +1,118 @@
+#!/bin/bash
+
+# AgentForge Publish Script
+# This script publishes all packages to npm in the correct order
+
+set -e  # Exit on error
+
+# Colors for output
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+YELLOW='\033[1;33m'
+BLUE='\033[0;34m'
+NC='\033[0m' # No Color
+
+# Function to print colored output
+print_step() {
+    echo -e "${BLUE}==>${NC} $1"
+}
+
+print_success() {
+    echo -e "${GREEN}✓${NC} $1"
+}
+
+print_warning() {
+    echo -e "${YELLOW}⚠${NC} $1"
+}
+
+print_error() {
+    echo -e "${RED}✗${NC} $1"
+}
+
+# Check if logged in to npm
+print_step "Checking npm authentication..."
+if ! npm whoami > /dev/null 2>&1; then
+    print_error "You are not logged in to npm. Please run 'npm login' first."
+    exit 1
+fi
+
+NPM_USER=$(npm whoami)
+print_success "Logged in as: $NPM_USER"
+
+# Confirm before publishing
+echo ""
+print_warning "This will publish all @agentforge packages to npm registry."
+read -p "Are you sure you want to continue? (y/N) " -n 1 -r
+echo
+if [[ ! $REPLY =~ ^[Yy]$ ]]; then
+    print_error "Publish cancelled"
+    exit 1
+fi
+
+# Get to repo root
+cd "$(dirname "$0")/.."
+
+# Publish packages in dependency order
+PACKAGES=(
+    "packages/core"
+    "packages/patterns"
+    "packages/tools"
+    "packages/testing"
+    "packages/cli"
+)
+
+echo ""
+print_step "Publishing packages in dependency order..."
+echo ""
+
+for package in "${PACKAGES[@]}"; do
+    if [ -d "$package" ]; then
+        PACKAGE_NAME=$(node -e "console.log(require('./$package/package.json').name)")
+        PACKAGE_VERSION=$(node -e "console.log(require('./$package/package.json').version)")
+        
+        print_step "Publishing $PACKAGE_NAME@$PACKAGE_VERSION..."
+        
+        cd "$package"
+        
+        if npm publish --access public; then
+            print_success "Published $PACKAGE_NAME@$PACKAGE_VERSION"
+        else
+            print_error "Failed to publish $PACKAGE_NAME"
+            exit 1
+        fi
+        
+        cd - > /dev/null
+        echo ""
+    else
+        print_warning "Package directory not found: $package"
+    fi
+done
+
+print_success "All packages published successfully!"
+echo ""
+
+# Verify published versions
+print_step "Verifying published versions..."
+echo ""
+
+for package in "${PACKAGES[@]}"; do
+    if [ -d "$package" ]; then
+        PACKAGE_NAME=$(node -e "console.log(require('./$package/package.json').name)")
+        NPM_VERSION=$(npm view "$PACKAGE_NAME" version 2>/dev/null || echo "not found")
+        
+        if [ "$NPM_VERSION" != "not found" ]; then
+            print_success "$PACKAGE_NAME@$NPM_VERSION"
+        else
+            print_error "$PACKAGE_NAME - not found on npm"
+        fi
+    fi
+done
+
+echo ""
+print_success "Release complete! 🎉"
+echo ""
+print_step "Next steps:"
+echo "  - Verify packages on npm: https://www.npmjs.com/org/agentforge"
+echo "  - Test installation: npx @agentforge/cli@latest create test-project"
+echo "  - Create GitHub release (optional)"
+
