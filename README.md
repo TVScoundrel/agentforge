@@ -397,6 +397,32 @@ Contributions are welcome! Please follow these steps:
 4. Write tests
 5. Submit a pull request
 
+### Release Process
+
+For maintainers releasing new versions:
+
+1. **Automated Version Bump**:
+   ```bash
+   ./scripts/release.sh 0.4.2
+   ```
+   This updates all package.json files, CLI templates, and documentation.
+
+2. **Manual Steps** (see [RELEASE_CHECKLIST.md](./RELEASE_CHECKLIST.md)):
+   - Update CHANGELOG.md with release notes
+   - Run `pnpm build` and `pnpm test`
+   - Review changes with `git diff`
+   - Commit: `git add . && git commit -m "chore: Bump version to X.Y.Z"`
+   - Tag: `git tag -a vX.Y.Z -m "Release vX.Y.Z"`
+   - Push: `git push && git push --tags`
+
+3. **Publish to npm**:
+   ```bash
+   ./scripts/publish.sh
+   ```
+   This publishes all packages in the correct dependency order.
+
+See [RELEASE_CHECKLIST.md](./RELEASE_CHECKLIST.md) for the complete checklist.
+
 ---
 
 ## 📄 License
