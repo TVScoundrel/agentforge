@@ -1,6 +1,6 @@
 {
   "name": "@agentforge/testing",
-  "version": "0.4.1",
+  "version": "0.5.0",
   "description": "Testing utilities and helpers for AgentForge framework",
   "type": "module",
   "main": "./dist/index.js",
