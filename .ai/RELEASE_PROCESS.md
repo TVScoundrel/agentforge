@@ -16,23 +16,23 @@ When the user asks you to "do a release" or "bump version to X.Y.Z", follow thes
 - This updates all package.json files, CLI templates, README, and docs-site config
 - Mark task as COMPLETE after running
 
-## Step 2: Update CHANGELOG.md (CRITICAL - DON'T SKIP!)
+## Step 2: Update VitePress Changelog (CRITICAL - DON'T SKIP!)
 **This is the step most commonly forgotten!**
 
-1. Open CHANGELOG.md
+1. Open `docs-site/changelog.md`
 2. Add new version section at the top (after the header):
    ```markdown
    ## [X.Y.Z] - YYYY-MM-DD
-   
+
    ### Added
    - List new features
-   
+
    ### Changed
    - List changes
-   
+
    ### Fixed
    - List bug fixes
-   
+
    ### Published
    - All packages published to npm registry at version X.Y.Z:
      - @agentforge/core@X.Y.Z
@@ -41,8 +41,9 @@ When the user asks you to "do a release" or "bump version to X.Y.Z", follow thes
      - @agentforge/testing@X.Y.Z
      - @agentforge/cli@X.Y.Z
    ```
-3. Ask user for release notes if not provided
-4. Mark task as COMPLETE after updating
+3. Also update the "Version History" section at the bottom with a one-line summary
+4. Ask user for release notes if not provided
+5. Mark task as COMPLETE after updating
 
 ## Step 3: Build and Test
 ```bash
@@ -70,13 +71,13 @@ git commit -m "chore: Bump version to X.Y.Z"
 - Mark task as COMPLETE after commit
 
 ## Step 6: Create Git Tag
-**IMPORTANT: Only do this AFTER CHANGELOG.md is updated!**
+**IMPORTANT: Only do this AFTER docs-site/changelog.md is updated!**
 
 ```bash
 git tag -a vX.Y.Z -m "Release vX.Y.Z
 
 Features:
-- List key features from CHANGELOG
+- List key features from changelog
 
 All packages updated to X.Y.Z"
 ```
@@ -115,8 +116,8 @@ npm view @agentforge/cli version
 - Mark task as COMPLETE after verification
 
 ## Common Mistakes to Avoid
-1. ❌ **Forgetting to update CHANGELOG.md** - This is the #1 mistake!
-2. ❌ **Creating git tag before CHANGELOG is updated** - Tag will be on wrong commit
+1. ❌ **Forgetting to update docs-site/changelog.md** - This is the #1 mistake!
+2. ❌ **Creating git tag before changelog is updated** - Tag will be on wrong commit
 3. ❌ **Not using task management** - Easy to lose track of steps
 4. ❌ **Skipping build/test** - Could publish broken code
 5. ❌ **Not verifying npm login** - Publish will fail
@@ -125,11 +126,11 @@ npm view @agentforge/cli version
 ## Task Management Template
 When starting a release, create these tasks:
 - [ ] Run version bump script
-- [ ] Update CHANGELOG.md
+- [ ] Update docs-site/changelog.md
 - [ ] Build and test
 - [ ] Review changes
 - [ ] Commit changes
-- [ ] Create git tag (AFTER CHANGELOG!)
+- [ ] Create git tag (AFTER changelog!)
 - [ ] Push to remote
 - [ ] Publish to npm
 - [ ] Verify published versions
@@ -140,14 +141,14 @@ Before creating the git tag, verify:
 - ✅ CLI templates updated
 - ✅ README.md updated
 - ✅ docs-site config updated
-- ✅ **CHANGELOG.md updated** ← Most important!
+- ✅ **docs-site/changelog.md updated** ← Most important!
 - ✅ Build successful
 - ✅ Tests passing
 - ✅ Changes committed
 
 ## If Something Goes Wrong
 - **Wrong version number**: Run release.sh again with correct version
-- **Forgot CHANGELOG**: Update it, commit, then move the tag
+- **Forgot changelog**: Update it, commit, then move the tag
 - **Tag on wrong commit**: Delete tag locally and remotely, recreate on correct commit
   ```bash
   git tag -d vX.Y.Z
