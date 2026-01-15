@@ -5,6 +5,66 @@ All notable changes to AgentForge will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.5.0] - 2026-01-15
+
+### Added
+
+#### Multi-Agent Pattern Enhancement (@agentforge/patterns)
+- **Automatic ReAct Agent Integration** - Multi-Agent workers can now accept ReAct agents directly
+  - New `agent` property in `WorkerConfig` for ReAct agent instances
+  - Automatic detection and wrapping of ReAct agents via `isReActAgent()`
+  - Seamless state conversion between Multi-Agent and ReAct formats
+  - Priority system: `executeFn` > `agent` > default LLM execution
+  - Eliminates boilerplate wrapper code (20+ lines → 1 line)
+  - Full backward compatibility with existing `executeFn` approach
+  - Enhanced error handling and verbose logging
+  - New utility functions: `isReActAgent()` and `wrapReActAgent()`
+
+#### Developer Experience
+- **Release Automation** - Added comprehensive release tooling
+  - `scripts/release.sh` - Automated version bump script
+  - `scripts/publish.sh` - Automated npm publishing script
+  - `RELEASE_CHECKLIST.md` - Complete release checklist
+  - `.ai/RELEASE_PROCESS.md` - AI assistant release guide
+
+### Changed
+- Updated all package versions to 0.5.0
+- Updated VitePress documentation site to display v0.5.0
+- Updated CLI templates to use @agentforge/* ^0.5.0
+- Improved `WorkerConfig` type definitions with comprehensive JSDoc
+
+### Published
+- All packages published to npm registry at version 0.5.0:
+  - @agentforge/core@0.5.0
+  - @agentforge/patterns@0.5.0 (includes ReAct agent integration)
+  - @agentforge/tools@0.5.0
+  - @agentforge/testing@0.5.0
+  - @agentforge/cli@0.5.0
+
+## [0.4.1] - 2026-01-15
+
+### Added
+
+#### Tool Compatibility (@agentforge/tools)
+- **`invoke()` method alias** - Added `invoke()` as an alias to `execute()` for all tools
+  - Provides compatibility with LangChain's tool interface
+  - Both methods work identically - use whichever fits your framework
+  - No breaking changes - `execute()` remains the primary method
+  - Fully typed with TypeScript support
+
+### Changed
+- Updated all package versions to 0.4.1
+- Updated VitePress documentation site to display v0.4.1
+- Updated CLI templates to use @agentforge/* ^0.4.1
+
+### Published
+- All packages published to npm registry at version 0.4.1:
+  - @agentforge/core@0.4.1
+  - @agentforge/patterns@0.4.1
+  - @agentforge/tools@0.4.1 (includes invoke() alias)
+  - @agentforge/testing@0.4.1
+  - @agentforge/cli@0.4.1
+
 ## [0.4.0] - 2026-01-09
 
 ### Added
@@ -296,6 +356,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Version History
 
+- **0.5.0** (2026-01-15) - Automatic ReAct agent integration for Multi-Agent pattern, release automation
+- **0.4.1** (2026-01-15) - Added invoke() method alias for LangChain compatibility
+- **0.4.0** (2026-01-09) - Added webSearch tool with DuckDuckGo and Serper providers
 - **0.3.3** (2026-01-08) - Added environment validation to all CLI templates with helpful error messages
 - **0.3.2** (2026-01-08) - Fixed minimal template missing dotenv configuration
 - **0.3.1** (2026-01-08) - Fixed CLI template version references
