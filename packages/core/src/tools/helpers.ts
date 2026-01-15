@@ -71,11 +71,18 @@ export function createTool<TInput = unknown, TOutput = unknown>(
   // Validate schema has descriptions on all fields
   validateSchemaDescriptions(schema);
 
-  return {
+  // Create the tool with both execute and invoke (LangChain compatibility)
+  const tool: Tool<TInput, TOutput> = {
     metadata: metadataResult.data,
     schema,
     execute,
   };
+
+  // Add invoke as an alias for execute (LangChain compatibility)
+  // This allows developers familiar with LangChain to use .invoke() instead of .execute()
+  (tool as any).invoke = execute;
+
+  return tool;
 }
 
 /**
@@ -108,11 +115,17 @@ export function createToolUnsafe<TInput = unknown, TOutput = unknown>(
     throw new Error(`Invalid tool metadata:\n${errors}`);
   }
 
-  return {
+  // Create the tool with both execute and invoke (LangChain compatibility)
+  const tool: Tool<TInput, TOutput> = {
     metadata: metadataResult.data,
     schema,
     execute,
   };
+
+  // Add invoke as an alias for execute (LangChain compatibility)
+  (tool as any).invoke = execute;
+
+  return tool;
 }
 
 /**
