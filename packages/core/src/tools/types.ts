@@ -331,7 +331,7 @@ export interface Tool<TInput = unknown, TOutput = unknown> {
 
   /**
    * Zod schema for input validation
-   * 
+   *
    * Why Zod?
    * - Runtime validation: Catch errors before execution
    * - Type inference: TypeScript types from schema
@@ -342,14 +342,29 @@ export interface Tool<TInput = unknown, TOutput = unknown> {
 
   /**
    * Tool implementation
-   * 
+   *
    * Why async?
    * - Most tools do I/O (files, network, database)
    * - Async is more flexible (can handle both sync and async)
-   * 
+   *
    * The input is automatically validated against the schema
    * before this function is called.
    */
   execute: (input: TInput) => Promise<TOutput>;
+
+  /**
+   * LangChain-compatible alias for execute
+   *
+   * This allows developers familiar with LangChain to use .invoke()
+   * instead of .execute(). Both methods do exactly the same thing.
+   *
+   * @example
+   * ```ts
+   * // Both of these work:
+   * const result1 = await tool.execute({ input: 'hello' });
+   * const result2 = await tool.invoke({ input: 'hello' });
+   * ```
+   */
+  invoke?: (input: TInput) => Promise<TOutput>;
 }
 
