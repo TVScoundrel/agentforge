@@ -7,6 +7,7 @@
  */
 
 import type { BaseChatModel } from '@langchain/core/language_models/chat_models';
+import type { CompiledStateGraph } from '@langchain/langgraph';
 import type { Tool } from '@agentforge/core';
 import type { MultiAgentStateType } from './state.js';
 import type { RoutingStrategy, WorkerCapabilities, RoutingDecision } from './schemas.js';
@@ -82,8 +83,35 @@ export interface WorkerConfig {
 
   /**
    * Custom execution function
+   *
+   * If provided, this function will be used to execute tasks for this worker.
+   * Takes precedence over the `agent` property.
    */
   executeFn?: (state: MultiAgentStateType) => Promise<Partial<MultiAgentStateType>>;
+
+  /**
+   * ReAct agent instance
+   *
+   * If provided, the Multi-Agent pattern will automatically wrap this ReAct agent
+   * to work as a worker. The agent should be a compiled LangGraph StateGraph
+   * (e.g., created with `createReActAgent()`).
+   *
+   * Note: `executeFn` takes precedence over `agent` if both are provided.
+   *
+   * @example
+   * ```typescript
+   * const hrAgent = createReActAgent({ model, tools, systemPrompt });
+   *
+   * const system = createMultiAgentSystem({
+   *   workers: [{
+   *     id: 'hr',
+   *     capabilities: { skills: ['hr'], ... },
+   *     agent: hrAgent,  // Automatically wrapped!
+   *   }]
+   * });
+   * ```
+   */
+  agent?: CompiledStateGraph<any, any>;
 }
 
 /**

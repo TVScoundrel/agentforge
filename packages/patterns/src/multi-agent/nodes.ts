@@ -12,6 +12,7 @@ import type { MultiAgentStateType } from './state.js';
 import type { SupervisorConfig, WorkerConfig, AggregatorConfig } from './types.js';
 import type { AgentMessage, TaskAssignment, TaskResult } from './schemas.js';
 import { getRoutingStrategy } from './routing.js';
+import { isReActAgent, wrapReActAgent } from './utils.js';
 
 /**
  * Default system prompt for aggregator
@@ -129,6 +130,7 @@ export function createWorkerNode(config: WorkerConfig) {
     systemPrompt,
     verbose = false,
     executeFn,
+    agent,
   } = config;
 
   return async (state: MultiAgentStateType): Promise<Partial<MultiAgentStateType>> => {
@@ -153,14 +155,33 @@ export function createWorkerNode(config: WorkerConfig) {
         };
       }
 
-      // Use custom execution function if provided
+      // Priority 1: Use custom execution function if provided
       if (executeFn) {
+        if (verbose) {
+          console.log(`[Worker:${id}] Using custom executeFn`);
+        }
         return await executeFn(state);
       }
 
-      // Default execution using LLM
+      // Priority 2: Use ReAct agent if provided
+      if (agent) {
+        if (isReActAgent(agent)) {
+          if (verbose) {
+            console.log(`[Worker:${id}] Using ReAct agent (auto-wrapped)`);
+          }
+          const wrappedFn = wrapReActAgent(id, agent, verbose);
+          return await wrappedFn(state);
+        } else {
+          console.warn(`[Worker:${id}] Agent provided but does not appear to be a ReAct agent. Falling back to default execution.`);
+        }
+      }
+
+      // Priority 3: Default execution using LLM
       if (!model) {
-        throw new Error(`Worker ${id} requires either a model or custom execution function`);
+        throw new Error(
+          `Worker ${id} requires either a model, an agent, or a custom execution function. ` +
+          `Provide one of: config.model, config.agent, or config.executeFn`
+        );
       }
 
       const defaultSystemPrompt = `You are a specialized worker agent with the following capabilities:

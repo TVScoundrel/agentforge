@@ -60,6 +60,12 @@ export {
   getRoutingStrategy,
 } from './routing.js';
 
+// Export utilities
+export {
+  isReActAgent,
+  wrapReActAgent,
+} from './utils.js';
+
 // Export node creators
 export {
   DEFAULT_AGGREGATOR_SYSTEM_PROMPT,
