@@ -5,6 +5,30 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.4.1] - 2026-01-15
+
+### Added
+
+#### Tool Compatibility (@agentforge/tools)
+- **`invoke()` method alias** - Added `invoke()` as an alias to `execute()` for all tools
+  - Provides compatibility with LangChain's tool interface
+  - Both methods work identically - use whichever fits your framework
+  - No breaking changes - `execute()` remains the primary method
+  - Fully typed with TypeScript support
+
+### Changed
+- Updated all package versions to 0.4.1
+- Updated VitePress documentation site to display v0.4.1
+- Updated CLI templates to use @agentforge/* ^0.4.1
+
+### Published
+- All packages published to npm registry at version 0.4.1:
+  - @agentforge/core@0.4.1
+  - @agentforge/patterns@0.4.1
+  - @agentforge/tools@0.4.1 (includes invoke() alias)
+  - @agentforge/testing@0.4.1
+  - @agentforge/cli@0.4.1
+
 ## [0.4.0] - 2026-01-09
 
 ### Added
