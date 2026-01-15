@@ -2,6 +2,22 @@
 
 # AgentForge Release Script
 # This script automates the version bump process for all packages
+#
+# FULL RELEASE PROCESS (see RELEASE_CHECKLIST.md):
+# 1. Run this script: ./scripts/release.sh X.Y.Z
+# 2. Update CHANGELOG.md with release notes (IMPORTANT!)
+# 3. Build and test: pnpm build && pnpm test
+# 4. Review changes: git diff
+# 5. Commit: git add . && git commit -m "chore: Bump version to X.Y.Z"
+# 6. Tag: git tag -a vX.Y.Z -m "Release vX.Y.Z"
+# 7. Push: git push && git push --tags
+# 8. Publish: ./scripts/publish.sh
+#
+# AI Assistant: When asked to do a release, ALWAYS:
+# - Read RELEASE_CHECKLIST.md first
+# - Use task management to track all steps
+# - Don't skip CHANGELOG.md update
+# - Don't create git tag until CHANGELOG is updated
 
 set -e  # Exit on error
 
