@@ -5,6 +5,42 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.5.0] - 2026-01-15
+
+### Added
+
+#### Multi-Agent Pattern Enhancement (@agentforge/patterns)
+- **Automatic ReAct Agent Integration** - Multi-Agent workers can now accept ReAct agents directly
+  - New `agent` property in `WorkerConfig` for ReAct agent instances
+  - Automatic detection and wrapping of ReAct agents via `isReActAgent()`
+  - Seamless state conversion between Multi-Agent and ReAct formats
+  - Priority system: `executeFn` > `agent` > default LLM execution
+  - Eliminates boilerplate wrapper code (20+ lines → 1 line)
+  - Full backward compatibility with existing `executeFn` approach
+  - Enhanced error handling and verbose logging
+  - New utility functions: `isReActAgent()` and `wrapReActAgent()`
+
+#### Developer Experience
+- **Release Automation** - Added comprehensive release tooling
+  - `scripts/release.sh` - Automated version bump script
+  - `scripts/publish.sh` - Automated npm publishing script
+  - `RELEASE_CHECKLIST.md` - Complete release checklist
+  - `.ai/RELEASE_PROCESS.md` - AI assistant release guide
+
+### Changed
+- Updated all package versions to 0.5.0
+- Updated VitePress documentation site to display v0.5.0
+- Updated CLI templates to use @agentforge/* ^0.5.0
+- Improved `WorkerConfig` type definitions with comprehensive JSDoc
+
+### Published
+- All packages published to npm registry at version 0.5.0:
+  - @agentforge/core@0.5.0
+  - @agentforge/patterns@0.5.0 (includes ReAct agent integration)
+  - @agentforge/tools@0.5.0
+  - @agentforge/testing@0.5.0
+  - @agentforge/cli@0.5.0
+
 ## [0.4.1] - 2026-01-15
 
 ### Added
