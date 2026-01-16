@@ -180,6 +180,21 @@ export function createMultiAgentSystem(config: MultiAgentSystemConfig) {
     return originalInvoke(mergedInput, config);
   } as any;
 
+  // Wrap the stream method to inject worker capabilities into the initial state
+  const originalStream = compiled.stream.bind(compiled);
+  compiled.stream = async function(input: Partial<MultiAgentStateType>, config?: any) {
+    // Merge worker capabilities with any workers in the input
+    const mergedInput = {
+      ...input,
+      workers: {
+        ...workerCapabilities,
+        ...(input.workers || {}),
+      },
+    };
+
+    return originalStream(mergedInput, config);
+  } as any;
+
   return compiled;
 }
 

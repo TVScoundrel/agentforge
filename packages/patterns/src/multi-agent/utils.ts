@@ -110,6 +110,14 @@ export function wrapReActAgent(
         console.log(`[ReActWrapper:${workerId}] Response:`, response.substring(0, 100) + '...');
       }
 
+      // Extract tools used from ReAct agent's actions
+      const toolsUsed = result.actions?.map((action: any) => action.name).filter(Boolean) || [];
+      const uniqueTools = [...new Set(toolsUsed)]; // Remove duplicates
+
+      if (verbose && uniqueTools.length > 0) {
+        console.log(`[ReActWrapper:${workerId}] Tools used:`, uniqueTools.join(', '));
+      }
+
       // Create task result in Multi-Agent format
       const taskResult: TaskResult = {
         assignmentId: currentAssignment.id,
@@ -120,6 +128,7 @@ export function wrapReActAgent(
         metadata: {
           agent_type: 'react',
           iterations: result.iteration || 0,
+          tools_used: uniqueTools,
         },
       };
 
