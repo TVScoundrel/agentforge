@@ -310,7 +310,7 @@ pnpm clean          # Clean all build artifacts
 
 ## 🎯 Current Status
 
-**🎉 AgentForge v0.5.0 - Published on npm and Production-Ready!**
+**🎉 AgentForge v0.5.1 - Published on npm and Production-Ready!**
 
 **All 7 Phases Complete:**
 

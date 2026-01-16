@@ -5,6 +5,34 @@ All notable changes to AgentForge will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.5.1] - 2026-01-16
+
+### Added
+
+#### Multi-Agent Pattern Enhancements (@agentforge/patterns)
+- **Streaming Support** - Added `stream()` method wrapper to Multi-Agent pattern
+  - Ensures worker capabilities are injected into initial state when using streaming mode
+  - Maintains consistency with `invoke()` method behavior
+  - Enables real-time streaming of multi-agent workflows
+
+- **Tool Usage Tracking** - Enhanced ReAct agent wrapper with tool tracking
+  - Automatically extracts and logs tools used during ReAct agent execution
+  - Includes `tools_used` array in task result metadata
+  - Removes duplicate tool names for cleaner reporting
+  - Adds verbose logging to show which tools were used by each worker
+
+### Changed
+- Updated all package versions to 0.5.1
+- Improved observability of ReAct agents in Multi-Agent workflows
+
+### Published
+- All packages published to npm registry at version 0.5.1:
+  - @agentforge/core@0.5.1
+  - @agentforge/patterns@0.5.1 (includes streaming support and tool tracking)
+  - @agentforge/tools@0.5.1
+  - @agentforge/testing@0.5.1
+  - @agentforge/cli@0.5.1
+
 ## [0.5.0] - 2026-01-15
 
 ### Added
@@ -356,6 +384,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Version History
 
+- **0.5.1** (2026-01-16) - Multi-Agent streaming support and tool usage tracking
 - **0.5.0** (2026-01-15) - Automatic ReAct agent integration for Multi-Agent pattern, release automation
 - **0.4.1** (2026-01-15) - Added invoke() method alias for LangChain compatibility
 - **0.4.0** (2026-01-09) - Added webSearch tool with DuckDuckGo and Serper providers
