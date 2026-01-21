@@ -253,7 +253,7 @@ Provide reference implementations of reusable agents:
   - [x] Tests demonstrating reusability (28 tests passing)
 - [x] Create main README for reusable agents examples
 - [x] Add TypeScript types for all configurations (via Zod schemas)
-- [ ] Add integration tests showing different configurations (deferred)
+- [-] Add integration tests showing different configurations (obsolete - covered by reusability scenario tests)
 - [x] Update main examples README
 
 **Deliverables**:
