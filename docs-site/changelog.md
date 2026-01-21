@@ -5,6 +5,55 @@ All notable changes to AgentForge will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.5.2] - 2026-01-21
+
+### Added
+
+#### Reusable Agent Examples
+- **Three Production-Ready Reusable Agents** - Complete examples in `examples/reusable-agents/`
+  - Customer Support Agent (24 tests passing)
+  - Code Review Agent (26 tests passing)
+  - Data Analyst Agent (28 tests passing)
+  - Each demonstrates factory function pattern, external prompts, tool injection, feature flags
+  - Total: 78 comprehensive tests across all examples
+- **Total Test Count**: 1028 tests passing across all packages (up from 897)
+
+#### CLI Scaffolding (@agentforge/cli)
+- **New Command: `agent:create-reusable`** - Scaffold production-ready reusable agents
+  - Interactive prompts for agent name, description, and author
+  - Complete template with factory function pattern
+  - External prompt templates (`.md` files with `{{variable}}` placeholders)
+  - Prompt loader utility for template rendering
+  - Comprehensive test suite (14 test cases)
+  - Configuration validation with Zod
+  - Tool injection support and feature flags
+  - Full documentation and examples
+  - 5 CLI command tests
+
+#### Documentation
+- **Reusable Agents Guide** - Complete guide for building configurable agents
+  - Factory function pattern
+  - External prompt templates
+  - Tool injection and feature flags
+  - Configuration validation
+  - Testing patterns and best practices
+- **Main README for Reusable Agents** - Overview of all three example agents (341 lines)
+- **Updated Examples README** - Added reusable agents section and learning path
+- **CLI Documentation** - Detailed usage guide for `agent:create-reusable` command
+
+### Fixed
+- **Lockfile Update** - Updated `pnpm-lock.yaml` to include reusable agent example dependencies
+  - Fixes CI deployment issue with `--frozen-lockfile` flag
+  - Ensures reproducible builds in GitHub Actions
+
+### Published
+- All packages published to npm registry at version 0.5.2:
+  - @agentforge/core@0.5.2
+  - @agentforge/patterns@0.5.2
+  - @agentforge/tools@0.5.2
+  - @agentforge/testing@0.5.2
+  - @agentforge/cli@0.5.2
+
 ## [Unreleased]
 
 ### Added
@@ -414,6 +463,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Version History
 
+- **0.5.2** (2026-01-21) - Reusable agent examples and CLI scaffolding
 - **0.5.1** (2026-01-16) - Multi-Agent streaming support and tool usage tracking
 - **0.5.0** (2026-01-15) - Automatic ReAct agent integration for Multi-Agent pattern, release automation
 - **0.4.1** (2026-01-15) - Added invoke() method alias for LangChain compatibility

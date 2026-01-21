@@ -219,7 +219,7 @@ export function createCustomerSupportAgent(config: CustomerSupportConfig = {}) {
 
   // Create and return the agent
   return createReActAgent({
-    model,
+    model: model as any, // Type assertion needed for BaseLanguageModel compatibility
     tools,
     systemPrompt,
     maxIterations,
