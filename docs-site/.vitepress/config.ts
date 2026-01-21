@@ -74,6 +74,8 @@ export default defineConfig({
           text: 'Advanced',
           items: [
             { text: 'Streaming', link: '/guide/advanced/streaming' },
+            { text: 'Human-in-the-Loop', link: '/guide/advanced/human-in-the-loop' },
+            { text: 'Creating Reusable Agents', link: '/guide/advanced/reusable-agents' },
             { text: 'Resource Management', link: '/guide/advanced/resources' },
             { text: 'Monitoring', link: '/guide/advanced/monitoring' },
             { text: 'Deployment', link: '/guide/advanced/deployment' }
