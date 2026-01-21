@@ -2,6 +2,10 @@
 
 Reusable agents are configurable, composable AI agents that can be easily customized and shared across projects. This guide covers best practices for creating agents that are flexible, maintainable, and ready for production use.
 
+::: tip Working Example Available
+See the complete [Customer Support Agent example](https://github.com/TVScoundrel/agentforge/tree/main/examples/reusable-agents/customer-support) for a production-ready implementation with external prompts, tool injection, feature flags, and comprehensive tests.
+:::
+
 ## Why Reusable Agents?
 
 **Benefits:**
@@ -1049,12 +1053,41 @@ export type { CustomerSupportConfig };
 export { DEFAULT_SYSTEM_PROMPT };
 ```
 
+## Working Examples
+
+For complete, working implementations of reusable agents, see the examples in the repository:
+
+### [Customer Support Agent](https://github.com/TVScoundrel/agentforge/tree/main/examples/reusable-agents/customer-support)
+
+A fully-featured customer support agent demonstrating:
+- ✅ Factory function pattern with Zod validation
+- ✅ Tool injection using ToolRegistry
+- ✅ Feature flags (human escalation, ticket creation, knowledge base)
+- ✅ **External prompt pattern** with `prompts/system.md`
+- ✅ System prompt customization with company branding
+- ✅ 24 comprehensive tests demonstrating reusability
+
+**Key Files:**
+- `src/index.ts` - Agent factory function
+- `src/prompt-loader.ts` - Prompt template utility
+- `prompts/system.md` - External prompt with `{{variables}}`
+- `src/index.test.ts` - Comprehensive test suite
+- `README.md` - Full documentation
+
+This example showcases the **recommended pattern** for creating production-ready reusable agents.
+
+### Coming Soon
+
+- **Code Review Agent** - Configurable code review with language-specific rules
+- **Data Analyst Agent** - Flexible data analysis with custom data sources
+
 ## Next Steps
 
 - See [Publishing Checklist](#publishing-checklist) for pre-publish steps
 - Review [Versioning Strategies](#versioning-strategies) for version management
 - Check [TypeScript Best Practices](#typescript-best-practices) for type safety
 - Explore [Tool Injection](#3-tool-injection-and-composition) for composability
+- **Try the [Customer Support Agent example](https://github.com/TVScoundrel/agentforge/tree/main/examples/reusable-agents/customer-support)**
 
 ## Related Guides
 
