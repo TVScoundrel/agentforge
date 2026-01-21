@@ -67,11 +67,11 @@ All packages are **published on npm** and ready for production use!
 
 | Package | Version | Description | npm |
 |---------|---------|-------------|-----|
-| [@agentforge/core](./packages/core) | 0.4.1 | Core abstractions (tools, registry, LangGraph utilities, middleware, streaming, resources, monitoring) | [![npm](https://img.shields.io/npm/v/@agentforge/core)](https://www.npmjs.com/package/@agentforge/core) |
-| [@agentforge/patterns](./packages/patterns) | 0.4.1 | Agent patterns (ReAct, Plan-Execute, Reflection, Multi-Agent) | [![npm](https://img.shields.io/npm/v/@agentforge/patterns)](https://www.npmjs.com/package/@agentforge/patterns) |
-| [@agentforge/tools](./packages/tools) | 0.4.1 | Standard tool library (70 production-ready tools) | [![npm](https://img.shields.io/npm/v/@agentforge/tools)](https://www.npmjs.com/package/@agentforge/tools) |
-| [@agentforge/testing](./packages/testing) | 0.4.1 | Testing utilities (mocks, assertions, fixtures) | [![npm](https://img.shields.io/npm/v/@agentforge/testing)](https://www.npmjs.com/package/@agentforge/testing) |
-| [@agentforge/cli](./packages/cli) | 0.4.1 | CLI tool (156 tests, 98.11% coverage) | [![npm](https://img.shields.io/npm/v/@agentforge/cli)](https://www.npmjs.com/package/@agentforge/cli) |
+| [@agentforge/core](./packages/core) | 0.5.2 | Core abstractions (tools, registry, LangGraph utilities, middleware, streaming, resources, monitoring) | [![npm](https://img.shields.io/npm/v/@agentforge/core)](https://www.npmjs.com/package/@agentforge/core) |
+| [@agentforge/patterns](./packages/patterns) | 0.5.2 | Agent patterns (ReAct, Plan-Execute, Reflection, Multi-Agent) | [![npm](https://img.shields.io/npm/v/@agentforge/patterns)](https://www.npmjs.com/package/@agentforge/patterns) |
+| [@agentforge/tools](./packages/tools) | 0.5.2 | Standard tool library (70 production-ready tools) | [![npm](https://img.shields.io/npm/v/@agentforge/tools)](https://www.npmjs.com/package/@agentforge/tools) |
+| [@agentforge/testing](./packages/testing) | 0.5.2 | Testing utilities (mocks, assertions, fixtures) | [![npm](https://img.shields.io/npm/v/@agentforge/testing)](https://www.npmjs.com/package/@agentforge/testing) |
+| [@agentforge/cli](./packages/cli) | 0.5.2 | CLI tool (156 tests, 98.11% coverage) | [![npm](https://img.shields.io/npm/v/@agentforge/cli)](https://www.npmjs.com/package/@agentforge/cli) |
 
 ### Installation
 
