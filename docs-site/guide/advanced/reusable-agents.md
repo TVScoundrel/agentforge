@@ -6,8 +6,9 @@ Reusable agents are configurable, composable AI agents that can be easily custom
 See complete working examples:
 - [Customer Support Agent](https://github.com/TVScoundrel/agentforge/tree/main/examples/reusable-agents/customer-support) - Support automation with escalation
 - [Code Review Agent](https://github.com/TVScoundrel/agentforge/tree/main/examples/reusable-agents/code-review) - Automated code review with security & performance checks
+- [Data Analyst Agent](https://github.com/TVScoundrel/agentforge/tree/main/examples/reusable-agents/data-analyst) - Flexible data analysis with statistical methods & visualization
 
-Both demonstrate production-ready implementations with external prompts, tool injection, feature flags, and comprehensive tests.
+All demonstrate production-ready implementations with external prompts, tool injection, feature flags, and comprehensive tests.
 :::
 
 ## Why Reusable Agents?
@@ -1101,9 +1102,26 @@ A configurable code review agent demonstrating:
 
 Perfect for teams needing customizable code review automation.
 
-### Coming Soon
+### [Data Analyst Agent](https://github.com/TVScoundrel/agentforge/tree/main/examples/reusable-agents/data-analyst)
 
-- **Data Analyst Agent** - Flexible data analysis with custom data sources
+A flexible data analyst agent demonstrating:
+- ✅ Factory function pattern with Zod validation
+- ✅ Tool injection using ToolRegistry
+- ✅ Feature flags (statistical analysis, data validation, visualization, confidential data mode)
+- ✅ **External prompt pattern** with `prompts/system.md`
+- ✅ Built-in tools (analyze-data, calculate-statistics, create-visualization, validate-data)
+- ✅ Analysis depth configuration (quick, standard, deep)
+- ✅ Data type specialization support
+- ✅ 28 comprehensive tests demonstrating reusability
+
+**Key Files:**
+- `src/index.ts` - Agent factory function
+- `src/prompt-loader.ts` - Prompt template utility
+- `prompts/system.md` - External prompt with `{{variables}}`
+- `src/index.test.ts` - Comprehensive test suite
+- `README.md` - Full documentation
+
+Perfect for teams needing flexible data analysis with customizable depth and focus areas.
 
 ## Next Steps
 
@@ -1114,6 +1132,7 @@ Perfect for teams needing customizable code review automation.
 - **Try the working examples:**
   - [Customer Support Agent](https://github.com/TVScoundrel/agentforge/tree/main/examples/reusable-agents/customer-support)
   - [Code Review Agent](https://github.com/TVScoundrel/agentforge/tree/main/examples/reusable-agents/code-review)
+  - [Data Analyst Agent](https://github.com/TVScoundrel/agentforge/tree/main/examples/reusable-agents/data-analyst)
 
 ## Related Guides
 
