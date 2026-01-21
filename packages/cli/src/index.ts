@@ -6,6 +6,7 @@ import { buildCommand } from './commands/build.js';
 import { testCommand } from './commands/test.js';
 import { lintCommand } from './commands/lint.js';
 import { agentCreateCommand } from './commands/agent/create.js';
+import { agentCreateReusableCommand } from './commands/agent/create-reusable.js';
 import { agentListCommand } from './commands/agent/list.js';
 import { agentTestCommand } from './commands/agent/test.js';
 import { agentDeployCommand } from './commands/agent/deploy.js';
@@ -70,6 +71,13 @@ agent
   .option('-p, --pattern <pattern>', 'Agent pattern (react, plan-execute, reflection, multi-agent)', 'react')
   .option('--no-test', 'Skip test generation')
   .action(agentCreateCommand);
+
+agent
+  .command('create-reusable <name>')
+  .description('Create a new reusable agent (production template)')
+  .option('-d, --description <description>', 'Agent description')
+  .option('-a, --author <author>', 'Author name')
+  .action(agentCreateReusableCommand);
 
 agent
   .command('list')

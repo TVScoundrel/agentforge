@@ -135,6 +135,57 @@ agentforge agent:create myAgent --pattern plan-execute
 - `-p, --pattern <pattern>` - Agent pattern (react, plan-execute, reflection, multi-agent) [default: react]
 - `--no-test` - Skip test generation
 
+#### `agent:create-reusable <name>`
+
+Create a new reusable agent using the production template.
+
+This command scaffolds a complete reusable agent with:
+- Factory function pattern
+- External prompt templates (`.md` files)
+- Tool injection support
+- Feature flags
+- Configuration validation with Zod
+- Comprehensive test suite
+- Full documentation
+
+```bash
+agentforge agent:create-reusable customer-support
+
+# With options
+agentforge agent:create-reusable data-analyst --description "Analyze data and generate insights" --author "Your Name"
+```
+
+**Options:**
+- `-d, --description <description>` - Agent description
+- `-a, --author <author>` - Author name
+
+**What Gets Created:**
+```
+customer-support/
+├── src/
+│   ├── index.ts           # Agent factory function
+│   ├── index.test.ts      # Comprehensive tests
+│   └── prompt-loader.ts   # Prompt template utility
+├── prompts/
+│   └── system.md          # External prompt template
+├── package.json
+├── tsconfig.json
+├── vitest.config.ts
+└── README.md
+```
+
+**Next Steps After Creation:**
+1. `cd customer-support`
+2. `pnpm install`
+3. Edit `prompts/system.md` to customize the prompt
+4. Edit `src/index.ts` to add tools and configuration
+5. `pnpm test` to run tests
+6. `pnpm build` to build
+
+**See Also:**
+- [Reusable Agents Guide](../../docs-site/guide/advanced/reusable-agents.md)
+- [Example Reusable Agents](../../examples/reusable-agents/)
+
 #### `agent:list`
 
 List all agents.
