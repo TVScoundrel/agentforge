@@ -1,19 +1,10 @@
 /**
  * Types for askHuman tool and human-in-the-loop workflows
- * @module tools/builtin/ask-human/types
+ * @module tools/agent/ask-human/types
  */
 
 import { z } from 'zod';
-
-/**
- * Priority level for human requests
- */
-export type HumanRequestPriority = 'low' | 'normal' | 'high' | 'critical';
-
-/**
- * Status of a human request
- */
-export type HumanRequestStatus = 'pending' | 'answered' | 'timeout' | 'cancelled';
+import type { HumanRequest, HumanRequestPriority, HumanRequestStatus } from '@agentforge/core';
 
 /**
  * Input schema for askHuman tool
@@ -100,63 +91,6 @@ export interface AskHumanOutput {
   };
 }
 
-/**
- * Human request stored in state
- */
-export interface HumanRequest {
-  /**
-   * Unique ID for this request
-   */
-  id: string;
-
-  /**
-   * The question being asked
-   */
-  question: string;
-
-  /**
-   * Optional context
-   */
-  context?: Record<string, any>;
-
-  /**
-   * Priority level
-   */
-  priority: HumanRequestPriority;
-
-  /**
-   * When the request was created
-   */
-  createdAt: number;
-
-  /**
-   * Timeout in milliseconds (0 = no timeout)
-   */
-  timeout: number;
-
-  /**
-   * Default response if timeout occurs
-   */
-  defaultResponse?: string;
-
-  /**
-   * Suggested responses
-   */
-  suggestions?: string[];
-
-  /**
-   * Current status
-   */
-  status: HumanRequestStatus;
-
-  /**
-   * The response (if answered)
-   */
-  response?: string;
-
-  /**
-   * When the response was received
-   */
-  respondedAt?: number;
-}
+// HumanRequest, HumanRequestPriority, and HumanRequestStatus are now imported from @agentforge/core
+// They are defined in packages/core/src/langgraph/interrupts/types.ts
 

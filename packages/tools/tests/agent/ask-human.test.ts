@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import { createAskHumanTool, askHumanTool } from '../../../src/tools/builtin/ask-human/tool.js';
-import type { AskHumanInput } from '../../../src/tools/builtin/ask-human/types.js';
+import { createAskHumanTool, askHumanTool } from '../../src/agent/ask-human/tool.js';
+import type { AskHumanInput } from '../../src/agent/ask-human/types.js';
 
 describe('askHuman Tool', () => {
   describe('createAskHumanTool', () => {

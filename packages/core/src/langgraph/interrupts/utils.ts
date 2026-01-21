@@ -3,16 +3,16 @@
  * @module langgraph/interrupts/utils
  */
 
-import type { 
-  InterruptData, 
-  HumanRequestInterrupt, 
+import type {
+  InterruptData,
+  HumanRequestInterrupt,
   ApprovalRequiredInterrupt,
   CustomInterrupt,
   AnyInterrupt,
   ThreadInfo,
   ThreadStatus,
+  HumanRequest,
 } from './types.js';
-import type { HumanRequest } from '../../tools/builtin/ask-human/types.js';
 
 /**
  * Create a human request interrupt
