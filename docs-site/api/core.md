@@ -255,6 +255,8 @@ await stream.start(async (write) => {
 
 ### SSE (Server-Sent Events)
 
+Create SSE streams for real-time communication:
+
 ```typescript
 import { createSSEStream } from '@agentforge/core/streaming';
 
@@ -264,6 +266,159 @@ const sseStream = createSSEStream({
   }
 });
 ```
+
+### Human-in-the-Loop SSE
+
+Specialized SSE utilities for human-in-the-loop workflows:
+
+```typescript
+import { createHumanInLoopSSE } from '@agentforge/core/streaming';
+import type { HumanRequest, HumanResponse } from '@agentforge/core/langgraph';
+
+// In your Express route
+app.get('/api/stream', (req, res) => {
+  const sse = createHumanInLoopSSE(res);
+
+  // Send human request
+  sse.sendHumanRequest({
+    id: 'req-123',
+    question: 'Approve this action?',
+    priority: 'high',
+    createdAt: Date.now(),
+    status: 'pending'
+  });
+
+  // Send human response
+  sse.sendHumanResponse({
+    requestId: 'req-123',
+    response: 'yes',
+    respondedAt: Date.now()
+  });
+
+  // Send timeout notification
+  sse.sendHumanTimeout({
+    requestId: 'req-123',
+    defaultResponse: 'no',
+    timedOutAt: Date.now()
+  });
+
+  // Send error
+  sse.sendHumanError({
+    requestId: 'req-123',
+    error: 'Failed to process request',
+    erroredAt: Date.now()
+  });
+});
+```
+
+**SSE Event Types:**
+- `human_request` - New request for human input
+- `human_response` - Human provided a response
+- `human_timeout` - Request timed out
+- `human_error` - Error processing request
+
+## LangGraph Integration
+
+### Interrupt Utilities
+
+Utilities for working with LangGraph's interrupt mechanism:
+
+```typescript
+import {
+  isNodeInterrupt,
+  extractHumanRequest,
+  createInterruptResponse
+} from '@agentforge/core/langgraph';
+
+// Check if error is a NodeInterrupt
+try {
+  await app.invoke(input, config);
+} catch (error) {
+  if (isNodeInterrupt(error)) {
+    // Extract human request from interrupt
+    const request = extractHumanRequest(error);
+    console.log('Human input needed:', request);
+
+    // Create response to resume execution
+    const response = createInterruptResponse(request.id, 'approved');
+
+    // Resume execution with response
+    await app.invoke(null, {
+      ...config,
+      resumeValue: response
+    });
+  }
+}
+```
+
+### Types
+
+```typescript
+import type {
+  HumanRequest,
+  HumanRequestPriority,
+  HumanRequestStatus,
+  HumanResponse
+} from '@agentforge/core/langgraph';
+
+// HumanRequest - Request for human input
+interface HumanRequest {
+  id: string;
+  question: string;
+  context?: Record<string, unknown>;
+  priority?: HumanRequestPriority;
+  createdAt: number;
+  timeout?: number;
+  defaultResponse?: string;
+  suggestions?: string[];
+  status: HumanRequestStatus;
+}
+
+// HumanRequestPriority - Priority levels
+type HumanRequestPriority = 'low' | 'normal' | 'high' | 'critical';
+
+// HumanRequestStatus - Request status
+type HumanRequestStatus = 'pending' | 'responded' | 'timeout' | 'error';
+
+// HumanResponse - Response from human
+interface HumanResponse {
+  requestId: string;
+  response: string;
+  respondedAt: number;
+}
+```
+
+### Usage with askHuman Tool
+
+The `askHuman` tool (from `@agentforge/tools`) uses these utilities internally:
+
+```typescript
+import { createAskHumanTool } from '@agentforge/tools';
+import { MemorySaver } from '@langchain/langgraph';
+
+// Create agent with askHuman tool
+const agent = createReActAgent({
+  model: chatModel,
+  tools: [createAskHumanTool()],
+});
+
+// Compile with checkpointer (required for interrupts)
+const checkpointer = new MemorySaver();
+const app = agent.compile({ checkpointer });
+
+// Execute - will pause when askHuman is called
+try {
+  const result = await app.invoke(input, config);
+} catch (error) {
+  if (isNodeInterrupt(error)) {
+    // Handle human request via SSE
+    const request = extractHumanRequest(error);
+    // Send to frontend, wait for response, resume execution
+  }
+}
+```
+
+See the [Human-in-the-Loop Guide](../guide/advanced/human-in-the-loop.md) for complete examples.
 
 ## Resource Management
 
