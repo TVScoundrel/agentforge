@@ -1,0 +1,31 @@
+{
+  "name": "@agentforge-examples/code-review-agent",
+  "version": "1.0.0",
+  "type": "module",
+  "description": "Configurable code review agent built with AgentForge",
+  "main": "src/index.ts",
+  "scripts": {
+    "test": "vitest run",
+    "test:watch": "vitest"
+  },
+  "keywords": [
+    "agentforge",
+    "code-review",
+    "ai-agent",
+    "reusable-agent"
+  ],
+  "dependencies": {
+    "@agentforge/core": "workspace:*",
+    "@agentforge/patterns": "workspace:*",
+    "@agentforge/tools": "workspace:*",
+    "@langchain/core": "^0.3.80",
+    "@langchain/openai": "^0.3.17",
+    "zod": "^3.25.76"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.5",
+    "typescript": "^5.7.3",
+    "vitest": "^1.6.1"
+  }
+}
+
