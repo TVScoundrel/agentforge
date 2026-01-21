@@ -7,7 +7,7 @@
  */
 
 import type { BaseChatModel } from '@langchain/core/language_models/chat_models';
-import type { CompiledStateGraph } from '@langchain/langgraph';
+import type { CompiledStateGraph, BaseCheckpointSaver } from '@langchain/langgraph';
 import type { Tool } from '@agentforge/core';
 import type { MultiAgentStateType } from './state.js';
 import type { RoutingStrategy, WorkerCapabilities, RoutingDecision } from './schemas.js';
@@ -167,6 +167,24 @@ export interface MultiAgentSystemConfig {
    * Whether to include verbose logging
    */
   verbose?: boolean;
+
+  /**
+   * Optional checkpointer for state persistence
+   * Required for human-in-the-loop workflows (askHuman tool), interrupts, and conversation continuity
+   *
+   * @example
+   * ```typescript
+   * import { MemorySaver } from '@langchain/langgraph';
+   *
+   * const checkpointer = new MemorySaver();
+   * const system = createMultiAgentSystem({
+   *   supervisor: { strategy: 'skill-based', model },
+   *   workers: [...],
+   *   checkpointer
+   * });
+   * ```
+   */
+  checkpointer?: BaseCheckpointSaver;
 }
 
 /**

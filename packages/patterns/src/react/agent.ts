@@ -25,6 +25,7 @@ import { createReasoningNode, createActionNode, createObservationNode } from './
  * @returns A compiled LangGraph StateGraph
  *
  * @example
+ * Basic usage:
  * ```typescript
  * import { createReActAgent } from '@agentforge/patterns';
  * import { ChatOpenAI } from '@langchain/openai';
@@ -40,6 +41,30 @@ import { createReasoningNode, createActionNode, createObservationNode } from './
  *   messages: [{ role: 'user', content: 'What is the weather?' }]
  * });
  * ```
+ *
+ * @example
+ * With checkpointer for human-in-the-loop workflows:
+ * ```typescript
+ * import { createReActAgent } from '@agentforge/patterns';
+ * import { createAskHumanTool } from '@agentforge/tools';
+ * import { MemorySaver } from '@langchain/langgraph';
+ * import { ChatOpenAI } from '@langchain/openai';
+ *
+ * const checkpointer = new MemorySaver();
+ * const askHuman = createAskHumanTool();
+ *
+ * const agent = createReActAgent({
+ *   model: new ChatOpenAI({ model: 'gpt-4' }),
+ *   tools: [askHuman, ...otherTools],
+ *   checkpointer  // Required for askHuman tool
+ * });
+ *
+ * // Invoke with thread_id for conversation continuity
+ * const result = await agent.invoke(
+ *   { messages: [{ role: 'user', content: 'Help me with this task' }] },
+ *   { configurable: { thread_id: 'conversation-123' } }
+ * );
+ * ```
  */
 export function createReActAgent(
   config: ReActAgentConfig,
@@ -53,6 +78,7 @@ export function createReActAgent(
     maxIterations = 10,
     returnIntermediateSteps = false,
     stopCondition,
+    checkpointer,
   } = config;
 
   const {
@@ -126,6 +152,7 @@ export function createReActAgent(
     .addEdge(ACTION_NODE, OBSERVATION_NODE)
     .addEdge(OBSERVATION_NODE, REASONING_NODE);
 
-  return workflow.compile() as any;
+  // Compile with checkpointer if provided
+  return workflow.compile(checkpointer ? { checkpointer } : undefined) as any;
 }
 

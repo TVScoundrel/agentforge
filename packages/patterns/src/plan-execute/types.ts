@@ -7,6 +7,7 @@
  */
 
 import type { BaseChatModel } from '@langchain/core/language_models/chat_models';
+import type { BaseCheckpointSaver } from '@langchain/langgraph';
 import type { Tool } from '@agentforge/core';
 import type { PlanExecuteStateType } from './state.js';
 
@@ -115,6 +116,24 @@ export interface PlanExecuteAgentConfig {
    * Verbose logging
    */
   verbose?: boolean;
+
+  /**
+   * Optional checkpointer for state persistence
+   * Required for human-in-the-loop workflows (askHuman tool), interrupts, and conversation continuity
+   *
+   * @example
+   * ```typescript
+   * import { MemorySaver } from '@langchain/langgraph';
+   *
+   * const checkpointer = new MemorySaver();
+   * const agent = createPlanExecuteAgent({
+   *   planner: { model },
+   *   executor: { tools },
+   *   checkpointer
+   * });
+   * ```
+   */
+  checkpointer?: BaseCheckpointSaver;
 }
 
 /**
