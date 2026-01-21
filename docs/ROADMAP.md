@@ -177,10 +177,12 @@ Core framework tool for human-in-the-loop interactions:
 - [x] Write unit tests (>90% coverage)
 - [x] Write integration tests with ReAct pattern
 - [x] Write integration tests with Plan-Execute pattern
-- [ ] Create documentation page: "Human-in-the-Loop"
-- [ ] Create example: Customer support agent with approval workflow
-- [ ] Update API documentation
+- [x] Create documentation page: "Human-in-the-Loop"
+- [x] Create example: Customer support agent with approval workflow
+- [x] Update API documentation
 - [x] Add to exports in `@agentforge/tools`
+
+**Status**: ✅ **COMPLETE** (13/13 tasks done)
 
 **Deliverables**:
 - `askHuman` tool implementation in `@agentforge/tools`
