@@ -116,20 +116,23 @@ export function createConfigurableAgent(config: AgentConfig) {
 
 ### 3. Tool Injection and Composition
 
-Allow tools to be injected for maximum flexibility:
+Allow tools to be injected for maximum flexibility using AgentForge's ToolRegistry:
 
 ```typescript
+import { ToolRegistry, toolBuilder, ToolCategory, type Tool } from '@agentforge/core';
 import { createAskHumanTool, currentDateTime } from '@agentforge/tools';
+import { z } from 'zod';
 
 export interface RefundAgentConfig {
-  // Required tools
+  // Required tools (created with toolBuilder)
   getCustomerInfo: Tool;
   getOrderInfo: Tool;
   processRefund: Tool;
-  
-  // Optional tools
+
+  // Optional: Additional tools or registry
   additionalTools?: Tool[];
-  
+  toolRegistry?: ToolRegistry;
+
   // Feature flags
   enableHumanApproval?: boolean;
   enableLogging?: boolean;
@@ -141,31 +144,53 @@ export function createRefundAgent(config: RefundAgentConfig) {
     getOrderInfo,
     processRefund,
     additionalTools = [],
+    toolRegistry,
     enableHumanApproval = true,
     enableLogging = false,
   } = config;
 
-  // Build tools array
-  const tools: Tool[] = [
+  // Use provided registry or create a new one
+  const registry = toolRegistry || new ToolRegistry();
+
+  // Register required tools
+  registry.registerMany([
     getCustomerInfo,
     getOrderInfo,
     processRefund,
     currentDateTime,
-    ...additionalTools,
-  ];
+  ]);
+
+  // Register additional tools
+  if (additionalTools.length > 0) {
+    registry.registerMany(additionalTools);
+  }
 
   // Conditionally add tools based on feature flags
   if (enableHumanApproval) {
-    tools.push(createAskHumanTool());
+    registry.register(createAskHumanTool());
   }
 
   if (enableLogging) {
-    tools.push(createLoggingTool());
+    const loggingTool = toolBuilder()
+      .name('log-action')
+      .description('Log an action for audit trail')
+      .category(ToolCategory.UTILITY)
+      .schema(z.object({
+        action: z.string().describe('Action to log'),
+        details: z.record(z.unknown()).optional().describe('Additional details'),
+      }))
+      .implement(async ({ action, details }) => {
+        console.log(`[AUDIT] ${action}`, details);
+        return { logged: true, timestamp: Date.now() };
+      })
+      .build();
+
+    registry.register(loggingTool);
   }
 
   return createReActAgent({
     model: new ChatOpenAI({ modelName: 'gpt-4' }),
-    tools,
+    tools: registry.getAll(),
     systemPrompt: buildRefundPrompt(enableHumanApproval),
   });
 }
@@ -176,6 +201,62 @@ export function createRefundAgent(config: RefundAgentConfig) {
 - Easy to mock tools for testing
 - Supports different backends (database, API, etc.)
 - Feature flags enable/disable functionality
+- ToolRegistry provides querying and organization
+
+**Using ToolRegistry for Advanced Composition:**
+
+```typescript
+import { ToolRegistry, ToolCategory } from '@agentforge/core';
+import { webSearch, calculator } from '@agentforge/tools';
+
+export interface AdvancedAgentConfig {
+  customTools?: Tool[];
+  enabledCategories?: ToolCategory[];
+  toolRegistry?: ToolRegistry;
+}
+
+export function createAdvancedAgent(config: AdvancedAgentConfig = {}) {
+  const {
+    customTools = [],
+    enabledCategories = [ToolCategory.UTILITY, ToolCategory.WEB],
+    toolRegistry,
+  } = config;
+
+  // Use provided registry or create new one
+  const registry = toolRegistry || new ToolRegistry();
+
+  // Register standard tools
+  registry.registerMany([webSearch, calculator]);
+
+  // Register custom tools
+  if (customTools.length > 0) {
+    registry.registerMany(customTools);
+  }
+
+  // Filter tools by enabled categories
+  const tools = enabledCategories.length > 0
+    ? enabledCategories.flatMap(cat => registry.getByCategory(cat))
+    : registry.getAll();
+
+  // Generate system prompt with tool descriptions
+  const toolPrompt = registry.generatePrompt({
+    includeExamples: true,
+    groupByCategory: true,
+  });
+
+  const systemPrompt = `You are a helpful AI assistant.
+
+${toolPrompt}
+
+Always use the appropriate tool for each task.`;
+
+  return createReActAgent({
+    model: new ChatOpenAI({ modelName: 'gpt-4' }),
+    tools,
+    systemPrompt,
+  });
+}
+```
 
 ### 4. System Prompt Customization
 
@@ -660,18 +741,42 @@ export function createAgent(config: AgentConfig) {
 
 ### 4. Support Testing
 
-Make agents easy to test:
+Make agents easy to test using AgentForge's tool builder:
 
 ```typescript
+import { toolBuilder, ToolCategory } from '@agentforge/core';
+import { z } from 'zod';
+
 // Provide mock tools for testing
 export const mockTools = {
-  getCustomer: createTool()
+  getCustomer: toolBuilder()
     .name('get-customer')
-    .schema(z.object({ id: z.string() }))
+    .description('Get customer information by ID')
+    .category(ToolCategory.UTILITY)
+    .schema(z.object({
+      id: z.string().describe('Customer ID')
+    }))
     .implement(async ({ id }) => ({
       id,
       name: 'Test Customer',
       email: 'test@example.com',
+      tier: 'gold',
+    }))
+    .build(),
+
+  processOrder: toolBuilder()
+    .name('process-order')
+    .description('Process a customer order')
+    .category(ToolCategory.UTILITY)
+    .schema(z.object({
+      orderId: z.string().describe('Order ID'),
+      action: z.enum(['approve', 'reject']).describe('Action to take'),
+    }))
+    .implement(async ({ orderId, action }) => ({
+      orderId,
+      action,
+      status: 'completed',
+      timestamp: Date.now(),
     }))
     .build(),
 };
@@ -684,7 +789,7 @@ export const testConfig: AgentConfig = {
 };
 
 // Usage in tests
-import { createAgent, testConfig } from '@myorg/my-agent';
+import { createAgent, testConfig, mockTools } from '@myorg/my-agent';
 
 test('agent handles customer query', async () => {
   const agent = createAgent(testConfig);
@@ -692,6 +797,18 @@ test('agent handles customer query', async () => {
     messages: [{ role: 'user', content: 'Get customer 123' }],
   });
   expect(result).toBeDefined();
+});
+
+test('agent uses correct tools', async () => {
+  const agent = createAgent({
+    ...testConfig,
+    tools: [mockTools.getCustomer],
+  });
+
+  // Verify tool is available
+  const tools = agent.getTools();
+  expect(tools).toHaveLength(1);
+  expect(tools[0].metadata.name).toBe('get-customer');
 });
 ```
 
