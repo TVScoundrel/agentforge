@@ -260,9 +260,70 @@ Always use the appropriate tool for each task.`;
 
 ### 4. System Prompt Customization
 
-Make system prompts flexible while maintaining core behavior:
+Make system prompts flexible while maintaining core behavior. **Best practice**: Store prompts in external `.md` files with variable placeholders.
 
+#### External Prompt Pattern (Recommended)
+
+Store prompts in separate `.md` files for better maintainability:
+
+**File: `prompts/system.md`**
+```markdown
+# {{agentRole}}
+
+You are a {{agentRole}}{{#if companyName}} representing {{companyName}}{{/if}}.
+
+## Your Responsibilities
+
+{{#each responsibilities}}
+- {{this}}
+{{/each}}
+
+## Guidelines
+
+{{#each guidelines}}
+- {{this}}
+{{/each}}
+
+{{#if enableEscalation}}
+## Escalation
+
+When you encounter issues you cannot resolve, use the `ask-human` tool to escalate.
+{{/if}}
+```
+
+**Prompt Loader Utility:**
 ```typescript
+import { readFileSync } from 'fs';
+import { join } from 'path';
+
+export function renderTemplate(template: string, variables: Record<string, any>): string {
+  let result = template;
+
+  // Handle conditional blocks: {{#if variable}}...{{/if}}
+  const conditionalRegex = /\{\{#if\s+(\w+)\}\}([\s\S]*?)\{\{\/if\}\}/g;
+  result = result.replace(conditionalRegex, (match, varName, content) => {
+    return variables[varName] ? content : '';
+  });
+
+  // Handle simple variables: {{variable}}
+  const variableRegex = /\{\{(\w+)\}\}/g;
+  result = result.replace(variableRegex, (match, varName) => {
+    return variables[varName] !== undefined ? String(variables[varName]) : '';
+  });
+
+  return result;
+}
+
+export function loadPrompt(promptName: string, variables: Record<string, any> = {}): string {
+  const template = readFileSync(join(__dirname, '..', 'prompts', `${promptName}.md`), 'utf-8');
+  return renderTemplate(template, variables);
+}
+```
+
+**Usage in Agent:**
+```typescript
+import { loadPrompt } from './prompt-loader';
+
 export interface PromptConfig {
   role?: string;
   goal?: string;
@@ -271,52 +332,57 @@ export interface PromptConfig {
   constraints?: string[];
 }
 
-export function buildSystemPrompt(config: PromptConfig): string {
-  const {
-    role = 'helpful assistant',
-    goal = 'assist users with their questions',
-    guidelines = [],
-    examples = [],
-    constraints = [],
-  } = config;
+export function buildSystemPrompt(config: CustomerSupportConfig): string {
+  const { systemPrompt, companyName, enableHumanEscalation } = config;
 
-  let prompt = `You are a ${role}.\n\n`;
-  prompt += `Your goal is to ${goal}.\n\n`;
-
-  if (guidelines.length > 0) {
-    prompt += `Guidelines:\n`;
-    guidelines.forEach((g, i) => {
-      prompt += `${i + 1}. ${g}\n`;
-    });
-    prompt += `\n`;
+  // Allow complete custom override
+  if (systemPrompt) {
+    return systemPrompt;
   }
 
-  if (examples.length > 0) {
-    prompt += `Examples:\n`;
-    examples.forEach((ex) => {
-      prompt += `Scenario: ${ex.scenario}\n`;
-      prompt += `Response: ${ex.response}\n\n`;
-    });
-  }
-
-  if (constraints.length > 0) {
-    prompt += `Constraints:\n`;
-    constraints.forEach((c, i) => {
-      prompt += `${i + 1}. ${c}\n`;
-    });
-  }
-
-  return prompt;
+  // Load and render prompt from external .md file
+  return loadPrompt('system', {
+    agentRole: 'customer support agent',
+    companyName,
+    enableEscalation: enableHumanEscalation,
+    responsibilities: [
+      'Greet customers warmly',
+      'Listen actively to understand issues',
+      'Provide clear solutions',
+    ],
+    guidelines: [
+      'Be polite and empathetic',
+      'Use simple language',
+      'Document all interactions',
+    ],
+  });
 }
 
 // Usage
-export function createSupportAgent(promptConfig?: PromptConfig) {
-  const systemPrompt = buildSystemPrompt({
-    role: 'customer support specialist',
-    goal: 'resolve customer issues quickly and professionally',
-    guidelines: [
-      'Always greet customers warmly',
-      'Listen actively to understand the issue',
+export function createSupportAgent(config: CustomerSupportConfig = {}) {
+  const systemPrompt = buildSystemPrompt(config);
+
+  return createReActAgent({
+    model: new ChatOpenAI({ modelName: 'gpt-4' }),
+    tools: config.tools || [],
+    systemPrompt,
+  });
+}
+```
+
+**Benefits of External Prompts:**
+
+- ✅ **Separation of Concerns**: Prompts are content, not code
+- ✅ **Easier to Read**: Markdown is more readable than template strings
+- ✅ **Version Control**: Track prompt changes independently from code
+- ✅ **Team Collaboration**: Non-developers can edit prompts
+- ✅ **Reusability**: Share prompts across multiple agents
+- ✅ **Testing**: Easier to test different prompt variations
+- ✅ **Localization**: Create language-specific prompt files
+
+**Alternative: Inline Prompts (Not Recommended)**
+
+For simple cases, you can build prompts inline, but this becomes hard to maintain:
       'Provide clear, actionable solutions',
       'Follow up to ensure satisfaction',
     ],
