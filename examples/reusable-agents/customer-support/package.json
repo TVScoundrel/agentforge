@@ -1,0 +1,42 @@
+{
+  "name": "@agentforge-examples/customer-support-agent",
+  "version": "1.0.0",
+  "description": "Reusable customer support agent built with AgentForge",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "scripts": {
+    "build": "tsc",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "type-check": "tsc --noEmit"
+  },
+  "keywords": [
+    "agentforge",
+    "ai-agent",
+    "customer-support",
+    "reusable-agent",
+    "langgraph",
+    "langchain"
+  ],
+  "dependencies": {
+    "@agentforge/core": "workspace:*",
+    "@agentforge/patterns": "workspace:*",
+    "@agentforge/tools": "workspace:*",
+    "@langchain/core": "^0.3.0",
+    "@langchain/openai": "^0.3.0",
+    "zod": "^3.22.4"
+  },
+  "devDependencies": {
+    "@types/node": "^20.10.0",
+    "typescript": "^5.3.3",
+    "vitest": "^1.0.4"
+  }
+}
+

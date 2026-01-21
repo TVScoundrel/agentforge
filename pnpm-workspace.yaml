@@ -2,4 +2,5 @@ packages:
   - 'packages/*'
   - 'docs-site'
   - 'playground'
+  - 'examples/reusable-agents/*'
 
