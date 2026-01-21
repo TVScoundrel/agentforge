@@ -115,3 +115,24 @@ export {
   type DevelopmentPresetOptions,
   type TestingPresetOptions,
 } from './middleware/index.js';
+
+export {
+  createHumanRequestInterrupt,
+  createApprovalRequiredInterrupt,
+  createCustomInterrupt,
+  isHumanRequestInterrupt,
+  isApprovalRequiredInterrupt,
+  isCustomInterrupt,
+  getThreadStatus,
+  type InterruptType,
+  type InterruptData,
+  type HumanRequestInterrupt,
+  type ApprovalRequiredInterrupt,
+  type CustomInterrupt,
+  type AnyInterrupt,
+  type ResumeCommand,
+  type ThreadStatus,
+  type ThreadInfo,
+  type CheckInterruptOptions,
+  type ResumeOptions,
+} from './interrupts/index.js';
