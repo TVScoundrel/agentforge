@@ -80,11 +80,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - @agentforge/testing@0.5.2
   - @agentforge/cli@0.5.2
 
-## [Unreleased]
-
-### Added
-- No unreleased changes yet
-
 ## [0.5.1] - 2026-01-16
 
 ### Added
