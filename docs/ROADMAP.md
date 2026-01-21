@@ -167,20 +167,20 @@ Enable human-in-the-loop workflows and promote reusable agent patterns:
 Core framework tool for human-in-the-loop interactions:
 
 **Implementation Tasks**:
-- [ ] Design `askHuman` tool API and types
-- [ ] Implement core `askHuman` tool in `@agentforge/core`
-- [ ] Add LangGraph interrupt handling integration
-- [ ] Implement SSE streaming support for real-time communication
-- [ ] Add support for multiple concurrent human requests
-- [ ] Implement timeout and fallback handling
-- [ ] Add TypeScript types and interfaces
-- [ ] Write unit tests (>90% coverage)
+- [x] Design `askHuman` tool API and types
+- [x] Implement core `askHuman` tool in `@agentforge/core`
+- [x] Add LangGraph interrupt handling integration
+- [x] Implement SSE streaming support for real-time communication
+- [x] Add support for multiple concurrent human requests
+- [x] Implement timeout and fallback handling
+- [x] Add TypeScript types and interfaces
+- [x] Write unit tests (>90% coverage)
 - [ ] Write integration tests with ReAct pattern
 - [ ] Write integration tests with Plan-Execute pattern
 - [ ] Create documentation page: "Human-in-the-Loop"
 - [ ] Create example: Customer support agent with approval workflow
 - [ ] Update API documentation
-- [ ] Add to exports in `@agentforge/core`
+- [x] Add to exports in `@agentforge/core`
 
 **Deliverables**:
 - `askHuman` tool implementation in `@agentforge/core`

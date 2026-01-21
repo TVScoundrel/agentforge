@@ -56,6 +56,24 @@ export { createProgressTracker } from './progress.js';
 // SSE support
 export { createSSEFormatter, createHeartbeat, parseSSEEvent } from './sse.js';
 
+// Human-in-the-loop SSE utilities
+export {
+  formatHumanRequestEvent,
+  formatHumanResponseEvent,
+  formatInterruptEvent,
+  formatResumeEvent,
+  formatAgentWaitingEvent,
+  formatAgentResumedEvent,
+  type HumanInLoopEventType,
+  type HumanRequestEventData,
+  type HumanResponseEventData,
+  type InterruptEventData,
+  type ResumeEventData,
+  type AgentWaitingEventData,
+  type AgentResumedEventData,
+  type HumanInLoopEventData,
+} from './human-in-loop.js';
+
 // WebSocket support
 export { createWebSocketHandler, sendMessage, broadcast, createMessage } from './websocket.js';
 
