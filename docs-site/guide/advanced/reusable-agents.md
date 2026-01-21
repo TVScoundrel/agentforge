@@ -2,8 +2,12 @@
 
 Reusable agents are configurable, composable AI agents that can be easily customized and shared across projects. This guide covers best practices for creating agents that are flexible, maintainable, and ready for production use.
 
-::: tip Working Example Available
-See the complete [Customer Support Agent example](https://github.com/TVScoundrel/agentforge/tree/main/examples/reusable-agents/customer-support) for a production-ready implementation with external prompts, tool injection, feature flags, and comprehensive tests.
+::: tip Working Examples Available
+See complete working examples:
+- [Customer Support Agent](https://github.com/TVScoundrel/agentforge/tree/main/examples/reusable-agents/customer-support) - Support automation with escalation
+- [Code Review Agent](https://github.com/TVScoundrel/agentforge/tree/main/examples/reusable-agents/code-review) - Automated code review with security & performance checks
+
+Both demonstrate production-ready implementations with external prompts, tool injection, feature flags, and comprehensive tests.
 :::
 
 ## Why Reusable Agents?
@@ -1076,9 +1080,29 @@ A fully-featured customer support agent demonstrating:
 
 This example showcases the **recommended pattern** for creating production-ready reusable agents.
 
+### [Code Review Agent](https://github.com/TVScoundrel/agentforge/tree/main/examples/reusable-agents/code-review)
+
+A configurable code review agent demonstrating:
+- ✅ Factory function pattern with Zod validation
+- ✅ Tool injection using ToolRegistry
+- ✅ Feature flags (security checks, performance checks, strict mode, auto-approve)
+- ✅ **External prompt pattern** with `prompts/system.md`
+- ✅ Built-in tools (analyze-code, check-security, check-performance)
+- ✅ Review depth configuration (quick, standard, thorough)
+- ✅ Language-specific review support
+- ✅ 26 comprehensive tests demonstrating reusability
+
+**Key Files:**
+- `src/index.ts` - Agent factory function
+- `src/prompt-loader.ts` - Prompt template utility
+- `prompts/system.md` - External prompt with `{{variables}}`
+- `src/index.test.ts` - Comprehensive test suite
+- `README.md` - Full documentation
+
+Perfect for teams needing customizable code review automation.
+
 ### Coming Soon
 
-- **Code Review Agent** - Configurable code review with language-specific rules
 - **Data Analyst Agent** - Flexible data analysis with custom data sources
 
 ## Next Steps
@@ -1087,7 +1111,9 @@ This example showcases the **recommended pattern** for creating production-ready
 - Review [Versioning Strategies](#versioning-strategies) for version management
 - Check [TypeScript Best Practices](#typescript-best-practices) for type safety
 - Explore [Tool Injection](#3-tool-injection-and-composition) for composability
-- **Try the [Customer Support Agent example](https://github.com/TVScoundrel/agentforge/tree/main/examples/reusable-agents/customer-support)**
+- **Try the working examples:**
+  - [Customer Support Agent](https://github.com/TVScoundrel/agentforge/tree/main/examples/reusable-agents/customer-support)
+  - [Code Review Agent](https://github.com/TVScoundrel/agentforge/tree/main/examples/reusable-agents/code-review)
 
 ## Related Guides
 
