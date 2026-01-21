@@ -263,30 +263,31 @@ Provide reference implementations of reusable agents:
 - TypeScript types
 - Tests demonstrating reusability
 
-#### Phase 9.4: CLI Scaffolding (Nice to Have)
+#### Phase 9.4: CLI Scaffolding (Nice to Have) ✅
 **Duration**: 1-2 days
+**Status**: COMPLETE
 
 CLI commands for creating reusable agents:
 
 **CLI Tasks**:
-- [ ] Design CLI command API
-- [ ] Implement `agentforge create reusable-agent <name>` command
-- [ ] Create template for reusable agent structure
-- [ ] Add TypeScript types template
-- [ ] Add README template with usage examples
-- [ ] Add package.json template for publishing
-- [ ] Add configuration schema template
-- [ ] Add tests template
-- [ ] Write unit tests for CLI command
-- [ ] Update CLI documentation
-- [ ] Add to CLI help text
-- [ ] Test end-to-end workflow
+- [x] Design CLI command API
+- [x] Implement `agentforge agent:create-reusable <name>` command
+- [x] Create template for reusable agent structure
+- [x] Add TypeScript types template
+- [x] Add README template with usage examples
+- [x] Add package.json template for publishing
+- [x] Add configuration schema template
+- [x] Add tests template
+- [x] Write unit tests for CLI command (5 tests passing)
+- [x] Update CLI documentation
+- [x] Add to CLI help text
+- [x] Test end-to-end workflow (build successful)
 
 **Deliverables**:
-- CLI command implementation
-- Templates for reusable agents
-- Documentation update
-- Tests for CLI command
+- ✅ CLI command implementation (`agent:create-reusable`)
+- ✅ Templates for reusable agents (complete template in `packages/cli/templates/reusable-agent/`)
+- ✅ Documentation update (CLI README with detailed usage)
+- ✅ Tests for CLI command (5 tests, mocked file operations)
 
 ---
 
