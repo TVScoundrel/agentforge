@@ -156,7 +156,136 @@ Implemented tool relations and minimal prompt mode:
 
 ---
 
-### Phase 9: Ecosystem 📋 FUTURE
+### Phase 9: Human-in-the-Loop & Reusable Agents 📋 PLANNED
+**Status**: 📋 Planned | **Priority**: High | **Duration**: 1-2 weeks
+
+Enable human-in-the-loop workflows and promote reusable agent patterns:
+
+#### Phase 9.1: askHuman Tool (High Priority)
+**Duration**: 3-5 days
+
+Core framework tool for human-in-the-loop interactions:
+
+**Implementation Tasks**:
+- [ ] Design `askHuman` tool API and types
+- [ ] Implement core `askHuman` tool in `@agentforge/core`
+- [ ] Add LangGraph interrupt handling integration
+- [ ] Implement SSE streaming support for real-time communication
+- [ ] Add support for multiple concurrent human requests
+- [ ] Implement timeout and fallback handling
+- [ ] Add TypeScript types and interfaces
+- [ ] Write unit tests (>90% coverage)
+- [ ] Write integration tests with ReAct pattern
+- [ ] Write integration tests with Plan-Execute pattern
+- [ ] Create documentation page: "Human-in-the-Loop"
+- [ ] Create example: Customer support agent with approval workflow
+- [ ] Update API documentation
+- [ ] Add to exports in `@agentforge/core`
+
+**Deliverables**:
+- `askHuman` tool implementation in `@agentforge/core`
+- Interrupt handling utilities
+- SSE streaming integration
+- TypeScript types and interfaces
+- Unit tests (>90% coverage)
+- Integration tests with ReAct/Plan-Execute patterns
+- Documentation page: "Human-in-the-Loop"
+- Example: Customer support agent with approval workflow
+
+#### Phase 9.2: Reusable Agent Pattern Documentation (High Priority)
+**Duration**: 2-3 days
+
+Document best practices for creating reusable agents:
+
+**Documentation Tasks**:
+- [ ] Create guide: "Creating Reusable Agents"
+- [ ] Document pattern: Agent factory functions
+- [ ] Document pattern: Configuration-driven agents
+- [ ] Document pattern: Tool injection and composition
+- [ ] Document pattern: System prompt customization
+- [ ] Create guide: Publishing agents to npm
+- [ ] Create guide: Versioning strategies
+- [ ] Document TypeScript best practices
+- [ ] Add code examples for each pattern
+- [ ] Create publishing checklist
+- [ ] Add to documentation site navigation
+- [ ] Review and polish documentation
+
+**Deliverables**:
+- Documentation page: "Creating Reusable Agents"
+- Best practices guide
+- TypeScript patterns and examples
+- Publishing checklist
+- Versioning guide
+
+#### Phase 9.3: Reusable Agent Examples (High Priority)
+**Duration**: 2-3 days
+
+Provide reference implementations of reusable agents:
+
+**Example Tasks**:
+- [ ] Create `examples/reusable-agents/` directory
+- [ ] Implement customer support agent (configurable)
+  - [ ] Agent factory function
+  - [ ] Configuration schema
+  - [ ] Tool injection pattern
+  - [ ] System prompt customization
+  - [ ] README with usage examples
+  - [ ] Tests demonstrating reusability
+- [ ] Implement code review agent (configurable)
+  - [ ] Agent factory function
+  - [ ] Configuration schema
+  - [ ] Tool injection pattern
+  - [ ] System prompt customization
+  - [ ] README with usage examples
+  - [ ] Tests demonstrating reusability
+- [ ] Implement data analyst agent (configurable)
+  - [ ] Agent factory function
+  - [ ] Configuration schema
+  - [ ] Tool injection pattern
+  - [ ] System prompt customization
+  - [ ] README with usage examples
+  - [ ] Tests demonstrating reusability
+- [ ] Create main README for reusable agents examples
+- [ ] Add TypeScript types for all configurations
+- [ ] Add integration tests showing different configurations
+- [ ] Update main examples README
+
+**Deliverables**:
+- 3 example reusable agents in `examples/reusable-agents/`
+- README for each with usage examples
+- Configuration schemas
+- TypeScript types
+- Tests demonstrating reusability
+
+#### Phase 9.4: CLI Scaffolding (Nice to Have)
+**Duration**: 1-2 days
+
+CLI commands for creating reusable agents:
+
+**CLI Tasks**:
+- [ ] Design CLI command API
+- [ ] Implement `agentforge create reusable-agent <name>` command
+- [ ] Create template for reusable agent structure
+- [ ] Add TypeScript types template
+- [ ] Add README template with usage examples
+- [ ] Add package.json template for publishing
+- [ ] Add configuration schema template
+- [ ] Add tests template
+- [ ] Write unit tests for CLI command
+- [ ] Update CLI documentation
+- [ ] Add to CLI help text
+- [ ] Test end-to-end workflow
+
+**Deliverables**:
+- CLI command implementation
+- Templates for reusable agents
+- Documentation update
+- Tests for CLI command
+
+---
+
+### Phase X: Ecosystem 📋 FUTURE
 **Status**: 📋 Planned | **Priority**: Low
 
 Community and ecosystem development:
