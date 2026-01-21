@@ -3,7 +3,75 @@
  * @module langgraph/interrupts/types
  */
 
-import type { HumanRequest } from '../../tools/builtin/ask-human/types.js';
+/**
+ * Priority level for human requests
+ */
+export type HumanRequestPriority = 'low' | 'normal' | 'high' | 'critical';
+
+/**
+ * Status of a human request
+ */
+export type HumanRequestStatus = 'pending' | 'answered' | 'timeout' | 'cancelled';
+
+/**
+ * Human request stored in state
+ */
+export interface HumanRequest {
+  /**
+   * Unique ID for this request
+   */
+  id: string;
+
+  /**
+   * The question being asked
+   */
+  question: string;
+
+  /**
+   * Optional context
+   */
+  context?: Record<string, any>;
+
+  /**
+   * Priority level
+   */
+  priority: HumanRequestPriority;
+
+  /**
+   * When the request was created
+   */
+  createdAt: number;
+
+  /**
+   * Timeout in milliseconds (0 = no timeout)
+   */
+  timeout: number;
+
+  /**
+   * Default response if timeout occurs
+   */
+  defaultResponse?: string;
+
+  /**
+   * Suggested responses
+   */
+  suggestions?: string[];
+
+  /**
+   * Current status
+   */
+  status: HumanRequestStatus;
+
+  /**
+   * The response (if answered)
+   */
+  response?: string;
+
+  /**
+   * When the response was received
+   */
+  respondedAt?: number;
+}
 
 /**
  * Interrupt type - identifies what kind of interrupt occurred

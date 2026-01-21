@@ -135,4 +135,7 @@ export {
   type ThreadInfo,
   type CheckInterruptOptions,
   type ResumeOptions,
+  type HumanRequest,
+  type HumanRequestPriority,
+  type HumanRequestStatus,
 } from './interrupts/index.js';

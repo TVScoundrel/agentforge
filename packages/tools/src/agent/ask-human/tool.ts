@@ -1,10 +1,9 @@
 /**
  * askHuman tool implementation
- * @module tools/builtin/ask-human/tool
+ * @module tools/agent/ask-human/tool
  */
 
-import { toolBuilder } from '../../builder.js';
-import { ToolCategory } from '../../types.js';
+import { toolBuilder, ToolCategory } from '@agentforge/core';
 import { AskHumanInputSchema, type AskHumanInput, type AskHumanOutput } from './types.js';
 import { randomUUID } from 'crypto';
 
@@ -16,13 +15,13 @@ import { randomUUID } from 'crypto';
  * 
  * @example
  * ```typescript
- * import { createAskHumanTool } from '@agentforge/core';
- * 
+ * import { createAskHumanTool } from '@agentforge/tools';
+ *
  * const askHuman = createAskHumanTool();
- * 
+ *
  * // In your agent
  * const tools = [askHuman, ...otherTools];
- * 
+ *
  * // The agent can call this tool to ask for human input
  * // When called, it will pause execution and wait for a response
  * ```

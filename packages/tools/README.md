@@ -1,6 +1,6 @@
 # @agentforge/tools
 
-> Production-ready tools collection for AgentForge - 69 tools for web, data, file, and utility operations
+> Production-ready tools collection for AgentForge - 70 tools for web, data, file, utility, and agent operations
 
 [![npm version](https://img.shields.io/npm/v/@agentforge/tools)](https://www.npmjs.com/package/@agentforge/tools)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.9-blue)](https://www.typescriptlang.org/)
@@ -8,7 +8,7 @@
 
 ## 🎉 Status: Production Ready & Published
 
-**69 production-ready tools** | **Full TypeScript support** | **Comprehensive documentation** | **LangChain compatible**
+**70 production-ready tools** | **Full TypeScript support** | **Comprehensive documentation** | **LangChain compatible**
 
 ## 📦 Installation
 
@@ -22,12 +22,13 @@ yarn add @agentforge/tools
 
 ## 🎯 Overview
 
-This package provides **69 ready-to-use tools** organized into 4 categories:
+This package provides **70 ready-to-use tools** organized into 5 categories:
 
 - **🌐 Web Tools** (11 tools) - HTTP requests, web search, web scraping, HTML parsing, URL manipulation
 - **📊 Data Tools** (18 tools) - JSON, CSV, XML processing and data transformation
 - **📁 File Tools** (18 tools) - File operations, directory management, path utilities
 - **🔧 Utility Tools** (22 tools) - Date/time, strings, math, validation
+- **🤖 Agent Tools** (1 tool) - Human-in-the-loop and agent interaction
 
 All tools feature:
 - ✅ Full TypeScript support with type inference

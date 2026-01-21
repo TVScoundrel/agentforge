@@ -4,8 +4,7 @@
  */
 
 import type { SSEEvent } from './types.js';
-import type { HumanRequest } from '../tools/builtin/ask-human/types.js';
-import type { AnyInterrupt } from '../langgraph/interrupts/types.js';
+import type { HumanRequest, AnyInterrupt } from '../langgraph/interrupts/types.js';
 
 /**
  * Human-in-the-loop SSE event types

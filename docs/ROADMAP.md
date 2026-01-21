@@ -168,8 +168,8 @@ Core framework tool for human-in-the-loop interactions:
 
 **Implementation Tasks**:
 - [x] Design `askHuman` tool API and types
-- [x] Implement core `askHuman` tool in `@agentforge/core`
-- [x] Add LangGraph interrupt handling integration
+- [x] Implement core `askHuman` tool in `@agentforge/tools`
+- [x] Add LangGraph interrupt handling integration in `@agentforge/core`
 - [x] Implement SSE streaming support for real-time communication
 - [x] Add support for multiple concurrent human requests
 - [x] Implement timeout and fallback handling
@@ -180,12 +180,12 @@ Core framework tool for human-in-the-loop interactions:
 - [ ] Create documentation page: "Human-in-the-Loop"
 - [ ] Create example: Customer support agent with approval workflow
 - [ ] Update API documentation
-- [x] Add to exports in `@agentforge/core`
+- [x] Add to exports in `@agentforge/tools`
 
 **Deliverables**:
-- `askHuman` tool implementation in `@agentforge/core`
-- Interrupt handling utilities
-- SSE streaming integration
+- `askHuman` tool implementation in `@agentforge/tools`
+- Interrupt handling utilities in `@agentforge/core`
+- SSE streaming integration in `@agentforge/core`
 - TypeScript types and interfaces
 - Unit tests (>90% coverage)
 - Integration tests with ReAct/Plan-Execute patterns

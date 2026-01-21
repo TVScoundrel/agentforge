@@ -94,15 +94,3 @@ export {
   type ToolInvocation,
   type ToolSimulatorConfig,
 } from './testing.js';
-
-// Built-in tools
-export {
-  createAskHumanTool,
-  askHumanTool,
-  AskHumanInputSchema,
-  type AskHumanInput,
-  type AskHumanOutput,
-  type HumanRequest,
-  type HumanRequestPriority,
-  type HumanRequestStatus,
-} from './builtin/index.js';
