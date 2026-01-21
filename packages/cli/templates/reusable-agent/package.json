@@ -1,0 +1,35 @@
+{
+  "name": "{{PACKAGE_NAME}}",
+  "version": "0.1.0",
+  "description": "{{AGENT_DESCRIPTION}}",
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "typecheck": "tsc --noEmit"
+  },
+  "keywords": [
+    "agentforge",
+    "ai-agent",
+    "llm",
+    "reusable-agent"
+  ],
+  "author": "{{AUTHOR}}",
+  "license": "MIT",
+  "dependencies": {
+    "@agentforge/core": "workspace:*",
+    "@agentforge/patterns": "workspace:*",
+    "@langchain/core": "^1.1.8",
+    "@langchain/openai": "^0.3.14",
+    "zod": "^3.24.1"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.5",
+    "typescript": "^5.7.3",
+    "vitest": "^3.0.5"
+  }
+}
+
