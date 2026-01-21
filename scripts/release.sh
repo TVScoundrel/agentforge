@@ -145,8 +145,11 @@ fi
 # Update README.md
 print_step "Updating README.md..."
 if [ -f "README.md" ]; then
-    sed -i.bak "s/v[0-9]*\.[0-9]*\.[0-9]*/v$NEW_VERSION/g" README.md
-    rm README.md.bak
+    # Update "AgentForge vX.Y.Z" status line
+    sed -i.bak "s/AgentForge v[0-9]*\.[0-9]*\.[0-9]*/AgentForge v$NEW_VERSION/g" README.md
+    # Update package table versions (| 0.X.Y | format)
+    sed -i.bak "s/| [0-9]*\.[0-9]*\.[0-9]* |/| $NEW_VERSION |/g" README.md
+    rm README.md.bak 2>/dev/null || true
     print_success "Updated README.md"
 fi
 
