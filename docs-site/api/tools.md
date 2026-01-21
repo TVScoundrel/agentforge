@@ -1,6 +1,6 @@
 # @agentforge/tools
 
-Standard tools library with 69+ production-ready tools.
+Standard tools library with 70 production-ready tools.
 
 ## Installation
 
@@ -358,7 +358,33 @@ import {
 } from '@agentforge/tools';
 ```
 
+## Agent Tools (1)
+
+### Ask Human
+
+```typescript
+import { createAskHumanTool } from '@agentforge/tools';
+
+// Create the tool
+const askHuman = createAskHumanTool();
+
+// Use in your agent
+const tools = [askHuman, ...otherTools];
+
+// The agent can call this tool to request human input
+// Execution pauses until a human responds
+```
+
+**Features:**
+- Human-in-the-loop workflows
+- Priority levels (low, normal, high, critical)
+- Timeout handling with default responses
+- Suggested responses for UI
+- LangGraph interrupt integration
+
+**Note:** Requires `@langchain/langgraph` to be installed.
+
 ## Complete Tool List
 
-See the [Tools README](https://github.com/TVScoundrel/agentforge/tree/main/packages/tools) for the complete list of all 69 tools with detailed documentation.
+See the [Tools README](https://github.com/TVScoundrel/agentforge/tree/main/packages/tools) for the complete list of all 70 tools with detailed documentation.
 

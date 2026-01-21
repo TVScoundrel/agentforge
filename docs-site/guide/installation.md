@@ -77,7 +77,7 @@ pnpm add -D @agentforge/testing
 ```
 
 #### @agentforge/tools
-Standard tools library (69+ tools).
+Standard tools library (70 tools).
 
 ```bash
 pnpm add @agentforge/tools
