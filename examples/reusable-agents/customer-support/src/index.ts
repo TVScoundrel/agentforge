@@ -14,6 +14,7 @@ import { ToolRegistry, toolBuilder, ToolCategory, type Tool } from '@agentforge/
 import { currentDateTime, createAskHumanTool } from '@agentforge/tools';
 import { z } from 'zod';
 import type { BaseLanguageModel } from '@langchain/core/language_models/base';
+import { loadPrompt } from './prompt-loader.js';
 
 /**
  * Configuration schema for the customer support agent
@@ -46,51 +47,41 @@ export const CustomerSupportConfigSchema = z.object({
 export type CustomerSupportConfig = z.infer<typeof CustomerSupportConfigSchema>;
 
 /**
- * Default system prompt for customer support agent
- */
-const DEFAULT_SYSTEM_PROMPT = `You are a professional customer support agent.
-
-Your responsibilities:
-1. Greet customers warmly and professionally
-2. Listen actively to understand their issue
-3. Ask clarifying questions when needed
-4. Provide clear, actionable solutions
-5. Follow up to ensure customer satisfaction
-
-Guidelines:
-- Always be polite, empathetic, and patient
-- Use simple, jargon-free language
-- Escalate complex issues to human agents when appropriate
-- Never share sensitive customer data
-- Document all interactions for future reference
-
-Remember: Your goal is to resolve issues quickly while maintaining excellent customer experience.`;
-
-/**
- * Build system prompt with company-specific information
+ * Build system prompt from template with variable substitution
+ *
+ * Loads the prompt from prompts/system.md and renders it with the provided variables.
+ * This pattern keeps prompts separate from code, making them easier to:
+ * - Read and understand
+ * - Modify without touching code
+ * - Version control separately
+ * - Share across teams
+ *
+ * @param config - Agent configuration
+ * @returns Rendered system prompt
  */
 function buildSystemPrompt(config: CustomerSupportConfig): string {
-  const { systemPrompt, companyName, supportEmail, enableHumanEscalation } = config;
-  
+  const {
+    systemPrompt,
+    companyName,
+    supportEmail,
+    enableHumanEscalation,
+    enableTicketCreation,
+    enableKnowledgeBase,
+  } = config;
+
+  // Allow complete custom override
   if (systemPrompt) {
     return systemPrompt;
   }
-  
-  let prompt = DEFAULT_SYSTEM_PROMPT;
-  
-  if (companyName) {
-    prompt += `\n\nYou are representing ${companyName}. Always maintain our brand voice and values.`;
-  }
-  
-  if (supportEmail) {
-    prompt += `\n\nFor complex issues, customers can also email ${supportEmail}.`;
-  }
-  
-  if (enableHumanEscalation) {
-    prompt += `\n\nWhen you encounter issues you cannot resolve, use the ask-human tool to escalate to a human agent.`;
-  }
-  
-  return prompt;
+
+  // Load and render prompt template with variables
+  return loadPrompt('system', {
+    companyName,
+    supportEmail,
+    enableHumanEscalation,
+    enableTicketCreation,
+    enableKnowledgeBase,
+  });
 }
 
 /**

@@ -10,6 +10,7 @@ A configurable, reusable customer support agent built with AgentForge. This agen
 - 📝 **Type-Safe**: Full TypeScript support with Zod validation
 - 🧪 **Testable**: Easy to test with dependency injection
 - 📦 **Reusable**: Use as-is or customize for your needs
+- 📄 **External Prompts**: Prompts stored in `.md` files with `{{variable}}` placeholders
 
 ## Installation
 
@@ -145,6 +146,61 @@ const agent = createCustomerSupportAgent({
 #### Knowledge Base (`enableKnowledgeBase: true`)
 - **search-knowledge-base**: Search knowledge base for solutions
 
+## Prompt Management
+
+This agent demonstrates the **external prompt pattern** - a best practice for managing agent prompts:
+
+### Why External Prompts?
+
+- **Separation of Concerns**: Keep prompts separate from code logic
+- **Easier to Read**: Prompts are in markdown, not embedded in strings
+- **Version Control**: Track prompt changes independently
+- **Team Collaboration**: Non-developers can edit prompts
+- **Reusability**: Share prompts across agents
+
+### Prompt Structure
+
+Prompts are stored in `prompts/system.md` with variable placeholders:
+
+```markdown
+# Customer Support Agent
+
+You are a professional customer support agent{{#if companyName}} representing {{companyName}}{{/if}}.
+
+## Your Responsibilities
+
+1. **Greet customers** warmly and professionally
+2. **Listen actively** to understand their issue
+...
+
+{{#if enableHumanEscalation}}
+- **Escalate complex issues** to human agents when appropriate
+{{/if}}
+```
+
+### Variable Substitution
+
+The prompt loader supports:
+- **Simple variables**: `{{companyName}}` → replaced with value
+- **Conditional blocks**: `{{#if variable}}...{{/if}}` → included if truthy
+
+### Custom Prompts
+
+You can either:
+1. **Modify the template**: Edit `prompts/system.md` directly
+2. **Override completely**: Pass `systemPrompt` in config
+3. **Add new templates**: Create new `.md` files and load them
+
+```typescript
+import { loadPrompt } from './prompt-loader';
+
+// Load custom prompt
+const customPrompt = loadPrompt('my-custom-prompt', {
+  companyName: 'Acme Corp',
+  supportLevel: 'premium',
+});
+```
+
 ## Examples
 
 See the [examples directory](./examples) for more usage examples:
@@ -153,12 +209,19 @@ See the [examples directory](./examples) for more usage examples:
 - Integration with ticketing systems
 - Custom tool integration
 - Testing strategies
+- Custom prompt templates
 
 ## Testing
 
 ```bash
 npm test
 ```
+
+All 24 tests passing, demonstrating:
+- Configuration validation
+- Tool injection patterns
+- Feature flag combinations
+- Reusability scenarios
 
 ## License
 
