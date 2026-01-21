@@ -5,6 +5,27 @@ All notable changes to AgentForge will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.5.3] - 2026-01-21
+
+### Fixed
+
+#### CLI Template (@agentforge/cli)
+- **Reusable Agent Template tsconfig.json** - Fixed incorrect TypeScript configuration
+  - Removed invalid `extends` path to non-existent `tsconfig.base.json`
+  - Added full standalone compiler options (templates should be self-contained)
+  - Fixed `rootDir` from `./src` to `.` (template files are at root level)
+  - Fixed `include` from `src/**/*` to `.` (no src directory in template)
+  - Template now matches pattern used in other CLI templates (minimal, full, etc.)
+  - Resolves TypeScript errors when opening template in IDE
+
+### Published
+- All packages published to npm registry at version 0.5.3:
+  - @agentforge/core@0.5.3
+  - @agentforge/patterns@0.5.3
+  - @agentforge/tools@0.5.3
+  - @agentforge/testing@0.5.3
+  - @agentforge/cli@0.5.3
+
 ## [0.5.2] - 2026-01-21
 
 ### Added
@@ -459,6 +480,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Version History
 
+- **0.5.3** (2026-01-21) - Fixed reusable-agent template tsconfig.json
 - **0.5.2** (2026-01-21) - Human-in-the-Loop support, reusable agent examples, and CLI scaffolding
 - **0.5.1** (2026-01-16) - Multi-Agent streaming support and tool usage tracking
 - **0.5.0** (2026-01-15) - Automatic ReAct agent integration for Multi-Agent pattern, release automation
