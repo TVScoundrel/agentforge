@@ -47,6 +47,7 @@ dist
 # Learning playground (local experiments, not tracked)
 playground/
 learning/
+brainstorming/
 
 # Personal verification documents (not part of the project)
 docs/verification/
