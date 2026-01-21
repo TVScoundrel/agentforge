@@ -6,6 +6,10 @@ This directory contains real-world examples and integrations demonstrating how t
 
 ```
 examples/
+├── reusable-agents/       # Reusable agent templates (NEW!)
+│   ├── customer-support/      # Configurable support agent
+│   ├── code-review/           # Configurable code reviewer
+│   └── data-analyst/          # Configurable data analyst
 ├── applications/          # Complete application examples
 │   ├── research-assistant/    # AI research assistant
 │   ├── code-reviewer/         # Code review assistant
@@ -15,6 +19,98 @@ examples/
     ├── express-api/           # Express.js REST API
     └── nextjs-app/            # Next.js full-stack app
 ```
+
+## 📦 Reusable Agents (Production Templates)
+
+**NEW!** Production-ready, configurable agent templates that you can use as-is or customize for your needs.
+
+### Customer Support Agent
+**Tests**: 24 passing ✅
+**Pattern**: Factory function with external prompts
+
+A configurable customer support agent with human escalation, ticket creation, and knowledge base integration.
+
+**Key Features**:
+- Human-in-the-loop escalation
+- Ticket creation and tracking
+- Knowledge base search
+- Company branding customization
+- External prompt templates
+
+**Quick Start**:
+```typescript
+import { createCustomerSupportAgent } from './reusable-agents/customer-support';
+
+const agent = createCustomerSupportAgent({
+  companyName: 'Acme Corp',
+  supportEmail: 'support@acme.com',
+  enableHumanEscalation: true,
+});
+```
+
+[View Documentation](./reusable-agents/customer-support/README.md)
+
+---
+
+### Code Review Agent
+**Tests**: 26 passing ✅
+**Pattern**: Factory function with external prompts
+
+An automated code review agent with security checks, performance analysis, and configurable strictness.
+
+**Key Features**:
+- Security vulnerability detection
+- Performance optimization suggestions
+- Strict mode for critical code
+- Auto-approve for trivial changes
+- Language-specific rules
+
+**Quick Start**:
+```typescript
+import { createCodeReviewAgent } from './reusable-agents/code-review';
+
+const agent = createCodeReviewAgent({
+  teamName: 'Platform Team',
+  languages: 'TypeScript, Python',
+  enableSecurityChecks: true,
+  strictMode: true,
+});
+```
+
+[View Documentation](./reusable-agents/code-review/README.md)
+
+---
+
+### Data Analyst Agent
+**Tests**: 28 passing ✅
+**Pattern**: Factory function with external prompts
+
+A flexible data analysis agent with statistical methods, visualization, and confidential data handling.
+
+**Key Features**:
+- Statistical analysis (mean, median, correlation, etc.)
+- Data quality validation
+- Chart and graph generation
+- Confidential data mode
+- Analysis depth configuration (quick/standard/deep)
+
+**Quick Start**:
+```typescript
+import { createDataAnalystAgent } from './reusable-agents/data-analyst';
+
+const agent = createDataAnalystAgent({
+  organizationName: 'Acme Corp',
+  dataTypes: 'Sales, Marketing, Customer',
+  enableStatisticalAnalysis: true,
+  analysisDepth: 'deep',
+});
+```
+
+[View Documentation](./reusable-agents/data-analyst/README.md)
+
+**[📚 View All Reusable Agents →](./reusable-agents/README.md)**
+
+---
 
 ## 🚀 Applications
 
@@ -165,6 +261,11 @@ npx create-next-app@latest my-agent-app
 
 | Example | Pattern | Best For |
 |---------|---------|----------|
+| **Reusable Agents** | **Factory + External Prompts** | **Production templates, customization** |
+| Customer Support Agent | Factory function | Configurable support automation |
+| Code Review Agent | Factory function | Configurable code analysis |
+| Data Analyst Agent | Factory function | Configurable data analysis |
+| **Applications** | **Various Patterns** | **Complete examples** |
 | Research Assistant | ReAct | Tool-heavy tasks, research |
 | Code Reviewer | Reflection | Quality analysis, self-improvement |
 | Data Analyst | Plan-Execute | Structured workflows, multi-step tasks |
@@ -173,19 +274,30 @@ npx create-next-app@latest my-agent-app
 ## 📚 Learning Path
 
 ### Beginner
-1. Start with the **Research Assistant** to understand ReAct pattern
+1. **Start with Reusable Agents** - Use production-ready templates
+   - Try the **Customer Support Agent** with your own configuration
+   - Modify prompts in `prompts/system.md` to see how it works
+   - Run the tests to understand the patterns
 2. Try the **Express.js integration** for API basics
 3. Explore the **Next.js integration** for full-stack apps
 
 ### Intermediate
-1. Study the **Code Reviewer** to learn Reflection pattern
-2. Analyze the **Data Analyst** for Plan-Execute pattern
-3. Build custom tools based on the examples
+1. **Customize Reusable Agents** - Add your own tools and features
+   - Inject custom tools via ToolRegistry
+   - Create your own prompt templates
+   - Build domain-specific configurations
+2. Study the **Code Reviewer** to learn Reflection pattern
+3. Analyze the **Data Analyst** for Plan-Execute pattern
+4. Build custom tools based on the examples
 
 ### Advanced
-1. Examine the **Customer Support Bot** for Multi-Agent systems
-2. Combine patterns for complex applications
-3. Optimize for production deployment
+1. **Create Your Own Reusable Agents** - Use the templates as a guide
+   - Follow the factory function pattern
+   - Implement external prompts
+   - Add comprehensive tests
+2. Examine the **Customer Support Bot** for Multi-Agent systems
+3. Combine patterns for complex applications
+4. Optimize for production deployment
 
 ## 🛠️ Prerequisites
 
