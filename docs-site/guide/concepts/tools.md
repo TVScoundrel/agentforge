@@ -5,7 +5,7 @@ Tools are the building blocks that allow AI agents to interact with the world. A
 ::: tip Related Concepts
 - **[Agent Patterns](/guide/concepts/patterns)** - Learn how tools are used in different agent patterns
 - **[Custom Tools Tutorial](/tutorials/custom-tools)** - Step-by-step guide to building your own tools
-- **[Standard Tools API](/api/tools)** - Browse 69+ pre-built tools
+- **[Standard Tools API](/api/tools)** - Browse 70 pre-built tools
 :::
 
 ## What is a Tool?
@@ -358,7 +358,7 @@ const readJsonTool = toolBuilder()
 ## Next Steps
 
 - [API Reference](/api/core#tool-system) - Complete API documentation
-- [Standard Tools](/api/tools) - 69+ pre-built tools
+- [Standard Tools](/api/tools) - 70 pre-built tools
 - [Custom Tools Tutorial](/tutorials/custom-tools) - Build your own tools
 - [Agent Patterns](/guide/concepts/patterns) - Use tools with agents
 

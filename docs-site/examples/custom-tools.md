@@ -303,7 +303,7 @@ registry.registerMany([
 
 ### Using Standard Tools from @agentforge/tools
 
-All 69+ tools from `@agentforge/tools` can be registered directly - they're already built with the tool builder API:
+All 70 tools from `@agentforge/tools` can be registered directly - they're already built with the tool builder API:
 
 ```typescript
 import { ToolRegistry } from '@agentforge/core';
@@ -698,6 +698,6 @@ Be explicit about what the tool cannot do:
 
 - [Tool System Guide](/guide/concepts/tools) - Deep dive into the tool system
 - [API Reference](/api/core#tool-system) - Complete API documentation
-- [Standard Tools](/api/tools) - 69+ pre-built tools
+- [Standard Tools](/api/tools) - 70 pre-built tools
 - [Agent Patterns](/guide/concepts/patterns) - Use tools with agents
 
