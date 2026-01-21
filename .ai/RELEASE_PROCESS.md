@@ -115,6 +115,25 @@ npm view @agentforge/cli version
 - Confirm all show the new version
 - Mark task as COMPLETE after verification
 
+## Step 10: Create GitHub Release
+**This step provides better visibility than just a git tag!**
+
+```bash
+./scripts/create-github-release.sh X.Y.Z
+```
+
+If GitHub CLI is not installed, the script will provide instructions for:
+- Installing GitHub CLI (`brew install gh`)
+- Or creating the release manually on GitHub
+
+Benefits of GitHub Releases:
+- Shows up in the Releases page for easy discovery
+- Sends notifications to repository watchers
+- Provides formatted release notes
+- Links to the git tag automatically
+
+- Mark task as COMPLETE after creating release
+
 ## Common Mistakes to Avoid
 1. ❌ **Forgetting to update docs-site/changelog.md** - This is the #1 mistake!
 2. ❌ **Creating git tag before changelog is updated** - Tag will be on wrong commit
@@ -122,6 +141,7 @@ npm view @agentforge/cli version
 4. ❌ **Skipping build/test** - Could publish broken code
 5. ❌ **Not verifying npm login** - Publish will fail
 6. ❌ **Publishing in wrong order** - Dependencies will break
+7. ❌ **Forgetting to create GitHub Release** - Just tagging is not enough for visibility
 
 ## Task Management Template
 When starting a release, create these tasks:
@@ -134,6 +154,7 @@ When starting a release, create these tasks:
 - [ ] Push to remote
 - [ ] Publish to npm
 - [ ] Verify published versions
+- [ ] Create GitHub Release
 
 ## Quick Checklist
 Before creating the git tag, verify:
