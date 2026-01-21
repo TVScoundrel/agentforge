@@ -5,6 +5,41 @@ All notable changes to AgentForge will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.5.4] - 2026-01-21
+
+### Added
+
+#### Checkpointer Support (@agentforge/patterns)
+- **Checkpointer Support Across All Patterns** - Enable state persistence and human-in-the-loop workflows
+  - Added optional `checkpointer` parameter to all 4 agent patterns:
+    - `createReActAgent()` - ReAct pattern with checkpointing
+    - `createPlanExecuteAgent()` - Plan-Execute pattern with checkpointing
+    - `createReflectionAgent()` - Reflection pattern with checkpointing
+    - `createMultiAgentSystem()` - Multi-Agent pattern with checkpointing
+  - Fully backward compatible - checkpointer is optional
+  - Enables askHuman tool usage with all patterns
+  - Enables conversation continuity and state persistence
+  - Enables LangGraph interrupts for human-in-the-loop workflows
+  - 4 new tests for checkpointer support (2 ReAct + 2 Multi-Agent)
+  - Updated JSDoc examples showing checkpointer usage with MemorySaver
+  - **Total Test Count**: 1032 tests passing (up from 1028)
+
+### Changed
+
+#### Documentation
+- **Test Count Updates** - Updated test counts across all documentation
+  - README.md: Updated badge and metrics to show 1032 tests
+  - docs/ROADMAP.md: Updated test count to 1032 tests
+  - All documentation now reflects current test coverage
+
+### Published
+- All packages published to npm registry at version 0.5.4:
+  - @agentforge/core@0.5.4
+  - @agentforge/patterns@0.5.4
+  - @agentforge/tools@0.5.4
+  - @agentforge/testing@0.5.4
+  - @agentforge/cli@0.5.4
+
 ## [0.5.3] - 2026-01-21
 
 ### Fixed
@@ -480,6 +515,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Version History
 
+- **0.5.4** (2026-01-21) - Checkpointer support for all patterns, enabling human-in-the-loop workflows
 - **0.5.3** (2026-01-21) - Fixed reusable-agent template tsconfig.json
 - **0.5.2** (2026-01-21) - Human-in-the-Loop support, reusable agent examples, and CLI scaffolding
 - **0.5.1** (2026-01-16) - Multi-Agent streaming support and tool usage tracking
