@@ -9,6 +9,27 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+#### Human-in-the-Loop Support (@agentforge/tools, @agentforge/core)
+- **askHuman Tool** - New tool for human-in-the-loop workflows
+  - Pauses agent execution to request human input or approval
+  - Priority levels: low, normal, high, critical
+  - Timeout handling with default responses
+  - Suggested responses for UI integration
+  - LangGraph interrupt integration
+  - Full TypeScript support with Zod validation
+  - 11 comprehensive unit tests
+
+- **Interrupt Handling Utilities** (@agentforge/core)
+  - `HumanRequest`, `HumanRequestPriority`, `HumanRequestStatus` types
+  - Interrupt creation and type guard utilities
+  - Thread status tracking
+  - SSE event formatters for real-time communication
+  - 19 unit tests for interrupt and streaming utilities
+
+- **New Agent Tools Category** - Created dedicated category for agent interaction tools
+  - Tool count increased from 69 to 70 tools
+  - 5 categories: Web, Data, File, Utility, Agent
+
 #### Reusable Agent Examples
 - **Three Production-Ready Reusable Agents** - Complete examples in `examples/reusable-agents/`
   - Customer Support Agent (24 tests passing)
@@ -41,6 +62,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Updated Examples README** - Added reusable agents section and learning path
 - **CLI Documentation** - Detailed usage guide for `agent:create-reusable` command
 
+### Changed
+- Moved `HumanRequest` types from tools to core (shared framework types)
+- Updated all documentation to reflect 70 tools
+- Added `@langchain/langgraph` as peer dependency (optional) for tools package
+
 ### Fixed
 - **Lockfile Update** - Updated `pnpm-lock.yaml` to include reusable agent example dependencies
   - Fixes CI deployment issue with `--frozen-lockfile` flag
@@ -57,32 +83,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
-
-#### Human-in-the-Loop Support (@agentforge/tools, @agentforge/core)
-- **askHuman Tool** - New tool for human-in-the-loop workflows
-  - Pauses agent execution to request human input or approval
-  - Priority levels: low, normal, high, critical
-  - Timeout handling with default responses
-  - Suggested responses for UI integration
-  - LangGraph interrupt integration
-  - Full TypeScript support with Zod validation
-  - 11 comprehensive unit tests
-
-- **Interrupt Handling Utilities** (@agentforge/core)
-  - `HumanRequest`, `HumanRequestPriority`, `HumanRequestStatus` types
-  - Interrupt creation and type guard utilities
-  - Thread status tracking
-  - SSE event formatters for real-time communication
-  - 19 unit tests for interrupt and streaming utilities
-
-- **New Agent Tools Category** - Created dedicated category for agent interaction tools
-  - Tool count increased from 69 to 70 tools
-  - 5 categories: Web, Data, File, Utility, Agent
-
-### Changed
-- Moved `HumanRequest` types from tools to core (shared framework types)
-- Updated all documentation to reflect 70 tools
-- Added `@langchain/langgraph` as peer dependency (optional) for tools package
+- No unreleased changes yet
 
 ## [0.5.1] - 2026-01-16
 
