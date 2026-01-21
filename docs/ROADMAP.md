@@ -175,8 +175,8 @@ Core framework tool for human-in-the-loop interactions:
 - [x] Implement timeout and fallback handling
 - [x] Add TypeScript types and interfaces
 - [x] Write unit tests (>90% coverage)
-- [ ] Write integration tests with ReAct pattern
-- [ ] Write integration tests with Plan-Execute pattern
+- [x] Write integration tests with ReAct pattern
+- [x] Write integration tests with Plan-Execute pattern
 - [ ] Create documentation page: "Human-in-the-Loop"
 - [ ] Create example: Customer support agent with approval workflow
 - [ ] Update API documentation
