@@ -7,6 +7,7 @@
  */
 
 import type { BaseChatModel } from '@langchain/core/language_models/chat_models';
+import type { BaseCheckpointSaver } from '@langchain/langgraph';
 import type { ReflectionStateType } from './state.js';
 import type { QualityCriteria } from './schemas.js';
 
@@ -108,6 +109,25 @@ export interface ReflectionAgentConfig {
    * Whether to include verbose logging
    */
   verbose?: boolean;
+
+  /**
+   * Optional checkpointer for state persistence
+   * Required for human-in-the-loop workflows (askHuman tool), interrupts, and conversation continuity
+   *
+   * @example
+   * ```typescript
+   * import { MemorySaver } from '@langchain/langgraph';
+   *
+   * const checkpointer = new MemorySaver();
+   * const agent = createReflectionAgent({
+   *   generator: { model },
+   *   reflector: { model },
+   *   reviser: { model },
+   *   checkpointer
+   * });
+   * ```
+   */
+  checkpointer?: BaseCheckpointSaver;
 }
 
 /**

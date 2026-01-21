@@ -21,6 +21,7 @@ import type { ReflectionAgentConfig, ReflectionRoute } from './types.js';
  * @returns A compiled LangGraph StateGraph
  *
  * @example
+ * Basic usage:
  * ```typescript
  * import { createReflectionAgent } from '@agentforge/patterns';
  * import { ChatOpenAI } from '@langchain/openai';
@@ -42,6 +43,32 @@ import type { ReflectionAgentConfig, ReflectionRoute } from './types.js';
  *   input: 'Write an essay about AI safety'
  * });
  * ```
+ *
+ * @example
+ * With checkpointer for human-in-the-loop workflows:
+ * ```typescript
+ * import { createReflectionAgent } from '@agentforge/patterns';
+ * import { createAskHumanTool } from '@agentforge/tools';
+ * import { MemorySaver } from '@langchain/langgraph';
+ * import { ChatOpenAI } from '@langchain/openai';
+ *
+ * const checkpointer = new MemorySaver();
+ * const model = new ChatOpenAI({ model: 'gpt-4' });
+ *
+ * const agent = createReflectionAgent({
+ *   generator: { model },
+ *   reflector: { model },
+ *   reviser: { model },
+ *   maxIterations: 3,
+ *   checkpointer  // Required for askHuman tool
+ * });
+ *
+ * // Invoke with thread_id for conversation continuity
+ * const result = await agent.invoke(
+ *   { input: 'Write a report on this topic' },
+ *   { configurable: { thread_id: 'conversation-123' } }
+ * );
+ * ```
  */
 export function createReflectionAgent(config: ReflectionAgentConfig) {
   // Extract configuration with defaults
@@ -52,6 +79,7 @@ export function createReflectionAgent(config: ReflectionAgentConfig) {
     maxIterations = 3,
     qualityCriteria,
     verbose = false,
+    checkpointer,
   } = config;
 
   // Create nodes
@@ -137,7 +165,7 @@ export function createReflectionAgent(config: ReflectionAgentConfig) {
     )
     .addEdge('finisher', END);
 
-  // Compile and return
-  return workflow.compile() as any;
+  // Compile with checkpointer if provided
+  return workflow.compile(checkpointer ? { checkpointer } : undefined) as any;
 }
 

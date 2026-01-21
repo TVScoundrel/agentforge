@@ -1,6 +1,7 @@
 import { describe, it, expect, vi } from 'vitest';
 import { createReActAgent } from '../../src/react/agent.js';
 import { ToolRegistry, toolBuilder, ToolCategory } from '@agentforge/core';
+import { MemorySaver } from '@langchain/langgraph';
 import { z } from 'zod';
 
 // Mock LLM for testing
@@ -188,6 +189,36 @@ describe('ReAct Agent Builder', () => {
         },
       }
     );
+
+    expect(agent).toBeDefined();
+    expect(typeof agent.invoke).toBe('function');
+  });
+
+  it('should accept optional checkpointer parameter', () => {
+    const mockLLM = new MockChatModel() as any;
+    const registry = new ToolRegistry();
+    const checkpointer = new MemorySaver();
+
+    const agent = createReActAgent({
+      model: mockLLM,
+      tools: registry,
+      checkpointer,
+    });
+
+    expect(agent).toBeDefined();
+    expect(typeof agent.invoke).toBe('function');
+  });
+
+  it('should work without checkpointer (backward compatibility)', () => {
+    const mockLLM = new MockChatModel() as any;
+    const registry = new ToolRegistry();
+
+    // Should work exactly as before without checkpointer
+    const agent = createReActAgent({
+      model: mockLLM,
+      tools: registry,
+      // No checkpointer - should still work
+    });
 
     expect(agent).toBeDefined();
     expect(typeof agent.invoke).toBe('function');

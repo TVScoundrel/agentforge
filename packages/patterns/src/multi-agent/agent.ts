@@ -25,6 +25,7 @@ import type { WorkerCapabilities } from './schemas.js';
  * @returns Compiled LangGraph workflow
  *
  * @example
+ * Basic usage:
  * ```typescript
  * const system = createMultiAgentSystem({
  *   supervisor: {
@@ -62,6 +63,39 @@ import type { WorkerCapabilities } from './schemas.js';
  *   input: 'Research AI trends and write a summary',
  * });
  * ```
+ *
+ * @example
+ * With checkpointer for human-in-the-loop workflows:
+ * ```typescript
+ * import { createMultiAgentSystem } from '@agentforge/patterns';
+ * import { createAskHumanTool } from '@agentforge/tools';
+ * import { MemorySaver } from '@langchain/langgraph';
+ * import { ChatOpenAI } from '@langchain/openai';
+ *
+ * const checkpointer = new MemorySaver();
+ * const askHuman = createAskHumanTool();
+ * const model = new ChatOpenAI({ model: 'gpt-4' });
+ *
+ * const system = createMultiAgentSystem({
+ *   supervisor: { strategy: 'skill-based', model },
+ *   workers: [
+ *     {
+ *       id: 'hr',
+ *       capabilities: { skills: ['hr'], tools: ['askHuman'], available: true, currentWorkload: 0 },
+ *       tools: [askHuman],
+ *       model,
+ *     },
+ *   ],
+ *   aggregator: { model },
+ *   checkpointer  // Required for askHuman tool
+ * });
+ *
+ * // Invoke with thread_id for conversation continuity
+ * const result = await system.invoke(
+ *   { input: 'Help me with HR policy question' },
+ *   { configurable: { thread_id: 'conversation-123' } }
+ * );
+ * ```
  */
 export function createMultiAgentSystem(config: MultiAgentSystemConfig) {
   const {
@@ -70,6 +104,7 @@ export function createMultiAgentSystem(config: MultiAgentSystemConfig) {
     aggregator,
     maxIterations = 10,
     verbose = false,
+    checkpointer,
   } = config;
 
   // Note: Empty workers array is allowed - workers can be registered later with registerWorkers()
@@ -162,8 +197,8 @@ export function createMultiAgentSystem(config: MultiAgentSystemConfig) {
   // @ts-ignore - LangGraph's complex generic types don't infer well with createStateAnnotation
   workflow.addConditionalEdges('aggregator', aggregatorRouter, [END]);
 
-  // Compile the graph
-  const compiled = workflow.compile();
+  // Compile the graph with checkpointer if provided
+  const compiled = workflow.compile(checkpointer ? { checkpointer } : undefined);
 
   // Wrap the invoke method to inject worker capabilities into the initial state
   const originalInvoke = compiled.invoke.bind(compiled);

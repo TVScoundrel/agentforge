@@ -21,6 +21,7 @@ import type { PlanExecuteAgentConfig, PlanExecuteRoute } from './types.js';
  * @returns A compiled LangGraph StateGraph
  *
  * @example
+ * Basic usage:
  * ```typescript
  * import { createPlanExecuteAgent } from '@agentforge/patterns';
  * import { ChatOpenAI } from '@langchain/openai';
@@ -44,6 +45,30 @@ import type { PlanExecuteAgentConfig, PlanExecuteRoute } from './types.js';
  *   input: 'Research the latest AI developments and summarize them'
  * });
  * ```
+ *
+ * @example
+ * With checkpointer for human-in-the-loop workflows:
+ * ```typescript
+ * import { createPlanExecuteAgent } from '@agentforge/patterns';
+ * import { createAskHumanTool } from '@agentforge/tools';
+ * import { MemorySaver } from '@langchain/langgraph';
+ * import { ChatOpenAI } from '@langchain/openai';
+ *
+ * const checkpointer = new MemorySaver();
+ * const askHuman = createAskHumanTool();
+ *
+ * const agent = createPlanExecuteAgent({
+ *   planner: { model: new ChatOpenAI({ model: 'gpt-4' }), maxSteps: 5 },
+ *   executor: { tools: [askHuman, ...otherTools] },
+ *   checkpointer  // Required for askHuman tool
+ * });
+ *
+ * // Invoke with thread_id for conversation continuity
+ * const result = await agent.invoke(
+ *   { input: 'Help me plan this project' },
+ *   { configurable: { thread_id: 'conversation-123' } }
+ * );
+ * ```
  */
 export function createPlanExecuteAgent(config: PlanExecuteAgentConfig) {
   const {
@@ -52,6 +77,7 @@ export function createPlanExecuteAgent(config: PlanExecuteAgentConfig) {
     replanner,
     maxIterations = 5,
     verbose = false,
+    checkpointer,
   } = config;
 
   // Create nodes
@@ -155,7 +181,7 @@ export function createPlanExecuteAgent(config: PlanExecuteAgentConfig) {
     }
   );
 
-  // Compile and return
-  return workflow.compile() as any;
+  // Compile with checkpointer if provided
+  return workflow.compile(checkpointer ? { checkpointer } : undefined) as any;
 }
 

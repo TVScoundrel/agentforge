@@ -5,6 +5,7 @@
 import { describe, it, expect } from 'vitest';
 import { createMultiAgentSystem, registerWorkers } from '../../src/multi-agent/agent.js';
 import type { MultiAgentSystemConfig } from '../../src/multi-agent/types.js';
+import { MemorySaver } from '@langchain/langgraph';
 
 describe('Multi-Agent System Factory', () => {
   describe('createMultiAgentSystem', () => {
@@ -239,6 +240,55 @@ describe('Multi-Agent System Factory', () => {
           currentWorkload: 0,
         },
       });
+    });
+
+    it('should accept optional checkpointer parameter', () => {
+      const checkpointer = new MemorySaver();
+      const config: MultiAgentSystemConfig = {
+        supervisor: {
+          strategy: 'round-robin',
+        },
+        workers: [
+          {
+            id: 'worker1',
+            capabilities: {
+              skills: ['skill1'],
+              tools: ['tool1'],
+              available: true,
+              currentWorkload: 0,
+            },
+          },
+        ],
+        checkpointer,
+      };
+
+      const system = createMultiAgentSystem(config);
+      expect(system).toBeDefined();
+      expect(typeof system.invoke).toBe('function');
+    });
+
+    it('should work without checkpointer (backward compatibility)', () => {
+      const config: MultiAgentSystemConfig = {
+        supervisor: {
+          strategy: 'round-robin',
+        },
+        workers: [
+          {
+            id: 'worker1',
+            capabilities: {
+              skills: ['skill1'],
+              tools: ['tool1'],
+              available: true,
+              currentWorkload: 0,
+            },
+          },
+        ],
+        // No checkpointer - should still work
+      };
+
+      const system = createMultiAgentSystem(config);
+      expect(system).toBeDefined();
+      expect(typeof system.invoke).toBe('function');
     });
   });
 });
