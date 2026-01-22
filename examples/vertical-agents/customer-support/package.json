@@ -21,6 +21,7 @@
     "agentforge",
     "ai-agent",
     "customer-support",
+    "vertical-agent",
     "reusable-agent",
     "langgraph",
     "langchain"

@@ -1,6 +1,8 @@
 # Code Review Agent
 
-A configurable, reusable code review agent built with AgentForge. This agent demonstrates best practices for creating flexible, production-ready AI agents that can be customized for different code review scenarios.
+A configurable, vertical code review agent built with AgentForge. This agent demonstrates best practices for creating flexible, production-ready AI agents that can be customized for different code review scenarios.
+
+> **Vertical Agent**: A domain-specific, reusable agent optimized for code review use cases.
 
 ## Features
 

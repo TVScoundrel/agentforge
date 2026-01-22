@@ -1,11 +1,11 @@
 /**
- * Reusable Customer Support Agent
- * 
+ * Vertical Customer Support Agent
+ *
  * A configurable customer support agent that can be customized with different
  * tools, models, and system prompts. Demonstrates best practices for creating
- * reusable agents with AgentForge.
- * 
- * @module reusable-agents/customer-support
+ * vertical agents with AgentForge.
+ *
+ * @module vertical-agents/customer-support
  */
 
 import { createReActAgent } from '@agentforge/patterns';

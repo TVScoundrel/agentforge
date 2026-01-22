@@ -1,8 +1,8 @@
 {
-  "name": "@agentforge-examples/code-review-agent",
+  "name": "@agentforge-examples/data-analyst-agent",
   "version": "1.0.0",
   "type": "module",
-  "description": "Configurable code review agent built with AgentForge",
+  "description": "Configurable data analyst agent built with AgentForge",
   "main": "src/index.ts",
   "scripts": {
     "test": "vitest run",
@@ -10,8 +10,9 @@
   },
   "keywords": [
     "agentforge",
-    "code-review",
+    "data-analyst",
     "ai-agent",
+    "vertical-agent",
     "reusable-agent"
   ],
   "dependencies": {

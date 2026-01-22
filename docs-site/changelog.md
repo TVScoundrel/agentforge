@@ -87,7 +87,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - 5 categories: Web, Data, File, Utility, Agent
 
 #### Reusable Agent Examples
-- **Three Production-Ready Reusable Agents** - Complete examples in `examples/reusable-agents/`
+- **Three Production-Ready Vertical Agents** - Complete examples in `examples/vertical-agents/`
   - Customer Support Agent (24 tests passing)
   - Code Review Agent (26 tests passing)
   - Data Analyst Agent (28 tests passing)
@@ -516,8 +516,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## Version History
 
 - **0.5.4** (2026-01-21) - Checkpointer support for all patterns, enabling human-in-the-loop workflows
-- **0.5.3** (2026-01-21) - Fixed reusable-agent template tsconfig.json
-- **0.5.2** (2026-01-21) - Human-in-the-Loop support, reusable agent examples, and CLI scaffolding
+- **0.5.3** (2026-01-21) - Fixed vertical-agent template tsconfig.json
+- **0.5.2** (2026-01-21) - Human-in-the-Loop support, vertical agent examples, and CLI scaffolding
 - **0.5.1** (2026-01-16) - Multi-Agent streaming support and tool usage tracking
 - **0.5.0** (2026-01-15) - Automatic ReAct agent integration for Multi-Agent pattern, release automation
 - **0.4.1** (2026-01-15) - Added invoke() method alias for LangChain compatibility

@@ -1,6 +1,8 @@
 # Customer Support Agent
 
-A configurable, reusable customer support agent built with AgentForge. This agent demonstrates best practices for creating flexible, production-ready AI agents that can be customized for different use cases.
+A configurable, vertical customer support agent built with AgentForge. This agent demonstrates best practices for creating flexible, production-ready AI agents that can be customized for different use cases.
+
+> **Vertical Agent**: A domain-specific, reusable agent optimized for customer support use cases.
 
 ## Features
 

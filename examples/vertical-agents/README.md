@@ -1,6 +1,8 @@
-# Reusable Agent Examples
+# Vertical Agent Examples
 
-This directory contains production-ready examples of reusable AI agents built with AgentForge. Each agent demonstrates best practices for creating flexible, configurable agents that can be customized for different use cases.
+This directory contains production-ready examples of vertical AI agents built with AgentForge. Each agent demonstrates best practices for creating flexible, configurable, domain-specific agents that can be customized for different use cases.
+
+> **Note**: Vertical agents (also called "reusable agents") are domain-specific agents designed for particular industries or use cases.
 
 ## 📦 Available Agents
 
@@ -302,7 +304,7 @@ Each agent includes:
 
 ## 🔗 Related Resources
 
-- [Reusable Agents Guide](../../docs-site/guide/advanced/reusable-agents.md) - Comprehensive guide
+- [Vertical Agents Guide](../../docs-site/guide/advanced/vertical-agents.md) - Comprehensive guide
 - [Tool Builder API](../../packages/core/README.md) - Creating custom tools
 - [Agent Patterns](../../packages/patterns/README.md) - ReAct, Plan-Execute, etc.
 - [AgentForge Tools](../../packages/tools/README.md) - 70+ reusable tools
@@ -325,11 +327,11 @@ Write tests that demonstrate different configurations and use cases.
 Include clear README with examples, configuration reference, and usage patterns.
 
 ### 6. Version Carefully
-Follow semantic versioning when publishing reusable agents.
+Follow semantic versioning when publishing vertical agents.
 
 ## 🤝 Contributing
 
-These examples are meant to inspire and guide. If you create interesting reusable agents:
+These examples are meant to inspire and guide. If you create interesting vertical agents:
 1. Follow the same patterns demonstrated here
 2. Include comprehensive tests
 3. Write clear documentation
