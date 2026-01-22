@@ -6,7 +6,7 @@ This directory contains real-world examples and integrations demonstrating how t
 
 ```
 examples/
-├── reusable-agents/       # Reusable agent templates (NEW!)
+├── vertical-agents/       # Vertical agent templates (NEW!)
 │   ├── customer-support/      # Configurable support agent
 │   ├── code-review/           # Configurable code reviewer
 │   └── data-analyst/          # Configurable data analyst
@@ -39,7 +39,7 @@ A configurable customer support agent with human escalation, ticket creation, an
 
 **Quick Start**:
 ```typescript
-import { createCustomerSupportAgent } from './reusable-agents/customer-support';
+import { createCustomerSupportAgent } from './vertical-agents/customer-support';
 
 const agent = createCustomerSupportAgent({
   companyName: 'Acme Corp',
@@ -48,7 +48,7 @@ const agent = createCustomerSupportAgent({
 });
 ```
 
-[View Documentation](./reusable-agents/customer-support/README.md)
+[View Documentation](./vertical-agents/customer-support/README.md)
 
 ---
 
@@ -67,7 +67,7 @@ An automated code review agent with security checks, performance analysis, and c
 
 **Quick Start**:
 ```typescript
-import { createCodeReviewAgent } from './reusable-agents/code-review';
+import { createCodeReviewAgent } from './vertical-agents/code-review';
 
 const agent = createCodeReviewAgent({
   teamName: 'Platform Team',
@@ -77,7 +77,7 @@ const agent = createCodeReviewAgent({
 });
 ```
 
-[View Documentation](./reusable-agents/code-review/README.md)
+[View Documentation](./vertical-agents/code-review/README.md)
 
 ---
 
@@ -96,7 +96,7 @@ A flexible data analysis agent with statistical methods, visualization, and conf
 
 **Quick Start**:
 ```typescript
-import { createDataAnalystAgent } from './reusable-agents/data-analyst';
+import { createDataAnalystAgent } from './vertical-agents/data-analyst';
 
 const agent = createDataAnalystAgent({
   organizationName: 'Acme Corp',
@@ -106,9 +106,9 @@ const agent = createDataAnalystAgent({
 });
 ```
 
-[View Documentation](./reusable-agents/data-analyst/README.md)
+[View Documentation](./vertical-agents/data-analyst/README.md)
 
-**[📚 View All Reusable Agents →](./reusable-agents/README.md)**
+**[📚 View All Vertical Agents →](./vertical-agents/README.md)**
 
 ---
 

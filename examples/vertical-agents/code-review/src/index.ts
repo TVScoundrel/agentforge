@@ -1,11 +1,11 @@
 /**
- * Reusable Code Review Agent
- * 
+ * Vertical Code Review Agent
+ *
  * A configurable code review agent that can be customized with different
  * languages, review criteria, and tools. Demonstrates best practices for
- * creating reusable agents with AgentForge.
- * 
- * @module reusable-agents/code-review
+ * creating vertical agents with AgentForge.
+ *
+ * @module vertical-agents/code-review
  */
 
 import { createReActAgent } from '@agentforge/patterns';

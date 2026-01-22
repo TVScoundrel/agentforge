@@ -1,6 +1,8 @@
 # Data Analyst Agent
 
-A configurable, reusable data analyst agent built with AgentForge. This agent demonstrates best practices for creating flexible, production-ready AI agents that can be customized for different data analysis scenarios.
+A configurable, vertical data analyst agent built with AgentForge. This agent demonstrates best practices for creating flexible, production-ready AI agents that can be customized for different data analysis scenarios.
+
+> **Vertical Agent**: A domain-specific, reusable agent optimized for data analysis use cases.
 
 ## Features
 

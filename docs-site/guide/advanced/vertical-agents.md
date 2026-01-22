@@ -1,17 +1,19 @@
-# Creating Reusable Agents
+# Creating Vertical Agents
 
-Reusable agents are configurable, composable AI agents that can be easily customized and shared across projects. This guide covers best practices for creating agents that are flexible, maintainable, and ready for production use.
+Vertical agents are domain-specific, configurable AI agents that can be easily customized and shared across projects. This guide covers best practices for creating agents that are flexible, maintainable, and ready for production use.
 
 ::: tip Working Examples Available
 See complete working examples:
-- [Customer Support Agent](https://github.com/TVScoundrel/agentforge/tree/main/examples/reusable-agents/customer-support) - Support automation with escalation
-- [Code Review Agent](https://github.com/TVScoundrel/agentforge/tree/main/examples/reusable-agents/code-review) - Automated code review with security & performance checks
-- [Data Analyst Agent](https://github.com/TVScoundrel/agentforge/tree/main/examples/reusable-agents/data-analyst) - Flexible data analysis with statistical methods & visualization
+- [Customer Support Agent](https://github.com/TVScoundrel/agentforge/tree/main/examples/vertical-agents/customer-support) - Support automation with escalation
+- [Code Review Agent](https://github.com/TVScoundrel/agentforge/tree/main/examples/vertical-agents/code-review) - Automated code review with security & performance checks
+- [Data Analyst Agent](https://github.com/TVScoundrel/agentforge/tree/main/examples/vertical-agents/data-analyst) - Flexible data analysis with statistical methods & visualization
 
 All demonstrate production-ready implementations with external prompts, tool injection, feature flags, and comprehensive tests.
 :::
 
-## Why Reusable Agents?
+## Why Vertical Agents?
+
+**Vertical agents** (also known as "reusable agents") are domain-specific agents designed for particular use cases or industries. They provide:
 
 **Benefits:**
 - 🔄 **Reusability**: Write once, use in multiple projects
@@ -20,12 +22,13 @@ All demonstrate production-ready implementations with external prompts, tool inj
 - 🧪 **Testability**: Easier to test with dependency injection
 - 📚 **Shareability**: Publish to npm for team or community use
 - 🔧 **Maintainability**: Centralized updates benefit all consumers
+- 🎯 **Domain-Specific**: Optimized for specific verticals (support, legal, HR, etc.)
 
 ## Core Patterns
 
 ### 1. Agent Factory Functions
 
-The foundation of reusable agents is the factory function pattern:
+The foundation of vertical agents is the factory function pattern:
 
 ```typescript
 import { createReActAgent } from '@agentforge/patterns';
@@ -526,7 +529,7 @@ export function createValidatedAgent(config: unknown) {
 
 ### Package Structure
 
-Organize your reusable agent as an npm package:
+Organize your vertical agent as an npm package:
 
 ```
 my-agent/
@@ -555,7 +558,7 @@ my-agent/
 {
   "name": "@myorg/customer-support-agent",
   "version": "1.0.0",
-  "description": "Reusable customer support agent for AgentForge",
+  "description": "Vertical customer support agent for AgentForge",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "exports": {
@@ -989,7 +992,7 @@ main();
 
 ## Complete Example
 
-Here's a complete example of a reusable agent:
+Here's a complete example of a vertical agent:
 
 ```typescript
 // src/index.ts
@@ -1060,9 +1063,9 @@ export { DEFAULT_SYSTEM_PROMPT };
 
 ## Working Examples
 
-For complete, working implementations of reusable agents, see the examples in the repository:
+For complete, working implementations of vertical agents, see the examples in the repository:
 
-### [Customer Support Agent](https://github.com/TVScoundrel/agentforge/tree/main/examples/reusable-agents/customer-support)
+### [Customer Support Agent](https://github.com/TVScoundrel/agentforge/tree/main/examples/vertical-agents/customer-support)
 
 A fully-featured customer support agent demonstrating:
 - ✅ Factory function pattern with Zod validation
@@ -1079,9 +1082,9 @@ A fully-featured customer support agent demonstrating:
 - `src/index.test.ts` - Comprehensive test suite
 - `README.md` - Full documentation
 
-This example showcases the **recommended pattern** for creating production-ready reusable agents.
+This example showcases the **recommended pattern** for creating production-ready vertical agents.
 
-### [Code Review Agent](https://github.com/TVScoundrel/agentforge/tree/main/examples/reusable-agents/code-review)
+### [Code Review Agent](https://github.com/TVScoundrel/agentforge/tree/main/examples/vertical-agents/code-review)
 
 A configurable code review agent demonstrating:
 - ✅ Factory function pattern with Zod validation
@@ -1102,7 +1105,7 @@ A configurable code review agent demonstrating:
 
 Perfect for teams needing customizable code review automation.
 
-### [Data Analyst Agent](https://github.com/TVScoundrel/agentforge/tree/main/examples/reusable-agents/data-analyst)
+### [Data Analyst Agent](https://github.com/TVScoundrel/agentforge/tree/main/examples/vertical-agents/data-analyst)
 
 A flexible data analyst agent demonstrating:
 - ✅ Factory function pattern with Zod validation
@@ -1130,9 +1133,9 @@ Perfect for teams needing flexible data analysis with customizable depth and foc
 - Check [TypeScript Best Practices](#typescript-best-practices) for type safety
 - Explore [Tool Injection](#3-tool-injection-and-composition) for composability
 - **Try the working examples:**
-  - [Customer Support Agent](https://github.com/TVScoundrel/agentforge/tree/main/examples/reusable-agents/customer-support)
-  - [Code Review Agent](https://github.com/TVScoundrel/agentforge/tree/main/examples/reusable-agents/code-review)
-  - [Data Analyst Agent](https://github.com/TVScoundrel/agentforge/tree/main/examples/reusable-agents/data-analyst)
+  - [Customer Support Agent](https://github.com/TVScoundrel/agentforge/tree/main/examples/vertical-agents/customer-support)
+  - [Code Review Agent](https://github.com/TVScoundrel/agentforge/tree/main/examples/vertical-agents/code-review)
+  - [Data Analyst Agent](https://github.com/TVScoundrel/agentforge/tree/main/examples/vertical-agents/data-analyst)
 
 ## Related Guides
 

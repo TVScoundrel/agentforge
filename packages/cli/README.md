@@ -183,8 +183,8 @@ customer-support/
 6. `pnpm build` to build
 
 **See Also:**
-- [Reusable Agents Guide](../../docs-site/guide/advanced/reusable-agents.md)
-- [Example Reusable Agents](../../examples/reusable-agents/)
+- [Vertical Agents Guide](../../docs-site/guide/advanced/vertical-agents.md)
+- [Example Vertical Agents](../../examples/vertical-agents/)
 
 #### `agent:list`
 

@@ -105,7 +105,7 @@ export async function agentCreateReusableCommand(
     logger.list(nextSteps);
 
     logger.newLine();
-    logger.info(chalk.gray('💡 Tip: See examples/reusable-agents/ for reference implementations'));
+    logger.info(chalk.gray('💡 Tip: See examples/vertical-agents/ for reference implementations'));
   } catch (error: any) {
     logger.error(`Failed to create reusable agent: ${error.message}`);
     process.exit(1);

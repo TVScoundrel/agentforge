@@ -1,8 +1,10 @@
 /**
- * Data Analyst Agent
- * 
- * A configurable, reusable data analyst agent built with AgentForge.
+ * Vertical Data Analyst Agent
+ *
+ * A configurable, vertical data analyst agent built with AgentForge.
  * Demonstrates best practices for creating flexible, production-ready AI agents.
+ *
+ * @module vertical-agents/data-analyst
  */
 
 import { z } from 'zod';

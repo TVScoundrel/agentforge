@@ -2,7 +2,9 @@
 
 {{AGENT_DESCRIPTION}}
 
-A configurable, reusable AI agent built with AgentForge.
+A configurable, vertical AI agent built with AgentForge.
+
+> **Vertical Agent**: A domain-specific, reusable agent optimized for specific use cases.
 
 ## Features
 

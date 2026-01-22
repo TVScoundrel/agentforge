@@ -15,6 +15,7 @@
     "agentforge",
     "ai-agent",
     "llm",
+    "vertical-agent",
     "reusable-agent"
   ],
   "author": "{{AUTHOR}}",
