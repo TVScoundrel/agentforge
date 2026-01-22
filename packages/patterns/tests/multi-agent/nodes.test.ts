@@ -194,7 +194,7 @@ describe('Multi-Agent Nodes', () => {
       const node = createWorkerNode(config);
       const result = await node(stateWithAssignment);
 
-      expect(executeFn).toHaveBeenCalledWith(stateWithAssignment);
+      expect(executeFn).toHaveBeenCalledWith(stateWithAssignment, undefined);
       expect(result.completedTasks).toHaveLength(1);
     });
 

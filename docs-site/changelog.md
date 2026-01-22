@@ -5,6 +5,39 @@ All notable changes to AgentForge will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.6.1] - 2026-01-22
+
+### Fixed
+- **askHuman Tool Interrupt Handling** - Fixed GraphInterrupt propagation for proper human-in-the-loop workflows
+  - Fixed GraphInterrupt propagation in ReAct action nodes (`@agentforge/core`)
+  - Fixed GraphInterrupt propagation in multi-agent worker nodes (`@agentforge/patterns`)
+  - Added config parameter to `executeFn` for LangGraph runtime configuration support
+  - Ensures `interrupt()` errors bubble up correctly through all execution layers
+  - Added detailed code comments explaining GraphInterrupt handling
+
+### Changed
+- **Internal Logging** - Replaced console.log debug statements with structured logging
+  - Implemented structured logging in askHuman tool with debug-level logs
+  - Implemented structured logging in multi-agent utils with debug/error levels
+  - Added LOG_LEVEL environment variable support (debug, info, warn, error)
+  - Improves production observability and debugging capabilities
+
+### Documentation
+- **Logging API Documentation** - Added comprehensive documentation for existing logger API
+  - Added `createLogger` and `LogLevel` documentation to Core API reference
+  - Updated monitoring guide to show built-in logger as primary option
+  - Updated deployment guide to show built-in logger as recommended option
+  - Documented LOG_LEVEL environment variable usage
+  - Showed Winston as alternative for advanced logging needs (file rotation, remote logging)
+
+### Published
+- All packages published to npm registry at version 0.6.1:
+  - @agentforge/core@0.6.1
+  - @agentforge/patterns@0.6.1
+  - @agentforge/tools@0.6.1
+  - @agentforge/testing@0.6.1
+  - @agentforge/cli@0.6.1
+
 ## [0.6.0] - 2026-01-22
 
 ### Added
@@ -567,6 +600,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Version History
 
+- **0.6.1** (2026-01-22) - Fixed askHuman interrupt handling, added logging documentation
 - **0.6.0** (2026-01-22) - Tool-enabled supervisors for multi-agent pattern, vertical agents terminology
 - **0.5.4** (2026-01-21) - Checkpointer support for all patterns, enabling human-in-the-loop workflows
 - **0.5.3** (2026-01-21) - Fixed vertical-agent template tsconfig.json
