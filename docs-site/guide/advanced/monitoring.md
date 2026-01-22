@@ -156,30 +156,23 @@ try {
 
 ## Logging
 
-### Structured Logging
+### Built-in Structured Logging
 
-Use structured logs for better analysis:
+AgentForge provides a built-in structured logger for observability:
 
 ```typescript
-import winston from 'winston';
+import { createLogger, LogLevel } from '@agentforge/core';
 
-const logger = winston.createLogger({
-  level: 'info',
-  format: winston.format.combine(
-    winston.format.timestamp(),
-    winston.format.json()
-  ),
-  transports: [
-    new winston.transports.File({ filename: 'error.log', level: 'error' }),
-    new winston.transports.File({ filename: 'combined.log' })
-  ]
-});
+// Create logger with environment-based log level
+const logLevel = (process.env.LOG_LEVEL?.toLowerCase() as LogLevel) || LogLevel.INFO;
+const logger = createLogger('agent', { level: logLevel });
 
 // Log agent execution
+const startTime = Date.now();
+
 logger.info('Agent invocation started', {
   agentType: 'ReActAgent',
-  input: input.messages[0].content,
-  timestamp: new Date().toISOString()
+  input: input.messages[0].content
 });
 
 const result = await agent.invoke(input, {
@@ -197,13 +190,13 @@ const result = await agent.invoke(input, {
       });
     },
     handleToolStart: (tool, input) => {
-      logger.info('Tool execution started', {
+      logger.debug('Tool execution started', {
         tool: tool.name,
         input
       });
     },
     handleToolEnd: (output) => {
-      logger.info('Tool execution completed', {
+      logger.debug('Tool execution completed', {
         outputLength: JSON.stringify(output).length
       });
     },
@@ -222,25 +215,70 @@ logger.info('Agent invocation completed', {
 });
 ```
 
+**Environment Configuration:**
+
+```bash
+# Development - show all logs including debug
+LOG_LEVEL=debug
+
+# Production - show info, warnings, and errors
+LOG_LEVEL=info
+
+# Production - errors only
+LOG_LEVEL=error
+```
+
 ### Log Levels
 
-Use appropriate log levels:
+AgentForge supports four log levels (from most to least verbose):
 
 ```typescript
-// ERROR: System errors, failures
-logger.error('Agent execution failed', { error: error.message });
-
-// WARN: Degraded performance, retries
-logger.warn('Token limit approaching', { usage: tokenUsage });
-
-// INFO: Important events, completions
-logger.info('Agent task completed', { duration, tokens });
-
-// DEBUG: Detailed execution flow
+// DEBUG: Detailed execution flow, tool calls, internal state
 logger.debug('Tool selected', { tool: toolName, reasoning });
+logger.debug('State transition', { from: 'planning', to: 'execution' });
 
-// TRACE: Very detailed, token-level
-logger.trace('LLM token generated', { token, position });
+// INFO: Important events, completions, milestones
+logger.info('Agent task completed', { duration, tokens });
+logger.info('Checkpoint saved', { threadId, checkpoint });
+
+// WARN: Degraded performance, retries, approaching limits
+logger.warn('Token limit approaching', { usage: tokenUsage, limit: 4000 });
+logger.warn('Retry attempt', { attempt: 2, maxAttempts: 3 });
+
+// ERROR: System errors, failures, exceptions
+logger.error('Agent execution failed', {
+  error: error.message,
+  stack: error.stack
+});
+```
+
+**Log Level Priority:**
+- `DEBUG` (0) - Shows all logs
+- `INFO` (1) - Shows info, warn, and error
+- `WARN` (2) - Shows warn and error
+- `ERROR` (3) - Shows error only
+
+### Alternative: Winston
+
+For advanced logging needs (file rotation, remote logging), use Winston:
+
+```typescript
+import winston from 'winston';
+
+const logger = winston.createLogger({
+  level: process.env.LOG_LEVEL || 'info',
+  format: winston.format.combine(
+    winston.format.timestamp(),
+    winston.format.json()
+  ),
+  transports: [
+    new winston.transports.File({ filename: 'error.log', level: 'error' }),
+    new winston.transports.File({ filename: 'combined.log' }),
+    new winston.transports.Console({
+      format: winston.format.simple()
+    })
+  ]
+});
 ```
 
 ## Tracing

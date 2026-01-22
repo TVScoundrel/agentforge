@@ -3,9 +3,14 @@
  * @module tools/agent/ask-human/tool
  */
 
-import { toolBuilder, ToolCategory } from '@agentforge/core';
+import { toolBuilder, ToolCategory, createLogger, LogLevel } from '@agentforge/core';
 import { AskHumanInputSchema, type AskHumanInput, type AskHumanOutput } from './types.js';
 import { randomUUID } from 'crypto';
+
+// Create logger for askHuman tool
+// Log level can be controlled via LOG_LEVEL environment variable
+const logLevel = (process.env.LOG_LEVEL?.toLowerCase() as LogLevel) || LogLevel.INFO;
+const logger = createLogger('askHuman', { level: logLevel });
 
 /**
  * Create the askHuman tool
@@ -81,7 +86,19 @@ export function createAskHumanTool() {
       // Use LangGraph's interrupt to pause execution
       // This will save the request to the checkpoint and pause the graph
       // The application can then resume with the human's response
-      const response = interrupt(humanRequest);
+      logger.debug('About to call interrupt()', { humanRequest });
+
+      let response;
+      try {
+        response = interrupt(humanRequest);
+        logger.debug('interrupt() returned successfully', { response, responseType: typeof response });
+      } catch (error) {
+        logger.debug('interrupt() threw error (expected for GraphInterrupt)', {
+          errorType: error?.constructor?.name,
+          error: error instanceof Error ? error.message : String(error)
+        });
+        throw error; // Re-throw to let the node handle it
+      }
 
       const respondedAt = Date.now();
       const duration = respondedAt - requestedAt;

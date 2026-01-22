@@ -133,7 +133,7 @@ export function createWorkerNode(config: WorkerConfig) {
     agent,
   } = config;
 
-  return async (state: MultiAgentStateType): Promise<Partial<MultiAgentStateType>> => {
+  return async (state: MultiAgentStateType, runConfig?: any): Promise<Partial<MultiAgentStateType>> => {
     try {
       if (verbose) {
         console.log(`[Worker:${id}] Executing task`);
@@ -141,7 +141,7 @@ export function createWorkerNode(config: WorkerConfig) {
 
       // Find the current assignment for this worker
       const currentAssignment = state.activeAssignments.find(
-        assignment => assignment.workerId === id && 
+        assignment => assignment.workerId === id &&
         !state.completedTasks.some(task => task.assignmentId === assignment.id)
       );
 
@@ -160,7 +160,7 @@ export function createWorkerNode(config: WorkerConfig) {
         if (verbose) {
           console.log(`[Worker:${id}] Using custom executeFn`);
         }
-        return await executeFn(state);
+        return await executeFn(state, runConfig);
       }
 
       // Priority 2: Use ReAct agent if provided
@@ -170,7 +170,7 @@ export function createWorkerNode(config: WorkerConfig) {
             console.log(`[Worker:${id}] Using ReAct agent (auto-wrapped)`);
           }
           const wrappedFn = wrapReActAgent(id, agent, verbose);
-          return await wrappedFn(state);
+          return await wrappedFn(state, runConfig);
         } else {
           console.warn(`[Worker:${id}] Agent provided but does not appear to be a ReAct agent. Falling back to default execution.`);
         }
@@ -254,8 +254,16 @@ Execute the assigned task using your skills and tools. Provide a clear, actionab
         status: 'routing',
       };
     } catch (error) {
+      // Check if this is a GraphInterrupt - if so, let it bubble up
+      // GraphInterrupt is used by LangGraph's interrupt() function for human-in-the-loop
+      if (error && typeof error === 'object' && 'constructor' in error &&
+          error.constructor.name === 'GraphInterrupt') {
+        // Re-throw GraphInterrupt so the graph can handle it
+        throw error;
+      }
+
       console.error(`[Worker:${id}] Error:`, error);
-      
+
       // Create error result
       const currentAssignment = state.activeAssignments.find(
         assignment => assignment.workerId === id
