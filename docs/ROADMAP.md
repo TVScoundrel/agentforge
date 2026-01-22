@@ -2,13 +2,13 @@
 
 > Phased development plan for the AgentForge framework
 
-## 🎯 Current Status: Phase 7 Complete! 🎉
+## 🎯 Current Status: Phase 9 Complete! 🎉
 
 **Overall Progress**: Framework 100% Complete, Documentation 100% Complete ✅
-**Latest Achievement**: Phase 7.6 Documentation Review & Polish Complete
+**Latest Achievement**: Phase 9.4 CLI Scaffolding for Reusable Agents Complete
 **Framework Status**: Production-Ready ✅
 **Documentation Status**: 100% Complete (34/34 pages) ✅
-**Updated**: January 7, 2026
+**Updated**: January 22, 2026
 
 ### Quick Stats
 - ✅ **7 Packages**: core, patterns, cli, testing, tools, docs + 4 templates
@@ -25,10 +25,10 @@
 
 **Framework Duration**: ~10 weeks (MVP to Production-Ready) ✅
 **Documentation Duration**: ~2 weeks (all phases 7.1-7.6 complete) ✅
-**Current Phase**: Phase 7 - 100% Complete ✅
+**Current Phase**: Phase 9 - 100% Complete ✅
 **Start Date**: 2025-12-23
 **Framework Completion**: 2026-01-07
-**Documentation Completion**: 2026-01-07
+**Phase 9 Completion**: 2026-01-22
 
 ---
 
@@ -359,6 +359,85 @@ CLI commands for creating reusable agents:
 - ✅ Templates for reusable agents (complete template in `packages/cli/templates/reusable-agent/`)
 - ✅ Documentation update (CLI README with detailed usage)
 - ✅ Tests for CLI command (5 tests, mocked file operations)
+
+---
+
+### Phase 10: Tool-Enabled Supervisor ✅ COMPLETE
+**Status**: ✅ Complete | **Priority**: High
+**Duration**: 5 hours (actual)
+**Target**: Q1 2026
+**Started**: January 22, 2026
+**Completed**: January 22, 2026
+
+Enable supervisors in the multi-agent pattern to use tools (especially `askHuman`) during routing decisions.
+
+**Motivation**: Real-world multi-agent systems often need to gather additional information before routing tasks. The supervisor should be able to ask for clarification, query databases, or call APIs before making routing decisions.
+
+**Key Features**:
+- [x] Supervisor can bind tools (especially `askHuman`)
+- [x] LLM-based routing detects and executes tool calls
+- [x] Routing retries with tool results as additional context
+- [x] Backward compatible - tools are optional
+- [x] Works with any tool, not just `askHuman`
+
+**Implementation Tasks**:
+- [x] Update `SupervisorConfig` type to accept `tools` and `maxToolRetries`
+- [x] Implement tool execution helper function
+- [x] Update `llmBasedRouting` to detect and execute tool calls
+- [x] Update `createMultiAgentSystem` to bind tools to supervisor model
+- [x] Add conversation history tracking for tool calls
+- [x] Unit tests (11 tests - tool detection, retry logic, error handling, backward compatibility)
+- [x] Integration tests (3 tests - system configuration, tool binding, parameter passing)
+- [x] Update multi-agent pattern documentation
+- [x] Create example: supervisor-with-askhuman
+- [x] Update PTY AGI playground to use feature
+
+**Deliverables**:
+- ✅ Tool-enabled supervisor in `@agentforge/patterns` v0.5.4
+- ✅ 14 tests (11 unit + 3 integration) - All passing
+- ✅ Updated multi-agent pattern guide (packages/patterns/docs + docs-site)
+- ✅ Working example with askHuman (05-supervisor-with-askhuman.ts)
+- ✅ PTY AGI integration (playground/src/system/pty-agi.ts)
+
+**Documentation**:
+- 📄 [Feature Planning Document](./FEATURE_TOOL_ENABLED_SUPERVISOR.md)
+
+**Progress**:
+- ✅ Phase 1: Core Implementation (Complete - 2 hours)
+  - ✅ Updated `SupervisorConfig` type with `tools` and `maxToolRetries`
+  - ✅ Implemented `executeTools()` helper function
+  - ✅ Updated `llmBasedRouting` with tool call detection and retry logic
+  - ✅ Updated `createMultiAgentSystem` to bind tools to supervisor model
+  - ✅ Build successful, no TypeScript errors
+- ✅ Phase 2: Testing (Complete - 1.5 hours)
+  - ✅ Created `routing-with-tools.test.ts` with 11 unit tests
+  - ✅ Created `integration-with-tools.test.ts` with 3 integration tests
+  - ✅ All 14 tests passing (192/192 total tests in patterns package)
+  - ✅ Test coverage: tool detection, retry logic, error handling, backward compatibility
+- ✅ Phase 3: Documentation (Complete - 1 hour)
+  - ✅ Added "Tool-Enabled Supervisor" section to Advanced Usage in `packages/patterns/docs/multi-agent-pattern.md`
+  - ✅ Updated API Reference with `tools` and `maxToolRetries` parameters
+  - ✅ Added comprehensive examples and best practices
+  - ✅ Updated `docs-site/guide/patterns/multi-agent.md` with same content
+  - ✅ Documented configuration options, workflow, and troubleshooting
+- ✅ Phase 4: Examples (Complete - 0.5 hours)
+  - ✅ Created `05-supervisor-with-askhuman.ts` example (202 lines)
+  - ✅ Demonstrates supervisor with askHuman tool
+  - ✅ Shows handling of ambiguous vs. clear requests
+  - ✅ Includes 3 example scenarios with mock responses
+  - ✅ Updated multi-agent examples README with new example
+  - ✅ Added "Tool-Enabled Supervisor" section to README
+  - ✅ Fixed all TypeScript errors (imports, types, unused variables)
+  - ✅ Uses relative imports for monorepo compatibility
+- ✅ Phase 5: PTY AGI Integration (Complete - 0.5 hours)
+  - ✅ Added `createAskHumanTool` import to `playground/src/system/pty-agi.ts`
+  - ✅ Created askHuman tool instance in `createPtyAgi()` function
+  - ✅ Added `tools: [askHumanTool]` to supervisor configuration
+  - ✅ Added `maxToolRetries: 3` to supervisor configuration
+  - ✅ Updated supervisor system prompt with askHuman usage guidelines
+  - ✅ Verified no TypeScript errors in pty-agi.ts
+  - ✅ Ran test:supervisor script - all tests pass
+  - ✅ PTY AGI now supports supervisor asking for clarification on ambiguous queries
 
 ---
 
