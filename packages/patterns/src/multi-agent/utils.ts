@@ -10,6 +10,12 @@
 import type { CompiledStateGraph } from '@langchain/langgraph';
 import type { MultiAgentStateType } from './state.js';
 import type { TaskResult } from './schemas.js';
+import { createLogger, LogLevel } from '@agentforge/core';
+
+// Create logger for multi-agent utils
+// Log level can be controlled via LOG_LEVEL environment variable
+const logLevel = (process.env.LOG_LEVEL?.toLowerCase() as LogLevel) || LogLevel.INFO;
+const logger = createLogger('multi-agent', { level: logLevel });
 
 /**
  * Check if an object is a ReAct agent (CompiledStateGraph)
@@ -45,7 +51,7 @@ export function isReActAgent(obj: any): obj is CompiledStateGraph<any, any> {
  * interface to work within the Multi-Agent pattern. It handles:
  * - Extracting the task from Multi-Agent state
  * - Converting to ReAct agent's expected input format
- * - Invoking the ReAct agent
+ * - Invoking the ReAct agent with proper config (for checkpointing/interrupts)
  * - Extracting the response from the agent's output
  * - Converting back to Multi-Agent state format
  *
@@ -60,26 +66,25 @@ export function isReActAgent(obj: any): obj is CompiledStateGraph<any, any> {
  * const executeFn = wrapReActAgent('hr', hrAgent);
  *
  * // Now executeFn can be used in Multi-Agent pattern
- * const result = await executeFn(state);
+ * const result = await executeFn(state, config);
  * ```
  */
 export function wrapReActAgent(
   workerId: string,
   agent: CompiledStateGraph<any, any>,
   verbose = false
-): (state: MultiAgentStateType) => Promise<Partial<MultiAgentStateType>> {
-  return async (state: MultiAgentStateType): Promise<Partial<MultiAgentStateType>> => {
+): (state: MultiAgentStateType, config?: any) => Promise<Partial<MultiAgentStateType>> {
+  return async (state: MultiAgentStateType, config?: any): Promise<Partial<MultiAgentStateType>> => {
     try {
-      if (verbose) {
-        console.log(`[ReActWrapper:${workerId}] Wrapping ReAct agent execution`);
-      }
+      logger.debug('Wrapping ReAct agent execution', { workerId });
 
       // Extract task from Multi-Agent state
       const task = state.messages[state.messages.length - 1]?.content || state.input;
 
-      if (verbose) {
-        console.log(`[ReActWrapper:${workerId}] Task:`, task.substring(0, 100) + '...');
-      }
+      logger.debug('Extracted task', {
+        workerId,
+        taskPreview: task.substring(0, 100) + (task.length > 100 ? '...' : '')
+      });
 
       // Find current assignment for this worker
       const currentAssignment = state.activeAssignments.find(
@@ -89,33 +94,36 @@ export function wrapReActAgent(
       );
 
       if (!currentAssignment) {
-        if (verbose) {
-          console.log(`[ReActWrapper:${workerId}] No active assignment found`);
-        }
+        logger.debug('No active assignment found', { workerId });
         return {
           currentAgent: 'supervisor',
           status: 'routing',
         };
       }
 
-      // Invoke ReAct agent with LangGraph-style input
-      const result: any = await agent.invoke({
-        messages: [{ role: 'user', content: task }],
-      });
+      // Invoke ReAct agent with LangGraph-style input and config
+      // The config contains thread_id for checkpointing, which is required for interrupts
+      const result: any = await agent.invoke(
+        {
+          messages: [{ role: 'user', content: task }],
+        },
+        config  // Pass through the config for checkpointing and interrupt support
+      );
 
       // Extract response from ReAct agent's messages
       const response = result.messages?.[result.messages.length - 1]?.content || 'No response';
 
-      if (verbose) {
-        console.log(`[ReActWrapper:${workerId}] Response:`, response.substring(0, 100) + '...');
-      }
+      logger.debug('Received response from ReAct agent', {
+        workerId,
+        responsePreview: response.substring(0, 100) + (response.length > 100 ? '...' : '')
+      });
 
       // Extract tools used from ReAct agent's actions
       const toolsUsed = result.actions?.map((action: any) => action.name).filter(Boolean) || [];
       const uniqueTools = [...new Set(toolsUsed)]; // Remove duplicates
 
-      if (verbose && uniqueTools.length > 0) {
-        console.log(`[ReActWrapper:${workerId}] Tools used:`, uniqueTools.join(', '));
+      if (uniqueTools.length > 0) {
+        logger.debug('Tools used by ReAct agent', { workerId, tools: uniqueTools });
       }
 
       // Create task result in Multi-Agent format
@@ -138,8 +146,21 @@ export function wrapReActAgent(
         currentAgent: 'supervisor',
         status: 'routing',
       };
-    } catch (error) {
-      console.error(`[ReActWrapper:${workerId}] Error:`, error);
+    } catch (error: any) {
+      // Check if this is a GraphInterrupt - if so, let it bubble up
+      // GraphInterrupt is used by LangGraph's interrupt() function for human-in-the-loop
+      if (error && typeof error === 'object' && 'constructor' in error &&
+          error.constructor.name === 'GraphInterrupt') {
+        logger.debug('GraphInterrupt detected - re-throwing', { workerId });
+        // Re-throw GraphInterrupt so the graph can handle it
+        throw error;
+      }
+
+      logger.error('Error in ReAct agent execution', {
+        workerId,
+        error: error instanceof Error ? error.message : String(error),
+        stack: error instanceof Error ? error.stack : undefined
+      });
 
       // Find current assignment for error reporting
       const currentAssignment = state.activeAssignments.find(

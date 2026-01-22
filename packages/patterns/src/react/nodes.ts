@@ -141,7 +141,15 @@ export function createActionNode(
           console.log(`[action] Tool '${action.name}' executed successfully`);
         }
       } catch (error) {
-        // Tool execution failed
+        // Check if this is a GraphInterrupt - if so, let it bubble up
+        // GraphInterrupt is used by LangGraph's interrupt() function for human-in-the-loop
+        if (error && typeof error === 'object' && 'constructor' in error &&
+            error.constructor.name === 'GraphInterrupt') {
+          // Re-throw GraphInterrupt so the graph can handle it
+          throw error;
+        }
+
+        // Tool execution failed (non-interrupt error)
         const errorMessage = error instanceof Error ? error.message : String(error);
 
         observations.push({

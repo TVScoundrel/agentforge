@@ -852,6 +852,28 @@ app.get('/metrics', async (req, res) => {
 
 ### Logging
 
+**Built-in Logger (Recommended):**
+
+```typescript
+import { createLogger, LogLevel } from '@agentforge/core';
+
+// Use environment variable for log level
+const logLevel = (process.env.LOG_LEVEL?.toLowerCase() as LogLevel) || LogLevel.INFO;
+
+const logger = createLogger('production-agent', {
+  level: logLevel,
+  format: 'json', // JSON format for log aggregation
+  includeTimestamp: true,
+  includeContext: true
+});
+
+// Use throughout your application
+logger.info('Server started', { port: 3000, env: process.env.NODE_ENV });
+logger.error('Request failed', { error: err.message, requestId });
+```
+
+**Advanced Logging with Winston (for remote logging):**
+
 ```typescript
 import winston from 'winston';
 import { Logtail } from '@logtail/node';

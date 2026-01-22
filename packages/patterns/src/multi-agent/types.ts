@@ -119,8 +119,11 @@ export interface WorkerConfig {
    *
    * If provided, this function will be used to execute tasks for this worker.
    * Takes precedence over the `agent` property.
+   *
+   * The config parameter contains LangGraph runtime configuration including
+   * thread_id for checkpointing, which is required for interrupt functionality.
    */
-  executeFn?: (state: MultiAgentStateType) => Promise<Partial<MultiAgentStateType>>;
+  executeFn?: (state: MultiAgentStateType, config?: any) => Promise<Partial<MultiAgentStateType>>;
 
   /**
    * ReAct agent instance

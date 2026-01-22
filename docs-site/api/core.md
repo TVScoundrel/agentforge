@@ -232,6 +232,128 @@ const prod = production({
 });
 ```
 
+## Logging
+
+### createLogger()
+
+Create a structured logger for observability and debugging.
+
+```typescript
+import { createLogger, LogLevel } from '@agentforge/core';
+
+// Create a logger with default settings (INFO level)
+const logger = createLogger('my-agent');
+
+// Create a logger with custom settings
+const logger = createLogger('my-agent', {
+  level: LogLevel.DEBUG,
+  format: 'json',
+  includeTimestamp: true,
+  includeContext: true
+});
+
+// Use the logger
+logger.debug('Processing request', { userId: 'user-123' });
+logger.info('Task completed', { duration: 1500 });
+logger.warn('Rate limit approaching', { usage: 95 });
+logger.error('Operation failed', { error: err.message });
+```
+
+#### Parameters
+
+- **`name`** (string) - Logger name, typically the agent or component name
+- **`options`** (optional) - Logger configuration:
+  - **`level`** - Minimum log level (default: `LogLevel.INFO`)
+  - **`format`** - Output format: `'pretty'` or `'json'` (default: `'pretty'`)
+  - **`includeTimestamp`** - Include timestamps in logs (default: `true`)
+  - **`includeContext`** - Include context data in logs (default: `true`)
+
+#### Logger Methods
+
+- **`logger.debug(message, data?)`** - Debug-level logs (detailed execution flow)
+- **`logger.info(message, data?)`** - Info-level logs (important events)
+- **`logger.warn(message, data?)`** - Warning-level logs (degraded performance, retries)
+- **`logger.error(message, data?)`** - Error-level logs (failures, exceptions)
+
+### LogLevel
+
+Enum for controlling log verbosity:
+
+```typescript
+enum LogLevel {
+  DEBUG = 'debug',  // Most verbose - all logs
+  INFO = 'info',    // Informational messages and above
+  WARN = 'warn',    // Warnings and errors only
+  ERROR = 'error'   // Errors only
+}
+```
+
+#### Log Level Priority
+
+Logs are filtered based on priority (lowest to highest):
+- `DEBUG` (0) - Shows all logs
+- `INFO` (1) - Shows info, warn, and error
+- `WARN` (2) - Shows warn and error
+- `ERROR` (3) - Shows error only
+
+#### Environment Variable
+
+Control log level via environment variable:
+
+```bash
+# Development - show all logs
+LOG_LEVEL=debug
+
+# Production - show info and above
+LOG_LEVEL=info
+
+# Production - errors only
+LOG_LEVEL=error
+```
+
+```typescript
+// Logger respects LOG_LEVEL environment variable
+const logLevel = (process.env.LOG_LEVEL?.toLowerCase() as LogLevel) || LogLevel.INFO;
+const logger = createLogger('my-agent', { level: logLevel });
+```
+
+#### Usage Examples
+
+**Development debugging:**
+```typescript
+const logger = createLogger('agent', { level: LogLevel.DEBUG });
+
+logger.debug('Tool selected', { tool: 'search', reasoning: '...' });
+logger.debug('API request', { url: '/api/search', params: {...} });
+```
+
+**Production logging:**
+```typescript
+const logger = createLogger('agent', {
+  level: LogLevel.INFO,
+  format: 'json' // Better for log aggregation
+});
+
+logger.info('Request processed', {
+  requestId: 'req-123',
+  duration: 1500,
+  tokensUsed: 450
+});
+```
+
+**Error tracking:**
+```typescript
+try {
+  await riskyOperation();
+} catch (error) {
+  logger.error('Operation failed', {
+    error: error.message,
+    stack: error.stack,
+    context: { userId, taskId }
+  });
+}
+```
+
 ## Streaming
 
 ### StreamManager
