@@ -5,6 +5,58 @@ All notable changes to AgentForge will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.6.0] - 2026-01-22
+
+### Added
+
+#### Tool-Enabled Supervisor (@agentforge/patterns)
+- **Supervisor Tools for Multi-Agent Pattern** - Supervisors can now use tools during routing decisions
+  - Added optional `tools` parameter to `SupervisorConfig` for tool-enabled routing
+  - Added `maxToolRetries` parameter to control tool call retry attempts (default: 3)
+  - Supervisors can gather additional information before routing tasks to workers
+  - Enables human-in-the-loop workflows with `askHuman` tool in supervisor
+  - Automatic tool call detection and execution in routing logic
+  - Conversation history tracking across tool calls for context preservation
+  - Full backward compatibility - tools are optional
+  - 11 new unit tests for routing with tools
+  - 3 new integration tests for system configuration
+  - **Total Test Count**: 1046 tests passing (up from 1032)
+
+#### Examples
+- **New Multi-Agent Example** - `05-supervisor-with-askhuman.ts`
+  - Demonstrates supervisor using `askHuman` tool for ambiguous requests
+  - Shows clear vs. ambiguous request handling
+  - Best practices for tool-enabled supervisors
+
+### Changed
+
+#### Documentation
+- **Terminology Update** - Standardized on "vertical agents" terminology
+  - Renamed "reusable agents" to "vertical agents" (industry-standard term)
+  - Updated all documentation, examples, and navigation
+  - Renamed `examples/reusable-agents/` → `examples/vertical-agents/`
+  - Renamed docs guide: `reusable-agents.md` → `vertical-agents.md`
+  - Updated CLI templates and references
+  - Maintained backward compatibility with 'reusable-agent' keyword for discoverability
+  - Improves clarity and aligns with common industry terminology
+
+- **Multi-Agent Pattern Documentation** - Enhanced with tool-enabled supervisor section
+  - Comprehensive examples and best practices
+  - Updated both package docs and docs-site
+  - New feature documentation: `docs/FEATURE_TOOL_ENABLED_SUPERVISOR.md`
+
+- **Test Count Updates** - Updated test counts across all documentation
+  - README.md: Updated badge and metrics to show 1046 tests
+  - All documentation now reflects current test coverage
+
+### Published
+- All packages published to npm registry at version 0.6.0:
+  - @agentforge/core@0.6.0
+  - @agentforge/patterns@0.6.0 (includes tool-enabled supervisor)
+  - @agentforge/tools@0.6.0
+  - @agentforge/testing@0.6.0
+  - @agentforge/cli@0.6.0
+
 ## [0.5.4] - 2026-01-21
 
 ### Added
@@ -515,6 +567,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Version History
 
+- **0.6.0** (2026-01-22) - Tool-enabled supervisors for multi-agent pattern, vertical agents terminology
 - **0.5.4** (2026-01-21) - Checkpointer support for all patterns, enabling human-in-the-loop workflows
 - **0.5.3** (2026-01-21) - Fixed vertical-agent template tsconfig.json
 - **0.5.2** (2026-01-21) - Human-in-the-Loop support, vertical agent examples, and CLI scaffolding
