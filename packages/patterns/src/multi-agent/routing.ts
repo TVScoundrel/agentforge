@@ -7,10 +7,56 @@
  * @module patterns/multi-agent/routing
  */
 
-import { HumanMessage, SystemMessage } from '@langchain/core/messages';
+import { HumanMessage, SystemMessage, AIMessage, ToolMessage } from '@langchain/core/messages';
+import type { Tool } from '@agentforge/core';
 import type { MultiAgentStateType } from './state.js';
 import type { SupervisorConfig, RoutingStrategyImpl } from './types.js';
 import type { RoutingDecision, WorkerCapabilities } from './schemas.js';
+
+/**
+ * Execute tools called by the LLM
+ *
+ * @param toolCalls - Array of tool calls from the LLM response
+ * @param tools - Available tools
+ * @returns Array of tool messages with results
+ */
+async function executeTools(
+  toolCalls: any[],
+  tools: Tool<any, any>[]
+): Promise<ToolMessage[]> {
+  const results: ToolMessage[] = [];
+
+  for (const toolCall of toolCalls) {
+    const tool = tools.find(t => t.metadata.name === toolCall.name);
+
+    if (!tool) {
+      results.push(new ToolMessage({
+        content: `Error: Tool '${toolCall.name}' not found`,
+        tool_call_id: toolCall.id,
+      }));
+      continue;
+    }
+
+    try {
+      const result = await tool.execute(toolCall.args);
+      const content = typeof result === 'string'
+        ? result
+        : JSON.stringify(result);
+
+      results.push(new ToolMessage({
+        content,
+        tool_call_id: toolCall.id,
+      }));
+    } catch (error: any) {
+      results.push(new ToolMessage({
+        content: `Error executing tool: ${error.message}`,
+        tool_call_id: toolCall.id,
+      }));
+    }
+  }
+
+  return results;
+}
 
 /**
  * Default system prompt for LLM-based routing
@@ -34,17 +80,21 @@ Respond with a JSON object containing:
 /**
  * LLM-based routing strategy
  * Uses an LLM to intelligently route tasks based on worker capabilities
+ *
+ * Supports tool calls (e.g., askHuman) for gathering additional information before routing.
  */
 export const llmBasedRouting: RoutingStrategyImpl = {
   name: 'llm-based',
-  
+
   async route(state: MultiAgentStateType, config: SupervisorConfig): Promise<RoutingDecision> {
     if (!config.model) {
       throw new Error('LLM-based routing requires a model to be configured');
     }
 
     const systemPrompt = config.systemPrompt || DEFAULT_SUPERVISOR_SYSTEM_PROMPT;
-    
+    const maxRetries = config.maxToolRetries || 3;
+    const tools = config.tools || [];
+
     // Build context about available workers
     const workerInfo = Object.entries(state.workers)
       .map(([id, caps]) => {
@@ -66,29 +116,60 @@ ${workerInfo}
 
 Select the best worker for this task and explain your reasoning.`;
 
-    const messages = [
-      new SystemMessage(systemPrompt),
-      new HumanMessage(userPrompt),
-    ];
+    // Conversation history for tool calls
+    const conversationHistory: any[] = [];
+    let attempt = 0;
 
-    const response = await config.model.invoke(messages);
-    const content = typeof response.content === 'string' 
-      ? response.content 
-      : JSON.stringify(response.content);
+    while (attempt < maxRetries) {
+      // Invoke LLM with conversation history
+      const messages = [
+        new SystemMessage(systemPrompt),
+        new HumanMessage(userPrompt),
+        ...conversationHistory,
+      ];
 
-    // Parse the routing decision
-    try {
-      const decision = JSON.parse(content);
-      return {
-        targetAgent: decision.targetAgent,
-        reasoning: decision.reasoning,
-        confidence: decision.confidence,
-        strategy: 'llm-based',
-        timestamp: Date.now(),
-      };
-    } catch (error) {
-      throw new Error(`Failed to parse routing decision from LLM: ${error}`);
+      const response = await config.model.invoke(messages);
+
+      // Check for tool calls
+      if (response.tool_calls && response.tool_calls.length > 0) {
+        if (tools.length === 0) {
+          throw new Error('LLM requested tool calls but no tools are configured');
+        }
+
+        // Execute tools
+        const toolResults = await executeTools(response.tool_calls, tools);
+
+        // Add to conversation history
+        conversationHistory.push(
+          new AIMessage({ content: response.content || '', tool_calls: response.tool_calls }),
+          ...toolResults
+        );
+
+        attempt++;
+        continue; // Retry routing with tool results
+      }
+
+      // No tool calls - parse routing decision
+      const content = typeof response.content === 'string'
+        ? response.content
+        : JSON.stringify(response.content);
+
+      // Parse the routing decision
+      try {
+        const decision = JSON.parse(content);
+        return {
+          targetAgent: decision.targetAgent,
+          reasoning: decision.reasoning,
+          confidence: decision.confidence,
+          strategy: 'llm-based',
+          timestamp: Date.now(),
+        };
+      } catch (error) {
+        throw new Error(`Failed to parse routing decision from LLM: ${error}`);
+      }
     }
+
+    throw new Error(`Max tool retries (${maxRetries}) exceeded without routing decision`);
   },
 };
 

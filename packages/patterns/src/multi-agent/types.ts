@@ -45,6 +45,39 @@ export interface SupervisorConfig {
    * Maximum number of routing iterations
    */
   maxIterations?: number;
+
+  /**
+   * Optional tools the supervisor can use during routing
+   *
+   * Enables the supervisor to gather additional information before making routing decisions.
+   * Common use case: askHuman tool for clarifying ambiguous queries.
+   *
+   * Note: Only works with LLM-based routing strategy.
+   *
+   * @example
+   * ```typescript
+   * import { createAskHumanTool } from '@agentforge/tools';
+   *
+   * const system = createMultiAgentSystem({
+   *   supervisor: {
+   *     strategy: 'llm-based',
+   *     model: chatModel,
+   *     tools: [createAskHumanTool()],
+   *   },
+   *   // ...
+   * });
+   * ```
+   */
+  tools?: Tool<any, any>[];
+
+  /**
+   * Maximum number of tool call retries before requiring routing decision
+   *
+   * Prevents infinite loops where the supervisor keeps calling tools without making a routing decision.
+   *
+   * @default 3
+   */
+  maxToolRetries?: number;
 }
 
 /**

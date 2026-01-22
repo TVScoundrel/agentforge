@@ -77,6 +77,22 @@ Demonstrates:
 npx tsx packages/patterns/examples/multi-agent/04-custom-workflow.ts
 ```
 
+### 05-supervisor-with-askhuman.ts
+**Tool-enabled supervisor with askHuman**
+
+Demonstrates:
+- Supervisor using tools during routing decisions
+- askHuman tool for gathering clarification
+- Handling ambiguous user requests
+- Tool call retry logic
+- Smart routing based on clarified intent
+
+**Use case**: Interactive systems where user intent may be unclear
+
+```bash
+npx tsx packages/patterns/examples/multi-agent/05-supervisor-with-askhuman.ts
+```
+
 ## Pattern Overview
 
 ### Basic Usage
@@ -191,6 +207,27 @@ const system = createMultiAgentSystem({
   systemPrompt: string,           // Worker-specific prompt
 }
 ```
+
+#### Tool-Enabled Supervisor (Advanced)
+```typescript
+const system = createMultiAgentSystem({
+  supervisor: {
+    model: ChatOpenAI,
+    strategy: 'llm-based',
+    tools: [askHumanTool],        // Tools supervisor can use
+    maxToolRetries: 3,             // Max tool calls before routing
+    systemPrompt: string,
+  },
+  workers: [...],
+});
+```
+
+The supervisor can use tools (like `askHuman`) to gather additional information before making routing decisions. This is useful for:
+- Clarifying ambiguous user requests
+- Fetching context needed for routing
+- Validating information before routing
+
+See example `05-supervisor-with-askhuman.ts` for a complete demonstration.
 
 ## When to Use This Pattern
 

@@ -7,6 +7,7 @@
  */
 
 import { StateGraph, END, CompiledStateGraph } from '@langchain/langgraph';
+import { toLangChainTools } from '@agentforge/core';
 import { MultiAgentState } from './state.js';
 import type { MultiAgentStateType } from './state.js';
 import type { MultiAgentSystemConfig, MultiAgentRouter, WorkerConfig } from './types.js';
@@ -113,12 +114,17 @@ export function createMultiAgentSystem(config: MultiAgentSystemConfig) {
   // @ts-ignore - LangGraph's complex generic types don't infer well with createStateAnnotation
   const workflow = new StateGraph(MultiAgentState);
 
+  // Bind tools to supervisor model if provided
+  let supervisorConfig = { ...supervisor, maxIterations, verbose };
+  if (supervisor.model && supervisor.tools && supervisor.tools.length > 0) {
+    const langchainTools = toLangChainTools(supervisor.tools);
+    // bindTools returns Runnable which is compatible but types don't match exactly
+    const modelWithTools = supervisor.model.bindTools!(langchainTools) as any;
+    supervisorConfig.model = modelWithTools;
+  }
+
   // Add supervisor node
-  const supervisorNode = createSupervisorNode({
-    ...supervisor,
-    maxIterations,
-    verbose,
-  });
+  const supervisorNode = createSupervisorNode(supervisorConfig);
   workflow.addNode('supervisor', supervisorNode);
 
   // Add worker nodes and collect capabilities
