@@ -31,6 +31,7 @@ describe('Multi-Agent System Integration with Tools', () => {
       const mockModel = {
         invoke: vi.fn(),
         bindTools: vi.fn().mockReturnThis(),
+        withStructuredOutput: vi.fn().mockReturnThis(),
       };
 
       // Create security worker
@@ -82,6 +83,7 @@ describe('Multi-Agent System Integration with Tools', () => {
       const mockModel = {
         invoke: vi.fn(),
         bindTools: vi.fn(),
+        withStructuredOutput: vi.fn().mockReturnThis(),
       };
 
       // Create worker
@@ -120,6 +122,7 @@ describe('Multi-Agent System Integration with Tools', () => {
       const mockModel = {
         invoke: vi.fn(),
         bindTools: vi.fn().mockReturnThis(),
+        withStructuredOutput: vi.fn().mockReturnThis(),
       };
 
       const mockTool = toolBuilder()

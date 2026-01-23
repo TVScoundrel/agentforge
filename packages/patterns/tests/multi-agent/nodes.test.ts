@@ -212,8 +212,9 @@ describe('Multi-Agent Nodes', () => {
       const node = createWorkerNode(config);
       const result = await node(mockState);
 
-      expect(result.currentAgent).toBe('supervisor');
-      expect(result.status).toBe('routing');
+      // Workers no longer set currentAgent/status to avoid conflicts in parallel execution
+      expect(result.currentAgent).toBeUndefined();
+      expect(result.status).toBeUndefined();
     });
 
     it('should handle errors and create error result', async () => {
