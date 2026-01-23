@@ -65,6 +65,12 @@ export interface ReActAgentConfig {
    * ```
    */
   checkpointer?: BaseCheckpointSaver;
+
+  /**
+   * Enable tool call deduplication to prevent calling the same tool with identical parameters multiple times
+   * @default true
+   */
+  enableDeduplication?: boolean;
 }
 
 /**

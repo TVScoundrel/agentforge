@@ -19,6 +19,13 @@ import {
   COMPLETED_STEP_TEMPLATE,
   REMAINING_STEP_TEMPLATE,
 } from './prompts.js';
+import {
+  generateToolCallCacheKey,
+  createPatternLogger,
+} from '../shared/deduplication.js';
+
+// Create logger for plan-execute pattern
+const logger = createPatternLogger('agentforge:patterns:plan-execute');
 
 /**
  * Create a planner node that generates a multi-step plan
@@ -91,11 +98,19 @@ export function createExecutorNode(config: ExecutorConfig) {
     model,
     parallel = false,
     stepTimeout = 30000,
+    enableDeduplication = true,
   } = config;
 
   return async (state: PlanExecuteStateType): Promise<Partial<PlanExecuteStateType>> => {
+    const { plan, currentStepIndex = 0, pastSteps = [], iteration = 0 } = state;
+
     try {
-      const { plan, currentStepIndex = 0, pastSteps = [] } = state;
+      logger.debug('Executor node executing', {
+        currentStepIndex,
+        totalSteps: plan?.steps?.length || 0,
+        iteration,
+        deduplicationEnabled: enableDeduplication
+      });
 
       if (!plan || !plan.steps || plan.steps.length === 0) {
         // No plan or empty plan
@@ -117,9 +132,31 @@ export function createExecutorNode(config: ExecutorConfig) {
       if (currentStep.dependencies && currentStep.dependencies.length > 0) {
         const completedStepIds = new Set(pastSteps.map(ps => ps.step.id));
         const unmetDependencies = currentStep.dependencies.filter(dep => !completedStepIds.has(dep));
-        
+
         if (unmetDependencies.length > 0) {
           throw new Error(`Unmet dependencies for step ${currentStep.id}: ${unmetDependencies.join(', ')}`);
+        }
+      }
+
+      // Build deduplication cache from past steps
+      const executionCache = new Map<string, CompletedStep>();
+      let cacheSize = 0;
+
+      if (enableDeduplication && currentStep.tool) {
+        for (const pastStep of pastSteps) {
+          // Cache both successful AND failed steps to prevent re-execution of errors
+          if (pastStep.step.tool) {
+            const cacheKey = generateToolCallCacheKey(pastStep.step.tool, pastStep.step.args || {});
+            executionCache.set(cacheKey, pastStep);
+            cacheSize++;
+          }
+        }
+
+        if (cacheSize > 0) {
+          logger.debug('Deduplication cache built', {
+            cacheSize,
+            pastStepsCount: pastSteps.length
+          });
         }
       }
 
@@ -127,24 +164,58 @@ export function createExecutorNode(config: ExecutorConfig) {
       let result: any;
       let success = true;
       let error: string | undefined;
+      let isDuplicate = false;
 
       try {
         if (currentStep.tool) {
-          // Find and execute the tool
-          const tool = tools.find(t => t.metadata.name === currentStep.tool);
-          if (!tool) {
-            throw new Error(`Tool not found: ${currentStep.tool}`);
+          // Check for duplicate execution
+          if (enableDeduplication) {
+            const cacheKey = generateToolCallCacheKey(currentStep.tool, currentStep.args || {});
+            const cachedStep = executionCache.get(cacheKey);
+
+            if (cachedStep) {
+              isDuplicate = true;
+              result = cachedStep.result;
+              success = cachedStep.success;
+              error = cachedStep.error;
+
+              logger.info('Duplicate step execution prevented', {
+                stepId: currentStep.id,
+                toolName: currentStep.tool,
+                arguments: currentStep.args,
+                iteration,
+                cacheHit: true
+              });
+            }
           }
 
-          // Execute with timeout
-          const timeoutPromise = new Promise((_, reject) =>
-            setTimeout(() => reject(new Error('Step execution timeout')), stepTimeout)
-          );
+          if (!isDuplicate) {
+            // Find and execute the tool
+            const tool = tools.find(t => t.metadata.name === currentStep.tool);
+            if (!tool) {
+              throw new Error(`Tool not found: ${currentStep.tool}`);
+            }
 
-          result = await Promise.race([
-            tool.execute(currentStep.args || {}),
-            timeoutPromise,
-          ]);
+            // Execute with timeout
+            const startTime = Date.now();
+            const timeoutPromise = new Promise((_, reject) =>
+              setTimeout(() => reject(new Error('Step execution timeout')), stepTimeout)
+            );
+
+            result = await Promise.race([
+              tool.execute(currentStep.args || {}),
+              timeoutPromise,
+            ]);
+
+            const executionTime = Date.now() - startTime;
+
+            logger.debug('Step executed successfully', {
+              stepId: currentStep.id,
+              toolName: currentStep.tool,
+              executionTime,
+              iteration
+            });
+          }
         } else {
           // No tool specified, just mark as completed
           result = { message: 'Step completed without tool execution' };
@@ -162,6 +233,13 @@ export function createExecutorNode(config: ExecutorConfig) {
         success = false;
         error = execError instanceof Error ? execError.message : 'Unknown execution error';
         result = null;
+
+        logger.warn('Step execution failed', {
+          stepId: currentStep.id,
+          toolName: currentStep.tool,
+          error,
+          iteration
+        });
       }
 
       // Create completed step
@@ -173,11 +251,26 @@ export function createExecutorNode(config: ExecutorConfig) {
         timestamp: new Date().toISOString(),
       };
 
+      // Log summary
+      logger.info('Executor node complete', {
+        stepId: currentStep.id,
+        stepIndex: currentStepIndex,
+        totalSteps: plan.steps.length,
+        success,
+        isDuplicate,
+        iteration
+      });
+
       return {
         pastSteps: [completedStep],
         currentStepIndex: currentStepIndex + 1,
       };
     } catch (error) {
+      logger.error('Executor node failed', {
+        error: error instanceof Error ? error.message : 'Unknown error',
+        iteration
+      });
+
       return {
         status: 'failed',
         error: error instanceof Error ? error.message : 'Unknown error in executor',

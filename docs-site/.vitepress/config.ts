@@ -75,6 +75,7 @@ export default defineConfig({
           items: [
             { text: 'Streaming', link: '/guide/advanced/streaming' },
             { text: 'Human-in-the-Loop', link: '/guide/advanced/human-in-the-loop' },
+            { text: 'Tool Deduplication', link: '/guide/advanced/tool-deduplication' },
             { text: 'Creating Vertical Agents', link: '/guide/advanced/vertical-agents' },
             { text: 'Resource Management', link: '/guide/advanced/resources' },
             { text: 'Monitoring', link: '/guide/advanced/monitoring' },

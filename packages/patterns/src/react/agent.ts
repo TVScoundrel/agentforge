@@ -79,6 +79,7 @@ export function createReActAgent(
     returnIntermediateSteps = false,
     stopCondition,
     checkpointer,
+    enableDeduplication = true, // Enable by default
   } = config;
 
   const {
@@ -106,7 +107,7 @@ export function createReActAgent(
     verbose
   );
 
-  const actionNode = createActionNode(toolArray, verbose);
+  const actionNode = createActionNode(toolArray, verbose, enableDeduplication);
 
   const observationNode = createObservationNode(verbose);
 

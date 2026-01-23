@@ -7,12 +7,16 @@
  */
 
 import { HumanMessage, SystemMessage } from '@langchain/core/messages';
-import { toLangChainTools } from '@agentforge/core';
+import { toLangChainTools, createLogger, LogLevel } from '@agentforge/core';
 import type { MultiAgentStateType } from './state.js';
 import type { SupervisorConfig, WorkerConfig, AggregatorConfig } from './types.js';
 import type { AgentMessage, TaskAssignment, TaskResult } from './schemas.js';
 import { getRoutingStrategy } from './routing.js';
 import { isReActAgent, wrapReActAgent } from './utils.js';
+
+// Create logger for nodes
+const logLevel = (process.env.LOG_LEVEL?.toLowerCase() as LogLevel) || LogLevel.INFO;
+const logger = createLogger('multi-agent:nodes', { level: logLevel });
 
 /**
  * Default system prompt for aggregator
@@ -39,12 +43,24 @@ export function createSupervisorNode(config: SupervisorConfig) {
 
   return async (state: MultiAgentStateType): Promise<Partial<MultiAgentStateType>> => {
     try {
+      logger.info('Supervisor node executing', {
+        iteration: state.iteration,
+        maxIterations,
+        activeAssignments: state.activeAssignments.length,
+        completedTasks: state.completedTasks.length
+      });
+
       if (verbose) {
         console.log(`[Supervisor] Routing iteration ${state.iteration}/${maxIterations}`);
       }
 
       // Check if we've exceeded max iterations
       if (state.iteration >= maxIterations) {
+        logger.warn('Max iterations reached', {
+          iteration: state.iteration,
+          maxIterations
+        });
+
         if (verbose) {
           console.log('[Supervisor] Max iterations reached, moving to aggregation');
         }
@@ -55,11 +71,21 @@ export function createSupervisorNode(config: SupervisorConfig) {
       }
 
       // Check if all active assignments are completed
-      const allCompleted = state.activeAssignments.every(assignment => 
+      const allCompleted = state.activeAssignments.every(assignment =>
         state.completedTasks.some(task => task.assignmentId === assignment.id)
       );
 
+      logger.debug('Checking task completion', {
+        activeAssignments: state.activeAssignments.length,
+        completedTasks: state.completedTasks.length,
+        allCompleted
+      });
+
       if (allCompleted && state.activeAssignments.length > 0) {
+        logger.info('All tasks completed, moving to aggregation', {
+          completedCount: state.completedTasks.length
+        });
+
         if (verbose) {
           console.log('[Supervisor] All tasks completed, moving to aggregation');
         }
@@ -70,6 +96,7 @@ export function createSupervisorNode(config: SupervisorConfig) {
       }
 
       // Get routing strategy and make decision
+      logger.debug('Getting routing strategy', { strategy });
       const routingImpl = getRoutingStrategy(strategy);
       const decision = await routingImpl.route(state, config);
 
@@ -80,8 +107,33 @@ export function createSupervisorNode(config: SupervisorConfig) {
           ? [decision.targetAgent]
           : [];
 
+      logger.debug('Target agents determined', {
+        targetAgents,
+        isParallel: targetAgents.length > 1,
+        decision: {
+          reasoning: decision.reasoning,
+          confidence: decision.confidence
+        }
+      });
+
       if (targetAgents.length === 0) {
+        logger.error('No target agents specified in routing decision');
         throw new Error('Routing decision must specify at least one target agent');
+      }
+
+      if (targetAgents.length === 1) {
+        logger.info('Routing to single agent', {
+          targetAgent: targetAgents[0],
+          reasoning: decision.reasoning,
+          confidence: decision.confidence
+        });
+      } else {
+        logger.info('Routing to multiple agents in parallel', {
+          targetAgents,
+          count: targetAgents.length,
+          reasoning: decision.reasoning,
+          confidence: decision.confidence
+        });
       }
 
       if (verbose) {
@@ -102,6 +154,15 @@ export function createSupervisorNode(config: SupervisorConfig) {
         assignedAt: Date.now(),
       }));
 
+      logger.debug('Created task assignments', {
+        assignmentCount: assignments.length,
+        assignments: assignments.map(a => ({
+          id: a.id,
+          workerId: a.workerId,
+          taskLength: a.task.length
+        }))
+      });
+
       // Create messages to workers
       const messages: AgentMessage[] = assignments.map(assignment => ({
         id: `msg-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
@@ -116,6 +177,13 @@ export function createSupervisorNode(config: SupervisorConfig) {
         },
       }));
 
+      logger.info('Supervisor routing complete', {
+        currentAgent: targetAgents.join(','),
+        status: 'executing',
+        assignmentCount: assignments.length,
+        nextIteration: state.iteration + 1
+      });
+
       return {
         currentAgent: targetAgents.join(','), // Store all agents (for backward compat)
         status: 'executing',
@@ -125,6 +193,12 @@ export function createSupervisorNode(config: SupervisorConfig) {
         iteration: state.iteration + 1,
       };
     } catch (error) {
+      logger.error('Supervisor node error', {
+        error: error instanceof Error ? error.message : String(error),
+        stack: error instanceof Error ? error.stack : undefined,
+        iteration: state.iteration
+      });
+
       console.error('[Supervisor] Error:', error);
       return {
         status: 'failed',
@@ -151,6 +225,12 @@ export function createWorkerNode(config: WorkerConfig) {
 
   return async (state: MultiAgentStateType, runConfig?: any): Promise<Partial<MultiAgentStateType>> => {
     try {
+      logger.info('Worker node executing', {
+        workerId: id,
+        iteration: state.iteration,
+        activeAssignments: state.activeAssignments.length
+      });
+
       if (verbose) {
         console.log(`[Worker:${id}] Executing task`);
       }
@@ -162,14 +242,29 @@ export function createWorkerNode(config: WorkerConfig) {
       );
 
       if (!currentAssignment) {
+        logger.debug('No active assignment found for worker', {
+          workerId: id,
+          totalActiveAssignments: state.activeAssignments.length,
+          completedTasks: state.completedTasks.length
+        });
+
         if (verbose) {
           console.log(`[Worker:${id}] No active assignment found`);
         }
         return {};
       }
 
+      logger.info('Worker processing assignment', {
+        workerId: id,
+        assignmentId: currentAssignment.id,
+        taskLength: currentAssignment.task.length,
+        taskPreview: currentAssignment.task.substring(0, 100)
+      });
+
       // Priority 1: Use custom execution function if provided
       if (executeFn) {
+        logger.debug('Using custom execution function', { workerId: id });
+
         if (verbose) {
           console.log(`[Worker:${id}] Using custom executeFn`);
         }
@@ -179,23 +274,33 @@ export function createWorkerNode(config: WorkerConfig) {
       // Priority 2: Use ReAct agent if provided
       if (agent) {
         if (isReActAgent(agent)) {
+          logger.debug('Using ReAct agent', { workerId: id });
+
           if (verbose) {
             console.log(`[Worker:${id}] Using ReAct agent (auto-wrapped)`);
           }
           const wrappedFn = wrapReActAgent(id, agent, verbose);
           return await wrappedFn(state, runConfig);
         } else {
+          logger.warn('Agent provided but not a ReAct agent, falling back', { workerId: id });
           console.warn(`[Worker:${id}] Agent provided but does not appear to be a ReAct agent. Falling back to default execution.`);
         }
       }
 
       // Priority 3: Default execution using LLM
       if (!model) {
+        logger.error('Worker missing required configuration', { workerId: id });
         throw new Error(
           `Worker ${id} requires either a model, an agent, or a custom execution function. ` +
           `Provide one of: config.model, config.agent, or config.executeFn`
         );
       }
+
+      logger.debug('Using default LLM execution', {
+        workerId: id,
+        hasTools: tools.length > 0,
+        toolCount: tools.length
+      });
 
       const defaultSystemPrompt = `You are a specialized worker agent with the following capabilities:
 Skills: ${capabilities.skills.join(', ')}
@@ -211,14 +316,27 @@ Execute the assigned task using your skills and tools. Provide a clear, actionab
       // Bind tools if available
       let modelToUse: any = model;
       if (tools.length > 0 && model.bindTools) {
+        logger.debug('Binding tools to model', {
+          workerId: id,
+          toolCount: tools.length,
+          toolNames: tools.map(t => t.metadata.name)
+        });
         const langchainTools = toLangChainTools(tools);
         modelToUse = model.bindTools(langchainTools);
       }
 
+      logger.debug('Invoking LLM', { workerId: id });
       const response = await modelToUse.invoke(messages);
-      const result = typeof response.content === 'string' 
-        ? response.content 
+      const result = typeof response.content === 'string'
+        ? response.content
         : JSON.stringify(response.content);
+
+      logger.info('Worker task completed', {
+        workerId: id,
+        assignmentId: currentAssignment.id,
+        resultLength: result.length,
+        resultPreview: result.substring(0, 100)
+      });
 
       if (verbose) {
         console.log(`[Worker:${id}] Task completed:`, result.substring(0, 100) + '...');
@@ -259,6 +377,11 @@ Execute the assigned task using your skills and tools. Provide a clear, actionab
         },
       };
 
+      logger.debug('Worker state update', {
+        workerId: id,
+        newWorkload: updatedWorkers[id].currentWorkload
+      });
+
       return {
         completedTasks: [taskResult],
         messages: [message],
@@ -269,9 +392,16 @@ Execute the assigned task using your skills and tools. Provide a clear, actionab
       // GraphInterrupt is used by LangGraph's interrupt() function for human-in-the-loop
       if (error && typeof error === 'object' && 'constructor' in error &&
           error.constructor.name === 'GraphInterrupt') {
+        logger.info('GraphInterrupt detected, re-throwing', { workerId: id });
         // Re-throw GraphInterrupt so the graph can handle it
         throw error;
       }
+
+      logger.error('Worker node error', {
+        workerId: id,
+        error: error instanceof Error ? error.message : String(error),
+        stack: error instanceof Error ? error.stack : undefined
+      });
 
       console.error(`[Worker:${id}] Error:`, error);
 
@@ -281,6 +411,11 @@ Execute the assigned task using your skills and tools. Provide a clear, actionab
       );
 
       if (currentAssignment) {
+        logger.warn('Creating error result for assignment', {
+          workerId: id,
+          assignmentId: currentAssignment.id
+        });
+
         const errorResult: TaskResult = {
           assignmentId: currentAssignment.id,
           workerId: id,
@@ -296,6 +431,8 @@ Execute the assigned task using your skills and tools. Provide a clear, actionab
           status: 'routing',
         };
       }
+
+      logger.error('No assignment found for error handling', { workerId: id });
 
       return {
         status: 'failed',
@@ -318,13 +455,23 @@ export function createAggregatorNode(config: AggregatorConfig = {}) {
 
   return async (state: MultiAgentStateType): Promise<Partial<MultiAgentStateType>> => {
     try {
+      logger.info('Aggregator node executing', {
+        completedTasks: state.completedTasks.length,
+        successfulTasks: state.completedTasks.filter(t => t.success).length,
+        failedTasks: state.completedTasks.filter(t => !t.success).length
+      });
+
       if (verbose) {
         console.log('[Aggregator] Combining results from workers');
       }
 
       // Use custom aggregation function if provided
       if (aggregateFn) {
+        logger.debug('Using custom aggregation function');
         const response = await aggregateFn(state);
+        logger.info('Custom aggregation complete', {
+          responseLength: response.length
+        });
         return {
           response,
           status: 'completed',
@@ -333,6 +480,7 @@ export function createAggregatorNode(config: AggregatorConfig = {}) {
 
       // Default aggregation
       if (state.completedTasks.length === 0) {
+        logger.warn('No completed tasks to aggregate');
         return {
           response: 'No tasks were completed.',
           status: 'completed',
@@ -341,10 +489,15 @@ export function createAggregatorNode(config: AggregatorConfig = {}) {
 
       // If no model, just concatenate results
       if (!model) {
+        logger.debug('No model provided, concatenating results');
         const combinedResults = state.completedTasks
           .filter(task => task.success)
           .map(task => task.result)
           .join('\n\n');
+
+        logger.info('Simple concatenation complete', {
+          resultLength: combinedResults.length
+        });
 
         return {
           response: combinedResults || 'No successful results to aggregate.',
@@ -353,6 +506,10 @@ export function createAggregatorNode(config: AggregatorConfig = {}) {
       }
 
       // Use model to intelligently aggregate results
+      logger.debug('Using LLM for intelligent aggregation', {
+        taskCount: state.completedTasks.length
+      });
+
       const taskResults = state.completedTasks
         .map((task, idx) => {
           const status = task.success ? '✓' : '✗';
@@ -373,10 +530,16 @@ Please synthesize these results into a comprehensive response that addresses the
         new HumanMessage(userPrompt),
       ];
 
+      logger.debug('Invoking aggregation LLM');
       const response = await model.invoke(messages);
       const aggregatedResponse = typeof response.content === 'string'
         ? response.content
         : JSON.stringify(response.content);
+
+      logger.info('Aggregation complete', {
+        responseLength: aggregatedResponse.length,
+        responsePreview: aggregatedResponse.substring(0, 100)
+      });
 
       if (verbose) {
         console.log('[Aggregator] Aggregation complete');
@@ -387,6 +550,12 @@ Please synthesize these results into a comprehensive response that addresses the
         status: 'completed',
       };
     } catch (error) {
+      logger.error('Aggregator node error', {
+        error: error instanceof Error ? error.message : String(error),
+        stack: error instanceof Error ? error.stack : undefined,
+        completedTasks: state.completedTasks.length
+      });
+
       console.error('[Aggregator] Error:', error);
       return {
         status: 'failed',

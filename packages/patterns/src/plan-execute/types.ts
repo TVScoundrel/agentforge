@@ -59,6 +59,12 @@ export interface ExecutorConfig {
    * Timeout for each step execution (ms)
    */
   stepTimeout?: number;
+
+  /**
+   * Enable tool call deduplication to prevent executing the same tool with identical parameters multiple times
+   * @default true
+   */
+  enableDeduplication?: boolean;
 }
 
 /**

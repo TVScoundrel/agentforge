@@ -182,3 +182,12 @@ export {
   registerWorkers,
   MultiAgentSystemBuilder,
 } from './multi-agent/index.js';
+
+// Shared utilities
+export {
+  generateToolCallCacheKey,
+  createPatternLogger,
+  buildDeduplicationMetrics,
+  calculateDeduplicationSavings,
+  type DeduplicationMetrics,
+} from './shared/deduplication.js';

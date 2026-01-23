@@ -7,13 +7,17 @@
  */
 
 import { StateGraph, END, CompiledStateGraph } from '@langchain/langgraph';
-import { toLangChainTools } from '@agentforge/core';
+import { toLangChainTools, createLogger, LogLevel } from '@agentforge/core';
 import { MultiAgentState } from './state.js';
 import type { MultiAgentStateType } from './state.js';
 import type { MultiAgentSystemConfig, MultiAgentRouter, WorkerConfig } from './types.js';
 import { createSupervisorNode, createWorkerNode, createAggregatorNode } from './nodes.js';
 import type { WorkerCapabilities } from './schemas.js';
 import { RoutingDecisionSchema } from './schemas.js';
+
+// Create logger for agent system
+const logLevel = (process.env.LOG_LEVEL?.toLowerCase() as LogLevel) || LogLevel.INFO;
+const logger = createLogger('multi-agent:system', { level: logLevel });
 
 /**
  * Create a multi-agent coordination system
@@ -164,13 +168,21 @@ export function createMultiAgentSystem(config: MultiAgentSystemConfig) {
 
   // Define routing logic
   const supervisorRouter: MultiAgentRouter = (state: MultiAgentStateType) => {
+    logger.debug('Supervisor router executing', {
+      status: state.status,
+      currentAgent: state.currentAgent,
+      iteration: state.iteration
+    });
+
     // Check for completion or failure
     if (state.status === 'completed' || state.status === 'failed') {
+      logger.info('Supervisor router: ending workflow', { status: state.status });
       return END;
     }
 
     // Check if we should aggregate
     if (state.status === 'aggregating') {
+      logger.info('Supervisor router: routing to aggregator');
       return 'aggregator';
     }
 
@@ -181,23 +193,42 @@ export function createMultiAgentSystem(config: MultiAgentSystemConfig) {
       if (state.currentAgent.includes(',')) {
         // Return array of agent IDs for parallel execution
         const agents = state.currentAgent.split(',').map(a => a.trim());
+        logger.info('Supervisor router: parallel routing', {
+          agents,
+          count: agents.length
+        });
         return agents as any; // LangGraph supports returning arrays for parallel execution
       }
       // Single agent routing
+      logger.info('Supervisor router: single agent routing', {
+        targetAgent: state.currentAgent
+      });
       return state.currentAgent;
     }
 
     // Default: stay at supervisor
+    logger.debug('Supervisor router: staying at supervisor');
     return 'supervisor';
   };
 
   const workerRouter: MultiAgentRouter = (state: MultiAgentStateType) => {
+    logger.debug('Worker router executing', {
+      iteration: state.iteration,
+      completedTasks: state.completedTasks.length
+    });
+
     // Workers always return to supervisor
     // The supervisor will check if all work is done and route to aggregator
+    logger.debug('Worker router: returning to supervisor');
     return 'supervisor';
   };
 
   const aggregatorRouter: MultiAgentRouter = (state: MultiAgentStateType) => {
+    logger.info('Aggregator router: ending workflow', {
+      completedTasks: state.completedTasks.length,
+      status: state.status
+    });
+
     // Aggregator always ends
     return END;
   };

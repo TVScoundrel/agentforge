@@ -57,6 +57,7 @@ export const ToolResultSchema = z.object({
   result: z.any(),
   error: z.string().optional(),
   timestamp: z.number().optional(),
+  isDuplicate: z.boolean().optional(), // Flag indicating this was a duplicate tool call
 });
 
 export type ToolResult = z.infer<typeof ToolResultSchema>;
