@@ -5,6 +5,23 @@ All notable changes to AgentForge will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.6.2] - 2026-01-23
+
+### Fixed
+- **Plan-Execute Pattern Interrupt Handling** - Fixed GraphInterrupt propagation in Plan-Execute pattern
+  - Added GraphInterrupt detection and re-throw logic to executor node (`@agentforge/patterns`)
+  - Ensures `askHuman` tool works correctly in Plan-Execute agents
+  - Completes interrupt handling coverage across all agent patterns that execute tools
+  - Now all patterns support human-in-the-loop workflows: ReAct, Multi-Agent, and Plan-Execute
+
+### Published
+- All packages published to npm registry at version 0.6.2:
+  - @agentforge/core@0.6.2
+  - @agentforge/patterns@0.6.2
+  - @agentforge/tools@0.6.2
+  - @agentforge/testing@0.6.2
+  - @agentforge/cli@0.6.2
+
 ## [0.6.1] - 2026-01-22
 
 ### Fixed
