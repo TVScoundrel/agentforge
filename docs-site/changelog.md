@@ -5,6 +5,70 @@ All notable changes to AgentForge will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.6.3] - 2026-01-23
+
+### Added
+- **Parallel Routing in Multi-Agent Pattern** - Route queries to multiple agents simultaneously for comprehensive answers
+  - Enhanced `RoutingDecisionSchema` to support both `targetAgent` (single) and `targetAgents` (array) fields
+  - Updated LLM-based routing to handle structured output and select multiple target agents
+  - Modified supervisor node to create multiple `TaskAssignment` objects for parallel execution
+  - Enhanced supervisor router to detect comma-separated agent IDs and return arrays for LangGraph parallel execution
+  - Removed state update conflicts from worker nodes (`currentAgent`, `status`) to enable parallel execution
+  - Simplified worker router to always return 'supervisor' for cleaner state management
+  - Added comprehensive documentation with examples, execution flow diagrams, and best practices
+  - Fully backward compatible - existing systems continue to work with single-agent routing
+
+**Benefits:**
+- Comprehensive answers combining insights from multiple specialists
+- Faster execution through parallel processing instead of sequential routing
+- Better coverage of complex queries requiring multiple perspectives
+- Intelligent aggregation of results from multiple agents
+
+**Example Use Cases:**
+- Code + Security: "Are there security issues in the auth module?"
+- Code + Documentation: "How does authentication work?"
+- Legal + HR: "What are compliance requirements for employee data?"
+
+### Published
+- All packages published to npm registry at version 0.6.3:
+  - @agentforge/core@0.6.3
+  - @agentforge/patterns@0.6.3
+  - @agentforge/tools@0.6.3
+  - @agentforge/testing@0.6.3
+  - @agentforge/cli@0.6.3
+
+## [0.6.3] - 2026-01-23
+
+### Added
+- **Parallel Routing in Multi-Agent Pattern** - Route queries to multiple agents simultaneously for comprehensive answers
+  - Enhanced `RoutingDecisionSchema` to support both `targetAgent` (single) and `targetAgents` (array) fields
+  - Updated LLM-based routing to handle structured output and select multiple target agents
+  - Modified supervisor node to create multiple `TaskAssignment` objects for parallel execution
+  - Enhanced supervisor router to detect comma-separated agent IDs and return arrays for LangGraph parallel execution
+  - Removed state update conflicts from worker nodes (`currentAgent`, `status`) to enable parallel execution
+  - Simplified worker router to always return 'supervisor' for cleaner state management
+  - Added comprehensive documentation with examples, execution flow diagrams, and best practices
+  - Fully backward compatible - existing systems continue to work with single-agent routing
+
+**Benefits:**
+- Comprehensive answers combining insights from multiple specialists
+- Faster execution through parallel processing instead of sequential routing
+- Better coverage of complex queries requiring multiple perspectives
+- Intelligent aggregation of results from multiple agents
+
+**Example Use Cases:**
+- Code + Security: "Are there security issues in the auth module?"
+- Code + Documentation: "How does authentication work?"
+- Legal + HR: "What are compliance requirements for employee data?"
+
+### Published
+- All packages published to npm registry at version 0.6.3:
+  - @agentforge/core@0.6.3
+  - @agentforge/patterns@0.6.3
+  - @agentforge/tools@0.6.3
+  - @agentforge/testing@0.6.3
+  - @agentforge/cli@0.6.3
+
 ## [0.6.2] - 2026-01-23
 
 ### Fixed
@@ -617,6 +681,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Version History
 
+- **0.6.3** (2026-01-23) - Parallel routing for multi-agent pattern - route to multiple agents simultaneously
+- **0.6.2** (2026-01-23) - Fixed Plan-Execute pattern interrupt handling
 - **0.6.1** (2026-01-22) - Fixed askHuman interrupt handling, added logging documentation
 - **0.6.0** (2026-01-22) - Tool-enabled supervisors for multi-agent pattern, vertical agents terminology
 - **0.5.4** (2026-01-21) - Checkpointer support for all patterns, enabling human-in-the-loop workflows
