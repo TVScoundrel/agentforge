@@ -95,10 +95,7 @@ export function wrapReActAgent(
 
       if (!currentAssignment) {
         logger.debug('No active assignment found', { workerId });
-        return {
-          currentAgent: 'supervisor',
-          status: 'routing',
-        };
+        return {};
       }
 
       // Invoke ReAct agent with LangGraph-style input and config
@@ -143,8 +140,6 @@ export function wrapReActAgent(
       // Return in Multi-Agent state format
       return {
         completedTasks: [taskResult],
-        currentAgent: 'supervisor',
-        status: 'routing',
       };
     } catch (error: any) {
       // Check if this is a GraphInterrupt - if so, let it bubble up

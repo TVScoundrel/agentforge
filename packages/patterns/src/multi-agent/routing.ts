@@ -66,16 +66,33 @@ export const DEFAULT_SUPERVISOR_SYSTEM_PROMPT = `You are a supervisor agent resp
 Your job is to:
 1. Analyze the current task and context
 2. Review available worker capabilities
-3. Select the most appropriate worker for the task
+3. Select the most appropriate worker(s) for the task
 4. Provide clear reasoning for your decision
 
-Respond with a JSON object containing:
+**IMPORTANT: You can route to MULTIPLE workers for parallel execution when:**
+- The task requires information from multiple domains (e.g., code + documentation)
+- Multiple workers have complementary expertise
+- Parallel execution would provide a more comprehensive answer
+
+**Response Format:**
+
+For SINGLE worker routing:
 {
   "targetAgent": "worker_id",
   "reasoning": "explanation of why this worker is best suited",
   "confidence": 0.0-1.0,
   "strategy": "llm-based"
-}`;
+}
+
+For PARALLEL multi-worker routing:
+{
+  "targetAgents": ["worker_id_1", "worker_id_2", ...],
+  "reasoning": "explanation of why these workers should work in parallel",
+  "confidence": 0.0-1.0,
+  "strategy": "llm-based"
+}
+
+Choose parallel routing when the task benefits from multiple perspectives or data sources.`;
 
 /**
  * LLM-based routing strategy
@@ -114,7 +131,7 @@ export const llmBasedRouting: RoutingStrategyImpl = {
 Available workers:
 ${workerInfo}
 
-Select the best worker for this task and explain your reasoning.`;
+Select the best worker(s) for this task and explain your reasoning.`;
 
     // Conversation history for tool calls
     const conversationHistory: any[] = [];
@@ -150,23 +167,45 @@ Select the best worker for this task and explain your reasoning.`;
       }
 
       // No tool calls - parse routing decision
-      const content = typeof response.content === 'string'
-        ? response.content
-        : JSON.stringify(response.content);
+      // When using withStructuredOutput, the response IS the structured object directly
+      // Otherwise, it's a BaseMessage with content that needs to be parsed
+      let decision: any;
 
-      // Parse the routing decision
-      try {
-        const decision = JSON.parse(content);
-        return {
-          targetAgent: decision.targetAgent,
-          reasoning: decision.reasoning,
-          confidence: decision.confidence,
-          strategy: 'llm-based',
-          timestamp: Date.now(),
-        };
-      } catch (error) {
-        throw new Error(`Failed to parse routing decision from LLM: ${error}`);
+      // Check if response is already the structured output (from withStructuredOutput)
+      if (response && typeof response === 'object' && ('targetAgent' in response || 'targetAgents' in response)) {
+        // Response is already the structured RoutingDecision object
+        decision = response;
+      } else if (response.content) {
+        // Response is a BaseMessage, parse the content
+        if (typeof response.content === 'string') {
+          // Try to parse JSON from string response
+          try {
+            decision = JSON.parse(response.content);
+          } catch (error) {
+            throw new Error(`Failed to parse routing decision from LLM. Expected JSON but got: ${response.content}`);
+          }
+        } else if (typeof response.content === 'object') {
+          // Already an object
+          decision = response.content;
+        } else {
+          throw new Error(`Unexpected response content type: ${typeof response.content}`);
+        }
+      } else {
+        throw new Error(`Unexpected response format: ${JSON.stringify(response)}`);
       }
+
+      // Support both single and parallel routing
+      // If targetAgents is provided, use it; otherwise use targetAgent
+      const result: RoutingDecision = {
+        targetAgent: decision.targetAgent,
+        targetAgents: decision.targetAgents,
+        reasoning: decision.reasoning,
+        confidence: decision.confidence,
+        strategy: 'llm-based',
+        timestamp: Date.now(),
+      };
+
+      return result;
     }
 
     throw new Error(`Max tool retries (${maxRetries}) exceeded without routing decision`);
@@ -195,6 +234,7 @@ export const roundRobinRouting: RoutingStrategyImpl = {
 
     return {
       targetAgent,
+      targetAgents: null,
       reasoning: `Round-robin selection: worker ${lastRoutingIndex + 1} of ${availableWorkers.length}`,
       confidence: 1.0,
       strategy: 'round-robin',
@@ -244,6 +284,7 @@ export const skillBasedRouting: RoutingStrategyImpl = {
 
       return {
         targetAgent: firstAvailable[0],
+        targetAgents: null,
         reasoning: 'No skill matches found, using first available worker',
         confidence: 0.5,
         strategy: 'skill-based',
@@ -256,6 +297,7 @@ export const skillBasedRouting: RoutingStrategyImpl = {
 
     return {
       targetAgent: best.id,
+      targetAgents: null,
       reasoning: `Best skill match with score ${best.score} (skills: ${best.skills.join(', ')})`,
       confidence,
       strategy: 'skill-based',
@@ -287,6 +329,7 @@ export const loadBalancedRouting: RoutingStrategyImpl = {
 
     return {
       targetAgent: targetWorker.id,
+      targetAgents: null,
       reasoning: `Lowest workload: ${targetWorker.workload} tasks (avg: ${avgWorkload.toFixed(1)})`,
       confidence,
       strategy: 'load-balanced',

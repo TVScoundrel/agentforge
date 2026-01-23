@@ -277,6 +277,132 @@ const system = createMultiAgentSystem({
 
 **Best for**: Complex tasks with varied requirements
 
+### Parallel Routing
+
+**NEW in v0.6.3**: The LLM-based routing strategy now supports routing to **multiple agents in parallel** for comprehensive answers.
+
+#### How It Works
+
+When using `llm-based` routing, the supervisor can select multiple workers to execute simultaneously:
+
+```typescript
+const system = createMultiAgentSystem({
+  supervisor: {
+    model: llm,
+    routingStrategy: 'llm-based',
+    systemPrompt: `Route queries to appropriate workers.
+
+    **PARALLEL ROUTING**: Select MULTIPLE workers when the query benefits from
+    multiple perspectives or data sources.
+
+    Common parallel routing scenarios:
+    - Code + Documentation: "How does authentication work?"
+    - Code + Security: "Are there security issues in the auth module?"
+    - Legal + HR: "What are compliance requirements for employee data?"
+
+    For parallel routing, return:
+    {
+      "targetAgents": ["worker_id_1", "worker_id_2"],
+      "reasoning": "explanation",
+      "confidence": 0.9,
+      "strategy": "llm-based"
+    }
+
+    For single routing, return:
+    {
+      "targetAgent": "worker_id",
+      "reasoning": "explanation",
+      "confidence": 0.9,
+      "strategy": "llm-based"
+    }`,
+  },
+  workers: [
+    {
+      id: 'code',
+      name: 'Code Agent',
+      description: 'Analyzes codebase',
+      capabilities: { skills: ['code-analysis', 'debugging'], tools: [], available: true },
+      model: llm,
+      tools: [codeSearchTool],
+    },
+    {
+      id: 'security',
+      name: 'Security Agent',
+      description: 'Performs security audits',
+      capabilities: { skills: ['security', 'vulnerability-scanning'], tools: [], available: true },
+      model: llm,
+      tools: [securityScanTool],
+    },
+  ],
+  aggregator: { model: llm },
+});
+
+// Query that triggers parallel routing
+const result = await system.invoke({
+  input: 'Are there any security vulnerabilities in our authentication module?',
+});
+
+// The supervisor routes to BOTH code and security agents in parallel
+// Both agents execute simultaneously
+// The aggregator combines their results into a comprehensive response
+```
+
+#### Schema Support
+
+The `RoutingDecisionSchema` supports both single and parallel routing:
+
+```typescript
+{
+  targetAgent: string | null,      // For single agent routing
+  targetAgents: string[] | null,   // For parallel agent routing (NEW)
+  reasoning: string,
+  confidence: number,
+  strategy: string,
+  timestamp: number,
+}
+```
+
+**Validation**: Either `targetAgent` OR `targetAgents` must be provided (not both).
+
+#### Benefits of Parallel Routing
+
+1. **Comprehensive Answers**: Combine insights from multiple specialists
+2. **Faster Execution**: Agents run simultaneously instead of sequentially
+3. **Better Coverage**: Get both code-level and conceptual perspectives
+4. **Intelligent Aggregation**: LLM combines results into coherent response
+
+#### Example Output
+
+```
+Query: "Are there security vulnerabilities in our auth module?"
+
+[Supervisor] Routing to 2 agents in parallel [code, security]
+
+[Worker:code] Analyzing codebase...
+[Worker:security] Running security scan...
+
+[Aggregator] Combining results from 2 workers...
+
+Response: "Security assessment combining code analysis and vulnerability scan:
+- Code Agent found: Weak password hashing (MD5), missing rate limiting
+- Security Agent found: No MFA support, session tokens don't expire
+- Recommendations: Upgrade to bcrypt, add rate limiting, implement MFA..."
+```
+
+#### When to Use Parallel Routing
+
+✅ **Use parallel routing when:**
+- Query needs multiple perspectives (code + docs, legal + HR)
+- Different data sources should be consulted (codebase + documentation)
+- Comprehensive analysis requires multiple specialists
+- Speed matters (parallel > sequential)
+
+❌ **Don't use parallel routing when:**
+- Query clearly maps to single specialist
+- Workers would duplicate work
+- Results need to be processed sequentially
+- Resource constraints limit parallelism
+
 ### 2. Skill-Based Routing
 
 Matches task requirements to worker capabilities.

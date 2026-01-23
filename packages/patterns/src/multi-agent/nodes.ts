@@ -73,24 +73,40 @@ export function createSupervisorNode(config: SupervisorConfig) {
       const routingImpl = getRoutingStrategy(strategy);
       const decision = await routingImpl.route(state, config);
 
-      if (verbose) {
-        console.log(`[Supervisor] Routing to ${decision.targetAgent}: ${decision.reasoning}`);
+      // Determine target agents (support both single and parallel routing)
+      const targetAgents = decision.targetAgents && decision.targetAgents.length > 0
+        ? decision.targetAgents
+        : decision.targetAgent
+          ? [decision.targetAgent]
+          : [];
+
+      if (targetAgents.length === 0) {
+        throw new Error('Routing decision must specify at least one target agent');
       }
 
-      // Create task assignment
-      const assignment: TaskAssignment = {
+      if (verbose) {
+        if (targetAgents.length === 1) {
+          console.log(`[Supervisor] Routing to ${targetAgents[0]}: ${decision.reasoning}`);
+        } else {
+          console.log(`[Supervisor] Routing to ${targetAgents.length} agents in parallel [${targetAgents.join(', ')}]: ${decision.reasoning}`);
+        }
+      }
+
+      // Create task assignments for all target agents (parallel execution)
+      const task = state.messages[state.messages.length - 1]?.content || state.input;
+      const assignments: TaskAssignment[] = targetAgents.map(workerId => ({
         id: `task_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
-        workerId: decision.targetAgent,
-        task: state.messages[state.messages.length - 1]?.content || state.input,
+        workerId,
+        task,
         priority: 5,
         assignedAt: Date.now(),
-      };
+      }));
 
-      // Create message to worker
-      const message: AgentMessage = {
+      // Create messages to workers
+      const messages: AgentMessage[] = assignments.map(assignment => ({
         id: `msg-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
         from: 'supervisor',
-        to: [decision.targetAgent],
+        to: [assignment.workerId],
         type: 'task_assignment',
         content: assignment.task,
         timestamp: Date.now(),
@@ -98,14 +114,14 @@ export function createSupervisorNode(config: SupervisorConfig) {
           assignmentId: assignment.id,
           priority: assignment.priority,
         },
-      };
+      }));
 
       return {
-        currentAgent: decision.targetAgent,
+        currentAgent: targetAgents.join(','), // Store all agents (for backward compat)
         status: 'executing',
         routingHistory: [decision],
-        activeAssignments: [assignment],
-        messages: [message],
+        activeAssignments: assignments, // Multiple assignments for parallel execution!
+        messages,
         iteration: state.iteration + 1,
       };
     } catch (error) {
@@ -149,10 +165,7 @@ export function createWorkerNode(config: WorkerConfig) {
         if (verbose) {
           console.log(`[Worker:${id}] No active assignment found`);
         }
-        return {
-          currentAgent: 'supervisor',
-          status: 'routing',
-        };
+        return {};
       }
 
       // Priority 1: Use custom execution function if provided
@@ -250,8 +263,6 @@ Execute the assigned task using your skills and tools. Provide a clear, actionab
         completedTasks: [taskResult],
         messages: [message],
         workers: updatedWorkers,
-        currentAgent: 'supervisor',
-        status: 'routing',
       };
     } catch (error) {
       // Check if this is a GraphInterrupt - if so, let it bubble up

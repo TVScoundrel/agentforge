@@ -88,33 +88,51 @@ export type RoutingStrategy = z.infer<typeof RoutingStrategySchema>;
 
 /**
  * Schema for routing decision
+ *
+ * Supports both single-agent and parallel multi-agent routing:
+ * - Single: Use `targetAgent` field
+ * - Parallel: Use `targetAgents` array field
+ *
+ * If both are provided, `targetAgents` takes precedence.
+ *
+ * Note: Uses .nullable() instead of .optional() for OpenAI structured output compatibility
  */
 export const RoutingDecisionSchema = z.object({
   /**
-   * Target agent to route to
+   * Target agent to route to (single agent routing)
+   * @deprecated Use targetAgents for parallel routing support
    */
-  targetAgent: z.string().describe('Agent to route the task to'),
+  targetAgent: z.string().nullable().default(null).describe('Agent to route the task to (single routing)'),
+
+  /**
+   * Target agents to route to (parallel routing)
+   * When multiple agents are specified, they execute in parallel
+   */
+  targetAgents: z.array(z.string()).nullable().default(null).describe('Agents to route the task to (parallel routing)'),
 
   /**
    * Reasoning for the routing decision
    */
-  reasoning: z.string().optional().describe('Explanation for routing decision'),
+  reasoning: z.string().default('').describe('Explanation for routing decision'),
 
   /**
    * Confidence in the routing decision (0-1)
    */
-  confidence: z.number().min(0).max(1).optional().describe('Confidence score'),
+  confidence: z.number().min(0).max(1).default(0.8).describe('Confidence score'),
 
   /**
    * Strategy used for routing
    */
-  strategy: RoutingStrategySchema.describe('Strategy used for this decision'),
+  strategy: RoutingStrategySchema.default('llm-based').describe('Strategy used for this decision'),
 
   /**
    * Timestamp of the routing decision
    */
-  timestamp: z.number().optional().describe('Timestamp of the decision'),
-});
+  timestamp: z.number().default(() => Date.now()).describe('Timestamp of the decision'),
+}).refine(
+  (data) => data.targetAgent || (data.targetAgents && data.targetAgents.length > 0),
+  { message: 'Either targetAgent or targetAgents must be provided' }
+);
 
 export type RoutingDecision = z.infer<typeof RoutingDecisionSchema>;
 

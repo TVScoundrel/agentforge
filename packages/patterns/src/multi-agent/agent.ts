@@ -13,6 +13,7 @@ import type { MultiAgentStateType } from './state.js';
 import type { MultiAgentSystemConfig, MultiAgentRouter, WorkerConfig } from './types.js';
 import { createSupervisorNode, createWorkerNode, createAggregatorNode } from './nodes.js';
 import type { WorkerCapabilities } from './schemas.js';
+import { RoutingDecisionSchema } from './schemas.js';
 
 /**
  * Create a multi-agent coordination system
@@ -114,13 +115,24 @@ export function createMultiAgentSystem(config: MultiAgentSystemConfig) {
   // @ts-ignore - LangGraph's complex generic types don't infer well with createStateAnnotation
   const workflow = new StateGraph(MultiAgentState);
 
-  // Bind tools to supervisor model if provided
+  // Configure supervisor model with structured output and tools
   let supervisorConfig = { ...supervisor, maxIterations, verbose };
-  if (supervisor.model && supervisor.tools && supervisor.tools.length > 0) {
-    const langchainTools = toLangChainTools(supervisor.tools);
-    // bindTools returns Runnable which is compatible but types don't match exactly
-    const modelWithTools = supervisor.model.bindTools!(langchainTools) as any;
-    supervisorConfig.model = modelWithTools;
+  if (supervisor.model) {
+    let configuredModel = supervisor.model;
+
+    // Add structured output for routing decisions (forces JSON response)
+    if (supervisor.strategy === 'llm-based') {
+      configuredModel = configuredModel.withStructuredOutput!(RoutingDecisionSchema) as any;
+    }
+
+    // Bind tools if provided
+    if (supervisor.tools && supervisor.tools.length > 0) {
+      const langchainTools = toLangChainTools(supervisor.tools);
+      // bindTools returns Runnable which is compatible but types don't match exactly
+      configuredModel = configuredModel.bindTools!(langchainTools) as any;
+    }
+
+    supervisorConfig.model = configuredModel;
   }
 
   // Add supervisor node
@@ -162,8 +174,16 @@ export function createMultiAgentSystem(config: MultiAgentSystemConfig) {
       return 'aggregator';
     }
 
-    // Route to the current agent
+    // Route to the current agent(s)
+    // Support parallel routing: currentAgent may contain comma-separated agent IDs
     if (state.currentAgent && state.currentAgent !== 'supervisor') {
+      // Check if this is parallel routing (multiple agents)
+      if (state.currentAgent.includes(',')) {
+        // Return array of agent IDs for parallel execution
+        const agents = state.currentAgent.split(',').map(a => a.trim());
+        return agents as any; // LangGraph supports returning arrays for parallel execution
+      }
+      // Single agent routing
       return state.currentAgent;
     }
 
@@ -173,6 +193,7 @@ export function createMultiAgentSystem(config: MultiAgentSystemConfig) {
 
   const workerRouter: MultiAgentRouter = (state: MultiAgentStateType) => {
     // Workers always return to supervisor
+    // The supervisor will check if all work is done and route to aggregator
     return 'supervisor';
   };
 

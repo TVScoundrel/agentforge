@@ -736,6 +736,187 @@ console.log(result.response);
 Tool-enabled supervisors are fully backward compatible. Systems without tools continue to work as before, and no changes are needed to existing code.
 :::
 
+## Advanced: Parallel Routing
+
+**NEW in v0.6.3**: Route queries to **multiple agents in parallel** for comprehensive answers that combine insights from multiple specialists.
+
+### Overview
+
+When using `llm-based` routing, the supervisor can select multiple workers to execute simultaneously instead of routing to just one agent. This enables:
+
+- **Comprehensive answers** combining multiple perspectives
+- **Faster execution** through parallel processing
+- **Better coverage** of complex queries
+
+### How It Works
+
+The supervisor analyzes the query and determines if multiple agents should work on it in parallel:
+
+```typescript
+import { createMultiAgentSystem } from '@agentforge/patterns';
+import { ChatOpenAI } from '@langchain/openai';
+
+const llm = new ChatOpenAI({ modelName: 'gpt-4' });
+
+const system = createMultiAgentSystem({
+  supervisor: {
+    strategy: 'llm-based',  // Required for parallel routing
+    model: llm,
+    systemPrompt: `Route queries to appropriate workers.
+
+    **PARALLEL ROUTING**: Select MULTIPLE workers when the query benefits from
+    multiple perspectives or data sources.
+
+    Common parallel routing scenarios:
+    - Code + Documentation: "How does authentication work?"
+    - Code + Security: "Are there security issues in the auth module?"
+    - Legal + HR: "What are compliance requirements for employee data?"
+
+    For parallel routing, return:
+    {
+      "targetAgents": ["worker_id_1", "worker_id_2"],
+      "reasoning": "explanation",
+      "confidence": 0.9,
+      "strategy": "llm-based"
+    }
+
+    For single routing, return:
+    {
+      "targetAgent": "worker_id",
+      "reasoning": "explanation",
+      "confidence": 0.9,
+      "strategy": "llm-based"
+    }`,
+  },
+  workers: [
+    {
+      id: 'code',
+      name: 'Code Agent',
+      description: 'Analyzes codebase',
+      capabilities: { skills: ['code-analysis'], tools: [], available: true },
+      model: llm,
+      tools: [codeSearchTool],
+    },
+    {
+      id: 'security',
+      name: 'Security Agent',
+      description: 'Performs security audits',
+      capabilities: { skills: ['security'], tools: [], available: true },
+      model: llm,
+      tools: [securityScanTool],
+    },
+    {
+      id: 'docs',
+      name: 'Documentation Agent',
+      description: 'Searches documentation',
+      capabilities: { skills: ['documentation'], tools: [], available: true },
+      model: llm,
+      tools: [docSearchTool],
+    },
+  ],
+  aggregator: { model: llm },
+});
+
+// Query that triggers parallel routing
+const result = await system.invoke({
+  input: 'Are there any security vulnerabilities in our authentication module?',
+});
+```
+
+### Execution Flow
+
+```
+Query: "Are there security vulnerabilities in our auth module?"
+   ↓
+Supervisor analyzes query
+   ↓
+Routes to [code, security] in parallel
+   ↓
+┌─────────────────┬─────────────────┐
+│   Code Agent    │ Security Agent  │
+│  (analyzing)    │  (scanning)     │
+└─────────────────┴─────────────────┘
+   ↓                      ↓
+   └──────────┬───────────┘
+              ↓
+         Aggregator
+              ↓
+    Combined Response
+```
+
+### Example Output
+
+```
+[Supervisor] Routing to 2 agents in parallel [code, security]
+
+[Worker:code] Analyzing codebase...
+[Worker:security] Running security scan...
+
+[Aggregator] Combining results from 2 workers...
+
+Response: "Security assessment combining code analysis and vulnerability scan:
+
+Code Analysis (Code Agent):
+- Found weak password hashing (MD5)
+- Missing rate limiting on login endpoint
+- Session tokens stored in localStorage
+
+Security Scan (Security Agent):
+- No MFA support detected
+- Session tokens don't expire
+- Missing CSRF protection
+
+Recommendations:
+1. Upgrade to bcrypt for password hashing
+2. Add rate limiting middleware
+3. Implement MFA
+4. Add token expiration (15 min)
+5. Move tokens to httpOnly cookies
+6. Add CSRF tokens"
+```
+
+### When to Use Parallel Routing
+
+✅ **Use parallel routing when:**
+- Query needs multiple perspectives (code + docs, legal + HR)
+- Different data sources should be consulted
+- Comprehensive analysis requires multiple specialists
+- Speed matters (parallel > sequential)
+
+❌ **Don't use parallel routing when:**
+- Query clearly maps to single specialist
+- Workers would duplicate work
+- Results need to be processed sequentially
+- Resource constraints limit parallelism
+
+### Schema Support
+
+The routing decision schema supports both single and parallel routing:
+
+```typescript
+{
+  targetAgent: string | null,      // For single agent routing
+  targetAgents: string[] | null,   // For parallel routing (NEW)
+  reasoning: string,
+  confidence: number,
+  strategy: string,
+  timestamp: number,
+}
+```
+
+**Validation**: Either `targetAgent` OR `targetAgents` must be provided (not both).
+
+### Best Practices
+
+1. **Guide the supervisor**: Provide clear examples in the system prompt of when to use parallel routing
+2. **Choose complementary agents**: Select agents that provide different perspectives, not duplicate work
+3. **Optimize aggregation**: Ensure the aggregator can effectively combine results from multiple agents
+4. **Monitor performance**: Parallel routing is faster but uses more resources
+
+::: tip Backward Compatibility
+Parallel routing is fully backward compatible. Existing systems continue to work with single-agent routing, and no changes are needed to existing code.
+:::
+
 ## Next Steps
 
 - [ReAct Pattern](/guide/patterns/react) - For single-agent tool usage
