@@ -22,6 +22,12 @@ import {
   REFLECTION_ENTRY_TEMPLATE,
   REVISION_ENTRY_TEMPLATE,
 } from './prompts.js';
+import { createPatternLogger } from '../shared/deduplication.js';
+
+// Create loggers for Reflection pattern nodes
+const generatorLogger = createPatternLogger('agentforge:patterns:reflection:generator');
+const reflectorLogger = createPatternLogger('agentforge:patterns:reflection:reflector');
+const reviserLogger = createPatternLogger('agentforge:patterns:reflection:reviser');
 
 /**
  * Create a generator node that creates initial responses
@@ -34,10 +40,14 @@ export function createGeneratorNode(config: GeneratorConfig) {
   } = config;
 
   return async (state: ReflectionStateType): Promise<Partial<ReflectionStateType>> => {
+    const startTime = Date.now();
+
     try {
-      if (verbose) {
-        console.log('[Generator] Generating initial response...');
-      }
+      generatorLogger.debug('Generating response', {
+        attempt: state.iteration + 1,
+        hasFeedback: state.reflections.length > 0,
+        hasExistingResponse: !!state.currentResponse
+      });
 
       // Build context from previous iterations if any
       let context = '';
@@ -57,13 +67,16 @@ export function createGeneratorNode(config: GeneratorConfig) {
       ];
 
       const response = await model.invoke(messages);
-      const content = typeof response.content === 'string' 
-        ? response.content 
+      const content = typeof response.content === 'string'
+        ? response.content
         : JSON.stringify(response.content);
 
-      if (verbose) {
-        console.log('[Generator] Generated response:', content.substring(0, 100) + '...');
-      }
+      generatorLogger.info('Response generated', {
+        attempt: state.iteration + 1,
+        responseLength: content.length,
+        isRevision: state.iteration > 0,
+        duration: Date.now() - startTime
+      });
 
       return {
         currentResponse: content,
@@ -71,7 +84,11 @@ export function createGeneratorNode(config: GeneratorConfig) {
         iteration: 1,
       };
     } catch (error) {
-      console.error('[Generator] Error:', error);
+      generatorLogger.error('Response generation failed', {
+        attempt: state.iteration + 1,
+        error: error instanceof Error ? error.message : String(error),
+        duration: Date.now() - startTime
+      });
       return {
         status: 'failed' as const,
         error: error instanceof Error ? error.message : 'Unknown error in generator',
@@ -92,10 +109,14 @@ export function createReflectorNode(config: ReflectorConfig) {
   } = config;
 
   return async (state: ReflectionStateType): Promise<Partial<ReflectionStateType>> => {
+    const startTime = Date.now();
+
     try {
-      if (verbose) {
-        console.log('[Reflector] Reflecting on response...');
-      }
+      reflectorLogger.debug('Reflecting on response', {
+        attempt: state.iteration,
+        responseLength: state.currentResponse?.length || 0,
+        hasCriteria: !!(qualityCriteria || state.qualityCriteria)
+      });
 
       if (!state.currentResponse) {
         throw new Error('No current response to reflect on');
@@ -182,17 +203,25 @@ export function createReflectorNode(config: ReflectorConfig) {
         };
       }
 
-      if (verbose) {
-        console.log('[Reflector] Reflection score:', reflection.score);
-        console.log('[Reflector] Meets standards:', reflection.meetsStandards);
-      }
+      reflectorLogger.info('Reflection complete', {
+        attempt: state.iteration,
+        score: reflection.score,
+        meetsStandards: reflection.meetsStandards,
+        issueCount: reflection.issues.length,
+        suggestionCount: reflection.suggestions.length,
+        duration: Date.now() - startTime
+      });
 
       return {
         reflections: [reflection],
         status: reflection.meetsStandards ? 'completed' as const : 'revising' as const,
       };
     } catch (error) {
-      console.error('[Reflector] Error:', error);
+      reflectorLogger.error('Reflection failed', {
+        attempt: state.iteration,
+        error: error instanceof Error ? error.message : String(error),
+        duration: Date.now() - startTime
+      });
       return {
         status: 'failed' as const,
         error: error instanceof Error ? error.message : 'Unknown error in reflector',
@@ -212,11 +241,9 @@ export function createReviserNode(config: ReviserConfig) {
   } = config;
 
   return async (state: ReflectionStateType): Promise<Partial<ReflectionStateType>> => {
-    try {
-      if (verbose) {
-        console.log('[Reviser] Revising response...');
-      }
+    const startTime = Date.now();
 
+    try {
       if (!state.currentResponse) {
         throw new Error('No current response to revise');
       }
@@ -226,6 +253,13 @@ export function createReviserNode(config: ReviserConfig) {
       }
 
       const lastReflection = state.reflections[state.reflections.length - 1];
+
+      reviserLogger.debug('Revising response', {
+        attempt: state.iteration,
+        previousScore: lastReflection.score,
+        issueCount: lastReflection.issues.length,
+        suggestionCount: lastReflection.suggestions.length
+      });
 
       // Build history section
       let historySection = '';
@@ -259,16 +293,19 @@ export function createReviserNode(config: ReviserConfig) {
         ? response.content
         : JSON.stringify(response.content);
 
-      if (verbose) {
-        console.log('[Reviser] Created revision:', content.substring(0, 100) + '...');
-      }
-
       // Create revision entry
       const revision = {
         content,
         iteration: state.iteration,
         basedOn: lastReflection,
       };
+
+      reviserLogger.info('Revision complete', {
+        attempt: state.iteration,
+        revisionLength: content.length,
+        basedOnScore: lastReflection.score,
+        duration: Date.now() - startTime
+      });
 
       return {
         currentResponse: content,
@@ -277,7 +314,11 @@ export function createReviserNode(config: ReviserConfig) {
         iteration: 1,
       };
     } catch (error) {
-      console.error('[Reviser] Error:', error);
+      reviserLogger.error('Revision failed', {
+        attempt: state.iteration,
+        error: error instanceof Error ? error.message : String(error),
+        duration: Date.now() - startTime
+      });
       return {
         status: 'failed' as const,
         error: error instanceof Error ? error.message : 'Unknown error in reviser',

@@ -185,5 +185,47 @@ describe('Structured Logging', () => {
       expect(stream.output[1]).toContain('userId');
     });
   });
+
+  describe('isDebugEnabled', () => {
+    it('should return true when debug level is enabled', () => {
+      const logger = createLogger('test', { level: LogLevel.DEBUG });
+      expect(logger.isDebugEnabled()).toBe(true);
+    });
+
+    it('should return false when debug level is disabled', () => {
+      const logger = createLogger('test', { level: LogLevel.INFO });
+      expect(logger.isDebugEnabled()).toBe(false);
+    });
+  });
+
+  describe('isLevelEnabled', () => {
+    it('should return true for enabled levels', () => {
+      const logger = createLogger('test', { level: LogLevel.INFO });
+
+      expect(logger.isLevelEnabled(LogLevel.INFO)).toBe(true);
+      expect(logger.isLevelEnabled(LogLevel.WARN)).toBe(true);
+      expect(logger.isLevelEnabled(LogLevel.ERROR)).toBe(true);
+    });
+
+    it('should return false for disabled levels', () => {
+      const logger = createLogger('test', { level: LogLevel.INFO });
+
+      expect(logger.isLevelEnabled(LogLevel.DEBUG)).toBe(false);
+    });
+
+    it('should work correctly for all log levels', () => {
+      const debugLogger = createLogger('test', { level: LogLevel.DEBUG });
+      expect(debugLogger.isLevelEnabled(LogLevel.DEBUG)).toBe(true);
+      expect(debugLogger.isLevelEnabled(LogLevel.INFO)).toBe(true);
+      expect(debugLogger.isLevelEnabled(LogLevel.WARN)).toBe(true);
+      expect(debugLogger.isLevelEnabled(LogLevel.ERROR)).toBe(true);
+
+      const errorLogger = createLogger('test', { level: LogLevel.ERROR });
+      expect(errorLogger.isLevelEnabled(LogLevel.DEBUG)).toBe(false);
+      expect(errorLogger.isLevelEnabled(LogLevel.INFO)).toBe(false);
+      expect(errorLogger.isLevelEnabled(LogLevel.WARN)).toBe(false);
+      expect(errorLogger.isLevelEnabled(LogLevel.ERROR)).toBe(true);
+    });
+  });
 });
 

@@ -730,13 +730,39 @@ const supportAgent = createReActAgent({
 
 ## Monitoring & Debugging
 
-### Enable Verbose Logging
+### Structured Logging
 
-```typescript
-const agent = createReActAgent(
-  { llm, tools },
-  { verbose: true }
-);
+The ReAct pattern uses AgentForge's structured logging system with three dedicated loggers:
+
+- `agentforge:patterns:react:reasoning` - Thought generation and decision making
+- `agentforge:patterns:react:action` - Tool execution and observations
+- `agentforge:patterns:react:observation` - Observation processing
+
+### Enable Debug Logging
+
+Set the `LOG_LEVEL` environment variable to see detailed execution logs:
+
+```bash
+# See everything (most verbose)
+LOG_LEVEL=debug npm start
+
+# See important events only (recommended for production)
+LOG_LEVEL=info npm start
+
+# See warnings and errors only
+LOG_LEVEL=warn npm start
+```
+
+### Example Debug Output
+
+With `LOG_LEVEL=debug`, you'll see detailed execution flow:
+
+```
+[2026-01-24T10:15:33.163Z] [DEBUG] [agentforge:patterns:react:reasoning] Reasoning node executing data={"iteration":1,"maxIterations":10}
+[2026-01-24T10:15:33.164Z] [INFO] [agentforge:patterns:react:reasoning] Reasoning complete data={"iteration":1,"thoughtGenerated":true,"actionCount":2,"shouldContinue":true,"duration":125}
+[2026-01-24T10:15:33.165Z] [DEBUG] [agentforge:patterns:react:action] Action node executing data={"iteration":1,"toolCallCount":2}
+[2026-01-24T10:15:33.165Z] [DEBUG] [agentforge:patterns:react:action] Executing tool data={"toolName":"search","args":{"query":"weather"}}
+[2026-01-24T10:15:33.166Z] [INFO] [agentforge:patterns:react:action] Action node complete data={"iteration":1,"toolsExecuted":2,"duplicatesSkipped":0,"totalObservations":2,"duration":89}
 ```
 
 ### Track Intermediate Steps
@@ -765,26 +791,86 @@ if (result.actions.length === 0) {
 }
 ```
 
-### Custom Logging
+### Common Debugging Scenarios
+
+#### Agent Not Stopping
+
+```bash
+LOG_LEVEL=debug npm start
+```
+
+Look for `shouldContinue` in "Reasoning complete" logs:
+```
+[INFO] [agentforge:patterns:react:reasoning] Reasoning complete data={"shouldContinue":true}
+```
+
+If `shouldContinue` is always `true`, the agent isn't detecting completion. Check your prompt or add explicit completion criteria.
+
+#### Tool Not Being Called
+
+```bash
+LOG_LEVEL=debug npm start
+```
+
+Look for:
+1. "Tool calls parsed" - Check if tool name is in the list
+2. "Executing tool" - Verify the tool is actually being called
+3. "Tool execution failed" - Check for errors
+
+#### Slow Performance
+
+```bash
+LOG_LEVEL=info npm start
+```
+
+Check `duration` fields in completion logs:
+```
+[INFO] [agentforge:patterns:react:action] Action node complete data={"duration":5234}
+```
+
+If duration > 2000ms, investigate which tools are slow.
+
+#### Cache Not Working
+
+```bash
+LOG_LEVEL=debug npm start
+```
+
+Look for cache metrics:
+```
+[INFO] [agentforge:patterns:react:action] Action node complete data={"duplicatesSkipped":3}
+```
+
+If `duplicatesSkipped` is 0 when you expect duplicates, check tool call deduplication configuration.
+
+### Performance Monitoring
+
+Monitor key metrics in INFO level logs:
 
 ```typescript
-import { createReasoningNode, createActionNode, createObservationNode } from '@agentforge/patterns';
+// Reasoning node metrics
+{
+  "iteration": 1,
+  "thoughtGenerated": true,
+  "actionCount": 2,
+  "shouldContinue": true,
+  "duration": 125  // milliseconds
+}
 
-// Wrap nodes with logging
-const loggingReasoningNode = async (state) => {
-  console.log('[Reasoning] Starting iteration', state.iteration);
-  const result = await reasoningNode(state);
-  console.log('[Reasoning] Generated thought:', result.thoughts?.[0]?.content);
-  return result;
-};
-
-const loggingActionNode = async (state) => {
-  console.log('[Action] Executing tools...');
-  const result = await actionNode(state);
-  console.log('[Action] Completed:', result.actions?.length, 'actions');
-  return result;
-};
+// Action node metrics
+{
+  "iteration": 1,
+  "toolsExecuted": 2,
+  "duplicatesSkipped": 0,  // Cache hits
+  "totalObservations": 2,
+  "duration": 89
+}
 ```
+
+**Performance targets:**
+- Reasoning node: < 500ms
+- Action node: < 1000ms (depends on tool execution time)
+- Cache hit rate: > 20% for repetitive tasks
 
 ### LangSmith Integration
 
@@ -805,6 +891,23 @@ const result = await agent.invoke(
   }
 );
 ```
+
+### Filtering Logs
+
+Use grep to filter logs by component:
+
+```bash
+# See only reasoning logs
+LOG_LEVEL=debug npm start 2>&1 | grep "react:reasoning"
+
+# See only errors
+LOG_LEVEL=debug npm start 2>&1 | grep "ERROR"
+
+# See only tool executions
+LOG_LEVEL=debug npm start 2>&1 | grep "Executing tool"
+```
+
+For more debugging techniques, see the [Debugging Guide](../../../docs/DEBUGGING_GUIDE.md).
 
 ## Error Handling
 
@@ -1304,6 +1407,18 @@ interface ScratchpadEntry {
 - Repeats same actions
 - Doesn't provide final answer
 
+**Debug with logging:**
+```bash
+LOG_LEVEL=debug npm start
+```
+
+Look for `shouldContinue` in "Reasoning complete" logs:
+```
+[INFO] [agentforge:patterns:react:reasoning] Reasoning complete data={"shouldContinue":true,"iteration":10}
+```
+
+If `shouldContinue` is always `true`, the agent isn't detecting completion.
+
 **Solutions:**
 ```typescript
 // 1. Add custom stop condition
@@ -1328,6 +1443,21 @@ maxIterations: 5  // Force earlier completion
 **Symptoms:**
 - Agent provides answer without using tools
 - No actions in result
+
+**Debug with logging:**
+```bash
+LOG_LEVEL=debug npm start
+```
+
+Look for:
+1. "Reasoning complete" - Check if `actionCount` is 0
+2. "Tool calls parsed" - Check if tool name is in the list
+3. "Executing tool" - Verify the tool is actually being called
+
+Example log showing no tools called:
+```
+[INFO] [agentforge:patterns:react:reasoning] Reasoning complete data={"actionCount":0}
+```
 
 **Solutions:**
 ```typescript
@@ -1378,6 +1508,18 @@ Action: Provide final answer`
 - Takes too long to complete
 - Uses many iterations for simple tasks
 
+**Debug with logging:**
+```bash
+LOG_LEVEL=info npm start
+```
+
+Check `duration` fields to identify slow operations:
+```
+[INFO] [agentforge:patterns:react:action] Action node complete data={"duration":5234,"iteration":8}
+```
+
+If duration > 2000ms or iteration > 5 for simple tasks, investigate.
+
 **Solutions:**
 ```typescript
 // 1. Reduce max iterations
@@ -1394,6 +1536,13 @@ stopCondition: (state) => {
 // Break complex tools into simpler ones
 // Remove unnecessary tools
 ```
+
+### More Debugging Help
+
+For comprehensive debugging techniques, see:
+- [Debugging Guide](../../../docs/DEBUGGING_GUIDE.md) - Complete debugging reference
+- [Logging Standards](../../../docs/LOGGING_STANDARDS.md) - Logging best practices
+- [Logging Examples](../../../docs/examples/LOGGING_EXAMPLES.md) - Code examples
 
 ### Tool errors
 

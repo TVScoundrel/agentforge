@@ -96,6 +96,17 @@ export interface Logger {
   error(message: string, data?: Record<string, any>): void;
 
   /**
+   * Check if debug logging is enabled
+   * Useful for avoiding expensive computations when debug is disabled
+   */
+  isDebugEnabled(): boolean;
+
+  /**
+   * Check if a specific log level is enabled
+   */
+  isLevelEnabled(level: LogLevel): boolean;
+
+  /**
    * Create a child logger with additional context
    */
   withContext(context: Record<string, any>): Logger;
@@ -135,6 +146,14 @@ class LoggerImpl implements Logger {
 
   error(message: string, data?: Record<string, any>): void {
     this.log(LogLevel.ERROR, message, data);
+  }
+
+  isDebugEnabled(): boolean {
+    return this.isLevelEnabled(LogLevel.DEBUG);
+  }
+
+  isLevelEnabled(level: LogLevel): boolean {
+    return LOG_LEVEL_PRIORITY[level] >= LOG_LEVEL_PRIORITY[this.options.level];
   }
 
   withContext(context: Record<string, any>): Logger {
@@ -201,6 +220,7 @@ class LoggerImpl implements Logger {
  * Create a structured logger.
  *
  * @example
+ * Basic usage:
  * ```typescript
  * import { createLogger, LogLevel } from '@agentforge/core';
  *
@@ -211,6 +231,16 @@ class LoggerImpl implements Logger {
  *
  * logger.info('Processing request', { userId: 'user-123' });
  * logger.error('Request failed', { error: err.message });
+ * ```
+ *
+ * @example
+ * Performance optimization with isDebugEnabled:
+ * ```typescript
+ * // Avoid expensive computations when debug is disabled
+ * if (logger.isDebugEnabled()) {
+ *   const expensiveData = computeExpensiveDebugInfo();
+ *   logger.debug('Debug info', expensiveData);
+ * }
  * ```
  *
  * @param name - Logger name (typically the agent or component name)

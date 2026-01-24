@@ -337,15 +337,33 @@ const marketingAgent = createReflectionAgent({
 
 ## Monitoring and Debugging
 
-### Enable Verbose Mode
+### Structured Logging
 
-```typescript
-const agent = createReflectionAgent({
-  generator: { llm, verbose: true },
-  reflector: { llm, verbose: true },
-  reviser: { llm, verbose: true },
-  verbose: true,
-});
+The Reflection pattern uses AgentForge's structured logging system with three dedicated loggers:
+
+- `agentforge:patterns:reflection:generator` - Initial generation
+- `agentforge:patterns:reflection:reflector` - Reflection and feedback
+- `agentforge:patterns:reflection:reviser` - Revision based on feedback
+
+### Enable Debug Logging
+
+```bash
+# See everything (most verbose)
+LOG_LEVEL=debug npm start
+
+# See important events only (recommended for production)
+LOG_LEVEL=info npm start
+```
+
+### Example Debug Output
+
+```
+[2026-01-24T10:15:33.163Z] [DEBUG] [agentforge:patterns:reflection:generator] Generator node executing
+[2026-01-24T10:15:33.164Z] [INFO] [agentforge:patterns:reflection:generator] Generation complete data={"contentLength":234,"duration":125}
+[2026-01-24T10:15:33.165Z] [DEBUG] [agentforge:patterns:reflection:reflector] Reflector node executing data={"attempt":1}
+[2026-01-24T10:15:33.166Z] [INFO] [agentforge:patterns:reflection:reflector] Reflection complete data={"feedbackLength":156,"score":7,"duration":89}
+[2026-01-24T10:15:33.167Z] [DEBUG] [agentforge:patterns:reflection:reviser] Reviser node executing data={"attempt":1}
+[2026-01-24T10:15:33.168Z] [INFO] [agentforge:patterns:reflection:reviser] Revision complete data={"contentLength":245,"duration":112}
 ```
 
 ### Track Progress
@@ -362,6 +380,32 @@ result.reflections.forEach((r, i) => {
 });
 ```
 
+### Common Debugging Scenarios
+
+#### Quality Not Improving
+
+```bash
+LOG_LEVEL=debug npm start
+```
+
+Look for reflection scores in logs:
+```
+[INFO] [agentforge:patterns:reflection:reflector] Reflection complete data={"score":7}
+```
+
+If scores aren't increasing, check reflection criteria.
+
+#### Too Many Iterations
+
+```bash
+LOG_LEVEL=info npm start
+```
+
+Look for "Max reflections reached" warnings:
+```
+[WARN] [agentforge:patterns:reflection:reviser] Max reflections reached data={"attempt":5}
+```
+
 ### Analyze Reflections
 
 ```typescript
@@ -375,6 +419,8 @@ const allSuggestions = result.reflections.flatMap(r => r.suggestions);
 const scores = result.reflections.map(r => r.score);
 const improved = scores[scores.length - 1] > scores[0];
 ```
+
+For more debugging techniques, see the [Debugging Guide](../../../docs/DEBUGGING_GUIDE.md).
 
 ## Error Handling
 

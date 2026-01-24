@@ -725,25 +725,31 @@ const workflowAgent = createPlanExecuteAgent({
 
 ## Monitoring & Debugging
 
-### Enable Verbose Logging
+### Structured Logging
 
-```typescript
-const agent = createPlanExecuteAgent({
-  planner: { llm, maxSteps: 5 },
-  executor: { tools },
-  verbose: true, // Enable detailed logging
-});
+The Plan-Execute pattern uses AgentForge's structured logging system with three dedicated loggers:
+
+- `agentforge:patterns:plan-execute:planner` - Plan generation
+- `agentforge:patterns:plan-execute:executor` - Step execution
+- `agentforge:patterns:plan-execute:replanner` - Plan revision
+
+### Enable Debug Logging
+
+```bash
+# See everything (most verbose)
+LOG_LEVEL=debug npm start
+
+# See important events only (recommended for production)
+LOG_LEVEL=info npm start
 ```
 
-Output:
+### Example Debug Output
+
 ```
-[Planner] Creating plan for: "Research topic X"
-[Planner] Generated 5 steps
-[Executor] Starting step 1: Fetch data
-[Executor] Step 1 completed in 234ms
-[Executor] Starting step 2: Validate data
-[Executor] Step 2 completed in 156ms
-...
+[2026-01-24T10:15:33.163Z] [DEBUG] [agentforge:patterns:plan-execute:planner] Planner node executing
+[2026-01-24T10:15:33.164Z] [INFO] [agentforge:patterns:plan-execute:planner] Plan generated data={"stepCount":5,"duration":234}
+[2026-01-24T10:15:33.165Z] [DEBUG] [agentforge:patterns:plan-execute:executor] Executing step data={"stepIndex":0,"description":"Fetch data"}
+[2026-01-24T10:15:33.166Z] [INFO] [agentforge:patterns:plan-execute:executor] Step complete data={"stepIndex":0,"status":"completed","duration":156}
 ```
 
 ### Track Progress
@@ -766,28 +772,39 @@ if (failedSteps.length > 0) {
 }
 ```
 
-### Custom Logging
+### Common Debugging Scenarios
 
-```typescript
-import { createPlannerNode, createExecutorNode } from '@agentforge/patterns';
+#### Plan Too Vague
 
-// Wrap nodes with logging
-const loggingExecutor = async (state) => {
-  console.log('[Executor] State:', {
-    currentStep: state.currentStepIndex,
-    completed: state.pastSteps.length,
-    status: state.status,
-  });
+```bash
+LOG_LEVEL=debug npm start
+```
 
-  const result = await executorNode(state);
+Look for "Plan generated" logs to see the plan structure:
+```
+[INFO] [agentforge:patterns:plan-execute:planner] Plan generated data={"stepCount":5}
+```
 
-  console.log('[Executor] Result:', {
-    newSteps: result.pastSteps?.length,
-    status: result.status,
-  });
+#### Step Execution Failing
 
-  return result;
-};
+```bash
+LOG_LEVEL=debug npm start
+```
+
+Look for "Step complete" logs with status:
+```
+[INFO] [agentforge:patterns:plan-execute:executor] Step complete data={"status":"failed","error":"..."}
+```
+
+#### Slow Performance
+
+```bash
+LOG_LEVEL=info npm start
+```
+
+Check `duration` fields:
+```
+[INFO] [agentforge:patterns:plan-execute:executor] Step complete data={"duration":5234}
 ```
 
 ### LangSmith Integration
@@ -809,6 +826,8 @@ const result = await agent.invoke(
   }
 );
 ```
+
+For more debugging techniques, see the [Debugging Guide](../../../docs/DEBUGGING_GUIDE.md).
 
 ## Error Handling
 

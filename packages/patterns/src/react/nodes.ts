@@ -15,8 +15,10 @@ import {
   buildDeduplicationMetrics,
 } from '../shared/deduplication.js';
 
-// Create logger for ReAct pattern
-const logger = createPatternLogger('agentforge:react');
+// Create loggers for ReAct pattern nodes
+const reasoningLogger = createPatternLogger('agentforge:patterns:react:reasoning');
+const actionLogger = createPatternLogger('agentforge:patterns:react:action');
+const observationLogger = createPatternLogger('agentforge:patterns:react:observation');
 
 /**
  * Create a reasoning node that generates thoughts and decides on actions
@@ -39,9 +41,15 @@ export function createReasoningNode(
   const llmWithTools = llm.bindTools ? llm.bindTools(langchainTools) : llm;
 
   return async (state: ReActStateType) => {
-    if (verbose) {
-      console.log(`[reasoning] Iteration ${(state.iteration as number) + 1}/${maxIterations}`);
-    }
+    const currentIteration = (state.iteration as number) || 0;
+    const startTime = Date.now();
+
+    reasoningLogger.debug('Reasoning iteration started', {
+      iteration: currentIteration + 1,
+      maxIterations,
+      observationCount: (state.observations as any[])?.length || 0,
+      hasActions: !!(state.actions as any[])?.length
+    });
 
     // Build messages for the LLM
     const stateMessages = (state.messages as any[]) || [];
@@ -82,8 +90,16 @@ export function createReasoningNode(
     }
 
     // Determine if we should continue
-    const currentIteration = (state.iteration as number) || 0;
     const shouldContinue = toolCalls.length > 0 && currentIteration + 1 < maxIterations;
+
+    reasoningLogger.info('Reasoning complete', {
+      iteration: currentIteration + 1,
+      thoughtGenerated: !!thought,
+      actionCount: toolCalls.length,
+      shouldContinue,
+      isFinalResponse: toolCalls.length === 0,
+      duration: Date.now() - startTime
+    });
 
     // Update state
     return {
@@ -116,15 +132,12 @@ export function createActionNode(
     const actions = (state.actions as ToolCall[]) || [];
     const allObservations = (state.observations as ToolResult[]) || [];
     const iteration = (state.iteration as number) || 0;
+    const startTime = Date.now();
 
-    if (verbose) {
-      console.log(`[action] Executing ${actions.length} tool calls`);
-    }
-
-    logger.debug('Action node executing', {
-      totalActions: actions.length,
+    actionLogger.debug('Action node started', {
+      actionCount: actions.length,
       iteration,
-      deduplicationEnabled: enableDeduplication
+      cacheEnabled: enableDeduplication
     });
 
     // Get the most recent actions (from the last reasoning step)
@@ -148,7 +161,7 @@ export function createActionNode(
       }
 
       if (cacheSize > 0) {
-        logger.debug('Deduplication cache built', {
+        actionLogger.debug('Deduplication cache built', {
           cacheSize,
           totalObservations: allObservations.length
         });
@@ -164,9 +177,11 @@ export function createActionNode(
       // Skip actions that already have observations (already processed)
       const existingObservation = allObservations.find(obs => obs.toolCallId === action.id);
       if (existingObservation) {
-        if (verbose) {
-          console.log(`[action] Skipping already-processed action: ${action.name} (id: ${action.id})`);
-        }
+        actionLogger.debug('Skipping already-processed action', {
+          toolName: action.name,
+          toolCallId: action.id,
+          iteration
+        });
         continue;
       }
 
@@ -178,16 +193,12 @@ export function createActionNode(
         if (cachedResult) {
           duplicatesSkipped++;
 
-          logger.info('Duplicate tool call prevented', {
+          actionLogger.info('Duplicate tool call prevented', {
             toolName: action.name,
             arguments: action.arguments,
             iteration,
             cacheHit: true
           });
-
-          if (verbose) {
-            console.log(`[action] ⚠️  Skipping duplicate tool call: ${action.name} (already executed with same arguments)`);
-          }
 
           // Return a special observation indicating this was a duplicate
           observations.push({
@@ -222,7 +233,7 @@ export function createActionNode(
 
         toolsExecuted++;
 
-        logger.debug('Tool executed successfully', {
+        actionLogger.debug('Tool executed successfully', {
           toolName: action.name,
           executionTime,
           iteration
@@ -241,10 +252,6 @@ export function createActionNode(
           const cacheKey = generateToolCallCacheKey(action.name, action.arguments);
           executionCache.set(cacheKey, observation);
         }
-
-        if (verbose) {
-          console.log(`[action] Tool '${action.name}' executed successfully`);
-        }
       } catch (error) {
         // Check if this is a GraphInterrupt - if so, let it bubble up
         // GraphInterrupt is used by LangGraph's interrupt() function for human-in-the-loop
@@ -257,7 +264,7 @@ export function createActionNode(
         // Tool execution failed (non-interrupt error)
         const errorMessage = error instanceof Error ? error.message : String(error);
 
-        logger.warn('Tool execution failed', {
+        actionLogger.error('Tool execution failed', {
           toolName: action.name,
           error: errorMessage,
           iteration
@@ -269,19 +276,16 @@ export function createActionNode(
           error: errorMessage,
           timestamp: Date.now(),
         });
-
-        if (verbose) {
-          console.error(`[action] Tool '${action.name}' failed:`, errorMessage);
-        }
       }
     }
 
     // Log summary of action node execution
     if (duplicatesSkipped > 0 || toolsExecuted > 0) {
       const metrics = buildDeduplicationMetrics(toolsExecuted, duplicatesSkipped, observations.length);
-      logger.info('Action node complete', {
+      actionLogger.info('Action node complete', {
         iteration,
         ...metrics,
+        duration: Date.now() - startTime
       });
     }
 
@@ -303,10 +307,12 @@ export function createObservationNode(
     const observations = (state.observations as ToolResult[]) || [];
     const thoughts = (state.thoughts as any[]) || [];
     const actions = (state.actions as ToolCall[]) || [];
+    const iteration = (state.iteration as number) || 0;
 
-    if (verbose) {
-      console.log(`[observation] Processing ${observations.length} observations`);
-    }
+    observationLogger.debug('Processing observations', {
+      observationCount: observations.length,
+      iteration
+    });
 
     // Get the most recent observations
     const recentObservations = observations.slice(-10);
@@ -348,6 +354,12 @@ export function createObservationNode(
         content,
         name: latestActions.find((a: any) => a.id === obs.toolCallId)?.name,
       };
+    });
+
+    observationLogger.debug('Observation node complete', {
+      iteration,
+      scratchpadUpdated: true,
+      messageCount: observationMessages.length
     });
 
     return {

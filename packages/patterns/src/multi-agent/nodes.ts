@@ -50,9 +50,7 @@ export function createSupervisorNode(config: SupervisorConfig) {
         completedTasks: state.completedTasks.length
       });
 
-      if (verbose) {
-        console.log(`[Supervisor] Routing iteration ${state.iteration}/${maxIterations}`);
-      }
+      logger.debug(`Routing iteration ${state.iteration}/${maxIterations}`);
 
       // Check if we've exceeded max iterations
       if (state.iteration >= maxIterations) {
@@ -61,9 +59,7 @@ export function createSupervisorNode(config: SupervisorConfig) {
           maxIterations
         });
 
-        if (verbose) {
-          console.log('[Supervisor] Max iterations reached, moving to aggregation');
-        }
+        logger.debug('Max iterations reached, moving to aggregation');
         return {
           status: 'aggregating',
           currentAgent: 'aggregator',
@@ -86,9 +82,7 @@ export function createSupervisorNode(config: SupervisorConfig) {
           completedCount: state.completedTasks.length
         });
 
-        if (verbose) {
-          console.log('[Supervisor] All tasks completed, moving to aggregation');
-        }
+        logger.debug('All tasks completed, moving to aggregation');
         return {
           status: 'aggregating',
           currentAgent: 'aggregator',
@@ -136,12 +130,10 @@ export function createSupervisorNode(config: SupervisorConfig) {
         });
       }
 
-      if (verbose) {
-        if (targetAgents.length === 1) {
-          console.log(`[Supervisor] Routing to ${targetAgents[0]}: ${decision.reasoning}`);
-        } else {
-          console.log(`[Supervisor] Routing to ${targetAgents.length} agents in parallel [${targetAgents.join(', ')}]: ${decision.reasoning}`);
-        }
+      if (targetAgents.length === 1) {
+        logger.debug(`Routing to ${targetAgents[0]}: ${decision.reasoning}`);
+      } else {
+        logger.debug(`Routing to ${targetAgents.length} agents in parallel [${targetAgents.join(', ')}]: ${decision.reasoning}`);
       }
 
       // Create task assignments for all target agents (parallel execution)
@@ -198,8 +190,6 @@ export function createSupervisorNode(config: SupervisorConfig) {
         stack: error instanceof Error ? error.stack : undefined,
         iteration: state.iteration
       });
-
-      console.error('[Supervisor] Error:', error);
       return {
         status: 'failed',
         error: error instanceof Error ? error.message : 'Unknown error in supervisor',
@@ -231,10 +221,6 @@ export function createWorkerNode(config: WorkerConfig) {
         activeAssignments: state.activeAssignments.length
       });
 
-      if (verbose) {
-        console.log(`[Worker:${id}] Executing task`);
-      }
-
       // Find the current assignment for this worker
       const currentAssignment = state.activeAssignments.find(
         assignment => assignment.workerId === id &&
@@ -247,10 +233,6 @@ export function createWorkerNode(config: WorkerConfig) {
           totalActiveAssignments: state.activeAssignments.length,
           completedTasks: state.completedTasks.length
         });
-
-        if (verbose) {
-          console.log(`[Worker:${id}] No active assignment found`);
-        }
         return {};
       }
 
@@ -264,10 +246,6 @@ export function createWorkerNode(config: WorkerConfig) {
       // Priority 1: Use custom execution function if provided
       if (executeFn) {
         logger.debug('Using custom execution function', { workerId: id });
-
-        if (verbose) {
-          console.log(`[Worker:${id}] Using custom executeFn`);
-        }
         return await executeFn(state, runConfig);
       }
 
@@ -275,15 +253,10 @@ export function createWorkerNode(config: WorkerConfig) {
       if (agent) {
         if (isReActAgent(agent)) {
           logger.debug('Using ReAct agent', { workerId: id });
-
-          if (verbose) {
-            console.log(`[Worker:${id}] Using ReAct agent (auto-wrapped)`);
-          }
           const wrappedFn = wrapReActAgent(id, agent, verbose);
           return await wrappedFn(state, runConfig);
         } else {
           logger.warn('Agent provided but not a ReAct agent, falling back', { workerId: id });
-          console.warn(`[Worker:${id}] Agent provided but does not appear to be a ReAct agent. Falling back to default execution.`);
         }
       }
 
@@ -337,10 +310,6 @@ Execute the assigned task using your skills and tools. Provide a clear, actionab
         resultLength: result.length,
         resultPreview: result.substring(0, 100)
       });
-
-      if (verbose) {
-        console.log(`[Worker:${id}] Task completed:`, result.substring(0, 100) + '...');
-      }
 
       // Create task result
       const taskResult: TaskResult = {
@@ -403,8 +372,6 @@ Execute the assigned task using your skills and tools. Provide a clear, actionab
         stack: error instanceof Error ? error.stack : undefined
       });
 
-      console.error(`[Worker:${id}] Error:`, error);
-
       // Create error result
       const currentAssignment = state.activeAssignments.find(
         assignment => assignment.workerId === id
@@ -461,9 +428,7 @@ export function createAggregatorNode(config: AggregatorConfig = {}) {
         failedTasks: state.completedTasks.filter(t => !t.success).length
       });
 
-      if (verbose) {
-        console.log('[Aggregator] Combining results from workers');
-      }
+      logger.debug('Combining results from workers');
 
       // Use custom aggregation function if provided
       if (aggregateFn) {
@@ -541,9 +506,7 @@ Please synthesize these results into a comprehensive response that addresses the
         responsePreview: aggregatedResponse.substring(0, 100)
       });
 
-      if (verbose) {
-        console.log('[Aggregator] Aggregation complete');
-      }
+      logger.debug('Aggregation complete');
 
       return {
         response: aggregatedResponse,
@@ -555,8 +518,6 @@ Please synthesize these results into a comprehensive response that addresses the
         stack: error instanceof Error ? error.stack : undefined,
         completedTasks: state.completedTasks.length
       });
-
-      console.error('[Aggregator] Error:', error);
       return {
         status: 'failed',
         error: error instanceof Error ? error.message : 'Unknown error in aggregator',

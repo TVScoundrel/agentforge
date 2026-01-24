@@ -19,6 +19,9 @@
 import { Tool, ToolCategory, ToolRelations } from './types.js';
 import { toLangChainTools as convertToLangChainTools } from '../langchain/converter.js';
 import type { DynamicStructuredTool } from '@langchain/core/tools';
+import { createLogger, LogLevel } from '../langgraph/observability/logger.js';
+
+const logger = createLogger('agentforge:core:tools:registry', { level: LogLevel.INFO });
 
 /**
  * Registry events
@@ -413,7 +416,11 @@ export class ToolRegistry {
           handler(data);
         } catch (error) {
           // Log error but don't throw to prevent one handler from breaking others
-          console.error(`Error in event handler for ${event}:`, error);
+          logger.error('Event handler error', {
+            event,
+            error: error instanceof Error ? error.message : String(error),
+            stack: error instanceof Error ? error.stack : undefined
+          });
         }
       });
     }

@@ -2,6 +2,10 @@
  * Alert system for production monitoring
  */
 
+import { createLogger, LogLevel } from '../langgraph/observability/logger.js';
+
+const logger = createLogger('agentforge:core:monitoring:alerts', { level: LogLevel.INFO });
+
 export type AlertSeverity = 'info' | 'warning' | 'error' | 'critical';
 
 export interface Alert {
@@ -82,8 +86,13 @@ export class AlertManager {
     // Notify callback
     this.options.onAlert?.(fullAlert);
 
-    // Send to all channels (in a real implementation)
-    console.log(`[ALERT] ${alert.severity.toUpperCase()}: ${alert.message}`, alert.data);
+    // Log the alert
+    logger.warn('Alert triggered', {
+      name: alert.name,
+      severity: alert.severity,
+      message: alert.message,
+      data: alert.data
+    });
   }
 
   private checkRules(metrics: any): void {
@@ -102,7 +111,11 @@ export class AlertManager {
           });
         }
       } catch (error) {
-        console.error(`Error checking rule ${rule.name}:`, error);
+        logger.error('Rule check failed', {
+          ruleName: rule.name,
+          error: error instanceof Error ? error.message : String(error),
+          stack: error instanceof Error ? error.stack : undefined
+        });
       }
     }
   }
@@ -130,16 +143,32 @@ export class AlertManager {
     // In a real implementation, send to the actual channel
     switch (channel.type) {
       case 'email':
-        console.log(`[EMAIL] Sending alert to ${channel.config.to}:`, alert);
+        logger.info('Alert sent to email', {
+          channel: channelName,
+          to: channel.config.to,
+          alert: { name: alert.name, severity: alert.severity, message: alert.message }
+        });
         break;
       case 'slack':
-        console.log(`[SLACK] Sending alert to ${channel.config.webhookUrl}:`, alert);
+        logger.info('Alert sent to Slack', {
+          channel: channelName,
+          webhookUrl: channel.config.webhookUrl,
+          alert: { name: alert.name, severity: alert.severity, message: alert.message }
+        });
         break;
       case 'webhook':
-        console.log(`[WEBHOOK] Sending alert to ${channel.config.url}:`, alert);
+        logger.info('Alert sent to webhook', {
+          channel: channelName,
+          url: channel.config.url,
+          alert: { name: alert.name, severity: alert.severity, message: alert.message }
+        });
         break;
       default:
-        console.log(`[${channel.type.toUpperCase()}] Sending alert:`, alert);
+        logger.info('Alert sent', {
+          channel: channelName,
+          channelType: channel.type,
+          alert: { name: alert.name, severity: alert.severity, message: alert.message }
+        });
     }
   }
 

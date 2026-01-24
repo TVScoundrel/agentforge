@@ -3,6 +3,10 @@
  * @module tools/lifecycle
  */
 
+import { createLogger, LogLevel } from '../langgraph/observability/logger.js';
+
+const logger = createLogger('agentforge:core:tools:lifecycle', { level: LogLevel.INFO });
+
 export interface HealthCheckResult {
   healthy: boolean;
   error?: string;
@@ -73,7 +77,13 @@ export class ManagedTool<TContext = any, TInput = any, TOutput = any> {
     // Setup auto-cleanup on process exit
     if (this.autoCleanup) {
       process.on('beforeExit', () => {
-        this.cleanup().catch(console.error);
+        this.cleanup().catch(err =>
+          logger.error('Cleanup failed', {
+            toolName: this.name,
+            error: err instanceof Error ? err.message : String(err),
+            stack: err instanceof Error ? err.stack : undefined
+          })
+        );
       });
     }
   }

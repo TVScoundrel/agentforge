@@ -1540,28 +1540,74 @@ const robustTool = {
 
 ### Debugging Tips
 
-1. **Enable Verbose Mode**:
-```typescript
-const system = createMultiAgentSystem({
-  // ...
-  verbose: true,
-});
+#### Structured Logging
+
+The Multi-Agent pattern uses AgentForge's structured logging system with dedicated loggers:
+
+- `agentforge:patterns:multi-agent:nodes` - Node execution (supervisor, worker, aggregator)
+- `agentforge:patterns:multi-agent:routing` - Routing decisions
+
+#### Enable Debug Logging
+
+```bash
+# See everything (most verbose)
+LOG_LEVEL=debug npm start
+
+# See important events only (recommended for production)
+LOG_LEVEL=info npm start
 ```
 
-2. **Log State Transitions**:
-```typescript
-const loggingNode = async (state: MultiAgentStateType) => {
-  console.log('[State]', {
-    status: state.status,
-    iterations: state.iterations,
-    workers: state.workers.length,
-    results: state.workerResults?.length,
-  });
-  return {};
-};
+#### Example Debug Output
+
+```
+[2026-01-24T10:15:33.163Z] [DEBUG] [agentforge:patterns:multi-agent:nodes] Supervisor node executing data={"iteration":1}
+[2026-01-24T10:15:33.164Z] [INFO] [agentforge:patterns:multi-agent:routing] Routing decision data={"selectedWorker":"research_agent","reason":"..."}
+[2026-01-24T10:15:33.165Z] [DEBUG] [agentforge:patterns:multi-agent:nodes] Worker node executing data={"worker":"research_agent"}
+[2026-01-24T10:15:33.166Z] [INFO] [agentforge:patterns:multi-agent:nodes] Worker complete data={"worker":"research_agent","duration":234}
+[2026-01-24T10:15:33.167Z] [DEBUG] [agentforge:patterns:multi-agent:nodes] Aggregator node executing
+[2026-01-24T10:15:33.168Z] [INFO] [agentforge:patterns:multi-agent:nodes] Aggregation complete data={"resultCount":3,"duration":89}
 ```
 
-3. **Inspect Worker Results**:
+#### Common Debugging Scenarios
+
+**Workers Not Being Called:**
+```bash
+LOG_LEVEL=debug npm start
+```
+
+Look for routing decisions:
+```
+[INFO] [agentforge:patterns:multi-agent:routing] Routing decision data={"selectedWorker":"none"}
+```
+
+If no worker is selected, check supervisor routing logic.
+
+**Slow Performance:**
+```bash
+LOG_LEVEL=info npm start
+```
+
+Check `duration` fields:
+```
+[INFO] [agentforge:patterns:multi-agent:nodes] Worker complete data={"duration":5234}
+```
+
+If duration > 2000ms, investigate which workers are slow.
+
+**Aggregation Issues:**
+```bash
+LOG_LEVEL=debug npm start
+```
+
+Look for aggregation logs:
+```
+[INFO] [agentforge:patterns:multi-agent:nodes] Aggregation complete data={"resultCount":0}
+```
+
+If `resultCount` is 0, check if workers are producing results.
+
+#### Inspect Worker Results
+
 ```typescript
 const result = await system.invoke({ input: 'task' });
 
@@ -1570,7 +1616,8 @@ console.log('Aggregated Result:', result.aggregatedResult);
 console.log('Final Response:', result.response);
 ```
 
-4. **Test Individual Components**:
+#### Test Individual Components
+
 ```typescript
 // Test supervisor alone
 const supervisorResult = await supervisorNode(testState);
@@ -1581,6 +1628,8 @@ const workerResult = await workerNode(testState);
 // Test aggregator alone
 const aggregatorResult = await aggregatorNode(testState);
 ```
+
+For more debugging techniques, see the [Debugging Guide](../../../docs/DEBUGGING_GUIDE.md).
 
 ## Comparison with Other Patterns
 

@@ -24,8 +24,10 @@ import {
   createPatternLogger,
 } from '../shared/deduplication.js';
 
-// Create logger for plan-execute pattern
-const logger = createPatternLogger('agentforge:patterns:plan-execute');
+// Create loggers for plan-execute pattern nodes
+const plannerLogger = createPatternLogger('agentforge:patterns:plan-execute:planner');
+const executorLogger = createPatternLogger('agentforge:patterns:plan-execute:executor');
+const replannerLogger = createPatternLogger('agentforge:patterns:plan-execute:replanner');
 
 /**
  * Create a planner node that generates a multi-step plan
@@ -39,7 +41,15 @@ export function createPlannerNode(config: PlannerConfig) {
   } = config;
 
   return async (state: PlanExecuteStateType): Promise<Partial<PlanExecuteStateType>> => {
+    const startTime = Date.now();
+
     try {
+      plannerLogger.debug('Planning started', {
+        input: state.input?.substring(0, 100),
+        maxSteps,
+        includeToolDescriptions
+      });
+
       // Build the planning prompt
       let toolDescriptions = '';
       if (includeToolDescriptions) {
@@ -74,6 +84,13 @@ export function createPlannerNode(config: PlannerConfig) {
         throw new Error(`Failed to parse plan from LLM response: ${parseError}`);
       }
 
+      plannerLogger.info('Plan created', {
+        stepCount: plan.steps.length,
+        goal: plan.goal.substring(0, 100),
+        confidence: plan.confidence,
+        duration: Date.now() - startTime
+      });
+
       return {
         plan,
         status: 'executing',
@@ -81,6 +98,11 @@ export function createPlannerNode(config: PlannerConfig) {
         iteration: 1,
       };
     } catch (error) {
+      plannerLogger.error('Planning failed', {
+        error: error instanceof Error ? error.message : String(error),
+        duration: Date.now() - startTime
+      });
+
       return {
         status: 'failed',
         error: error instanceof Error ? error.message : 'Unknown error in planner',
@@ -105,7 +127,7 @@ export function createExecutorNode(config: ExecutorConfig) {
     const { plan, currentStepIndex = 0, pastSteps = [], iteration = 0 } = state;
 
     try {
-      logger.debug('Executor node executing', {
+      executorLogger.debug('Executor node executing', {
         currentStepIndex,
         totalSteps: plan?.steps?.length || 0,
         iteration,
@@ -153,7 +175,7 @@ export function createExecutorNode(config: ExecutorConfig) {
         }
 
         if (cacheSize > 0) {
-          logger.debug('Deduplication cache built', {
+          executorLogger.debug('Deduplication cache built', {
             cacheSize,
             pastStepsCount: pastSteps.length
           });
@@ -179,7 +201,7 @@ export function createExecutorNode(config: ExecutorConfig) {
               success = cachedStep.success;
               error = cachedStep.error;
 
-              logger.info('Duplicate step execution prevented', {
+              executorLogger.info('Duplicate step execution prevented', {
                 stepId: currentStep.id,
                 toolName: currentStep.tool,
                 arguments: currentStep.args,
@@ -209,7 +231,7 @@ export function createExecutorNode(config: ExecutorConfig) {
 
             const executionTime = Date.now() - startTime;
 
-            logger.debug('Step executed successfully', {
+            executorLogger.debug('Step executed successfully', {
               stepId: currentStep.id,
               toolName: currentStep.tool,
               executionTime,
@@ -234,7 +256,7 @@ export function createExecutorNode(config: ExecutorConfig) {
         error = execError instanceof Error ? execError.message : 'Unknown execution error';
         result = null;
 
-        logger.warn('Step execution failed', {
+        executorLogger.warn('Step execution failed', {
           stepId: currentStep.id,
           toolName: currentStep.tool,
           error,
@@ -252,7 +274,7 @@ export function createExecutorNode(config: ExecutorConfig) {
       };
 
       // Log summary
-      logger.info('Executor node complete', {
+      executorLogger.info('Executor node complete', {
         stepId: currentStep.id,
         stepIndex: currentStepIndex,
         totalSteps: plan.steps.length,
@@ -266,7 +288,7 @@ export function createExecutorNode(config: ExecutorConfig) {
         currentStepIndex: currentStepIndex + 1,
       };
     } catch (error) {
-      logger.error('Executor node failed', {
+      executorLogger.error('Executor node failed', {
         error: error instanceof Error ? error.message : 'Unknown error',
         iteration
       });
@@ -290,12 +312,21 @@ export function createReplannerNode(config: ReplannerConfig) {
   } = config;
 
   return async (state: PlanExecuteStateType): Promise<Partial<PlanExecuteStateType>> => {
+    const startTime = Date.now();
+
     try {
       const { plan, pastSteps = [], currentStepIndex = 0 } = state;
 
       if (!plan) {
         return { status: 'failed', error: 'No plan available for replanning' };
       }
+
+      replannerLogger.debug('Evaluating replanning', {
+        completedSteps: pastSteps.length,
+        remainingSteps: plan.steps.length - currentStepIndex,
+        successfulSteps: pastSteps.filter(ps => ps.success).length,
+        failedSteps: pastSteps.filter(ps => !ps.success).length
+      });
 
       // Format completed steps
       const completedStepsText = pastSteps
@@ -342,6 +373,12 @@ export function createReplannerNode(config: ReplannerConfig) {
       }
 
       if (decision.shouldReplan) {
+        replannerLogger.info('Replanning triggered', {
+          reason: decision.reason,
+          newGoal: decision.newGoal?.substring(0, 100),
+          duration: Date.now() - startTime
+        });
+
         // Trigger replanning
         return {
           status: 'planning',
@@ -349,12 +386,22 @@ export function createReplannerNode(config: ReplannerConfig) {
           iteration: 1,
         };
       } else {
+        replannerLogger.info('Continuing with current plan', {
+          reason: decision.reason,
+          duration: Date.now() - startTime
+        });
+
         // Continue with current plan
         return {
           status: 'executing',
         };
       }
     } catch (error) {
+      replannerLogger.error('Replanning evaluation failed', {
+        error: error instanceof Error ? error.message : String(error),
+        duration: Date.now() - startTime
+      });
+
       return {
         status: 'failed',
         error: error instanceof Error ? error.message : 'Unknown error in replanner',
