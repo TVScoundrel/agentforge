@@ -275,78 +275,7 @@ const calculatorTool = toolBuilder()
   .build();
 ```
 
-### Pattern 2: Tool with Complex Schema
-
-**Before:**
-```typescript
-const searchTool = new DynamicStructuredTool({
-  name: 'search',
-  description: 'Search for information',
-  schema: z.object({
-    query: z.string(),
-    filters: z.object({
-      category: z.string().optional(),
-      dateRange: z.object({
-        start: z.string(),
-        end: z.string(),
-      }).optional(),
-    }).optional(),
-    limit: z.number().default(10),
-  }),
-  func: async (input) => {
-    // Search implementation
-    return JSON.stringify(results);
-  },
-});
-```
-
-**After:**
-```typescript
-const searchTool = toolBuilder()
-  .name('search')
-  .description('Search for information with advanced filtering')
-  .category(ToolCategory.DATA)
-  .tag('search')
-  .tag('query')
-  .usageNotes('Date ranges should be in ISO 8601 format (YYYY-MM-DD)')
-  .limitation('Maximum 100 results per query')
-  .limitation('Search is case-insensitive')
-  .example({
-    description: 'Basic search',
-    input: { query: 'machine learning' },
-    explanation: 'Searches for "machine learning" with default settings',
-  })
-  .example({
-    description: 'Search with filters',
-    input: {
-      query: 'AI research',
-      filters: {
-        category: 'papers',
-        dateRange: { start: '2023-01-01', end: '2023-12-31' },
-      },
-      limit: 20,
-    },
-    explanation: 'Searches for AI research papers from 2023, limited to 20 results',
-  })
-  .schema(z.object({
-    query: z.string().describe('The search query'),
-    filters: z.object({
-      category: z.string().optional().describe('Filter by category'),
-      dateRange: z.object({
-        start: z.string().describe('Start date (YYYY-MM-DD)'),
-        end: z.string().describe('End date (YYYY-MM-DD)'),
-      }).optional().describe('Date range filter'),
-    }).optional().describe('Optional filters'),
-    limit: z.number().default(10).describe('Maximum number of results'),
-  }))
-  .implement(async (input) => {
-    // Search implementation
-    return JSON.stringify(results);
-  })
-  .build();
-```
-
-### Pattern 3: Migrating Multiple Tools
+### Pattern 2: Migrating Multiple Tools
 
 **Before:**
 ```typescript
@@ -390,54 +319,6 @@ const fileTools = registry.getByCategory(ToolCategory.FILE_SYSTEM);
 const langchainFileTools = fileTools.map(t => t.toLangChainTool());
 ```
 
-### Pattern 4: Tool with Error Handling
-
-**Before:**
-```typescript
-const apiTool = new DynamicStructuredTool({
-  name: 'api-call',
-  description: 'Call an external API',
-  schema: z.object({ endpoint: z.string() }),
-  func: async ({ endpoint }) => {
-    try {
-      const response = await fetch(endpoint);
-      return await response.text();
-    } catch (error) {
-      return `Error: ${error.message}`;
-    }
-  },
-});
-```
-
-**After:**
-```typescript
-const apiTool = toolBuilder()
-  .name('api-call')
-  .description('Call an external API endpoint')
-  .category(ToolCategory.WEB)
-  .tag('api')
-  .usageNotes('Returns error message if request fails')
-  .limitation('Timeout: 30 seconds')
-  .limitation('Does not follow redirects')
-  .example({
-    description: 'Call a REST API',
-    input: { endpoint: 'https://api.example.com/data' },
-    explanation: 'Fetches data from the API endpoint',
-  })
-  .schema(z.object({
-    endpoint: z.string().url().describe('The API endpoint URL'),
-  }))
-  .implement(async ({ endpoint }) => {
-    try {
-      const response = await fetch(endpoint);
-      return await response.text();
-    } catch (error) {
-      return `Error: ${error.message}`;
-    }
-  })
-  .build();
-```
-
 ---
 
 ## Advanced Features
@@ -476,22 +357,6 @@ const prompt = registry.generatePrompt({
 console.log(prompt);
 ```
 
-### Event Listeners
-
-Monitor registry changes:
-
-```typescript
-import { RegistryEvent } from '@agentforge/core';
-
-registry.on(RegistryEvent.TOOL_REGISTERED, (tool) => {
-  console.log(`New tool registered: ${tool.metadata.name}`);
-});
-
-registry.on(RegistryEvent.TOOL_REMOVED, (tool) => {
-  console.log(`Tool removed: ${tool.metadata.name}`);
-});
-```
-
 ### Generating LLM Prompts
 
 Automatically generate tool descriptions for your LLM:
@@ -513,33 +378,6 @@ const filePrompt = registry.generatePrompt({
   categories: [ToolCategory.FILE_SYSTEM],
   includeExamples: true,
 });
-```
-
-### Type Safety with Zod
-
-AgentForge leverages Zod for runtime validation:
-
-```typescript
-const tool = toolBuilder()
-  .name('typed-tool')
-  .description('A tool with strong typing')
-  .category(ToolCategory.UTILITY)
-  .schema(z.object({
-    name: z.string().min(1).describe('User name'),
-    age: z.number().int().positive().describe('User age'),
-    email: z.string().email().describe('User email'),
-    tags: z.array(z.string()).optional().describe('User tags'),
-  }))
-  .implement(async (input) => {
-    // input is fully typed!
-    // TypeScript knows: input.name is string, input.age is number, etc.
-    return `Hello ${input.name}, age ${input.age}`;
-  })
-  .build();
-
-// Invalid input will throw ZodError
-await tool.execute({ name: '', age: -5 }); // ❌ Validation error
-await tool.execute({ name: 'John', age: 30 }); // ✅ Valid
 ```
 
 ---
@@ -578,19 +416,6 @@ toolBuilder()
 }))
 ```
 
-Or use `createToolUnsafe()` to skip validation (not recommended):
-```typescript
-import { createToolUnsafe } from '@agentforge/core';
-
-const tool = createToolUnsafe({
-  metadata: { /* ... */ },
-  schema: z.object({
-    path: z.string(), // No description required
-  }),
-  execute: async (input) => { /* ... */ },
-});
-```
-
 ### Issue: Converting back to LangChain
 
 **Problem:**
@@ -600,7 +425,7 @@ const langchainTool = myTool.toLangChainTool();
 ```
 
 **Solution:**
-Make sure you're calling it on an AgentForge tool, not a LangChain tool:
+Make sure you're calling it on an AgentForge tool:
 ```typescript
 // ✅ Correct
 const agentforgeTool = toolBuilder()./* ... */.build();
@@ -609,50 +434,6 @@ const langchainTool = agentforgeTool.toLangChainTool();
 // Or use the converter function
 import { toLangChainTool } from '@agentforge/core';
 const langchainTool = toLangChainTool(agentforgeTool);
-```
-
-### Issue: Tool execution returns wrong type
-
-**Problem:**
-LangChain tools must return strings, but your tool returns an object.
-
-**Solution:**
-AgentForge automatically converts non-string results to strings:
-```typescript
-.implement(async (input) => {
-  const result = { data: [1, 2, 3] };
-  return result; // ✅ Automatically converted to JSON string
-})
-```
-
-Or explicitly convert:
-```typescript
-.implement(async (input) => {
-  const result = { data: [1, 2, 3] };
-  return JSON.stringify(result); // ✅ Explicit conversion
-})
-```
-
-### Issue: Duplicate tool names in registry
-
-**Problem:**
-```typescript
-registry.register(tool1);
-registry.register(tool1); // ❌ Error: Tool already registered
-```
-
-**Solution:**
-Use `update()` to modify existing tools:
-```typescript
-registry.register(tool1);
-registry.update('tool-1', updatedTool1); // ✅ Updates existing tool
-```
-
-Or check before registering:
-```typescript
-if (!registry.has('tool-1')) {
-  registry.register(tool1);
-}
 ```
 
 ---
@@ -698,8 +479,6 @@ if (!registry.has('tool-1')) {
 })
 ```
 
-**Why:** Good examples serve as documentation and help LLMs learn usage patterns.
-
 ### 3. Document Limitations
 
 **Bad:**
@@ -715,47 +494,7 @@ if (!registry.has('tool-1')) {
 .limitation('Does not follow symbolic links')
 ```
 
-**Why:** Limitations help prevent misuse and set correct expectations.
-
-### 4. Use Appropriate Categories
-
-```typescript
-// File operations
-.category(ToolCategory.FILE_SYSTEM)
-
-// HTTP requests, web scraping
-.category(ToolCategory.WEB)
-
-// Database queries
-.category(ToolCategory.DATABASE)
-
-// Math, string manipulation, etc.
-.category(ToolCategory.UTILITY)
-
-// Data processing, analysis
-.category(ToolCategory.DATA)
-
-// Code execution, compilation
-.category(ToolCategory.CODE)
-
-// AI/ML operations
-.category(ToolCategory.AI)
-```
-
-**Why:** Categories enable better organization and filtering.
-
-### 5. Add Relevant Tags
-
-```typescript
-.tag('file')
-.tag('read')
-.tag('io')
-.tag('filesystem')
-```
-
-**Why:** Tags improve searchability and discoverability.
-
-### 6. Use the Registry for Organization
+### 4. Use the Registry for Organization
 
 **Bad:**
 ```typescript
@@ -780,21 +519,6 @@ const fileTools = registry.getByCategory(ToolCategory.FILE_SYSTEM);
 const searchResults = registry.search('file');
 ```
 
-**Why:** The registry provides powerful querying and organization capabilities.
-
-### 7. Validate Input Thoroughly
-
-```typescript
-.schema(z.object({
-  email: z.string().email().describe('User email address'),
-  age: z.number().int().positive().max(150).describe('User age'),
-  url: z.string().url().describe('Website URL'),
-  date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/).describe('Date (YYYY-MM-DD)'),
-}))
-```
-
-**Why:** Zod validation catches errors before execution, improving reliability.
-
 ---
 
 ## Migration Checklist
@@ -814,125 +538,6 @@ Use this checklist when migrating each tool:
 
 ---
 
-## Complete Migration Example
-
-Here's a complete before/after example:
-
-### Before (Raw LangChain)
-
-```typescript
-import { DynamicStructuredTool } from '@langchain/core/tools';
-import { z } from 'zod';
-import { createReactAgent } from '@langchain/langgraph/prebuilt';
-import { ChatOpenAI } from '@langchain/openai';
-
-// Define tools
-const weatherTool = new DynamicStructuredTool({
-  name: 'get-weather',
-  description: 'Get weather for a location',
-  schema: z.object({
-    location: z.string(),
-  }),
-  func: async ({ location }) => {
-    // Implementation
-    return `Weather in ${location}: Sunny, 72°F`;
-  },
-});
-
-const newsTool = new DynamicStructuredTool({
-  name: 'get-news',
-  description: 'Get latest news',
-  schema: z.object({
-    topic: z.string(),
-  }),
-  func: async ({ topic }) => {
-    // Implementation
-    return `Latest news about ${topic}`;
-  },
-});
-
-// Create agent
-const agent = createReactAgent({
-  model: new ChatOpenAI(),
-  tools: [weatherTool, newsTool],
-});
-```
-
-### After (AgentForge)
-
-```typescript
-import { toolBuilder, ToolCategory, ToolRegistry } from '@agentforge/core';
-import { z } from 'zod';
-import { createReactAgent } from '@langchain/langgraph/prebuilt';
-import { ChatOpenAI } from '@langchain/openai';
-
-// Create registry
-const registry = new ToolRegistry();
-
-// Define tools with rich metadata
-const weatherTool = toolBuilder()
-  .name('get-weather')
-  .description('Get current weather information for a location')
-  .category(ToolCategory.WEB)
-  .tag('weather')
-  .tag('api')
-  .usageNotes('Location can be city name, zip code, or coordinates')
-  .limitation('Only supports US locations')
-  .example({
-    description: 'Get weather for a city',
-    input: { location: 'San Francisco' },
-    explanation: 'Returns current weather conditions for San Francisco',
-  })
-  .schema(z.object({
-    location: z.string().describe('City name, zip code, or coordinates'),
-  }))
-  .implement(async ({ location }) => {
-    // Implementation
-    return `Weather in ${location}: Sunny, 72°F`;
-  })
-  .build();
-
-const newsTool = toolBuilder()
-  .name('get-news')
-  .description('Get latest news articles about a topic')
-  .category(ToolCategory.WEB)
-  .tag('news')
-  .tag('api')
-  .usageNotes('Returns top 5 most recent articles')
-  .limitation('News from last 24 hours only')
-  .example({
-    description: 'Get tech news',
-    input: { topic: 'artificial intelligence' },
-    explanation: 'Returns latest AI-related news articles',
-  })
-  .schema(z.object({
-    topic: z.string().describe('News topic or keyword'),
-  }))
-  .implement(async ({ topic }) => {
-    // Implementation
-    return `Latest news about ${topic}`;
-  })
-  .build();
-
-// Register tools
-registry.registerMany([weatherTool, newsTool]);
-
-// Generate prompt for LLM (optional)
-const toolPrompt = registry.generatePrompt({
-  includeExamples: true,
-  groupByCategory: true,
-});
-console.log('Tool descriptions for LLM:\n', toolPrompt);
-
-// Convert to LangChain and create agent
-const agent = createReactAgent({
-  model: new ChatOpenAI(),
-  tools: registry.toLangChainTools(), // Seamless conversion!
-});
-```
-
----
-
 ## Next Steps
 
 After migrating your tools:
@@ -943,17 +548,14 @@ After migrating your tools:
 4. **Organize by Category** - Group related tools together
 5. **Share Tools** - Export and share tool definitions with your team
 
----
+## Related Documentation
 
-## Need Help?
-
-- 📚 [API Documentation](./API.md)
-- 🔧 [Tool Registry Spec](./TOOL_REGISTRY_SPEC.md)
-- 💡 [Examples](../packages/core/examples/)
-- 🐛 [Report Issues](https://github.com/TVScoundrel/agentforge/issues)
+- [Tool System Guide](/guide/concepts/tools) - Deep dive into the tool system
+- [API Reference](/api/core#tool-system) - Complete API documentation
+- [Standard Tools](/api/tools) - 70 pre-built tools
+- [Custom Tools Tutorial](/tutorials/custom-tools) - Build your own tools
 
 ---
 
 **Happy Migrating! 🚀**
-
 

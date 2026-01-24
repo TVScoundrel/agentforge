@@ -48,7 +48,8 @@ export default defineConfig({
             { text: 'What is AgentForge?', link: '/guide/what-is-agentforge' },
             { text: 'Getting Started', link: '/guide/getting-started' },
             { text: 'Installation', link: '/guide/installation' },
-            { text: 'Quick Start', link: '/guide/quick-start' }
+            { text: 'Quick Start', link: '/guide/quick-start' },
+            { text: 'Migration Guide', link: '/guide/migration' }
           ]
         },
         {
@@ -79,7 +80,8 @@ export default defineConfig({
             { text: 'Creating Vertical Agents', link: '/guide/advanced/vertical-agents' },
             { text: 'Resource Management', link: '/guide/advanced/resources' },
             { text: 'Monitoring', link: '/guide/advanced/monitoring' },
-            { text: 'Deployment', link: '/guide/advanced/deployment' }
+            { text: 'Deployment', link: '/guide/advanced/deployment' },
+            { text: 'Debugging', link: '/guide/advanced/debugging' }
           ]
         }
       ],

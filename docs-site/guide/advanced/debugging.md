@@ -1,4 +1,4 @@
-# AgentForge Debugging Guide
+# Debugging Guide
 
 This guide shows you how to use AgentForge's structured logging system to debug your agents effectively.
 
@@ -6,7 +6,6 @@ This guide shows you how to use AgentForge's structured logging system to debug 
 
 - [Quick Start](#quick-start)
 - [Log Levels](#log-levels)
-- [Enabling Debug Logging](#enabling-debug-logging)
 - [Pattern-Specific Debugging](#pattern-specific-debugging)
 - [Common Debugging Scenarios](#common-debugging-scenarios)
 - [Filtering Logs](#filtering-logs)
@@ -465,9 +464,10 @@ userLogger.info('User action');
 - **Errors:** Look for ERROR level logs with stack traces
 - **Cache:** Monitor `duplicatesSkipped` metrics
 
-For more information, see:
-- [Logging Standards](./LOGGING_STANDARDS.md)
-- [Logging Examples](./examples/LOGGING_EXAMPLES.md)
-- Pattern-specific documentation in `packages/patterns/docs/`
+## Related Documentation
 
+- [Agent Patterns](/guide/concepts/patterns) - Learn about different agent patterns
+- [Tools](/guide/concepts/tools) - Understanding the tool system
+- [API Reference](/api/core) - Complete API documentation
+- [Examples](/examples/react-agent) - See debugging in action
 

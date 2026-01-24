@@ -233,8 +233,9 @@ pnpm test:coverage
 For contributors and advanced users:
 - [Framework Design](./docs/FRAMEWORK_DESIGN.md) - Architecture and design decisions
 - [Roadmap](./docs/ROADMAP.md) - Development roadmap and milestones
-- [Tool Registry Spec](./docs/TOOL_REGISTRY_SPEC.md) - Tool registry specification
 - [Monorepo Setup](./docs/MONOREPO_SETUP.md) - Monorepo structure and setup
+- [Codebase Learning Guide](./docs/CODEBASE_LEARNING_GUIDE.md) - Contributor onboarding
+- [Logging Standards](./docs/LOGGING_STANDARDS.md) - Internal logging standards
 - [Pattern Comparison](./packages/patterns/docs/pattern-comparison.md) - Detailed pattern comparison
 
 ### Examples & Templates
