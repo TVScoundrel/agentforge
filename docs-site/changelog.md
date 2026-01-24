@@ -5,6 +5,65 @@ All notable changes to AgentForge will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.6.4] - 2026-01-24
+
+### Added
+- **Comprehensive Structured Logging System** - Complete systematic implementation of hierarchical logging across the entire AgentForge framework
+  - Created 15 dedicated loggers across patterns and core components using consistent naming convention: `agentforge:<package>:<module>:<component>`
+  - Replaced 41 console.log/error calls with structured logging using appropriate log levels (DEBUG, INFO, WARN, ERROR)
+  - Enhanced Logger interface with `isDebugEnabled()` and `isLevelEnabled()` methods for performance optimization
+  - All 322 tests passing (Patterns: 204, Tools: 118) with zero breaking changes
+
+**Pattern Logging:**
+- **ReAct Pattern**: 3 loggers (reasoning, action, observation) - 8 instances migrated
+- **Reflection Pattern**: 3 loggers (generator, reflector, reviser) - 11 instances migrated
+- **Plan-Execute Pattern**: 3 loggers (planner, executor, replanner) - enhanced logging
+- **Multi-Agent Pattern**: 1 logger (nodes) - 16 instances migrated
+
+**Core Components:**
+- **Monitoring/Alerts**: 4 console.log instances migrated to structured logging
+- **Tool Registry/Lifecycle**: 2 console.error instances migrated to structured logging
+
+**Documentation:**
+- Created `DEBUGGING_GUIDE.md` - comprehensive debugging reference with pattern-specific sections
+- Created `LOGGING_STANDARDS.md` - official logging standards and best practices
+- Created `LOGGING_EXAMPLES.md` - concrete code examples for all patterns
+- Updated all 4 pattern documentation files with structured logging sections
+- Created `CONSOLE_LOGGING_AUDIT.md` - complete audit of all console.log usage
+- Created `LOGGING_STRATEGY.md` - 5-phase implementation strategy (100% complete)
+
+**Benefits:**
+- Consistent, hierarchical logging across all patterns and core components
+- Fine-grained control via LOG_LEVEL environment variable (DEBUG, INFO, WARN, ERROR)
+- Performance-optimized with level checking to avoid unnecessary string operations
+- Backward compatible - existing verbose parameters still work (deprecated but functional)
+- Better debugging experience with pattern-specific log filtering
+
+**Example Usage:**
+```bash
+# Enable debug logging for all patterns
+LOG_LEVEL=DEBUG node your-agent.js
+
+# Enable debug logging for specific pattern
+LOG_LEVEL=DEBUG DEBUG=agentforge:patterns:react:* node your-agent.js
+
+# Enable debug logging for specific component
+LOG_LEVEL=DEBUG DEBUG=agentforge:patterns:react:reasoning node your-agent.js
+```
+
+### Fixed
+- **Release Script Bug** - Fixed root package.json not being updated during releases
+  - Added root `package.json` to PACKAGE_FILES array in `scripts/release.sh`
+  - Ensures version consistency across all package files
+
+### Published
+- All packages published to npm registry at version 0.6.4:
+  - @agentforge/core@0.6.4
+  - @agentforge/patterns@0.6.4
+  - @agentforge/tools@0.6.4
+  - @agentforge/testing@0.6.4
+  - @agentforge/cli@0.6.4
+
 ## [0.6.3] - 2026-01-23
 
 ### Added
