@@ -85,6 +85,7 @@ print_success "Working directory is clean"
 print_step "Updating package.json files..."
 
 PACKAGE_FILES=(
+    "package.json"
     "packages/core/package.json"
     "packages/patterns/package.json"
     "packages/tools/package.json"
