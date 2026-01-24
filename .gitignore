@@ -53,6 +53,7 @@ brainstorming/
 docs/verification/
 
 # Internal development documentation (not for public repo)
+dev-docs/
 .dev-docs/
 
 # AI assistant context and instructions (local only)
