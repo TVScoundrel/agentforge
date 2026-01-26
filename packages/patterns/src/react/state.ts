@@ -21,6 +21,7 @@ import {
   type ToolResult,
   type ScratchpadEntry,
 } from './schemas.js';
+import { iterationField, responseField } from '../shared/state-fields.js';
 
 /**
  * ReAct state configuration
@@ -88,12 +89,7 @@ export const ReActStateConfig = {
    * Current iteration count
    * Tracks how many thought-action-observation loops have been executed
    */
-  iteration: {
-    schema: z.number(),
-    reducer: (left: number, right: number) => left + right,
-    default: () => 0,
-    description: 'Current iteration count',
-  } satisfies StateChannelConfig<number, number>,
+  iteration: iterationField,
 
   /**
    * Whether the agent should continue iterating
@@ -107,10 +103,7 @@ export const ReActStateConfig = {
   /**
    * Final response (if any)
    */
-  response: {
-    schema: z.string().optional(),
-    description: 'Final response from the agent',
-  } satisfies StateChannelConfig<string | undefined>,
+  response: responseField,
 };
 
 /**

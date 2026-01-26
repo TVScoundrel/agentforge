@@ -17,6 +17,13 @@ import {
   type CompletedStep,
   type ExecutionStatus,
 } from './schemas.js';
+import {
+  inputField,
+  responseField,
+  errorField,
+  iterationField,
+  maxIterationsField,
+} from '../shared/state-fields.js';
 
 /**
  * Plan-and-Execute state configuration
@@ -28,11 +35,7 @@ export const PlanExecuteStateConfig = {
   /**
    * Original user input/query
    */
-  input: {
-    schema: z.string(),
-    default: () => '',
-    description: 'Original user input or query',
-  } satisfies StateChannelConfig<string, string>,
+  input: inputField,
 
   /**
    * The current plan
@@ -73,37 +76,22 @@ export const PlanExecuteStateConfig = {
   /**
    * Final response
    */
-  response: {
-    schema: z.string().optional(),
-    description: 'Final response after plan execution',
-  } satisfies StateChannelConfig<string | undefined, string | undefined>,
+  response: responseField,
 
   /**
    * Error message if execution failed
    */
-  error: {
-    schema: z.string().optional(),
-    description: 'Error message if execution failed',
-  } satisfies StateChannelConfig<string | undefined, string | undefined>,
+  error: errorField,
 
   /**
    * Iteration counter for replanning
    */
-  iteration: {
-    schema: z.number().int().nonnegative(),
-    reducer: (left: number, right: number) => left + right,
-    default: () => 0,
-    description: 'Number of planning iterations',
-  } satisfies StateChannelConfig<number, number>,
+  iteration: iterationField,
 
   /**
    * Maximum iterations allowed
    */
-  maxIterations: {
-    schema: z.number().int().positive(),
-    default: () => 5,
-    description: 'Maximum number of planning iterations allowed',
-  } satisfies StateChannelConfig<number, number>,
+  maxIterations: maxIterationsField(5),
 };
 
 /**

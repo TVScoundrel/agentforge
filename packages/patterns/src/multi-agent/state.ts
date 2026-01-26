@@ -26,6 +26,13 @@ import {
   type MultiAgentStatus,
   type HandoffRequest,
 } from './schemas.js';
+import {
+  inputField,
+  responseField,
+  errorField,
+  iterationField,
+  maxIterationsField,
+} from '../shared/state-fields.js';
 
 /**
  * Multi-Agent state configuration
@@ -37,11 +44,7 @@ export const MultiAgentStateConfig = {
   /**
    * Original user input/query
    */
-  input: {
-    schema: z.string(),
-    default: () => '',
-    description: 'Original user input or query',
-  } satisfies StateChannelConfig<string, string>,
+  input: inputField,
 
   /**
    * All messages in the multi-agent conversation
@@ -130,37 +133,22 @@ export const MultiAgentStateConfig = {
   /**
    * Iteration counter
    */
-  iteration: {
-    schema: z.number().int().nonnegative(),
-    reducer: (left: number, right: number) => left + right,
-    default: () => 0,
-    description: 'Current iteration number',
-  } satisfies StateChannelConfig<number, number>,
+  iteration: iterationField,
 
   /**
    * Maximum iterations allowed
    */
-  maxIterations: {
-    schema: z.number().int().positive(),
-    default: () => 10,
-    description: 'Maximum number of iterations allowed',
-  } satisfies StateChannelConfig<number, number>,
+  maxIterations: maxIterationsField(10),
 
   /**
    * Final aggregated response
    */
-  response: {
-    schema: z.string().optional(),
-    description: 'Final aggregated response',
-  } satisfies StateChannelConfig<string | undefined, string | undefined>,
+  response: responseField,
 
   /**
    * Error message if execution failed
    */
-  error: {
-    schema: z.string().optional(),
-    description: 'Error message if execution failed',
-  } satisfies StateChannelConfig<string | undefined, string | undefined>,
+  error: errorField,
 };
 
 /**

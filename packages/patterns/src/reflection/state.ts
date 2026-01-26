@@ -19,6 +19,13 @@ import {
   type ReflectionStatus,
   type QualityCriteria,
 } from './schemas.js';
+import {
+  inputField,
+  responseField,
+  errorField,
+  iterationField,
+  maxIterationsField,
+} from '../shared/state-fields.js';
 
 /**
  * Reflection state configuration
@@ -30,11 +37,7 @@ export const ReflectionStateConfig = {
   /**
    * Original user input/task
    */
-  input: {
-    schema: z.string(),
-    default: () => '',
-    description: 'Original user input or task',
-  } satisfies StateChannelConfig<string, string>,
+  input: inputField,
 
   /**
    * Current response/output
@@ -69,12 +72,7 @@ export const ReflectionStateConfig = {
   /**
    * Current iteration number
    */
-  iteration: {
-    schema: z.number().int().nonnegative(),
-    reducer: (left: number, right: number) => left + right,
-    default: () => 0,
-    description: 'Current iteration number',
-  } satisfies StateChannelConfig<number, number>,
+  iteration: iterationField,
 
   /**
    * Current status
@@ -96,27 +94,17 @@ export const ReflectionStateConfig = {
   /**
    * Maximum iterations allowed
    */
-  maxIterations: {
-    schema: z.number().int().positive(),
-    default: () => 3,
-    description: 'Maximum number of reflection iterations allowed',
-  } satisfies StateChannelConfig<number, number>,
+  maxIterations: maxIterationsField(3),
 
   /**
    * Final response (when completed)
    */
-  response: {
-    schema: z.string().optional(),
-    description: 'Final response after reflection process',
-  } satisfies StateChannelConfig<string | undefined, string | undefined>,
+  response: responseField,
 
   /**
    * Error message if failed
    */
-  error: {
-    schema: z.string().optional(),
-    description: 'Error message if reflection failed',
-  } satisfies StateChannelConfig<string | undefined, string | undefined>,
+  error: errorField,
 };
 
 /**
