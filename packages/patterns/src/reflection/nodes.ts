@@ -23,6 +23,7 @@ import {
   REVISION_ENTRY_TEMPLATE,
 } from './prompts.js';
 import { createPatternLogger } from '../shared/deduplication.js';
+import { handleNodeError } from '../shared/error-handling.js';
 
 // Create loggers for Reflection pattern nodes
 const generatorLogger = createPatternLogger('agentforge:patterns:reflection:generator');
@@ -84,14 +85,17 @@ export function createGeneratorNode(config: GeneratorConfig) {
         iteration: 1,
       };
     } catch (error) {
+      // Handle error with proper GraphInterrupt detection
+      const errorMessage = handleNodeError(error, 'generator', false);
+
       generatorLogger.error('Response generation failed', {
         attempt: state.iteration + 1,
-        error: error instanceof Error ? error.message : String(error),
+        error: errorMessage,
         duration: Date.now() - startTime
       });
       return {
         status: 'failed' as const,
-        error: error instanceof Error ? error.message : 'Unknown error in generator',
+        error: errorMessage,
       };
     }
   };
@@ -217,14 +221,17 @@ export function createReflectorNode(config: ReflectorConfig) {
         status: reflection.meetsStandards ? 'completed' as const : 'revising' as const,
       };
     } catch (error) {
+      // Handle error with proper GraphInterrupt detection
+      const errorMessage = handleNodeError(error, 'reflector', false);
+
       reflectorLogger.error('Reflection failed', {
         attempt: state.iteration,
-        error: error instanceof Error ? error.message : String(error),
+        error: errorMessage,
         duration: Date.now() - startTime
       });
       return {
         status: 'failed' as const,
-        error: error instanceof Error ? error.message : 'Unknown error in reflector',
+        error: errorMessage,
       };
     }
   };
@@ -314,14 +321,17 @@ export function createReviserNode(config: ReviserConfig) {
         iteration: 1,
       };
     } catch (error) {
+      // Handle error with proper GraphInterrupt detection
+      const errorMessage = handleNodeError(error, 'reviser', false);
+
       reviserLogger.error('Revision failed', {
         attempt: state.iteration,
-        error: error instanceof Error ? error.message : String(error),
+        error: errorMessage,
         duration: Date.now() - startTime
       });
       return {
         status: 'failed' as const,
-        error: error instanceof Error ? error.message : 'Unknown error in reviser',
+        error: errorMessage,
       };
     }
   };

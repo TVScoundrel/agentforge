@@ -11,6 +11,7 @@ import type { CompiledStateGraph } from '@langchain/langgraph';
 import type { MultiAgentStateType } from './state.js';
 import type { TaskResult } from './schemas.js';
 import { createLogger, LogLevel } from '@agentforge/core';
+import { handleNodeError } from '../shared/error-handling.js';
 
 // Create logger for multi-agent utils
 // Log level can be controlled via LOG_LEVEL environment variable
@@ -142,19 +143,12 @@ export function wrapReActAgent(
         completedTasks: [taskResult],
       };
     } catch (error: any) {
-      // Check if this is a GraphInterrupt - if so, let it bubble up
-      // GraphInterrupt is used by LangGraph's interrupt() function for human-in-the-loop
-      if (error && typeof error === 'object' && 'constructor' in error &&
-          error.constructor.name === 'GraphInterrupt') {
-        logger.debug('GraphInterrupt detected - re-throwing', { workerId });
-        // Re-throw GraphInterrupt so the graph can handle it
-        throw error;
-      }
+      // Handle error with proper GraphInterrupt detection
+      const errorMessage = handleNodeError(error, `react-agent:${workerId}`, false);
 
       logger.error('Error in ReAct agent execution', {
         workerId,
-        error: error instanceof Error ? error.message : String(error),
-        stack: error instanceof Error ? error.stack : undefined
+        error: errorMessage
       });
 
       // Find current assignment for error reporting
@@ -168,7 +162,7 @@ export function wrapReActAgent(
           workerId,
           success: false,
           result: '',
-          error: error instanceof Error ? error.message : 'Unknown error in ReAct agent',
+          error: errorMessage,
           completedAt: Date.now(),
         };
 
@@ -181,7 +175,7 @@ export function wrapReActAgent(
 
       return {
         status: 'failed',
-        error: error instanceof Error ? error.message : `Unknown error in ReAct wrapper for ${workerId}`,
+        error: errorMessage,
       };
     }
   };

@@ -14,6 +14,7 @@ import {
   createPatternLogger,
   buildDeduplicationMetrics,
 } from '../shared/deduplication.js';
+import { handleNodeError } from '../shared/error-handling.js';
 
 // Create loggers for ReAct pattern nodes
 const reasoningLogger = createPatternLogger('agentforge:patterns:react:reasoning');
@@ -253,16 +254,8 @@ export function createActionNode(
           executionCache.set(cacheKey, observation);
         }
       } catch (error) {
-        // Check if this is a GraphInterrupt - if so, let it bubble up
-        // GraphInterrupt is used by LangGraph's interrupt() function for human-in-the-loop
-        if (error && typeof error === 'object' && 'constructor' in error &&
-            error.constructor.name === 'GraphInterrupt') {
-          // Re-throw GraphInterrupt so the graph can handle it
-          throw error;
-        }
-
-        // Tool execution failed (non-interrupt error)
-        const errorMessage = error instanceof Error ? error.message : String(error);
+        // Handle error with proper GraphInterrupt detection
+        const errorMessage = handleNodeError(error, `action:${action.name}`, false);
 
         actionLogger.error('Tool execution failed', {
           toolName: action.name,

@@ -13,6 +13,7 @@ import type { SupervisorConfig, WorkerConfig, AggregatorConfig } from './types.j
 import type { AgentMessage, TaskAssignment, TaskResult } from './schemas.js';
 import { getRoutingStrategy } from './routing.js';
 import { isReActAgent, wrapReActAgent } from './utils.js';
+import { handleNodeError } from '../shared/error-handling.js';
 
 // Create logger for nodes
 const logLevel = (process.env.LOG_LEVEL?.toLowerCase() as LogLevel) || LogLevel.INFO;
@@ -357,19 +358,12 @@ Execute the assigned task using your skills and tools. Provide a clear, actionab
         workers: updatedWorkers,
       };
     } catch (error) {
-      // Check if this is a GraphInterrupt - if so, let it bubble up
-      // GraphInterrupt is used by LangGraph's interrupt() function for human-in-the-loop
-      if (error && typeof error === 'object' && 'constructor' in error &&
-          error.constructor.name === 'GraphInterrupt') {
-        logger.info('GraphInterrupt detected, re-throwing', { workerId: id });
-        // Re-throw GraphInterrupt so the graph can handle it
-        throw error;
-      }
+      // Handle error with proper GraphInterrupt detection
+      const errorMessage = handleNodeError(error, `worker:${id}`, false);
 
       logger.error('Worker node error', {
         workerId: id,
-        error: error instanceof Error ? error.message : String(error),
-        stack: error instanceof Error ? error.stack : undefined
+        error: errorMessage
       });
 
       // Create error result
@@ -388,7 +382,7 @@ Execute the assigned task using your skills and tools. Provide a clear, actionab
           workerId: id,
           success: false,
           result: '',
-          error: error instanceof Error ? error.message : 'Unknown error',
+          error: errorMessage,
           completedAt: Date.now(),
         };
 
@@ -403,7 +397,7 @@ Execute the assigned task using your skills and tools. Provide a clear, actionab
 
       return {
         status: 'failed',
-        error: error instanceof Error ? error.message : `Unknown error in worker ${id}`,
+        error: errorMessage,
       };
     }
   };
