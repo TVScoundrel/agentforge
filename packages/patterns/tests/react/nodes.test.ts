@@ -5,33 +5,27 @@ import {
   createObservationNode,
 } from '../../src/react/nodes.js';
 import { toolBuilder, ToolCategory } from '@agentforge/core';
+import { createMockLLM } from '@agentforge/testing';
+import { AIMessage } from '@langchain/core/messages';
 import { z } from 'zod';
 import type { ReActStateType } from '../../src/react/state.js';
 
-// Mock LLM for testing
-class MockChatModel {
-  private mockResponse: any;
+// Helper to create mock LLM with custom response
+function createMockChatModel(mockResponse?: any) {
+  const response = mockResponse || {
+    content: 'I need to use a tool',
+    tool_calls: [
+      {
+        id: 'call_123',
+        name: 'test-tool',
+        args: { input: 'test' },
+      },
+    ],
+  };
 
-  constructor(mockResponse?: any) {
-    this.mockResponse = mockResponse || {
-      content: 'I need to use a tool',
-      tool_calls: [
-        {
-          id: 'call_123',
-          name: 'test-tool',
-          args: { input: 'test' },
-        },
-      ],
-    };
-  }
-
-  async invoke() {
-    return this.mockResponse;
-  }
-
-  bindTools() {
-    return this;
-  }
+  return createMockLLM({
+    responseGenerator: () => new AIMessage(response),
+  });
 }
 
 describe('ReAct Nodes', () => {
@@ -46,7 +40,7 @@ describe('ReAct Nodes', () => {
 
   describe('createReasoningNode', () => {
     it('should generate thoughts and tool calls', async () => {
-      const mockLLM = new MockChatModel() as any;
+      const mockLLM = createMockChatModel() as any;
       const reasoningNode = createReasoningNode(mockLLM, [testTool], 'System prompt', 10, false);
 
       const initialState: ReActStateType = {
@@ -69,7 +63,7 @@ describe('ReAct Nodes', () => {
     });
 
     it('should set shouldContinue to false when no tool calls', async () => {
-      const mockLLM = new MockChatModel({
+      const mockLLM = createMockChatModel({
         content: 'Final answer',
         tool_calls: [],
       }) as any;
@@ -94,7 +88,7 @@ describe('ReAct Nodes', () => {
     });
 
     it('should respect max iterations', async () => {
-      const mockLLM = new MockChatModel() as any;
+      const mockLLM = createMockChatModel() as any;
       const reasoningNode = createReasoningNode(mockLLM, [testTool], 'System prompt', 5, false);
 
       const initialState: ReActStateType = {

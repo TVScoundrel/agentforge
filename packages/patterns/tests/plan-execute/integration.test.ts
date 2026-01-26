@@ -2,12 +2,13 @@ import { describe, it, expect } from 'vitest';
 import { AIMessage } from '@langchain/core/messages';
 import { createPlanExecuteAgent } from '../../src/plan-execute/agent.js';
 import { toolBuilder, ToolCategory } from '@agentforge/core';
+import { createMockLLM } from '@agentforge/testing';
 import { z } from 'zod';
 
-// Mock LLM for planner
-class MockPlannerLLM {
-  async invoke() {
-    return new AIMessage({
+// Helper to create mock planner LLM
+function createMockPlannerLLM() {
+  return createMockLLM({
+    responseGenerator: () => new AIMessage({
       content: JSON.stringify({
         goal: 'Calculate and format result',
         steps: [
@@ -16,20 +17,20 @@ class MockPlannerLLM {
         ],
         confidence: 0.95,
       }),
-    });
-  }
+    }),
+  });
 }
 
-// Mock LLM for replanner (never replans)
-class MockReplannerLLM {
-  async invoke() {
-    return new AIMessage({
+// Helper to create mock replanner LLM (never replans)
+function createMockReplannerLLM() {
+  return createMockLLM({
+    responseGenerator: () => new AIMessage({
       content: JSON.stringify({
         shouldReplan: false,
         reason: 'All steps completed successfully',
       }),
-    });
-  }
+    }),
+  });
 }
 
 // Create test tools
@@ -56,7 +57,7 @@ const formatterTool = toolBuilder()
 
 describe('Plan-Execute Agent Integration', () => {
   it('should create a plan-execute agent', () => {
-    const llm = new MockPlannerLLM() as any;
+    const llm = createMockPlannerLLM() as any;
     const agent = createPlanExecuteAgent({
       planner: { model: llm },
       executor: { tools: [calculatorTool, formatterTool] },
@@ -66,7 +67,7 @@ describe('Plan-Execute Agent Integration', () => {
   });
 
   it('should execute a complete plan', async () => {
-    const llm = new MockPlannerLLM() as any;
+    const llm = createMockPlannerLLM() as any;
     const agent = createPlanExecuteAgent({
       planner: { model: llm },
       executor: { tools: [calculatorTool, formatterTool] },
@@ -85,7 +86,7 @@ describe('Plan-Execute Agent Integration', () => {
   });
 
   it('should handle plan with dependencies', async () => {
-    const llm = new MockPlannerLLM() as any;
+    const llm = createMockPlannerLLM() as any;
     const agent = createPlanExecuteAgent({
       planner: { model: llm },
       executor: { tools: [calculatorTool, formatterTool] },
@@ -99,13 +100,13 @@ describe('Plan-Execute Agent Integration', () => {
     expect(result.pastSteps).toHaveLength(2);
     expect(result.pastSteps?.[0].step.id).toBe('step-1');
     expect(result.pastSteps?.[1].step.id).toBe('step-2');
-    
+
     // Verify second step had dependency
     expect(result.plan?.steps[1].dependencies).toContain('step-1');
   });
 
   it('should work without replanner', async () => {
-    const llm = new MockPlannerLLM() as any;
+    const llm = createMockPlannerLLM() as any;
     const agent = createPlanExecuteAgent({
       planner: { model: llm },
       executor: { tools: [calculatorTool, formatterTool] },
@@ -121,8 +122,8 @@ describe('Plan-Execute Agent Integration', () => {
   });
 
   it('should work with replanner', async () => {
-    const plannerLLM = new MockPlannerLLM() as any;
-    const replannerLLM = new MockReplannerLLM() as any;
+    const plannerLLM = createMockPlannerLLM() as any;
+    const replannerLLM = createMockReplannerLLM() as any;
     
     const agent = createPlanExecuteAgent({
       planner: { model: plannerLLM },

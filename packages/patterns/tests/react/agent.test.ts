@@ -1,31 +1,13 @@
 import { describe, it, expect, vi } from 'vitest';
 import { createReActAgent } from '../../src/react/agent.js';
 import { ToolRegistry, toolBuilder, ToolCategory } from '@agentforge/core';
+import { createMockLLM } from '@agentforge/testing';
 import { MemorySaver } from '@langchain/langgraph';
 import { z } from 'zod';
 
-// Mock LLM for testing
-class MockChatModel {
-  async invoke() {
-    return { content: 'Mock response' };
-  }
-  
-  async stream() {
-    return [];
-  }
-
-  bind() {
-    return this;
-  }
-
-  bindTools() {
-    return this;
-  }
-}
-
 describe('ReAct Agent Builder', () => {
   it('should create a compiled StateGraph', () => {
-    const mockLLM = new MockChatModel() as any;
+    const mockLLM = createMockLLM({ responses: ['Mock response'] }) as any;
     const registry = new ToolRegistry();
 
     const agent = createReActAgent({
@@ -38,7 +20,7 @@ describe('ReAct Agent Builder', () => {
   });
 
   it('should accept ToolRegistry as tools', () => {
-    const mockLLM = new MockChatModel() as any;
+    const mockLLM = createMockLLM({ responses: ['Mock response'] }) as any;
     const registry = new ToolRegistry();
 
     const tool = toolBuilder()
@@ -60,7 +42,7 @@ describe('ReAct Agent Builder', () => {
   });
 
   it('should accept array of Tools', () => {
-    const mockLLM = new MockChatModel() as any;
+    const mockLLM = createMockLLM({ responses: ['Mock response'] }) as any;
 
     const tool = toolBuilder()
       .name('test-tool')
@@ -79,7 +61,7 @@ describe('ReAct Agent Builder', () => {
   });
 
   it('should use default configuration values', () => {
-    const mockLLM = new MockChatModel() as any;
+    const mockLLM = createMockLLM({ responses: ['Mock response'] }) as any;
     const registry = new ToolRegistry();
 
     const agent = createReActAgent({
@@ -92,7 +74,7 @@ describe('ReAct Agent Builder', () => {
   });
 
   it('should accept custom system prompt', () => {
-    const mockLLM = new MockChatModel() as any;
+    const mockLLM = createMockLLM({ responses: ['Mock response'] }) as any;
     const registry = new ToolRegistry();
 
     const agent = createReActAgent({
@@ -105,7 +87,7 @@ describe('ReAct Agent Builder', () => {
   });
 
   it('should accept custom maxIterations', () => {
-    const mockLLM = new MockChatModel() as any;
+    const mockLLM = createMockLLM({ responses: ['Mock response'] }) as any;
     const registry = new ToolRegistry();
 
     const agent = createReActAgent({
@@ -118,7 +100,7 @@ describe('ReAct Agent Builder', () => {
   });
 
   it('should accept returnIntermediateSteps option', () => {
-    const mockLLM = new MockChatModel() as any;
+    const mockLLM = createMockLLM({ responses: ['Mock response'] }) as any;
     const registry = new ToolRegistry();
 
     const agent = createReActAgent({
@@ -131,7 +113,7 @@ describe('ReAct Agent Builder', () => {
   });
 
   it('should accept custom stop condition', () => {
-    const mockLLM = new MockChatModel() as any;
+    const mockLLM = createMockLLM({ responses: ['Mock response'] }) as any;
     const registry = new ToolRegistry();
 
     const stopCondition = vi.fn((state) => state.iteration >= 3);
@@ -146,7 +128,7 @@ describe('ReAct Agent Builder', () => {
   });
 
   it('should accept builder options', () => {
-    const mockLLM = new MockChatModel() as any;
+    const mockLLM = createMockLLM({ responses: ['Mock response'] }) as any;
     const registry = new ToolRegistry();
 
     const agent = createReActAgent(
@@ -168,7 +150,7 @@ describe('ReAct Agent Builder', () => {
   });
 
   it('should create agent with all configuration options', () => {
-    const mockLLM = new MockChatModel() as any;
+    const mockLLM = createMockLLM({ responses: ['Mock response'] }) as any;
     const registry = new ToolRegistry();
 
     const agent = createReActAgent(
@@ -195,7 +177,7 @@ describe('ReAct Agent Builder', () => {
   });
 
   it('should accept optional checkpointer parameter', () => {
-    const mockLLM = new MockChatModel() as any;
+    const mockLLM = createMockLLM({ responses: ['Mock response'] }) as any;
     const registry = new ToolRegistry();
     const checkpointer = new MemorySaver();
 
@@ -210,7 +192,7 @@ describe('ReAct Agent Builder', () => {
   });
 
   it('should work without checkpointer (backward compatibility)', () => {
-    const mockLLM = new MockChatModel() as any;
+    const mockLLM = createMockLLM({ responses: ['Mock response'] }) as any;
     const registry = new ToolRegistry();
 
     // Should work exactly as before without checkpointer

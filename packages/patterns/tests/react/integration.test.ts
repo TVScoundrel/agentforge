@@ -1,44 +1,39 @@
 import { describe, it, expect, vi } from 'vitest';
 import { ReActAgentBuilder, createReActAgent } from '../../src/react/index.js';
 import { toolBuilder, ToolCategory } from '@agentforge/core';
+import { createMockLLM } from '@agentforge/testing';
 import { z } from 'zod';
 import { AIMessage, HumanMessage } from '@langchain/core/messages';
 
-// Mock LLM that simulates tool calling
-class MockLLMWithToolCalls {
-  private callCount = 0;
+// Helper to create mock LLM that simulates tool calling
+function createMockLLMWithToolCalls() {
+  let callCount = 0;
 
-  async invoke(messages: any[]) {
-    this.callCount++;
+  return createMockLLM({
+    responseGenerator: () => {
+      callCount++;
 
-    // First call: decide to use a tool
-    if (this.callCount === 1) {
+      // First call: decide to use a tool
+      if (callCount === 1) {
+        return new AIMessage({
+          content: '',
+          tool_calls: [
+            {
+              id: 'call_1',
+              name: 'calculator',
+              args: { operation: 'add', a: 5, b: 3 },
+            },
+          ],
+        });
+      }
+
+      // Second call: provide final answer
       return new AIMessage({
-        content: '',
-        tool_calls: [
-          {
-            id: 'call_1',
-            name: 'calculator',
-            args: { operation: 'add', a: 5, b: 3 },
-          },
-        ],
+        content: 'The result is 8',
+        tool_calls: [],
       });
-    }
-
-    // Second call: provide final answer
-    return new AIMessage({
-      content: 'The result is 8',
-      tool_calls: [],
-    });
-  }
-
-  bind() {
-    return this;
-  }
-
-  bindTools() {
-    return this;
-  }
+    },
+  });
 }
 
 // Create a simple calculator tool
@@ -70,7 +65,7 @@ const calculatorTool = toolBuilder()
 
 describe('ReAct Agent Integration', () => {
   it('should execute a complete ReAct loop with tool calling', async () => {
-    const mockLLM = new MockLLMWithToolCalls() as any;
+    const mockLLM = createMockLLMWithToolCalls() as any;
 
     const agent = createReActAgent({
       model: mockLLM,
@@ -88,7 +83,7 @@ describe('ReAct Agent Integration', () => {
   });
 
   it('should work with fluent builder API', async () => {
-    const mockLLM = new MockLLMWithToolCalls() as any;
+    const mockLLM = createMockLLMWithToolCalls() as any;
 
     const agent = new ReActAgentBuilder()
       .withLLM(mockLLM)
@@ -261,7 +256,7 @@ describe('ReAct Agent Integration', () => {
   });
 
   it('should support custom stop conditions', async () => {
-    const mockLLM = new MockLLMWithToolCalls() as any;
+    const mockLLM = createMockLLMWithToolCalls() as any;
     const stopCondition = vi.fn((state) => state.iteration >= 1);
 
     const agent = createReActAgent({
@@ -281,7 +276,7 @@ describe('ReAct Agent Integration', () => {
   });
 
   it('should accumulate scratchpad entries', async () => {
-    const mockLLM = new MockLLMWithToolCalls() as any;
+    const mockLLM = createMockLLMWithToolCalls() as any;
 
     const agent = createReActAgent({
       model: mockLLM,

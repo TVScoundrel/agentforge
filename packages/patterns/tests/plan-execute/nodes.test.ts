@@ -3,12 +3,13 @@ import { AIMessage } from '@langchain/core/messages';
 import { createPlannerNode, createExecutorNode, createReplannerNode } from '../../src/plan-execute/nodes.js';
 import type { PlanExecuteStateType } from '../../src/plan-execute/state.js';
 import { toolBuilder, ToolCategory } from '@agentforge/core';
+import { createMockLLM } from '@agentforge/testing';
 import { z } from 'zod';
 
-// Mock LLM for planner
-class MockPlannerLLM {
-  async invoke() {
-    return new AIMessage({
+// Helper to create mock planner LLM
+function createMockPlannerLLM() {
+  return createMockLLM({
+    responseGenerator: () => new AIMessage({
       content: JSON.stringify({
         goal: 'Test goal',
         steps: [
@@ -17,27 +18,21 @@ class MockPlannerLLM {
         ],
         confidence: 0.9,
       }),
-    });
-  }
+    }),
+  });
 }
 
-// Mock LLM for replanner
-class MockReplannerLLM {
-  private shouldReplan: boolean;
-
-  constructor(shouldReplan: boolean = false) {
-    this.shouldReplan = shouldReplan;
-  }
-
-  async invoke() {
-    return new AIMessage({
+// Helper to create mock replanner LLM
+function createMockReplannerLLM(shouldReplan: boolean = false) {
+  return createMockLLM({
+    responseGenerator: () => new AIMessage({
       content: JSON.stringify({
-        shouldReplan: this.shouldReplan,
-        reason: this.shouldReplan ? 'Need to adjust plan' : 'Continue with current plan',
-        newGoal: this.shouldReplan ? 'Updated goal' : undefined,
+        shouldReplan,
+        reason: shouldReplan ? 'Need to adjust plan' : 'Continue with current plan',
+        newGoal: shouldReplan ? 'Updated goal' : undefined,
       }),
-    });
-  }
+    }),
+  });
 }
 
 // Create a simple calculator tool
@@ -55,14 +50,14 @@ const calculatorTool = toolBuilder()
 describe('Plan-Execute Nodes', () => {
   describe('createPlannerNode', () => {
     it('should create a planner node', () => {
-      const llm = new MockPlannerLLM() as any;
+      const llm = createMockPlannerLLM() as any;
       const planner = createPlannerNode({ model: llm });
       expect(planner).toBeDefined();
       expect(typeof planner).toBe('function');
     });
 
     it('should generate a plan from user input', async () => {
-      const llm = new MockPlannerLLM() as any;
+      const llm = createMockPlannerLLM() as any;
       const planner = createPlannerNode({ model: llm });
 
       const state: Partial<PlanExecuteStateType> = {
@@ -252,14 +247,14 @@ describe('Plan-Execute Nodes', () => {
 
   describe('createReplannerNode', () => {
     it('should create a replanner node', () => {
-      const llm = new MockReplannerLLM() as any;
+      const llm = createMockReplannerLLM() as any;
       const replanner = createReplannerNode({ model: llm });
       expect(replanner).toBeDefined();
       expect(typeof replanner).toBe('function');
     });
 
     it('should decide to continue with current plan', async () => {
-      const llm = new MockReplannerLLM(false) as any;
+      const llm = createMockReplannerLLM(false) as any;
       const replanner = createReplannerNode({ model: llm });
 
       const state: Partial<PlanExecuteStateType> = {
@@ -289,7 +284,7 @@ describe('Plan-Execute Nodes', () => {
     });
 
     it('should decide to replan', async () => {
-      const llm = new MockReplannerLLM(true) as any;
+      const llm = createMockReplannerLLM(true) as any;
       const replanner = createReplannerNode({ model: llm });
 
       const state: Partial<PlanExecuteStateType> = {
@@ -321,7 +316,7 @@ describe('Plan-Execute Nodes', () => {
     });
 
     it('should handle missing plan', async () => {
-      const llm = new MockReplannerLLM() as any;
+      const llm = createMockReplannerLLM() as any;
       const replanner = createReplannerNode({ model: llm });
 
       const state: Partial<PlanExecuteStateType> = {

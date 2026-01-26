@@ -1,28 +1,10 @@
 import { describe, it, expect, vi } from 'vitest';
 import { ReActAgentBuilder, createReActAgentBuilder } from '../../src/react/builder.js';
 import { ToolRegistry, toolBuilder, ToolCategory } from '@agentforge/core';
+import { createMockLLM } from '@agentforge/testing';
 import { z } from 'zod';
 
-// Mock LLM
-class MockChatModel {
-  async invoke() {
-    return { content: 'Mock response', tool_calls: [] };
-  }
-
-  async stream() {
-    return [];
-  }
-
-  bind() {
-    return this;
-  }
-
-  bindTools() {
-    return this;
-  }
-}
-
-const mockLLM = new MockChatModel() as any;
+const mockLLM = createMockLLM({ responses: ['Mock response'] }) as any;
 
 // Mock tools
 const mockTool = toolBuilder()
