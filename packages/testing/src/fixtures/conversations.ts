@@ -115,16 +115,16 @@ export const sampleData = {
   toolCalls: [
     { name: 'calculator', args: { operation: 'add', a: 2, b: 2 } },
     { name: 'search', args: { query: 'weather forecast' } },
-    { name: 'get_time', args: {} },
+    { name: 'get-time', args: {} },
   ],
-  
+
   /**
    * Sample tool results
    */
   toolResults: [
     { name: 'calculator', result: '4' },
     { name: 'search', result: 'Weather forecast: Sunny, 72°F' },
-    { name: 'get_time', result: '2026-01-06T12:00:00Z' },
+    { name: 'get-time', result: '2026-01-06T12:00:00Z' },
   ],
 };
 

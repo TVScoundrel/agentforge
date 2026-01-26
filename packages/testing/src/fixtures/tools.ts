@@ -52,7 +52,7 @@ export const searchTool = toolBuilder()
  * Sample time tool
  */
 export const timeTool = toolBuilder()
-  .name('get_time')
+  .name('get-time')
   .description('Gets the current time')
   .category(ToolCategory.UTILITY)
   .schema(z.object({ _dummy: z.string().optional().describe('Dummy field') }))
@@ -65,7 +65,7 @@ export const timeTool = toolBuilder()
  * Sample weather tool
  */
 export const weatherTool = toolBuilder()
-  .name('get_weather')
+  .name('get-weather')
   .description('Gets weather information for a location')
   .category(ToolCategory.WEB)
   .schema(
@@ -83,7 +83,7 @@ export const weatherTool = toolBuilder()
  * Sample file reader tool
  */
 export const fileReaderTool = toolBuilder()
-  .name('read_file')
+  .name('read-file')
   .description('Reads content from a file')
   .category(ToolCategory.FILE_SYSTEM)
   .schema(
@@ -100,7 +100,7 @@ export const fileReaderTool = toolBuilder()
  * Sample database query tool
  */
 export const databaseQueryTool = toolBuilder()
-  .name('query_database')
+  .name('query-database')
   .description('Queries a database')
   .category(ToolCategory.DATABASE)
   .schema(
