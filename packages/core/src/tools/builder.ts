@@ -263,11 +263,53 @@ export class ToolBuilder<TInput = unknown, TOutput = unknown> {
 
   /**
    * Set the implementation function (required)
-   * 
+   *
    * @param execute - Async function that implements the tool
    */
   implement<T>(execute: (input: TInput) => Promise<T>): ToolBuilder<TInput, T> {
     (this as any)._execute = execute;
+    return this as any;
+  }
+
+  /**
+   * Set the implementation function with automatic error handling
+   *
+   * Wraps the implementation in a try-catch block and returns a standardized
+   * result object with success/error information.
+   *
+   * @param execute - Async function that implements the tool
+   * @returns ToolBuilder with safe result type { success: boolean; data?: T; error?: string }
+   *
+   * @example
+   * ```ts
+   * const tool = toolBuilder()
+   *   .name('read-file')
+   *   .schema(z.object({ path: z.string() }))
+   *   .implementSafe(async ({ path }) => {
+   *     return await fs.readFile(path, 'utf-8');
+   *   })
+   *   .build();
+   *
+   * // Result will be: { success: true, data: "file content" }
+   * // Or on error: { success: false, error: "ENOENT: no such file..." }
+   * ```
+   */
+  implementSafe<T>(
+    execute: (input: TInput) => Promise<T>
+  ): ToolBuilder<TInput, { success: boolean; data?: T; error?: string }> {
+    const safeExecute = async (input: TInput) => {
+      try {
+        const data = await execute(input);
+        return { success: true, data };
+      } catch (error) {
+        return {
+          success: false,
+          error: error instanceof Error ? error.message : String(error),
+        };
+      }
+    };
+
+    (this as any)._execute = safeExecute;
     return this as any;
   }
 

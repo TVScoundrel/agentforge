@@ -268,6 +268,123 @@ describe('ToolBuilder', () => {
     });
   });
 
+  describe('implementSafe', () => {
+    it('should return success result on successful execution', async () => {
+      const tool = toolBuilder()
+        .name('safe-tool')
+        .description('Tool with safe implementation')
+        .category(ToolCategory.UTILITY)
+        .schema(z.object({
+          value: z.string().describe('Input value'),
+        }))
+        .implementSafe(async ({ value }) => {
+          return `Processed: ${value}`;
+        })
+        .build();
+
+      const result = await tool.execute({ value: 'test' });
+
+      expect(result.success).toBe(true);
+      expect(result.data).toBe('Processed: test');
+      expect(result.error).toBeUndefined();
+    });
+
+    it('should return error result when implementation throws Error', async () => {
+      const tool = toolBuilder()
+        .name('failing-tool')
+        .description('Tool that throws an error')
+        .category(ToolCategory.UTILITY)
+        .schema(z.object({
+          shouldFail: z.boolean().describe('Whether to fail'),
+        }))
+        .implementSafe(async ({ shouldFail }) => {
+          if (shouldFail) {
+            throw new Error('Something went wrong');
+          }
+          return 'Success';
+        })
+        .build();
+
+      const result = await tool.execute({ shouldFail: true });
+
+      expect(result.success).toBe(false);
+      expect(result.data).toBeUndefined();
+      expect(result.error).toBe('Something went wrong');
+    });
+
+    it('should handle non-Error exceptions', async () => {
+      const tool = toolBuilder()
+        .name('string-error-tool')
+        .description('Tool that throws a string')
+        .category(ToolCategory.UTILITY)
+        .schema(z.object({
+          input: z.string().describe('Input'),
+        }))
+        .implementSafe(async ({ input }) => {
+          throw 'String error message';
+        })
+        .build();
+
+      const result = await tool.execute({ input: 'test' });
+
+      expect(result.success).toBe(false);
+      expect(result.data).toBeUndefined();
+      expect(result.error).toBe('String error message');
+    });
+
+    it('should handle complex return types', async () => {
+      const tool = toolBuilder()
+        .name('complex-safe-tool')
+        .description('Tool with complex return type')
+        .category(ToolCategory.UTILITY)
+        .schema(z.object({
+          name: z.string().describe('Name'),
+          count: z.number().describe('Count'),
+        }))
+        .implementSafe(async ({ name, count }) => {
+          return {
+            result: name.toUpperCase(),
+            doubled: count * 2,
+            metadata: { processed: true },
+          };
+        })
+        .build();
+
+      const result = await tool.execute({ name: 'test', count: 5 });
+
+      expect(result.success).toBe(true);
+      expect(result.data).toEqual({
+        result: 'TEST',
+        doubled: 10,
+        metadata: { processed: true },
+      });
+      expect(result.error).toBeUndefined();
+    });
+
+    it('should properly type the result', async () => {
+      const tool = toolBuilder()
+        .name('typed-safe-tool')
+        .description('Tool with typed safe result')
+        .category(ToolCategory.UTILITY)
+        .schema(z.object({
+          value: z.number().describe('Value'),
+        }))
+        .implementSafe(async ({ value }) => {
+          return value * 2;
+        })
+        .build();
+
+      const result = await tool.execute({ value: 10 });
+
+      // TypeScript should know result has { success, data?, error? }
+      if (result.success) {
+        // data should be number | undefined
+        expect(typeof result.data).toBe('number');
+        expect(result.data).toBe(20);
+      }
+    });
+  });
+
   describe('tool relations', () => {
     it('should support requires relation', () => {
       const tool = toolBuilder()
