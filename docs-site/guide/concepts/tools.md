@@ -301,6 +301,24 @@ Use Zod schemas to validate and transform inputs:
 
 ### Error Handling
 
+**✅ Recommended: Automatic Error Handling (v0.7.0+)**
+
+Use `.implementSafe()` for automatic error handling with consistent response format:
+
+```typescript
+.implementSafe(async ({ path }) => {
+  // No try-catch needed! Just write the happy path
+  const fs = await import('fs/promises');
+  const content = await fs.readFile(path, 'utf-8');
+  return { data: content };
+})
+// Returns: { success: true, data: "..." } or { success: false, error: "..." }
+```
+
+**Alternative: Manual Error Handling**
+
+Use `.implement()` when you need custom error handling logic:
+
 ```typescript
 .implement(async ({ path }) => {
   try {

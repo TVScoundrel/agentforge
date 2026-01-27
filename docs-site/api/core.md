@@ -61,7 +61,10 @@ const editFileTool = toolBuilder()
 - **`.tags(tags: string[])`** - Add tags for discovery
 - **`.schema(schema: ZodSchema)`** - Define input schema (required)
 - **`.examples(examples: Example[])`** - Add usage examples
-- **`.implement(fn: ToolFunction)`** - Implement tool logic (required)
+
+**Implementation (choose one):**
+- **`.implement(fn: ToolFunction)`** - Implement tool logic with manual error handling
+- **`.implementSafe(fn: ToolFunction)`** - Implement with automatic error handling (NEW in v0.7.0)
 
 **Tool Relations (NEW in v0.3.9):**
 - **`.requires(tools: string[])`** - Tools that must be called before this tool
@@ -72,6 +75,52 @@ const editFileTool = toolBuilder()
 
 **Build:**
 - **`.build()`** - Build the tool with validation
+
+#### Safe Error Handling (NEW in v0.7.0)
+
+The `.implementSafe()` method automatically wraps your tool implementation in try-catch and returns a standardized response format:
+
+```typescript
+import { toolBuilder, ToolCategory } from '@agentforge/core';
+import { z } from 'zod';
+import fs from 'fs/promises';
+
+// ✅ Recommended: Use implementSafe() for automatic error handling
+const readFileTool = toolBuilder()
+  .name('read-file')
+  .description('Read a file from the file system')
+  .category(ToolCategory.FILE_SYSTEM)
+  .schema(z.object({
+    path: z.string().describe('Path to the file to read')
+  }))
+  .implementSafe(async ({ path }) => {
+    // No try-catch needed! Just write the happy path
+    const content = await fs.readFile(path, 'utf-8');
+    return { data: content };
+  })
+  .build();
+
+// Result on success: { success: true, data: "file content" }
+// Result on error: { success: false, error: "ENOENT: no such file or directory..." }
+```
+
+**Benefits:**
+- ✅ No manual try-catch blocks needed
+- ✅ Consistent error response format
+- ✅ Type-safe response: `{ success: boolean; data?: T; error?: string }`
+- ✅ Cleaner, more readable code
+
+**When to use `.implement()` vs `.implementSafe()`:**
+
+Use **`.implementSafe()`** when:
+- You want automatic error handling
+- You want consistent error response format
+- You're building tools that may fail (file operations, API calls, etc.)
+
+Use **`.implement()`** when:
+- You need custom error handling logic
+- You want to return custom error formats
+- You need fine-grained control over error responses
 
 ### ToolCategory
 

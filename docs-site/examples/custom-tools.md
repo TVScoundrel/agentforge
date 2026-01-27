@@ -58,7 +58,7 @@ console.log(result); // 42
 
 ## Example 2: File System Tool
 
-A tool that reads files with proper error handling:
+A tool that reads files with automatic error handling:
 
 ```typescript
 import { toolBuilder, ToolCategory } from '@agentforge/core';
@@ -85,21 +85,15 @@ const readFileTool = toolBuilder()
       .default('utf-8')
       .describe('File encoding (default: utf-8)')
   }))
-  .implement(async ({ path, encoding }) => {
-    try {
-      const content = await fs.readFile(path, encoding);
-      return content;
-    } catch (error: any) {
-      if (error.code === 'ENOENT') {
-        throw new Error(`File not found: ${path}`);
-      }
-      if (error.code === 'EACCES') {
-        throw new Error(`Permission denied: ${path}`);
-      }
-      throw error;
-    }
+  .implementSafe(async ({ path, encoding }) => {
+    // No try-catch needed! Automatic error handling
+    const content = await fs.readFile(path, encoding);
+    return { data: content };
   })
   .build();
+
+// Result on success: { success: true, data: "file content" }
+// Result on error: { success: false, error: "ENOENT: no such file or directory..." }
 ```
 
 ## Example 3: API Integration Tool
@@ -639,7 +633,20 @@ Write clear descriptions that help LLMs understand when to use the tool:
 
 ### 2. Proper Error Handling
 
-Always handle errors gracefully:
+**✅ Recommended: Use `.implementSafe()` for automatic error handling (v0.7.0+)**
+
+```typescript
+.implementSafe(async ({ path }) => {
+  // No try-catch needed! Just write the happy path
+  const content = await fs.readFile(path, 'utf-8');
+  return { data: content };
+})
+// Returns: { success: true, data: "..." } or { success: false, error: "..." }
+```
+
+**Alternative: Manual error handling with `.implement()`**
+
+For custom error handling logic:
 
 ```typescript
 .implement(async ({ path }) => {

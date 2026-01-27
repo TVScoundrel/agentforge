@@ -53,6 +53,7 @@ const readFileTool = new DynamicStructuredTool({
 ```typescript
 import { toolBuilder, ToolCategory } from '@agentforge/core';
 import { z } from 'zod';
+import fs from 'fs/promises';
 
 const readFileTool = toolBuilder()
   .name('read-file')
@@ -70,8 +71,10 @@ const readFileTool = toolBuilder()
   .schema(z.object({
     path: z.string().describe('Path to the file to read'),
   }))
-  .implement(async ({ path }) => {
-    return fs.readFileSync(path, 'utf-8');
+  .implementSafe(async ({ path }) => {
+    // No try-catch needed! Automatic error handling
+    const content = await fs.readFile(path, 'utf-8');
+    return { data: content };
   })
   .build();
 
@@ -84,6 +87,7 @@ const langchainTool = readFileTool.toLangChainTool();
 - 🔍 Better discoverability
 - 📚 Self-documenting
 - 🔄 Bidirectional conversion
+- ✨ **Automatic error handling with `.implementSafe()`** (NEW in v0.7.0)
 
 ---
 
@@ -188,14 +192,14 @@ const httpRequestTool = toolBuilder()
       .optional()
       .describe('Request body (for POST/PUT)'),
   }))
-  .implement(async ({ url, method = 'GET', headers, body }) => {
+  .implementSafe(async ({ url, method = 'GET', headers, body }) => {
     const response = await axios({
       url,
       method,
       headers,
       data: body,
     });
-    return JSON.stringify(response.data);
+    return { data: JSON.stringify(response.data) };
   })
   .build();
 ```
@@ -264,13 +268,15 @@ const calculatorTool = toolBuilder()
     a: z.number().describe('First number'),
     b: z.number().describe('Second number'),
   }))
-  .implement(async ({ operation, a, b }) => {
+  .implementSafe(async ({ operation, a, b }) => {
+    let result: number;
     switch (operation) {
-      case 'add': return String(a + b);
-      case 'subtract': return String(a - b);
-      case 'multiply': return String(a * b);
-      case 'divide': return String(a / b);
+      case 'add': result = a + b; break;
+      case 'subtract': result = a - b; break;
+      case 'multiply': result = a * b; break;
+      case 'divide': result = a / b; break;
     }
+    return { data: String(result) };
   })
   .build();
 ```
