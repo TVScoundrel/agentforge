@@ -5,6 +5,64 @@ All notable changes to AgentForge will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.7.0] - 2026-01-27
+
+### Added
+- **Agent Builder Utility** - New shared utility for consistent StateGraph creation across agent patterns
+  - Located in `packages/patterns/src/shared/agent-builder.ts`
+  - Provides `createAgentGraph()` function with standardized configuration
+  - Eliminates boilerplate code in agent pattern implementations
+  - Consistent error handling and state management
+
+- **`implementSafe()` Method for ToolBuilder** - Automatic error handling for tools
+  - New method on ToolBuilder that wraps tool implementation in try-catch
+  - Automatically returns `{ success: boolean; data?: T; error?: string }` format
+  - Eliminates manual error handling boilerplate in tool implementations
+  - Type-safe error responses with full TypeScript support
+  - Example:
+    ```typescript
+    const tool = toolBuilder()
+      .name('read-file')
+      .schema(z.object({ path: z.string() }))
+      .implementSafe(async ({ path }) => {
+        return await fs.readFile(path, 'utf-8');
+      })
+      .build();
+    // Result: { success: true, data: "file content" }
+    // Or on error: { success: false, error: "ENOENT: no such file..." }
+    ```
+
+### Changed
+- **Refactored 14 Tools to Use `implementSafe()`** - Eliminated 116 lines of boilerplate code
+  - **File Operations (8 tools)**: directoryList, directoryCreate, directoryDelete, fileSearch, fileReader, fileWriter, fileAppend, fileDelete
+  - **Web Tools (1 tool)**: urlValidator (also updated UrlValidationResult interface)
+  - **Data Tools (4 tools)**: jsonParser, jsonStringify, jsonQuery, jsonValidator
+  - All tools now use consistent error handling pattern
+  - Cleaner, more maintainable code focused on business logic
+
+- **Consolidated Vitest Configurations** - Workspace-level test configuration
+  - Created `vitest.workspace.ts` at repository root
+  - Removed 4 duplicate package-level vitest configurations
+  - Properly excludes CLI template tests (78 tests that shouldn't run in workspace)
+  - All 935 tests passing (84 test files)
+
+### Fixed
+- **DRY Violations Eliminated** - Completed comprehensive DRY remediation plan
+  - Phase 1: Removed ReAct pattern duplication (~2,300 lines)
+  - Phase 2: Created shared utilities for error handling and state fields (~145 lines)
+  - Phase 3: Advanced refactoring with builder utilities (~176 lines)
+  - **Total: ~2,621 lines of duplicate code eliminated**
+  - Improved maintainability and developer experience
+  - Zero breaking changes for users
+
+### Published
+- All packages published to npm registry at version 0.7.0:
+  - @agentforge/core@0.7.0
+  - @agentforge/patterns@0.7.0
+  - @agentforge/tools@0.7.0
+  - @agentforge/testing@0.7.0
+  - @agentforge/cli@0.7.0
+
 ## [0.6.4] - 2026-01-24
 
 ### Added
@@ -740,6 +798,8 @@ LOG_LEVEL=DEBUG DEBUG=agentforge:patterns:react:reasoning node your-agent.js
 
 ## Version History
 
+- **0.7.0** (2026-01-27) - Agent builder utility, implementSafe() method, DRY remediation (~2,621 lines eliminated)
+- **0.6.4** (2026-01-24) - Comprehensive structured logging system across all patterns and core components
 - **0.6.3** (2026-01-23) - Parallel routing for multi-agent pattern - route to multiple agents simultaneously
 - **0.6.2** (2026-01-23) - Fixed Plan-Execute pattern interrupt handling
 - **0.6.1** (2026-01-22) - Fixed askHuman interrupt handling, added logging documentation

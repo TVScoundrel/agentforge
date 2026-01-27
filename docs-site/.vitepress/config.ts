@@ -32,7 +32,7 @@ export default defineConfig({
       { text: 'Examples', link: '/examples/react-agent' },
       { text: 'Tutorials', link: '/tutorials/first-agent' },
       {
-        text: 'v0.6.4',
+        text: 'v0.7.0',
         items: [
           { text: 'Changelog', link: '/changelog' },
           { text: 'Contributing', link: '/contributing' }
