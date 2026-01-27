@@ -19,20 +19,12 @@ export const jsonParser = toolBuilder()
     json: z.string().describe('JSON string to parse'),
     strict: z.boolean().default(true).describe('Use strict JSON parsing (no trailing commas, etc.)'),
   }))
-  .implement(async (input) => {
-    try {
-      const parsed = JSON.parse(input.json);
-      return {
-        success: true,
-        data: parsed,
-        type: Array.isArray(parsed) ? 'array' : typeof parsed,
-      };
-    } catch (error) {
-      return {
-        success: false,
-        error: error instanceof Error ? error.message : 'Failed to parse JSON',
-      };
-    }
+  .implementSafe(async (input) => {
+    const parsed = JSON.parse(input.json);
+    return {
+      data: parsed,
+      type: Array.isArray(parsed) ? 'array' : typeof parsed,
+    };
   })
   .build();
 
@@ -49,23 +41,15 @@ export const jsonStringify = toolBuilder()
     pretty: z.boolean().default(false).describe('Format with indentation for readability'),
     indent: z.number().default(2).describe('Number of spaces for indentation (when pretty is true)'),
   }))
-  .implement(async (input) => {
-    try {
-      const json = input.pretty 
-        ? JSON.stringify(input.data, null, input.indent)
-        : JSON.stringify(input.data);
-      
-      return {
-        success: true,
-        json,
-        length: json.length,
-      };
-    } catch (error) {
-      return {
-        success: false,
-        error: error instanceof Error ? error.message : 'Failed to stringify data',
-      };
-    }
+  .implementSafe(async (input) => {
+    const json = input.pretty
+      ? JSON.stringify(input.data, null, input.indent)
+      : JSON.stringify(input.data);
+
+    return {
+      json,
+      length: json.length,
+    };
   })
   .build();
 
@@ -81,40 +65,29 @@ export const jsonQuery = toolBuilder()
     data: z.any().describe('JSON data to query'),
     path: z.string().describe('Dot notation path to query (e.g., "user.name" or "items[0].id")'),
   }))
-  .implement(async (input) => {
-    try {
-      const parts = input.path.split('.');
-      let current = input.data;
-      
-      for (const part of parts) {
-        // Handle array indexing: items[0]
-        const arrayMatch = part.match(/^(\w+)\[(\d+)\]$/);
-        if (arrayMatch) {
-          const [, key, index] = arrayMatch;
-          current = current[key][parseInt(index, 10)];
-        } else {
-          current = current[part];
-        }
-        
-        if (current === undefined) {
-          return {
-            success: false,
-            error: `Path not found: ${input.path}`,
-          };
-        }
+  .implementSafe(async (input) => {
+    const parts = input.path.split('.');
+    let current = input.data;
+
+    for (const part of parts) {
+      // Handle array indexing: items[0]
+      const arrayMatch = part.match(/^(\w+)\[(\d+)\]$/);
+      if (arrayMatch) {
+        const [, key, index] = arrayMatch;
+        current = current[key][parseInt(index, 10)];
+      } else {
+        current = current[part];
       }
-      
-      return {
-        success: true,
-        value: current,
-        type: Array.isArray(current) ? 'array' : typeof current,
-      };
-    } catch (error) {
-      return {
-        success: false,
-        error: error instanceof Error ? error.message : 'Failed to query JSON',
-      };
+
+      if (current === undefined) {
+        throw new Error(`Path not found: ${input.path}`);
+      }
     }
+
+    return {
+      value: current,
+      type: Array.isArray(current) ? 'array' : typeof current,
+    };
   })
   .build();
 
@@ -129,19 +102,12 @@ export const jsonValidator = toolBuilder()
   .schema(z.object({
     json: z.string().describe('JSON string to validate'),
   }))
-  .implement(async (input) => {
-    try {
-      JSON.parse(input.json);
-      return {
-        valid: true,
-        message: 'Valid JSON',
-      };
-    } catch (error) {
-      return {
-        valid: false,
-        error: error instanceof Error ? error.message : 'Invalid JSON',
-      };
-    }
+  .implementSafe(async (input) => {
+    JSON.parse(input.json);
+    return {
+      valid: true,
+      message: 'Valid JSON',
+    };
   })
   .build();
 

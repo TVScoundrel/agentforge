@@ -23,68 +23,59 @@ export const directoryList = toolBuilder()
     includeDetails: z.boolean().default(false).describe('Include file size, type, and modification date'),
     extension: z.string().optional().describe('Optional file extension filter (e.g., ".txt", ".js")'),
   }))
-  .implement(async (input) => {
-    try {
-      const listFiles = async (dir: string, recursive: boolean): Promise<any[]> => {
-        const entries = await fs.readdir(dir, { withFileTypes: true });
-        const files: any[] = [];
+  .implementSafe(async (input) => {
+    const listFiles = async (dir: string, recursive: boolean): Promise<any[]> => {
+      const entries = await fs.readdir(dir, { withFileTypes: true });
+      const files: any[] = [];
 
-        for (const entry of entries) {
-          const fullPath = path.join(dir, entry.name);
-          const relativePath = path.relative(input.path, fullPath);
+      for (const entry of entries) {
+        const fullPath = path.join(dir, entry.name);
+        const relativePath = path.relative(input.path, fullPath);
 
-          // Apply extension filter if specified
-          if (input.extension && !entry.name.endsWith(input.extension)) {
-            if (!entry.isDirectory() || !recursive) {
-              continue;
-            }
-          }
-
-          if (input.includeDetails) {
-            const stats = await fs.stat(fullPath);
-            files.push({
-              name: entry.name,
-              path: relativePath,
-              fullPath,
-              isFile: entry.isFile(),
-              isDirectory: entry.isDirectory(),
-              size: stats.size,
-              modified: stats.mtime.toISOString(),
-            });
-          } else {
-            files.push({
-              name: entry.name,
-              path: relativePath,
-              isFile: entry.isFile(),
-              isDirectory: entry.isDirectory(),
-            });
-          }
-
-          // Recurse into subdirectories if requested
-          if (recursive && entry.isDirectory()) {
-            const subFiles = await listFiles(fullPath, true);
-            files.push(...subFiles);
+        // Apply extension filter if specified
+        if (input.extension && !entry.name.endsWith(input.extension)) {
+          if (!entry.isDirectory() || !recursive) {
+            continue;
           }
         }
 
-        return files;
-      };
+        if (input.includeDetails) {
+          const stats = await fs.stat(fullPath);
+          files.push({
+            name: entry.name,
+            path: relativePath,
+            fullPath,
+            isFile: entry.isFile(),
+            isDirectory: entry.isDirectory(),
+            size: stats.size,
+            modified: stats.mtime.toISOString(),
+          });
+        } else {
+          files.push({
+            name: entry.name,
+            path: relativePath,
+            isFile: entry.isFile(),
+            isDirectory: entry.isDirectory(),
+          });
+        }
 
-      const files = await listFiles(input.path, input.recursive ?? false);
+        // Recurse into subdirectories if requested
+        if (recursive && entry.isDirectory()) {
+          const subFiles = await listFiles(fullPath, true);
+          files.push(...subFiles);
+        }
+      }
 
-      return {
-        success: true,
-        path: input.path,
-        files,
-        count: files.length,
-      };
-    } catch (error) {
-      return {
-        success: false,
-        error: error instanceof Error ? error.message : 'Failed to list directory',
-        path: input.path,
-      };
-    }
+      return files;
+    };
+
+    const files = await listFiles(input.path, input.recursive ?? false);
+
+    return {
+      path: input.path,
+      files,
+      count: files.length,
+    };
   })
   .build();
 
@@ -100,22 +91,13 @@ export const directoryCreate = toolBuilder()
     path: z.string().describe('Path to the directory to create'),
     recursive: z.boolean().default(true).describe('Create parent directories if they don\'t exist'),
   }))
-  .implement(async (input) => {
-    try {
-      await fs.mkdir(input.path, { recursive: input.recursive });
-      
-      return {
-        success: true,
-        path: input.path,
-        message: 'Directory created successfully',
-      };
-    } catch (error) {
-      return {
-        success: false,
-        error: error instanceof Error ? error.message : 'Failed to create directory',
-        path: input.path,
-      };
-    }
+  .implementSafe(async (input) => {
+    await fs.mkdir(input.path, { recursive: input.recursive });
+
+    return {
+      path: input.path,
+      message: 'Directory created successfully',
+    };
   })
   .build();
 
@@ -131,22 +113,13 @@ export const directoryDelete = toolBuilder()
     path: z.string().describe('Path to the directory to delete'),
     recursive: z.boolean().default(false).describe('Delete directory and all its contents'),
   }))
-  .implement(async (input) => {
-    try {
-      await fs.rm(input.path, { recursive: input.recursive, force: false });
-      
-      return {
-        success: true,
-        path: input.path,
-        message: 'Directory deleted successfully',
-      };
-    } catch (error) {
-      return {
-        success: false,
-        error: error instanceof Error ? error.message : 'Failed to delete directory',
-        path: input.path,
-      };
-    }
+  .implementSafe(async (input) => {
+    await fs.rm(input.path, { recursive: input.recursive, force: false });
+
+    return {
+      path: input.path,
+      message: 'Directory deleted successfully',
+    };
   })
   .build();
 
@@ -164,50 +137,41 @@ export const fileSearch = toolBuilder()
     recursive: z.boolean().default(true).describe('Search in subdirectories'),
     caseSensitive: z.boolean().default(false).describe('Case-sensitive pattern matching'),
   }))
-  .implement(async (input) => {
-    try {
-      const searchFiles = async (dir: string): Promise<string[]> => {
-        const entries = await fs.readdir(dir, { withFileTypes: true });
-        const matches: string[] = [];
+  .implementSafe(async (input) => {
+    const searchFiles = async (dir: string): Promise<string[]> => {
+      const entries = await fs.readdir(dir, { withFileTypes: true });
+      const matches: string[] = [];
 
-        // Convert pattern to regex
-        const regexPattern = input.pattern
-          .replace(/\./g, '\\.')
-          .replace(/\*/g, '.*');
-        const regex = new RegExp(`^${regexPattern}$`, input.caseSensitive ? '' : 'i');
+      // Convert pattern to regex
+      const regexPattern = input.pattern
+        .replace(/\./g, '\\.')
+        .replace(/\*/g, '.*');
+      const regex = new RegExp(`^${regexPattern}$`, input.caseSensitive ? '' : 'i');
 
-        for (const entry of entries) {
-          const fullPath = path.join(dir, entry.name);
+      for (const entry of entries) {
+        const fullPath = path.join(dir, entry.name);
 
-          if (entry.isFile() && regex.test(entry.name)) {
-            matches.push(fullPath);
-          }
-
-          if (input.recursive && entry.isDirectory()) {
-            const subMatches = await searchFiles(fullPath);
-            matches.push(...subMatches);
-          }
+        if (entry.isFile() && regex.test(entry.name)) {
+          matches.push(fullPath);
         }
 
-        return matches;
-      };
+        if (input.recursive && entry.isDirectory()) {
+          const subMatches = await searchFiles(fullPath);
+          matches.push(...subMatches);
+        }
+      }
 
-      const matches = await searchFiles(input.directory);
+      return matches;
+    };
 
-      return {
-        success: true,
-        directory: input.directory,
-        pattern: input.pattern,
-        matches,
-        count: matches.length,
-      };
-    } catch (error) {
-      return {
-        success: false,
-        error: error instanceof Error ? error.message : 'Failed to search files',
-        directory: input.directory,
-      };
-    }
+    const matches = await searchFiles(input.directory);
+
+    return {
+      directory: input.directory,
+      pattern: input.pattern,
+      matches,
+      count: matches.length,
+    };
   })
   .build();
 

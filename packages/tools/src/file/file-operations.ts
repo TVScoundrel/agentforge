@@ -21,25 +21,16 @@ export const fileReader = toolBuilder()
     path: z.string().describe('Path to the file to read'),
     encoding: z.enum(['utf8', 'utf-8', 'ascii', 'base64', 'hex', 'binary']).default('utf8').describe('File encoding'),
   }))
-  .implement(async (input) => {
-    try {
-      const content = await fs.readFile(input.path, input.encoding as BufferEncoding);
-      const stats = await fs.stat(input.path);
-      
-      return {
-        success: true,
-        content,
-        size: stats.size,
-        path: input.path,
-        encoding: input.encoding,
-      };
-    } catch (error) {
-      return {
-        success: false,
-        error: error instanceof Error ? error.message : 'Failed to read file',
-        path: input.path,
-      };
-    }
+  .implementSafe(async (input) => {
+    const content = await fs.readFile(input.path, input.encoding as BufferEncoding);
+    const stats = await fs.stat(input.path);
+
+    return {
+      content,
+      size: stats.size,
+      path: input.path,
+      encoding: input.encoding,
+    };
   })
   .build();
 
@@ -57,30 +48,21 @@ export const fileWriter = toolBuilder()
     encoding: z.enum(['utf8', 'utf-8', 'ascii', 'base64', 'hex']).default('utf8').describe('File encoding'),
     createDirs: z.boolean().default(false).describe('Create parent directories if they don\'t exist'),
   }))
-  .implement(async (input) => {
-    try {
-      // Create parent directories if requested
-      if (input.createDirs) {
-        const dir = path.dirname(input.path);
-        await fs.mkdir(dir, { recursive: true });
-      }
-      
-      await fs.writeFile(input.path, input.content, input.encoding as BufferEncoding);
-      const stats = await fs.stat(input.path);
-      
-      return {
-        success: true,
-        path: input.path,
-        size: stats.size,
-        encoding: input.encoding,
-      };
-    } catch (error) {
-      return {
-        success: false,
-        error: error instanceof Error ? error.message : 'Failed to write file',
-        path: input.path,
-      };
+  .implementSafe(async (input) => {
+    // Create parent directories if requested
+    if (input.createDirs) {
+      const dir = path.dirname(input.path);
+      await fs.mkdir(dir, { recursive: true });
     }
+
+    await fs.writeFile(input.path, input.content, input.encoding as BufferEncoding);
+    const stats = await fs.stat(input.path);
+
+    return {
+      path: input.path,
+      size: stats.size,
+      encoding: input.encoding,
+    };
   })
   .build();
 
@@ -97,23 +79,14 @@ export const fileAppend = toolBuilder()
     content: z.string().describe('Content to append to the file'),
     encoding: z.enum(['utf8', 'utf-8', 'ascii']).default('utf8').describe('File encoding'),
   }))
-  .implement(async (input) => {
-    try {
-      await fs.appendFile(input.path, input.content, input.encoding as BufferEncoding);
-      const stats = await fs.stat(input.path);
-      
-      return {
-        success: true,
-        path: input.path,
-        size: stats.size,
-      };
-    } catch (error) {
-      return {
-        success: false,
-        error: error instanceof Error ? error.message : 'Failed to append to file',
-        path: input.path,
-      };
-    }
+  .implementSafe(async (input) => {
+    await fs.appendFile(input.path, input.content, input.encoding as BufferEncoding);
+    const stats = await fs.stat(input.path);
+
+    return {
+      path: input.path,
+      size: stats.size,
+    };
   })
   .build();
 
@@ -128,22 +101,13 @@ export const fileDelete = toolBuilder()
   .schema(z.object({
     path: z.string().describe('Path to the file to delete'),
   }))
-  .implement(async (input) => {
-    try {
-      await fs.unlink(input.path);
-      
-      return {
-        success: true,
-        path: input.path,
-        message: 'File deleted successfully',
-      };
-    } catch (error) {
-      return {
-        success: false,
-        error: error instanceof Error ? error.message : 'Failed to delete file',
-        path: input.path,
-      };
-    }
+  .implementSafe(async (input) => {
+    await fs.unlink(input.path);
+
+    return {
+      path: input.path,
+      message: 'File deleted successfully',
+    };
   })
   .build();
 

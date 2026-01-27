@@ -11,16 +11,14 @@ import { z } from 'zod';
  * URL validation result
  */
 export interface UrlValidationResult {
-  valid: boolean;
-  url?: string;
-  protocol?: string;
-  hostname?: string;
-  port?: string;
-  pathname?: string;
-  search?: string;
-  hash?: string;
-  origin?: string;
-  error?: string;
+  url: string;
+  protocol: string;
+  hostname: string;
+  port: string;
+  pathname: string;
+  search: string;
+  hash: string;
+  origin: string;
 }
 
 /**
@@ -41,27 +39,19 @@ export const urlValidator = toolBuilder()
   .schema(z.object({
     url: z.string().describe('The URL to validate and parse'),
   }))
-  .implement(async (input): Promise<UrlValidationResult> => {
-    try {
-      const parsed = new URL(input.url);
-      
-      return {
-        valid: true,
-        url: parsed.href,
-        protocol: parsed.protocol,
-        hostname: parsed.hostname,
-        port: parsed.port,
-        pathname: parsed.pathname,
-        search: parsed.search,
-        hash: parsed.hash,
-        origin: parsed.origin,
-      };
-    } catch (error) {
-      return {
-        valid: false,
-        error: error instanceof Error ? error.message : 'Invalid URL',
-      };
-    }
+  .implementSafe(async (input): Promise<UrlValidationResult> => {
+    const parsed = new URL(input.url);
+
+    return {
+      url: parsed.href,
+      protocol: parsed.protocol,
+      hostname: parsed.hostname,
+      port: parsed.port,
+      pathname: parsed.pathname,
+      search: parsed.search,
+      hash: parsed.hash,
+      origin: parsed.origin,
+    };
   })
   .build();
 
