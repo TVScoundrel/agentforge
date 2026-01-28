@@ -12,7 +12,7 @@
 
 ## ✨ Features
 
-### 🛠️ Tool System (Phase 1)
+### 🛠️ Tool System
 - **Rich Metadata** - Categories, tags, examples, and detailed descriptions
 - **Fluent Builder API** - Easy tool creation with `createTool()`
 - **Tool Registry** - Centralized management with querying and events
@@ -20,7 +20,7 @@
 - **Prompt Generation** - Automatic LLM-friendly prompt generation
 - **113 tests** - Comprehensive test coverage
 
-### 📊 LangGraph Utilities (Phase 2)
+### 📊 LangGraph Utilities
 - **State Management** - Type-safe state annotations with Zod validation
 - **Workflow Builders** - Sequential, parallel, and conditional patterns
 - **Error Handling** - Retry, error handling, and timeout utilities
@@ -29,13 +29,13 @@
 - **Observability** - LangSmith integration, metrics, logging, error reporting
 - **158 tests** - Full coverage of all utilities
 
-### � Middleware System (Phase 4)
+### � Middleware System
 - **Composable Middleware** - Caching, rate limiting, validation, concurrency control
 - **Production Presets** - Ready-to-use middleware stacks
 - **Development Tools** - Logging, debugging, and testing middleware
 - **94 tests** - Comprehensive middleware testing
 
-### 🌊 Streaming & Real-time (Phase 5.1)
+### 🌊 Streaming & Real-time
 - **Stream Transformers** - Filter, map, batch, debounce, throttle
 - **Stream Aggregators** - Collect, reduce, window operations
 - **SSE Support** - Server-Sent Events for real-time updates
@@ -43,25 +43,25 @@
 - **Progress Tracking** - Monitor long-running operations
 - **68 tests** - Full streaming coverage
 
-### 🛠️ Advanced Tools (Phase 5.2)
+### 🛠️ Advanced Tools
 - **Async Execution** - Parallel and sequential tool execution
 - **Lifecycle Management** - Setup, teardown, and cleanup hooks
 - **Tool Composition** - Combine tools into pipelines
 - **Testing Utilities** - Mock tools and test helpers
 
-### 📦 Resource Management (Phase 5.3)
+### 📦 Resource Management
 - **Connection Pooling** - Efficient resource reuse
 - **Memory Management** - Automatic cleanup and limits
 - **Batch Processing** - Efficient bulk operations
 - **Circuit Breaker** - Fault tolerance and resilience
 
-### � Monitoring (Phase 5.4)
+### � Monitoring
 - **Health Checks** - System and component health monitoring
 - **Profiling** - Performance metrics and bottleneck detection
 - **Alerts** - Configurable alerting system
 - **Audit Logging** - Comprehensive activity tracking
 
-### 🚀 Deployment (Phase 5.5)
+### 🚀 Deployment
 - **Docker Support** - Production-ready containers
 - **Kubernetes** - Deployment manifests and guides
 - **CI/CD Templates** - GitHub Actions, GitLab CI

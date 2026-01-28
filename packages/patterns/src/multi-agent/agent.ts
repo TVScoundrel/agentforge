@@ -7,7 +7,7 @@
  */
 
 import { StateGraph, END, CompiledStateGraph } from '@langchain/langgraph';
-import { toLangChainTools, createLogger, LogLevel } from '@agentforge/core';
+import { createLogger, LogLevel } from '@agentforge/core';
 import { MultiAgentState } from './state.js';
 import type { MultiAgentStateType } from './state.js';
 import type { MultiAgentSystemConfig, MultiAgentRouter, WorkerConfig } from './types.js';
@@ -119,7 +119,7 @@ export function createMultiAgentSystem(config: MultiAgentSystemConfig) {
   // @ts-ignore - LangGraph's complex generic types don't infer well with createStateAnnotation
   const workflow = new StateGraph(MultiAgentState);
 
-  // Configure supervisor model with structured output and tools
+  // Configure supervisor model with structured output
   let supervisorConfig = { ...supervisor, maxIterations, verbose };
   if (supervisor.model) {
     let configuredModel = supervisor.model;
@@ -127,13 +127,6 @@ export function createMultiAgentSystem(config: MultiAgentSystemConfig) {
     // Add structured output for routing decisions (forces JSON response)
     if (supervisor.strategy === 'llm-based') {
       configuredModel = configuredModel.withStructuredOutput!(RoutingDecisionSchema) as any;
-    }
-
-    // Bind tools if provided
-    if (supervisor.tools && supervisor.tools.length > 0) {
-      const langchainTools = toLangChainTools(supervisor.tools);
-      // bindTools returns Runnable which is compatible but types don't match exactly
-      configuredModel = configuredModel.bindTools!(langchainTools) as any;
     }
 
     supervisorConfig.model = configuredModel;

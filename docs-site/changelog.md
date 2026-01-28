@@ -5,6 +5,47 @@ All notable changes to AgentForge will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Removed
+- **Tool-Enabled Supervisor** (@agentforge/patterns) - Removed supervisor tool support due to fundamental technical incompatibility
+  - **Why This Was Removed**: The feature had a critical design flaw - supervisors require `withStructuredOutput()` to guarantee routing decisions, but this is **fundamentally incompatible** with tool calling
+    - `withStructuredOutput()` constrains the LLM to return a specific schema (RoutingDecision)
+    - `bindTools()` allows the LLM to return tool_calls instead of the structured output
+    - **These two capabilities are mutually exclusive** - the LLM cannot do both simultaneously
+    - The previous implementation used complex retry loops to work around this, but it was unreliable and broke the type contract
+  - Removed `tools` parameter from `SupervisorConfig`
+  - Removed `maxToolRetries` parameter from `SupervisorConfig`
+  - Removed tool execution infrastructure from routing logic (~180 lines)
+  - Removed "Tool-Enabled Supervisor" section from documentation
+  - **Migration Path**: Use an intake/triage agent upstream of the supervisor for human-in-the-loop workflows
+    - Create a ReAct agent with `askHuman` tool to handle clarification (ReAct pattern supports tools natively)
+    - Pass clarified requests to the multi-agent system supervisor (supervisor only does routing)
+    - **Benefits**: Cleaner separation of concerns, each agent has a coherent contract, more reliable and maintainable
+    - Example:
+      ```typescript
+      // Intake agent handles human interaction (no structured output constraint)
+      const intakeAgent = createReActAgent({
+        model: llm,
+        tools: [askHumanTool],
+        systemPrompt: 'Clarify ambiguous requests before routing...'
+      });
+
+      // Supervisor handles routing (structured output, no tools)
+      const system = createMultiAgentSystem({
+        supervisor: {
+          strategy: 'llm-based',
+          model: llm,  // Uses withStructuredOutput internally
+          systemPrompt: 'Route to the best worker...'
+        },
+        workers: [...]
+      });
+
+      // Chain them together
+      const clarified = await intakeAgent.invoke({ input: userQuery });
+      const result = await system.invoke({ input: clarified.output });
+      ```
+
 ## [0.7.0] - 2026-01-27
 
 ### Added
@@ -241,6 +282,10 @@ LOG_LEVEL=DEBUG DEBUG=agentforge:patterns:react:reasoning node your-agent.js
 ### Added
 
 #### Tool-Enabled Supervisor (@agentforge/patterns)
+::: warning DEPRECATED
+This feature was removed in a later version. See [Unreleased] section for migration path to intake/triage agent pattern.
+:::
+
 - **Supervisor Tools for Multi-Agent Pattern** - Supervisors can now use tools during routing decisions
   - Added optional `tools` parameter to `SupervisorConfig` for tool-enabled routing
   - Added `maxToolRetries` parameter to control tool call retry attempts (default: 3)
@@ -803,7 +848,7 @@ LOG_LEVEL=DEBUG DEBUG=agentforge:patterns:react:reasoning node your-agent.js
 - **0.6.3** (2026-01-23) - Parallel routing for multi-agent pattern - route to multiple agents simultaneously
 - **0.6.2** (2026-01-23) - Fixed Plan-Execute pattern interrupt handling
 - **0.6.1** (2026-01-22) - Fixed askHuman interrupt handling, added logging documentation
-- **0.6.0** (2026-01-22) - Tool-enabled supervisors for multi-agent pattern, vertical agents terminology
+- **0.6.0** (2026-01-22) - Tool-enabled supervisors for multi-agent pattern (deprecated), vertical agents terminology
 - **0.5.4** (2026-01-21) - Checkpointer support for all patterns, enabling human-in-the-loop workflows
 - **0.5.3** (2026-01-21) - Fixed vertical-agent template tsconfig.json
 - **0.5.2** (2026-01-21) - Human-in-the-Loop support, vertical agent examples, and CLI scaffolding

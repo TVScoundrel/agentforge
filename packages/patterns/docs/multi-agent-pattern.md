@@ -540,8 +540,6 @@ interface SupervisorConfig {
   model: BaseChatModel;
   strategy: RoutingStrategy;
   systemPrompt?: string;
-  tools?: Tool[];           // Optional tools for supervisor to use during routing
-  maxToolRetries?: number;  // Max tool calls before routing (default: 3)
 }
 
 interface AggregatorConfig {
@@ -727,8 +725,6 @@ interface SupervisorConfig {
   model: BaseChatModel;
   routingStrategy: RoutingStrategy;
   systemPrompt?: string;
-  tools?: Tool[];           // Optional tools for supervisor to use during routing
-  maxToolRetries?: number;  // Max tool calls before routing (default: 3)
 }
 ```
 
@@ -1257,177 +1253,6 @@ const healthAwareRouting = {
   },
 };
 ```
-
-### Tool-Enabled Supervisor
-
-Enable the supervisor to use tools during routing decisions. This is particularly useful when the supervisor needs to gather additional information before making routing decisions.
-
-#### Overview
-
-When tools are provided to the supervisor, it can call them during the routing process to:
-- Ask the user for clarification on ambiguous requests
-- Fetch additional context needed for routing decisions
-- Validate information before routing to a worker
-
-The supervisor will execute tool calls and incorporate the results into its decision-making process before selecting a worker.
-
-#### Configuration
-
-```typescript
-import { createMultiAgentSystem } from '@agentforge/patterns';
-import { createAskHumanTool } from '@agentforge/core';
-import { ChatOpenAI } from '@langchain/openai';
-
-const llm = new ChatOpenAI({ modelName: 'gpt-4' });
-
-// Create askHuman tool for clarification
-const askHumanTool = createAskHumanTool();
-
-const system = createMultiAgentSystem({
-  supervisor: {
-    strategy: 'llm-based',
-    model: llm,
-    tools: [askHumanTool],           // Tools the supervisor can use
-    maxToolRetries: 3,                // Max tool calls before routing (default: 3)
-    systemPrompt: `You are a supervisor coordinating specialized agents.
-
-When the user's request is ambiguous or lacks necessary details, use the askHuman tool
-to gather more information before routing to a worker.
-
-Available workers:
-- hr_agent: Handles HR tasks (onboarding, benefits, policies)
-- security_agent: Handles security tasks (audits, compliance, access)
-- code_agent: Handles code tasks (reviews, refactoring, debugging)`,
-  },
-  workers: [
-    {
-      id: 'hr_agent',
-      executeFn: hrWorker,
-      capabilities: {
-        skills: ['hr', 'onboarding', 'benefits'],
-        tools: ['slack', 'workday'],
-      },
-    },
-    {
-      id: 'security_agent',
-      executeFn: securityWorker,
-      capabilities: {
-        skills: ['security', 'compliance', 'audit'],
-        tools: ['scanner', 'analyzer'],
-      },
-    },
-    {
-      id: 'code_agent',
-      executeFn: codeWorker,
-      capabilities: {
-        skills: ['code', 'review', 'refactor'],
-        tools: ['linter', 'formatter'],
-      },
-    },
-  ],
-});
-```
-
-#### How It Works
-
-1. **User sends ambiguous request**: "I need help with something"
-2. **Supervisor detects ambiguity**: Realizes it needs more information
-3. **Supervisor calls askHuman tool**: "What type of help do you need? (HR, Security, or Code)"
-4. **User responds**: "Security compliance audit"
-5. **Supervisor routes to worker**: Routes to `security_agent` based on clarification
-6. **Worker executes task**: Security agent performs the audit
-
-#### Example: Handling Ambiguous Queries
-
-```typescript
-// User query is ambiguous
-const result = await system.invoke({
-  input: 'I need help',
-});
-
-// Behind the scenes:
-// 1. Supervisor receives: "I need help"
-// 2. Supervisor calls askHuman: "What type of help do you need?"
-// 3. User responds: "Security compliance"
-// 4. Supervisor routes to: security_agent
-// 5. Security agent executes task
-// 6. Result returned to user
-
-console.log(result.response);
-// "Security compliance audit completed. All systems are compliant."
-```
-
-#### Tool Execution Flow
-
-```
-User Input
-    ↓
-Supervisor (with tools)
-    ↓
-Tool Call? ──Yes──→ Execute Tool ──→ Add to conversation ──→ Retry routing
-    ↓                                                              ↑
-    No                                                             │
-    ↓                                                              │
-Routing Decision ──────────────────────────────────────────────────┘
-    ↓
-Worker Execution
-    ↓
-Result
-```
-
-#### Configuration Options
-
-**`tools`**: Array of tools the supervisor can use
-- Only works with `llm-based` routing strategy
-- Tools are converted to LangChain format automatically
-- Common use case: `askHuman` for clarification
-
-**`maxToolRetries`**: Maximum number of tool calls before requiring routing decision
-- Default: `3`
-- Prevents infinite loops where supervisor keeps calling tools
-- After max retries, supervisor must make a routing decision
-
-#### Best Practices
-
-1. **Use for ambiguous queries**: Tool-enabled supervisors are ideal when user intent is unclear
-2. **Set appropriate retry limits**: Balance between gathering information and avoiding delays
-3. **Provide clear system prompts**: Guide the supervisor on when to use tools vs. route directly
-4. **Handle tool failures gracefully**: Ensure supervisor can still route even if tools fail
-
-#### Example: Multiple Tool Calls
-
-```typescript
-// Supervisor may call tools multiple times to gather complete information
-const result = await system.invoke({
-  input: 'I need help with a task',
-});
-
-// Behind the scenes:
-// 1. Supervisor: "What department?" → User: "HR"
-// 2. Supervisor: "What specific task?" → User: "Onboarding"
-// 3. Supervisor routes to: hr_agent
-```
-
-#### Troubleshooting
-
-**Issue**: Supervisor keeps calling tools without routing
-- **Cause**: Max retry limit too high or supervisor not making decisions
-- **Solution**: Lower `maxToolRetries` or improve system prompt
-
-**Issue**: Tools not being called when needed
-- **Cause**: System prompt doesn't encourage tool use
-- **Solution**: Update prompt to explicitly mention when to use tools
-
-**Issue**: Tool execution errors
-- **Cause**: Tool implementation issues or invalid arguments
-- **Solution**: Check tool implementation and ensure proper error handling
-
-#### Backward Compatibility
-
-Tool-enabled supervisors are fully backward compatible:
-- Systems without tools continue to work as before
-- No changes needed to existing code
-- Tools are optional and only used when configured
 
 ## Troubleshooting
 
