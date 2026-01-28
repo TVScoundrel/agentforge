@@ -65,6 +65,31 @@ import { createReasoningNode, createActionNode, createObservationNode } from './
  *   { configurable: { thread_id: 'conversation-123' } }
  * );
  * ```
+ *
+ * @example
+ * As a nested agent in a multi-agent system:
+ * ```typescript
+ * import { createReActAgent, createMultiAgentSystem } from '@agentforge/patterns';
+ * import { createAskHumanTool } from '@agentforge/tools';
+ * import { MemorySaver } from '@langchain/langgraph';
+ * import { ChatOpenAI } from '@langchain/openai';
+ *
+ * // Create worker agent with checkpointer: true to use parent's checkpointer
+ * const hrAgent = createReActAgent({
+ *   model: new ChatOpenAI({ model: 'gpt-4' }),
+ *   tools: [createAskHumanTool(), ...hrTools],
+ *   checkpointer: true  // Use parent's checkpointer with separate namespace
+ * });
+ *
+ * // Create multi-agent system with its own checkpointer
+ * const system = createMultiAgentSystem({
+ *   workers: { hr: hrAgent },
+ *   checkpointer: new MemorySaver()  // Parent checkpointer
+ * });
+ *
+ * // When hrAgent calls askHuman, it will use a separate checkpoint namespace
+ * // Format: {parent_thread_id}:worker:hr
+ * ```
  */
 export function createReActAgent(
   config: ReActAgentConfig,
@@ -153,7 +178,16 @@ export function createReActAgent(
     .addEdge(ACTION_NODE, OBSERVATION_NODE)
     .addEdge(OBSERVATION_NODE, REASONING_NODE);
 
-  // Compile with checkpointer if provided
-  return workflow.compile(checkpointer ? { checkpointer } : undefined) as any;
+  // Compile with checkpointer configuration
+  // - If checkpointer is a BaseCheckpointSaver instance, use it directly
+  // - If checkpointer is `true`, use parent's checkpointer with separate namespace (for nested graphs)
+  // - If checkpointer is undefined, no checkpointing
+  const checkpointerConfig = checkpointer === true
+    ? { checkpointer: true }  // Use parent's checkpointer with separate namespace
+    : checkpointer
+    ? { checkpointer }  // Use provided checkpointer instance
+    : undefined;  // No checkpointing
+
+  return workflow.compile(checkpointerConfig) as any;
 }
 

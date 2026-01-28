@@ -52,7 +52,12 @@ export interface ReActAgentConfig {
    * Optional checkpointer for state persistence
    * Required for human-in-the-loop workflows (askHuman tool), interrupts, and conversation continuity
    *
+   * Can be:
+   * - A BaseCheckpointSaver instance (e.g., MemorySaver) for standalone agents
+   * - `true` to use the parent graph's checkpointer with a separate namespace (for nested graphs)
+   *
    * @example
+   * Standalone agent with its own checkpointer:
    * ```typescript
    * import { MemorySaver } from '@langchain/langgraph';
    *
@@ -63,8 +68,18 @@ export interface ReActAgentConfig {
    *   checkpointer
    * });
    * ```
+   *
+   * @example
+   * Nested agent using parent's checkpointer (for multi-agent systems):
+   * ```typescript
+   * const agent = createReActAgent({
+   *   model,
+   *   tools,
+   *   checkpointer: true  // Use parent's checkpointer with separate namespace
+   * });
+   * ```
    */
-  checkpointer?: BaseCheckpointSaver;
+  checkpointer?: BaseCheckpointSaver | true;
 
   /**
    * Enable tool call deduplication to prevent calling the same tool with identical parameters multiple times
