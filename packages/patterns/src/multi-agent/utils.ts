@@ -99,13 +99,36 @@ export function wrapReActAgent(
         return {};
       }
 
-      // Invoke ReAct agent with LangGraph-style input and config
-      // The config contains thread_id for checkpointing, which is required for interrupts
+      // Generate worker-specific thread_id for separate checkpoint namespace
+      // This allows the worker's ReAct agent to have its own checkpoint that can be resumed independently
+      // Format: {parent_thread_id}:worker:{workerId}
+      const workerThreadId = config?.configurable?.thread_id
+        ? `${config.configurable.thread_id}:worker:${workerId}`
+        : undefined;
+
+      const workerConfig = workerThreadId ? {
+        ...config,
+        configurable: {
+          ...config.configurable,
+          thread_id: workerThreadId
+        }
+      } : config;
+
+      logger.debug('Invoking ReAct agent with worker-specific config', {
+        workerId,
+        parentThreadId: config?.configurable?.thread_id,
+        workerThreadId,
+        hasConfig: !!workerConfig
+      });
+
+      // Invoke ReAct agent with worker-specific config for separate checkpoint namespace
+      // This ensures that when the worker's ReAct agent calls interrupt(), the checkpoint
+      // is saved in a separate namespace and can be resumed independently
       const result: any = await agent.invoke(
         {
           messages: [{ role: 'user', content: task }],
         },
-        config  // Pass through the config for checkpointing and interrupt support
+        workerConfig  // Worker-specific config with unique thread_id
       );
 
       // Extract response from ReAct agent's messages
