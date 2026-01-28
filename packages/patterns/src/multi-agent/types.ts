@@ -184,7 +184,20 @@ export interface MultiAgentSystemConfig {
    * Optional checkpointer for state persistence
    * Required for human-in-the-loop workflows (askHuman tool), interrupts, and conversation continuity
    *
+   * **Worker Checkpoint Namespaces:**
+   * When worker agents are configured with `checkpointer: true`, they automatically use
+   * separate checkpoint namespaces to enable proper handling of nested graph interrupts.
+   *
+   * The namespace format is: `{parent_thread_id}:worker:{workerId}`
+   *
+   * For example, if the parent thread ID is `thread_abc123` and the worker ID is `hr`,
+   * the worker's checkpoint namespace will be `thread_abc123:worker:hr`.
+   *
+   * This allows worker agents to use the `askHuman` tool without causing infinite loops,
+   * as each worker's state is saved and resumed independently.
+   *
    * @example
+   * Basic usage with checkpointer:
    * ```typescript
    * import { MemorySaver } from '@langchain/langgraph';
    *
@@ -194,6 +207,35 @@ export interface MultiAgentSystemConfig {
    *   workers: [...],
    *   checkpointer
    * });
+   * ```
+   *
+   * @example
+   * Worker agents with nested graph interrupts:
+   * ```typescript
+   * import { MemorySaver } from '@langchain/langgraph';
+   * import { createReActAgent } from '@agentforge/patterns';
+   * import { createAskHumanTool } from '@agentforge/tools';
+   *
+   * // Create worker agent with checkpointer: true
+   * const hrAgent = createReActAgent({
+   *   model,
+   *   tools: [createAskHumanTool(), ...hrTools],
+   *   checkpointer: true  // Use parent's checkpointer with separate namespace
+   * });
+   *
+   * // Create multi-agent system with checkpointer
+   * const system = createMultiAgentSystem({
+   *   supervisor: { strategy: 'skill-based', model },
+   *   workers: [{
+   *     id: 'hr',
+   *     capabilities: { skills: ['hr'], ... },
+   *     agent: hrAgent
+   *   }],
+   *   checkpointer: new MemorySaver()
+   * });
+   *
+   * // When hrAgent calls askHuman, it will use checkpoint namespace:
+   * // thread_abc123:worker:hr
    * ```
    */
   checkpointer?: BaseCheckpointSaver;
