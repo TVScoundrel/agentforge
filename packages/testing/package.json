@@ -32,7 +32,7 @@
   "dependencies": {
     "@agentforge/core": "workspace:*",
     "@agentforge/patterns": "workspace:*",
-    "@langchain/core": "^1.1.15",
+    "@langchain/core": "^1.1.17",
     "zod": "^3.24.1"
   },
   "devDependencies": {

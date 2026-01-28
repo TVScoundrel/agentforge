@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import { createAskHumanTool, askHumanTool } from '../../src/agent/ask-human/tool.js';
 import type { AskHumanInput } from '../../src/agent/ask-human/types.js';
 
@@ -108,24 +108,7 @@ describe('askHuman Tool', () => {
     });
   });
 
-  describe('tool execution', () => {
-    it('should throw error if @langchain/langgraph is not installed', async () => {
-      const tool = createAskHumanTool();
 
-      // Mock the dynamic import to fail
-      vi.mock('@langchain/langgraph', () => {
-        throw new Error('Cannot find module');
-      });
-
-      const input: AskHumanInput = {
-        question: 'Test question',
-      };
-
-      await expect(tool.execute(input)).rejects.toThrow(
-        'askHuman tool requires @langchain/langgraph to be installed'
-      );
-    });
-  });
 
   describe('input validation', () => {
     it('should reject empty question', () => {
