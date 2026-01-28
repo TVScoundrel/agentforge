@@ -15,9 +15,11 @@ pnpm test:coverage web-search
 ```
 
 **Test Coverage:**
-- ✅ 29 unit tests passing
-- ✅ DuckDuckGo provider tests
-- ✅ Serper provider tests
+- ✅ 45 unit tests passing
+- ✅ DuckDuckGo provider tests (11 tests)
+- ✅ Serper provider tests (10 tests)
+- ✅ Index/integration tests (14 tests)
+- ✅ Utility tests (10 tests)
 - ✅ Fallback mechanism tests
 - ✅ Error handling tests
 - ✅ Schema validation tests

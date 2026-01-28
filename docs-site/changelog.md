@@ -45,6 +45,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
       const clarified = await intakeAgent.invoke({ input: userQuery });
       const result = await system.invoke({ input: clarified.output });
       ```
+  - **Test Count Impact**: Removed 14 tests (integration-with-tools.test.ts and routing-with-tools.test.ts)
+    - Total test count: 921 tests passing (down from 1046 in v0.6.0, but v0.7.0 had 935 before this removal)
+    - All remaining tests passing with no regressions
 
 ## [0.7.0] - 2026-01-27
 
