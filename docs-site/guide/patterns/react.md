@@ -137,6 +137,59 @@ const agent = createReActAgent({
 });
 ```
 
+### State Persistence with Checkpointer
+
+Enable conversation continuity and human-in-the-loop workflows with checkpointers:
+
+```typescript
+import { MemorySaver } from '@langchain/langgraph';
+import { createReActAgent } from '@agentforge/patterns';
+import { createAskHumanTool } from '@agentforge/tools';
+
+// Create agent with checkpointer
+const agent = createReActAgent({
+  model,
+  tools: [createAskHumanTool(), calculator, webSearch],
+  checkpointer: new MemorySaver()
+});
+
+// Start a conversation with a thread ID
+const result1 = await agent.invoke(
+  { messages: [{ role: 'user', content: 'What is 2+2?' }] },
+  { configurable: { thread_id: 'user-123' } }
+);
+
+// Resume the same conversation later
+const result2 = await agent.invoke(
+  { messages: [{ role: 'user', content: 'And what about 3+3?' }] },
+  { configurable: { thread_id: 'user-123' } }  // Same thread ID
+);
+```
+
+**For nested agents in multi-agent systems:**
+
+```typescript
+import { ReActAgentBuilder } from '@agentforge/patterns';
+
+// Worker agent that uses parent's checkpointer
+const hrAgent = new ReActAgentBuilder()
+  .withModel(model)
+  .withTools([askHumanTool, slackTool])
+  .withCheckpointer(true)  // Use parent's checkpointer with separate namespace
+  .build();
+
+// When used in a multi-agent system:
+// - The agent stores state in a separate namespace (e.g., thread_abc:worker:hr)
+// - Supports interrupts (askHuman tool) without causing infinite loops
+// - Can be resumed independently from other workers
+```
+
+**Benefits:**
+- **Conversation continuity**: Resume conversations across sessions
+- **Human-in-the-loop**: Request user input mid-execution with `askHuman` tool
+- **Multi-agent coordination**: Enable worker agents to interrupt and resume independently
+- **Error recovery**: Resume from failures without losing progress
+
 ## Streaming
 
 ReAct agents support streaming for real-time updates:

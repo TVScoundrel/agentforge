@@ -120,6 +120,48 @@ builder.withStopCondition((state) => {
 });
 ```
 
+#### `withCheckpointer(checkpointer: BaseCheckpointSaver | true)`
+Enable state persistence for conversation continuity and human-in-the-loop workflows.
+
+**For standalone agents:**
+```typescript
+import { MemorySaver } from '@langchain/langgraph';
+
+const agent = new ReActAgentBuilder()
+  .withModel(model)
+  .withTools(tools)
+  .withCheckpointer(new MemorySaver())
+  .build();
+
+// Use with thread_id for conversation continuity
+const result = await agent.invoke(
+  { messages: [{ role: 'user', content: 'Hello' }] },
+  { configurable: { thread_id: 'conversation-123' } }
+);
+```
+
+**For nested agents in multi-agent systems:**
+```typescript
+// Worker agent using parent's checkpointer with separate namespace
+const workerAgent = new ReActAgentBuilder()
+  .withModel(model)
+  .withTools([askHumanTool, ...otherTools])
+  .withCheckpointer(true)  // Use parent's checkpointer
+  .build();
+
+// When used in a multi-agent system, this agent will:
+// - Use the parent graph's checkpointer
+// - Store state in a separate namespace (e.g., thread_abc:worker:hr)
+// - Support interrupts (askHuman tool) without causing infinite loops
+```
+
+**Use cases:**
+- **Conversation continuity**: Resume conversations across sessions
+- **Human-in-the-loop**: Use `askHuman` tool to request user input
+- **Multi-agent systems**: Enable worker agents to interrupt and resume independently
+
+**Important:** When using `checkpointer: true` in nested graphs, the parent graph must provide a checkpointer and pass a unique `thread_id` in the config.
+
 #### `withVerbose(value: boolean)`
 Enable verbose logging (default: false).
 

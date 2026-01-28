@@ -19,7 +19,6 @@ import type { BaseChatModel } from '@langchain/core/language_models/chat_models'
 import type { CompiledStateGraph } from '@langchain/langgraph';
 import { ToolRegistry, type Tool } from '@agentforge/core';
 import type { ReActAgentConfig, ReActBuilderOptions, StopConditionFn } from './types.js';
-import type { ReActStateType } from './state.js';
 import { createReActAgent } from './agent.js';
 import { DEFAULT_REACT_SYSTEM_PROMPT } from './prompts.js';
 

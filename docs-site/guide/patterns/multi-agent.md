@@ -231,6 +231,93 @@ const system = createMultiAgentSystem({
 });
 ```
 
+## Human-in-the-Loop with Checkpointers
+
+Enable worker agents to request human input mid-execution using checkpointers. This is essential for workflows that require user confirmation, clarification, or approval.
+
+### Basic Setup
+
+```typescript
+import { MemorySaver } from '@langchain/langgraph';
+import { createMultiAgentSystem, ReActAgentBuilder } from '@agentforge/patterns';
+import { createAskHumanTool } from '@agentforge/tools';
+
+// Create worker agents with checkpointer: true
+const hrAgent = new ReActAgentBuilder()
+  .withModel(model)
+  .withTools([createAskHumanTool(), slackTool, emailTool])
+  .withCheckpointer(true)  // Use parent's checkpointer with separate namespace
+  .build();
+
+const legalAgent = new ReActAgentBuilder()
+  .withModel(model)
+  .withTools([createAskHumanTool(), contractTool, complianceTool])
+  .withCheckpointer(true)
+  .build();
+
+// Create multi-agent system with checkpointer
+const system = createMultiAgentSystem({
+  supervisor: {
+    model,
+    strategy: 'skill-based'
+  },
+  workers: [
+    {
+      id: 'hr',
+      capabilities: { skills: ['hr', 'employee', 'slack'] },
+      agent: hrAgent
+    },
+    {
+      id: 'legal',
+      capabilities: { skills: ['legal', 'contract', 'compliance'] },
+      agent: legalAgent
+    }
+  ],
+  checkpointer: new MemorySaver()  // Parent checkpointer
+});
+```
+
+### How It Works
+
+When a worker agent calls `askHuman`:
+
+1. **Interrupt occurs** - The worker agent pauses execution
+2. **State is saved** - Worker's state is saved in a separate namespace: `{thread_id}:worker:{workerId}`
+3. **User responds** - Your application collects user input
+4. **Resume execution** - Call `system.invoke(new Command({ resume: userInput }))` to continue
+
+```typescript
+import { Command } from '@langchain/langgraph';
+
+// Start a conversation
+const result = await system.invoke(
+  { messages: [{ role: 'user', content: 'Send a Slack announcement about my promotion' }] },
+  { configurable: { thread_id: 'user-123' } }
+);
+
+// If HR agent asks for confirmation, it will throw GraphInterrupt
+// Your application should catch this and prompt the user
+
+// Resume with user's response
+const finalResult = await system.invoke(
+  new Command({ resume: 'Yes, please send it to #announcements' }),
+  { configurable: { thread_id: 'user-123' } }
+);
+```
+
+### Benefits
+
+- **Independent worker state** - Each worker has its own checkpoint namespace
+- **No infinite loops** - Workers can interrupt and resume without restarting
+- **Conversation continuity** - Resume conversations across sessions
+- **Error recovery** - Resume from failures without losing progress
+
+### Important Notes
+
+- **Always use `checkpointer: true`** for worker agents (not a checkpointer instance)
+- **Parent must provide checkpointer** - The multi-agent system must have a checkpointer
+- **Unique thread IDs** - Always pass a `thread_id` in the config for conversation continuity
+
 ## Agent Builder
 
 Use the fluent builder API for complex agent definitions:
