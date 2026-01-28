@@ -121,6 +121,44 @@ export class ReActAgentBuilder {
   }
 
   /**
+   * Set the checkpointer for state persistence (optional)
+   *
+   * Can be:
+   * - A BaseCheckpointSaver instance (e.g., MemorySaver) for standalone agents
+   * - `true` to use the parent graph's checkpointer with a separate namespace (for nested graphs)
+   *
+   * Required for human-in-the-loop workflows (askHuman tool) and conversation continuity.
+   *
+   * @param checkpointer - Checkpointer instance or `true` for nested graphs
+   *
+   * @example
+   * Standalone agent with its own checkpointer:
+   * ```typescript
+   * import { MemorySaver } from '@langchain/langgraph';
+   *
+   * const agent = new ReActAgentBuilder()
+   *   .withModel(model)
+   *   .withTools(tools)
+   *   .withCheckpointer(new MemorySaver())
+   *   .build();
+   * ```
+   *
+   * @example
+   * Nested agent using parent's checkpointer (for multi-agent systems):
+   * ```typescript
+   * const agent = new ReActAgentBuilder()
+   *   .withModel(model)
+   *   .withTools(tools)
+   *   .withCheckpointer(true)  // Use parent's checkpointer with separate namespace
+   *   .build();
+   * ```
+   */
+  withCheckpointer(checkpointer: any): this {
+    this.config.checkpointer = checkpointer;
+    return this;
+  }
+
+  /**
    * Build the ReAct agent
    *
    * @returns A compiled LangGraph StateGraph
@@ -144,6 +182,7 @@ export class ReActAgentBuilder {
       maxIterations: this.config.maxIterations ?? 10,
       returnIntermediateSteps: this.config.returnIntermediateSteps ?? false,
       stopCondition: this.config.stopCondition,
+      checkpointer: this.config.checkpointer,
     };
 
     return createReActAgent(finalConfig, this.options);
