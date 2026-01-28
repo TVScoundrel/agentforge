@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.8.0] - 2026-01-28
+
 ### Removed
 - **Tool-Enabled Supervisor** (@agentforge/patterns) - Removed supervisor tool support due to fundamental technical incompatibility
   - **Why This Was Removed**: The feature had a critical design flaw - supervisors require `withStructuredOutput()` to guarantee routing decisions, but this is **fundamentally incompatible** with tool calling
@@ -48,6 +50,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - **Test Count Impact**: Removed 14 tests (integration-with-tools.test.ts and routing-with-tools.test.ts)
     - Total test count: 921 tests passing (down from 1046 in v0.6.0, but v0.7.0 had 935 before this removal)
     - All remaining tests passing with no regressions
+
+### Changed
+- **Documentation Updates** - Updated all test count references to reflect current state
+  - Updated README.md badge from 1046 to 921 tests passing
+  - Updated README.md Phase 3 count from 143 to 129 tests
+  - Updated web-search TESTING.md from 29 to 45 unit tests with detailed breakdown
+
+### Published
+- All packages published to npm registry at version 0.8.0:
+  - @agentforge/core@0.8.0
+  - @agentforge/patterns@0.8.0
+  - @agentforge/tools@0.8.0
+  - @agentforge/testing@0.8.0
+  - @agentforge/cli@0.8.0
 
 ## [0.7.0] - 2026-01-27
 
