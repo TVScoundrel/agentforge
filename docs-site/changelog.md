@@ -7,6 +7,45 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.8.1] - 2026-01-28
+
+### Fixed
+- **Nested Graph Interrupt Bug** (@agentforge/patterns) - Fixed infinite loop when worker agents use `askHuman` tool in multi-agent systems
+  - **The Bug**: Worker agents using `askHuman` would cause infinite loops - the agent would ask the same question repeatedly even after the user responded
+  - **Root Cause**: When a worker agent (nested graph) called `interrupt()`, the multi-agent system didn't properly resume the worker's checkpoint. Instead, it re-executed the worker node from the beginning
+  - **The Fix**: Implemented separate checkpoint namespaces for worker agents using LangGraph's `checkpointer: true` feature
+    - Worker nodes now generate worker-specific thread IDs (format: `{parent_thread_id}:worker:{workerId}`)
+    - ReAct agent compilation now supports `checkpointer: true` to use parent's checkpointer with separate namespace
+    - Worker agents configured to use `checkpointer: true` when created in multi-agent systems
+  - **Impact**: Worker agents can now use `askHuman` tool without causing infinite loops, enabling proper human-in-the-loop workflows in multi-agent systems
+  - **Implementation Details**:
+    - Phase 1: Updated worker node creation to pass worker-specific thread IDs
+    - Phase 2: Added `checkpointer: true` support to ReAct agent compilation
+    - Phase 3: Updated all worker agents to use `checkpointer: true`
+    - Phase 4: Enhanced type definitions to document worker checkpoint namespaces
+    - Phase 5: Validated fix with manual testing - confirmed no infinite loops
+  - **Files Modified**:
+    - `packages/patterns/src/multi-agent/utils.ts` - Worker-specific thread ID generation
+    - `packages/patterns/src/react/types.ts` - Added `checkpointer: true` support to types
+    - `packages/patterns/src/react/agent.ts` - Updated compilation to handle `checkpointer: true`
+    - `packages/patterns/src/react/builder.ts` - Added `withCheckpointer()` method
+    - `playground/src/agents/*-agent.ts` - Updated all worker agents to use `checkpointer: true`
+    - `playground/src/system/pty-agi.ts` - Pass `checkpointer: true` to all worker agents
+  - **Documentation Added**:
+    - `packages/patterns/docs/react-agent-guide.md` - Added `withCheckpointer()` method documentation
+    - `docs-site/guide/patterns/react.md` - Added "State Persistence with Checkpointer" section
+    - `docs-site/guide/patterns/multi-agent.md` - Added "Human-in-the-Loop with Checkpointers" section
+    - `docs/NESTED_GRAPH_INTERRUPT_FIX.md` - Comprehensive planning document with all implementation phases
+  - **Test Results**: All 921 tests passing ✅
+
+### Published
+- All packages published to npm registry at version 0.8.1:
+  - @agentforge/core@0.8.1
+  - @agentforge/patterns@0.8.1
+  - @agentforge/tools@0.8.1
+  - @agentforge/testing@0.8.1
+  - @agentforge/cli@0.8.1
+
 ## [0.8.0] - 2026-01-28
 
 ### Removed
@@ -862,6 +901,8 @@ This feature was removed in a later version. See [Unreleased] section for migrat
 
 ## Version History
 
+- **0.8.1** (2026-01-28) - Fixed nested graph interrupt bug - worker agents can now use askHuman without infinite loops
+- **0.8.0** (2026-01-28) - Removed tool-enabled supervisor feature (fundamental technical incompatibility)
 - **0.7.0** (2026-01-27) - Agent builder utility, implementSafe() method, DRY remediation (~2,621 lines eliminated)
 - **0.6.4** (2026-01-24) - Comprehensive structured logging system across all patterns and core components
 - **0.6.3** (2026-01-23) - Parallel routing for multi-agent pattern - route to multiple agents simultaneously

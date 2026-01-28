@@ -1,6 +1,6 @@
 {
   "name": "@agentforge/core",
-  "version": "0.8.0",
+  "version": "0.8.1",
   "description": "Core abstractions for AgentForge - production-ready deep agents framework",
   "type": "module",
   "main": "./dist/index.cjs",
