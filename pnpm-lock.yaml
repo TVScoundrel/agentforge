@@ -246,6 +246,9 @@ importers:
       '@agentforge/core':
         specifier: workspace:*
         version: link:../core
+      '@slack/web-api':
+        specifier: ^7.13.0
+        version: 7.13.0
       axios:
         specifier: ^1.7.9
         version: 1.13.2
