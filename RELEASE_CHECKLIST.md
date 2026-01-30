@@ -29,6 +29,11 @@ This checklist ensures all steps are completed before tagging and publishing a n
   - [ ] Package table versions
   - [ ] Status badge version
   - [ ] Any version-specific examples
+  - [ ] **If test count changed**: Update test count badge (line ~8)
+  - [ ] **If test/tool count changed**: Update Phase 6 features (line ~51)
+  - [ ] **If tool count changed**: Update package table tool count (line ~72)
+  - [ ] **If tool count changed**: Update Phase 6 status tool count (line ~350)
+  - [ ] **If test/tool count changed**: Update Project Metrics (lines ~367, 371)
 - [ ] Update `docs-site/.vitepress/config.ts`:
   - [ ] Version dropdown text (e.g., `text: 'v0.4.1'`)
 - [ ] Update `CHANGELOG.md`:
