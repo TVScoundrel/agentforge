@@ -1,6 +1,6 @@
 # @agentforge/tools
 
-> Production-ready tools collection for AgentForge - 70 tools for web, data, file, utility, and agent operations
+> Production-ready tools collection for AgentForge - 74 tools for web, data, file, utility, and agent operations
 
 [![npm version](https://img.shields.io/npm/v/@agentforge/tools)](https://www.npmjs.com/package/@agentforge/tools)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.9-blue)](https://www.typescriptlang.org/)
@@ -8,7 +8,7 @@
 
 ## 🎉 Status: Production Ready & Published
 
-**70 production-ready tools** | **Full TypeScript support** | **Comprehensive documentation** | **LangChain compatible**
+**74 production-ready tools** | **Full TypeScript support** | **Comprehensive documentation** | **LangChain compatible**
 
 ## 📦 Installation
 
@@ -22,9 +22,9 @@ yarn add @agentforge/tools
 
 ## 🎯 Overview
 
-This package provides **70 ready-to-use tools** organized into 5 categories:
+This package provides **74 ready-to-use tools** organized into 5 categories:
 
-- **🌐 Web Tools** (11 tools) - HTTP requests, web search, web scraping, HTML parsing, URL manipulation
+- **🌐 Web Tools** (15 tools) - HTTP requests, web search, web scraping, HTML parsing, URL manipulation, Slack integration
 - **📊 Data Tools** (18 tools) - JSON, CSV, XML processing and data transformation
 - **📁 File Tools** (18 tools) - File operations, directory management, path utilities
 - **🔧 Utility Tools** (22 tools) - Date/time, strings, math, validation
@@ -95,6 +95,13 @@ Tools for web interactions and HTTP operations.
 - **`urlValidator`** - Validate and parse URLs
 - **`urlBuilder`** - Build URLs from components
 - **`urlQueryParser`** - Parse query parameters
+
+#### Slack Tools
+- **`sendSlackMessage`** - Send messages to Slack channels
+- **`notifySlack`** - Send notifications with @mentions
+- **`getSlackChannels`** - List available Slack channels
+- **`getSlackMessages`** - Read message history from channels
+- **`createSlackTools()`** - Factory function for custom Slack configuration
 
 ### 📊 Data Tools (18 tools)
 
@@ -286,6 +293,71 @@ console.log(result.text);
 console.log(result.links);
 console.log(result.metadata);
 ```
+
+### Slack Integration Example
+
+```typescript
+import {
+  sendSlackMessage,
+  notifySlack,
+  getSlackChannels,
+  getSlackMessages,
+  createSlackTools
+} from '@agentforge/tools';
+
+// Send a simple message
+const message = await sendSlackMessage.execute({
+  channel: 'general',
+  message: 'Hello from AgentForge!'
+});
+
+// Send a notification with mentions
+const notification = await notifySlack.execute({
+  channel: 'alerts',
+  message: 'System alert: High CPU usage detected',
+  mentions: ['john', 'jane']  // Will send as: @john @jane System alert...
+});
+
+// List available channels
+const channels = await getSlackChannels.execute({
+  include_private: false  // Only public channels
+});
+console.log(channels.data?.channels);
+
+// Read message history
+const history = await getSlackMessages.execute({
+  channel: 'general',
+  limit: 50
+});
+console.log(`Found ${history.data?.count} messages`);
+
+// Custom configuration (for multiple workspaces or custom bot settings)
+const customTools = createSlackTools({
+  token: 'xoxb-your-custom-token',
+  botName: 'My Custom Bot',
+  botIcon: ':rocket:'
+});
+
+await customTools.sendMessage.execute({
+  channel: 'general',
+  message: 'Message from custom bot!'
+});
+```
+
+**Environment Setup:**
+```bash
+# Add to your .env file
+SLACK_USER_TOKEN=xoxp-your-user-token
+# OR
+SLACK_BOT_TOKEN=xoxb-your-bot-token
+```
+
+**Getting a Slack Token:**
+1. Go to [Slack API](https://api.slack.com/apps)
+2. Create a new app or select existing
+3. Add OAuth scopes: `chat:write`, `channels:read`, `channels:history`
+4. Install app to workspace
+5. Copy the token (starts with `xoxb-` for bot or `xoxp-` for user)
 
 ### Data Processing Example
 
@@ -522,12 +594,13 @@ pnpm lint
 
 ## 📊 Tool Statistics
 
-- **Total Tools**: 69
-- **Web Tools**: 11
+- **Total Tools**: 74
+- **Web Tools**: 15 (includes 4 Slack tools)
 - **Data Tools**: 18
 - **File Tools**: 18
 - **Utility Tools**: 22
-- **Lines of Code**: ~2,500
+- **Agent Tools**: 1
+- **Lines of Code**: ~3,200
 - **Full TypeScript Support**: ✅
 - **Zod Validation**: ✅
 - **LangChain Compatible**: ✅
