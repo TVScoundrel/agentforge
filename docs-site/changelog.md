@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.9.0] - 2026-01-30
+
 ### Added
 
 #### @agentforge/tools
@@ -22,6 +24,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Structured logging for debugging and monitoring
   - Tool count increased from 70 to 74 tools
   - Web Tools category increased from 11 to 15 tools
+
+### Published
+- All packages published to npm registry at version 0.9.0:
+  - @agentforge/core@0.9.0
+  - @agentforge/patterns@0.9.0
+  - @agentforge/tools@0.9.0
+  - @agentforge/testing@0.9.0
+  - @agentforge/cli@0.9.0
 
 ## [0.8.2] - 2026-01-28
 
@@ -941,6 +951,7 @@ This feature was removed in a later version. See [Unreleased] section for migrat
 
 ## Version History
 
+- **0.9.0** (2026-01-30) - Added Slack integration tools (4 new tools: sendSlackMessage, notifySlack, getSlackChannels, getSlackMessages)
 - **0.8.2** (2026-01-28) - Updated LangChain packages to latest versions, fixed test compatibility
 - **0.8.1** (2026-01-28) - Fixed nested graph interrupt bug - worker agents can now use askHuman without infinite loops
 - **0.8.0** (2026-01-28) - Removed tool-enabled supervisor feature (fundamental technical incompatibility)
