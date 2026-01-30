@@ -7,6 +7,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+#### @agentforge/tools
+- **feat: add Slack integration tools** - Four new tools for Slack workspace integration
+  - `sendSlackMessage` - Send messages to Slack channels
+  - `notifySlack` - Send notifications with @mentions to alert team members
+  - `getSlackChannels` - List available Slack channels (public and private)
+  - `getSlackMessages` - Read message history from channels
+  - Configurable via environment variables (`SLACK_USER_TOKEN` or `SLACK_BOT_TOKEN`) or programmatic configuration
+  - Factory function `createSlackTools(config)` for custom token configuration
+  - Comprehensive test coverage (23 tests)
+  - Full TypeScript support with Zod schema validation
+  - Structured logging for debugging and monitoring
+  - Tool count increased from 70 to 74 tools
+  - Web Tools category increased from 11 to 15 tools
+
 ## [0.8.2] - 2026-01-28
 
 ### Changed

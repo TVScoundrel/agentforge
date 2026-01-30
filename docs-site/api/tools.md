@@ -1,6 +1,6 @@
 # @agentforge/tools
 
-Standard tools library with 70 production-ready tools.
+Standard tools library with 74 production-ready tools.
 
 ## Installation
 
@@ -8,7 +8,7 @@ Standard tools library with 70 production-ready tools.
 pnpm add @agentforge/tools
 ```
 
-## Web Tools (11)
+## Web Tools (15)
 
 ### Web Search
 
@@ -122,6 +122,102 @@ const url = await urlBuilder.invoke({
 const params = await urlQueryParser.invoke({
   url: 'https://example.com?foo=bar&baz=qux'
 });
+```
+
+### Slack Integration
+
+```typescript
+import {
+  sendSlackMessage,
+  notifySlack,
+  getSlackChannels,
+  getSlackMessages,
+  createSlackTools
+} from '@agentforge/tools';
+
+// Send a message to a Slack channel
+const result = await sendSlackMessage.invoke({
+  channel: '#general',
+  text: 'Hello from AgentForge! 👋'
+});
+
+// Send a notification with @mentions
+const notification = await notifySlack.invoke({
+  channel: '#alerts',
+  text: 'Deployment completed successfully!',
+  mentions: ['@john', '@jane']
+});
+
+// List available channels
+const channels = await getSlackChannels.invoke({
+  includePrivate: true
+});
+
+console.log(`Found ${channels.channels.length} channels`);
+channels.channels.forEach(ch => {
+  console.log(`${ch.name} (${ch.memberCount} members)`);
+});
+
+// Read message history
+const messages = await getSlackMessages.invoke({
+  channel: '#general',
+  limit: 10
+});
+
+console.log(`Retrieved ${messages.messages.length} messages`);
+messages.messages.forEach(msg => {
+  console.log(`[${msg.timestamp}] ${msg.user}: ${msg.text}`);
+});
+
+// Custom configuration with factory function
+const customSlackTools = createSlackTools({
+  token: 'xoxb-your-custom-token'
+});
+
+// Use custom tools
+const customResult = await customSlackTools[0].invoke({
+  channel: '#custom',
+  text: 'Using custom token configuration'
+});
+```
+
+**Features:**
+- Send messages to any Slack channel
+- Notify team members with @mentions
+- List public and private channels
+- Read message history with pagination
+- Configurable via environment variables or programmatic configuration
+- Full TypeScript support with Zod validation
+- Structured logging for debugging
+
+**Environment Setup:**
+```bash
+# Add to your .env file
+# Use either a User Token or Bot Token
+SLACK_USER_TOKEN=xoxp-your-user-token-here
+# OR
+SLACK_BOT_TOKEN=xoxb-your-bot-token-here
+```
+
+**Getting a Slack Token:**
+1. Go to [Slack API Apps](https://api.slack.com/apps)
+2. Create a new app or select an existing one
+3. Navigate to "OAuth & Permissions"
+4. Add required scopes:
+   - **User Token Scopes**: `channels:read`, `channels:history`, `chat:write`, `groups:read`, `groups:history`
+   - **Bot Token Scopes**: `channels:read`, `channels:history`, `chat:write`, `groups:read`, `groups:history`
+5. Install the app to your workspace
+6. Copy the token (starts with `xoxp-` for user tokens or `xoxb-` for bot tokens)
+
+**Programmatic Configuration:**
+```typescript
+// Override environment variables with custom configuration
+const slackTools = createSlackTools({
+  token: 'xoxb-your-custom-token'
+});
+
+// Use the custom tools
+const [sendMessage, notify, getChannels, getMessages] = slackTools;
 ```
 
 ## Data Tools (18)
