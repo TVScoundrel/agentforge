@@ -66,7 +66,7 @@ logger.debug('Processing iteration', { iteration: 3, toolsExecuted: 1 });
 logger.info('Agent invocation complete', { duration: 1234, success: true });
 ```
 
-Format: `agentforge:<package>:<module>:<component>` (see [LOGGING_STANDARDS.md](../docs/LOGGING_STANDARDS.md))
+Format: `agentforge:<package>:<module>:<component>` (see docs/LOGGING_STANDARDS.md)
 
 ### Tool Creation (Fluent Builder API)
 ```typescript
@@ -124,18 +124,33 @@ const state = createStateBuilder().messages([...]).build();
 
 ### Common Pitfalls
 - **DON'T** run `pnpm install` in individual packages (breaks workspace linking)
-- **DON'T** use `console.log` - use logger (see [LOGGING_STANDARDS.md](../docs/LOGGING_STANDARDS.md))
+- **DON'T** use `console.log` - use logger (see docs/LOGGING_STANDARDS.md)
 - **DO** rebuild packages after changes: `pnpm -r build` or individual `pnpm build`
 - **DO** use `.js` in imports even for `.ts` files (ESM/NodeNext requirement)
 - **DO** run tests from root (`pnpm test`) to use workspace config
 
 ## Key Files
 
-- **Architecture**: [FRAMEWORK_DESIGN.md](../docs/FRAMEWORK_DESIGN.md) - Design decisions, component overview
-- **Monorepo**: [MONOREPO_SETUP.md](../docs/MONOREPO_SETUP.md) - Workspace structure, build system
-- **Learning**: [CODEBASE_LEARNING_GUIDE.md](../docs/CODEBASE_LEARNING_GUIDE.md) - Structured onboarding
-- **Logging**: [LOGGING_STANDARDS.md](../docs/LOGGING_STANDARDS.md) - Logger naming, levels, examples
+- **Architecture**: docs/FRAMEWORK_DESIGN.md - Design decisions, component overview
+- **Monorepo**: docs/MONOREPO_SETUP.md - Workspace structure, build system
+- **Learning**: docs/CODEBASE_LEARNING_GUIDE.md - Structured onboarding
+- **Logging**: docs/LOGGING_STANDARDS.md - Logger naming, levels, examples
+- **Release Process**: RELEASE_CHECKLIST.md - Step-by-step release checklist
 - **Examples**: `packages/*/examples/`, `examples/applications/` - Working implementations
+
+## Optional AI Assistant Files (Local, Not Git-Tracked)
+
+The `.ai/` folder may contain additional process documentation for AI assistants. **This folder is gitignored and may not exist in all clones.** If present, it contains:
+
+- **`.ai/RELEASE_PROCESS.md`** - Detailed release process guide for AI assistants (when asked to "do a release")
+  - Step-by-step instructions with script locations
+  - Task management templates
+  - Common mistakes to avoid
+  - Quick checklists for validation
+- **`.ai/PROJECT_OVERVIEW.md`** - High-level project context
+- **`.ai/LOGGING_STRATEGY.md`** - Logging implementation strategy
+
+**When referencing these files**: Always check if they exist first. If missing, fall back to the git-tracked documentation in `docs/` and `RELEASE_CHECKLIST.md`.
 
 ## External Dependencies
 
