@@ -7,6 +7,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.9.1] - 2026-02-02
+
+### Changed
+- **@agentforge/core**: Refactored LangGraph utilities organization - moved `retry`, `error-handler`, and `timeout` from `langgraph/patterns/` to `langgraph/middleware/` for better semantic clarity and organization
+
+### Added
+- **project**: Added `.github/copilot-instructions.md` to provide comprehensive guidance for AI coding agents working with the AgentForge framework
+
+### Published
+- All packages published to npm registry at version 0.9.1:
+  - @agentforge/core@0.9.1
+  - @agentforge/patterns@0.9.1
+  - @agentforge/tools@0.9.1
+  - @agentforge/testing@0.9.1
+  - @agentforge/cli@0.9.1
+
 ## [0.9.0] - 2026-01-30
 
 ### Added
