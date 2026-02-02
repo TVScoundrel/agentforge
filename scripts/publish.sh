@@ -32,12 +32,19 @@ print_error() {
 # Check if logged in to npm
 print_step "Checking npm authentication..."
 if ! npm whoami > /dev/null 2>&1; then
-    print_error "You are not logged in to npm. Please run 'npm login' first."
-    exit 1
+    print_warning "You are not logged in to npm. Starting login process..."
+    echo ""
+    if npm login; then
+        NPM_USER=$(npm whoami)
+        print_success "Successfully logged in as: $NPM_USER"
+    else
+        print_error "npm login failed. Please try again manually with 'npm login'"
+        exit 1
+    fi
+else
+    NPM_USER=$(npm whoami)
+    print_success "Already logged in as: $NPM_USER"
 fi
-
-NPM_USER=$(npm whoami)
-print_success "Logged in as: $NPM_USER"
 
 # Confirm before publishing
 echo ""
