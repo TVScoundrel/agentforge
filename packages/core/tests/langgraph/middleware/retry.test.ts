@@ -1,5 +1,5 @@
 import { describe, it, expect, vi } from 'vitest';
-import { withRetry } from '../../../src/langgraph/patterns/retry';
+import { withRetry } from '../../../src/langgraph/middleware/retry';
 
 describe('Retry Pattern', () => {
   interface TestState {

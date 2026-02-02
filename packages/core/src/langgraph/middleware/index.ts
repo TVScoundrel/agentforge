@@ -59,9 +59,9 @@ export {
 } from './presets.js';
 
 // Re-export existing middleware from patterns
-export { withRetry, type RetryOptions } from '../patterns/retry.js';
-export { withErrorHandler, type ErrorHandlerOptions } from '../patterns/error-handler.js';
-export { withTimeout, type TimeoutOptions } from '../patterns/timeout.js';
+export { withRetry, type RetryOptions, type BackoffStrategy } from './retry.js';
+export { withErrorHandler, type ErrorHandlerOptions } from './error-handler.js';
+export { withTimeout, TimeoutError, type TimeoutOptions } from './timeout.js';
 
 // Re-export observability middleware
 export { withMetrics, type MetricsNodeOptions } from '../observability/metrics.js';

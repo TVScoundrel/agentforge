@@ -47,7 +47,7 @@ export {
   type BackoffStrategy,
   type ErrorHandlerOptions,
   type TimeoutOptions,
-} from './patterns/index.js';
+} from './middleware/index.js';
 
 export {
   createMemoryCheckpointer,

@@ -1,5 +1,5 @@
 import { describe, it, expect, vi } from 'vitest';
-import { withErrorHandler } from '../../../src/langgraph/patterns/error-handler';
+import { withErrorHandler } from '../../../src/langgraph/middleware/error-handler';
 
 describe('Error Handler Pattern', () => {
   interface TestState {

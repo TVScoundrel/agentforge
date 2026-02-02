@@ -1,5 +1,5 @@
 import { describe, it, expect, vi } from 'vitest';
-import { withTimeout, TimeoutError } from '../../../src/langgraph/patterns/timeout';
+import { withTimeout, TimeoutError } from '../../../src/langgraph/middleware/timeout';
 
 describe('Timeout Pattern', () => {
   interface TestState {

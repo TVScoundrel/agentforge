@@ -8,9 +8,9 @@
 
 import type { NodeFunction, SimpleMiddleware } from './types.js';
 import { compose } from './compose.js';
-import { withRetry as _withRetry, type RetryOptions } from '../patterns/retry.js';
-import { withErrorHandler as _withErrorHandler, type ErrorHandlerOptions } from '../patterns/error-handler.js';
-import { withTimeout as _withTimeout, type TimeoutOptions } from '../patterns/timeout.js';
+import { withRetry as _withRetry, type RetryOptions } from './retry.js';
+import { withErrorHandler as _withErrorHandler, type ErrorHandlerOptions } from './error-handler.js';
+import { withTimeout as _withTimeout, type TimeoutOptions } from './timeout.js';
 import { withMetrics as _withMetrics, type MetricsNodeOptions } from '../observability/metrics.js';
 import { withTracing as _withTracing, type TracingOptions } from '../observability/langsmith.js';
 import { createLogger, LogLevel, type Logger } from '../observability/logger.js';
