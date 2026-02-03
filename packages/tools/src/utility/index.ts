@@ -1,11 +1,10 @@
 /**
  * Utility Tools
- * 
+ *
  * General utility tools for common operations.
  */
 
-export * from './date-time.js';
-export * from './string-utilities.js';
-export * from './math-operations.js';
-export * from './validation.js';
-
+export * from './date-time/index.js';
+export * from './string/index.js';
+export * from './math/index.js';
+export * from './validation/index.js';
