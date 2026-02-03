@@ -7,6 +7,52 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.10.1] - 2026-02-03
+
+### Changed
+
+#### @agentforge/tools
+- **refactor: Complete tools directory structure migration** - Internal refactoring for better maintainability
+  - Completed comprehensive refactoring of 72 tools across 16 monolithic files into organized directory structures
+  - All tool categories now follow consistent directory pattern with `index.ts`, `types.ts`, and `tools/` subdirectory
+  - Added 17 factory functions for programmatic configuration (`createSlackTools()`, `createHttpTools()`, etc.)
+  - **No breaking changes** - All public exports remain identical, fully backward compatible
+  - **Benefits**:
+    - Improved modularity - each tool in its own file (50-150 lines vs 100-600 lines)
+    - Better maintainability - changes to one tool don't affect others
+    - Enhanced discoverability - clear directory structure makes tools easy to find
+    - Consistent patterns - all 16 tool categories follow the same structure
+    - Type safety - shared types in `types.ts` ensure consistency
+    - Testability - each tool can be tested independently
+  - **Refactored Categories**:
+    - Slack Tools (4 tools) - `slack.ts` → `slack/` directory
+    - HTTP Tools (3 tools) - `http-client.ts` → `http/` directory
+    - Scraper Tools (3 tools) - `scraper.ts` → `scraper/` directory
+    - HTML Parser Tools (3 tools) - `html-parser.ts` → `html-parser/` directory
+    - URL Validator Tools (3 tools) - `url-validator.ts` → `url-validator/` directory
+    - CSV Tools (4 tools) - `csv-parser.ts` → `csv/` directory
+    - JSON Tools (5 tools) - `json-processor.ts` → `json/` directory
+    - XML Tools (4 tools) - `xml-parser.ts` → `xml/` directory
+    - Transformer Tools (6 tools) - `transformer.ts` → `transformer/` directory
+    - File Operations (5 tools) - `file-operations.ts` → `operations/` directory
+    - Directory Operations (4 tools) - `directory-operations.ts` → `directory/` directory
+    - Path Utilities (8 tools) - `path-utilities.ts` → `path/` directory
+    - Date/Time Tools (5 tools) - `date-time.ts` → `date-time/` directory
+    - String Utilities (7 tools) - `string-utilities.ts` → `string/` directory
+    - Math Operations (4 tools) - `math-operations.ts` → `math/` directory
+    - Validation Tools (6 tools) - `validation.ts` → `validation/` directory
+  - **Documentation**: Updated README with directory structure explanation and factory function examples
+  - **Test Results**: All 975 tests passing ✅
+  - **Build**: Successful ✅
+
+### Published
+- All packages published to npm registry at version 0.10.1:
+  - @agentforge/core@0.10.1
+  - @agentforge/patterns@0.10.1
+  - @agentforge/tools@0.10.1
+  - @agentforge/testing@0.10.1
+  - @agentforge/cli@0.10.1
+
 ## [0.10.0] - 2026-02-03
 
 ### Added
