@@ -1,8 +1,32 @@
 /**
  * Confluence Integration Tools
  * Real integration with Atlassian Confluence for knowledge base access
- * 
+ *
  * @packageDocumentation
+ *
+ * @example
+ * ```ts
+ * // Using environment variables
+ * import { confluenceTools } from '@agentforge/tools';
+ *
+ * // ATLASSIAN_API_KEY, ATLASSIAN_EMAIL, ATLASSIAN_SITE_URL must be set
+ * const result = await confluenceTools[0].execute({
+ *   query: 'space=AI AND type=page'
+ * });
+ *
+ * // Using factory function with custom config
+ * import { createConfluenceTools } from '@agentforge/tools';
+ *
+ * const tools = createConfluenceTools({
+ *   apiKey: 'your-api-key',
+ *   email: 'your-email@example.com',
+ *   siteUrl: 'https://your-domain.atlassian.net'
+ * });
+ *
+ * const result = await tools.searchConfluence.execute({
+ *   query: 'payment processing'
+ * });
+ * ```
  */
 
 import { toolBuilder, ToolCategory, createLogger, LogLevel } from "@agentforge/core";
@@ -12,6 +36,64 @@ import axios from "axios";
 // Create logger for Confluence tools
 const logLevel = (process.env.LOG_LEVEL?.toLowerCase() as LogLevel) || LogLevel.INFO;
 const logger = createLogger('[tools:confluence]', { level: logLevel });
+
+/**
+ * Configuration options for Confluence tools
+ */
+export interface ConfluenceToolsConfig {
+  /**
+   * Atlassian API key
+   * If not provided, will fall back to ATLASSIAN_API_KEY env var
+   */
+  apiKey?: string;
+
+  /**
+   * Atlassian account email
+   * If not provided, will fall back to ATLASSIAN_EMAIL env var
+   */
+  email?: string;
+
+  /**
+   * Atlassian site URL (e.g., 'https://your-domain.atlassian.net')
+   * If not provided, will fall back to ATLASSIAN_SITE_URL env var
+   */
+  siteUrl?: string;
+
+  /**
+   * Custom log level for Confluence tools
+   * @default LogLevel.INFO
+   */
+  logLevel?: LogLevel;
+}
+
+/**
+ * Configuration options for Confluence tools
+ */
+export interface ConfluenceToolsConfig {
+  /**
+   * Atlassian API key
+   * If not provided, will fall back to ATLASSIAN_API_KEY env var
+   */
+  apiKey?: string;
+
+  /**
+   * Atlassian account email
+   * If not provided, will fall back to ATLASSIAN_EMAIL env var
+   */
+  email?: string;
+
+  /**
+   * Atlassian site URL (e.g., 'https://your-domain.atlassian.net')
+   * If not provided, will fall back to ATLASSIAN_SITE_URL env var
+   */
+  siteUrl?: string;
+
+  /**
+   * Custom log level for Confluence tools
+   * @default LogLevel.INFO
+   */
+  logLevel?: LogLevel;
+}
 
 // Helper function to get configuration from environment (read at runtime)
 function getConfig() {
@@ -602,4 +684,79 @@ export const confluenceTools = [
   updateConfluencePage,
   archiveConfluencePage,
 ];
+
+/**
+ * Create Confluence tools with custom configuration
+ *
+ * This factory function allows you to create Confluence tools with programmatic configuration
+ * instead of relying solely on environment variables.
+ *
+ * @param config - Optional configuration for Confluence tools
+ * @returns Object containing all 7 Confluence tools configured with the provided settings
+ *
+ * @example
+ * ```ts
+ * // Create tools with custom credentials
+ * const tools = createConfluenceTools({
+ *   apiKey: 'your-api-key',
+ *   email: 'your-email@example.com',
+ *   siteUrl: 'https://your-domain.atlassian.net'
+ * });
+ *
+ * // Use the tools
+ * const result = await tools.searchConfluence.execute({
+ *   query: 'payment processing'
+ * });
+ * ```
+ *
+ * @example
+ * ```ts
+ * // Create tools with custom log level
+ * const tools = createConfluenceTools({
+ *   logLevel: LogLevel.DEBUG
+ * });
+ * ```
+ */
+export function createConfluenceTools(config: ConfluenceToolsConfig = {}) {
+  const {
+    apiKey,
+    email,
+    siteUrl,
+    logLevel: customLogLevel,
+  } = config;
+
+  // Validate configuration early if provided
+  if (apiKey || email || siteUrl) {
+    const ATLASSIAN_API_KEY = apiKey || process.env.ATLASSIAN_API_KEY || "";
+    const ATLASSIAN_EMAIL = email || process.env.ATLASSIAN_EMAIL || "";
+    const ATLASSIAN_SITE_URL = (siteUrl || process.env.ATLASSIAN_SITE_URL || "").replace(/\/$/, "");
+
+    if (!ATLASSIAN_API_KEY || !ATLASSIAN_EMAIL || !ATLASSIAN_SITE_URL) {
+      throw new Error(
+        "Confluence credentials not configured. Set ATLASSIAN_API_KEY, ATLASSIAN_EMAIL, and ATLASSIAN_SITE_URL in config or environment variables."
+      );
+    }
+
+    // Store config in environment for tools to use
+    if (apiKey) process.env.ATLASSIAN_API_KEY = apiKey;
+    if (email) process.env.ATLASSIAN_EMAIL = email;
+    if (siteUrl) process.env.ATLASSIAN_SITE_URL = siteUrl;
+  }
+
+  // Set custom log level if provided
+  if (customLogLevel) {
+    process.env.LOG_LEVEL = customLogLevel;
+  }
+
+  // Return all tools - they will use the configured environment variables
+  return {
+    searchConfluence,
+    getConfluencePage,
+    listConfluenceSpaces,
+    getSpacePages,
+    createConfluencePage,
+    updateConfluencePage,
+    archiveConfluencePage,
+  };
+}
 
