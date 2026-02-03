@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.10.0] - 2026-02-03
+
 ### Added
 
 #### @agentforge/tools
@@ -25,6 +27,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Structured logging with `[[tools:confluence]]` prefix for debugging and monitoring
   - Tool count increased from 74 to 81 tools
   - Web Tools category increased from 15 to 22 tools
+
+### Published
+- All packages published to npm registry at version 0.10.0:
+  - @agentforge/core@0.10.0
+  - @agentforge/patterns@0.10.0
+  - @agentforge/tools@0.10.0
+  - @agentforge/testing@0.10.0
+  - @agentforge/cli@0.10.0
 
 ## [0.9.1] - 2026-02-02
 

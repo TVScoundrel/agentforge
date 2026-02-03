@@ -5,7 +5,7 @@
 [![GitHub](https://img.shields.io/badge/GitHub-TVScoundrel%2Fagentforge-blue?logo=github)](https://github.com/TVScoundrel/agentforge)
 [![Documentation](https://img.shields.io/badge/docs-live-brightgreen?logo=readthedocs)](https://tvscoundrel.github.io/agentforge/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.9-blue?logo=typescript)](https://www.typescriptlang.org/)
-[![Tests](https://img.shields.io/badge/tests-943%20passing-success)](./packages)
+[![Tests](https://img.shields.io/badge/tests-975%20passing-success)](./packages)
 [![Coverage](https://img.shields.io/badge/CLI%20coverage-98.11%25-brightgreen)](./packages/cli)
 [![License](https://img.shields.io/badge/license-MIT-green)](./LICENSE)
 
@@ -46,9 +46,9 @@
 **Phase 6: Developer Experience**
 - 🎯 **CLI Tool** - Project scaffolding, development, testing, deployment (156 tests, 98.11% coverage)
 - 🧪 **Testing Utilities** - Mocks, assertions, fixtures for agent testing
-- 📦 **Standard Tools** - 74 production-ready tools across 5 categories
+- 📦 **Standard Tools** - 81 production-ready tools across 5 categories
 - 🔒 **Type Safety** - Full TypeScript support with Zod schemas
-- 📚 **Comprehensive Tests** - 943 tests passing across all packages
+- 📚 **Comprehensive Tests** - 975 tests passing across all packages
 
 **Phase 7: Documentation**
 - 📖 **Complete Documentation** - 34 pages, 10,000+ lines of guides, tutorials, and API docs
@@ -67,11 +67,11 @@ All packages are **published on npm** and ready for production use!
 
 | Package | Version | Description | npm |
 |---------|---------|-------------|-----|
-| [@agentforge/core](./packages/core) | 0.9.1 | Core abstractions (tools, registry, LangGraph utilities, middleware, streaming, resources, monitoring) | [![npm](https://img.shields.io/npm/v/@agentforge/core)](https://www.npmjs.com/package/@agentforge/core) |
-| [@agentforge/patterns](./packages/patterns) | 0.9.1 | Agent patterns (ReAct, Plan-Execute, Reflection, Multi-Agent) | [![npm](https://img.shields.io/npm/v/@agentforge/patterns)](https://www.npmjs.com/package/@agentforge/patterns) |
-| [@agentforge/tools](./packages/tools) | 0.9.1 | Standard tool library (74 production-ready tools) | [![npm](https://img.shields.io/npm/v/@agentforge/tools)](https://www.npmjs.com/package/@agentforge/tools) |
-| [@agentforge/testing](./packages/testing) | 0.9.1 | Testing utilities (mocks, assertions, fixtures) | [![npm](https://img.shields.io/npm/v/@agentforge/testing)](https://www.npmjs.com/package/@agentforge/testing) |
-| [@agentforge/cli](./packages/cli) | 0.9.1 | CLI tool (156 tests, 98.11% coverage) | [![npm](https://img.shields.io/npm/v/@agentforge/cli)](https://www.npmjs.com/package/@agentforge/cli) |
+| [@agentforge/core](./packages/core) | 0.10.0 | Core abstractions (tools, registry, LangGraph utilities, middleware, streaming, resources, monitoring) | [![npm](https://img.shields.io/npm/v/@agentforge/core)](https://www.npmjs.com/package/@agentforge/core) |
+| [@agentforge/patterns](./packages/patterns) | 0.10.0 | Agent patterns (ReAct, Plan-Execute, Reflection, Multi-Agent) | [![npm](https://img.shields.io/npm/v/@agentforge/patterns)](https://www.npmjs.com/package/@agentforge/patterns) |
+| [@agentforge/tools](./packages/tools) | 0.10.0 | Standard tool library (81 production-ready tools) | [![npm](https://img.shields.io/npm/v/@agentforge/tools)](https://www.npmjs.com/package/@agentforge/tools) |
+| [@agentforge/testing](./packages/testing) | 0.10.0 | Testing utilities (mocks, assertions, fixtures) | [![npm](https://img.shields.io/npm/v/@agentforge/testing)](https://www.npmjs.com/package/@agentforge/testing) |
+| [@agentforge/cli](./packages/cli) | 0.10.0 | CLI tool (156 tests, 98.11% coverage) | [![npm](https://img.shields.io/npm/v/@agentforge/cli)](https://www.npmjs.com/package/@agentforge/cli) |
 
 ### Installation
 
@@ -311,7 +311,7 @@ pnpm clean          # Clean all build artifacts
 
 ## 🎯 Current Status
 
-**🎉 AgentForge v0.9.1 - Published on npm and Production-Ready!**
+**🎉 AgentForge v0.10.0 - Published on npm and Production-Ready!**
 
 **All 7 Phases Complete:**
 
