@@ -725,8 +725,8 @@ export function createConfluenceTools(config: ConfluenceToolsConfig = {}) {
     logLevel: customLogLevel,
   } = config;
 
-  // Validate configuration early if provided
-  if (apiKey || email || siteUrl) {
+  // Create closure for getting configured auth credentials
+  function getConfiguredAuth() {
     const ATLASSIAN_API_KEY = apiKey || process.env.ATLASSIAN_API_KEY || "";
     const ATLASSIAN_EMAIL = email || process.env.ATLASSIAN_EMAIL || "";
     const ATLASSIAN_SITE_URL = (siteUrl || process.env.ATLASSIAN_SITE_URL || "").replace(/\/$/, "");
@@ -737,18 +737,553 @@ export function createConfluenceTools(config: ConfluenceToolsConfig = {}) {
       );
     }
 
-    // Store config in environment for tools to use
-    if (apiKey) process.env.ATLASSIAN_API_KEY = apiKey;
-    if (email) process.env.ATLASSIAN_EMAIL = email;
-    if (siteUrl) process.env.ATLASSIAN_SITE_URL = siteUrl;
+    return { ATLASSIAN_API_KEY, ATLASSIAN_EMAIL, ATLASSIAN_SITE_URL };
   }
 
-  // Set custom log level if provided
-  if (customLogLevel) {
-    process.env.LOG_LEVEL = customLogLevel;
+  // Create closure for getting configured auth header
+  function getConfiguredAuthHeader() {
+    const { ATLASSIAN_API_KEY, ATLASSIAN_EMAIL } = getConfiguredAuth();
+    const auth = Buffer.from(`${ATLASSIAN_EMAIL}:${ATLASSIAN_API_KEY}`).toString("base64");
+    return `Basic ${auth}`;
   }
 
-  // Return all tools - they will use the configured environment variables
+  // Create logger with custom log level if provided
+  const toolLogger = customLogLevel
+    ? createLogger('tools:confluence', { level: customLogLevel })
+    : logger;
+
+  // Build searchConfluence tool with configured auth/logger
+  const searchConfluence = toolBuilder()
+    .name("search-confluence")
+    .description("Search for pages in Confluence using keywords or CQL (Confluence Query Language). Returns matching pages with titles, IDs, and excerpts.")
+    .category(ToolCategory.WEB)
+    .tag("confluence")
+    .tag("search")
+    .tag("knowledge-base")
+    .usageNotes("Use this to find relevant documentation, policies, or information in Confluence. You can search by keywords or use CQL for advanced queries (e.g., 'space=AI AND type=page'). Use get-confluence-page to retrieve full content of specific pages.")
+    .suggests(["get-confluence-page"])
+    .schema(z.object({
+      query: z.string().describe("Search query or CQL expression (e.g., 'payment processing' or 'space=BL3 AND title~payment')"),
+      limit: z.number().optional().describe("Maximum number of results to return (default: 10, max: 25)"),
+    }))
+    .implement(async ({ query, limit = 10 }) => {
+      toolLogger.info('search-confluence called', { query, limit });
+
+      try {
+        const { ATLASSIAN_SITE_URL } = getConfiguredAuth();
+        const response = await axios.get(`${ATLASSIAN_SITE_URL}/wiki/rest/api/content/search`, {
+          headers: {
+            Authorization: getConfiguredAuthHeader(),
+            Accept: "application/json",
+          },
+          params: {
+            cql: query,
+            limit: Math.min(limit, 25),
+            expand: "space,version",
+          },
+        });
+
+        const { ATLASSIAN_SITE_URL: siteUrl } = getConfiguredAuth();
+        const results = response.data.results.map((page: any) => ({
+          id: page.id,
+          title: page.title,
+          type: page.type,
+          space: page.space?.name || "Unknown",
+          spaceKey: page.space?.key || "",
+          url: `${siteUrl}/wiki${page._links.webui}`,
+          lastModified: page.version?.when || "",
+        }));
+
+        // IMPORTANT: Log when search returns no results - this is a valid outcome!
+        if (results.length === 0) {
+          toolLogger.warn('search-confluence returned NO RESULTS - this is a valid outcome, agent should not retry', {
+            query,
+            limit,
+            totalSize: response.data.totalSize
+          });
+        } else {
+          toolLogger.info('search-confluence result', {
+            query,
+            resultCount: results.length,
+            totalSize: response.data.totalSize,
+            titles: results.map((r: any) => r.title).slice(0, 3) // Log first 3 titles
+          });
+        }
+
+        return JSON.stringify({
+          success: true,
+          count: results.length,
+          total: response.data.totalSize,
+          results,
+        });
+      } catch (error: any) {
+        toolLogger.error('search-confluence error', {
+          query,
+          error: error.response?.data?.message || error.message,
+          status: error.response?.status
+        });
+
+        return JSON.stringify({
+          success: false,
+          error: error.response?.data?.message || error.message,
+        });
+      }
+    })
+    .build();
+
+  // Build getConfluencePage tool with configured auth/logger
+  const getConfluencePage = toolBuilder()
+    .name("get-confluence-page")
+    .description("Get the full content of a specific Confluence page by its ID. Returns page title, content, metadata, and URL.")
+    .category(ToolCategory.WEB)
+    .tag("confluence")
+    .tag("page")
+    .tag("content")
+    .usageNotes("Use this after search-confluence to retrieve the full content of a specific page. The page_id can be found in search results.")
+    .follows(["search-confluence"])
+    .schema(z.object({
+      page_id: z.string().describe("The Confluence page ID (e.g., '123456')"),
+    }))
+    .implement(async ({ page_id }) => {
+      toolLogger.info('get-confluence-page called', { page_id });
+
+      try {
+        const { ATLASSIAN_SITE_URL } = getConfiguredAuth();
+        const response = await axios.get(`${ATLASSIAN_SITE_URL}/wiki/rest/api/content/${page_id}`, {
+          headers: {
+            Authorization: getConfiguredAuthHeader(),
+            Accept: "application/json",
+          },
+          params: {
+            expand: "body.storage,space,version,history",
+          },
+        });
+
+        const page = response.data;
+
+        toolLogger.info('get-confluence-page result', {
+          page_id,
+          title: page.title,
+          space: page.space?.name,
+          contentLength: page.body?.storage?.value?.length || 0
+        });
+
+        return JSON.stringify({
+          success: true,
+          page: {
+            id: page.id,
+            title: page.title,
+            type: page.type,
+            space: page.space?.name || "Unknown",
+            spaceKey: page.space?.key || "",
+            content: page.body?.storage?.value || "",
+            url: `${ATLASSIAN_SITE_URL}/wiki${page._links.webui}`,
+            created: page.history?.createdDate || "",
+            lastModified: page.version?.when || "",
+            version: page.version?.number || 1,
+          },
+        });
+      } catch (error: any) {
+        toolLogger.error('get-confluence-page error', {
+          page_id,
+          error: error.response?.data?.message || error.message,
+          status: error.response?.status
+        });
+
+        return JSON.stringify({
+          success: false,
+          error: error.response?.data?.message || error.message,
+        });
+      }
+    })
+    .build();
+
+  // Build listConfluenceSpaces tool with configured auth/logger
+  const listConfluenceSpaces = toolBuilder()
+    .name("list-confluence-spaces")
+    .description("List all available Confluence spaces. Returns space names, keys, types, and descriptions to help identify where to search for information.")
+    .category(ToolCategory.WEB)
+    .tag("confluence")
+    .tag("spaces")
+    .tag("list")
+    .usageNotes("Use this first to discover available spaces before searching. Helps narrow down searches to specific areas (e.g., 'AI', 'BL3', 'Finance').")
+    .follows(["search-confluence"])
+    .schema(z.object({
+      limit: z.number().optional().describe("Maximum number of spaces to return (default: 25)"),
+    }))
+    .implement(async ({ limit = 25 }) => {
+      toolLogger.info('list-confluence-spaces called', { limit });
+
+      try {
+        const { ATLASSIAN_SITE_URL } = getConfiguredAuth();
+        const response = await axios.get(`${ATLASSIAN_SITE_URL}/wiki/rest/api/space`, {
+          headers: {
+            Authorization: getConfiguredAuthHeader(),
+            Accept: "application/json",
+          },
+          params: {
+            limit,
+          },
+        });
+
+        const spaces = response.data.results.map((space: any) => ({
+          key: space.key,
+          name: space.name,
+          type: space.type,
+          description: space.description?.plain?.value || "",
+          url: `${ATLASSIAN_SITE_URL}/wiki${space._links.webui}`,
+        }));
+
+        toolLogger.info('list-confluence-spaces result', {
+          spaceCount: spaces.length,
+          spaceKeys: spaces.map((s: any) => s.key).slice(0, 5) // Log first 5 space keys
+        });
+
+        return JSON.stringify({
+          success: true,
+          count: spaces.length,
+          spaces,
+        });
+      } catch (error: any) {
+        toolLogger.error('list-confluence-spaces error', {
+          error: error.response?.data?.message || error.message,
+          status: error.response?.status
+        });
+
+        return JSON.stringify({
+          success: false,
+          error: error.response?.data?.message || error.message,
+        });
+      }
+    })
+    .build();
+
+  // Build getSpacePages tool with configured auth/logger
+  const getSpacePages = toolBuilder()
+    .name("get-space-pages")
+    .description("Get all pages from a specific Confluence space by space key. Useful for browsing content in a particular area.")
+    .category(ToolCategory.WEB)
+    .tag("confluence")
+    .tag("space")
+    .tag("pages")
+    .usageNotes("Use this to explore all pages in a specific space. Get the space key from list-confluence-spaces first.")
+    .requires(["list-confluence-spaces"])
+    .schema(z.object({
+      space_key: z.string().describe("The space key (e.g., 'AI', 'BL3', 'FIN')"),
+      limit: z.number().optional().describe("Maximum number of pages to return (default: 25)"),
+    }))
+    .implement(async ({ space_key, limit = 25 }) => {
+      toolLogger.info('get-space-pages called', { space_key, limit });
+
+      try {
+        const { ATLASSIAN_SITE_URL } = getConfiguredAuth();
+        const response = await axios.get(`${ATLASSIAN_SITE_URL}/wiki/rest/api/content`, {
+          headers: {
+            Authorization: getConfiguredAuthHeader(),
+            Accept: "application/json",
+          },
+          params: {
+            spaceKey: space_key,
+            type: "page",
+            limit,
+            expand: "version",
+          },
+        });
+
+        const pages = response.data.results.map((page: any) => ({
+          id: page.id,
+          title: page.title,
+          url: `${ATLASSIAN_SITE_URL}/wiki${page._links.webui}`,
+          lastModified: page.version?.when || "",
+        }));
+
+        // Log when no pages found - this is a valid outcome!
+        if (pages.length === 0) {
+          toolLogger.warn('get-space-pages returned NO PAGES - this is a valid outcome, agent should not retry', {
+            space_key,
+            limit
+          });
+        } else {
+          toolLogger.info('get-space-pages result', {
+            space_key,
+            pageCount: pages.length,
+            titles: pages.map((p: any) => p.title).slice(0, 3) // Log first 3 titles
+          });
+        }
+
+        return JSON.stringify({
+          success: true,
+          space: space_key,
+          count: pages.length,
+          pages,
+        });
+      } catch (error: any) {
+        toolLogger.error('get-space-pages error', {
+          space_key,
+          error: error.response?.data?.message || error.message,
+          status: error.response?.status
+        });
+
+        return JSON.stringify({
+          success: false,
+          error: error.response?.data?.message || error.message,
+        });
+      }
+    })
+    .build();
+
+  // Build createConfluencePage tool with configured auth/logger
+  const createConfluencePage = toolBuilder()
+    .name("create-confluence-page")
+    .description("Create a new page in a Confluence space. Requires space key, page title, and content (in HTML storage format).")
+    .category(ToolCategory.WEB)
+    .tag("confluence")
+    .tag("create")
+    .tag("write")
+    .usageNotes("Use this to create new documentation pages. Content should be in Confluence storage format (HTML). Get the space key from list-confluence-spaces first. Be mindful of creating duplicate pages.")
+    .requires(["list-confluence-spaces"])
+    .schema(z.object({
+      space_key: z.string().describe("The space key where the page will be created (e.g., 'AI', 'BL3')"),
+      title: z.string().describe("The title of the new page"),
+      content: z.string().describe("The page content in HTML format (Confluence storage format)"),
+      parent_page_id: z.string().optional().describe("Optional parent page ID to create this as a child page"),
+    }))
+    .implement(async ({ space_key, title, content, parent_page_id }) => {
+      toolLogger.info('create-confluence-page called', { space_key, title, hasParent: !!parent_page_id });
+
+      try {
+        const { ATLASSIAN_SITE_URL } = getConfiguredAuth();
+
+        const pageData: any = {
+          type: "page",
+          title: title,
+          space: { key: space_key },
+          body: {
+            storage: {
+              value: content,
+              representation: "storage",
+            },
+          },
+        };
+
+        // Add parent if specified
+        if (parent_page_id) {
+          pageData.ancestors = [{ id: parent_page_id }];
+        }
+
+        const response = await axios.post(
+          `${ATLASSIAN_SITE_URL}/wiki/rest/api/content`,
+          pageData,
+          {
+            headers: {
+              Authorization: getConfiguredAuthHeader(),
+              "Content-Type": "application/json",
+            },
+          }
+        );
+
+        toolLogger.info('create-confluence-page result', {
+          page_id: response.data.id,
+          title: response.data.title,
+          space: space_key
+        });
+
+        return JSON.stringify({
+          success: true,
+          page: {
+            id: response.data.id,
+            title: response.data.title,
+            space: space_key,
+            url: `${ATLASSIAN_SITE_URL}/wiki${response.data._links.webui}`,
+            version: response.data.version?.number || 1,
+          },
+        });
+      } catch (error: any) {
+        toolLogger.error('create-confluence-page error', {
+          space_key,
+          title,
+          error: error.response?.data?.message || error.message,
+          status: error.response?.status
+        });
+
+        return JSON.stringify({
+          success: false,
+          error: error.response?.data?.message || error.message,
+        });
+      }
+    })
+    .build();
+
+  // Build updateConfluencePage tool with configured auth/logger
+  const updateConfluencePage = toolBuilder()
+    .name("update-confluence-page")
+    .description("Update an existing Confluence page. Requires page ID, new title, and new content. Automatically increments the version number.")
+    .category(ToolCategory.WEB)
+    .tag("confluence")
+    .tag("update")
+    .tag("write")
+    .usageNotes("Use this to update existing documentation. The page content will be completely replaced with the new content. Make sure to preserve any important information from the original page.")
+    .requires(["get-confluence-page"])
+    .schema(z.object({
+      page_id: z.string().describe("The Confluence page ID to update"),
+      title: z.string().describe("The new title for the page"),
+      content: z.string().describe("The new page content in HTML format (Confluence storage format)"),
+    }))
+    .implement(async ({ page_id, title, content }) => {
+      toolLogger.info('update-confluence-page called', { page_id, title });
+
+      try {
+        const { ATLASSIAN_SITE_URL } = getConfiguredAuth();
+
+        // First, get the current version
+        const getResponse = await axios.get(
+          `${ATLASSIAN_SITE_URL}/wiki/rest/api/content/${page_id}`,
+          {
+            headers: {
+              Authorization: getConfiguredAuthHeader(),
+            },
+            params: { expand: "version" },
+          }
+        );
+
+        const currentVersion = getResponse.data.version.number;
+
+        // Update the page
+        const updateResponse = await axios.put(
+          `${ATLASSIAN_SITE_URL}/wiki/rest/api/content/${page_id}`,
+          {
+            type: "page",
+            title: title,
+            version: { number: currentVersion + 1 },
+            body: {
+              storage: {
+                value: content,
+                representation: "storage",
+              },
+            },
+          },
+          {
+            headers: {
+              Authorization: getConfiguredAuthHeader(),
+              "Content-Type": "application/json",
+            },
+          }
+        );
+
+        toolLogger.info('update-confluence-page result', {
+          page_id,
+          title,
+          newVersion: currentVersion + 1
+        });
+
+        return JSON.stringify({
+          success: true,
+          page: {
+            id: updateResponse.data.id,
+            title: updateResponse.data.title,
+            url: `${ATLASSIAN_SITE_URL}/wiki${updateResponse.data._links.webui}`,
+            version: updateResponse.data.version?.number || currentVersion + 1,
+          },
+        });
+      } catch (error: any) {
+        toolLogger.error('update-confluence-page error', {
+          page_id,
+          title,
+          error: error.response?.data?.message || error.message,
+          status: error.response?.status
+        });
+
+        return JSON.stringify({
+          success: false,
+          error: error.response?.data?.message || error.message,
+        });
+      }
+    })
+    .build();
+
+  // Build archiveConfluencePage tool with configured auth/logger
+  const archiveConfluencePage = toolBuilder()
+    .name("archive-confluence-page")
+    .description("Archive (trash) a Confluence page by its ID. The page will be moved to trash and can be restored later if needed.")
+    .category(ToolCategory.WEB)
+    .tag("confluence")
+    .tag("archive")
+    .tag("delete")
+    .usageNotes("Use this to archive outdated or obsolete documentation. The page is not permanently deleted - it's moved to trash and can be restored. Use with caution.")
+    .requires(["get-confluence-page"])
+    .schema(z.object({
+      page_id: z.string().describe("The Confluence page ID to archive"),
+    }))
+    .implement(async ({ page_id }) => {
+      toolLogger.info('archive-confluence-page called', { page_id });
+
+      try {
+        const { ATLASSIAN_SITE_URL } = getConfiguredAuth();
+
+        // Get current page data
+        const getResponse = await axios.get(
+          `${ATLASSIAN_SITE_URL}/wiki/rest/api/content/${page_id}`,
+          {
+            headers: {
+              Authorization: getConfiguredAuthHeader(),
+            },
+            params: { expand: "version,body.storage,space" },
+          }
+        );
+
+        const currentVersion = getResponse.data.version.number;
+        const pageData = getResponse.data;
+
+        // Archive by updating status to 'trashed'
+        await axios.put(
+          `${ATLASSIAN_SITE_URL}/wiki/rest/api/content/${page_id}`,
+          {
+            version: { number: currentVersion + 1 },
+            title: pageData.title,
+            type: "page",
+            status: "trashed",
+            body: pageData.body,
+            space: { key: pageData.space.key },
+          },
+          {
+            headers: {
+              Authorization: getConfiguredAuthHeader(),
+              "Content-Type": "application/json",
+            },
+          }
+        );
+
+        toolLogger.info('archive-confluence-page result', {
+          page_id,
+          title: pageData.title,
+          archived: true
+        });
+
+        return JSON.stringify({
+          success: true,
+          page: {
+            id: page_id,
+            title: pageData.title,
+            status: "trashed",
+            message: "Page has been archived (moved to trash)",
+          },
+        });
+      } catch (error: any) {
+        toolLogger.error('archive-confluence-page error', {
+          page_id,
+          error: error.response?.data?.message || error.message,
+          status: error.response?.status
+        });
+
+        return JSON.stringify({
+          success: false,
+          error: error.response?.data?.message || error.message,
+        });
+      }
+    })
+    .build();
+
+  // Return all configured tools
   return {
     searchConfluence,
     getConfluencePage,
@@ -759,4 +1294,3 @@ export function createConfluenceTools(config: ConfluenceToolsConfig = {}) {
     archiveConfluencePage,
   };
 }
-
