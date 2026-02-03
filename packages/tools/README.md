@@ -676,6 +676,86 @@ const result = await httpGet.execute({
 console.log(result.data);
 ```
 
+## 🏗️ Code Organization
+
+All tools follow a consistent directory structure pattern for better maintainability and discoverability:
+
+### Directory Structure
+
+Each tool category is organized into its own directory with the following structure:
+
+```
+tool-category/
+├── index.ts          # Main exports, factory functions, default instances
+├── types.ts          # TypeScript interfaces, Zod schemas, configuration types
+├── auth.ts           # Authentication helpers (for API tools)
+└── tools/            # Individual tool implementations
+    ├── tool-1.ts
+    ├── tool-2.ts
+    └── tool-3.ts
+```
+
+### Example: Slack Tools
+
+```
+slack/
+├── index.ts          # Exports: sendSlackMessage, notifySlack, getSlackChannels, getSlackMessages, createSlackTools()
+├── types.ts          # SlackConfig, SlackMessageSchema, SlackChannelSchema, etc.
+├── auth.ts           # getSlackToken(), validateSlackConfig()
+└── tools/
+    ├── send-message.ts
+    ├── notify.ts
+    ├── get-channels.ts
+    └── get-messages.ts
+```
+
+### Benefits
+
+- **Modularity**: Each tool is in its own file, making it easy to find and modify
+- **Consistency**: All tool categories follow the same pattern
+- **Maintainability**: Changes to one tool don't affect others
+- **Discoverability**: Clear structure makes it easy to understand what's available
+- **Type Safety**: Shared types in `types.ts` ensure consistency across tools
+- **Testability**: Each tool can be tested independently
+
+### Factory Functions
+
+Each tool category provides a factory function for custom configuration:
+
+```typescript
+import { createSlackTools } from '@agentforge/tools';
+
+// Custom configuration
+const customTools = createSlackTools({
+  token: 'xoxb-your-custom-token',
+  botName: 'My Custom Bot',
+  botIcon: ':rocket:'
+});
+
+// Use custom tools
+await customTools.sendMessage.execute({
+  channel: 'general',
+  message: 'Hello from custom bot!'
+});
+```
+
+Available factory functions:
+- `createSlackTools(config?)` - Slack integration tools
+- `createConfluenceTools(config?)` - Confluence integration tools
+- `createHttpTools(config?)` - HTTP client tools
+- `createScraperTools(config?)` - Web scraping tools
+- `createCsvTools(config?)` - CSV processing tools
+- `createJsonTools(config?)` - JSON processing tools
+- `createXmlTools(config?)` - XML processing tools
+- `createTransformerTools(config?)` - Data transformation tools
+- `createFileOperationTools(config?)` - File operation tools
+- `createDirectoryOperationTools(config?)` - Directory operation tools
+- `createPathUtilityTools(config?)` - Path utility tools
+- `createDateTimeTools(config?)` - Date/time tools
+- `createStringUtilityTools(config?)` - String utility tools
+- `createMathOperationTools(config?)` - Math operation tools
+- `createValidationTools(config?)` - Validation tools
+
 ## 🛠️ Development
 
 ```bash

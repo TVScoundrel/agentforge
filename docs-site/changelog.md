@@ -28,6 +28,42 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Tool count increased from 74 to 81 tools
   - Web Tools category increased from 15 to 22 tools
 
+### Changed
+
+#### @agentforge/tools
+- **refactor: Migrate all tools to directory structure pattern** - Comprehensive refactoring for better maintainability
+  - Refactored 72 tools across 16 monolithic files into organized directory structures
+  - **Phase 2: Slack Tools** (4 tools) - Split `slack.ts` (661 lines) into directory structure
+  - **Phase 3: Web Tools** (10 tools) - Split HTTP, Scraper, HTML Parser, URL tools into directories
+  - **Phase 4: Data Tools** (19 tools) - Split CSV, JSON, XML, Transformer tools into directories
+  - **Phase 5: File Tools** (17 tools) - Split File Operations, Directory Operations, Path Utilities into directories
+  - **Phase 6: Utility Tools** (22 tools) - Split Date/Time, String, Math, Validation tools into directories
+  - **Benefits**:
+    - Improved modularity - each tool in its own file
+    - Better maintainability - changes to one tool don't affect others
+    - Enhanced discoverability - clear directory structure
+    - Consistent patterns - all tool categories follow the same structure
+    - Type safety - shared types ensure consistency
+    - Testability - each tool can be tested independently
+  - **Directory Structure Pattern**:
+    ```
+    tool-category/
+    ├── index.ts          # Main exports, factory functions, default instances
+    ├── types.ts          # TypeScript interfaces, Zod schemas, configuration types
+    ├── auth.ts           # Authentication helpers (for API tools)
+    └── tools/            # Individual tool implementations
+        ├── tool-1.ts
+        ├── tool-2.ts
+        └── tool-3.ts
+    ```
+  - **Factory Functions**: Each tool category now provides a factory function for custom configuration
+    - `createSlackTools(config?)`, `createConfluenceTools(config?)`, `createHttpTools(config?)`, etc.
+    - Enables programmatic configuration without environment variables
+    - Supports multiple instances with different configurations
+  - **No Breaking Changes**: All public exports remain the same, fully backward compatible
+  - **Test Results**: All 975 tests passing ✅
+  - **Documentation**: Updated README with directory structure explanation and factory function examples
+
 ### Published
 - All packages published to npm registry at version 0.10.0:
   - @agentforge/core@0.10.0
