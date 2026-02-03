@@ -1,6 +1,6 @@
 # @agentforge/tools
 
-> Production-ready tools collection for AgentForge - 74 tools for web, data, file, utility, and agent operations
+> Production-ready tools collection for AgentForge - 81 tools for web, data, file, utility, and agent operations
 
 [![npm version](https://img.shields.io/npm/v/@agentforge/tools)](https://www.npmjs.com/package/@agentforge/tools)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.9-blue)](https://www.typescriptlang.org/)
@@ -8,7 +8,7 @@
 
 ## 🎉 Status: Production Ready & Published
 
-**74 production-ready tools** | **Full TypeScript support** | **Comprehensive documentation** | **LangChain compatible**
+**81 production-ready tools** | **Full TypeScript support** | **Comprehensive documentation** | **LangChain compatible**
 
 ## 📦 Installation
 
@@ -22,9 +22,9 @@ yarn add @agentforge/tools
 
 ## 🎯 Overview
 
-This package provides **74 ready-to-use tools** organized into 5 categories:
+This package provides **81 ready-to-use tools** organized into 5 categories:
 
-- **🌐 Web Tools** (15 tools) - HTTP requests, web search, web scraping, HTML parsing, URL manipulation, Slack integration
+- **🌐 Web Tools** (22 tools) - HTTP requests, web search, web scraping, HTML parsing, URL manipulation, Slack integration, Confluence integration
 - **📊 Data Tools** (18 tools) - JSON, CSV, XML processing and data transformation
 - **📁 File Tools** (18 tools) - File operations, directory management, path utilities
 - **🔧 Utility Tools** (22 tools) - Date/time, strings, math, validation
@@ -69,9 +69,9 @@ const result = await calculator.execute({
 
 ## 📚 Tool Categories
 
-### 🌐 Web Tools (11 tools)
+### 🌐 Web Tools (22 tools)
 
-Tools for web interactions and HTTP operations.
+Tools for web interactions, HTTP operations, and integrations.
 
 #### Web Search
 - **`webSearch`** - Search the web using DuckDuckGo (free) or Serper API (optional premium)
@@ -102,6 +102,16 @@ Tools for web interactions and HTTP operations.
 - **`getSlackChannels`** - List available Slack channels
 - **`getSlackMessages`** - Read message history from channels
 - **`createSlackTools()`** - Factory function for custom Slack configuration
+
+#### Confluence Tools
+- **`searchConfluence`** - Search Confluence using CQL (Confluence Query Language)
+- **`getConfluencePage`** - Get full page content by ID
+- **`listConfluenceSpaces`** - List all available Confluence spaces
+- **`getSpacePages`** - Get all pages from a specific space
+- **`createConfluencePage`** - Create new Confluence pages
+- **`updateConfluencePage`** - Update existing Confluence pages
+- **`archiveConfluencePage`** - Archive pages (move to trash)
+- **`createConfluenceTools()`** - Factory function for custom Confluence configuration
 
 ### 📊 Data Tools (18 tools)
 
@@ -359,6 +369,99 @@ SLACK_BOT_TOKEN=xoxb-your-bot-token
 4. Install app to workspace
 5. Copy the token (starts with `xoxb-` for bot or `xoxp-` for user)
 
+### Confluence Integration Example
+
+```typescript
+import {
+  searchConfluence,
+  getConfluencePage,
+  listConfluenceSpaces,
+  getSpacePages,
+  createConfluencePage,
+  updateConfluencePage,
+  archiveConfluencePage,
+  createConfluenceTools
+} from '@agentforge/tools';
+
+// Search for pages
+const searchResults = await searchConfluence.execute({
+  cql: 'type=page AND space=DOCS',
+  limit: 10
+});
+console.log(`Found ${searchResults.results.length} pages`);
+
+// Get a specific page
+const page = await getConfluencePage.execute({
+  page_id: '123456'
+});
+console.log(`Page title: ${page.page.title}`);
+console.log(`Content: ${page.page.content}`);
+
+// List all spaces
+const spaces = await listConfluenceSpaces.execute({
+  limit: 50
+});
+console.log(`Found ${spaces.spaces.length} spaces`);
+
+// Get pages from a space
+const spacePages = await getSpacePages.execute({
+  space_key: 'DOCS',
+  limit: 25
+});
+console.log(`Found ${spacePages.pages.length} pages in DOCS space`);
+
+// Create a new page
+const newPage = await createConfluencePage.execute({
+  space_key: 'DOCS',
+  title: 'My New Page',
+  content: '<p>This is the page content in HTML format</p>',
+  parent_page_id: '789012'  // Optional parent page
+});
+console.log(`Created page with ID: ${newPage.page.id}`);
+
+// Update an existing page
+const updated = await updateConfluencePage.execute({
+  page_id: newPage.page.id,
+  title: 'Updated Page Title',
+  content: '<p>Updated content</p>'
+});
+console.log(`Updated to version ${updated.page.version}`);
+
+// Archive a page
+const archived = await archiveConfluencePage.execute({
+  page_id: newPage.page.id,
+  reason: 'No longer needed'
+});
+console.log(archived.archived.note);
+
+// Custom configuration (for multiple Confluence instances)
+const customTools = createConfluenceTools({
+  apiKey: 'your-api-key',
+  email: 'your-email@example.com',
+  siteUrl: 'https://your-domain.atlassian.net'
+});
+
+await customTools.searchConfluence.execute({
+  cql: 'type=page',
+  limit: 5
+});
+```
+
+**Environment Setup:**
+```bash
+# Add to your .env file
+ATLASSIAN_API_KEY=your-api-key-here
+ATLASSIAN_EMAIL=your-email@example.com
+ATLASSIAN_SITE_URL=https://your-domain.atlassian.net
+```
+
+**Getting a Confluence API Key:**
+1. Go to [Atlassian Account Settings](https://id.atlassian.com/manage-profile/security/api-tokens)
+2. Click "Create API token"
+3. Give it a label (e.g., "AgentForge")
+4. Copy the generated token
+5. Use your Atlassian email and the API token for authentication
+
 ### Data Processing Example
 
 ```typescript
@@ -594,13 +697,13 @@ pnpm lint
 
 ## 📊 Tool Statistics
 
-- **Total Tools**: 74
-- **Web Tools**: 15 (includes 4 Slack tools)
+- **Total Tools**: 81
+- **Web Tools**: 22 (includes 4 Slack tools + 7 Confluence tools)
 - **Data Tools**: 18
 - **File Tools**: 18
 - **Utility Tools**: 22
 - **Agent Tools**: 1
-- **Lines of Code**: ~3,200
+- **Lines of Code**: ~4,000
 - **Full TypeScript Support**: ✅
 - **Zod Validation**: ✅
 - **LangChain Compatible**: ✅
