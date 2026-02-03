@@ -39,7 +39,7 @@ import {
   getSlackChannels,
   getSlackMessages,
   createSlackTools,
-} from '../../src/web/slack.js';
+} from '../../src/web/slack/index.js';
 
 describe('Slack Tools', () => {
   const originalEnv = process.env;
@@ -131,7 +131,7 @@ describe('Slack Tools', () => {
       // Need to reset the module to clear the cached client
       vi.resetModules();
 
-      const { sendSlackMessage: freshTool } = await import('../../src/web/slack.js');
+      const { sendSlackMessage: freshTool } = await import('../../src/web/slack/index.js');
       const result = await freshTool.execute({
         channel: 'general',
         message: 'test',
