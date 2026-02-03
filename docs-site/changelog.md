@@ -7,6 +7,25 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+#### @agentforge/tools
+- **feat: add Confluence integration tools** - Seven new tools for Atlassian Confluence integration
+  - `searchConfluence` - Search for pages across all Confluence spaces
+  - `getConfluencePage` - Retrieve a specific page by ID with full content
+  - `listConfluenceSpaces` - List all available Confluence spaces
+  - `getSpacePages` - Get all pages within a specific space
+  - `createConfluencePage` - Create new pages with optional parent pages
+  - `updateConfluencePage` - Update existing page content and metadata
+  - `archiveConfluencePage` - Archive pages (move to trash)
+  - Configurable via environment variables (`ATLASSIAN_API_KEY`, `ATLASSIAN_EMAIL`, `ATLASSIAN_SITE_URL`) or programmatic configuration
+  - Factory function `createConfluenceTools(config)` for custom configuration
+  - Comprehensive test coverage (32 tests)
+  - Full TypeScript support with Zod schema validation
+  - Structured logging with `[[tools:confluence]]` prefix for debugging and monitoring
+  - Tool count increased from 74 to 81 tools
+  - Web Tools category increased from 15 to 22 tools
+
 ## [0.9.1] - 2026-02-02
 
 ### Changed
