@@ -1,0 +1,137 @@
+/**
+ * Web Scraper Tool
+ * 
+ * Scrape and extract data from web pages using CSS selectors.
+ */
+
+import { toolBuilder, ToolCategory } from '@agentforge/core';
+import axios from 'axios';
+import * as cheerio from 'cheerio';
+import { webScraperSchema, type ScraperResult } from '../types.js';
+
+/**
+ * Create a web scraper tool
+ * 
+ * @param defaultTimeout - Default timeout in milliseconds
+ * @param userAgent - User agent string for requests
+ * @returns Web scraper tool
+ * 
+ * @example
+ * ```ts
+ * const scraper = createWebScraperTool(60000, 'MyBot/1.0');
+ * const result = await scraper.execute({
+ *   url: 'https://example.com',
+ *   selector: 'article h1',
+ *   extractText: true
+ * });
+ * ```
+ */
+export function createWebScraperTool(
+  defaultTimeout: number = 30000,
+  userAgent: string = 'Mozilla/5.0 (compatible; AgentForge/1.0; +https://agentforge.dev)'
+) {
+  return toolBuilder()
+    .name('web-scraper')
+    .description('Scrape and extract data from web pages. Can extract text, HTML, links, images, and use CSS selectors to target specific elements.')
+    .category(ToolCategory.WEB)
+    .tags(['scraper', 'web', 'html', 'extract', 'parse'])
+    .schema(webScraperSchema)
+    .implement(async (input): Promise<ScraperResult> => {
+      // Fetch the page
+      const response = await axios.get(input.url, {
+        timeout: input.timeout || defaultTimeout,
+        headers: {
+          'User-Agent': userAgent,
+        },
+      });
+
+      const html = response.data;
+      const $ = cheerio.load(html);
+
+      const result: ScraperResult = {
+        url: input.url,
+      };
+
+      // Apply selector if provided
+      const $selected = input.selector ? $(input.selector) : $('body');
+
+      // Extract text
+      if (input.extractText) {
+        result.text = $selected.text().trim();
+      }
+
+      // Extract HTML
+      if (input.extractHtml) {
+        result.html = $selected.html() || '';
+      }
+
+      // Extract links
+      if (input.extractLinks) {
+        result.links = [];
+        $('a[href]').each((_, el) => {
+          const href = $(el).attr('href');
+          if (href) {
+            // Convert relative URLs to absolute
+            try {
+              const absoluteUrl = new URL(href, input.url).href;
+              result.links!.push(absoluteUrl);
+            } catch {
+              result.links!.push(href);
+            }
+          }
+        });
+      }
+
+      // Extract images
+      if (input.extractImages) {
+        result.images = [];
+        $('img[src]').each((_, el) => {
+          const src = $(el).attr('src');
+          if (src) {
+            // Convert relative URLs to absolute
+            try {
+              const absoluteUrl = new URL(src, input.url).href;
+              result.images!.push(absoluteUrl);
+            } catch {
+              result.images!.push(src);
+            }
+          }
+        });
+      }
+
+      // Extract metadata
+      if (input.extractMetadata) {
+        result.metadata = {};
+        
+        // Title
+        const title = $('title').text() || $('meta[property="og:title"]').attr('content');
+        if (title) result.metadata.title = title;
+
+        // Description
+        const description = $('meta[name="description"]').attr('content') || 
+                           $('meta[property="og:description"]').attr('content');
+        if (description) result.metadata.description = description;
+
+        // Other meta tags
+        $('meta[name], meta[property]').each((_, el) => {
+          const name = $(el).attr('name') || $(el).attr('property');
+          const content = $(el).attr('content');
+          if (name && content) {
+            result.metadata![name] = content;
+          }
+        });
+      }
+
+      // If selector was provided, return the selected elements
+      if (input.selector) {
+        result.selected = $selected.map((_, el) => ({
+          text: $(el).text().trim(),
+          html: $(el).html(),
+        })).get();
+      }
+
+      return result;
+    })
+    .build();
+}
+
