@@ -31,13 +31,13 @@
 
 import { createLogger, LogLevel } from "@agentforge/core";
 import { getConfig, getAuthHeader, createGetConfiguredAuth, createGetConfiguredAuthHeader } from "./auth.js";
-import { createSearchConfluenceTool } from "./search-confluence.js";
-import { createGetConfluencePageTool } from "./get-confluence-page.js";
-import { createListConfluenceSpacesTool } from "./list-confluence-spaces.js";
-import { createGetSpacePagesTool } from "./get-space-pages.js";
-import { createCreateConfluencePageTool } from "./create-confluence-page.js";
-import { createUpdateConfluencePageTool } from "./update-confluence-page.js";
-import { createArchiveConfluencePageTool } from "./archive-confluence-page.js";
+import { createSearchConfluenceTool } from "./tools/search-confluence.js";
+import { createGetConfluencePageTool } from "./tools/get-confluence-page.js";
+import { createListConfluenceSpacesTool } from "./tools/list-confluence-spaces.js";
+import { createGetSpacePagesTool } from "./tools/get-space-pages.js";
+import { createCreateConfluencePageTool } from "./tools/create-confluence-page.js";
+import { createUpdateConfluencePageTool } from "./tools/update-confluence-page.js";
+import { createArchiveConfluencePageTool } from "./tools/archive-confluence-page.js";
 
 // Export types
 export type { ConfluenceToolsConfig, ConfluenceAuth } from "./types.js";
