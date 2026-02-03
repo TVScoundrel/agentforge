@@ -121,5 +121,5 @@ echo ""
 print_step "Next steps:"
 echo "  - Verify packages on npm: https://www.npmjs.com/org/agentforge"
 echo "  - Test installation: npx @agentforge/cli@latest create test-project"
-echo "  - Create GitHub release (optional)"
+echo "  - Create GitHub release: ./scripts/create-github-release.sh <version>"
 
