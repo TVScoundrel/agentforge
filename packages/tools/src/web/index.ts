@@ -10,4 +10,5 @@ export * from './html-parser.js';
 export * from './url-validator.js';
 export * from './web-search/index.js';
 export * from './slack.js';
+export * from './confluence/index.js';
 
