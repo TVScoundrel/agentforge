@@ -1,6 +1,6 @@
 # @agentforge/tools
 
-Standard tools library with 74 production-ready tools.
+Standard tools library with 81 production-ready tools.
 
 ## Installation
 
@@ -8,7 +8,7 @@ Standard tools library with 74 production-ready tools.
 pnpm add @agentforge/tools
 ```
 
-## Web Tools (15)
+## Web Tools (22)
 
 ### Web Search
 
@@ -218,6 +218,166 @@ const slackTools = createSlackTools({
 
 // Use the custom tools
 const [sendMessage, notify, getChannels, getMessages] = slackTools;
+```
+
+### Confluence Integration
+
+```typescript
+import {
+  searchConfluence,
+  getConfluencePage,
+  listConfluenceSpaces,
+  getSpacePages,
+  createConfluencePage,
+  updateConfluencePage,
+  archiveConfluencePage,
+  createConfluenceTools
+} from '@agentforge/tools';
+
+// Search for pages across all spaces
+const searchResults = await searchConfluence.invoke({
+  query: 'API documentation',
+  limit: 10
+});
+
+console.log(`Found ${searchResults.results.length} pages`);
+searchResults.results.forEach(page => {
+  console.log(`${page.title} (${page.space.name})`);
+  console.log(`  URL: ${page.url}`);
+});
+
+// Get a specific page by ID
+const page = await getConfluencePage.invoke({
+  page_id: '123456'
+});
+
+console.log(`Title: ${page.page.title}`);
+console.log(`Space: ${page.page.space.name}`);
+console.log(`Content: ${page.page.body.storage.value}`);
+console.log(`Version: ${page.page.version.number}`);
+
+// List all available spaces
+const spaces = await listConfluenceSpaces.invoke({
+  limit: 25
+});
+
+console.log(`Found ${spaces.spaces.length} spaces`);
+spaces.spaces.forEach(space => {
+  console.log(`${space.name} (${space.key})`);
+});
+
+// Get all pages in a specific space
+const spacePages = await getSpacePages.invoke({
+  space_key: 'DOCS',
+  limit: 50
+});
+
+console.log(`Found ${spacePages.pages.length} pages in space`);
+spacePages.pages.forEach(page => {
+  console.log(`${page.title} (ID: ${page.id})`);
+});
+
+// Create a new page
+const newPage = await createConfluencePage.invoke({
+  space_key: 'DOCS',
+  title: 'New Documentation Page',
+  body: '<p>This is the page content in Confluence storage format.</p>'
+});
+
+console.log(`Created page: ${newPage.page.title}`);
+console.log(`Page ID: ${newPage.page.id}`);
+console.log(`URL: ${newPage.page._links.webui}`);
+
+// Create a child page
+const childPage = await createConfluencePage.invoke({
+  space_key: 'DOCS',
+  title: 'Child Page',
+  body: '<p>This is a child page.</p>',
+  parent_page_id: '123456'
+});
+
+// Update an existing page
+const updatedPage = await updateConfluencePage.invoke({
+  page_id: '123456',
+  title: 'Updated Title',
+  body: '<p>Updated content.</p>'
+});
+
+console.log(`Updated page to version ${updatedPage.page.version.number}`);
+
+// Archive a page (move to trash)
+const archivedPage = await archiveConfluencePage.invoke({
+  page_id: '123456'
+});
+
+console.log(`Archived page: ${archivedPage.page.title}`);
+
+// Custom configuration with factory function
+const customConfluenceTools = createConfluenceTools({
+  apiKey: 'your-custom-api-key',
+  email: 'custom@example.com',
+  siteUrl: 'https://custom.atlassian.net'
+});
+
+// Use custom tools
+const customResult = await customConfluenceTools[0].invoke({
+  query: 'search query',
+  limit: 10
+});
+```
+
+**Features:**
+- Search pages across all Confluence spaces
+- Retrieve full page content with metadata
+- List all available spaces in your Confluence instance
+- Get all pages within a specific space
+- Create new pages with optional parent pages (hierarchical structure)
+- Update existing page content and metadata
+- Archive pages (move to trash)
+- Configurable via environment variables or programmatic configuration
+- Full TypeScript support with Zod validation
+- Structured logging with `[[tools:confluence]]` prefix for debugging
+
+**Environment Setup:**
+```bash
+# Add to your .env file
+ATLASSIAN_API_KEY=your-atlassian-api-key-here
+ATLASSIAN_EMAIL=your-email@example.com
+ATLASSIAN_SITE_URL=https://your-site.atlassian.net
+```
+
+**Getting Confluence API Credentials:**
+1. Go to [Atlassian Account Settings](https://id.atlassian.com/manage-profile/security/api-tokens)
+2. Click "Create API token"
+3. Give it a descriptive label (e.g., "AgentForge Integration")
+4. Copy the generated API token
+5. Use your Atlassian account email and the API token for authentication
+6. Your site URL is your Confluence instance URL (e.g., `https://yourcompany.atlassian.net`)
+
+**Programmatic Configuration:**
+```typescript
+// Override environment variables with custom configuration
+const confluenceTools = createConfluenceTools({
+  apiKey: 'your-custom-api-key',
+  email: 'custom@example.com',
+  siteUrl: 'https://custom.atlassian.net'
+});
+
+// Use the custom tools
+const [search, getPage, listSpaces, getPages, create, update, archive] = confluenceTools;
+```
+
+**Content Format:**
+Confluence uses "storage format" (a subset of HTML) for page content. Common elements:
+```html
+<p>Paragraph text</p>
+<h1>Heading 1</h1>
+<h2>Heading 2</h2>
+<ul><li>Bullet point</li></ul>
+<ol><li>Numbered list</li></ol>
+<ac:structured-macro ac:name="code">
+  <ac:plain-text-body><![CDATA[code block]]></ac:plain-text-body>
+</ac:structured-macro>
 ```
 
 ## Data Tools (18)
