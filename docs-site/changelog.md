@@ -7,6 +7,38 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.10.5] - 2026-02-04
+
+### Fixed
+
+#### @agentforge/patterns
+- **fix: Wrap stream() method in registerWorkers to inject worker registry** [P2 Bug]
+  - Fixed stream method wrapping in standalone `registerWorkers()` function
+  - **Problem**: `registerWorkers()` only wrapped the `invoke()` method to inject worker registry, but did NOT wrap the `stream()` method. This meant streaming callers wouldn't see registered workers.
+  - **Solution**:
+    - Added `_originalStream` property to `MultiAgentSystemWithRegistry` interface (line 416)
+    - Wrapped `stream()` method in `registerWorkers()` function (lines 494-510) following the same pattern as `invoke()`
+    - Ensures registered workers are merged into state for both `invoke()` and `stream()` calls
+  - **Impact**:
+    - Streaming callers now see registered workers (same as invoke callers)
+    - Consistent behavior between `createMultiAgentSystem()` and `registerWorkers()`
+    - Worker capabilities are properly injected into the initial state regardless of which method is used
+  - **Location**: `packages/patterns/src/multi-agent/agent.ts` (lines 416, 494-510)
+  - **Added comprehensive test coverage**:
+    - 2 new tests for stream method wrapping
+    - Tests verify that `stream()` wrapper correctly merges registered workers into input
+    - Tests verify correct tool name extraction from AgentForge Tools when using `stream()`
+    - Tests use spy/mock pattern to verify wrapper logic directly
+  - **Breaking Change**: None - backward compatible enhancement
+
+### Published
+- All packages published to npm registry at version 0.10.5:
+  - @agentforge/core@0.10.5
+  - @agentforge/patterns@0.10.5
+  - @agentforge/tools@0.10.5
+  - @agentforge/testing@0.10.5
+  - @agentforge/cli@0.10.5
+
 ## [0.10.4] - 2026-02-04
 
 ### Fixed
