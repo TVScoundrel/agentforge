@@ -7,6 +7,54 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.11.0] - 2026-02-04
+
+### Changed
+
+#### @agentforge/core, @agentforge/patterns, @agentforge/tools
+- **LangChain Compatibility: invoke() is now the primary method** [Breaking Change - Deprecation]
+  - **What Changed**: `invoke()` is now the primary method for tool execution, with `execute()` deprecated as an alias
+  - **Migration**: Replace all `.execute(` calls with `.invoke(` in your code
+  - **Timeline**: `execute()` will be removed in v1.0.0
+  - **Backward Compatibility**: Both methods work identically in v0.11.0 - no immediate action required
+  - **Why**: Aligns AgentForge with LangChain industry standards for better ecosystem compatibility
+
+  **Implementation Details:**
+  - Core tool interface now defines `invoke()` as primary, `execute()` as deprecated alias
+  - All tool helpers (`createTool()`, `toolBuilder()`) create tools with both methods
+  - Tool executor prefers `invoke()` when available, falls back to `execute()`
+  - Updated 12 test files (core, patterns, tools) - 97 occurrences
+  - Updated 9 example files - 29 occurrences
+  - Updated 15 documentation files - 112+ occurrences
+  - All 997 tests passing ✅
+  - Build successful ✅
+
+  **Files Modified:**
+  - `packages/core/src/tools/types.ts` - Updated Tool interface with deprecation
+  - `packages/core/src/tools/helpers.ts` - Reversed alias direction
+  - `packages/core/src/tools/builder.ts` - Updated ToolBuilder
+  - `packages/core/src/langchain/converter.ts` - Uses invoke()
+  - `packages/patterns/src/react/nodes.ts` - Uses invoke()
+  - `packages/patterns/src/plan-execute/nodes.ts` - Uses invoke()
+  - Plus 12 test files, 9 example files, and 15 documentation files
+
+  **Migration Example:**
+  ```typescript
+  // Before (v0.10.x)
+  const result = await tool.execute({ input: "test" });
+
+  // After (v0.11.0+)
+  const result = await tool.invoke({ input: "test" });
+  ```
+
+### Published
+- All packages published to npm registry at version 0.11.0:
+  - @agentforge/core@0.11.0
+  - @agentforge/patterns@0.11.0
+  - @agentforge/tools@0.11.0
+  - @agentforge/testing@0.11.0
+  - @agentforge/cli@0.11.0
+
 ## [0.10.7] - 2026-02-04
 
 ### Fixed
