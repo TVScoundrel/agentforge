@@ -30,7 +30,7 @@ describe('createTool', () => {
     expect(tool.metadata.description).toBe('A test tool');
     expect(tool.metadata.category).toBe(ToolCategory.UTILITY);
 
-    const result = await tool.execute({ input: 'hello' });
+    const result = await tool.invoke({ input: 'hello' });
     expect(result).toBe('Result: hello');
   });
 
@@ -101,7 +101,7 @@ describe('createTool', () => {
       async ({ required, optional }) => ({ required, optional })
     );
 
-    const result = await tool.execute({ required: 'test' });
+    const result = await tool.invoke({ required: 'test' });
     expect(result.required).toBe('test');
     expect(result.optional).toBeUndefined();
   });
@@ -121,7 +121,7 @@ describe('createTool', () => {
       async ({ items }) => items
     );
 
-    const result = await tool.execute({ items: ['a', 'b', 'c'] });
+    const result = await tool.invoke({ items: ['a', 'b', 'c'] });
     expect(result).toEqual(['a', 'b', 'c']);
   });
 });
@@ -141,7 +141,7 @@ describe('createToolUnsafe', () => {
     );
 
     expect(tool.metadata.name).toBe('unsafe-tool');
-    const result = await tool.execute({ input: 'test' });
+    const result = await tool.invoke({ input: 'test' });
     expect(result).toBe('test');
   });
 

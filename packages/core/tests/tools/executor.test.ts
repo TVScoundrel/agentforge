@@ -23,7 +23,7 @@ describe('Tool Executor', () => {
 
       const executor = createToolExecutor();
       const result = await executor.execute(tool, { input: 'hello' });
-      
+
       expect(result).toBe('Result: hello');
     });
 
@@ -36,7 +36,7 @@ describe('Tool Executor', () => {
 
       const executor = createToolExecutor();
       const result = await executor.execute(tool, 'test');
-      
+
       expect(result).toBe('LangChain result: test');
     });
 
@@ -50,7 +50,7 @@ describe('Tool Executor', () => {
 
       const executor = createToolExecutor();
       const result = await executor.execute(tool, 'test');
-      
+
       // Should prefer invoke (LangChain compatibility)
       expect(result).toBe('Invoke: test');
     });
@@ -63,7 +63,7 @@ describe('Tool Executor', () => {
       };
 
       const executor = createToolExecutor();
-      
+
       await expect(executor.execute(tool, 'test')).rejects.toThrow(
         'Tool must implement either invoke() or execute() method'
       );
@@ -81,7 +81,7 @@ describe('Tool Executor', () => {
 
       const executor = createToolExecutor();
       const result = await executor.execute(tool, 'hello');
-      
+
       expect(result).toBe('test-value: hello');
     });
 
@@ -97,7 +97,7 @@ describe('Tool Executor', () => {
 
       const executor = createToolExecutor();
       const result = await executor.execute(tool, 'hello');
-      
+
       expect(result).toBe('test-value: hello');
     });
   });
@@ -125,7 +125,7 @@ describe('Tool Executor', () => {
       });
 
       const result = await executor.execute(tool, 'test');
-      
+
       expect(result).toBe('Success after 3 attempts');
       expect(attempts).toBe(3);
     });
@@ -152,7 +152,7 @@ describe('Tool Executor', () => {
       });
 
       const result = await executor.execute(tool, 'test');
-      
+
       expect(result).toBe('Success after 2 attempts');
       expect(attempts).toBe(2);
     });

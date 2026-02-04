@@ -28,7 +28,7 @@ describe('ToolBuilder', () => {
       expect(tool.metadata.description).toBe('A test tool for testing');
       expect(tool.metadata.category).toBe(ToolCategory.UTILITY);
 
-      const result = await tool.execute({ input: 'hello' });
+      const result = await tool.invoke({ input: 'hello' });
       expect(result).toBe('Result: hello');
     });
 
@@ -232,7 +232,7 @@ describe('ToolBuilder', () => {
         })
         .build();
 
-      const result = await tool.execute({ name: 'test', age: 25 });
+      const result = await tool.invoke({ name: 'test', age: 25 });
       expect(result.nameUpper).toBe('TEST');
       expect(result.ageDouble).toBe(50);
     });
@@ -257,7 +257,7 @@ describe('ToolBuilder', () => {
         }))
         .build();
 
-      const result = await tool.execute({
+      const result = await tool.invoke({
         user: { name: 'John', email: 'john@example.com' },
         tags: ['tag1', 'tag2'],
       });
@@ -282,7 +282,7 @@ describe('ToolBuilder', () => {
         })
         .build();
 
-      const result = await tool.execute({ value: 'test' });
+      const result = await tool.invoke({ value: 'test' });
 
       expect(result.success).toBe(true);
       expect(result.data).toBe('Processed: test');
@@ -305,7 +305,7 @@ describe('ToolBuilder', () => {
         })
         .build();
 
-      const result = await tool.execute({ shouldFail: true });
+      const result = await tool.invoke({ shouldFail: true });
 
       expect(result.success).toBe(false);
       expect(result.data).toBeUndefined();
@@ -325,7 +325,7 @@ describe('ToolBuilder', () => {
         })
         .build();
 
-      const result = await tool.execute({ input: 'test' });
+      const result = await tool.invoke({ input: 'test' });
 
       expect(result.success).toBe(false);
       expect(result.data).toBeUndefined();
@@ -350,7 +350,7 @@ describe('ToolBuilder', () => {
         })
         .build();
 
-      const result = await tool.execute({ name: 'test', count: 5 });
+      const result = await tool.invoke({ name: 'test', count: 5 });
 
       expect(result.success).toBe(true);
       expect(result.data).toEqual({
@@ -374,7 +374,7 @@ describe('ToolBuilder', () => {
         })
         .build();
 
-      const result = await tool.execute({ value: 10 });
+      const result = await tool.invoke({ value: 10 });
 
       // TypeScript should know result has { success, data?, error? }
       if (result.success) {
