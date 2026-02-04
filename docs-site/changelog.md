@@ -7,6 +7,50 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.11.5] - 2026-02-04
+
+### Fixed
+
+#### @agentforge/core
+- **Tool Executor Priority Metrics Exclude Failures** [P3]
+  - **Problem**: The `byPriority` metrics in `executor.ts` only tracked successful executions, skewing monitoring and observability stats
+  - **Impact**: Failed tool executions were not counted in priority metrics, making it impossible to accurately monitor tool execution patterns
+  - **Solution**: Added `metrics.byPriority[priority]++` to the error handling block so both successful and failed executions are tracked
+  - **Location**: `packages/core/src/tools/executor.ts` line 211
+
+#### @agentforge/patterns
+- **Tool Call Deduplication Cache Key Nested Object Handling** [P3]
+  - **Problem**: The `generateToolCallCacheKey` function only normalized top-level argument keys, which could cause collisions or failed deduplication when nested objects had keys in different orders
+  - **Impact**: Tool calls with identical nested arguments but different key orders could be treated as different calls, bypassing deduplication
+  - **Solution**: Implemented recursive `normalizeObject()` function that properly sorts keys at all nesting levels, ensuring consistent cache keys
+  - **Location**: `packages/patterns/src/shared/deduplication.ts` line 11-40
+
+### Tests
+
+#### @agentforge/core
+- Added 4 comprehensive tests for tool executor metrics tracking:
+  - Test for tracking successful executions by priority
+  - Test for tracking failed executions by priority
+  - Test for tracking mixed successful and failed executions by priority
+  - Test for metrics reset functionality
+
+#### @agentforge/patterns
+- Created new test suite `packages/patterns/tests/shared/deduplication.test.ts` with 12 tests:
+  - Top-level key order consistency
+  - Nested object key order consistency
+  - Deeply nested objects (3+ levels)
+  - Arrays within objects
+  - Null/undefined handling
+  - Complex nested structures with arrays and objects
+
+### Published
+- All packages published to npm registry at version 0.11.5:
+  - @agentforge/core@0.11.5
+  - @agentforge/patterns@0.11.5
+  - @agentforge/tools@0.11.5
+  - @agentforge/testing@0.11.5
+  - @agentforge/cli@0.11.5
+
 ## [0.11.4] - 2026-02-04
 
 ### Fixed
