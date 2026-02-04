@@ -546,6 +546,168 @@ describe('Multi-Agent Nodes', () => {
         currentWorkload: 5,
       });
     });
+
+    it('should decrement workload on task failure/error', async () => {
+      const executeFn = vi.fn().mockRejectedValue(new Error('Execution failed'));
+
+      const config: WorkerConfig = {
+        id: 'worker1',
+        capabilities: {
+          skills: ['skill1'],
+          tools: [],
+          available: true,
+          currentWorkload: 0,
+        },
+        executeFn,
+      };
+
+      const stateWithWorkload: MultiAgentStateType = {
+        ...mockState,
+        workers: {
+          ...mockState.workers,
+          'worker1': {
+            skills: ['skill1'],
+            tools: [],
+            available: true,
+            currentWorkload: 3, // Has workload
+          },
+        },
+        activeAssignments: [{
+          id: 'task1',
+          workerId: 'worker1',
+          task: 'Test task',
+          priority: 1,
+          assignedAt: Date.now(),
+        }],
+      };
+
+      const node = createWorkerNode(config);
+      const result = await node(stateWithWorkload);
+
+      // Should decrement workload even on error
+      // 3 - 1 = 2
+      expect(result.workers).toBeDefined();
+      expect(result.workers!['worker1'].currentWorkload).toBe(2);
+
+      // Should also create error result
+      expect(result.completedTasks).toHaveLength(1);
+      expect(result.completedTasks![0].success).toBe(false);
+    });
+  });
+
+  describe('Supervisor - Error Handling', () => {
+    it('should return failed status when worker ID is missing from state.workers', async () => {
+      const config: SupervisorConfig = {
+        strategy: 'rule-based',
+        // Custom routing function that returns a non-existent worker ID
+        routingFn: async () => ({
+          targetAgents: ['nonexistent-worker'],
+          reasoning: 'Test routing to non-existent worker',
+          confidence: 1.0,
+        }),
+      };
+
+      const node = createSupervisorNode(config);
+
+      // Should return failed status with error message
+      const result = await node(mockState);
+      expect(result.status).toBe('failed');
+      expect(result.error).toContain('Worker nonexistent-worker not found in state.workers');
+      expect(result.error).toContain('Available workers: worker1, worker2');
+    });
+  });
+
+  describe('Load-Balanced Routing with Workload', () => {
+    it('should route to worker with lower workload in load-balanced strategy', async () => {
+      const config: SupervisorConfig = {
+        strategy: 'load-balanced',
+      };
+
+      const stateWithDifferentWorkloads: MultiAgentStateType = {
+        ...mockState,
+        workers: {
+          'worker1': {
+            skills: ['skill1'],
+            tools: ['tool1'],
+            available: true,
+            currentWorkload: 5, // High workload
+          },
+          'worker2': {
+            skills: ['skill2'],
+            tools: ['tool2'],
+            available: true,
+            currentWorkload: 1, // Low workload
+          },
+        },
+      };
+
+      const node = createSupervisorNode(config);
+      const result = await node(stateWithDifferentWorkloads);
+
+      // Should route to worker2 (lower workload)
+      expect(result.currentAgent).toBe('worker2');
+
+      // Should increment worker2's workload
+      expect(result.workers!['worker2'].currentWorkload).toBe(2);
+
+      // worker1's workload should remain unchanged
+      expect(result.workers!['worker1'].currentWorkload).toBe(5);
+    });
+
+    it('should update routing decisions as workloads change', async () => {
+      const config: SupervisorConfig = {
+        strategy: 'load-balanced',
+      };
+
+      // Initial state: both workers have 0 workload
+      let currentState: MultiAgentStateType = {
+        ...mockState,
+        workers: {
+          'worker1': {
+            skills: ['skill1'],
+            tools: ['tool1'],
+            available: true,
+            currentWorkload: 0,
+          },
+          'worker2': {
+            skills: ['skill2'],
+            tools: ['tool2'],
+            available: true,
+            currentWorkload: 0,
+          },
+        },
+      };
+
+      const node = createSupervisorNode(config);
+
+      // First assignment - should go to worker1 (or worker2, both have 0)
+      const result1 = await node(currentState);
+      const firstWorker = result1.currentAgent!;
+      expect(['worker1', 'worker2']).toContain(firstWorker);
+      expect(result1.workers![firstWorker].currentWorkload).toBe(1);
+
+      // Update state with new workloads
+      currentState = {
+        ...currentState,
+        workers: result1.workers!,
+        iteration: 1,
+      };
+
+      // Second assignment - should go to the worker with lower workload
+      const result2 = await node(currentState);
+      const secondWorker = result2.currentAgent!;
+
+      // The second worker should be the one with lower workload
+      const worker1Workload = currentState.workers['worker1'].currentWorkload;
+      const worker2Workload = currentState.workers['worker2'].currentWorkload;
+
+      if (worker1Workload < worker2Workload) {
+        expect(secondWorker).toBe('worker1');
+      } else if (worker2Workload < worker1Workload) {
+        expect(secondWorker).toBe('worker2');
+      }
+      // If equal, either is acceptable
+    });
   });
 
   describe('createAggregatorNode', () => {
