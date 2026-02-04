@@ -7,6 +7,58 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.10.7] - 2026-02-04
+
+### Fixed
+
+#### @agentforge/patterns
+- **fix: Multi-agent iteration counter exponential growth** [P1 Bug]
+  - Fixed iteration counter causing exponential growth (0→1→3→7→15) instead of linear increment (0→1→2→3→4)
+  - **Problem**: Supervisor node in `packages/patterns/src/multi-agent/nodes.ts` was returning `iteration: state.iteration + 1` on line 186. Since the `iterationField` uses an **additive reducer** `(left, right) => left + right`, this caused the iteration count to double each cycle instead of incrementing by 1. This caused agents to hit `maxIterations` much earlier than intended (e.g., after 3-4 cycles instead of 10).
+  - **Solution**:
+    - Changed `iteration: state.iteration + 1` to `iteration: 1` in supervisor node (line 186)
+    - With additive reducer, returning `1` means "add 1 to current iteration"
+    - Added clarifying comment explaining the additive reducer behavior
+  - **Impact**:
+    - Multi-agent workflows now correctly track iteration count
+    - Agents can run for the full intended number of iterations
+    - Prevents premature termination due to incorrect iteration counting
+  - **Tests**: Added comprehensive test in `packages/patterns/tests/multi-agent/nodes.test.ts` verifying linear increment (0→1→2→3→4) with detailed comments explaining how the additive reducer works
+  - **Breaking Change**: None - backward compatible bug fix
+
+#### @agentforge/core
+- **fix: Tool executor invoke/execute compatibility** [P2 Bug]
+  - Fixed runtime error for tools that only implement `execute()` method
+  - **Problem**: The executor in `packages/core/src/tools/executor.ts` (lines 108-121) was always calling `tool.invoke()`, but according to the Tool interface, `execute` is **required** and `invoke` is **optional** (LangChain-compatible alias). This would cause runtime errors for:
+    - External tools (e.g., LangChain tools) that only implement `invoke`
+    - Manually created tool objects that only implement `execute`
+  - **Solution**:
+    - Updated `executeWithRetry` function to check for `invoke` first (LangChain compatibility), fall back to `execute` (required method)
+    - Throws clear error if neither method exists
+    - Uses `.call(tool, input)` to preserve correct `this` context
+  - **Impact**:
+    - Better compatibility with external tools and LangChain ecosystem
+    - Prevents cryptic "invoke is not a function" errors
+    - All AgentForge tools (created via `createTool()` or `toolBuilder()`) continue to work as they have both methods
+  - **Tests**: Added 8 comprehensive tests in `packages/core/tests/tools/executor.test.ts`:
+    - Tool with only `execute()` method (should work)
+    - Tool with only `invoke()` method (should work for LangChain compatibility)
+    - Tool with both methods (should prefer `invoke`)
+    - Tool with neither method (should throw clear error)
+    - Preserve `this` context when calling `execute`
+    - Preserve `this` context when calling `invoke`
+    - Retry logic with `execute` method
+    - Retry logic with `invoke` method
+  - **Breaking Change**: None - backward compatible bug fix
+
+### Published
+- All packages published to npm registry at version 0.10.7:
+  - @agentforge/core@0.10.7
+  - @agentforge/patterns@0.10.7
+  - @agentforge/tools@0.10.7
+  - @agentforge/testing@0.10.7
+  - @agentforge/cli@0.10.7
+
 ## [0.10.6] - 2026-02-04
 
 ### Fixed
