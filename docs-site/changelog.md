@@ -31,10 +31,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 #### @agentforge/core, @agentforge/patterns, @agentforge/tools
-- **LangChain Compatibility: invoke() is now the primary method** [Breaking Change - Deprecation]
+- **LangChain Compatibility: invoke() is now the primary method** [Deprecation]
   - **What Changed**: `invoke()` is now the primary method for tool execution, with `execute()` deprecated as an alias
   - **Migration**: Replace all `.execute(` calls with `.invoke(` in your code
-  - **Timeline**: `execute()` will be removed in v1.0.0
+  - **Timeline**: `execute()` will be removed in v1.0.0 (breaking change)
   - **Backward Compatibility**: Both methods work identically in v0.11.0 - no immediate action required
   - **Why**: Aligns AgentForge with LangChain industry standards for better ecosystem compatibility
 
