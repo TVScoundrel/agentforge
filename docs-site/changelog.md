@@ -7,6 +7,42 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.11.2] - 2026-02-04
+
+### Fixed
+
+#### @agentforge/patterns
+- **CRITICAL: Multi-Agent Workload Tracking** [P1 Priority]
+  - Fixed broken workload tracking that prevented load-balanced routing from reflecting in-flight work
+  - **Problem 1**: Workload never incremented on task assignment (supervisor node)
+    - When supervisor assigned tasks to workers, it created TaskAssignment objects but never incremented the currentWorkload counter in state
+    - Workers always appeared to have their initial workload (typically 0)
+  - **Problem 2**: Workload decrement used static config instead of state (worker node)
+    - When tasks completed, worker node decremented workload using capabilities.currentWorkload from the static config parameter
+    - Should have read from state.workers[id].currentWorkload instead
+    - This meant decrements were based on stale data, not current state
+  - **Problem 3**: Workload decrement only happened in LLM execution path
+    - Custom executeFn and ReAct agents returned directly without updating workload
+    - Only the default LLM execution path handled workload decrement
+    - This caused inconsistent workload tracking depending on execution method
+  - **Solution**:
+    - Supervisor node now increments workload for all assigned workers in state
+    - Worker node now reads current workload from state, not config
+    - Workload decrement now happens for ALL execution paths (custom executeFn, ReAct agents, and LLM execution)
+  - **Impact**:
+    - Load-balanced routing now correctly reflects in-flight work
+    - Workers with higher workload are deprioritized appropriately
+    - Workload tracking is consistent across all execution methods
+    - Fixes routing strategy that depends on accurate currentWorkload values
+
+### Published
+- All packages published to npm registry at version 0.11.2:
+  - @agentforge/core@0.11.2
+  - @agentforge/patterns@0.11.2
+  - @agentforge/tools@0.11.2
+  - @agentforge/testing@0.11.2
+  - @agentforge/cli@0.11.2
+
 ## [0.11.1] - 2026-02-04
 
 ### Fixed
