@@ -7,6 +7,65 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.11.3] - 2026-02-04
+
+### Fixed
+
+#### @agentforge/patterns
+- **CRITICAL HOTFIX: Multi-Agent Workload Tracking Completion** [Multiple P1/P2 Fixes]
+  - **Context**: Version 0.11.2 fixed workload increment/decrement basics but had critical remaining bugs
+  - **Fix 1 [P1]**: Workload now decrements on both completion AND failure
+    - **Problem**: Workload was incremented on assignment but never decremented, causing load-balanced routing to become increasingly inaccurate over time
+    - **Root Cause**: The `executeWithLLM()` helper function returned its own object that bypassed the workload decrement code. Additionally, the error handler didn't decrement workload on failure
+    - **Solution**: Moved helper function, ensured workload decrement happens AFTER all execution paths complete, added workload decrement to error handler (catch block)
+    - **Impact**: Workload now correctly decrements on both success and failure paths
+  - **Fix 2 [P2]**: Missing worker IDs now fail fast with clear error messages
+    - **Problem**: If a worker ID was routed but missing in state.workers, workload was silently not updated, creating inconsistent state and hiding configuration errors
+    - **Root Cause**: Supervisor checked `if (worker)` and silently continued if worker was undefined
+    - **Solution**: Changed to `if (!worker)` with error logging and exception throwing, listing available workers for debugging
+    - **Impact**: Configuration errors are caught immediately instead of silently ignored
+  - **Fix 3**: Custom worker updates preserved when decrementing workload
+    - **Problem**: The workload decrement logic was overwriting worker updates returned by custom executeFn or ReAct agents
+    - **Root Cause**: Code did `workers: updatedWorkers` which overwrites `executionResult.workers`
+    - **Solution**: Merge `executionResult.workers` with workload decrement instead of overwriting
+    - **Impact**: Custom execution paths can safely modify worker state (add skills, change availability, update other workers) without being overwritten
+  - **Fix 4 [P2]**: Partial executionResult.workers no longer drops other workers
+    - **Problem**: When executeFn returned only a subset of workers (e.g., just worker1), all other workers (worker2, worker3, etc.) were dropped from state
+    - **Root Cause**: Merge logic started with `executionResult.workers` instead of `state.workers`, losing all workers not in the partial update
+    - **Solution**: Always start with `state.workers` and merge in updates from `executionResult.workers`
+    - **Impact**: All workers are preserved in state even when custom execution paths return partial worker updates
+
+### Added
+
+#### @agentforge/patterns
+- **Workload Management Contract Documentation**
+  - Added comprehensive JSDoc on `createWorkerNode()` explaining that framework owns `currentWorkload` tracking
+  - Added inline comments at workload decrement location documenting the contract
+  - Added code examples showing correct and incorrect usage
+  - **Contract**: Custom executeFn should NOT modify `currentWorkload` (framework owns it), but CAN modify other worker properties (skills, availability, etc.)
+  - **Rationale**: Workload is infrastructure concern (like React owning component lifecycle), simpler mental model, prevents bugs, consistent behavior
+
+### Tests
+
+#### @agentforge/patterns
+- Added comprehensive workload tracking tests (6 new tests):
+  - Workload decrements on task failure/error
+  - Error when worker ID missing from state.workers
+  - Load-balanced routing changes after workload updates
+  - Custom executeFn worker updates preserved while decrementing workload
+  - Framework decrements workload even if executeFn modifies it (documents contract)
+  - Partial executionResult.workers doesn't drop other workers from state
+- All 28 multi-agent node tests passing
+- Total: 1011 tests passing across all packages
+
+### Published
+- All packages published to npm registry at version 0.11.3:
+  - @agentforge/core@0.11.3
+  - @agentforge/patterns@0.11.3
+  - @agentforge/tools@0.11.3
+  - @agentforge/testing@0.11.3
+  - @agentforge/cli@0.11.3
+
 ## [0.11.2] - 2026-02-04
 
 ### Fixed
