@@ -31,7 +31,7 @@ const agent = createReActAgent({
 The `askHuman` tool accepts several parameters:
 
 ```typescript
-const response = await askHuman.execute({
+const response = await askHuman.invoke({
   question: 'Do you approve this refund of $500?',
   priority: 'high',
   timeout: 60000, // 1 minute
@@ -84,14 +84,14 @@ Use priority levels to help humans triage requests:
 
 ```typescript
 // Critical approval
-await askHuman.execute({
+await askHuman.invoke({
   question: 'Delete all customer data? This cannot be undone!',
   priority: 'critical',
   suggestions: ['Cancel', 'Confirm deletion']
 });
 
 // Low priority feedback
-await askHuman.execute({
+await askHuman.invoke({
   question: 'Which color scheme do you prefer?',
   priority: 'low',
   timeout: 30000,
@@ -104,7 +104,7 @@ await askHuman.execute({
 Set timeouts to prevent agents from waiting indefinitely:
 
 ```typescript
-await askHuman.execute({
+await askHuman.invoke({
   question: 'Approve deployment to production?',
   timeout: 120000, // 2 minutes
   defaultResponse: 'no', // Safe default
@@ -122,7 +122,7 @@ await askHuman.execute({
 Pass context to help humans make informed decisions:
 
 ```typescript
-await askHuman.execute({
+await askHuman.invoke({
   question: 'Approve this refund?',
   context: {
     customerId: 'CUST-12345',
@@ -141,7 +141,7 @@ The `askHuman` tool uses LangGraph's `interrupt()` function to pause execution a
 
 ### How It Works
 
-1. Agent calls `askHuman.execute()`
+1. Agent calls `askHuman.invoke()`
 2. Tool calls `interrupt()` with the request
 3. LangGraph pauses execution and saves state
 4. Human receives request via SSE stream
@@ -247,7 +247,7 @@ const agent = createPlanExecuteAgent({
 **Planning Phase Example:**
 ```typescript
 // Agent asks for clarification before creating plan
-await askHuman.execute({
+await askHuman.invoke({
   question: 'What is the target completion date?',
   context: { phase: 'planning' },
   suggestions: ['Today', 'This week', 'This month']
@@ -257,7 +257,7 @@ await askHuman.execute({
 **Execution Phase Example:**
 ```typescript
 // Agent asks for approval during execution
-await askHuman.execute({
+await askHuman.invoke({
   question: 'Step 3 requires admin approval. Proceed?',
   context: { phase: 'execution', step: 3 },
   priority: 'high',
@@ -272,12 +272,12 @@ await askHuman.execute({
 
 ❌ **Bad:**
 ```typescript
-await askHuman.execute({ question: 'OK?' });
+await askHuman.invoke({ question: 'OK?' });
 ```
 
 ✅ **Good:**
 ```typescript
-await askHuman.execute({
+await askHuman.invoke({
   question: 'Approve refund of $500 to customer John Doe for order #12345?',
   context: { orderId: '12345', amount: 500, customer: 'John Doe' }
 });
@@ -305,14 +305,14 @@ Always use safe defaults for timeouts:
 
 ```typescript
 // ✅ Safe: Defaults to 'no' for approvals
-await askHuman.execute({
+await askHuman.invoke({
   question: 'Delete user account?',
   timeout: 60000,
   defaultResponse: 'no'
 });
 
 // ❌ Unsafe: Defaults to 'yes' for destructive action
-await askHuman.execute({
+await askHuman.invoke({
   question: 'Delete user account?',
   timeout: 60000,
   defaultResponse: 'yes' // DANGEROUS!
@@ -324,7 +324,7 @@ await askHuman.execute({
 Include relevant information to help humans decide:
 
 ```typescript
-await askHuman.execute({
+await askHuman.invoke({
   question: 'Approve this expense?',
   context: {
     amount: 5000,
@@ -341,7 +341,7 @@ await askHuman.execute({
 Help humans respond quickly with suggestions:
 
 ```typescript
-await askHuman.execute({
+await askHuman.invoke({
   question: 'How should we handle this error?',
   suggestions: [
     'Retry automatically',
@@ -358,7 +358,7 @@ Handle errors gracefully:
 
 ```typescript
 try {
-  const result = await askHuman.execute({
+  const result = await askHuman.invoke({
     question: 'Approve this action?',
     timeout: 30000,
     defaultResponse: 'no'

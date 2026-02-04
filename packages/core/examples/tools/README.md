@@ -108,7 +108,7 @@ const executor = createToolExecutor({
 });
 
 // Execute with automatic retry and timeout
-const result = await executor.execute(myTool, input);
+const result = await executor.invoke(myTool, input);
 ```
 
 ### Pattern 2: Resource Management
@@ -135,7 +135,7 @@ const dbTool = createManagedTool({
 });
 
 await dbTool.initialize();
-const result = await dbTool.execute({ query: 'SELECT * FROM users' });
+const result = await dbTool.invoke({ query: 'SELECT * FROM users' });
 await dbTool.cleanup();
 ```
 

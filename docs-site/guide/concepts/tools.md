@@ -367,7 +367,7 @@ const readJsonTool = toolBuilder()
   }))
   .implement(async ({ path }) => {
     // Use the read-file tool
-    const content = await readFileTool.execute({ path, encoding: 'utf-8' });
+    const content = await readFileTool.invoke({ path, encoding: 'utf-8' });
     return JSON.parse(content);
   })
   .build();

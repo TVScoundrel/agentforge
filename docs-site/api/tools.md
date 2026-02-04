@@ -16,7 +16,7 @@ pnpm add @agentforge/tools
 import { webSearch } from '@agentforge/tools';
 
 // Basic search (no API key needed - uses DuckDuckGo)
-const result = await webSearch.execute({
+const result = await webSearch.invoke({
   query: 'TypeScript programming language',
   maxResults: 10
 });
@@ -29,7 +29,7 @@ result.results.forEach(r => {
 
 // Premium search with Serper API (requires SERPER_API_KEY env var)
 // Get your API key at: https://serper.dev
-const premiumResult = await webSearch.execute({
+const premiumResult = await webSearch.invoke({
   query: 'Latest AI developments 2026',
   maxResults: 5,
   preferSerper: true  // Use Serper for Google search results

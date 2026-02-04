@@ -99,7 +99,7 @@ OPENAI_API_KEY=your-openai-api-key
 ```typescript
 import { webSearch } from '@agentforge/tools';
 
-const result = await webSearch.execute({
+const result = await webSearch.invoke({
   query: 'TypeScript programming language',
   maxResults: 10,
 });
@@ -113,7 +113,7 @@ console.log(result.results.length); // Number of results
 ```typescript
 import { webSearch } from '@agentforge/tools';
 
-const result = await webSearch.execute({
+const result = await webSearch.invoke({
   query: 'Latest AI developments 2026',
   maxResults: 10,
   preferSerper: true, // Use Serper if available
@@ -127,7 +127,7 @@ console.log(result.source); // 'serper' or 'duckduckgo'
 ```typescript
 import { webSearch } from '@agentforge/tools';
 
-const result = await webSearch.execute({
+const result = await webSearch.invoke({
   query: 'Python programming',
   maxResults: 5,
   timeout: 5000, // 5 second timeout
@@ -139,7 +139,7 @@ const result = await webSearch.execute({
 ```typescript
 import { webSearch } from '@agentforge/tools';
 
-const result = await webSearch.execute({
+const result = await webSearch.invoke({
   query: 'JavaScript frameworks',
   maxResults: 50, // Request up to 50 results
 });
@@ -153,7 +153,7 @@ import { webSearch } from '@agentforge/tools';
 const queries = ['TypeScript', 'Rust', 'Go'];
 const results = await Promise.all(
   queries.map((query) =>
-    webSearch.execute({
+    webSearch.invoke({
       query,
       maxResults: 5,
     })

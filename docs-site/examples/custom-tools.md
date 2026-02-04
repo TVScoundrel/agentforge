@@ -48,7 +48,7 @@ const calculatorTool = toolBuilder()
   .build();
 
 // Use the tool
-const result = await calculatorTool.execute({
+const result = await calculatorTool.invoke({
   operation: 'multiply',
   a: 6,
   b: 7

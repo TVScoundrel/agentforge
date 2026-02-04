@@ -6,16 +6,16 @@ AgentForge tools are designed to be compatible with LangChain patterns to make m
 
 ## The `invoke` Alias
 
-All AgentForge tools support both `.execute()` and `.invoke()` methods:
+All AgentForge tools support both `.invoke()` and `.invoke()` methods:
 
-- **`.execute()`** - The native AgentForge method
-- **`.invoke()`** - An alias for `.execute()` for LangChain compatibility
+- **`.invoke()`** - The native AgentForge method
+- **`.invoke()`** - An alias for `.invoke()` for LangChain compatibility
 
 Both methods do exactly the same thing and can be used interchangeably.
 
 ## Usage Examples
 
-### Using `.execute()` (AgentForge style)
+### Using `.invoke()` (AgentForge style)
 
 ```typescript
 import { toolBuilder, ToolCategory } from '@agentforge/core';
@@ -34,7 +34,7 @@ const greetTool = toolBuilder()
   .build();
 
 // AgentForge style
-const result = await greetTool.execute({ name: 'Alice' });
+const result = await greetTool.invoke({ name: 'Alice' });
 console.log(result); // "Hello, Alice!"
 ```
 
@@ -50,7 +50,7 @@ console.log(result); // "Hello, Bob!"
 
 ```typescript
 // These produce identical results
-const result1 = await greetTool.execute({ name: 'Charlie' });
+const result1 = await greetTool.invoke({ name: 'Charlie' });
 const result2 = await greetTool.invoke({ name: 'Charlie' });
 
 console.log(result1 === result2); // true
@@ -74,7 +74,7 @@ const result = await myAgentForgeTool.invoke({ input: 'data' });
 
 You can use whichever method feels more natural to you:
 
-- **`.execute()`** - More explicit about what's happening
+- **`.invoke()`** - More explicit about what's happening
 - **`.invoke()`** - Shorter and familiar to LangChain users
 
 ## Implementation Details
@@ -103,17 +103,17 @@ const tool = toolBuilder()
   .build();
 
 // TypeScript knows the input type for both methods
-const result1 = await tool.execute({ a: 1, b: 2 }); // ✅ Type-safe
+const result1 = await tool.invoke({ a: 1, b: 2 }); // ✅ Type-safe
 const result2 = await tool.invoke({ a: 1, b: 2 });  // ✅ Type-safe
 
 // TypeScript catches errors for both methods
-await tool.execute({ a: 'wrong' }); // ❌ Type error
+await tool.invoke({ a: 'wrong' }); // ❌ Type error
 await tool.invoke({ a: 'wrong' });  // ❌ Type error
 ```
 
 ## Best Practices
 
-1. **Choose one style and stick with it** - For consistency, pick either `.execute()` or `.invoke()` and use it throughout your codebase
+1. **Choose one style and stick with it** - For consistency, pick either `.invoke()` or `.invoke()` and use it throughout your codebase
 
 2. **Document your choice** - If you're building a library or framework, document which method you use in your examples
 
