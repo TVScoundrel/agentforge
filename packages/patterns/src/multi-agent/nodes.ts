@@ -170,11 +170,26 @@ export function createSupervisorNode(config: SupervisorConfig) {
         },
       }));
 
+      // Increment workload for all assigned workers
+      const updatedWorkers = { ...state.workers };
+      for (const assignment of assignments) {
+        const worker = updatedWorkers[assignment.workerId];
+        if (worker) {
+          updatedWorkers[assignment.workerId] = {
+            ...worker,
+            currentWorkload: worker.currentWorkload + 1,
+          };
+        }
+      }
+
       logger.info('Supervisor routing complete', {
         currentAgent: targetAgents.join(','),
         status: 'executing',
         assignmentCount: assignments.length,
-        nextIteration: state.iteration + 1
+        nextIteration: state.iteration + 1,
+        workloadUpdates: Object.entries(updatedWorkers)
+          .filter(([id]) => targetAgents.includes(id))
+          .map(([id, caps]) => ({ workerId: id, newWorkload: caps.currentWorkload }))
       });
 
       return {
@@ -183,6 +198,7 @@ export function createSupervisorNode(config: SupervisorConfig) {
         routingHistory: [decision],
         activeAssignments: assignments, // Multiple assignments for parallel execution!
         messages,
+        workers: updatedWorkers, // Include updated workload
         // Add 1 to iteration counter (uses additive reducer)
         iteration: 1,
       };
@@ -245,25 +261,24 @@ export function createWorkerNode(config: WorkerConfig) {
         taskPreview: currentAssignment.task.substring(0, 100)
       });
 
+      // Execute the task using one of the available methods
+      let executionResult: Partial<MultiAgentStateType>;
+
       // Priority 1: Use custom execution function if provided
       if (executeFn) {
         logger.debug('Using custom execution function', { workerId: id });
-        return await executeFn(state, runConfig);
+        executionResult = await executeFn(state, runConfig);
       }
-
       // Priority 2: Use ReAct agent if provided
-      if (agent) {
-        if (isReActAgent(agent)) {
-          logger.debug('Using ReAct agent', { workerId: id });
-          const wrappedFn = wrapReActAgent(id, agent, verbose);
-          return await wrappedFn(state, runConfig);
-        } else {
-          logger.warn('Agent provided but not a ReAct agent, falling back', { workerId: id });
-        }
+      else if (agent && isReActAgent(agent)) {
+        logger.debug('Using ReAct agent', { workerId: id });
+        const wrappedFn = wrapReActAgent(id, agent, verbose);
+        executionResult = await wrappedFn(state, runConfig);
       }
-
       // Priority 3: Default execution using LLM
-      if (!model) {
+      else if (model) {
+        executionResult = await executeWithLLM();
+      } else {
         logger.error('Worker missing required configuration', { workerId: id });
         throw new Error(
           `Worker ${id} requires either a model, an agent, or a custom execution function. ` +
@@ -271,93 +286,104 @@ export function createWorkerNode(config: WorkerConfig) {
         );
       }
 
-      logger.debug('Using default LLM execution', {
-        workerId: id,
-        hasTools: tools.length > 0,
-        toolCount: tools.length
-      });
-
-      const defaultSystemPrompt = `You are a specialized worker agent with the following capabilities:
-Skills: ${capabilities.skills.join(', ')}
-Tools: ${capabilities.tools.join(', ')}
-
-Execute the assigned task using your skills and tools. Provide a clear, actionable result.`;
-
-      const messages = [
-        new SystemMessage(systemPrompt || defaultSystemPrompt),
-        new HumanMessage(currentAssignment.task),
-      ];
-
-      // Bind tools if available
-      let modelToUse: any = model;
-      if (tools.length > 0 && model.bindTools) {
-        logger.debug('Binding tools to model', {
-          workerId: id,
-          toolCount: tools.length,
-          toolNames: tools.map(t => t.metadata.name)
-        });
-        const langchainTools = toLangChainTools(tools);
-        modelToUse = model.bindTools(langchainTools);
-      }
-
-      logger.debug('Invoking LLM', { workerId: id });
-      const response = await modelToUse.invoke(messages);
-      const result = typeof response.content === 'string'
-        ? response.content
-        : JSON.stringify(response.content);
-
-      logger.info('Worker task completed', {
-        workerId: id,
-        assignmentId: currentAssignment.id,
-        resultLength: result.length,
-        resultPreview: result.substring(0, 100)
-      });
-
-      // Create task result
-      const taskResult: TaskResult = {
-        assignmentId: currentAssignment.id,
-        workerId: id,
-        success: true,
-        result,
-        completedAt: Date.now(),
-        metadata: {
-          skills_used: capabilities.skills,
-        },
-      };
-
-      // Create completion message
-      const message: AgentMessage = {
-        id: `msg-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
-        from: id,
-        to: ['supervisor'],
-        type: 'task_result',
-        content: result,
-        timestamp: Date.now(),
-        metadata: {
-          assignmentId: currentAssignment.id,
-          success: true,
-        },
-      };
-
-      // Update worker workload
+      // Update worker workload - read from state, not config
+      // This happens for ALL execution paths (custom, ReAct, or LLM)
+      const currentWorker = state.workers[id];
       const updatedWorkers = {
         ...state.workers,
         [id]: {
-          ...capabilities,
-          currentWorkload: Math.max(0, capabilities.currentWorkload - 1),
+          ...currentWorker,
+          currentWorkload: Math.max(0, currentWorker.currentWorkload - 1),
         },
       };
 
       logger.debug('Worker state update', {
         workerId: id,
+        previousWorkload: currentWorker.currentWorkload,
         newWorkload: updatedWorkers[id].currentWorkload
       });
 
+      // Merge workload update with execution result
       return {
-        completedTasks: [taskResult],
-        messages: [message],
+        ...executionResult,
         workers: updatedWorkers,
       };
+
+      // Helper function for default LLM execution
+      async function executeWithLLM(): Promise<Partial<MultiAgentStateType>> {
+        logger.debug('Using default LLM execution', {
+          workerId: id,
+          hasTools: tools.length > 0,
+          toolCount: tools.length
+        });
+
+        const defaultSystemPrompt = `You are a specialized worker agent with the following capabilities:
+Skills: ${capabilities.skills.join(', ')}
+Tools: ${capabilities.tools.join(', ')}
+
+Execute the assigned task using your skills and tools. Provide a clear, actionable result.`;
+
+        const messages = [
+          new SystemMessage(systemPrompt || defaultSystemPrompt),
+          new HumanMessage(currentAssignment!.task),
+        ];
+
+        // Bind tools if available
+        let modelToUse: any = model;
+        if (tools.length > 0 && model!.bindTools) {
+          logger.debug('Binding tools to model', {
+            workerId: id,
+            toolCount: tools.length,
+            toolNames: tools.map(t => t.metadata.name)
+          });
+          const langchainTools = toLangChainTools(tools);
+          modelToUse = model!.bindTools(langchainTools);
+        }
+
+        logger.debug('Invoking LLM', { workerId: id });
+        const response = await modelToUse.invoke(messages);
+        const result = typeof response.content === 'string'
+          ? response.content
+          : JSON.stringify(response.content);
+
+        logger.info('Worker task completed', {
+          workerId: id,
+          assignmentId: currentAssignment!.id,
+          resultLength: result.length,
+          resultPreview: result.substring(0, 100)
+        });
+
+        // Create task result
+        const taskResult: TaskResult = {
+          assignmentId: currentAssignment!.id,
+          workerId: id,
+          success: true,
+          result,
+          completedAt: Date.now(),
+          metadata: {
+            skills_used: capabilities.skills,
+          },
+        };
+
+        // Create completion message
+        const message: AgentMessage = {
+          id: `msg-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+          from: id,
+          to: ['supervisor'],
+          type: 'task_result',
+          content: result,
+          timestamp: Date.now(),
+          metadata: {
+            assignmentId: currentAssignment!.id,
+            success: true,
+          },
+        };
+
+        return {
+          completedTasks: [taskResult],
+          messages: [message],
+        };
+      }
     } catch (error) {
       // Handle error with proper GraphInterrupt detection
       const errorMessage = handleNodeError(error, `worker:${id}`, false);
