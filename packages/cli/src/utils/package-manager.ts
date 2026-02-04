@@ -110,3 +110,31 @@ export function getRunCommand(packageManager: PackageManager, script: string): s
   return commands[packageManager];
 }
 
+/**
+ * Publish a package to npm
+ *
+ * @param cwd - Working directory
+ * @param options - Publish options
+ */
+export async function publishPackage(
+  cwd: string,
+  options: {
+    tag?: string;
+    access?: 'public' | 'restricted';
+    dryRun?: boolean;
+  } = {}
+): Promise<void> {
+  const { tag = 'latest', access = 'public', dryRun = false } = options;
+
+  const args = ['publish', '--access', access, '--tag', tag];
+
+  if (dryRun) {
+    args.push('--dry-run');
+  }
+
+  await execa('npm', args, {
+    cwd,
+    stdio: 'inherit',
+  });
+}
+

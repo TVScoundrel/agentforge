@@ -80,10 +80,16 @@ export function createStateAnnotation<
         reducer: channelConfig.reducer,
         default: channelConfig.default,
       });
+    } else if (channelConfig.default) {
+      // For simple channels with defaults, use a "last value wins" reducer
+      // This is necessary because LangGraph's Annotation() doesn't support
+      // defaults for LastValue channels - only for channels with reducers
+      stateDefinition[key] = Annotation<any>({
+        reducer: (_left: any, right: any) => right,
+        default: channelConfig.default,
+      });
     } else {
-      // Use LastValue for simple channels
-      // Note: LangGraph's Annotation doesn't support default for LastValue channels
-      // Defaults must be handled at the application level
+      // Use LastValue for simple channels without defaults
       stateDefinition[key] = Annotation<any>();
     }
   }

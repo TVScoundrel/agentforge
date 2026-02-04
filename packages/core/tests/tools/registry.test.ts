@@ -145,6 +145,42 @@ describe('ToolRegistry', () => {
       const updated = registry.update('non-existent', tool);
       expect(updated).toBe(false);
     });
+
+    it('should prevent desync when tool is renamed via update', () => {
+      // Register a tool with original name
+      const tool1 = toolBuilder()
+        .name('original-name')
+        .description('Original tool')
+        .category(ToolCategory.UTILITY)
+        .schema(z.object({ input: z.string().describe('Input') }))
+        .implement(async ({ input }) => input)
+        .build();
+
+      registry.register(tool1);
+
+      // Try to update with a tool that has a different name
+      const tool2 = toolBuilder()
+        .name('renamed-tool')
+        .description('Renamed tool')
+        .category(ToolCategory.UTILITY)
+        .schema(z.object({ input: z.string().describe('Input') }))
+        .implement(async ({ input }) => input.toUpperCase())
+        .build();
+
+      // Should throw an error to prevent desync
+      expect(() => {
+        registry.update('original-name', tool2);
+      }).toThrow(/Cannot update tool: metadata\.name "renamed-tool" does not match registry key "original-name"/);
+
+      // Verify the original tool is still in place and unchanged
+      const retrieved = registry.get('original-name');
+      expect(retrieved).toBeDefined();
+      expect(retrieved?.metadata.name).toBe('original-name');
+      expect(retrieved?.metadata.description).toBe('Original tool');
+
+      // Verify the new name doesn't exist
+      expect(registry.has('renamed-tool')).toBe(false);
+    });
   });
 
   describe('Query Operations', () => {

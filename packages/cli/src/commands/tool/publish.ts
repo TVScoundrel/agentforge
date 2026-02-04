@@ -1,6 +1,6 @@
 import chalk from 'chalk';
 import { logger } from '../../utils/logger.js';
-import { runScript, detectPackageManager } from '../../utils/package-manager.js';
+import { runScript, detectPackageManager, publishPackage } from '../../utils/package-manager.js';
 
 interface ToolPublishOptions {
   tag?: string;
@@ -49,24 +49,51 @@ export async function toolPublishCommand(
     }
 
     // Publish to npm
-    if (!options.dryRun) {
-      logger.startSpinner('Publishing to npm...');
-      
-      // TODO: Implement actual npm publish logic
-      // This would typically involve:
-      // 1. Checking npm credentials
-      // 2. Updating version
-      // 3. Publishing to npm registry
-      
-      await new Promise((resolve) => setTimeout(resolve, 2000));
-      logger.succeedSpinner('Published to npm');
+    logger.startSpinner(options.dryRun ? 'Running dry-run publish...' : 'Publishing to npm...');
+    try {
+      await publishPackage(cwd, {
+        tag: options.tag,
+        access: 'public',
+        dryRun: options.dryRun,
+      });
+
+      if (options.dryRun) {
+        logger.succeedSpinner('Dry-run completed - no actual publishing occurred');
+      } else {
+        logger.succeedSpinner('Published to npm');
+      }
+    } catch (error: any) {
+      logger.failSpinner('Publishing failed');
+
+      // Provide helpful error messages for common issues
+      if (error.message.includes('ENEEDAUTH') || error.message.includes('E401')) {
+        logger.error('Not authenticated with npm');
+        logger.info('Run: npm login');
+      } else if (error.message.includes('E403')) {
+        logger.error('Permission denied - you may not have access to publish this package');
+        logger.info('Check package name and npm organization permissions');
+      } else if (error.message.includes('EPUBLISHCONFLICT') || error.message.includes('E409')) {
+        logger.error('Version already published');
+        logger.info('Update the version in package.json before publishing');
+      } else {
+        logger.error(error.message);
+      }
+
+      process.exit(1);
     }
 
     logger.newLine();
-    logger.success(chalk.bold.green('✨ Tool published successfully!'));
-    logger.newLine();
-    logger.info('Note: Actual npm publishing implementation coming soon');
-    logger.info('For now, please use npm publish manually');
+
+    if (options.dryRun) {
+      logger.success(chalk.bold.green('✨ Dry-run completed successfully!'));
+      logger.newLine();
+      logger.info('No changes were made. Remove --dry-run to publish for real.');
+    } else {
+      logger.success(chalk.bold.green('✨ Tool published successfully!'));
+      logger.newLine();
+      logger.info(`Published ${chalk.cyan(name)} with tag ${chalk.cyan(options.tag || 'latest')}`);
+      logger.info('Users can now install with: npm install ' + name);
+    }
   } catch (error: any) {
     logger.failSpinner('Publishing failed');
     logger.error(error.message);

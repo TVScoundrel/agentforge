@@ -193,6 +193,7 @@ export class ToolRegistry {
    * @param name - The tool name
    * @param tool - The new tool definition
    * @returns True if updated, false if the tool didn't exist
+   * @throws Error if the tool's metadata.name doesn't match the name parameter
    *
    * @example
    * ```ts
@@ -202,6 +203,14 @@ export class ToolRegistry {
   update(name: string, tool: Tool<any, any>): boolean {
     if (!this.tools.has(name)) {
       return false;
+    }
+
+    // Prevent desync: ensure the tool's metadata.name matches the Map key
+    if (tool.metadata.name !== name) {
+      throw new Error(
+        `Cannot update tool: metadata.name "${tool.metadata.name}" does not match registry key "${name}". ` +
+        `To rename a tool, remove it and register it again with the new name.`
+      );
     }
 
     this.tools.set(name, tool);

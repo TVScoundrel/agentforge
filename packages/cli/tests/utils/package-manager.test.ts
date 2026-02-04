@@ -6,6 +6,7 @@ import {
   installDependencies,
   addDependency,
   runScript,
+  publishPackage,
   type PackageManager,
 } from '../../src/utils/package-manager.js';
 import fs from 'fs-extra';
@@ -276,6 +277,67 @@ describe('Package Manager Utils', () => {
       await runScript('/test', 'lint');
 
       expect(execa).toHaveBeenCalledWith('pnpm', ['run', 'lint'], {
+        cwd: '/test',
+        stdio: 'inherit',
+      });
+    });
+  });
+
+  describe('publishPackage', () => {
+    it('should publish with default options', async () => {
+      vi.mocked(execa).mockResolvedValueOnce({} as any);
+
+      await publishPackage('/test');
+
+      expect(execa).toHaveBeenCalledWith('npm', ['publish', '--access', 'public', '--tag', 'latest'], {
+        cwd: '/test',
+        stdio: 'inherit',
+      });
+    });
+
+    it('should publish with custom tag', async () => {
+      vi.mocked(execa).mockResolvedValueOnce({} as any);
+
+      await publishPackage('/test', { tag: 'beta' });
+
+      expect(execa).toHaveBeenCalledWith('npm', ['publish', '--access', 'public', '--tag', 'beta'], {
+        cwd: '/test',
+        stdio: 'inherit',
+      });
+    });
+
+    it('should publish with restricted access', async () => {
+      vi.mocked(execa).mockResolvedValueOnce({} as any);
+
+      await publishPackage('/test', { access: 'restricted' });
+
+      expect(execa).toHaveBeenCalledWith('npm', ['publish', '--access', 'restricted', '--tag', 'latest'], {
+        cwd: '/test',
+        stdio: 'inherit',
+      });
+    });
+
+    it('should run dry-run publish', async () => {
+      vi.mocked(execa).mockResolvedValueOnce({} as any);
+
+      await publishPackage('/test', { dryRun: true });
+
+      expect(execa).toHaveBeenCalledWith('npm', ['publish', '--access', 'public', '--tag', 'latest', '--dry-run'], {
+        cwd: '/test',
+        stdio: 'inherit',
+      });
+    });
+
+    it('should publish with all options', async () => {
+      vi.mocked(execa).mockResolvedValueOnce({} as any);
+
+      await publishPackage('/test', {
+        tag: 'next',
+        access: 'restricted',
+        dryRun: true,
+      });
+
+      expect(execa).toHaveBeenCalledWith('npm', ['publish', '--access', 'restricted', '--tag', 'next', '--dry-run'], {
         cwd: '/test',
         stdio: 'inherit',
       });

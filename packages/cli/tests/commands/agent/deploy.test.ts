@@ -10,42 +10,31 @@ describe('agent:deploy command', () => {
     vi.spyOn(process, 'exit').mockImplementation(() => undefined as never);
   });
 
-  it('should deploy agent to production', async () => {
+  it('should show error and deployment instructions', async () => {
     await agentDeployCommand('myAgent', {});
 
     expect(logger.logger.info).toHaveBeenCalledWith(expect.stringContaining('myAgent'));
     expect(logger.logger.info).toHaveBeenCalledWith(expect.stringContaining('production'));
-    expect(logger.logger.succeedSpinner).toHaveBeenCalledWith('Agent deployed successfully');
-    expect(logger.logger.success).toHaveBeenCalled();
+    expect(logger.logger.error).toHaveBeenCalledWith('Automated agent deployment is not yet implemented');
+    expect(logger.logger.info).toHaveBeenCalledWith(expect.stringContaining('Docker Deployment'));
+    expect(logger.logger.info).toHaveBeenCalledWith(expect.stringContaining('Kubernetes Deployment'));
+    expect(logger.logger.info).toHaveBeenCalledWith(expect.stringContaining('Serverless Deployment'));
+    expect(process.exit).toHaveBeenCalledWith(1);
   });
 
-  it('should deploy agent to specific environment', async () => {
+  it('should show environment in output', async () => {
     await agentDeployCommand('myAgent', { environment: 'staging' });
 
     expect(logger.logger.info).toHaveBeenCalledWith(expect.stringContaining('staging'));
+    expect(process.exit).toHaveBeenCalledWith(1);
   });
 
-  it('should run in dry-run mode', async () => {
+  it('should show deployment instructions regardless of dry-run flag', async () => {
     await agentDeployCommand('myAgent', { dryRun: true });
 
-    expect(logger.logger.warn).toHaveBeenCalledWith(expect.stringContaining('Dry run'));
-    expect(logger.logger.succeedSpinner).toHaveBeenCalledWith('Deployment prepared');
-    expect(logger.logger.succeedSpinner).not.toHaveBeenCalledWith('Agent deployed successfully');
-  });
-
-  it('should handle errors gracefully', async () => {
-    // Mock setTimeout to throw error
-    vi.spyOn(global, 'setTimeout').mockImplementation(() => {
-      throw new Error('Deployment failed');
-    });
-
-    await agentDeployCommand('errorAgent', {});
-
-    expect(logger.logger.failSpinner).toHaveBeenCalledWith('Deployment failed');
-    expect(logger.logger.error).toHaveBeenCalled();
+    expect(logger.logger.error).toHaveBeenCalledWith('Automated agent deployment is not yet implemented');
+    expect(logger.logger.info).toHaveBeenCalledWith(expect.stringContaining('deployment methods'));
     expect(process.exit).toHaveBeenCalledWith(1);
-
-    vi.restoreAllMocks();
   });
 });
 
