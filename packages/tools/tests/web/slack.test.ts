@@ -101,7 +101,7 @@ describe('Slack Tools', () => {
 
       mockPostMessage.mockResolvedValueOnce(mockResponse);
 
-      const result = await sendSlackMessage.execute({
+      const result = await sendSlackMessage.invoke({
         channel: 'general',
         message: 'Hello, world!',
       });
@@ -132,7 +132,7 @@ describe('Slack Tools', () => {
       vi.resetModules();
 
       const { sendSlackMessage: freshTool } = await import('../../src/web/slack/index.js');
-      const result = await freshTool.execute({
+      const result = await freshTool.invoke({
         channel: 'general',
         message: 'test',
       });
@@ -147,7 +147,7 @@ describe('Slack Tools', () => {
 
       mockPostMessage.mockRejectedValueOnce(mockError);
 
-      const result = await sendSlackMessage.execute({
+      const result = await sendSlackMessage.invoke({
         channel: 'nonexistent',
         message: 'test',
       });
@@ -171,7 +171,7 @@ describe('Slack Tools', () => {
 
       mockPostMessage.mockResolvedValueOnce(mockResponse);
 
-      const result = await notifySlack.execute({
+      const result = await notifySlack.invoke({
         channel: 'alerts',
         message: 'System alert!',
       });
@@ -204,7 +204,7 @@ describe('Slack Tools', () => {
 
       mockPostMessage.mockResolvedValueOnce(mockResponse);
 
-      const result = await notifySlack.execute({
+      const result = await notifySlack.invoke({
         channel: 'alerts',
         message: 'Critical issue!',
         mentions: ['john', 'jane'],
@@ -246,7 +246,7 @@ describe('Slack Tools', () => {
 
       mockConversationsList.mockResolvedValueOnce(mockResponse);
 
-      const result = await getSlackChannels.execute({
+      const result = await getSlackChannels.invoke({
         include_private: false,
       });
 
@@ -283,7 +283,7 @@ describe('Slack Tools', () => {
         .mockResolvedValueOnce(mockPublicResponse)
         .mockResolvedValueOnce(mockPrivateResponse);
 
-      const result = await getSlackChannels.execute({
+      const result = await getSlackChannels.invoke({
         include_private: true,
       });
 
@@ -336,7 +336,7 @@ describe('Slack Tools', () => {
 
       mockConversationsHistory.mockResolvedValueOnce(mockResponse);
 
-      const result = await getSlackMessages.execute({
+      const result = await getSlackMessages.invoke({
         channel: 'C123456',
         limit: 20,
       });
@@ -381,7 +381,7 @@ describe('Slack Tools', () => {
       mockConversationsList.mockResolvedValueOnce(mockChannelsResponse);
       mockConversationsHistory.mockResolvedValueOnce(mockMessagesResponse);
 
-      const result = await getSlackMessages.execute({
+      const result = await getSlackMessages.invoke({
         channel: 'general',
         limit: 10,
       });
@@ -406,7 +406,7 @@ describe('Slack Tools', () => {
 
       mockConversationsList.mockResolvedValueOnce(mockChannelsResponse);
 
-      const result = await getSlackMessages.execute({
+      const result = await getSlackMessages.invoke({
         channel: 'nonexistent',
         limit: 10,
       });
@@ -430,7 +430,7 @@ describe('Slack Tools', () => {
 
       mockConversationsHistory.mockResolvedValueOnce(mockResponse);
 
-      const result = await getSlackMessages.execute({
+      const result = await getSlackMessages.invoke({
         channel: 'C123456',
         limit: 50,
       });
@@ -451,7 +451,7 @@ describe('Slack Tools', () => {
 
       mockConversationsHistory.mockResolvedValueOnce(mockResponse);
 
-      const result = await getSlackMessages.execute({
+      const result = await getSlackMessages.invoke({
         channel: 'C123456',
         limit: 200,
       });
@@ -472,7 +472,7 @@ describe('Slack Tools', () => {
 
       mockConversationsHistory.mockResolvedValueOnce(mockResponse);
 
-      const result = await getSlackMessages.execute({
+      const result = await getSlackMessages.invoke({
         channel: 'C123456',
         limit: 10,
       });
@@ -497,7 +497,7 @@ describe('Slack Tools', () => {
         token: 'xoxb-custom-token',
       });
 
-      const result = await tools.sendMessage.execute({
+      const result = await tools.sendMessage.invoke({
         channel: 'general',
         message: 'Test with custom token',
       });
@@ -525,7 +525,7 @@ describe('Slack Tools', () => {
         botIcon: ':rocket:',
       });
 
-      await tools.sendMessage.execute({
+      await tools.sendMessage.invoke({
         channel: 'general',
         message: 'Test message',
       });
@@ -551,7 +551,7 @@ describe('Slack Tools', () => {
 
       const tools = createSlackTools({});
 
-      await tools.sendMessage.execute({
+      await tools.sendMessage.invoke({
         channel: 'general',
         message: 'Test',
       });
@@ -565,7 +565,7 @@ describe('Slack Tools', () => {
 
       const tools = createSlackTools({});
 
-      const result = await tools.sendMessage.execute({
+      const result = await tools.sendMessage.invoke({
         channel: 'general',
         message: 'Test',
       });
