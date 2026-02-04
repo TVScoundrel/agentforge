@@ -137,6 +137,40 @@ describe('Multi-Agent Nodes', () => {
       expect(result.status).toBe('failed');
       expect(result.error).toBeDefined();
     });
+
+    it('should increment iteration counter linearly with additive reducer', async () => {
+      const config: SupervisorConfig = {
+        strategy: 'round-robin',
+      };
+
+      const node = createSupervisorNode(config);
+
+      // Simulate multiple routing cycles
+      // The iteration field uses an additive reducer: (left, right) => left + right
+      // So returning iteration: 1 means "add 1 to current iteration"
+
+      // Cycle 1: iteration starts at 0
+      const result1 = await node({ ...mockState, iteration: 0 });
+      expect(result1.iteration).toBe(1); // Should return 1, which gets added to 0 → 1
+
+      // Cycle 2: iteration is now 1
+      const result2 = await node({ ...mockState, iteration: 1 });
+      expect(result2.iteration).toBe(1); // Should return 1, which gets added to 1 → 2
+
+      // Cycle 3: iteration is now 2
+      const result3 = await node({ ...mockState, iteration: 2 });
+      expect(result3.iteration).toBe(1); // Should return 1, which gets added to 2 → 3
+
+      // Cycle 4: iteration is now 3
+      const result4 = await node({ ...mockState, iteration: 3 });
+      expect(result4.iteration).toBe(1); // Should return 1, which gets added to 3 → 4
+
+      // If the bug existed (returning state.iteration + 1), we would see:
+      // Cycle 1: 0 + (0 + 1) = 1 ✓
+      // Cycle 2: 1 + (1 + 1) = 3 ✗ (should be 2)
+      // Cycle 3: 3 + (3 + 1) = 7 ✗ (should be 3)
+      // Cycle 4: 7 + (7 + 1) = 15 ✗ (should be 4)
+    });
   });
 
   describe('createWorkerNode', () => {

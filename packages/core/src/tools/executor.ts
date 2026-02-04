@@ -110,14 +110,21 @@ export function createToolExecutor(config: ToolExecutorConfig = {}) {
     input: any,
     policy?: RetryPolicy
   ): Promise<any> {
+    // Use invoke if available (LangChain compatibility), otherwise use execute (required)
+    const executeFn = tool.invoke || tool.execute;
+
+    if (!executeFn) {
+      throw new Error('Tool must implement either invoke() or execute() method');
+    }
+
     if (!policy) {
-      return await tool.invoke(input);
+      return await executeFn.call(tool, input);
     }
 
     let lastError: Error | undefined;
     for (let attempt = 1; attempt <= policy.maxAttempts; attempt++) {
       try {
-        return await tool.invoke(input);
+        return await executeFn.call(tool, input);
       } catch (error) {
         lastError = error as Error;
 

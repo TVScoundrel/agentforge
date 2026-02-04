@@ -183,7 +183,8 @@ export function createSupervisorNode(config: SupervisorConfig) {
         routingHistory: [decision],
         activeAssignments: assignments, // Multiple assignments for parallel execution!
         messages,
-        iteration: state.iteration + 1,
+        // Add 1 to iteration counter (uses additive reducer)
+        iteration: 1,
       };
     } catch (error) {
       logger.error('Supervisor node error', {
