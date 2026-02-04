@@ -199,8 +199,8 @@ async function testTools() {
 
   const input = { text: 'hello world', format: 'titlecase' as const };
 
-  const manualResult = await manualTool.execute(input);
-  const builderResult = await builderTool.execute(input);
+  const manualResult = await manualTool.invoke(input);
+  const builderResult = await builderTool.invoke(input);
 
   console.log('Input:', input);
   console.log('Manual Tool Result:', manualResult);

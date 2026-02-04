@@ -52,7 +52,7 @@ async function main() {
 
   for (let i = 0; i < 8; i++) {
     try {
-      const result = await breaker.execute(() => unstableAPI.call(`request-${i + 1}`));
+      const result = await breaker.invoke(() => unstableAPI.call(`request-${i + 1}`));
       console.log(`  Result ${i + 1}: ${result}`);
     } catch (error) {
       console.log(`  Request ${i + 1} failed: ${(error as Error).message}`);
@@ -86,7 +86,7 @@ async function main() {
   console.log('  Triggering failures...');
   for (let i = 0; i < 4; i++) {
     try {
-      await recoveryBreaker.execute(() => unstableAPI.call(`request-${i + 1}`));
+      await recoveryBreaker.invoke(() => unstableAPI.call(`request-${i + 1}`));
     } catch (error) {
       // Ignore failures
     }
@@ -100,7 +100,7 @@ async function main() {
   failureCount = 10; // Make next calls succeed
 
   try {
-    const result = await recoveryBreaker.execute(() => unstableAPI.call('recovery-test'));
+    const result = await recoveryBreaker.invoke(() => unstableAPI.call('recovery-test'));
     console.log(`  Recovery successful: ${result}`);
   } catch (error) {
     console.log(`  Recovery failed: ${(error as Error).message}`);
@@ -121,7 +121,7 @@ async function main() {
 
   const callWithFallback = async (input: string): Promise<string> => {
     try {
-      return await fallbackBreaker.execute(() => unstableAPI.call(input));
+      return await fallbackBreaker.invoke(() => unstableAPI.call(input));
     } catch (error) {
       if ((error as Error).message === 'Circuit breaker is open') {
         console.log('  Using fallback response');
@@ -169,7 +169,7 @@ async function main() {
 
   for (const code of testCodes) {
     try {
-      const result = await selectiveBreaker.execute(() => apiWithErrors.call(code));
+      const result = await selectiveBreaker.invoke(() => apiWithErrors.call(code));
       console.log(`  ${code}: ${result}`);
     } catch (error) {
       console.log(`  ${code}: ${(error as Error).message}`);

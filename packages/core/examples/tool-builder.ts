@@ -163,7 +163,7 @@ async function main() {
   console.log('   Name:', calculatorTool.metadata.name);
   console.log('   Description:', calculatorTool.metadata.description);
   
-  const calcResult = await calculatorTool.execute({ a: 6, b: 7 });
+  const calcResult = await calculatorTool.invoke({ a: 6, b: 7 });
   console.log(`   Result: 6 × 7 = ${calcResult}\n`);
 
   // Example 2: File Search
@@ -174,7 +174,7 @@ async function main() {
   console.log('   Examples:', searchFilesTool.metadata.examples?.length);
   console.log('   Limitations:', searchFilesTool.metadata.limitations?.length);
   
-  const searchResult = await searchFilesTool.execute({
+  const searchResult = await searchFilesTool.invoke({
     directory: './src',
     pattern: '*.ts',
     recursive: true,
@@ -187,7 +187,7 @@ async function main() {
   console.log('   HTTP GET:', httpGetTool.metadata.name);
   console.log('   HTTP POST:', httpPostTool.metadata.name);
   
-  const getResult = await httpGetTool.execute({
+  const getResult = await httpGetTool.invoke({
     url: 'https://api.example.com/data',
     headers: { 'Authorization': 'Bearer token' },
   });

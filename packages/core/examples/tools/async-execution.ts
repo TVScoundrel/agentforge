@@ -77,7 +77,7 @@ async function main() {
 
   // Example 1: Execute single tool
   console.log('1. Single tool execution:');
-  const result1 = await executor.execute(searchTool, 'TypeScript');
+  const result1 = await executor.invoke(searchTool, 'TypeScript');
   console.log('Result:', result1);
   console.log();
 
@@ -94,10 +94,10 @@ async function main() {
   // Example 3: Priority-based execution
   console.log('3. Priority-based execution:');
   const promises = [
-    executor.execute(processTool, { data: 'low priority' }, { priority: 'low' }),
-    executor.execute(searchTool, 'high priority', { priority: 'high' }),
-    executor.execute(fetchTool, 'normal priority', { priority: 'normal' }),
-    executor.execute(searchTool, 'critical', { priority: 'critical' }),
+    executor.invoke(processTool, { data: 'low priority' }, { priority: 'low' }),
+    executor.invoke(searchTool, 'high priority', { priority: 'high' }),
+    executor.invoke(fetchTool, 'normal priority', { priority: 'normal' }),
+    executor.invoke(searchTool, 'critical', { priority: 'critical' }),
   ];
   await Promise.all(promises);
   console.log();
@@ -105,7 +105,7 @@ async function main() {
   // Example 4: Retry on failure
   console.log('4. Retry on failure:');
   try {
-    const result = await executor.execute(unstableTool, { test: 'data' });
+    const result = await executor.invoke(unstableTool, { test: 'data' });
     console.log('Unstable tool succeeded:', result);
   } catch (error) {
     console.log('Unstable tool failed after retries');

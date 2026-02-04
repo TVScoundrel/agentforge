@@ -242,7 +242,7 @@ async function main() {
 
   if (validResult.success) {
     console.log('\n✅ Valid input:', validInput);
-    const output = await readFileTool.execute(validResult.data);
+    const output = await readFileTool.invoke(validResult.data);
     console.log('   Output:', output);
   }
 

@@ -21,7 +21,7 @@ async function main() {
   // Example 1: Basic search (uses DuckDuckGo by default)
   console.log('1. Basic search with DuckDuckGo:');
   try {
-    const result1 = await webSearch.execute({
+    const result1 = await webSearch.invoke({
       query: 'TypeScript programming language',
       maxResults: 5,
     });
@@ -46,7 +46,7 @@ async function main() {
   if (process.env.SERPER_API_KEY) {
     console.log('2. Search with Serper API:');
     try {
-      const result2 = await webSearch.execute({
+      const result2 = await webSearch.invoke({
         query: 'Latest AI developments 2026',
         maxResults: 5,
         preferSerper: true,
@@ -74,7 +74,7 @@ async function main() {
   // Example 3: Demonstrate fallback behavior
   console.log('3. Fallback behavior (DuckDuckGo → Serper):');
   try {
-    const result3 = await webSearch.execute({
+    const result3 = await webSearch.invoke({
       query: 'obscure technical query that might return no results',
       maxResults: 10,
       preferSerper: false, // Prefer DuckDuckGo, but will fallback to Serper if empty
