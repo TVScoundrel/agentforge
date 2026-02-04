@@ -483,7 +483,7 @@ describe('Multi-Agent System Factory', () => {
       // Invoke the system to get the initial state with workers
       const result = await system.invoke({
         input: 'test',
-      });
+      }) as any;
 
       // Verify the worker was registered with correct tool names
       expect(result.workers).toBeDefined();

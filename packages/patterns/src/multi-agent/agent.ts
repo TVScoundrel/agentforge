@@ -127,7 +127,7 @@ function getToolName(tool: any): string {
  * );
  * ```
  */
-export function createMultiAgentSystem(config: MultiAgentSystemConfig) {
+export function createMultiAgentSystem(config: MultiAgentSystemConfig): MultiAgentSystemWithRegistry {
   const {
     supervisor,
     workers,
@@ -305,7 +305,7 @@ export function createMultiAgentSystem(config: MultiAgentSystemConfig) {
     return originalStream(mergedInput, config);
   } as any;
 
-  return compiled;
+  return compiled as MultiAgentSystemWithRegistry;
 }
 
 /**
@@ -409,7 +409,7 @@ export class MultiAgentSystemBuilder {
 /**
  * Extended multi-agent system with worker registration support
  */
-export interface MultiAgentSystemWithRegistry extends CompiledStateGraph<MultiAgentStateType, Partial<MultiAgentStateType>, '__start__' | 'supervisor' | 'aggregator' | string> {
+export interface MultiAgentSystemWithRegistry extends CompiledStateGraph<any, any, any> {
   _workerRegistry?: Record<string, WorkerCapabilities>;
   _originalInvoke?: typeof CompiledStateGraph.prototype.invoke;
   _originalStream?: typeof CompiledStateGraph.prototype.stream;
