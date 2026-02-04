@@ -7,6 +7,31 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.10.2] - 2026-02-04
+
+### Fixed
+
+#### @agentforge/core
+- **fix: Move LangChain dependencies from peerDependencies to dependencies**
+  - Moved `@langchain/core` and `@langchain/langgraph` from `peerDependencies` to `dependencies`
+  - Moved `zod` from `peerDependencies` to `dependencies`
+  - **Impact**: Users no longer need to manually install LangChain dependencies
+  - **Benefit**: Smoother installation experience - `npm install @agentforge/core` now automatically installs all required dependencies
+  - **Breaking Change**: None - this is purely a packaging improvement
+
+#### @agentforge/patterns
+- **fix: Remove redundant peerDependencies**
+  - Removed duplicate `peerDependencies` section (dependencies were already correctly listed in `dependencies`)
+  - **Impact**: Cleaner package.json, no functional changes
+
+### Published
+- All packages published to npm registry at version 0.10.2:
+  - @agentforge/core@0.10.2
+  - @agentforge/patterns@0.10.2
+  - @agentforge/tools@0.10.2
+  - @agentforge/testing@0.10.2
+  - @agentforge/cli@0.10.2
+
 ## [0.10.1] - 2026-02-03
 
 ### Changed
