@@ -208,6 +208,7 @@ export function createToolExecutor(config: ToolExecutorConfig = {}) {
       metrics.failedExecutions++;
       metrics.totalDuration += duration;
       metrics.averageDuration = metrics.totalDuration / metrics.totalExecutions;
+      metrics.byPriority[priority]++;
 
       onExecutionError?.(tool, input, error as Error, duration);
 
