@@ -227,6 +227,33 @@ export function createSupervisorNode(config: SupervisorConfig) {
 
 /**
  * Create a worker agent node
+ *
+ * **Workload Management Contract:**
+ * The framework automatically manages `currentWorkload` for all workers:
+ * - Incremented by supervisor when task is assigned
+ * - Decremented by worker when task completes (success or failure)
+ *
+ * Custom `executeFn` implementations should NOT modify `currentWorkload`.
+ * The framework will automatically decrement it after execution completes.
+ *
+ * Custom `executeFn` CAN modify other worker properties (skills, tools,
+ * availability, etc.) and these changes will be preserved and merged with
+ * the workload decrement.
+ *
+ * @example
+ * ```typescript
+ * // ✅ CORRECT: Custom executeFn modifies skills, framework handles workload
+ * const executeFn = async (state) => ({
+ *   completedTasks: [...],
+ *   workers: {
+ *     'worker1': {
+ *       ...state.workers['worker1'],
+ *       skills: [...state.workers['worker1'].skills, 'new-skill'], // ✅ OK
+ *       // currentWorkload: ... // ❌ DON'T - framework manages this
+ *     }
+ *   }
+ * });
+ * ```
  */
 export function createWorkerNode(config: WorkerConfig) {
   const {
@@ -371,13 +398,24 @@ Execute the assigned task using your skills and tools. Provide a clear, actionab
         );
       }
 
-      // Update worker workload - read from state, not config
-      // CRITICAL: This happens AFTER execution for ALL paths (custom, ReAct, or LLM)
-      // This ensures workload is decremented on both success and failure
+      // ============================================================================
+      // WORKLOAD MANAGEMENT (Framework-Owned)
+      // ============================================================================
+      // The framework automatically decrements currentWorkload after task execution.
+      // This happens for ALL execution paths (custom executeFn, ReAct, or LLM).
+      //
+      // CONTRACT: Custom executeFn should NOT modify currentWorkload.
+      // If executeFn does modify it, this code will decrement it again, which may
+      // result in incorrect workload values. The framework owns workload tracking.
+      //
+      // Custom executeFn CAN modify other worker properties (skills, availability,
+      // etc.) and those changes will be preserved via the merge below.
+      // ============================================================================
+
       const currentWorker = state.workers[id];
 
-      // CRITICAL: Merge with any worker updates from executionResult
-      // Custom executeFn or ReAct agents may return worker updates that must be preserved
+      // Merge with any worker updates from executionResult
+      // This preserves custom worker property changes while applying workload decrement
       const baseWorkers = executionResult.workers || state.workers;
       const workerToUpdate = baseWorkers[id] || currentWorker;
 

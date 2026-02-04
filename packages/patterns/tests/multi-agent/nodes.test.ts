@@ -670,6 +670,67 @@ describe('Multi-Agent Nodes', () => {
       expect(result.workers!['worker2'].available).toBe(false);
       expect(result.workers!['worker2'].currentWorkload).toBe(0);
     });
+
+    it('should decrement workload even if executeFn modifies it (framework owns workload)', async () => {
+      // This test documents the contract: framework owns workload management
+      // If executeFn modifies currentWorkload, it will be decremented again
+      // This is intentional - executeFn should NOT touch currentWorkload
+
+      const executeFn = vi.fn().mockResolvedValue({
+        completedTasks: [{
+          assignmentId: 'task1',
+          workerId: 'worker1',
+          success: true,
+          result: 'Result',
+          completedAt: Date.now(),
+        }],
+        workers: {
+          'worker1': {
+            skills: ['skill1'],
+            tools: [],
+            available: true,
+            currentWorkload: 10, // executeFn incorrectly sets workload
+          },
+        },
+      });
+
+      const config: WorkerConfig = {
+        id: 'worker1',
+        capabilities: {
+          skills: ['skill1'],
+          tools: [],
+          available: true,
+          currentWorkload: 0,
+        },
+        executeFn,
+      };
+
+      const stateWithWorkload: MultiAgentStateType = {
+        ...mockState,
+        workers: {
+          'worker1': {
+            skills: ['skill1'],
+            tools: [],
+            available: true,
+            currentWorkload: 5, // State has 5
+          },
+        },
+        activeAssignments: [{
+          id: 'task1',
+          workerId: 'worker1',
+          task: 'Test task',
+          priority: 1,
+          assignedAt: Date.now(),
+        }],
+      };
+
+      const node = createWorkerNode(config);
+      const result = await node(stateWithWorkload);
+
+      // Framework decrements executeFn's value: 10 - 1 = 9
+      // This documents that executeFn should NOT modify currentWorkload
+      expect(result.workers!['worker1'].currentWorkload).toBe(9);
+    });
   });
 
   describe('Supervisor - Error Handling', () => {
