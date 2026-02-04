@@ -593,6 +593,83 @@ describe('Multi-Agent Nodes', () => {
       expect(result.completedTasks).toHaveLength(1);
       expect(result.completedTasks![0].success).toBe(false);
     });
+
+    it('should preserve worker updates from custom executeFn while decrementing workload', async () => {
+      // Custom executeFn that returns worker updates
+      const executeFn = vi.fn().mockResolvedValue({
+        completedTasks: [{
+          assignmentId: 'task1',
+          workerId: 'worker1',
+          success: true,
+          result: 'Custom result',
+          completedAt: Date.now(),
+        }],
+        workers: {
+          'worker1': {
+            skills: ['skill1', 'new-skill'], // executeFn added a new skill
+            tools: [],
+            available: true,
+            currentWorkload: 5, // executeFn set this (will be decremented)
+          },
+          'worker2': {
+            skills: ['skill2'],
+            tools: [],
+            available: false, // executeFn changed availability
+            currentWorkload: 0,
+          },
+        },
+      });
+
+      const config: WorkerConfig = {
+        id: 'worker1',
+        capabilities: {
+          skills: ['skill1'],
+          tools: [],
+          available: true,
+          currentWorkload: 0,
+        },
+        executeFn,
+      };
+
+      const stateWithWorkload: MultiAgentStateType = {
+        ...mockState,
+        workers: {
+          'worker1': {
+            skills: ['skill1'],
+            tools: [],
+            available: true,
+            currentWorkload: 3,
+          },
+          'worker2': {
+            skills: ['skill2'],
+            tools: [],
+            available: true,
+            currentWorkload: 0,
+          },
+        },
+        activeAssignments: [{
+          id: 'task1',
+          workerId: 'worker1',
+          task: 'Test task',
+          priority: 1,
+          assignedAt: Date.now(),
+        }],
+      };
+
+      const node = createWorkerNode(config);
+      const result = await node(stateWithWorkload);
+
+      // Should preserve executeFn's worker updates
+      expect(result.workers).toBeDefined();
+
+      // Worker1: should have new skill AND decremented workload
+      expect(result.workers!['worker1'].skills).toEqual(['skill1', 'new-skill']);
+      expect(result.workers!['worker1'].currentWorkload).toBe(4); // 5 - 1 = 4
+
+      // Worker2: should preserve availability change from executeFn
+      expect(result.workers!['worker2'].available).toBe(false);
+      expect(result.workers!['worker2'].currentWorkload).toBe(0);
+    });
   });
 
   describe('Supervisor - Error Handling', () => {

@@ -375,18 +375,25 @@ Execute the assigned task using your skills and tools. Provide a clear, actionab
       // CRITICAL: This happens AFTER execution for ALL paths (custom, ReAct, or LLM)
       // This ensures workload is decremented on both success and failure
       const currentWorker = state.workers[id];
+
+      // CRITICAL: Merge with any worker updates from executionResult
+      // Custom executeFn or ReAct agents may return worker updates that must be preserved
+      const baseWorkers = executionResult.workers || state.workers;
+      const workerToUpdate = baseWorkers[id] || currentWorker;
+
       const updatedWorkers = {
-        ...state.workers,
+        ...baseWorkers,
         [id]: {
-          ...currentWorker,
-          currentWorkload: Math.max(0, currentWorker.currentWorkload - 1),
+          ...workerToUpdate,
+          currentWorkload: Math.max(0, workerToUpdate.currentWorkload - 1),
         },
       };
 
       logger.debug('Worker workload decremented', {
         workerId: id,
-        previousWorkload: currentWorker.currentWorkload,
-        newWorkload: updatedWorkers[id].currentWorkload
+        previousWorkload: workerToUpdate.currentWorkload,
+        newWorkload: updatedWorkers[id].currentWorkload,
+        hadExecutionResultWorkers: !!executionResult.workers
       });
 
       // Merge workload update with execution result
