@@ -412,6 +412,7 @@ export class MultiAgentSystemBuilder {
 export interface MultiAgentSystemWithRegistry extends CompiledStateGraph<MultiAgentStateType, Partial<MultiAgentStateType>, '__start__' | 'supervisor' | 'aggregator' | string> {
   _workerRegistry?: Record<string, WorkerCapabilities>;
   _originalInvoke?: typeof CompiledStateGraph.prototype.invoke;
+  _originalStream?: typeof CompiledStateGraph.prototype.stream;
 }
 
 /**
@@ -487,6 +488,24 @@ export function registerWorkers(
       };
 
       return system._originalInvoke!(mergedInput, config);
+    } as any;
+  }
+
+  // Wrap the stream method to inject workers into state (only once)
+  if (!system._originalStream) {
+    system._originalStream = system.stream.bind(system);
+
+    system.stream = async function(input: Partial<MultiAgentStateType>, config?: any) {
+      // Merge registered workers with any workers in the input
+      const mergedInput = {
+        ...input,
+        workers: {
+          ...(system._workerRegistry || {}),
+          ...(input.workers || {}),
+        },
+      };
+
+      return system._originalStream!(mergedInput, config);
     } as any;
   }
 }

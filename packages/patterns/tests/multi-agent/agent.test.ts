@@ -532,6 +532,124 @@ describe('Multi-Agent System Factory', () => {
         },
       });
     });
+
+    it('should wrap stream() method when workers are registered', async () => {
+      const config: MultiAgentSystemConfig = {
+        supervisor: {
+          strategy: 'round-robin',
+        },
+        workers: [
+          {
+            id: 'initial',
+            capabilities: {
+              skills: ['initial'],
+              tools: [],
+              available: true,
+              currentWorkload: 0,
+            },
+          },
+        ],
+      };
+
+      const system = createMultiAgentSystem(config);
+
+      const workers = [
+        {
+          name: 'worker1',
+          capabilities: ['skill1'],
+          tools: [],
+        },
+      ];
+
+      registerWorkers(system, workers);
+
+      // Verify that stream method was wrapped
+      const systemWithRegistry = system as any;
+      expect(systemWithRegistry._originalStream).toBeDefined();
+      expect(typeof systemWithRegistry._originalStream).toBe('function');
+
+      // Verify the worker registry was created with correct data
+      expect(systemWithRegistry._workerRegistry).toBeDefined();
+      expect(systemWithRegistry._workerRegistry['worker1']).toBeDefined();
+      expect(systemWithRegistry._workerRegistry['worker1'].skills).toEqual(['skill1']);
+
+      // Spy on the original stream method to verify it receives merged workers
+      const originalStreamSpy = vi.fn(systemWithRegistry._originalStream);
+      systemWithRegistry._originalStream = originalStreamSpy;
+
+      // Call stream() - the wrapper should merge workers into the input
+      await system.stream({
+        input: 'test',
+      });
+
+      // Verify the original stream was called with merged workers
+      expect(originalStreamSpy).toHaveBeenCalledTimes(1);
+      const callArgs = originalStreamSpy.mock.calls[0][0] as any;
+      expect(callArgs.workers).toBeDefined();
+      expect(callArgs.workers['worker1']).toBeDefined();
+      expect(callArgs.workers['worker1'].skills).toEqual(['skill1']);
+    });
+
+    it('should inject registered workers with AgentForge Tools when using stream() method', async () => {
+      const agentforgeTool = toolBuilder()
+        .name('stream-tool')
+        .description('Tool for streaming test')
+        .category(ToolCategory.UTILITY)
+        .schema(z.object({ input: z.string().describe('Input') }))
+        .implement(async ({ input }: { input: string }) => input)
+        .build();
+
+      const config: MultiAgentSystemConfig = {
+        supervisor: {
+          strategy: 'round-robin',
+        },
+        workers: [
+          {
+            id: 'initial',
+            capabilities: {
+              skills: ['initial'],
+              tools: [],
+              available: true,
+              currentWorkload: 0,
+            },
+          },
+        ],
+      };
+
+      const system = createMultiAgentSystem(config);
+
+      const workers = [
+        {
+          name: 'worker1',
+          capabilities: ['skill1'],
+          tools: [agentforgeTool],
+        },
+      ];
+
+      registerWorkers(system, workers);
+
+      // Verify that stream method was wrapped and worker registry contains correct tool names
+      const systemWithRegistry = system as any;
+      expect(systemWithRegistry._originalStream).toBeDefined();
+      expect(systemWithRegistry._workerRegistry['worker1']).toBeDefined();
+      expect(systemWithRegistry._workerRegistry['worker1'].tools).toEqual(['stream-tool']);
+
+      // Spy on the original stream method to verify it receives merged workers with correct tool names
+      const originalStreamSpy = vi.fn(systemWithRegistry._originalStream);
+      systemWithRegistry._originalStream = originalStreamSpy;
+
+      // Call stream() - the wrapper should merge workers (with correct tool names) into the input
+      await system.stream({
+        input: 'test',
+      });
+
+      // Verify the original stream was called with merged workers that have correct tool names
+      expect(originalStreamSpy).toHaveBeenCalledTimes(1);
+      const callArgs = originalStreamSpy.mock.calls[0][0] as any;
+      expect(callArgs.workers).toBeDefined();
+      expect(callArgs.workers['worker1']).toBeDefined();
+      expect(callArgs.workers['worker1'].tools).toEqual(['stream-tool']);
+    });
   });
 });
 
