@@ -174,12 +174,21 @@ export function createSupervisorNode(config: SupervisorConfig) {
       const updatedWorkers = { ...state.workers };
       for (const assignment of assignments) {
         const worker = updatedWorkers[assignment.workerId];
-        if (worker) {
-          updatedWorkers[assignment.workerId] = {
-            ...worker,
-            currentWorkload: worker.currentWorkload + 1,
-          };
+        if (!worker) {
+          // CRITICAL: Don't silently skip - this indicates a configuration error
+          logger.error('Worker not found in state', {
+            workerId: assignment.workerId,
+            availableWorkers: Object.keys(updatedWorkers)
+          });
+          throw new Error(
+            `Worker ${assignment.workerId} not found in state.workers. ` +
+            `Available workers: ${Object.keys(updatedWorkers).join(', ')}`
+          );
         }
+        updatedWorkers[assignment.workerId] = {
+          ...worker,
+          currentWorkload: worker.currentWorkload + 1,
+        };
       }
 
       logger.info('Supervisor routing complete', {
@@ -261,54 +270,6 @@ export function createWorkerNode(config: WorkerConfig) {
         taskPreview: currentAssignment.task.substring(0, 100)
       });
 
-      // Execute the task using one of the available methods
-      let executionResult: Partial<MultiAgentStateType>;
-
-      // Priority 1: Use custom execution function if provided
-      if (executeFn) {
-        logger.debug('Using custom execution function', { workerId: id });
-        executionResult = await executeFn(state, runConfig);
-      }
-      // Priority 2: Use ReAct agent if provided
-      else if (agent && isReActAgent(agent)) {
-        logger.debug('Using ReAct agent', { workerId: id });
-        const wrappedFn = wrapReActAgent(id, agent, verbose);
-        executionResult = await wrappedFn(state, runConfig);
-      }
-      // Priority 3: Default execution using LLM
-      else if (model) {
-        executionResult = await executeWithLLM();
-      } else {
-        logger.error('Worker missing required configuration', { workerId: id });
-        throw new Error(
-          `Worker ${id} requires either a model, an agent, or a custom execution function. ` +
-          `Provide one of: config.model, config.agent, or config.executeFn`
-        );
-      }
-
-      // Update worker workload - read from state, not config
-      // This happens for ALL execution paths (custom, ReAct, or LLM)
-      const currentWorker = state.workers[id];
-      const updatedWorkers = {
-        ...state.workers,
-        [id]: {
-          ...currentWorker,
-          currentWorkload: Math.max(0, currentWorker.currentWorkload - 1),
-        },
-      };
-
-      logger.debug('Worker state update', {
-        workerId: id,
-        previousWorkload: currentWorker.currentWorkload,
-        newWorkload: updatedWorkers[id].currentWorkload
-      });
-
-      // Merge workload update with execution result
-      return {
-        ...executionResult,
-        workers: updatedWorkers,
-      };
-
       // Helper function for default LLM execution
       async function executeWithLLM(): Promise<Partial<MultiAgentStateType>> {
         logger.debug('Using default LLM execution', {
@@ -384,6 +345,55 @@ Execute the assigned task using your skills and tools. Provide a clear, actionab
           messages: [message],
         };
       }
+
+      // Execute the task using one of the available methods
+      let executionResult: Partial<MultiAgentStateType>;
+
+      // Priority 1: Use custom execution function if provided
+      if (executeFn) {
+        logger.debug('Using custom execution function', { workerId: id });
+        executionResult = await executeFn(state, runConfig);
+      }
+      // Priority 2: Use ReAct agent if provided
+      else if (agent && isReActAgent(agent)) {
+        logger.debug('Using ReAct agent', { workerId: id });
+        const wrappedFn = wrapReActAgent(id, agent, verbose);
+        executionResult = await wrappedFn(state, runConfig);
+      }
+      // Priority 3: Default execution using LLM
+      else if (model) {
+        executionResult = await executeWithLLM();
+      } else {
+        logger.error('Worker missing required configuration', { workerId: id });
+        throw new Error(
+          `Worker ${id} requires either a model, an agent, or a custom execution function. ` +
+          `Provide one of: config.model, config.agent, or config.executeFn`
+        );
+      }
+
+      // Update worker workload - read from state, not config
+      // CRITICAL: This happens AFTER execution for ALL paths (custom, ReAct, or LLM)
+      // This ensures workload is decremented on both success and failure
+      const currentWorker = state.workers[id];
+      const updatedWorkers = {
+        ...state.workers,
+        [id]: {
+          ...currentWorker,
+          currentWorkload: Math.max(0, currentWorker.currentWorkload - 1),
+        },
+      };
+
+      logger.debug('Worker workload decremented', {
+        workerId: id,
+        previousWorkload: currentWorker.currentWorkload,
+        newWorkload: updatedWorkers[id].currentWorkload
+      });
+
+      // Merge workload update with execution result
+      return {
+        ...executionResult,
+        workers: updatedWorkers,
+      };
     } catch (error) {
       // Handle error with proper GraphInterrupt detection
       const errorMessage = handleNodeError(error, `worker:${id}`, false);
@@ -391,6 +401,22 @@ Execute the assigned task using your skills and tools. Provide a clear, actionab
       logger.error('Worker node error', {
         workerId: id,
         error: errorMessage
+      });
+
+      // CRITICAL: Decrement workload on error too
+      const currentWorker = state.workers[id];
+      const updatedWorkers = {
+        ...state.workers,
+        [id]: {
+          ...currentWorker,
+          currentWorkload: Math.max(0, currentWorker.currentWorkload - 1),
+        },
+      };
+
+      logger.debug('Worker workload decremented (error path)', {
+        workerId: id,
+        previousWorkload: currentWorker.currentWorkload,
+        newWorkload: updatedWorkers[id].currentWorkload
       });
 
       // Create error result
@@ -417,6 +443,7 @@ Execute the assigned task using your skills and tools. Provide a clear, actionab
           completedTasks: [errorResult],
           currentAgent: 'supervisor',
           status: 'routing',
+          workers: updatedWorkers, // Include workload update
         };
       }
 
@@ -425,6 +452,7 @@ Execute the assigned task using your skills and tools. Provide a clear, actionab
       return {
         status: 'failed',
         error: errorMessage,
+        workers: updatedWorkers, // Include workload update even on failure
       };
     }
   };
