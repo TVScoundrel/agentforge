@@ -7,6 +7,25 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.11.1] - 2026-02-04
+
+### Fixed
+
+#### @agentforge/core
+- **Executor Contract Enforcement**: Tool executor now properly enforces the `invoke()` requirement to match the TypeScript type contract introduced in v0.11.0
+  - Removed fallback to `execute()` method for tools that don't implement `invoke()`
+  - Improved error message to guide developers: "Tool must implement invoke() method. Tools created with createTool() or toolBuilder automatically have this method. If you are manually constructing a tool, ensure it has an invoke() method."
+  - Added deprecation warning for tools that only implement `execute()` (backward compatibility during migration period)
+- **Consistent Logging**: Replaced `console.warn` with structured logger in tool executor for consistent logging across the codebase
+  - Deprecation warnings now appear in structured log format with timestamps and context
+  - Logger instance: `agentforge:tools:executor`
+
+### Technical Details
+- All 997 tests passing ✅
+- No breaking changes - backward compatible
+- Tools created with `createTool()` or `toolBuilder` are unaffected
+- Only affects manually constructed tools that violate the type contract
+
 ## [0.11.0] - 2026-02-04
 
 ### Changed
