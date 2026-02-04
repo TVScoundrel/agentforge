@@ -731,6 +731,89 @@ describe('Multi-Agent Nodes', () => {
       // This documents that executeFn should NOT modify currentWorkload
       expect(result.workers!['worker1'].currentWorkload).toBe(9);
     });
+
+    it('should preserve all workers when executeFn returns partial workers', async () => {
+      // CRITICAL: If executeFn returns only a subset of workers (e.g., just worker1),
+      // the merge logic must preserve all other workers (worker2, worker3, etc.)
+
+      const executeFn = vi.fn().mockResolvedValue({
+        completedTasks: [{
+          assignmentId: 'task1',
+          workerId: 'worker1',
+          success: true,
+          result: 'Result',
+          completedAt: Date.now(),
+        }],
+        workers: {
+          // Only worker1 - partial update!
+          'worker1': {
+            skills: ['skill1', 'new-skill'],
+            tools: [],
+            available: true,
+            currentWorkload: 5, // Will be decremented by framework
+          },
+        },
+      });
+
+      const config: WorkerConfig = {
+        id: 'worker1',
+        capabilities: {
+          skills: ['skill1'],
+          tools: [],
+          available: true,
+          currentWorkload: 0,
+        },
+        executeFn,
+      };
+
+      const stateWithMultipleWorkers: MultiAgentStateType = {
+        ...mockState,
+        workers: {
+          'worker1': {
+            skills: ['skill1'],
+            tools: [],
+            available: true,
+            currentWorkload: 5,
+          },
+          'worker2': {
+            skills: ['skill2'],
+            tools: ['tool2'],
+            available: true,
+            currentWorkload: 3,
+          },
+          'worker3': {
+            skills: ['skill3'],
+            tools: ['tool3'],
+            available: false,
+            currentWorkload: 0,
+          },
+        },
+        activeAssignments: [{
+          id: 'task1',
+          workerId: 'worker1',
+          task: 'Test task',
+          priority: 1,
+          assignedAt: Date.now(),
+        }],
+      };
+
+      const node = createWorkerNode(config);
+      const result = await node(stateWithMultipleWorkers);
+
+      // Worker1: should have updates from executeFn AND workload decrement
+      expect(result.workers!['worker1'].skills).toEqual(['skill1', 'new-skill']);
+      expect(result.workers!['worker1'].currentWorkload).toBe(4); // 5 - 1 = 4
+
+      // Worker2: should be preserved (not dropped)
+      expect(result.workers!['worker2']).toBeDefined();
+      expect(result.workers!['worker2'].skills).toEqual(['skill2']);
+      expect(result.workers!['worker2'].currentWorkload).toBe(3);
+
+      // Worker3: should be preserved (not dropped)
+      expect(result.workers!['worker3']).toBeDefined();
+      expect(result.workers!['worker3'].skills).toEqual(['skill3']);
+      expect(result.workers!['worker3'].available).toBe(false);
+    });
   });
 
   describe('Supervisor - Error Handling', () => {

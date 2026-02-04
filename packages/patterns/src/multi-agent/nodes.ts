@@ -414,9 +414,13 @@ Execute the assigned task using your skills and tools. Provide a clear, actionab
 
       const currentWorker = state.workers[id];
 
-      // Merge with any worker updates from executionResult
-      // This preserves custom worker property changes while applying workload decrement
-      const baseWorkers = executionResult.workers || state.workers;
+      // CRITICAL: Merge executionResult.workers with state.workers
+      // executionResult.workers may be partial (e.g., only worker1), so we must
+      // start with state.workers to preserve all workers, then merge updates
+      const baseWorkers = {
+        ...state.workers,
+        ...(executionResult.workers || {}),
+      };
       const workerToUpdate = baseWorkers[id] || currentWorker;
 
       const updatedWorkers = {
