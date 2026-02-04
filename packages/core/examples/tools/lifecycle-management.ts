@@ -105,11 +105,11 @@ async function main() {
 
   // Execute queries
   console.log('Executing queries:');
-  const result1 = await dbTool.execute({ query: 'SELECT * FROM users' });
+  const result1 = await dbTool.invoke({ query: 'SELECT * FROM users' });
   console.log('Result 1:', result1);
   console.log();
 
-  const result2 = await dbTool.execute({ query: 'SELECT * FROM posts' });
+  const result2 = await dbTool.invoke({ query: 'SELECT * FROM posts' });
   console.log('Result 2:', result2);
   console.log();
 
@@ -159,7 +159,7 @@ async function main() {
   });
 
   await apiTool.initialize();
-  const apiResult = await apiTool.execute({ endpoint: '/users/123' });
+  const apiResult = await apiTool.invoke({ endpoint: '/users/123' });
   console.log('API result:', apiResult);
   console.log();
 

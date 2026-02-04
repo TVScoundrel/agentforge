@@ -129,10 +129,10 @@ async function main() {
   // Execute tools through simulator
   console.log('  Executing tools...');
   try {
-    await simulator.execute('search', 'TypeScript');
-    await simulator.execute('fetch', 'https://example.com');
-    await simulator.execute('process', { data: 'test' });
-    await simulator.execute('search', 'LangGraph');
+    await simulator.invoke('search', 'TypeScript');
+    await simulator.invoke('fetch', 'https://example.com');
+    await simulator.invoke('process', { data: 'test' });
+    await simulator.invoke('search', 'LangGraph');
   } catch (error) {
     console.log('  Some executions failed (expected with 10% error rate)');
   }

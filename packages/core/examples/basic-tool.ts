@@ -147,7 +147,7 @@ async function main() {
   const calcValidation = calculatorTool.schema.safeParse(calcInput);
   
   if (calcValidation.success) {
-    const result = await calculatorTool.execute(calcValidation.data);
+    const result = await calculatorTool.invoke(calcValidation.data);
     console.log(`   Result: ${calcInput.a} + ${calcInput.b} = ${result}\n`);
   }
 
@@ -163,7 +163,7 @@ async function main() {
   const fileValidation = readFileTool.schema.safeParse(fileInput);
   
   if (fileValidation.success) {
-    const result = await readFileTool.execute(fileValidation.data);
+    const result = await readFileTool.invoke(fileValidation.data);
     console.log(`   Result: ${result}\n`);
   }
 
