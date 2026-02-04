@@ -20,6 +20,30 @@ const logLevel = (process.env.LOG_LEVEL?.toLowerCase() as LogLevel) || LogLevel.
 const logger = createLogger('multi-agent:system', { level: logLevel });
 
 /**
+ * Extract tool name from either AgentForge Tool or LangChain tool
+ *
+ * AgentForge Tools have: tool.metadata.name
+ * LangChain tools have: tool.name
+ *
+ * @param tool - Tool instance (AgentForge or LangChain)
+ * @returns Tool name or 'unknown' if not found
+ */
+function getToolName(tool: any): string {
+  // AgentForge Tool: has metadata.name
+  if (tool.metadata?.name) {
+    return tool.metadata.name;
+  }
+
+  // LangChain tool: has name directly
+  if (tool.name) {
+    return tool.name;
+  }
+
+  // Fallback
+  return 'unknown';
+}
+
+/**
  * Create a multi-agent coordination system
  *
  * This factory function creates a complete multi-agent system with:
@@ -344,7 +368,7 @@ export class MultiAgentSystemBuilder {
         id: worker.name,
         capabilities: {
           skills: worker.capabilities,
-          tools: worker.tools?.map(t => t.name || 'unknown') || [],
+          tools: worker.tools?.map(t => getToolName(t)) || [],
           available: true,
           currentWorkload: 0,
         },
@@ -442,7 +466,7 @@ export function registerWorkers(
   for (const worker of workers) {
     system._workerRegistry[worker.name] = {
       skills: worker.capabilities,
-      tools: worker.tools?.map(t => t.name || 'unknown') || [],
+      tools: worker.tools?.map(t => getToolName(t)) || [],
       available: true,
       currentWorkload: 0,
     };

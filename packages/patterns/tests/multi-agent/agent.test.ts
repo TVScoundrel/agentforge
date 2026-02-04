@@ -3,9 +3,11 @@
  */
 
 import { describe, it, expect } from 'vitest';
-import { createMultiAgentSystem, registerWorkers } from '../../src/multi-agent/agent.js';
+import { createMultiAgentSystem, registerWorkers, MultiAgentSystemBuilder } from '../../src/multi-agent/agent.js';
 import type { MultiAgentSystemConfig } from '../../src/multi-agent/types.js';
 import { MemorySaver } from '@langchain/langgraph';
+import { toolBuilder, ToolCategory } from '@agentforge/core';
+import { z } from 'zod';
 
 describe('Multi-Agent System Factory', () => {
   describe('createMultiAgentSystem', () => {
@@ -289,6 +291,246 @@ describe('Multi-Agent System Factory', () => {
       const system = createMultiAgentSystem(config);
       expect(system).toBeDefined();
       expect(typeof system.invoke).toBe('function');
+    });
+  });
+
+  describe('Tool Name Extraction', () => {
+    it('should correctly extract tool names from AgentForge Tools in registerWorkers', () => {
+      // Create AgentForge Tools with metadata.name
+      const agentforgeTool1 = toolBuilder()
+        .name('agentforge-tool-1')
+        .description('First AgentForge tool')
+        .category(ToolCategory.UTILITY)
+        .schema(z.object({ input: z.string().describe('Input') }))
+        .implement(async ({ input }) => input)
+        .build();
+
+      const agentforgeTool2 = toolBuilder()
+        .name('agentforge-tool-2')
+        .description('Second AgentForge tool')
+        .category(ToolCategory.UTILITY)
+        .schema(z.object({ input: z.string().describe('Input') }))
+        .implement(async ({ input }) => input)
+        .build();
+
+      const config: MultiAgentSystemConfig = {
+        supervisor: {
+          strategy: 'round-robin',
+        },
+        workers: [
+          {
+            id: 'initial',
+            capabilities: {
+              skills: ['initial'],
+              tools: [],
+              available: true,
+              currentWorkload: 0,
+            },
+          },
+        ],
+      };
+
+      const system = createMultiAgentSystem(config);
+
+      const workers = [
+        {
+          name: 'worker1',
+          capabilities: ['skill1'],
+          tools: [agentforgeTool1, agentforgeTool2],
+        },
+      ];
+
+      registerWorkers(system, workers);
+
+      expect(system._workerRegistry).toEqual({
+        worker1: {
+          skills: ['skill1'],
+          tools: ['agentforge-tool-1', 'agentforge-tool-2'],
+          available: true,
+          currentWorkload: 0,
+        },
+      });
+    });
+
+    it('should correctly extract tool names from LangChain tools in registerWorkers', () => {
+      // Create LangChain-style tools with name property
+      const langchainTool1 = { name: 'langchain-tool-1' };
+      const langchainTool2 = { name: 'langchain-tool-2' };
+
+      const config: MultiAgentSystemConfig = {
+        supervisor: {
+          strategy: 'round-robin',
+        },
+        workers: [
+          {
+            id: 'initial',
+            capabilities: {
+              skills: ['initial'],
+              tools: [],
+              available: true,
+              currentWorkload: 0,
+            },
+          },
+        ],
+      };
+
+      const system = createMultiAgentSystem(config);
+
+      const workers = [
+        {
+          name: 'worker1',
+          capabilities: ['skill1'],
+          tools: [langchainTool1, langchainTool2],
+        },
+      ];
+
+      registerWorkers(system, workers);
+
+      expect(system._workerRegistry).toEqual({
+        worker1: {
+          skills: ['skill1'],
+          tools: ['langchain-tool-1', 'langchain-tool-2'],
+          available: true,
+          currentWorkload: 0,
+        },
+      });
+    });
+
+    it('should handle mixed AgentForge and LangChain tools in registerWorkers', () => {
+      const agentforgeTool = toolBuilder()
+        .name('agentforge-tool')
+        .description('AgentForge tool')
+        .category(ToolCategory.UTILITY)
+        .schema(z.object({ input: z.string().describe('Input') }))
+        .implement(async ({ input }) => input)
+        .build();
+
+      const langchainTool = { name: 'langchain-tool' };
+
+      const config: MultiAgentSystemConfig = {
+        supervisor: {
+          strategy: 'round-robin',
+        },
+        workers: [
+          {
+            id: 'initial',
+            capabilities: {
+              skills: ['initial'],
+              tools: [],
+              available: true,
+              currentWorkload: 0,
+            },
+          },
+        ],
+      };
+
+      const system = createMultiAgentSystem(config);
+
+      const workers = [
+        {
+          name: 'worker1',
+          capabilities: ['skill1'],
+          tools: [agentforgeTool, langchainTool],
+        },
+      ];
+
+      registerWorkers(system, workers);
+
+      expect(system._workerRegistry).toEqual({
+        worker1: {
+          skills: ['skill1'],
+          tools: ['agentforge-tool', 'langchain-tool'],
+          available: true,
+          currentWorkload: 0,
+        },
+      });
+    });
+
+    it('should correctly extract tool names from AgentForge Tools in MultiAgentSystemBuilder', async () => {
+      const agentforgeTool1 = toolBuilder()
+        .name('builder-tool-1')
+        .description('First builder tool')
+        .category(ToolCategory.UTILITY)
+        .schema(z.object({ input: z.string().describe('Input') }))
+        .implement(async ({ input }) => input)
+        .build();
+
+      const agentforgeTool2 = toolBuilder()
+        .name('builder-tool-2')
+        .description('Second builder tool')
+        .category(ToolCategory.UTILITY)
+        .schema(z.object({ input: z.string().describe('Input') }))
+        .implement(async ({ input }) => input)
+        .build();
+
+      const builder = new MultiAgentSystemBuilder({
+        supervisor: {
+          strategy: 'round-robin',
+        },
+      });
+
+      builder.registerWorkers([
+        {
+          name: 'worker1',
+          capabilities: ['skill1'],
+          tools: [agentforgeTool1, agentforgeTool2],
+        },
+      ]);
+
+      const system = builder.build();
+      expect(system).toBeDefined();
+
+      // Invoke the system to get the initial state with workers
+      const result = await system.invoke({
+        input: 'test',
+      });
+
+      // Verify the worker was registered with correct tool names
+      expect(result.workers).toBeDefined();
+      expect(result.workers['worker1']).toBeDefined();
+      expect(result.workers['worker1'].tools).toEqual(['builder-tool-1', 'builder-tool-2']);
+    });
+
+    it('should handle tools without name or metadata gracefully', () => {
+      const invalidTool = {}; // No name or metadata
+
+      const config: MultiAgentSystemConfig = {
+        supervisor: {
+          strategy: 'round-robin',
+        },
+        workers: [
+          {
+            id: 'initial',
+            capabilities: {
+              skills: ['initial'],
+              tools: [],
+              available: true,
+              currentWorkload: 0,
+            },
+          },
+        ],
+      };
+
+      const system = createMultiAgentSystem(config);
+
+      const workers = [
+        {
+          name: 'worker1',
+          capabilities: ['skill1'],
+          tools: [invalidTool],
+        },
+      ];
+
+      registerWorkers(system, workers);
+
+      expect(system._workerRegistry).toEqual({
+        worker1: {
+          skills: ['skill1'],
+          tools: ['unknown'], // Should fallback to 'unknown'
+          available: true,
+          currentWorkload: 0,
+        },
+      });
     });
   });
 });
