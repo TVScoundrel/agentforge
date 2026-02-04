@@ -26,14 +26,14 @@ import { createTool } from './helpers.js';
 
 /**
  * Builder for creating tools with a fluent API
- * 
+ *
  * This provides a more ergonomic way to create tools compared to
  * manually constructing the metadata object.
  */
 export class ToolBuilder<TInput = unknown, TOutput = unknown> {
   private metadata: Partial<ToolMetadata> = {};
   private _schema?: z.ZodSchema<TInput>;
-  private _execute?: (input: TInput) => Promise<TOutput>;
+  private _invoke?: (input: TInput) => Promise<TOutput>;
 
   /**
    * Set the tool name (required)
@@ -264,10 +264,10 @@ export class ToolBuilder<TInput = unknown, TOutput = unknown> {
   /**
    * Set the implementation function (required)
    *
-   * @param execute - Async function that implements the tool
+   * @param invoke - Async function that implements the tool
    */
-  implement<T>(execute: (input: TInput) => Promise<T>): ToolBuilder<TInput, T> {
-    (this as any)._execute = execute;
+  implement<T>(invoke: (input: TInput) => Promise<T>): ToolBuilder<TInput, T> {
+    (this as any)._invoke = invoke;
     return this as any;
   }
 
@@ -277,7 +277,7 @@ export class ToolBuilder<TInput = unknown, TOutput = unknown> {
    * Wraps the implementation in a try-catch block and returns a standardized
    * result object with success/error information.
    *
-   * @param execute - Async function that implements the tool
+   * @param invoke - Async function that implements the tool
    * @returns ToolBuilder with safe result type { success: boolean; data?: T; error?: string }
    *
    * @example
@@ -295,11 +295,11 @@ export class ToolBuilder<TInput = unknown, TOutput = unknown> {
    * ```
    */
   implementSafe<T>(
-    execute: (input: TInput) => Promise<T>
+    invoke: (input: TInput) => Promise<T>
   ): ToolBuilder<TInput, { success: boolean; data?: T; error?: string }> {
-    const safeExecute = async (input: TInput) => {
+    const safeInvoke = async (input: TInput) => {
       try {
-        const data = await execute(input);
+        const data = await invoke(input);
         return { success: true, data };
       } catch (error) {
         return {
@@ -309,18 +309,18 @@ export class ToolBuilder<TInput = unknown, TOutput = unknown> {
       }
     };
 
-    (this as any)._execute = safeExecute;
+    (this as any)._invoke = safeInvoke;
     return this as any;
   }
 
   /**
    * Build the tool with validation
-   * 
+   *
    * Validates:
    * - All required fields are present
    * - Metadata is valid
    * - Schema has descriptions on all fields
-   * 
+   *
    * @returns The validated tool
    * @throws {Error} If validation fails
    */
@@ -338,7 +338,7 @@ export class ToolBuilder<TInput = unknown, TOutput = unknown> {
     if (!this._schema) {
       throw new Error('Tool schema is required. Use .schema() to set it.');
     }
-    if (!this._execute) {
+    if (!this._invoke) {
       throw new Error('Tool implementation is required. Use .implement() to set it.');
     }
 
@@ -346,7 +346,7 @@ export class ToolBuilder<TInput = unknown, TOutput = unknown> {
     return createTool(
       this.metadata as ToolMetadata,
       this._schema,
-      this._execute
+      this._invoke
     );
   }
 }

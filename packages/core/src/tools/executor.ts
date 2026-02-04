@@ -110,7 +110,7 @@ export function createToolExecutor(config: ToolExecutorConfig = {}) {
     input: any,
     policy?: RetryPolicy
   ): Promise<any> {
-    // Use invoke if available (LangChain compatibility), otherwise use execute (required)
+    // Use invoke (primary method), fallback to execute (deprecated alias) for backward compatibility
     const executeFn = tool.invoke || tool.execute;
 
     if (!executeFn) {
