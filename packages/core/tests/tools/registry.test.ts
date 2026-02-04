@@ -306,6 +306,41 @@ describe('ToolRegistry', () => {
       expect(registry.has('new-tool')).toBe(false);
     });
 
+    it('should throw error if input list contains duplicate names', () => {
+      const tools = [
+        toolBuilder()
+          .name('duplicate-name')
+          .description('First tool with duplicate name')
+          .category(ToolCategory.UTILITY)
+          .schema(z.object({ x: z.number().describe('Input') }))
+          .implement(async ({ x }) => x)
+          .build(),
+        toolBuilder()
+          .name('unique-name')
+          .description('A unique tool')
+          .category(ToolCategory.UTILITY)
+          .schema(z.object({ y: z.string().describe('Input') }))
+          .implement(async ({ y }) => y)
+          .build(),
+        toolBuilder()
+          .name('duplicate-name')
+          .description('Second tool with duplicate name')
+          .category(ToolCategory.UTILITY)
+          .schema(z.object({ z: z.boolean().describe('Input') }))
+          .implement(async ({ z }) => z)
+          .build(),
+      ];
+
+      expect(() => registry.registerMany(tools)).toThrow(
+        'Cannot register tools: duplicate names in input list: duplicate-name'
+      );
+
+      // Should not have registered any of the tools
+      expect(registry.has('duplicate-name')).toBe(false);
+      expect(registry.has('unique-name')).toBe(false);
+      expect(registry.size()).toBe(0);
+    });
+
     it('should clear all tools', () => {
       const tools = [
         toolBuilder()

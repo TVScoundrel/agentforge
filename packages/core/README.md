@@ -151,6 +151,13 @@ pnpm test
 pnpm typecheck
 ```
 
+## 🔗 Links
+
+- [GitHub Repository](https://github.com/TVScoundrel/agentforge)
+- [npm Package](https://www.npmjs.com/package/@agentforge/core)
+- [Changelog](https://tvscoundrel.github.io/agentforge/changelog.html) - See what's new before upgrading
+- [Report Issues](https://github.com/TVScoundrel/agentforge/issues)
+
 ## License
 
 MIT © 2026 Tom Van Schoor

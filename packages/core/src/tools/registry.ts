@@ -298,7 +298,26 @@ export class ToolRegistry {
    * ```
    */
   registerMany(tools: Tool<any, any>[]): void {
-    // Check for conflicts first
+    // Check for duplicates within the input list first
+    const inputNames = new Set<string>();
+    const duplicatesInInput: string[] = [];
+
+    for (const tool of tools) {
+      const name = tool.metadata.name;
+      if (inputNames.has(name)) {
+        duplicatesInInput.push(name);
+      } else {
+        inputNames.add(name);
+      }
+    }
+
+    if (duplicatesInInput.length > 0) {
+      throw new Error(
+        `Cannot register tools: duplicate names in input list: ${duplicatesInInput.join(', ')}`
+      );
+    }
+
+    // Check for conflicts with existing tools
     const conflicts: string[] = [];
     for (const tool of tools) {
       if (this.tools.has(tool.metadata.name)) {

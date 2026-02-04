@@ -808,6 +808,7 @@ MIT © 2026 Tom Van Schoor
 
 - [GitHub Repository](https://github.com/TVScoundrel/agentforge)
 - [npm Package](https://www.npmjs.com/package/@agentforge/tools)
+- [Changelog](https://tvscoundrel.github.io/agentforge/changelog.html) - See what's new before upgrading
 - [Report Issues](https://github.com/TVScoundrel/agentforge/issues)
 
 ## 📚 Related Packages
