@@ -7,6 +7,38 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.10.4] - 2026-02-04
+
+### Fixed
+
+#### @agentforge/patterns
+- **fix: Correct tool name extraction for AgentForge Tools in Multi-Agent system** [P2 Bug]
+  - Fixed tool name extraction in `MultiAgentSystemBuilder.registerWorkers()` (line 371)
+  - Fixed tool name extraction in standalone `registerWorkers()` function (line 469)
+  - **Problem**: Worker tool names were recorded as 'unknown' when using AgentForge Tools because the code read `t.name` instead of `t.metadata.name`
+  - **Solution**: Added `getToolName()` helper function that correctly handles both AgentForge Tools (`tool.metadata.name`) and LangChain tools (`tool.name`)
+  - **Impact**:
+    - Worker tool names are now correctly recorded in routing/tool prompts
+    - Runtime worker capabilities show the correct tool names
+    - The supervisor can make better routing decisions based on accurate tool information
+  - **Location**: `packages/patterns/src/multi-agent/agent.ts` (lines 22-44, 371, 469)
+  - **Added comprehensive test coverage**:
+    - 5 new tests for tool name extraction with both AgentForge Tools and LangChain tools
+    - Tests verify correct extraction from AgentForge Tools (using `metadata.name`)
+    - Tests verify correct extraction from LangChain tools (using `name`)
+    - Tests verify handling of mixed tool types
+    - Tests verify graceful fallback to 'unknown' for tools without name
+    - Updated `MultiAgentSystemBuilder` test to properly assert tool name extraction
+  - **Breaking Change**: None - backward compatible with both tool types
+
+### Published
+- All packages published to npm registry at version 0.10.4:
+  - @agentforge/core@0.10.4
+  - @agentforge/patterns@0.10.4
+  - @agentforge/tools@0.10.4
+  - @agentforge/testing@0.10.4
+  - @agentforge/cli@0.10.4
+
 ## [0.10.3] - 2026-02-04
 
 ### Fixed
