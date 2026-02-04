@@ -63,7 +63,7 @@ describe('Web Search Tool', () => {
 
       mockedAxios.get.mockResolvedValueOnce(mockResponse);
 
-      const result = await webSearch.execute({
+      const result = await webSearch.invoke({
         query: 'test query',
         maxResults: 10,
       });
@@ -91,7 +91,7 @@ describe('Web Search Tool', () => {
 
       mockedAxios.get.mockResolvedValueOnce(mockResponse);
 
-      const result = await webSearch.execute({
+      const result = await webSearch.invoke({
         query: 'test',
       });
 
@@ -111,7 +111,7 @@ describe('Web Search Tool', () => {
 
       mockedAxios.get.mockResolvedValueOnce(mockResponse);
 
-      const result = await webSearch.execute({
+      const result = await webSearch.invoke({
         query: 'nonexistent query',
       });
 
@@ -123,7 +123,7 @@ describe('Web Search Tool', () => {
     it('should handle errors gracefully', async () => {
       mockedAxios.get.mockRejectedValueOnce(new Error('Network error'));
 
-      const result = await webSearch.execute({
+      const result = await webSearch.invoke({
         query: 'test',
       });
 
@@ -153,7 +153,7 @@ describe('Web Search Tool', () => {
 
       mockedAxios.post.mockResolvedValueOnce(mockResponse);
 
-      const result = await webSearch.execute({
+      const result = await webSearch.invoke({
         query: 'test query',
         preferSerper: true,
       });
@@ -202,7 +202,7 @@ describe('Web Search Tool', () => {
       mockedAxios.get.mockResolvedValueOnce(duckduckgoResponse);
       mockedAxios.post.mockResolvedValueOnce(serperResponse);
 
-      const result = await webSearch.execute({
+      const result = await webSearch.invoke({
         query: 'test query',
         preferSerper: false, // Prefer DuckDuckGo, but will fallback
       });
@@ -228,7 +228,7 @@ describe('Web Search Tool', () => {
 
       mockedAxios.get.mockResolvedValueOnce(duckduckgoResponse);
 
-      const result = await webSearch.execute({
+      const result = await webSearch.invoke({
         query: 'test query',
       });
 
@@ -252,7 +252,7 @@ describe('Web Search Tool', () => {
 
       mockedAxios.get.mockResolvedValueOnce(duckduckgoResponse);
 
-      const result = await webSearch.execute({
+      const result = await webSearch.invoke({
         query: 'test query',
       });
 
@@ -278,7 +278,7 @@ describe('Web Search Tool', () => {
 
       mockedAxios.get.mockResolvedValueOnce(mockResponse);
 
-      const result = await webSearch.execute({
+      const result = await webSearch.invoke({
         query: '  test   query  ',
       });
 
@@ -296,7 +296,7 @@ describe('Web Search Tool', () => {
 
       mockedAxios.get.mockResolvedValueOnce(mockResponse);
 
-      await webSearch.execute({
+      await webSearch.invoke({
         query: 'test',
       });
 

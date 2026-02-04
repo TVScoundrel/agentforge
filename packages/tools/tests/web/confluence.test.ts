@@ -130,7 +130,7 @@ describe('Confluence Tools', () => {
 
       mockAxiosGet.mockResolvedValueOnce(mockResponse);
 
-      const resultString = await searchConfluence.execute({
+      const resultString = await searchConfluence.invoke({
         query: 'test query',
         limit: 10,
       });
@@ -165,7 +165,7 @@ describe('Confluence Tools', () => {
 
       mockAxiosGet.mockResolvedValueOnce(mockResponse);
 
-      const resultString = await searchConfluence.execute({
+      const resultString = await searchConfluence.invoke({
         query: 'nonexistent',
       });
       const result = JSON.parse(resultString);
@@ -177,7 +177,7 @@ describe('Confluence Tools', () => {
     it('should handle API errors', async () => {
       mockAxiosGet.mockRejectedValueOnce(new Error('API Error'));
 
-      const resultString = await searchConfluence.execute({
+      const resultString = await searchConfluence.invoke({
         query: 'test',
       });
       const result = JSON.parse(resultString);
@@ -193,7 +193,7 @@ describe('Confluence Tools', () => {
 
       mockAxiosGet.mockResolvedValueOnce(mockResponse);
 
-      await searchConfluence.execute({
+      await searchConfluence.invoke({
         query: 'test',
         limit: 100,
       });
@@ -229,7 +229,7 @@ describe('Confluence Tools', () => {
 
       mockAxiosGet.mockResolvedValueOnce(mockResponse);
 
-      const resultString = await getConfluencePage.execute({
+      const resultString = await getConfluencePage.invoke({
         page_id: '123',
       });
       const result = JSON.parse(resultString);
@@ -256,7 +256,7 @@ describe('Confluence Tools', () => {
         message: 'Not found',
       });
 
-      const resultString = await getConfluencePage.execute({
+      const resultString = await getConfluencePage.invoke({
         page_id: 'nonexistent',
       });
       const result = JSON.parse(resultString);
@@ -285,7 +285,7 @@ describe('Confluence Tools', () => {
 
       mockAxiosGet.mockResolvedValueOnce(mockResponse);
 
-      const resultString = await listConfluenceSpaces.execute({
+      const resultString = await listConfluenceSpaces.invoke({
         limit: 10,
       });
       const result = JSON.parse(resultString);
@@ -305,7 +305,7 @@ describe('Confluence Tools', () => {
 
       mockAxiosGet.mockResolvedValueOnce(mockResponse);
 
-      const resultString = await listConfluenceSpaces.execute({});
+      const resultString = await listConfluenceSpaces.invoke({});
       const result = JSON.parse(resultString);
 
       expect(result.success).toBe(true);
@@ -333,7 +333,7 @@ describe('Confluence Tools', () => {
 
       mockAxiosGet.mockResolvedValueOnce(mockResponse);
 
-      const resultString = await getSpacePages.execute({
+      const resultString = await getSpacePages.invoke({
         space_key: 'TEST',
         limit: 10,
       });
@@ -350,7 +350,7 @@ describe('Confluence Tools', () => {
         message: 'Space not found',
       });
 
-      const resultString = await getSpacePages.execute({
+      const resultString = await getSpacePages.invoke({
         space_key: 'NONEXISTENT',
       });
       const result = JSON.parse(resultString);
@@ -375,7 +375,7 @@ describe('Confluence Tools', () => {
 
       mockAxiosPost.mockResolvedValueOnce(mockResponse);
 
-      const resultString = await createConfluencePage.execute({
+      const resultString = await createConfluencePage.invoke({
         space_key: 'TEST',
         title: 'New Page',
         content: '<p>New content</p>',
@@ -420,7 +420,7 @@ describe('Confluence Tools', () => {
 
       mockAxiosPost.mockResolvedValueOnce(mockResponse);
 
-      const resultString = await createConfluencePage.execute({
+      const resultString = await createConfluencePage.invoke({
         space_key: 'TEST',
         title: 'Child Page',
         content: '<p>Content</p>',
@@ -444,7 +444,7 @@ describe('Confluence Tools', () => {
         message: 'Invalid request',
       });
 
-      const resultString = await createConfluencePage.execute({
+      const resultString = await createConfluencePage.invoke({
         space_key: 'TEST',
         title: 'New Page',
         content: '<p>Content</p>',
@@ -479,7 +479,7 @@ describe('Confluence Tools', () => {
       mockAxiosGet.mockResolvedValueOnce(mockGetResponse);
       mockAxiosPut.mockResolvedValueOnce(mockUpdateResponse);
 
-      const resultString = await updateConfluencePage.execute({
+      const resultString = await updateConfluencePage.invoke({
         page_id: '123',
         title: 'Updated Page',
         content: '<p>Updated content</p>',
@@ -512,7 +512,7 @@ describe('Confluence Tools', () => {
         message: 'Page not found',
       });
 
-      const resultString = await updateConfluencePage.execute({
+      const resultString = await updateConfluencePage.invoke({
         page_id: 'nonexistent',
         title: 'Updated',
         content: '<p>Content</p>',
@@ -549,7 +549,7 @@ describe('Confluence Tools', () => {
       mockAxiosGet.mockResolvedValueOnce(mockGetResponse);
       mockAxiosPut.mockResolvedValueOnce(mockPutResponse);
 
-      const resultString = await archiveConfluencePage.execute({
+      const resultString = await archiveConfluencePage.invoke({
         page_id: '123',
       });
       const result = JSON.parse(resultString);
@@ -566,7 +566,7 @@ describe('Confluence Tools', () => {
         message: 'Page not found',
       });
 
-      const resultString = await archiveConfluencePage.execute({
+      const resultString = await archiveConfluencePage.invoke({
         page_id: 'nonexistent',
       });
       const result = JSON.parse(resultString);
@@ -582,7 +582,7 @@ describe('Confluence Tools', () => {
       delete process.env.ATLASSIAN_EMAIL;
       delete process.env.ATLASSIAN_SITE_URL;
 
-      const resultString = await searchConfluence.execute({
+      const resultString = await searchConfluence.invoke({
         query: 'test',
       });
       const result = JSON.parse(resultString);
@@ -594,7 +594,7 @@ describe('Confluence Tools', () => {
     it('should handle network errors', async () => {
       mockAxiosGet.mockRejectedValueOnce(new Error('Network error'));
 
-      const resultString = await searchConfluence.execute({
+      const resultString = await searchConfluence.invoke({
         query: 'test',
       });
       const result = JSON.parse(resultString);
@@ -609,7 +609,7 @@ describe('Confluence Tools', () => {
         message: 'Unauthorized',
       });
 
-      const resultString = await searchConfluence.execute({
+      const resultString = await searchConfluence.invoke({
         query: 'test',
       });
       const result = JSON.parse(resultString);
@@ -624,7 +624,7 @@ describe('Confluence Tools', () => {
         message: 'Forbidden',
       });
 
-      const resultString = await getConfluencePage.execute({
+      const resultString = await getConfluencePage.invoke({
         page_id: '123',
       });
       const result = JSON.parse(resultString);
@@ -651,7 +651,7 @@ describe('Confluence Tools', () => {
         siteUrl: 'https://custom.atlassian.net',
       });
 
-      await tools.searchConfluence.execute({
+      await tools.searchConfluence.invoke({
         query: 'test',
       });
 
@@ -681,7 +681,7 @@ describe('Confluence Tools', () => {
 
       const tools = createConfluenceTools({});
 
-      await tools.searchConfluence.execute({
+      await tools.searchConfluence.invoke({
         query: 'test',
       });
 

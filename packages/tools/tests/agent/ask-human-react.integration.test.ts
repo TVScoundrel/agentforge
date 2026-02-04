@@ -133,7 +133,7 @@ describe('askHuman Tool - Agent Integration', () => {
       };
 
       // The tool will throw because interrupt() is called outside a graph context
-      await expect(tool.execute(input)).rejects.toThrow();
+      await expect(tool.invoke(input)).rejects.toThrow();
     });
 
     it('should validate input before execution', async () => {
@@ -143,7 +143,7 @@ describe('askHuman Tool - Agent Integration', () => {
       const invalidInput = {} as AskHumanInput;
 
       // Should throw validation error
-      await expect(tool.execute(invalidInput)).rejects.toThrow();
+      await expect(tool.invoke(invalidInput)).rejects.toThrow();
     });
   });
 });
