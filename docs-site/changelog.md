@@ -7,6 +7,32 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.10.3] - 2026-02-04
+
+### Fixed
+
+#### @agentforge/patterns
+- **fix: Correct task routing in wrapReActAgent for parallel execution** [P1 Critical Bug]
+  - Fixed critical bug where `wrapReActAgent()` used the most recent message from shared state instead of the worker's specific assignment
+  - **Problem**: In parallel or multi-step multi-agent execution, workers could receive the wrong task (another worker's task from the most recent message)
+  - **Solution**: Changed task extraction to use `currentAssignment.task` directly instead of `state.messages[state.messages.length - 1]?.content`
+  - **Impact**: Ensures correct task routing in parallel and multi-step scenarios
+  - **Location**: `packages/patterns/src/multi-agent/utils.ts` (lines 78-103)
+  - **Added comprehensive test coverage**:
+    - New test file: `packages/patterns/tests/multi-agent/utils.test.ts`
+    - 3 new tests specifically for parallel execution scenarios
+    - Tests verify correct task routing with multiple parallel assignments
+    - Tests verify graceful handling of missing/completed assignments
+  - **Breaking Change**: None - function signature and return type unchanged
+
+### Published
+- All packages published to npm registry at version 0.10.3:
+  - @agentforge/core@0.10.3
+  - @agentforge/patterns@0.10.3
+  - @agentforge/tools@0.10.3
+  - @agentforge/testing@0.10.3
+  - @agentforge/cli@0.10.3
+
 ## [0.10.2] - 2026-02-04
 
 ### Fixed
