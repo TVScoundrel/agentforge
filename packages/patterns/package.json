@@ -62,9 +62,5 @@
     "typescript": "^5.3.3",
     "typescript-eslint": "^8.19.1",
     "vitest": "^1.6.1"
-  },
-  "peerDependencies": {
-    "@langchain/core": "^1.1.17",
-    "@langchain/langgraph": "^1.1.2"
   }
 }

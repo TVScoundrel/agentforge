@@ -117,6 +117,12 @@ importers:
 
   packages/core:
     dependencies:
+      '@langchain/core':
+        specifier: ^1.1.17
+        version: 1.1.17(openai@6.16.0(zod@3.25.76))
+      '@langchain/langgraph':
+        specifier: ^1.1.2
+        version: 1.1.2(@langchain/core@1.1.17(openai@6.16.0(zod@3.25.76)))(zod-to-json-schema@3.25.0(zod@3.25.76))(zod@3.25.76)
       zod:
         specifier: ^3.23.0
         version: 3.25.76
@@ -127,12 +133,6 @@ importers:
       '@eslint/js':
         specifier: ^9.17.0
         version: 9.39.2
-      '@langchain/core':
-        specifier: ^1.1.17
-        version: 1.1.17(openai@6.16.0(zod@3.25.76))
-      '@langchain/langgraph':
-        specifier: ^1.1.2
-        version: 1.1.2(@langchain/core@1.1.17(openai@6.16.0(zod@3.25.76)))(zod-to-json-schema@3.25.0(zod@3.25.76))(zod@3.25.76)
       '@types/node':
         specifier: ^22.10.2
         version: 22.19.3
