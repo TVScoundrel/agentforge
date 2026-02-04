@@ -226,7 +226,7 @@ export function createExecutorNode(config: ExecutorConfig) {
             );
 
             result = await Promise.race([
-              tool.execute(currentStep.args || {}),
+              tool.invoke(currentStep.args || {}),
               timeoutPromise,
             ]);
 

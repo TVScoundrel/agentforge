@@ -55,7 +55,7 @@ export function toLangChainTool(
     description: tool.metadata.description,
     schema: tool.schema as any,
     func: async (input: any) => {
-      const result = await tool.execute(input);
+      const result = await tool.invoke(input);
 
       // LangChain tools must return strings
       // Convert result to string if it's not already

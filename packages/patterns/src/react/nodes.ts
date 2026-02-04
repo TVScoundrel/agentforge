@@ -237,7 +237,7 @@ export function createActionNode(
       try {
         // Execute the tool
         const startTime = Date.now();
-        const result = await tool.execute(action.arguments);
+        const result = await tool.invoke(action.arguments);
         const executionTime = Date.now() - startTime;
 
         toolsExecuted++;

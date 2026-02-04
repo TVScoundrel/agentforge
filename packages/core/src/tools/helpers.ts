@@ -11,22 +11,22 @@ import { validateSchemaDescriptions } from './validation.js';
 
 /**
  * Create a tool with automatic validation
- * 
+ *
  * This function validates:
  * 1. Metadata is valid (name, description, category, etc.)
  * 2. Schema has descriptions on ALL fields (enforced!)
- * 
+ *
  * Why enforce descriptions?
  * - LLMs need context to understand parameters
  * - Better descriptions = Better tool usage
  * - Prevents common mistakes
- * 
+ *
  * @param metadata - Tool metadata
  * @param schema - Zod schema for input validation (must have descriptions!)
- * @param execute - Tool implementation
+ * @param invoke - Tool implementation (primary method, industry standard)
  * @returns Validated tool
  * @throws {Error} If metadata is invalid or schema is missing descriptions
- * 
+ *
  * @example
  * ```ts
  * // ✅ This works - all fields have descriptions
@@ -43,7 +43,7 @@ import { validateSchemaDescriptions } from './validation.js';
  *     // Implementation
  *   }
  * );
- * 
+ *
  * // ❌ This throws - missing description on 'path'
  * const badTool = createTool(
  *   { name: 'bad', description: 'Bad tool', category: ToolCategory.UTILITY },
@@ -57,7 +57,7 @@ import { validateSchemaDescriptions } from './validation.js';
 export function createTool<TInput = unknown, TOutput = unknown>(
   metadata: ToolMetadata,
   schema: z.ZodSchema<TInput>,
-  execute: (input: TInput) => Promise<TOutput>
+  invoke: (input: TInput) => Promise<TOutput>
 ): Tool<TInput, TOutput> {
   // Validate metadata
   const metadataResult = validateToolMetadata(metadata);
@@ -71,40 +71,40 @@ export function createTool<TInput = unknown, TOutput = unknown>(
   // Validate schema has descriptions on all fields
   validateSchemaDescriptions(schema);
 
-  // Create the tool with both execute and invoke (LangChain compatibility)
+  // Create the tool with invoke as primary method (industry standard)
   const tool: Tool<TInput, TOutput> = {
     metadata: metadataResult.data,
     schema,
-    execute,
+    invoke,
   };
 
-  // Add invoke as an alias for execute (LangChain compatibility)
-  // This allows developers familiar with LangChain to use .invoke() instead of .execute()
-  (tool as any).invoke = execute;
+  // Add execute as a deprecated alias for invoke (backward compatibility)
+  // This maintains compatibility with existing code while encouraging use of invoke()
+  (tool as any).execute = invoke;
 
   return tool;
 }
 
 /**
  * Create a tool without enforcing schema descriptions
- * 
+ *
  * ⚠️ WARNING: Only use this if you have a good reason to skip description validation.
  * In most cases, you should use `createTool()` instead.
- * 
+ *
  * This is useful for:
  * - Migration from existing code
  * - Tools with dynamic schemas
  * - Testing
- * 
+ *
  * @param metadata - Tool metadata
  * @param schema - Zod schema for input validation
- * @param execute - Tool implementation
+ * @param invoke - Tool implementation (primary method, industry standard)
  * @returns Tool (without schema validation)
  */
 export function createToolUnsafe<TInput = unknown, TOutput = unknown>(
   metadata: ToolMetadata,
   schema: z.ZodSchema<TInput>,
-  execute: (input: TInput) => Promise<TOutput>
+  invoke: (input: TInput) => Promise<TOutput>
 ): Tool<TInput, TOutput> {
   // Only validate metadata, skip schema description validation
   const metadataResult = validateToolMetadata(metadata);
@@ -115,15 +115,15 @@ export function createToolUnsafe<TInput = unknown, TOutput = unknown>(
     throw new Error(`Invalid tool metadata:\n${errors}`);
   }
 
-  // Create the tool with both execute and invoke (LangChain compatibility)
+  // Create the tool with invoke as primary method (industry standard)
   const tool: Tool<TInput, TOutput> = {
     metadata: metadataResult.data,
     schema,
-    execute,
+    invoke,
   };
 
-  // Add invoke as an alias for execute (LangChain compatibility)
-  (tool as any).invoke = execute;
+  // Add execute as a deprecated alias for invoke (backward compatibility)
+  (tool as any).execute = invoke;
 
   return tool;
 }

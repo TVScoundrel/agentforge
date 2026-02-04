@@ -341,7 +341,7 @@ export interface Tool<TInput = unknown, TOutput = unknown> {
   schema: z.ZodSchema<TInput>;
 
   /**
-   * Tool implementation
+   * Tool implementation (primary method)
    *
    * Why async?
    * - Most tools do I/O (files, network, database)
@@ -349,22 +349,33 @@ export interface Tool<TInput = unknown, TOutput = unknown> {
    *
    * The input is automatically validated against the schema
    * before this function is called.
-   */
-  execute: (input: TInput) => Promise<TOutput>;
-
-  /**
-   * LangChain-compatible alias for execute
    *
-   * This allows developers familiar with LangChain to use .invoke()
-   * instead of .execute(). Both methods do exactly the same thing.
+   * This is the industry standard method name used by LangChain.
    *
    * @example
    * ```ts
-   * // Both of these work:
+   * const result = await tool.invoke({ input: 'hello' });
+   * ```
+   */
+  invoke: (input: TInput) => Promise<TOutput>;
+
+  /**
+   * Deprecated alias for invoke()
+   *
+   * @deprecated Use invoke() instead. This method will be removed in v1.0.0.
+   *
+   * Both methods do exactly the same thing, but invoke() is the industry
+   * standard used by LangChain and should be preferred.
+   *
+   * @example
+   * ```ts
+   * // ❌ Deprecated (still works, but will be removed in v1.0.0):
    * const result1 = await tool.execute({ input: 'hello' });
+   *
+   * // ✅ Preferred (industry standard):
    * const result2 = await tool.invoke({ input: 'hello' });
    * ```
    */
-  invoke?: (input: TInput) => Promise<TOutput>;
+  execute?: (input: TInput) => Promise<TOutput>;
 }
 
