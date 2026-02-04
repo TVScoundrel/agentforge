@@ -3,6 +3,10 @@
  * @module tools/executor
  */
 
+import { createLogger } from '../langgraph/observability/logger.js';
+
+const logger = createLogger('agentforge:tools:executor');
+
 export type Priority = 'low' | 'normal' | 'high' | 'critical';
 
 export type BackoffStrategy = 'linear' | 'exponential' | 'fixed';
@@ -110,11 +114,25 @@ export function createToolExecutor(config: ToolExecutorConfig = {}) {
     input: any,
     policy?: RetryPolicy
   ): Promise<any> {
-    // Use invoke (primary method), fallback to execute (deprecated alias) for backward compatibility
+    // Require invoke() as the primary method (industry standard)
+    // Fall back to execute() only for backward compatibility with tools created before v0.11.0
     const executeFn = tool.invoke || tool.execute;
 
     if (!executeFn) {
-      throw new Error('Tool must implement either invoke() or execute() method');
+      throw new Error(
+        'Tool must implement invoke() method. ' +
+        'Tools created with createTool() or toolBuilder automatically have this method. ' +
+        'If you are manually constructing a tool, ensure it has an invoke() method.'
+      );
+    }
+
+    // Warn if tool only has execute() (violates the type contract since v0.11.0)
+    if (!tool.invoke && tool.execute) {
+      logger.warn(
+        `Tool "${tool.metadata?.name || 'unknown'}" only implements execute() which is deprecated. ` +
+        'Please update to implement invoke() as the primary method. ' +
+        'execute() will be removed in v1.0.0.'
+      );
     }
 
     if (!policy) {

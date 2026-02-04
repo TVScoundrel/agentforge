@@ -65,7 +65,7 @@ describe('Tool Executor', () => {
       const executor = createToolExecutor();
 
       await expect(executor.execute(tool, 'test')).rejects.toThrow(
-        'Tool must implement either invoke() or execute() method'
+        'Tool must implement invoke() method'
       );
     });
 
