@@ -7,6 +7,50 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.10.6] - 2026-02-04
+
+### Fixed
+
+#### @agentforge/patterns
+- **fix: Tool-result messages now properly handled as ToolMessage instead of HumanMessage** [P2 Bug]
+  - Fixed tool-result messages being treated as `HumanMessage` instead of `ToolMessage` in ReAct pattern
+  - **Problem**: Observation nodes emitted messages with `role: 'tool'` but were missing `tool_call_id`, and the reasoning node didn't handle `role: 'tool'` case, causing tool outputs to fall back to `HumanMessage`. This mislabeled tool outputs and could degrade model behavior.
+  - **Solution**:
+    - Added `tool_call_id` field to observation messages (line 336 in `packages/patterns/src/react/nodes.ts`)
+    - Added explicit handling for `role: 'tool'` messages to create proper `ToolMessage` instances (lines 63-70)
+    - Added `tool_call_id?: string` to `MessageSchema` to preserve the field during state validation (line 28 in `packages/patterns/src/react/schemas.ts`)
+  - **Impact**:
+    - Tool outputs are now properly labeled for LLMs, improving model behavior and tool-calling accuracy
+    - Message flow correctly preserves the relationship between tool calls and their results via `tool_call_id`
+    - Aligns with LangChain's expected message format for tool interactions
+  - **Tests**: Added comprehensive test coverage for tool message handling and schema validation
+  - **Breaking Change**: None - backward compatible bug fix
+
+- **fix: returnIntermediateSteps configuration now properly used** [P3 Bug]
+  - Fixed `returnIntermediateSteps` configuration parameter being accepted but never used
+  - **Problem**: The scratchpad was always populated with intermediate steps regardless of the `returnIntermediateSteps` setting, wasting memory and tokens when not needed.
+  - **Solution**:
+    - Updated `createObservationNode` to accept `returnIntermediateSteps` parameter (line 299-308 in `packages/patterns/src/react/nodes.ts`)
+    - Conditionally populate scratchpad only when `returnIntermediateSteps: true` (lines 340-354)
+    - Passed flag from agent config to observation node (line 137 in `packages/patterns/src/react/agent.ts`)
+  - **Impact**:
+    - When `returnIntermediateSteps: false` (default): Scratchpad is not populated, saving memory and tokens
+    - When `returnIntermediateSteps: true`: Scratchpad is populated with intermediate reasoning steps for debugging and observability
+  - **Tests**: Added tests to verify both scenarios (scratchpad populated when true, empty when false)
+  - **Breaking Change**: None - backward compatible bug fix
+
+- **chore: Updated confusing iteration counter comment for clarity**
+  - Updated comment on line 110 of `packages/patterns/src/react/nodes.ts` to clarify that the value `1` is being added to the iteration counter using an additive reducer, not setting it to 1
+  - Prevents confusion about how the iteration counter works
+
+### Published
+- All packages published to npm registry at version 0.10.6:
+  - @agentforge/core@0.10.6
+  - @agentforge/patterns@0.10.6
+  - @agentforge/tools@0.10.6
+  - @agentforge/testing@0.10.6
+  - @agentforge/cli@0.10.6
+
 ## [0.10.5] - 2026-02-04
 
 ### Fixed
