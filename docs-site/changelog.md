@@ -7,6 +7,76 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.11.4] - 2026-02-04
+
+### Fixed
+
+#### @agentforge/core
+- **Tool Registry Desync Prevention** [P2]
+  - **Problem**: The `update()` method allowed renaming tools by accepting a tool with a different `metadata.name` than the registry key, causing Map key to desync from tool metadata
+  - **Impact**: This broke lookups, prompts, and other methods that rely on `metadata.name`
+  - **Solution**: Added validation in `update()` to prevent renaming - throws error if `tool.metadata.name` doesn't match registry key
+  - **Guidance**: Clear error message guides users to use `remove()` + `register()` for renaming
+  - **Location**: `packages/core/src/tools/registry.ts` line 202
+
+- **State Defaults for Non-Reducer Channels** [P2]
+  - **Problem**: Defaults declared in state configs were silently ignored for non-reducer channels, leaving fields like `status`, `shouldContinue`, `maxIterations`, and `input` undefined
+  - **Root Cause**: LangGraph's `Annotation()` API doesn't support defaults for LastValue channels - only for channels with reducers
+  - **Impact**: Affected all patterns (ReAct, Plan-Execute, Reflection, Multi-Agent) where state fields with defaults weren't being initialized
+  - **Solution**: For non-reducer channels with defaults, use a "last value wins" reducer `(_left, right) => right` to enable default support while maintaining correct semantics
+  - **Location**: `packages/core/src/langgraph/state.ts` line 76
+  - **Note**: If a node explicitly returns `{ key: undefined }`, it will override the default (expected behavior - nodes should omit keys instead)
+
+#### @agentforge/cli
+- **Agent Deploy Command False Success** [P2]
+  - **Problem**: `agent:deploy` command used `setTimeout` to fake deployment and reported success without actually deploying
+  - **Impact**: Incorrect behavior for a release tool - users thought agents were deployed when they weren't
+  - **Solution**: Replaced placeholder with proper error message and comprehensive deployment instructions for 4 methods (Docker, Kubernetes, Serverless, Manual)
+  - **Location**: `packages/cli/src/commands/agent/deploy.ts` line 26
+
+- **Tool Publish Command False Success** [P2]
+  - **Problem**: `tool:publish` command used `setTimeout` to fake npm publishing and reported success without actually publishing
+  - **Impact**: Critical issue for release tool - packages weren't being published to npm
+  - **Solution**: Implemented actual npm publishing using `execa` to run `npm publish`
+  - **Added**: New `publishPackage()` utility function in `packages/cli/src/utils/package-manager.ts`
+  - **Features**: Comprehensive error handling for authentication (E401/ENEEDAUTH), permissions (E403), and version conflicts (E409/EPUBLISHCONFLICT)
+  - **Location**: `packages/cli/src/commands/tool/publish.ts` line 51
+
+### Tests
+
+#### @agentforge/core
+- Added test for tool registry desync prevention
+- Added 7 comprehensive tests for state defaults fix:
+  - Regression test verifying defaults work without `validateState()`
+  - Test showing `validateState()` still works correctly
+  - Test ensuring "last value wins" semantics (no accumulation)
+  - Test for backward compatibility (non-reducer channels without defaults)
+  - Test documenting residual risk (explicit `undefined` overrides default)
+  - Test showing best practice (nodes should omit keys, not write `undefined`)
+  - Edge case coverage
+
+#### @agentforge/cli
+- Updated 3 `agent:deploy` tests to verify error message and deployment instructions
+- Updated to 9 `tool:publish` tests total:
+  - Successful publishing
+  - Custom tag support
+  - Dry-run mode
+  - Test failure handling
+  - Build failure handling
+  - npm publish failure handling
+  - Authentication error handling
+  - Version conflict handling
+  - General error handling
+- Added 5 new tests for `publishPackage()` utility function
+
+### Published
+- All packages published to npm registry at version 0.11.4:
+  - @agentforge/core@0.11.4
+  - @agentforge/patterns@0.11.4
+  - @agentforge/tools@0.11.4
+  - @agentforge/testing@0.11.4
+  - @agentforge/cli@0.11.4
+
 ## [0.11.3] - 2026-02-04
 
 ### Fixed
