@@ -350,7 +350,7 @@ import { calculator } from './calculator.js';
 
 describe('Calculator Tool', () => {
   it('should perform addition', async () => {
-    const result = await calculator.execute({
+    const result = await calculator.invoke({
       expression: '2 + 2'
     });
 
@@ -359,7 +359,7 @@ describe('Calculator Tool', () => {
   });
 
   it('should handle errors', async () => {
-    const result = await calculator.execute({
+    const result = await calculator.invoke({
       expression: 'invalid'
     });
 

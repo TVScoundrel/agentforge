@@ -77,7 +77,7 @@ import { searchTool } from '../../../src/tools/search';
 
 describe('Search Tool', () => {
   it('should search and return results', async () => {
-    const result = await searchTool.execute({
+    const result = await searchTool.invoke({
       query: 'AgentForge',
       limit: 5
     });
@@ -88,12 +88,12 @@ describe('Search Tool', () => {
   
   it('should handle empty queries', async () => {
     await expect(
-      searchTool.execute({ query: '', limit: 5 })
+      searchTool.invoke({ query: '', limit: 5 })
     ).rejects.toThrow('Query cannot be empty');
   });
   
   it('should respect limit parameter', async () => {
-    const result = await searchTool.execute({
+    const result = await searchTool.invoke({
       query: 'test',
       limit: 3
     });
@@ -540,7 +540,7 @@ describe('Plan-Execute Agent', () => {
 // ✅ Good - isolated test
 it('should add numbers', async () => {
   const tool = createCalculatorTool();
-  const result = await tool.execute({ operation: 'add', a: 2, b: 2 });
+  const result = await tool.invoke({ operation: 'add', a: 2, b: 2 });
   expect(result).toBe('4');
 });
 
@@ -550,7 +550,7 @@ it('should create tool', () => {
   sharedTool = createCalculatorTool();
 });
 it('should use tool', async () => {
-  const result = await sharedTool.execute({ operation: 'add', a: 2, b: 2 });
+  const result = await sharedTool.invoke({ operation: 'add', a: 2, b: 2 });
   expect(result).toBe('4');
 });
 ```

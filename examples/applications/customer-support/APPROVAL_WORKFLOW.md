@@ -37,7 +37,7 @@ if (refundAmount <= 100) {
   processRefund({ approved: true });
 } else {
   // Request human approval for large refunds
-  const approval = await askHuman.execute({
+  const approval = await askHuman.invoke({
     question: `Approve refund of $${amount}?`,
     context: {
       customer: customerInfo,
@@ -152,7 +152,7 @@ Use appropriate priority for different scenarios:
 Always set timeouts with safe defaults:
 
 ```typescript
-await askHuman.execute({
+await askHuman.invoke({
   question: 'Approve this refund?',
   timeout: 120000, // 2 minutes
   defaultResponse: 'no' // Safe: deny if no response

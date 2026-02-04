@@ -196,7 +196,7 @@ streamingAgent.on('chunk', (chunk) => {
   console.log('Client 2 received:', chunk);
 });
 
-await streamingAgent.execute('Research task');
+await streamingAgent.invoke('Research task');
 ```
 
 ## Server-Sent Events (SSE)

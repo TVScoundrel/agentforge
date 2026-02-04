@@ -538,7 +538,7 @@ Use this checklist when migrating each tool:
 - [ ] Add at least one `.example()` showing typical usage
 - [ ] Add `.usageNotes()` if there are important usage details
 - [ ] Add `.limitation()` for any known limitations
-- [ ] Test the tool with `.execute()`
+- [ ] Test the tool with `.invoke()`
 - [ ] Verify LangChain conversion with `.toLangChainTool()`
 - [ ] Add to registry if using centralized tool management
 

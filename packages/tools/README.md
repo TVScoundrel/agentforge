@@ -44,23 +44,23 @@ All tools feature:
 import { httpGet, jsonParser, fileReader, calculator } from '@agentforge/tools';
 
 // Make an HTTP GET request
-const response = await httpGet.execute({
+const response = await httpGet.invoke({
   url: 'https://api.example.com/data'
 });
 
 // Parse JSON
-const parsed = await jsonParser.execute({
+const parsed = await jsonParser.invoke({
   json: '{"name": "John", "age": 30}'
 });
 
 // Read a file
-const file = await fileReader.execute({
+const file = await fileReader.invoke({
   path: './data.txt',
   encoding: 'utf8'
 });
 
 // Perform calculations
-const result = await calculator.execute({
+const result = await calculator.invoke({
   operation: 'add',
   a: 10,
   b: 20
@@ -213,7 +213,7 @@ General utility tools for common operations.
 import { webSearch } from '@agentforge/tools';
 
 // Basic search (no API key needed - uses DuckDuckGo)
-const result = await webSearch.execute({
+const result = await webSearch.invoke({
   query: 'TypeScript programming language',
   maxResults: 10
 });
@@ -226,7 +226,7 @@ result.results.forEach(r => {
 
 // Premium search with Serper API (requires SERPER_API_KEY env var)
 // Get your API key at: https://serper.dev
-const premiumResult = await webSearch.execute({
+const premiumResult = await webSearch.invoke({
   query: 'Latest AI developments 2026',
   maxResults: 5,
   preferSerper: true  // Use Serper for Google search results
@@ -291,7 +291,7 @@ SERPER_API_KEY=your-serper-api-key-here
 ```typescript
 import { webScraper } from '@agentforge/tools';
 
-const result = await webScraper.execute({
+const result = await webScraper.invoke({
   url: 'https://example.com',
   selector: 'article h1',
   extractText: true,
@@ -316,26 +316,26 @@ import {
 } from '@agentforge/tools';
 
 // Send a simple message
-const message = await sendSlackMessage.execute({
+const message = await sendSlackMessage.invoke({
   channel: 'general',
   message: 'Hello from AgentForge!'
 });
 
 // Send a notification with mentions
-const notification = await notifySlack.execute({
+const notification = await notifySlack.invoke({
   channel: 'alerts',
   message: 'System alert: High CPU usage detected',
   mentions: ['john', 'jane']  // Will send as: @john @jane System alert...
 });
 
 // List available channels
-const channels = await getSlackChannels.execute({
+const channels = await getSlackChannels.invoke({
   include_private: false  // Only public channels
 });
 console.log(channels.data?.channels);
 
 // Read message history
-const history = await getSlackMessages.execute({
+const history = await getSlackMessages.invoke({
   channel: 'general',
   limit: 50
 });
@@ -348,7 +348,7 @@ const customTools = createSlackTools({
   botIcon: ':rocket:'
 });
 
-await customTools.sendMessage.execute({
+await customTools.sendMessage.invoke({
   channel: 'general',
   message: 'Message from custom bot!'
 });
@@ -384,34 +384,34 @@ import {
 } from '@agentforge/tools';
 
 // Search for pages
-const searchResults = await searchConfluence.execute({
+const searchResults = await searchConfluence.invoke({
   cql: 'type=page AND space=DOCS',
   limit: 10
 });
 console.log(`Found ${searchResults.results.length} pages`);
 
 // Get a specific page
-const page = await getConfluencePage.execute({
+const page = await getConfluencePage.invoke({
   page_id: '123456'
 });
 console.log(`Page title: ${page.page.title}`);
 console.log(`Content: ${page.page.content}`);
 
 // List all spaces
-const spaces = await listConfluenceSpaces.execute({
+const spaces = await listConfluenceSpaces.invoke({
   limit: 50
 });
 console.log(`Found ${spaces.spaces.length} spaces`);
 
 // Get pages from a space
-const spacePages = await getSpacePages.execute({
+const spacePages = await getSpacePages.invoke({
   space_key: 'DOCS',
   limit: 25
 });
 console.log(`Found ${spacePages.pages.length} pages in DOCS space`);
 
 // Create a new page
-const newPage = await createConfluencePage.execute({
+const newPage = await createConfluencePage.invoke({
   space_key: 'DOCS',
   title: 'My New Page',
   content: '<p>This is the page content in HTML format</p>',
@@ -420,7 +420,7 @@ const newPage = await createConfluencePage.execute({
 console.log(`Created page with ID: ${newPage.page.id}`);
 
 // Update an existing page
-const updated = await updateConfluencePage.execute({
+const updated = await updateConfluencePage.invoke({
   page_id: newPage.page.id,
   title: 'Updated Page Title',
   content: '<p>Updated content</p>'
@@ -428,7 +428,7 @@ const updated = await updateConfluencePage.execute({
 console.log(`Updated to version ${updated.page.version}`);
 
 // Archive a page
-const archived = await archiveConfluencePage.execute({
+const archived = await archiveConfluencePage.invoke({
   page_id: newPage.page.id,
   reason: 'No longer needed'
 });
@@ -441,7 +441,7 @@ const customTools = createConfluenceTools({
   siteUrl: 'https://your-domain.atlassian.net'
 });
 
-await customTools.searchConfluence.execute({
+await customTools.searchConfluence.invoke({
   cql: 'type=page',
   limit: 5
 });
@@ -468,13 +468,13 @@ ATLASSIAN_SITE_URL=https://your-domain.atlassian.net
 import { csvParser, arrayFilter, arraySort } from '@agentforge/tools';
 
 // Parse CSV data
-const parsed = await csvParser.execute({
+const parsed = await csvParser.invoke({
   csv: 'name,age,city\nJohn,30,NYC\nJane,25,LA',
   hasHeaders: true
 });
 
 // Filter the data
-const filtered = await arrayFilter.execute({
+const filtered = await arrayFilter.invoke({
   array: parsed.data,
   property: 'age',
   operator: 'greater-than',
@@ -482,7 +482,7 @@ const filtered = await arrayFilter.execute({
 });
 
 // Sort the results
-const sorted = await arraySort.execute({
+const sorted = await arraySort.invoke({
   array: filtered.filtered,
   property: 'age',
   order: 'desc'
@@ -497,7 +497,7 @@ console.log(sorted.sorted);
 import { fileReader, fileWriter, directoryList } from '@agentforge/tools';
 
 // Read a file
-const content = await fileReader.execute({
+const content = await fileReader.invoke({
   path: './data.json',
   encoding: 'utf8'
 });
@@ -506,14 +506,14 @@ const content = await fileReader.execute({
 const processed = JSON.parse(content.content);
 processed.updated = new Date().toISOString();
 
-await fileWriter.execute({
+await fileWriter.invoke({
   path: './data-updated.json',
   content: JSON.stringify(processed, null, 2),
   createDirs: true
 });
 
 // List directory
-const files = await directoryList.execute({
+const files = await directoryList.invoke({
   path: './',
   recursive: false,
   includeDetails: true
@@ -528,13 +528,13 @@ console.log(files.files);
 import { currentDateTime, dateArithmetic, dateDifference } from '@agentforge/tools';
 
 // Get current date
-const now = await currentDateTime.execute({
+const now = await currentDateTime.invoke({
   format: 'custom',
   customFormat: 'yyyy-MM-dd HH:mm:ss'
 });
 
 // Add 7 days
-const future = await dateArithmetic.execute({
+const future = await dateArithmetic.invoke({
   date: now.iso,
   operation: 'add',
   amount: 7,
@@ -542,7 +542,7 @@ const future = await dateArithmetic.execute({
 });
 
 // Calculate difference
-const diff = await dateDifference.execute({
+const diff = await dateDifference.invoke({
   startDate: now.iso,
   endDate: future.result,
   unit: 'hours'
@@ -557,20 +557,20 @@ console.log(`${diff.difference} hours until ${future.result}`);
 import { stringCaseConverter, stringReplace, stringSplit } from '@agentforge/tools';
 
 // Convert to different cases
-const camel = await stringCaseConverter.execute({
+const camel = await stringCaseConverter.invoke({
   text: 'hello world example',
   targetCase: 'camel'
 });
 // Result: "helloWorldExample"
 
-const kebab = await stringCaseConverter.execute({
+const kebab = await stringCaseConverter.invoke({
   text: 'HelloWorldExample',
   targetCase: 'kebab'
 });
 // Result: "hello-world-example"
 
 // Replace text
-const replaced = await stringReplace.execute({
+const replaced = await stringReplace.invoke({
   text: 'Hello World, Hello Universe',
   search: 'Hello',
   replace: 'Hi',
@@ -579,7 +579,7 @@ const replaced = await stringReplace.execute({
 // Result: "Hi World, Hi Universe"
 
 // Split string
-const parts = await stringSplit.execute({
+const parts = await stringSplit.invoke({
   text: 'apple,banana,orange',
   delimiter: ','
 });
@@ -592,19 +592,19 @@ const parts = await stringSplit.execute({
 import { emailValidator, urlValidatorSimple, creditCardValidator } from '@agentforge/tools';
 
 // Validate email
-const email = await emailValidator.execute({
+const email = await emailValidator.invoke({
   email: 'user@example.com'
 });
 console.log(email.valid); // true
 
 // Validate URL
-const url = await urlValidatorSimple.execute({
+const url = await urlValidatorSimple.invoke({
   url: 'https://example.com/path'
 });
 console.log(url.valid); // true
 
 // Validate credit card
-const card = await creditCardValidator.execute({
+const card = await creditCardValidator.invoke({
   cardNumber: '4532-1488-0343-6467'
 });
 console.log(card.valid); // true (passes Luhn check)
@@ -650,7 +650,7 @@ interface Tool<TInput, TOutput> {
 Most tools return a result object with a `success` field:
 
 ```typescript
-const result = await someTool.execute({ ... });
+const result = await someTool.invoke({ ... });
 
 if (result.success) {
   console.log(result.data);
@@ -667,7 +667,7 @@ All tools are fully typed with TypeScript:
 import { httpGet } from '@agentforge/tools';
 
 // TypeScript knows the input type
-const result = await httpGet.execute({
+const result = await httpGet.invoke({
   url: 'https://api.example.com',
   headers: { 'Authorization': 'Bearer token' }
 });
@@ -733,7 +733,7 @@ const customTools = createSlackTools({
 });
 
 // Use custom tools
-await customTools.sendMessage.execute({
+await customTools.sendMessage.invoke({
   channel: 'general',
   message: 'Hello from custom bot!'
 });
