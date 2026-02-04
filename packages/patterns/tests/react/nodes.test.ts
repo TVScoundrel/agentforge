@@ -207,7 +207,7 @@ describe('ReAct Nodes', () => {
 
   describe('createObservationNode', () => {
     it('should process observations and update scratchpad', async () => {
-      const observationNode = createObservationNode(false);
+      const observationNode = createObservationNode(false, true); // verbose=false, returnIntermediateSteps=true
 
       const state: ReActStateType = {
         messages: [],
@@ -275,10 +275,12 @@ describe('ReAct Nodes', () => {
       expect(result.messages!.length).toBe(1);
       expect(result.messages![0].role).toBe('tool');
       expect(result.messages![0].content).toBe('Success');
+      expect(result.messages![0].tool_call_id).toBe('call_123');
+      expect(result.messages![0].name).toBe('test-tool');
     });
 
     it('should handle error observations', async () => {
-      const observationNode = createObservationNode(false);
+      const observationNode = createObservationNode(false, true); // verbose=false, returnIntermediateSteps=true
 
       const state: ReActStateType = {
         messages: [],

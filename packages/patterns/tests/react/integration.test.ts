@@ -275,7 +275,7 @@ describe('ReAct Agent Integration', () => {
     expect(result.iteration).toBeLessThanOrEqual(1);
   });
 
-  it('should accumulate scratchpad entries', async () => {
+  it('should accumulate scratchpad entries when returnIntermediateSteps is true', async () => {
     const mockLLM = createMockLLMWithToolCalls() as any;
 
     const agent = createReActAgent({
@@ -296,6 +296,25 @@ describe('ReAct Agent Integration', () => {
     expect(result.scratchpad[0]).toHaveProperty('thought');
     expect(result.scratchpad[0]).toHaveProperty('action');
     expect(result.scratchpad[0]).toHaveProperty('observation');
+  });
+
+  it('should NOT populate scratchpad when returnIntermediateSteps is false', async () => {
+    const mockLLM = createMockLLMWithToolCalls() as any;
+
+    const agent = createReActAgent({
+      model: mockLLM,
+      tools: [calculatorTool],
+      maxIterations: 5,
+      returnIntermediateSteps: false, // Explicitly set to false
+    });
+
+    const result = await agent.invoke({
+      messages: [new HumanMessage('What is 5 + 3?')],
+    });
+
+    expect(result).toBeDefined();
+    expect(result.scratchpad).toBeDefined();
+    expect(result.scratchpad.length).toBe(0); // Should be empty
   });
 });
 

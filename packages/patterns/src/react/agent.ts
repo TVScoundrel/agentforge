@@ -134,7 +134,7 @@ export function createReActAgent(
 
   const actionNode = createActionNode(toolArray, verbose, enableDeduplication);
 
-  const observationNode = createObservationNode(verbose);
+  const observationNode = createObservationNode(verbose, returnIntermediateSteps);
 
   // ===== Routing Logic =====
 

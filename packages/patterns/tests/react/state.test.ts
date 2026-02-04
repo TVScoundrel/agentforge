@@ -85,6 +85,30 @@ describe('ReAct State Definition', () => {
     expect(() => validateState(invalidState, ReActStateConfig)).toThrow();
   });
 
+  it('should preserve tool_call_id when validating state', () => {
+    const stateWithToolMessage = {
+      messages: [
+        { role: 'user', content: 'Calculate 5 + 3' },
+        { role: 'tool', content: 'Result: 8', name: 'calculator', tool_call_id: 'call_123' },
+      ],
+      thoughts: [],
+      actions: [],
+      observations: [],
+      scratchpad: [],
+      iteration: 1,
+      shouldContinue: false,
+      response: undefined,
+    };
+
+    const validated = validateState(stateWithToolMessage, ReActStateConfig);
+
+    expect(validated.messages).toBeDefined();
+    expect(validated.messages.length).toBe(2);
+    expect(validated.messages[1].role).toBe('tool');
+    expect(validated.messages[1].tool_call_id).toBe('call_123');
+    expect(validated.messages[1].name).toBe('calculator');
+  });
+
   it('should use reducers to accumulate state updates', () => {
     const initialState: ReActStateType = {
       messages: [{ role: 'user', content: 'Hello' }],
@@ -134,6 +158,21 @@ describe('ReAct Schemas', () => {
     };
 
     expect(() => MessageSchema.parse(validMessage)).not.toThrow();
+  });
+
+  it('should validate Message schema with tool_call_id for tool messages', () => {
+    const toolMessage = {
+      role: 'tool',
+      content: 'Result: 42',
+      name: 'calculator',
+      tool_call_id: 'call_123',
+    };
+
+    const parsed = MessageSchema.parse(toolMessage);
+    expect(parsed.role).toBe('tool');
+    expect(parsed.content).toBe('Result: 42');
+    expect(parsed.name).toBe('calculator');
+    expect(parsed.tool_call_id).toBe('call_123');
   });
 
   it('should validate Thought schema', () => {

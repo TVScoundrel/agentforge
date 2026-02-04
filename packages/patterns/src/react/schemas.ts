@@ -16,11 +16,16 @@ export const MessageRoleSchema = z.enum(['system', 'user', 'assistant', 'tool'])
 
 /**
  * Base message schema
+ *
+ * Note: tool_call_id is required for messages with role='tool' to properly
+ * construct ToolMessage instances in LangChain. It links tool results back
+ * to their corresponding tool calls.
  */
 export const MessageSchema = z.object({
   role: MessageRoleSchema,
   content: z.string(),
   name: z.string().optional(),
+  tool_call_id: z.string().optional(),
   metadata: z.record(z.any()).optional(),
 });
 

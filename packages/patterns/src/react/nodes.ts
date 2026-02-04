@@ -60,6 +60,14 @@ export function createReasoningNode(
         if (msg.role === 'user') return new HumanMessage(msg.content);
         if (msg.role === 'assistant') return new AIMessage(msg.content);
         if (msg.role === 'system') return new SystemMessage(msg.content);
+        if (msg.role === 'tool') {
+          // Properly handle tool messages with tool_call_id
+          return new ToolMessage({
+            content: msg.content,
+            tool_call_id: msg.tool_call_id,
+            name: msg.name,
+          });
+        }
         return new HumanMessage(msg.content); // fallback
       }),
     ];
@@ -107,7 +115,7 @@ export function createReasoningNode(
       messages: [{ role: 'assistant' as const, content: thought }],
       thoughts: thought ? [{ content: thought, timestamp: Date.now() }] : [],
       actions: toolCalls,
-      iteration: 1, // Increment iteration
+      iteration: 1, // Add 1 to iteration counter (uses additive reducer)
       shouldContinue,
       response: toolCalls.length === 0 ? thought : undefined, // Final response if no tool calls
     };
@@ -292,9 +300,11 @@ export function createActionNode(
  * Create an observation node that processes tool results and updates scratchpad
  *
  * @param verbose - Whether to log debug information
+ * @param returnIntermediateSteps - Whether to populate the scratchpad with intermediate steps
  */
 export function createObservationNode(
-  verbose: boolean = false
+  verbose: boolean = false,
+  returnIntermediateSteps: boolean = false
 ) {
   return async (state: ReActStateType) => {
     const observations = (state.observations as ToolResult[]) || [];
@@ -309,33 +319,10 @@ export function createObservationNode(
 
     // Get the most recent observations
     const recentObservations = observations.slice(-10);
-
-    // Update scratchpad with the latest step
-    const currentStep = state.iteration as number;
-    const latestThought = thoughts[thoughts.length - 1]?.content || '';
     const latestActions = actions.slice(-10);
-    const latestObservations = recentObservations;
-
-    // Create scratchpad entry
-    const scratchpadEntry = {
-      step: currentStep,
-      thought: latestThought,
-      action: latestActions.map((a: any) => `${a.name}(${JSON.stringify(a.arguments)})`).join(', '),
-      observation: latestObservations
-        .map((obs: any) => {
-          if (obs.error) {
-            return `Error: ${obs.error}`;
-          }
-          return typeof obs.result === 'string'
-            ? obs.result
-            : JSON.stringify(obs.result);
-        })
-        .join('; '),
-      timestamp: Date.now(),
-    };
 
     // Add observation results as messages
-    const observationMessages = latestObservations.map((obs: any) => {
+    const observationMessages = recentObservations.map((obs: any) => {
       const content = obs.error
         ? `Error: ${obs.error}`
         : typeof obs.result === 'string'
@@ -346,17 +333,36 @@ export function createObservationNode(
         role: 'tool' as const,
         content,
         name: latestActions.find((a: any) => a.id === obs.toolCallId)?.name,
+        tool_call_id: obs.toolCallId, // Include tool_call_id for proper ToolMessage construction
       };
     });
 
+    // Only populate scratchpad if returnIntermediateSteps is enabled
+    const scratchpadEntries = returnIntermediateSteps ? [{
+      step: state.iteration as number,
+      thought: thoughts[thoughts.length - 1]?.content || '',
+      action: latestActions.map((a: any) => `${a.name}(${JSON.stringify(a.arguments)})`).join(', '),
+      observation: recentObservations
+        .map((obs: any) => {
+          if (obs.error) {
+            return `Error: ${obs.error}`;
+          }
+          return typeof obs.result === 'string'
+            ? obs.result
+            : JSON.stringify(obs.result);
+        })
+        .join('; '),
+      timestamp: Date.now(),
+    }] : [];
+
     observationLogger.debug('Observation node complete', {
       iteration,
-      scratchpadUpdated: true,
+      scratchpadUpdated: returnIntermediateSteps,
       messageCount: observationMessages.length
     });
 
     return {
-      scratchpad: [scratchpadEntry],
+      scratchpad: scratchpadEntries,
       messages: observationMessages,
     };
   };
