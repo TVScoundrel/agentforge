@@ -79,14 +79,6 @@ export function wrapReActAgent(
     try {
       logger.debug('Wrapping ReAct agent execution', { workerId });
 
-      // Extract task from Multi-Agent state
-      const task = state.messages[state.messages.length - 1]?.content || state.input;
-
-      logger.debug('Extracted task', {
-        workerId,
-        taskPreview: task.substring(0, 100) + (task.length > 100 ? '...' : '')
-      });
-
       // Find current assignment for this worker
       const currentAssignment = state.activeAssignments.find(
         assignment =>
@@ -98,6 +90,17 @@ export function wrapReActAgent(
         logger.debug('No active assignment found', { workerId });
         return {};
       }
+
+      // Extract task from the worker's current assignment
+      // IMPORTANT: Use currentAssignment.task instead of state.messages to avoid
+      // routing the wrong task in parallel or multi-step execution scenarios
+      const task = currentAssignment.task;
+
+      logger.debug('Extracted task from assignment', {
+        workerId,
+        assignmentId: currentAssignment.id,
+        taskPreview: task.substring(0, 100) + (task.length > 100 ? '...' : '')
+      });
 
       // Generate worker-specific thread_id for separate checkpoint namespace
       // This allows the worker's ReAct agent to have its own checkpoint that can be resumed independently
