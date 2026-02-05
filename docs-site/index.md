@@ -57,7 +57,9 @@ features:
     details: Built on LangGraph - leverage the full power of LangChain ecosystem.
 ---
 
-## Quick Start
+## CLI Quick Start
+
+Get started in 2 minutes with the CLI:
 
 ```bash
 # Create a new project
@@ -72,6 +74,11 @@ pnpm install
 # Run your first agent
 pnpm dev
 ```
+
+::: tip Other Installation Options
+- **Manual Install:** Add to an existing project → [Installation Guide](/guide/installation#manual-installation)
+- **Detailed Setup:** Step-by-step walkthrough → [Getting Started](/guide/getting-started)
+:::
 
 ## Example: ReAct Agent
 

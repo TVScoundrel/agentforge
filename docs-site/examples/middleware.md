@@ -19,7 +19,7 @@ Middleware allows you to add cross-cutting concerns to your agent nodes:
 Cache expensive operations to improve performance:
 
 ```typescript
-import { withCache } from '@agentforge/core/middleware';
+import { withCache } from '@agentforge/core';
 
 interface SearchState {
   query: string;
@@ -46,7 +46,7 @@ const cachedSearch = withCache(searchNode, {
 Protect your APIs from overuse:
 
 ```typescript
-import { withRateLimit } from '@agentforge/core/middleware';
+import { withRateLimit } from '@agentforge/core';
 
 // Limit to 100 requests per minute
 const rateLimitedSearch = withRateLimit(searchNode, {
@@ -64,7 +64,7 @@ const rateLimitedSearch = withRateLimit(searchNode, {
 Validate inputs and outputs with Zod schemas:
 
 ```typescript
-import { withValidation } from '@agentforge/core/middleware';
+import { withValidation } from '@agentforge/core';
 import { z } from 'zod';
 
 const inputSchema = z.object({
@@ -90,7 +90,7 @@ const validatedSearch = withValidation(searchNode, {
 Automatically retry failed operations:
 
 ```typescript
-import { withRetry } from '@agentforge/core/middleware';
+import { withRetry } from '@agentforge/core';
 
 const resilientSearch = withRetry(searchNode, {
   maxAttempts: 3,
@@ -114,7 +114,7 @@ const resilientSearch = withRetry(searchNode, {
 Apply multiple middleware to a single node:
 
 ```typescript
-import { compose, withCache, withValidation, withRateLimit, withLogging } from '@agentforge/core/middleware';
+import { compose, withCache, withValidation, withRateLimit, withLogging } from '@agentforge/core';
 import { z } from 'zod';
 
 const schema = z.object({
@@ -142,7 +142,7 @@ const enhancedSearch = compose(
 Fluent API for building middleware stacks:
 
 ```typescript
-import { MiddlewareChain } from '@agentforge/core/middleware';
+import { MiddlewareChain } from '@agentforge/core';
 
 const enhancedSearch = new MiddlewareChain()
   .use(withLogging({ name: 'search', level: 'info' }))
@@ -159,7 +159,7 @@ const enhancedSearch = new MiddlewareChain()
 Optimized for production with error handling, retries, and monitoring:
 
 ```typescript
-import { production } from '@agentforge/core/middleware';
+import { production } from '@agentforge/core';
 
 const productionSearch = production(searchNode, {
   nodeName: 'search-node',
@@ -183,12 +183,11 @@ const productionSearch = production(searchNode, {
 Optimized for development with verbose logging and tracing:
 
 ```typescript
-import { development } from '@agentforge/core/middleware';
+import { development } from '@agentforge/core';
 
 const devSearch = development(searchNode, {
   nodeName: 'search-node',
-  logLevel: 'debug',
-  enableTracing: true
+  verbose: true
 });
 ```
 
@@ -197,9 +196,10 @@ const devSearch = development(searchNode, {
 Optimized for testing with mocks and invocation tracking:
 
 ```typescript
-import { testing } from '@agentforge/core/middleware';
+import { testing } from '@agentforge/core';
 
 const testSearch = testing(searchNode, {
+  nodeName: 'search-node',
   mockResponse: { query: 'test', results: ['mocked result'] },
   trackInvocations: true,
   simulateError: false
@@ -214,7 +214,7 @@ console.log(testSearch.invocations);
 Create your own middleware for specific needs:
 
 ```typescript
-import { Middleware, NodeFunction } from '@agentforge/core/middleware';
+import { Middleware, NodeFunction } from '@agentforge/core';
 
 interface TimingOptions {
   name: string;
@@ -285,7 +285,7 @@ const conditionalCachedSearch = withConditionalCache(
 Share resources across multiple nodes:
 
 ```typescript
-import { createSharedCache, createSharedRateLimiter } from '@agentforge/core/middleware';
+import { createSharedCache, createSharedRateLimiter } from '@agentforge/core';
 
 // Create shared cache
 const sharedCache = createSharedCache({

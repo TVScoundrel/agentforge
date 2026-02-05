@@ -20,12 +20,6 @@ import {
   webScraper,
   currentDateTime
 } from '@agentforge/tools';
-import {
-  caching,
-  rateLimiting,
-  logging
-} from '@agentforge/core/middleware';
-
 // Create the agent
 const agent = createReActAgent({
   model: new ChatOpenAI({
@@ -38,38 +32,20 @@ const agent = createReActAgent({
     webScraper,
     currentDateTime
   ],
-  
+
   maxIterations: 10,
-  
+
   systemPrompt: `You are a helpful research assistant.
 Use the available tools to answer questions accurately.
 Always show your reasoning process.
-Cite sources when using web search.`,
-
-  middleware: [
-    // Cache results for 5 minutes
-    caching({
-      ttl: 300,
-      keyGenerator: (input) => {
-        const query = input.messages[0]?.content || '';
-        return `react:${query}`;
-      }
-    }),
-
-    // Rate limit to 20 requests per minute
-    rateLimiting({
-      maxRequests: 20,
-      windowMs: 60000
-    }),
-
-    // Log all interactions
-    logging({
-      level: 'info',
-      logInput: true,
-      logOutput: true
-    })
-  ]
+Cite sources when using web search.`
 });
+
+// Optional: Apply middleware to enhance the agent
+// Note: Middleware wraps individual nodes, not the entire agent graph
+// For production use, you can wrap specific nodes with middleware:
+// import { production, withCache, withRateLimit } from '@agentforge/core';
+// const enhancedNode = production(myNode, { nodeName: 'reasoning', enableMetrics: true });
 
 // Use the agent
 async function main() {
@@ -154,12 +130,12 @@ for await (const chunk of stream) {
 import { createReActAgent } from '@agentforge/patterns';
 import { MemorySaver } from '@langchain/langgraph';
 
-const checkpointSaver = new MemorySaver();
+const checkpointer = new MemorySaver();
 
 const agent = createReActAgent({
   model: new ChatOpenAI({ model: 'gpt-4' }),
   tools: [calculator, currentDateTime],
-  checkpointSaver,
+  checkpointer,
   maxIterations: 5
 });
 
@@ -180,29 +156,26 @@ await agent.invoke({
 
 ## Error Handling
 
+Middleware should be applied to individual nodes, not the agent itself:
+
 ```typescript
 import { createReActAgent } from '@agentforge/patterns';
-import { retry, timeout } from '@agentforge/core/middleware';
+import { withRetry, withTimeout } from '@agentforge/core';
+import type { NodeFunction } from '@agentforge/core';
 
+// Create the agent
 const agent = createReActAgent({
   model: new ChatOpenAI({ model: 'gpt-4' }),
   tools: [calculator, currentDateTime],
-  maxIterations: 5,
-
-  middleware: [
-    // Retry on failures
-    retry({
-      maxAttempts: 3,
-      delayMs: 1000,
-      backoff: 'exponential'
-    }),
-
-    // Timeout after 30 seconds
-    timeout({
-      timeoutMs: 30000
-    })
-  ]
+  maxIterations: 5
 });
+
+// To apply middleware, you would wrap individual nodes in the graph
+// For example, if you have access to the graph nodes:
+// const enhancedNode = withRetry(
+//   withTimeout(myNode, { timeout: 30000 }),
+//   { maxAttempts: 3, backoff: 'exponential' }
+// );
 
 try {
   const result = await agent.invoke({

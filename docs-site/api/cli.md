@@ -24,10 +24,10 @@ agentforge create <project-name> [options]
 
 #### Options
 
-- `--template <name>` - Project template (minimal, full, api-service)
+- `--template <name>` - Project template (minimal, full, api, cli)
 - `--package-manager <pm>` - Package manager (pnpm, npm, yarn)
-- `--skip-install` - Skip dependency installation
-- `--skip-git` - Skip git initialization
+- `--no-install` - Skip dependency installation
+- `--no-git` - Skip git initialization
 
 #### Examples
 
@@ -36,10 +36,13 @@ agentforge create <project-name> [options]
 agentforge create my-agent
 
 # Create with specific template
-agentforge create my-api --template api-service
+agentforge create my-api --template api
+
+# Create CLI project
+agentforge create my-cli --template cli
 
 # Create without installing dependencies
-agentforge create my-agent --skip-install
+agentforge create my-agent --no-install
 ```
 
 ### dev
@@ -52,9 +55,8 @@ agentforge dev [options]
 
 #### Options
 
-- `--port <number>` - Server port (default: 3000)
-- `--host <string>` - Server host (default: localhost)
-- `--watch` - Watch for file changes
+- `-p, --port <number>` - Server port (default: 3000)
+- `--no-open` - Do not open browser automatically
 
 #### Examples
 
@@ -64,6 +66,9 @@ agentforge dev
 
 # Custom port
 agentforge dev --port 8080
+
+# Don't open browser
+agentforge dev --no-open
 ```
 
 ### build
@@ -76,18 +81,20 @@ agentforge build [options]
 
 #### Options
 
-- `--outDir <path>` - Output directory (default: dist)
-- `--minify` - Minify output
-- `--sourcemap` - Generate source maps
+- `--no-minify` - Skip minification
+- `--no-sourcemap` - Skip sourcemap generation
 
 #### Examples
 
 ```bash
-# Build for production
+# Build for production (with minification and sourcemaps)
 agentforge build
 
-# Build with source maps
-agentforge build --sourcemap
+# Build without minification
+agentforge build --no-minify
+
+# Build without sourcemaps
+agentforge build --no-sourcemap
 ```
 
 ### test
@@ -114,143 +121,120 @@ agentforge test
 agentforge test --watch --coverage
 ```
 
-### generate
+### agent
 
-Generate code from templates.
+Manage agents in your project.
 
 ```bash
-agentforge generate <type> <name> [options]
+agentforge agent <command> [options]
 ```
 
-#### Types
+#### Commands
 
-- `agent` - Generate agent
-- `tool` - Generate custom tool
-- `middleware` - Generate middleware
-- `pattern` - Generate custom pattern
+- `create <name>` - Create a new agent
+- `create-reusable <name>` - Create a reusable agent (production template)
+- `list` - List all agents
+- `test <name>` - Test a specific agent
+- `deploy <name>` - Deploy an agent (not yet implemented)
 
 #### Examples
 
 ```bash
-# Generate agent
-agentforge generate agent research-agent
+# Create a new agent
+agentforge agent create research-agent
 
-# Generate tool
-agentforge generate tool web-search
+# Create with specific pattern
+agentforge agent create my-agent --pattern plan-execute
 
-# Generate middleware
-agentforge generate middleware auth
+# Create reusable agent
+agentforge agent create-reusable my-agent --description "A reusable agent"
+
+# List all agents
+agentforge agent list
+
+# Test an agent
+agentforge agent test research-agent
 ```
 
-### deploy
+### tool
 
-Deploy to various platforms.
+Manage tools in your project.
 
 ```bash
-agentforge deploy <platform> [options]
+agentforge tool <command> [options]
 ```
 
-#### Platforms
+#### Commands
 
-- `docker` - Build Docker image
-- `kubernetes` - Deploy to Kubernetes
-- `vercel` - Deploy to Vercel
-- `aws` - Deploy to AWS Lambda
+- `create <name>` - Create a new tool
+- `list` - List all tools
+- `test <name>` - Test a specific tool
+- `publish <name>` - Publish a tool to npm
 
 #### Examples
 
 ```bash
-# Build Docker image
-agentforge deploy docker
+# Create a new tool
+agentforge tool create web-search
 
-# Deploy to Kubernetes
-agentforge deploy kubernetes --namespace production
+# Create with category
+agentforge tool create my-tool --category web
+
+# List all tools
+agentforge tool list
+
+# Test a tool
+agentforge tool test web-search
+
+# Publish a tool
+agentforge tool publish my-tool --tag latest
 ```
 
-### info
+### agent deploy
 
-Display project information.
-
-```bash
-agentforge info
-```
-
-Shows:
-- Project name and version
-- Installed packages
-- Configuration
-- Environment
-
-### upgrade
-
-Upgrade AgentForge packages.
+Deploy an agent (currently not implemented - use manual deployment).
 
 ```bash
-agentforge upgrade [options]
+agentforge agent deploy <name> [options]
 ```
 
 #### Options
 
-- `--latest` - Upgrade to latest versions
-- `--interactive` - Interactive upgrade
+- `--environment <env>` - Deployment environment (default: production)
+- `--dry-run` - Dry run without actual deployment
 
-#### Examples
+#### Note
 
-```bash
-# Upgrade all packages
-agentforge upgrade
+Automated agent deployment is not yet implemented. Please use one of the following deployment methods:
 
-# Interactive upgrade
-agentforge upgrade --interactive
-```
+**1. Docker Deployment:**
+- See `templates/deployment/docker/` for Dockerfile and docker-compose.yml
+- Run: `docker build -t my-agent . && docker run my-agent`
 
-## Configuration
+**2. Kubernetes Deployment:**
+- See `templates/deployment/kubernetes/` for manifests
+- Run: `kubectl apply -f templates/deployment/kubernetes/`
 
-### agentforge.config.ts
+**3. Serverless Deployment:**
+- AWS Lambda: Use SAM or Serverless Framework
+- Vercel: Use `vercel deploy`
+- Google Cloud Run: Use `gcloud run deploy`
 
-Create `agentforge.config.ts` in your project root:
+**4. Manual Deployment:**
+1. Build: `npm run build`
+2. Test: `npm test`
+3. Deploy to your platform of choice
 
-```typescript
-import { defineConfig } from '@agentforge/cli';
-
-export default defineConfig({
-  // Build configuration
-  build: {
-    outDir: 'dist',
-    minify: true,
-    sourcemap: true
-  },
-
-  // Development server
-  dev: {
-    port: 3000,
-    host: 'localhost',
-    watch: true
-  },
-
-  // Testing
-  test: {
-    coverage: true,
-    ui: false
-  },
-
-  // Deployment
-  deploy: {
-    docker: {
-      registry: 'docker.io',
-      tag: 'latest'
-    }
-  }
-});
-```
+For detailed deployment guides, see the [deployment documentation](https://tvscoundrel.github.io/agentforge/guide/advanced/deployment).
 
 ## Environment Variables
 
 The CLI respects these environment variables:
 
-- `AGENTFORGE_CONFIG` - Path to config file
 - `NODE_ENV` - Environment (development, production)
-- `LOG_LEVEL` - Logging level (debug, info, warn, error)
+- `PORT` - Development server port (for dev command)
+- `NO_MINIFY` - Skip minification (for build command)
+- `NO_SOURCEMAP` - Skip sourcemap generation (for build command)
 
 ## Examples
 
@@ -271,10 +255,9 @@ agentforge test --watch
 
 # Build for production
 agentforge build
-
-# Deploy
-agentforge deploy docker
 ```
+
+For deployment, see the [deployment guide](https://tvscoundrel.github.io/agentforge/guide/advanced/deployment) for platform-specific instructions (Docker, Kubernetes, Serverless, etc.).
 
 ## Troubleshooting
 
@@ -298,23 +281,23 @@ On Unix systems, you may need to use `sudo`:
 sudo pnpm add -g @agentforge/cli
 ```
 
-## API
+## Programmatic API
 
 The CLI can also be used programmatically:
 
 ```typescript
-import { CLI } from '@agentforge/cli';
+import { program, run } from '@agentforge/cli';
 
-const cli = new CLI();
+// Run the CLI programmatically
+await run();
 
-await cli.create('my-agent', {
-  template: 'minimal',
-  skipInstall: false
-});
-
-await cli.build({
-  outDir: 'dist',
-  minify: true
-});
+// Or access the Commander.js program instance directly
+// to add custom commands or modify behavior
+program
+  .command('custom')
+  .description('Custom command')
+  .action(() => {
+    console.log('Custom command executed');
+  });
 ```
 

@@ -39,9 +39,15 @@ import { ChatOpenAI } from '@langchain/openai';
 import { webScraper, calculator, fileWriter } from '@agentforge/tools';
 
 const agent = createPlanExecuteAgent({
-  model: new ChatOpenAI({ model: 'gpt-4' }),
-  tools: [webScraper, calculator, fileWriter],
-  maxExecutionSteps: 20
+  planner: {
+    model: new ChatOpenAI({ model: 'gpt-4' }),
+    maxSteps: 5
+  },
+  executor: {
+    tools: [webScraper, calculator, fileWriter],
+    parallel: false
+  },
+  maxIterations: 20
 });
 
 const result = await agent.invoke({
@@ -77,15 +83,19 @@ interface PlanExecuteConfig {
 
 ```typescript
 const agent = createPlanExecuteAgent({
-  model: new ChatOpenAI({ model: 'gpt-4' }),
-  tools: [webScraper, calculator, fileWriter],
-
-  // Execution limits
-  maxExecutionSteps: 30,
-  maxPlanningIterations: 5,
-  
-  // Enable re-planning based on results
-  enableReplanning: true,
+  planner: {
+    model: new ChatOpenAI({ model: 'gpt-4' }),
+    maxSteps: 5
+  },
+  executor: {
+    tools: [webScraper, calculator, fileWriter],
+    parallel: false
+  },
+  replanner: {
+    model: new ChatOpenAI({ model: 'gpt-4' }),
+    replanThreshold: 0.7
+  },
+  maxIterations: 30,
   
   // Return detailed execution trace
   returnIntermediateSteps: true,
@@ -154,17 +164,20 @@ If a step fails or produces unexpected results:
 
 ```typescript
 const agent = createPlanExecuteAgent({
-  model,
-  tools,
-  enableReplanning: true,
-  
-  // Custom re-planning strategy
-  replanningStrategy: async (plan, executionResult, error) => {
-    if (error) {
-      // Remove failed step and add alternative
-      return adjustPlan(plan, executionResult);
-    }
-    return plan;
+  planner: {
+    model,
+    maxSteps: 10
+  },
+  executor: {
+    tools,
+    parallel: false
+  },
+  replanner: {
+    model,
+    replanThreshold: 0.7,
+    systemPrompt: `Re-evaluate the plan based on execution results.
+    If errors occurred, adjust the plan to work around them.
+    If confidence is low, create alternative approaches.`
   }
 });
 ```
@@ -175,9 +188,10 @@ const agent = createPlanExecuteAgent({
 
 ```typescript
 const agent = createPlanExecuteAgent({
-  model,
-  tools,
-  planningPrompt: `You are an expert planner.
+  planner: {
+    model,
+    maxSteps: 10,
+    systemPrompt: `You are an expert planner.
 
 Create a comprehensive plan with these requirements:
 1. Break down the task into 5-10 clear steps
@@ -187,32 +201,29 @@ Create a comprehensive plan with these requirements:
 5. Plan for error handling
 
 Format your plan as a numbered list with tool specifications.`
+  },
+  executor: {
+    tools,
+    parallel: false
+  }
 });
 ```
 
 ### Custom Execution Strategy
 
 ```typescript
-import { createPlanExecuteAgent, ExecutionStrategy } from '@agentforge/patterns';
-
-const parallelStrategy: ExecutionStrategy = {
-  async execute(plan, tools) {
-    // Group independent steps
-    const groups = groupIndependentSteps(plan.steps);
-    
-    // Execute each group in parallel
-    for (const group of groups) {
-      await Promise.all(
-        group.map(step => executeTool(step.tool, step.params))
-      );
-    }
-  }
-};
+import { createPlanExecuteAgent } from '@agentforge/patterns';
 
 const agent = createPlanExecuteAgent({
-  model,
-  tools,
-  executionStrategy: parallelStrategy
+  planner: {
+    model,
+    maxSteps: 10
+  },
+  executor: {
+    tools,
+    parallel: true,  // Enable parallel execution of independent steps
+    stepTimeout: 30000
+  }
 });
 ```
 
@@ -265,10 +276,15 @@ const result = await agent.invoke({
 
 ```typescript
 const agent = createPlanExecuteAgent({
-  model,
-  tools,
-  maxExecutionSteps: 25,  // Prevent runaway execution
-  maxPlanningIterations: 3  // Limit re-planning attempts
+  planner: {
+    model,
+    maxSteps: 10
+  },
+  executor: {
+    tools,
+    parallel: false
+  },
+  maxIterations: 25  // Prevent runaway execution
 });
 ```
 
@@ -276,24 +292,44 @@ const agent = createPlanExecuteAgent({
 
 ```typescript
 const agent = createPlanExecuteAgent({
-  model,
-  tools,
-  enableReplanning: true,  // Adapt to unexpected results
-  replanningThreshold: 0.7  // Re-plan if confidence < 70%
+  planner: {
+    model,
+    maxSteps: 10
+  },
+  executor: {
+    tools,
+    parallel: false
+  },
+  replanner: {
+    model,
+    replanThreshold: 0.7  // Re-plan if confidence < 70%
+  }
 });
 ```
 
-### 4. Use Checkpoints for Long Tasks
+### 4. Use Checkpointer for Long Tasks
 
 ```typescript
-import { withCheckpointing } from '@agentforge/core';
+import { MemorySaver } from '@langchain/langgraph';
 
-const agent = withCheckpointing(
-  createPlanExecuteAgent({ llm, tools }),
-  {
-    checkpointEvery: 5,  // Save state every 5 steps
-    storage: 'redis'
-  }
+const checkpointer = new MemorySaver();
+
+const agent = createPlanExecuteAgent({
+  planner: {
+    model,
+    maxSteps: 5
+  },
+  executor: {
+    tools,
+    parallel: false
+  },
+  checkpointer  // Enable state persistence for resuming
+});
+
+// Use with thread_id to resume conversations
+const result = await agent.invoke(
+  { messages: [{ role: 'user', content: 'Complex task' }] },
+  { configurable: { thread_id: 'task-123' } }
 );
 ```
 
@@ -305,16 +341,22 @@ const agent = withCheckpointing(
 import { webScraper, htmlParser, fileWriter } from '@agentforge/tools';
 
 const researchAgent = createPlanExecuteAgent({
-  model: new ChatOpenAI({ model: 'gpt-4' }),
-  tools: [webScraper, htmlParser, fileWriter],
-  maxExecutionSteps: 30,
-  planningPrompt: `Create a research plan:
+  planner: {
+    model: new ChatOpenAI({ model: 'gpt-4' }),
+    maxSteps: 10,
+    systemPrompt: `Create a research plan:
 
 1. Identify key topics to research
 2. Search multiple sources for each topic
 3. Synthesize findings
 4. Generate structured report
 5. Save to file with citations`
+  },
+  executor: {
+    tools: [webScraper, htmlParser, fileWriter],
+    parallel: false
+  },
+  maxIterations: 30
 });
 ```
 
@@ -324,15 +366,21 @@ const researchAgent = createPlanExecuteAgent({
 import { fileReader, jsonParser, csvParser } from '@agentforge/tools';
 
 const pipelineAgent = createPlanExecuteAgent({
-  model: new ChatOpenAI({ model: 'gpt-4' }),
-  tools: [fileReader, jsonParser, csvParser],
-  planningPrompt: `Create a data processing plan:
+  planner: {
+    model: new ChatOpenAI({ model: 'gpt-4' }),
+    maxSteps: 10,
+    systemPrompt: `Create a data processing plan:
 
 1. Read source data
 2. Validate and clean data
 3. Transform to target schema
 4. Write to database
 5. Verify data integrity`
+  },
+  executor: {
+    tools: [fileReader, jsonParser, csvParser],
+    parallel: false
+  }
 });
 ```
 
@@ -342,16 +390,25 @@ const pipelineAgent = createPlanExecuteAgent({
 import { apiCall, webScrape, calculator, chartGenerate } from '@agentforge/tools';
 
 const analysisAgent = createPlanExecuteAgent({
-  model: new ChatOpenAI({ model: 'gpt-4' }),
-  tools: [apiCall, webScrape, calculator, chartGenerate],
-  enableReplanning: true,
-  planningPrompt: `Create an analysis plan:
+  planner: {
+    model: new ChatOpenAI({ model: 'gpt-4' }),
+    maxSteps: 10,
+    systemPrompt: `Create an analysis plan:
 
 1. Gather data from all sources
 2. Normalize and merge datasets
 3. Perform statistical analysis
 4. Generate visualizations
 5. Create summary report`
+  },
+  executor: {
+    tools: [apiCall, webScrape, calculator, chartGenerate],
+    parallel: false
+  },
+  replanner: {
+    model: new ChatOpenAI({ model: 'gpt-4' }),
+    replanThreshold: 0.7
+  }
 });
 ```
 
@@ -412,27 +469,40 @@ Execute independent steps in parallel:
 
 ```typescript
 const agent = createPlanExecuteAgent({
-  model,
-  tools,
-  executionMode: 'parallel',  // Execute independent steps concurrently
-  maxParallelSteps: 3
+  planner: {
+    model,
+    maxSteps: 10
+  },
+  executor: {
+    tools,
+    parallel: true,  // Execute independent steps concurrently
+    stepTimeout: 30000
+  }
 });
 ```
 
 ### 2. Plan Caching
 
-Cache plans for similar tasks:
+Cache plans for similar tasks using middleware:
 
 ```typescript
-import { withPlanCache } from '@agentforge/patterns';
+import { withCache, createSharedCache } from '@agentforge/core';
 
-const agent = withPlanCache(
-  createPlanExecuteAgent({ llm, tools }),
-  {
-    ttl: 3600,
-    similarityThreshold: 0.8
+const cache = createSharedCache({ maxSize: 100 });
+
+// Apply caching to the planner node
+// Note: This requires accessing the graph nodes directly
+// For simpler caching, consider using the production preset
+const agent = createPlanExecuteAgent({
+  planner: {
+    model,
+    maxSteps: 5
+  },
+  executor: {
+    tools,
+    parallel: false
   }
-);
+});
 ```
 
 ### 3. Incremental Execution
@@ -440,16 +510,25 @@ const agent = withPlanCache(
 Resume from checkpoints:
 
 ```typescript
+import { MemorySaver } from '@langchain/langgraph';
+
+const checkpointer = new MemorySaver();
+
 const agent = createPlanExecuteAgent({
-  model,
-  tools,
-  resumeFromCheckpoint: true,
-  checkpointStorage: 'redis'
+  planner: {
+    model,
+    maxSteps: 10
+  },
+  executor: {
+    tools,
+    parallel: false
+  },
+  checkpointer
 });
 
 // Resume interrupted execution
 const result = await agent.invoke(input, {
-  checkpointId: 'previous-run-id'
+  configurable: { thread_id: 'task-123' }
 });
 ```
 

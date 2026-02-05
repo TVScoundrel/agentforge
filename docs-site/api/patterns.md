@@ -33,13 +33,14 @@ const result = await agent.invoke({
 #### Options
 
 ```typescript
-interface ReActAgentOptions {
+interface ReActAgentConfig {
   model: BaseChatModel;              // LLM instance
-  tools: Tool[];                   // Available tools
+  tools: ToolRegistry | Tool[];    // Available tools (registry or array)
   maxIterations?: number;          // Max reasoning cycles (default: 10)
   systemPrompt?: string;           // System prompt
-  checkpointSaver?: CheckpointSaver; // State persistence
-  middleware?: Middleware[];       // Middleware stack
+  returnIntermediateSteps?: boolean; // Return intermediate steps (default: false)
+  stopCondition?: (state) => boolean; // Custom stop condition
+  checkpointer?: BaseCheckpointSaver; // State persistence for human-in-the-loop
 }
 ```
 
@@ -53,28 +54,52 @@ Plan first, then execute steps sequentially.
 import { createPlanExecuteAgent } from '@agentforge/patterns';
 
 const agent = createPlanExecuteAgent({
-  model: new ChatOpenAI({ model: 'gpt-4' }),
-  tools: [tool1, tool2],
-  plannerPrompt: 'Create a detailed plan to solve the task.',
-  executorPrompt: 'Execute the current step.'
+  planner: {
+    model: new ChatOpenAI({ model: 'gpt-4' }),
+    systemPrompt: 'Create a detailed plan to solve the task.',
+    maxSteps: 5
+  },
+  executor: {
+    tools: [tool1, tool2],
+    parallel: false
+  },
+  replanner: {
+    model: new ChatOpenAI({ model: 'gpt-4' }),
+    replanThreshold: 0.7
+  },
+  maxIterations: 10
 });
 
 const result = await agent.invoke({
-  messages: [{ role: 'user', content: 'Research and summarize AI trends' }]
+  input: 'Research and summarize AI trends'
 });
 ```
 
 #### Options
 
 ```typescript
-interface PlanExecuteAgentOptions {
-  model: BaseChatModel;
-  tools: Tool[];
-  plannerPrompt?: string;          // Planner system prompt
-  executorPrompt?: string;         // Executor system prompt
-  maxSteps?: number;               // Max execution steps (default: 10)
-  checkpointSaver?: CheckpointSaver;
-  middleware?: Middleware[];
+interface PlanExecuteAgentConfig {
+  planner: {
+    model: BaseChatModel;
+    systemPrompt?: string;
+    maxSteps?: number;
+    includeToolDescriptions?: boolean;
+  };
+  executor: {
+    tools: Tool[];
+    model?: BaseChatModel;
+    parallel?: boolean;
+    stepTimeout?: number;
+  };
+  replanner?: {
+    model: BaseChatModel;
+    replanThreshold?: number;
+    systemPrompt?: string;
+  };
+  maxIterations?: number;
+  returnIntermediateSteps?: boolean;
+  verbose?: boolean;
+  checkpointer?: BaseCheckpointSaver;
 }
 ```
 
@@ -88,10 +113,23 @@ Self-critique and improvement through reflection.
 import { createReflectionAgent } from '@agentforge/patterns';
 
 const agent = createReflectionAgent({
-  model: new ChatOpenAI({ model: 'gpt-4' }),
-  tools: [tool1, tool2],
-  maxReflections: 3,
-  reflectionPrompt: 'Critique your previous response and improve it.'
+  generator: {
+    model: new ChatOpenAI({ model: 'gpt-4' }),
+    systemPrompt: 'Generate a high-quality response.'
+  },
+  reflector: {
+    model: new ChatOpenAI({ model: 'gpt-4' }),
+    systemPrompt: 'Critique the response and suggest improvements.',
+    qualityCriteria: {
+      minScore: 8,
+      criteria: ['accuracy', 'clarity', 'completeness']
+    }
+  },
+  reviser: {
+    model: new ChatOpenAI({ model: 'gpt-4' }),
+    systemPrompt: 'Revise the response based on the critique.'
+  },
+  maxIterations: 3
 });
 
 const result = await agent.invoke({
@@ -102,14 +140,32 @@ const result = await agent.invoke({
 #### Options
 
 ```typescript
-interface ReflectionAgentOptions {
-  model: BaseChatModel;
-  tools: Tool[];
-  maxReflections?: number;         // Max reflection cycles (default: 3)
-  reflectionPrompt?: string;       // Reflection prompt
-  improvementThreshold?: number;   // Quality threshold (0-1)
-  checkpointSaver?: CheckpointSaver;
-  middleware?: Middleware[];
+interface ReflectionAgentConfig {
+  generator: {
+    model: BaseChatModel;
+    systemPrompt?: string;
+  };
+  reflector: {
+    model: BaseChatModel;
+    systemPrompt?: string;
+    qualityCriteria?: {
+      minScore?: number;        // 0-10 scale
+      criteria?: string[];      // Specific criteria to evaluate
+      requireAll?: boolean;     // Whether all criteria must be met
+    };
+  };
+  reviser: {
+    model: BaseChatModel;
+    systemPrompt?: string;
+  };
+  maxIterations?: number;
+  qualityCriteria?: {
+    minScore?: number;
+    criteria?: string[];
+    requireAll?: boolean;
+  };
+  verbose?: boolean;
+  checkpointer?: BaseCheckpointSaver;
 }
 ```
 

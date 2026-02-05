@@ -77,11 +77,11 @@ Configure your agent for production:
 // src/agent.ts
 import { createReActAgent } from '@agentforge/patterns';
 import { ChatOpenAI } from '@langchain/openai';
-import { productionPreset } from '@agentforge/core/middleware';
+import { production } from '@agentforge/core';
 import { config } from './config';
 
-// Create LLM with production settings
-const llm = new ChatOpenAI({
+// Create model with production settings
+const model = new ChatOpenAI({
   modelName: config.OPENAI_MODEL,
   temperature: 0,
   maxRetries: 3,
@@ -90,36 +90,37 @@ const llm = new ChatOpenAI({
 
 // Create agent
 const baseAgent = createReActAgent({
-  llm,
+  model,
   tools: [...yourTools],
   maxIterations: 10,
 });
 
-// Apply production middleware
-export const agent = productionPreset(baseAgent, {
-  nodeName: 'main-agent',
-  cache: {
-    ttl: 3600000, // 1 hour
-    maxSize: 1000,
-  },
-  rateLimit: {
-    maxRequests: 100,
-    windowMs: 60000, // 1 minute
-  },
-  retry: {
-    maxAttempts: 3,
-    backoff: 'exponential',
-  },
-  timeout: {
-    timeout: 30000, // 30 seconds
-  },
-  logging: {
-    level: config.LOG_LEVEL,
-  },
-  metrics: {
-    enabled: true,
-  },
-});
+// Apply production middleware to agent nodes
+// Note: This wraps individual nodes, not the entire graph
+export const agent = baseAgent;
+
+// For wrapping individual nodes with production middleware:
+// import { production } from '@agentforge/core';
+// const enhancedNode = production(myNode, {
+//   nodeName: 'my-node',
+//   enableMetrics: true,
+//   enableTracing: true,
+//   enableRetry: true,
+//   timeout: 30000,
+//   retryOptions: {
+//     maxAttempts: 3,
+//     backoff: 'exponential',
+//   },
+//   timeout: {
+//     timeout: 30000, // 30 seconds
+//   },
+//   logging: {
+//     level: config.LOG_LEVEL,
+//   },
+//   metrics: {
+//     enabled: true,
+//   },
+// });
 ```
 
 ### Health Check Endpoint
@@ -128,27 +129,24 @@ Add health checks for monitoring:
 
 ```typescript
 // src/health.ts
-import { createHealthChecker } from '@agentforge/core/monitoring';
+import { createHealthChecker } from '@agentforge/core';
 
 export const healthChecker = createHealthChecker({
-  name: 'agent-service',
-  checks: [
-    {
-      name: 'llm',
-      check: async () => {
-        // Test LLM connection
-        await llm.invoke('test');
-        return { status: 'healthy' };
-      },
+  checks: {
+    llm: async () => {
+      // Test LLM connection
+      await model.invoke('test');
+      return { healthy: true, status: 'healthy' };
     },
-    {
-      name: 'database',
-      check: async () => {
-        // Test database connection (if applicable)
-        return { status: 'healthy' };
-      },
+    database: async () => {
+      // Test database connection (if applicable)
+      return { healthy: true, status: 'healthy' };
     },
-  ],
+  },
+  timeout: 5000,
+  onCheckFail: (name, error) => {
+    console.error(`Health check ${name} failed:`, error);
+  }
 });
 
 // Express.js example
@@ -157,7 +155,7 @@ app.get('/health/live', (req, res) => {
 });
 
 app.get('/health/ready', async (req, res) => {
-  const health = await healthChecker.check();
+  const health = await healthChecker.getHealth();
   res.status(health.healthy ? 200 : 503).json(health);
 });
 ```

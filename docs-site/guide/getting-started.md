@@ -2,6 +2,40 @@
 
 Welcome to AgentForge! This guide will help you get up and running in minutes.
 
+## Choose Your Path
+
+Pick the installation method that best fits your needs:
+
+::: info 🚀 **CLI Scaffold** (Recommended for new projects)
+**Best for:** Starting a new AgentForge project from scratch
+
+**What you get:** Pre-configured TypeScript, example agent, environment setup, development scripts
+
+**Time:** ~2 minutes
+
+👉 [Jump to CLI Installation](#option-1-using-the-cli-recommended)
+:::
+
+::: info 🔧 **Manual Install** (For existing projects)
+**Best for:** Adding AgentForge to an existing TypeScript project
+
+**What you get:** Full control over configuration and dependencies
+
+**Time:** ~5 minutes
+
+👉 [Jump to Manual Installation](#option-2-manual-installation)
+:::
+
+::: info 📦 **Add to Existing Project**
+**Best for:** Integrating AgentForge into your current codebase
+
+**What you need:** Existing Node.js/TypeScript project with package.json
+
+**Time:** ~3 minutes
+
+👉 See [Manual Installation](#option-2-manual-installation) and skip the project initialization steps
+:::
+
 ## Prerequisites
 
 Before you begin, make sure you have:
@@ -44,7 +78,7 @@ mkdir my-agent && cd my-agent
 pnpm init
 
 # Install AgentForge packages
-pnpm add @agentforge/core @agentforge/patterns
+pnpm add @agentforge/core @agentforge/patterns @agentforge/tools
 pnpm add -D typescript @types/node tsx
 
 # Install LangChain dependencies
@@ -116,11 +150,15 @@ main().catch(console.error);
 
 ### 3. Set Up Environment
 
-Create `.env`:
+Create `.env` with your API key:
 
 ```bash
 OPENAI_API_KEY=your-api-key-here
 ```
+
+::: tip Complete Environment Setup
+For detailed environment configuration including LangSmith tracing, multiple LLM providers, and custom settings, see the [Environment Setup Guide](/guide/installation#environment-setup).
+:::
 
 ### 4. Run Your Agent
 

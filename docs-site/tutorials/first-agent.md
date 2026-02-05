@@ -145,35 +145,31 @@ Be friendly and informative.`
 Create `src/middleware.ts`:
 
 ```typescript
-import { 
-  caching, 
-  rateLimiting, 
-  logging 
-} from '@agentforge/core/middleware';
+import {
+  withCache,
+  withRateLimit,
+  withLogging,
+  compose,
+  createSharedCache,
+  createSharedRateLimiter
+} from '@agentforge/core';
+import type { NodeFunction } from '@agentforge/core';
 
-export const weatherMiddleware = [
-  // Cache weather results for 5 minutes
-  caching({
-    ttl: 300,
-    keyGenerator: (input) => {
-      const city = input.messages[0]?.content || '';
+// Create shared resources
+const cache = createSharedCache({ maxSize: 100 });
+const limiter = createSharedRateLimiter({ maxRequests: 10, windowMs: 60000 });
+
+// Helper to enhance a node with middleware
+export function withWeatherMiddleware<State>(node: NodeFunction<State>): NodeFunction<State> {
+  return compose(
+    withLogging({ name: 'weather-node', logInput: true, logOutput: true, logDuration: true }),
+    (n) => cache.withCache(n, (state: any) => {
+      const city = state.messages?.[0]?.content || '';
       return `weather:${city}`;
-    }
-  }),
-
-  // Rate limit to 10 requests per minute
-  rateLimiting({
-    maxRequests: 10,
-    windowMs: 60000
-  }),
-
-  // Log all requests
-  logging({
-    level: 'info',
-    logInput: true,
-    logOutput: true
-  })
-];
+    }),
+    (n) => limiter.withRateLimit(n, () => 'global')
+  )(node);
+}
 ```
 
 ## Step 7: Create Main Entry Point

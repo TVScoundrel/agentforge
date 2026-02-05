@@ -34,6 +34,10 @@ OPENAI_API_KEY=your-api-key-here
 LANGCHAIN_TRACING_V2=true  # Optional: for debugging
 ```
 
+::: tip Complete Environment Setup
+For detailed environment configuration including multiple LLM providers, LangSmith tracing, and custom settings, see the [Environment Setup Guide](/guide/installation#environment-setup).
+:::
+
 > **What happens if you skip this step?**
 >
 > If you don't set up your `.env` file with the required API keys, you'll get a clear error message telling you exactly what's missing and how to fix it. The agent won't start until all required environment variables are configured.
@@ -98,23 +102,29 @@ Always cite your sources and show your reasoning.`
 
 ## Step 5: Add Middleware
 
-Create `src/middleware.ts`:
+Enhance your agent nodes with production middleware:
 
 ```typescript
-import { production } from '@agentforge/core/middleware';
+import { production } from '@agentforge/core';
+import type { NodeFunction } from '@agentforge/core';
 
-export const productionMiddleware = production({
-  retry: {
-    maxAttempts: 3,
-    delayMs: 1000
-  },
-  timeout: {
-    timeoutMs: 30000
-  },
-  logging: {
-    level: 'info'
-  }
-});
+// Wrap your node function with production middleware
+export function withProductionMiddleware<State>(
+  node: NodeFunction<State>,
+  nodeName: string
+): NodeFunction<State> {
+  return production(node, {
+    nodeName,
+    enableRetry: true,
+    enableMetrics: true,
+    enableTracing: true,
+    timeout: 30000,
+    retryOptions: {
+      maxAttempts: 3,
+      initialDelay: 1000
+    }
+  });
+}
 ```
 
 ## Step 6: Create Main Entry Point

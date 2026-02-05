@@ -42,11 +42,11 @@ import { ChatOpenAI } from '@langchain/openai';
 import { toolBuilder, ToolCategory } from '@agentforge/core';
 import { z } from 'zod';
 
-const llm = new ChatOpenAI({ model: 'gpt-4' });
+const model = new ChatOpenAI({ model: 'gpt-4' });
 
 // Create a ReAct agent for complex research
 const researchAgent = createReActAgent({
-  llm,
+  model,
   tools: [webSearchTool, scrapeTool, analyzeTool],
   maxIterations: 10
 });
@@ -71,7 +71,7 @@ const complexResearchTool = toolBuilder()
 // Use in Plan-Execute agent
 const agent = createPlanExecuteAgent({
   planner: {
-    llm,
+    model,
     maxSteps: 5,
     systemPrompt: 'Create a structured research and analysis plan'
   },
@@ -108,7 +108,7 @@ import { createPlanExecuteAgent, createReflectionAgent } from '@agentforge/patte
 // Step 1: Execute content creation plan
 const executionAgent = createPlanExecuteAgent({
   planner: {
-    llm,
+    model,
     maxSteps: 4,
     systemPrompt: 'Plan content creation: research, outline, draft, format'
   },
@@ -119,12 +119,12 @@ const executionAgent = createPlanExecuteAgent({
 
 // Step 2: Refine with reflection
 const reflectionAgent = createReflectionAgent({
-  generator: { llm },
+  generator: { model },
   reflector: {
-    llm,
+    model,
     systemPrompt: 'Critique content for clarity, accuracy, and engagement'
   },
-  reviser: { llm },
+  reviser: { model },
   maxIterations: 3
 });
 
@@ -162,9 +162,9 @@ import { createMultiAgentSystem, registerWorkers } from '@agentforge/patterns';
 
 // Create specialized worker agents
 const codeReviewAgent = createReflectionAgent({
-  generator: { llm },
+  generator: { model },
   reflector: {
-    llm,
+    model,
     systemPrompt: 'Review code for bugs, style, and best practices'
   },
   maxIterations: 2
@@ -172,7 +172,7 @@ const codeReviewAgent = createReflectionAgent({
 
 const testingAgent = createPlanExecuteAgent({
   planner: {
-    llm,
+    model,
     systemPrompt: 'Plan comprehensive testing strategy'
   },
   executor: {
@@ -181,18 +181,18 @@ const testingAgent = createPlanExecuteAgent({
 });
 
 const documentationAgent = createReActAgent({
-  llm,
+  model,
   tools: [codeAnalysisTool, exampleGeneratorTool, markdownTool]
 });
 
 // Create multi-agent system
 const system = createMultiAgentSystem({
   supervisor: {
-    llm,
+    model,
     routingStrategy: 'skill-based'
   },
   workers: [],
-  aggregator: { llm }
+  aggregator: { model }
 });
 
 // Register workers
@@ -241,7 +241,7 @@ interface CustomState {
 
 // Create custom nodes
 async function planningNode(state: CustomState): Promise<CustomState> {
-  const plan = await llm.invoke(`Create a plan for: ${state.input}`);
+  const plan = await model.invoke(`Create a plan for: ${state.input}`);
   return {
     ...state,
     plan: plan.split('\n'),
@@ -261,7 +261,7 @@ async function executionNode(state: CustomState): Promise<CustomState> {
 }
 
 async function aggregationNode(state: CustomState): Promise<CustomState> {
-  const finalOutput = await llm.invoke(
+  const finalOutput = await model.invoke(
     `Summarize results: ${state.results.join('\n')}`
   );
   return { ...state, finalOutput };
@@ -356,8 +356,8 @@ const registry = new ToolRegistry();
 registry.registerMany([...allTools]);
 
 async function selectTools(task: string): Promise<Tool[]> {
-  // Use LLM to select relevant tools
-  const selection = await llm.invoke(
+  // Use model to select relevant tools
+  const selection = await model.invoke(
     `Which tools are needed for: ${task}?\nAvailable: ${registry.getAll().map(t => t.metadata.name).join(', ')}`
   );
 
@@ -367,7 +367,7 @@ async function selectTools(task: string): Promise<Tool[]> {
 
 // Use in agent
 const tools = await selectTools('Research and analyze data');
-const agent = createReActAgent({ llm, tools });
+const agent = createReActAgent({ model, tools });
 ```
 
 ### Technique 2: Adaptive Iteration Limits
@@ -384,7 +384,7 @@ function estimateComplexity(task: string): number {
 const maxIterations = estimateComplexity(userInput);
 
 const agent = createReActAgent({
-  llm,
+  model,
   tools,
   maxIterations
 });
@@ -398,7 +398,7 @@ Break complex tasks into hierarchical plans:
 async function hierarchicalPlanning(task: string, depth: number = 0): Promise<Plan> {
   if (depth > 2) return { steps: [task] }; // Max depth
 
-  const plan = await llm.invoke(`Break down: ${task}`);
+  const plan = await model.invoke(`Break down: ${task}`);
   const steps = parsePlan(plan);
 
   const subPlans = await Promise.all(
@@ -416,7 +416,7 @@ async function hierarchicalPlanning(task: string, depth: number = 0): Promise<Pl
 Cache intermediate results for efficiency:
 
 ```typescript
-import { withCache } from '@agentforge/core/middleware';
+import { withCache } from '@agentforge/core';
 
 const cachedResearchTool = withCache(researchTool, {
   ttl: 3600000, // 1 hour
@@ -436,7 +436,7 @@ const agent = createPlanExecuteAgent({
 
 ```typescript
 // ✅ Good - start with simple pattern
-const simpleAgent = createReActAgent({ llm, tools });
+const simpleAgent = createReActAgent({ model, tools });
 
 // Then enhance if needed
 const enhancedAgent = createPlanExecuteAgent({
@@ -461,7 +461,7 @@ const overEngineered = createMultiAgentSystem({
 Add logging to understand workflow:
 
 ```typescript
-import { withLogging } from '@agentforge/core/middleware';
+import { withLogging } from '@agentforge/core';
 
 const loggedNode = withLogging(myNode, {
   name: 'custom-node',
@@ -474,7 +474,7 @@ const loggedNode = withLogging(myNode, {
 ### 3. Handle Failures Gracefully
 
 ```typescript
-import { withRetry, withErrorHandler } from '@agentforge/core/middleware';
+import { withRetry, withErrorHandler } from '@agentforge/core';
 
 const resilientNode = compose(
   (n) => withRetry(n, { maxAttempts: 3 }),
@@ -492,7 +492,7 @@ const resilientNode = compose(
 Test patterns individually before combining:
 
 ```typescript
-import { testing } from '@agentforge/core/middleware';
+import { testing } from '@agentforge/core';
 
 // Test individual components
 const testAgent = testing(myAgent, {
@@ -518,26 +518,26 @@ import {
 
 // 1. Create specialized agents
 const webResearcher = createReActAgent({
-  llm,
+  model,
   tools: [webSearchTool, scrapeTool],
   maxIterations: 10
 });
 
 const dataAnalyzer = createPlanExecuteAgent({
-  planner: { llm, maxSteps: 5 },
+  planner: { model, maxSteps: 5 },
   executor: { tools: [analyzeTool, visualizeTool] }
 });
 
 const reportWriter = createReflectionAgent({
-  generator: { llm },
-  reflector: { llm },
+  generator: { model },
+  reflector: { model },
   maxIterations: 3
 });
 
 // 2. Combine in multi-agent system
 const researchSystem = createMultiAgentSystem({
   supervisor: {
-    llm,
+    model,
     routingStrategy: 'skill-based'
   },
   workers: [
@@ -545,7 +545,7 @@ const researchSystem = createMultiAgentSystem({
     { name: 'analyzer', capabilities: ['analyze', 'visualize'], agent: dataAnalyzer },
     { name: 'writer', capabilities: ['write', 'report'], agent: reportWriter }
   ],
-  aggregator: { llm }
+  aggregator: { model }
 });
 
 // 3. Use the system

@@ -39,7 +39,7 @@ AgentForge provides 10+ production-ready middleware:
 Cache node results to avoid redundant computations:
 
 ```typescript
-import { withCache } from '@agentforge/core/middleware';
+import { withCache } from '@agentforge/core';
 
 const cachedNode = withCache(myNode, {
   ttl: 3600000, // 1 hour in milliseconds
@@ -60,7 +60,7 @@ const cachedNode = withCache(myNode, {
 Control request rate to prevent overload:
 
 ```typescript
-import { withRateLimit } from '@agentforge/core/middleware';
+import { withRateLimit } from '@agentforge/core';
 
 const rateLimitedNode = withRateLimit(myNode, {
   maxRequests: 100, // Max requests
@@ -79,7 +79,7 @@ const rateLimitedNode = withRateLimit(myNode, {
 Validate inputs and outputs with Zod schemas:
 
 ```typescript
-import { withValidation } from '@agentforge/core/middleware';
+import { withValidation } from '@agentforge/core';
 import { z } from 'zod';
 
 const inputSchema = z.object({
@@ -104,7 +104,7 @@ const validatedNode = withValidation(myNode, {
 Automatically retry failed operations:
 
 ```typescript
-import { withRetry } from '@agentforge/core/middleware';
+import { withRetry } from '@agentforge/core';
 
 const resilientNode = withRetry(myNode, {
   maxAttempts: 3,
@@ -125,7 +125,7 @@ const resilientNode = withRetry(myNode, {
 Prevent long-running operations:
 
 ```typescript
-import { withTimeout } from '@agentforge/core/middleware';
+import { withTimeout } from '@agentforge/core';
 
 const timedNode = withTimeout(myNode, {
   timeout: 30000, // 30 seconds
@@ -140,7 +140,7 @@ const timedNode = withTimeout(myNode, {
 Structured logging for observability:
 
 ```typescript
-import { withLogging } from '@agentforge/core/middleware';
+import { withLogging } from '@agentforge/core';
 
 const loggedNode = withLogging(myNode, {
   name: 'search-node',
@@ -157,7 +157,7 @@ const loggedNode = withLogging(myNode, {
 Graceful error handling with fallbacks:
 
 ```typescript
-import { withErrorHandler } from '@agentforge/core/middleware';
+import { withErrorHandler } from '@agentforge/core';
 
 const safeNode = withErrorHandler(myNode, {
   onError: (error, state) => {
@@ -173,7 +173,7 @@ const safeNode = withErrorHandler(myNode, {
 Collect performance metrics:
 
 ```typescript
-import { withMetrics } from '@agentforge/core/middleware';
+import { withMetrics } from '@agentforge/core';
 
 const monitoredNode = withMetrics(myNode, {
   name: 'search-node',
@@ -188,7 +188,7 @@ const monitoredNode = withMetrics(myNode, {
 Distributed tracing support:
 
 ```typescript
-import { withTracing } from '@agentforge/core/middleware';
+import { withTracing } from '@agentforge/core';
 
 const tracedNode = withTracing(myNode, {
   name: 'search-node',
@@ -203,9 +203,9 @@ const tracedNode = withTracing(myNode, {
 Limit concurrent executions:
 
 ```typescript
-import { withConcurrencyLimit } from '@agentforge/core/middleware';
+import { withConcurrency } from '@agentforge/core';
 
-const throttledNode = withConcurrencyLimit(myNode, {
+const throttledNode = withConcurrency(myNode, {
   maxConcurrent: 5, // Max 5 concurrent executions
   queueSize: 100, // Max 100 queued requests
   timeout: 30000, // Queue timeout
@@ -219,7 +219,7 @@ const throttledNode = withConcurrencyLimit(myNode, {
 Apply multiple middleware to a node:
 
 ```typescript
-import { compose, withCache, withValidation, withLogging } from '@agentforge/core/middleware';
+import { compose, withCache, withValidation, withLogging } from '@agentforge/core';
 import { z } from 'zod';
 
 const schema = z.object({ query: z.string() });
@@ -242,7 +242,7 @@ const enhancedNode = compose(
 Fluent API for building middleware stacks:
 
 ```typescript
-import { MiddlewareChain } from '@agentforge/core/middleware';
+import { MiddlewareChain } from '@agentforge/core';
 
 const enhancedNode = new MiddlewareChain()
   .use(withLogging({ name: 'search' }))
@@ -279,16 +279,15 @@ Pre-configured middleware stacks for common scenarios.
 Optimized for production with comprehensive error handling:
 
 ```typescript
-import { productionPreset } from '@agentforge/core/middleware';
+import { production } from '@agentforge/core';
 
-const productionNode = productionPreset(myNode, {
+const productionNode = production(myNode, {
   nodeName: 'search-node',
-  cache: { ttl: 3600000 },
-  rateLimit: { maxRequests: 100, windowMs: 60000 },
-  retry: { maxAttempts: 3 },
-  timeout: { timeout: 30000 },
-  logging: { level: 'info' },
-  metrics: { enabled: true },
+  enableMetrics: true,
+  enableTracing: true,
+  enableRetry: true,
+  timeout: 30000,
+  retryOptions: { maxAttempts: 3 }
 });
 ```
 
@@ -298,28 +297,24 @@ const productionNode = productionPreset(myNode, {
 - ✅ Timeout protection (30s)
 - ✅ Retry logic (3 attempts)
 - ✅ Error handling
-- ✅ Rate limiting (optional)
-- ✅ Caching (optional)
+- ✅ Distributed tracing
 
 ### Development Preset
 
 Optimized for development with verbose logging:
 
 ```typescript
-import { developmentPreset } from '@agentforge/core/middleware';
+import { development } from '@agentforge/core';
 
-const devNode = developmentPreset(myNode, {
+const devNode = development(myNode, {
   nodeName: 'search-node',
-  logging: { level: 'debug' },
-  tracing: { enabled: true },
-  validation: { inputSchema, outputSchema },
+  verbose: true
 });
 ```
 
 **Includes:**
 - ✅ Verbose logging (debug level)
-- ✅ Distributed tracing
-- ✅ Input/output validation
+- ✅ Input/output logging
 - ✅ Error details
 - ✅ Performance timing
 
@@ -328,9 +323,9 @@ const devNode = developmentPreset(myNode, {
 Optimized for testing with mocks and tracking:
 
 ```typescript
-import { testingPreset } from '@agentforge/core/middleware';
+import { testing } from '@agentforge/core';
 
-const testNode = testingPreset(myNode, {
+const testNode = testing(myNode, {
   nodeName: 'search-node',
   mockResponse: { results: ['mocked'] },
   trackInvocations: true,
@@ -346,7 +341,7 @@ console.log(testNode.invocations);
 Create your own middleware:
 
 ```typescript
-import { Middleware, NodeFunction } from '@agentforge/core/middleware';
+import { Middleware, NodeFunction } from '@agentforge/core';
 
 interface TimingOptions {
   name: string;

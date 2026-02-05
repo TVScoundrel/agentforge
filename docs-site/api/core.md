@@ -191,28 +191,18 @@ const minimalPrompt = registry.generatePrompt({
 
 ## Middleware System
 
-### createMiddleware()
+### Composing Middleware
 
-Create custom middleware:
+Compose multiple middleware functions:
 
 ```typescript
-import { createMiddleware } from '@agentforge/core/middleware';
+import { compose, withRetry, withMetrics, withLogging } from '@agentforge/core';
 
-const loggingMiddleware = createMiddleware({
-  name: 'logging',
-  before: async (context) => {
-    console.log('Before:', context.input);
-    return context;
-  },
-  after: async (context, result) => {
-    console.log('After:', result);
-    return result;
-  },
-  onError: async (context, error) => {
-    console.error('Error:', error);
-    throw error;
-  }
-});
+const enhanced = compose(
+  withLogging({ name: 'my-node', logDuration: true }),
+  withMetrics({ name: 'my-node', trackDuration: true }),
+  withRetry({ maxAttempts: 3, backoff: 'exponential' })
+)(myNode);
 ```
 
 ### Built-in Middleware
@@ -220,34 +210,42 @@ const loggingMiddleware = createMiddleware({
 #### Caching
 
 ```typescript
-import { caching } from '@agentforge/core/middleware';
+import { withCache, createSharedCache } from '@agentforge/core';
 
-const cache = caching({
+// Create a shared cache
+const cache = createSharedCache({ maxSize: 1000 });
+
+// Apply caching middleware
+const cachedNode = withCache(myNode, {
   ttl: 3600,
-  maxSize: 1000,
-  keyGenerator: (input) => JSON.stringify(input)
+  cache,
+  keyGenerator: (state) => JSON.stringify(state)
 });
 ```
 
 #### Rate Limiting
 
 ```typescript
-import { rateLimiting } from '@agentforge/core/middleware';
+import { withRateLimit, createSharedRateLimiter } from '@agentforge/core';
 
-const rateLimit = rateLimiting({
-  maxRequests: 100,
-  windowMs: 60000
+// Create a shared rate limiter
+const limiter = createSharedRateLimiter({ maxRequests: 100, windowMs: 60000 });
+
+// Apply rate limiting middleware
+const limitedNode = withRateLimit(myNode, {
+  limiter,
+  strategy: 'sliding-window'
 });
 ```
 
 #### Retry Logic
 
 ```typescript
-import { retry } from '@agentforge/core/middleware';
+import { withRetry } from '@agentforge/core';
 
-const retryMiddleware = retry({
+const retryNode = withRetry(myNode, {
   maxAttempts: 3,
-  delayMs: 1000,
+  initialDelay: 1000,
   backoff: 'exponential'
 });
 ```
@@ -255,29 +253,32 @@ const retryMiddleware = retry({
 #### Validation
 
 ```typescript
-import { validation } from '@agentforge/core/middleware';
+import { withValidation } from '@agentforge/core';
 import { z } from 'zod';
 
-const validate = validation({
-  input: z.object({
+const validatedNode = withValidation(myNode, {
+  inputSchema: z.object({
     query: z.string().min(1)
   }),
-  output: z.object({
+  outputSchema: z.object({
     result: z.string()
-  })
+  }),
+  mode: 'strict'
 });
 ```
 
-#### Production Bundle
+#### Production Preset
 
 ```typescript
-import { production } from '@agentforge/core/middleware';
+import { production } from '@agentforge/core';
 
-const prod = production({
-  retry: { maxAttempts: 3 },
-  timeout: { timeoutMs: 30000 },
-  logging: { level: 'info' },
-  metrics: { enabled: true }
+// Wrap a node with production middleware
+const productionNode = production(myNode, {
+  nodeName: 'my-node',
+  enableMetrics: true,
+  enableTracing: true,
+  enableRetry: true,
+  timeout: 30000
 });
 ```
 
@@ -405,37 +406,94 @@ try {
 
 ## Streaming
 
-### StreamManager
+### Stream Transformers
 
-Manage streaming responses:
+Transform streams with chunking, batching, and throttling:
 
 ```typescript
-import { StreamManager } from '@agentforge/core/streaming';
+import { chunk, batch, throttle, collect } from '@agentforge/core';
 
-const stream = new StreamManager({
-  onChunk: (chunk) => console.log(chunk),
-  onComplete: () => console.log('Done'),
-  onError: (error) => console.error(error)
+// Chunk stream into groups
+const chunked = chunk(stream, { size: 10 });
+
+// Batch items with time window
+const batched = batch(stream, { maxSize: 5, maxWaitMs: 1000 });
+
+// Throttle stream
+const throttled = throttle(stream, { intervalMs: 100 });
+
+// Collect all items
+const items = await collect(stream);
+```
+
+### Stream Aggregators
+
+Aggregate and transform stream data:
+
+```typescript
+import { reduce, merge, filter, map, take } from '@agentforge/core';
+
+// Reduce stream to single value
+const sum = await reduce(stream, (acc, val) => acc + val, 0);
+
+// Filter stream items
+const filtered = filter(stream, (item) => item.score > 0.5);
+
+// Map stream items
+const mapped = map(stream, (item) => ({ ...item, processed: true }));
+
+// Take first N items
+const first10 = take(stream, 10);
+```
+
+### Progress Tracking
+
+Track progress of long-running operations:
+
+```typescript
+import { createProgressTracker } from '@agentforge/core';
+
+const tracker = createProgressTracker({
+  total: 100,
+  onProgress: (progress) => {
+    console.log(`${progress.percentage}% complete`);
+    console.log(`${progress.current}/${progress.total}`);
+  }
 });
 
-await stream.start(async (write) => {
-  write({ type: 'text', content: 'Hello' });
-  write({ type: 'text', content: ' World' });
-});
+// Update progress
+tracker.update(25);
+tracker.update(50);
+tracker.complete();
 ```
 
 ### SSE (Server-Sent Events)
 
-Create SSE streams for real-time communication:
+Create SSE formatters for real-time communication:
 
 ```typescript
-import { createSSEStream } from '@agentforge/core/streaming';
+import { createSSEFormatter, createHeartbeat, parseSSEEvent } from '@agentforge/core';
 
-const sseStream = createSSEStream({
-  onMessage: (data) => {
-    // Send SSE message
-  }
+// Create formatter
+const formatter = createSSEFormatter({
+  eventPrefix: 'agent',
+  includeId: true
 });
+
+// Format events
+const eventString = formatter.format({
+  event: 'message',
+  data: { content: 'Hello' }
+});
+
+// Create heartbeat
+const heartbeat = createHeartbeat({
+  intervalMs: 30000,
+  onHeartbeat: () => console.log('ping')
+});
+
+// Parse SSE events
+const event = parseSSEEvent('event: message\ndata: {"content":"Hello"}\n\n');
 ```
 
 ### Human-in-the-Loop SSE
@@ -443,50 +501,51 @@ const sseStream = createSSEStream({
 Specialized SSE utilities for human-in-the-loop workflows:
 
 ```typescript
-import { createHumanInLoopSSE } from '@agentforge/core/streaming';
-import type { HumanRequest, HumanResponse } from '@agentforge/core/langgraph';
+import {
+  formatHumanRequestEvent,
+  formatHumanResponseEvent,
+  formatInterruptEvent,
+  formatResumeEvent,
+  formatAgentWaitingEvent,
+  formatAgentResumedEvent
+} from '@agentforge/core';
 
-// In your Express route
-app.get('/api/stream', (req, res) => {
-  const sse = createHumanInLoopSSE(res);
+// Format human request event
+const requestEvent = formatHumanRequestEvent({
+  id: 'req-123',
+  question: 'Approve this action?',
+  priority: 'high',
+  createdAt: Date.now(),
+  status: 'pending'
+});
 
-  // Send human request
-  sse.sendHumanRequest({
-    id: 'req-123',
-    question: 'Approve this action?',
-    priority: 'high',
-    createdAt: Date.now(),
-    status: 'pending'
-  });
+// Format human response event
+const responseEvent = formatHumanResponseEvent({
+  requestId: 'req-123',
+  response: 'yes',
+  respondedAt: Date.now()
+});
 
-  // Send human response
-  sse.sendHumanResponse({
-    requestId: 'req-123',
-    response: 'yes',
-    respondedAt: Date.now()
-  });
+// Format interrupt event
+const interruptEvent = formatInterruptEvent({
+  reason: 'User requested pause',
+  timestamp: Date.now()
+});
 
-  // Send timeout notification
-  sse.sendHumanTimeout({
-    requestId: 'req-123',
-    defaultResponse: 'no',
-    timedOutAt: Date.now()
-  });
-
-  // Send error
-  sse.sendHumanError({
-    requestId: 'req-123',
-    error: 'Failed to process request',
-    erroredAt: Date.now()
-  });
+// Format agent waiting event
+const waitingEvent = formatAgentWaitingEvent({
+  requestId: 'req-123',
+  message: 'Waiting for approval'
 });
 ```
 
-**SSE Event Types:**
+**Human-in-Loop Event Types:**
 - `human_request` - New request for human input
 - `human_response` - Human provided a response
-- `human_timeout` - Request timed out
-- `human_error` - Error processing request
+- `interrupt` - Agent execution interrupted
+- `resume` - Agent execution resumed
+- `agent_waiting` - Agent waiting for human input
+- `agent_resumed` - Agent resumed after human input
 
 ## LangGraph Integration
 
@@ -618,27 +677,36 @@ try {
 
 ## Monitoring
 
-### HealthCheck
+### Health Checks
 
 ```typescript
-import { HealthCheck } from '@agentforge/core/monitoring';
+import { createHealthChecker } from '@agentforge/core';
 
-const health = new HealthCheck();
-
-health.addCheck('database', async () => {
-  // Check database connection
-  return { healthy: true };
+const healthChecker = createHealthChecker({
+  checks: {
+    database: async () => {
+      // Check database connection
+      return { healthy: true };
+    },
+    redis: async () => {
+      // Check Redis connection
+      return { healthy: true };
+    }
+  },
+  timeout: 5000,
+  interval: 30000
 });
 
-const status = await health.check();
+healthChecker.start();
+const status = await healthChecker.getHealth();
 ```
 
 ### Metrics
 
 ```typescript
-import { MetricsCollector } from '@agentforge/core/monitoring';
+import { createMetrics } from '@agentforge/core';
 
-const metrics = new MetricsCollector();
+const metrics = createMetrics('my-agent');
 
 metrics.increment('requests');
 metrics.gauge('active_connections', 5);

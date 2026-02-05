@@ -33,7 +33,7 @@ For existing projects or custom setups:
 
 ```bash
 # Core packages
-pnpm add @agentforge/core @agentforge/patterns
+pnpm add @agentforge/core @agentforge/patterns @agentforge/tools
 
 # LangChain dependencies
 pnpm add @langchain/core @langchain/openai
