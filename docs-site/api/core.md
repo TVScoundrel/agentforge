@@ -199,9 +199,9 @@ Compose multiple middleware functions:
 import { compose, withRetry, withMetrics, withLogging } from '@agentforge/core';
 
 const enhanced = compose(
-  withLogging({ name: 'my-node', logDuration: true }),
-  withMetrics({ name: 'my-node', trackDuration: true }),
-  withRetry({ maxAttempts: 3, backoff: 'exponential' })
+  (node) => withLogging({ name: 'my-node', logDuration: true })(node),
+  (node) => withMetrics(node, { name: 'my-node', trackDuration: true }),
+  (node) => withRetry(node, { maxAttempts: 3, backoff: 'exponential' })
 )(myNode);
 ```
 

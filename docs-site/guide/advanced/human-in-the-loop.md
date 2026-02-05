@@ -169,7 +169,6 @@ AgentForge provides SSE utilities for real-time communication with humans.
 
 ```typescript
 import {
-  createSSEFormatter,
   formatHumanRequestEvent,
   formatHumanResponseEvent
 } from '@agentforge/core';
@@ -178,25 +177,33 @@ import express from 'express';
 const app = express();
 
 app.get('/api/stream', (req, res) => {
-  const sse = createSSEFormatter(res);
+  // Set up SSE headers
+  res.setHeader('Content-Type', 'text/event-stream');
+  res.setHeader('Cache-Control', 'no-cache');
+  res.setHeader('Connection', 'keep-alive');
 
-  // Send human request event
-  const requestEvent = formatHumanRequestEvent({
+  const threadId = 'thread-123';
+
+  // Create and send human request event
+  const humanRequest = {
     id: 'req-123',
     question: 'Approve this action?',
-    priority: 'high',
+    priority: 'high' as const,
     createdAt: Date.now(),
-    status: 'pending'
-  });
-  sse.send(requestEvent);
+    status: 'pending' as const
+  };
+  const requestEvent = formatHumanRequestEvent(humanRequest, threadId);
 
-  // Send response event when human answers
-  const responseEvent = formatHumanResponseEvent({
-    requestId: 'req-123',
-    response: 'yes',
-    respondedAt: Date.now()
-  });
-  sse.send(responseEvent);
+  // Format SSE event manually
+  res.write(`event: ${requestEvent.event}\n`);
+  res.write(`id: ${requestEvent.id}\n`);
+  res.write(`data: ${requestEvent.data}\n\n`);
+
+  // Later, when human responds, send response event
+  const responseEvent = formatHumanResponseEvent('req-123', 'yes', threadId);
+  res.write(`event: ${responseEvent.event}\n`);
+  res.write(`id: ${responseEvent.id}\n`);
+  res.write(`data: ${responseEvent.data}\n\n`);
 });
 ```
 
