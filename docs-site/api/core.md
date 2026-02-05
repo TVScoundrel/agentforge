@@ -558,7 +558,7 @@ import {
   isNodeInterrupt,
   extractHumanRequest,
   createInterruptResponse
-} from '@agentforge/core/langgraph';
+} from '@agentforge/core';
 
 // Check if error is a NodeInterrupt
 try {
@@ -589,7 +589,7 @@ import type {
   HumanRequestPriority,
   HumanRequestStatus,
   HumanResponse
-} from '@agentforge/core/langgraph';
+} from '@agentforge/core';
 
 // HumanRequest - Request for human input
 interface HumanRequest {
@@ -652,14 +652,15 @@ See the [Human-in-the-Loop Guide](../guide/advanced/human-in-the-loop.md) for co
 
 ## Resource Management
 
-### ResourcePool
+### Connection Pool
 
-Manage connections and resources:
+Manage database and HTTP connections:
 
 ```typescript
-import { ResourcePool } from '@agentforge/core/resources';
+import { createConnectionPool, createDatabasePool, createHttpPool } from '@agentforge/core';
 
-const pool = new ResourcePool({
+// Generic connection pool
+const pool = createConnectionPool({
   create: async () => createConnection(),
   destroy: async (conn) => conn.close(),
   validate: async (conn) => conn.isAlive(),
@@ -673,6 +674,22 @@ try {
 } finally {
   pool.release(resource);
 }
+
+// Database-specific pool
+const dbPool = createDatabasePool({
+  host: 'localhost',
+  port: 5432,
+  database: 'mydb',
+  min: 2,
+  max: 10
+});
+
+// HTTP client pool
+const httpPool = createHttpPool({
+  baseURL: 'https://api.example.com',
+  maxConnections: 10,
+  timeout: 5000
+});
 ```
 
 ## Monitoring

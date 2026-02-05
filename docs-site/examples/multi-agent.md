@@ -177,19 +177,35 @@ Best for:
 ## Agent Communication
 
 ```typescript
-// Agents can share context
+// Create multi-agent system with supervisor and workers
 const system = createMultiAgentSystem({
-  agents: { researcher, analyst, writer },
-  coordinator: new ChatOpenAI({ model: 'gpt-4' }),
-  workflow: 'sequential',
-  
-  // Shared memory across agents
-  sharedMemory: true,
-  
-  // Communication protocol
-  communication: {
-    format: 'structured',
-    includeMetadata: true
+  supervisor: {
+    strategy: 'skill-based',
+    model: new ChatOpenAI({ model: 'gpt-4' }),
+    maxIterations: 10
+  },
+
+  workers: [
+    {
+      id: 'researcher',
+      capabilities: { skills: ['research', 'data-gathering'], priority: 1 },
+      agent: researcher
+    },
+    {
+      id: 'analyst',
+      capabilities: { skills: ['analysis', 'evaluation'], priority: 2 },
+      agent: analyst
+    },
+    {
+      id: 'writer',
+      capabilities: { skills: ['writing', 'summarization'], priority: 3 },
+      agent: writer
+    }
+  ],
+
+  aggregator: {
+    model: new ChatOpenAI({ model: 'gpt-4' }),
+    systemPrompt: 'Combine the results from all agents into a coherent response.'
   }
 });
 ```
@@ -197,21 +213,27 @@ const system = createMultiAgentSystem({
 ## Monitoring
 
 ```typescript
-import { MetricsCollector } from '@agentforge/core/monitoring';
+// Use an external metrics library like prom-client
+import { Histogram, Counter } from 'prom-client';
 
-const metrics = new MetricsCollector();
-
-const system = createMultiAgentSystem({
-  agents: { researcher, analyst, writer },
-  coordinator: new ChatOpenAI({ model: 'gpt-4' }),
-  workflow: 'sequential',
-  
-  // Monitor agent performance
-  onAgentComplete: (agentName, result, duration) => {
-    metrics.histogram(`agent.${agentName}.duration`, duration);
-    metrics.increment(`agent.${agentName}.invocations`);
-  }
+const agentDuration = new Histogram({
+  name: 'agent_duration_seconds',
+  help: 'Agent execution duration',
+  labelNames: ['agent_name']
 });
+
+const agentInvocations = new Counter({
+  name: 'agent_invocations_total',
+  help: 'Total agent invocations',
+  labelNames: ['agent_name']
+});
+
+// Track metrics by wrapping agent invocations
+const result = await system.invoke({ input: 'Your task' });
+
+// Record metrics after execution
+agentDuration.observe({ agent_name: 'researcher' }, 1.5);
+agentInvocations.inc({ agent_name: 'researcher' });
 ```
 
 ## Next Steps

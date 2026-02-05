@@ -645,17 +645,27 @@ az container create \
 
 ```typescript
 // src/metrics.ts
-import { createMetricsCollector } from '@agentforge/core/monitoring';
-
-export const metrics = createMetricsCollector({
-  prefix: 'agent_',
-  labels: ['environment', 'version'],
-});
+// Use an external metrics library like prom-client for Prometheus metrics
+import { register, Counter, Histogram, Gauge } from 'prom-client';
 
 // Track agent invocations
-metrics.counter('invocations_total', 'Total agent invocations');
-metrics.histogram('duration_seconds', 'Agent execution duration');
-metrics.gauge('active_requests', 'Active requests');
+export const invocationsCounter = new Counter({
+  name: 'agent_invocations_total',
+  help: 'Total agent invocations',
+  labelNames: ['environment', 'version']
+});
+
+export const durationHistogram = new Histogram({
+  name: 'agent_duration_seconds',
+  help: 'Agent execution duration',
+  labelNames: ['environment', 'version']
+});
+
+export const activeRequestsGauge = new Gauge({
+  name: 'agent_active_requests',
+  help: 'Active requests',
+  labelNames: ['environment', 'version']
+});
 
 // Expose metrics endpoint
 app.get('/metrics', async (req, res) => {

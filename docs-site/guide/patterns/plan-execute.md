@@ -51,14 +51,11 @@ const agent = createPlanExecuteAgent({
 });
 
 const result = await agent.invoke({
-  messages: [{
-    role: 'user',
-    content: 'Research the top 5 programming languages in 2026, compare their popularity, and create a summary report.'
-  }]
+  input: 'Research the top 5 programming languages in 2026, compare their popularity, and create a summary report.'
 });
 
 console.log('Plan:', result.plan);
-console.log('Result:', result.messages[result.messages.length - 1].content);
+console.log('Result:', result.response);
 ```
 
 ## Configuration Options
@@ -68,14 +65,31 @@ console.log('Result:', result.messages[result.messages.length - 1].content);
 ```typescript
 interface PlanExecuteConfig {
   // Required
-  model: BaseChatModel;           // The language model
-  tools: StructuredTool[];      // Available tools
+  planner: {
+    model: BaseChatModel;         // Language model for planning
+    systemPrompt?: string;        // Custom planning prompt
+    maxSteps?: number;            // Max steps in a plan (default: 10)
+    includeToolDescriptions?: boolean;  // Include tool info in planning
+  };
+
+  executor: {
+    tools: Tool[];                // Available tools for execution
+    model?: BaseChatModel;        // Optional model for sub-tasks
+    parallel?: boolean;           // Enable parallel execution
+    stepTimeout?: number;         // Timeout per step (ms)
+  };
 
   // Optional
-  maxExecutionSteps?: number;   // Max steps to execute (default: 25)
-  maxPlanningIterations?: number;  // Max re-planning attempts (default: 3)
+  replanner?: {
+    model: BaseChatModel;         // Model for replanning decisions
+    replanThreshold?: number;     // Confidence threshold (0-1)
+    systemPrompt?: string;        // Custom replanning prompt
+  };
+
+  maxIterations?: number;         // Max planning iterations (default: 5)
   returnIntermediateSteps?: boolean;  // Include execution steps
-  enableReplanning?: boolean;   // Allow plan adjustments (default: true)
+  verbose?: boolean;              // Enable verbose logging
+  checkpointer?: BaseCheckpointSaver;  // State persistence
 }
 ```
 
@@ -85,7 +99,15 @@ interface PlanExecuteConfig {
 const agent = createPlanExecuteAgent({
   planner: {
     model: new ChatOpenAI({ model: 'gpt-4' }),
-    maxSteps: 5
+    maxSteps: 5,
+    // Custom planning prompt
+    systemPrompt: `Create a detailed, step-by-step plan.
+
+Each step should:
+- Be specific and actionable
+- Specify which tool to use
+- Include expected outcomes
+- Consider dependencies`
   },
   executor: {
     tools: [webScraper, calculator, fileWriter],
@@ -96,18 +118,9 @@ const agent = createPlanExecuteAgent({
     replanThreshold: 0.7
   },
   maxIterations: 30,
-  
+
   // Return detailed execution trace
-  returnIntermediateSteps: true,
-  
-  // Custom planning prompt
-  planningPrompt: `Create a detailed, step-by-step plan.
-  
-Each step should:
-- Be specific and actionable
-- Specify which tool to use
-- Include expected outcomes
-- Consider dependencies`
+  returnIntermediateSteps: true
 });
 ```
 
@@ -233,7 +246,7 @@ Monitor planning and execution in real-time:
 
 ```typescript
 const stream = await agent.stream({
-  messages: [{ role: 'user', content: 'Complex research task' }]
+  input: 'Complex research task'
 });
 
 for await (const chunk of stream) {
@@ -256,14 +269,12 @@ The quality of the plan depends on task clarity:
 ```typescript
 // ❌ Vague
 const result = await agent.invoke({
-  messages: [{ role: 'user', content: 'Do some research' }]
+  input: 'Do some research'
 });
 
 // ✅ Clear and specific
 const result = await agent.invoke({
-  messages: [{
-    role: 'user',
-    content: `Research the environmental impact of electric vehicles:
+  input: `Research the environmental impact of electric vehicles:
     1. Find recent studies (2024-2026)
     2. Compare with traditional vehicles
     3. Include manufacturing and lifecycle data
@@ -328,7 +339,7 @@ const agent = createPlanExecuteAgent({
 
 // Use with thread_id to resume conversations
 const result = await agent.invoke(
-  { messages: [{ role: 'user', content: 'Complex task' }] },
+  { input: 'Complex task' },
   { configurable: { thread_id: 'task-123' } }
 );
 ```
