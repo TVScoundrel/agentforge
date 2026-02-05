@@ -474,7 +474,7 @@ const enhancedAgent = createPlanExecuteAgent({
 // ❌ Bad - over-engineering from the start
 const overEngineered = createMultiAgentSystem({
   supervisor: {
-    strategy: 'supervisor',
+    strategy: 'skill-based',
     model
   },
   workers: [

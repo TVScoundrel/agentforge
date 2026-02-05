@@ -33,9 +33,9 @@ const agent = createReflectionAgent({
 - Are there any errors or omissions?
 - How can it be improved?`,
     qualityCriteria: {
-      accuracy: 0.8,
-      completeness: 0.8,
-      clarity: 0.8
+      minScore: 8,
+      criteria: ['accuracy', 'completeness', 'clarity'],
+      requireAll: true
     }
   },
 

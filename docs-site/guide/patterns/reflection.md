@@ -55,9 +55,9 @@ const agent = createReflectionAgent({
 - Are there any errors or omissions?
 - How can it be improved?`,
     qualityCriteria: {
-      accuracy: 0.8,
-      completeness: 0.8,
-      clarity: 0.8
+      minScore: 8,
+      criteria: ['accuracy', 'completeness', 'clarity'],
+      requireAll: true
     }
   },
 
@@ -117,10 +117,9 @@ interface ReviserConfig {
 }
 
 interface QualityCriteria {
-  accuracy?: number;            // Accuracy threshold (0-1)
-  completeness?: number;        // Completeness threshold (0-1)
-  clarity?: number;             // Clarity threshold (0-1)
-  [key: string]: number | undefined;  // Custom criteria
+  minScore?: number;            // Minimum quality score required (0-10), default: 7
+  criteria?: string[];          // Specific criteria to evaluate
+  requireAll?: boolean;         // Whether all criteria must be met, default: true
 }
 ```
 
@@ -148,10 +147,9 @@ const agent = createReflectionAgent({
 
 Provide specific suggestions for improvement.`,
     qualityCriteria: {
-      accuracy: 0.9,
-      completeness: 0.9,
-      clarity: 0.9,
-      structure: 0.9
+      minScore: 9,
+      criteria: ['accuracy', 'completeness', 'clarity', 'structure'],
+      requireAll: true
     },
     verbose: true
   },
@@ -245,10 +243,9 @@ const agent = createReflectionAgent({
     model: reflectorModel,
     systemPrompt: 'Evaluate content quality across multiple dimensions',
     qualityCriteria: {
-      accuracy: 0.9,
-      completeness: 0.8,
-      clarity: 0.85,
-      style: 0.7
+      minScore: 8,
+      criteria: ['accuracy', 'completeness', 'clarity', 'style'],
+      requireAll: true
     }
   },
   reviser: {
@@ -304,10 +301,9 @@ const codeReflectionAgent = createReflectionAgent({
 
 Provide specific improvements.`,
     qualityCriteria: {
-      correctness: 0.95,
-      performance: 0.8,
-      security: 0.9,
-      maintainability: 0.85
+      minScore: 9,
+      criteria: ['correctness', 'performance', 'security', 'maintainability'],
+      requireAll: true
     }
   },
   reviser: {
@@ -334,9 +330,9 @@ const writingReflectionAgent = createReflectionAgent({
 
 Suggest specific edits.`,
     qualityCriteria: {
-      grammar: 0.95,
-      clarity: 0.9,
-      engagement: 0.8
+      minScore: 9,
+      criteria: ['grammar', 'clarity', 'engagement'],
+      requireAll: true
     }
   },
   reviser: {
@@ -383,7 +379,7 @@ const agent = createReflectionAgent({
   reflector: {
     model,
     qualityCriteria: {
-      quality: 0.85  // Stop early if quality is good enough
+      minScore: 8.5  // Stop early if quality is good enough
     }
   },
   reviser: { model },
@@ -411,9 +407,9 @@ Overall Quality: (average of above)
 Specific Issues: [list]
 Improvement Suggestions: [list]`,
     qualityCriteria: {
-      technicalAccuracy: 0.9,
-      completeness: 0.85,
-      codeQuality: 0.8
+      minScore: 8.5,
+      criteria: ['technicalAccuracy', 'completeness', 'codeQuality'],
+      requireAll: true
     }
   },
   reviser: {
@@ -488,9 +484,9 @@ const contentAgent = createReflectionAgent({
 
 Provide specific feedback.`,
     qualityCriteria: {
-      engagement: 0.8,
-      accuracy: 0.9,
-      grammar: 0.95
+      minScore: 9,
+      criteria: ['engagement', 'accuracy', 'grammar'],
+      requireAll: true
     }
   },
   reviser: {
@@ -523,10 +519,9 @@ const codeAgent = createReflectionAgent({
 
 Provide specific feedback on bugs and improvements.`,
     qualityCriteria: {
-      correctness: 0.95,
-      efficiency: 0.8,
-      readability: 0.85,
-      bestPractices: 0.9
+      minScore: 9,
+      criteria: ['correctness', 'efficiency', 'readability', 'bestPractices'],
+      requireAll: true
     }
   },
   reviser: {
@@ -559,10 +554,9 @@ const researchAgent = createReflectionAgent({
 
 Identify gaps and suggest improvements.`,
     qualityCriteria: {
-      accuracy: 0.95,
-      completeness: 0.85,
-      balance: 0.8,
-      depth: 0.85
+      minScore: 9,
+      criteria: ['accuracy', 'completeness', 'balance', 'depth'],
+      requireAll: true
     }
   },
   reviser: {
@@ -642,7 +636,7 @@ const agent = createReflectionAgent({
   reflector: {
     model,
     qualityCriteria: {
-      quality: 0.9  // Target quality threshold
+      minScore: 9  // Target quality threshold
     }
   },
   reviser: { model },
@@ -661,10 +655,9 @@ const agent = createReflectionAgent({
     model,
     systemPrompt: 'Evaluate content across multiple dimensions',
     qualityCriteria: {
-      accuracy: 0.9,
-      completeness: 0.85,
-      clarity: 0.8,
-      style: 0.75
+      minScore: 8,
+      criteria: ['accuracy', 'completeness', 'clarity', 'style'],
+      requireAll: true
     }
   },
   reviser: { model },
@@ -728,7 +721,7 @@ const reviewerAgent = createReflectionAgent({
 
 const system = createMultiAgentSystem({
   supervisor: {
-    strategy: 'supervisor',
+    strategy: 'skill-based',
     model,
     systemPrompt: 'Coordinate writing and review process'
   },
