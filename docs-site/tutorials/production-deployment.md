@@ -166,20 +166,14 @@ class HealthChecker {
 }
 
 export const healthChecker = new HealthChecker({
-  checks: {
-    llm: async () => {
-      // Test LLM connection
-      await model.invoke('test');
-      return { healthy: true, status: 'healthy' };
-    },
-    database: async () => {
-      // Test database connection (if applicable)
-      return { healthy: true, status: 'healthy' };
-    },
+  llm: async () => {
+    // Test LLM connection
+    await model.invoke('test');
+    return { healthy: true, status: 'healthy' };
   },
-  timeout: 5000,
-  onCheckFail: (name, error) => {
-    console.error(`Health check ${name} failed:`, error);
+  database: async () => {
+    // Test database connection (if applicable)
+    return { healthy: true, status: 'healthy' };
   }
 });
 

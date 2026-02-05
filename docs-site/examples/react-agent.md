@@ -191,7 +191,12 @@ try {
 
 ```typescript
 import { describe, it, expect } from 'vitest';
-import { MockLLM, AgentTestRunner } from '@agentforge/testing';
+import {
+  MockLLM,
+  AgentTestRunner,
+  assertToolCalled,
+  assertIterationsWithinLimit
+} from '@agentforge/testing';
 import { createReActAgent } from '@agentforge/patterns';
 import { calculator } from '@agentforge/tools';
 
@@ -220,12 +225,16 @@ describe('ReAct Agent', () => {
     });
 
     expect(result.passed).toBe(true);
-    harness.assertToolCalled('calculator');
+    assertToolCalled(result.finalState.actions || [], 'calculator');
   });
 
   it('should complete within iterations', async () => {
-    const result = await harness.invoke('Calculate 10 * 5');
-    harness.assertWithinIterations(3);
+    const result = await runner.run({
+      messages: [{ role: 'user', content: 'Calculate 10 * 5' }]
+    });
+
+    expect(result.passed).toBe(true);
+    assertIterationsWithinLimit(result.finalState.iteration || 0, 3);
   });
 });
 ```

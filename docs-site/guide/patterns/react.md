@@ -94,7 +94,8 @@ const agent = createReActAgent({
 
   // Custom stop condition
   stopCondition: (state) => {
-    return state.iterations >= 15 || state.scratchpad.includes('FINAL_ANSWER');
+    return state.iteration >= 15 ||
+           state.scratchpad.some(entry => entry.thought?.includes('FINAL_ANSWER'));
   },
 
   // Add checkpointer for state persistence
@@ -112,7 +113,7 @@ import { createReActAgent } from '@agentforge/patterns';
 const agent = createReActAgent({
   model,
   tools,
-  systemMessage: `You are a helpful research assistant.
+  systemPrompt: `You are a helpful research assistant.
   
 When solving tasks:
 1. Break down complex questions into steps
@@ -223,17 +224,24 @@ import { createReActAgent } from '@agentforge/patterns';
 const agent = createReActAgent({
   model,
   tools,
-  
-  // Option 1: Boolean - use default error message
-  handleParsingErrors: true,
-  
-  // Option 2: Custom error message
-  handleParsingErrors: 'Invalid format. Please use the correct tool schema.',
-  
-  // Option 3: Custom error handler function
-  handleParsingErrors: (error: Error) => {
-    console.error('Parsing error:', error);
-    return `Error: ${error.message}. Please try again with valid JSON.`;
+  maxIterations: 10,
+
+  // Use custom stop condition to handle errors
+  stopCondition: (state) => {
+    // Stop if we've hit max iterations
+    if (state.iteration >= 10) return true;
+
+    // Stop if we have a response
+    if (state.response) return true;
+
+    // Stop if last observation indicates an error
+    const lastObs = state.observations[state.observations.length - 1];
+    if (lastObs?.error) {
+      console.error('Tool error:', lastObs.error);
+      return true;
+    }
+
+    return false;
   }
 });
 ```
@@ -398,7 +406,7 @@ const agent = createReActAgent({
 const result = await agent.invoke(input);
 
 // Access state fields
-console.log('Iterations:', result.iterations);
+console.log('Iteration count:', result.iteration);
 console.log('Actions taken:', result.actions);
 console.log('Observations:', result.observations);
 console.log('Scratchpad:', result.scratchpad);
@@ -406,15 +414,21 @@ console.log('Scratchpad:', result.scratchpad);
 
 ## Performance Optimization
 
-### 1. Trim Intermediate Steps
+### 1. Limit Iterations
 
-Reduce token usage by keeping only recent steps:
+Reduce token usage by limiting the number of reasoning loops:
 
 ```typescript
 const agent = createReActAgent({
   model,
   tools,
-  trimIntermediateSteps: 5  // Keep only last 5 steps
+  maxIterations: 5,  // Limit to 5 reasoning loops
+
+  // Or use a custom stop condition
+  stopCondition: (state) => {
+    // Stop early if we have enough information
+    return state.iteration >= 3 && state.response !== undefined;
+  }
 });
 ```
 

@@ -327,8 +327,8 @@ registry.registerMany([
   jsonParser,
   fileReader,
   fileWriter,
-  stringCase,
-  validateEmail
+  stringCaseConverter,
+  emailValidator
 ]);
 
 // Auto-generate prompts for all tools (custom + standard)

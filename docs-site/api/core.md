@@ -702,22 +702,37 @@ const httpPool = createHttpPool({
 ```typescript
 // Example custom health checker implementation
 
-const healthChecker = createHealthChecker({
-  checks: {
-    database: async () => {
-      // Check database connection
-      return { healthy: true };
-    },
-    redis: async () => {
-      // Check Redis connection
-      return { healthy: true };
+class HealthChecker {
+  constructor(private checks: Record<string, () => Promise<any>>) {}
+
+  async getHealth(): Promise<{ healthy: boolean; checks: Record<string, any> }> {
+    const results: Record<string, any> = {};
+    let allHealthy = true;
+
+    for (const [name, check] of Object.entries(this.checks)) {
+      try {
+        results[name] = await check();
+      } catch (error) {
+        results[name] = { healthy: false, error: error.message };
+        allHealthy = false;
+      }
     }
+
+    return { healthy: allHealthy, checks: results };
+  }
+}
+
+const healthChecker = new HealthChecker({
+  database: async () => {
+    // Check database connection
+    return { healthy: true };
   },
-  timeout: 5000,
-  interval: 30000
+  redis: async () => {
+    // Check Redis connection
+    return { healthy: true };
+  }
 });
 
-healthChecker.start();
 const status = await healthChecker.getHealth();
 ```
 
