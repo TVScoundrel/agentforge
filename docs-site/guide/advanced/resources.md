@@ -51,18 +51,22 @@ Set limits to prevent runaway costs:
 
 ```typescript
 import { createReActAgent } from '@agentforge/patterns';
+import { ChatOpenAI } from '@langchain/openai';
 
-const agent = createReActAgent({
-  llm,
-  tools,
-  maxTokens: 10000,  // Total token budget
-  onTokenLimitReached: (usage) => {
-    console.warn('Token limit reached:', usage);
-    throw new Error('Token budget exceeded');
-  }
+// Configure model with token limits
+const model = new ChatOpenAI({
+  model: 'gpt-4',
+  maxTokens: 2000,  // Max tokens per response
+  timeout: 30000    // 30 second timeout
 });
 
-// Track cumulative usage
+const agent = createReActAgent({
+  model,
+  tools,
+  maxIterations: 10  // Limit reasoning loops
+});
+
+// Track cumulative usage via callbacks
 let totalTokens = 0;
 const maxBudget = 50000;
 
@@ -70,7 +74,7 @@ const result = await agent.invoke(input, {
   callbacks: [{
     handleLLMEnd: (output) => {
       totalTokens += output.llmOutput?.tokenUsage?.totalTokens || 0;
-      
+
       if (totalTokens > maxBudget) {
         throw new Error(`Budget exceeded: ${totalTokens}/${maxBudget} tokens`);
       }
@@ -97,9 +101,9 @@ provide citations for your sources.
 const concisePrompt = `You are a research assistant. Find accurate, current information and cite sources.`;
 
 const agent = createReActAgent({
-  llm,
+  model,
   tools,
-  systemMessage: concisePrompt  // Save ~50 tokens per request
+  systemPrompt: concisePrompt  // Save ~50 tokens per request
 });
 ```
 
@@ -738,12 +742,19 @@ class ResourceAlerts {
 Always define limits to prevent runaway costs:
 
 ```typescript
+import { ChatOpenAI } from '@langchain/openai';
+
+// Configure model with limits
+const model = new ChatOpenAI({
+  model: 'gpt-4',
+  maxTokens: 2000,  // Max tokens per response
+  timeout: 60000    // 1 minute timeout
+});
+
 const agent = createReActAgent({
-  llm,
+  model,
   tools,
-  maxIterations: 15,
-  maxTokens: 10000,
-  timeout: 60000  // 1 minute
+  maxIterations: 15  // Limit reasoning loops
 });
 ```
 

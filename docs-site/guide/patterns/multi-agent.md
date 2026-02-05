@@ -604,7 +604,7 @@ for await (const chunk of stream) {
     console.log('Researcher output:', chunk.researcher.messages);
   }
   if (chunk.aggregator) {
-    console.log('Final result:', chunk.aggregator.output);
+    console.log('Final result:', chunk.aggregator.response);
   }
 }
 ```
@@ -627,36 +627,36 @@ const system = createMultiAgentSystem({
       id: 'dataCollector',
       capabilities: {
         skills: ['data-collection', 'api-calls', 'web-scraping'],
-        tools: ['api_call', 'web_scrape'],
+        tools: ['http_get', 'web_scraper'],
         available: true,
         currentWorkload: 0
       },
       model,
-      tools: [apiCall, webScrape],
+      tools: [httpGet, webScraper],  // From @agentforge/tools
       systemPrompt: 'Collect data from external sources'
     },
     {
       id: 'dataProcessor',
       capabilities: {
         skills: ['data-processing', 'transformation', 'calculations'],
-        tools: ['data_transform', 'calculator'],
+        tools: ['csv_parser', 'calculator'],
         available: true,
         currentWorkload: 0
       },
       model,
-      tools: [dataTransform, calculator],
+      tools: [csvParser, calculator],  // From @agentforge/tools
       systemPrompt: 'Clean and transform data'
     },
     {
       id: 'dataAnalyst',
       capabilities: {
         skills: ['data-analysis', 'statistics', 'visualization'],
-        tools: ['statistical_analysis', 'chart_generate'],
+        tools: ['json_parser', 'calculator'],
         available: true,
         currentWorkload: 0
       },
       model,
-      tools: [statisticalAnalysis, chartGenerate],
+      tools: [jsonParser, calculator],  // From @agentforge/tools
       systemPrompt: 'Analyze data and create visualizations'
     }
   ],

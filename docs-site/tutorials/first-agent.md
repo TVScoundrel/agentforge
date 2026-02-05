@@ -234,7 +234,12 @@ Create `src/agent.test.ts`:
 
 ```typescript
 import { describe, it, expect } from 'vitest';
-import { MockLLM, AgentTestHarness } from '@agentforge/testing';
+import {
+  MockLLM,
+  AgentTestRunner,
+  assertToolCalled,
+  assertIterationsWithinLimit
+} from '@agentforge/testing';
 import { createReActAgent } from '@agentforge/patterns';
 import { getWeather, convertTemperature } from './tools/index.js';
 
@@ -251,16 +256,24 @@ describe('Weather Agent', () => {
     maxIterations: 3
   });
 
-  const harness = new AgentTestHarness(agent);
+  const runner = new AgentTestRunner(agent, {
+    timeout: 5000,
+    captureSteps: true
+  });
 
   it('should get weather', async () => {
-    const result = await harness.invoke('What is the weather in London?');
-    expect(result).toBeDefined();
+    const result = await runner.run({
+      messages: [{ role: 'user', content: 'What is the weather in London?' }]
+    });
+    expect(result.finalState.response).toBeDefined();
   });
 
   it('should use weather tool', async () => {
-    await harness.invoke('Weather in Paris?');
-    harness.assertToolCalled('get-weather');
+    const result = await runner.run({
+      messages: [{ role: 'user', content: 'Weather in Paris?' }]
+    });
+    assertToolCalled(result.finalState.actions, 'get-weather');
+    assertIterationsWithinLimit(result.finalState.iteration, 3);
   });
 });
 ```
