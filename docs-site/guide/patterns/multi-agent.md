@@ -970,7 +970,7 @@ const result = await system.invoke({
   input: 'Task description'
 });
 
-console.log('Final output:', result.output);
+console.log('Final response:', result.response);
 console.log('Completed tasks:', result.completedTasks);
 console.log('Status:', result.status);
 console.log('Iterations:', result.iteration);

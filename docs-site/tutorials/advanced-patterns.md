@@ -573,6 +573,7 @@ const dataAnalyzer = createPlanExecuteAgent({
 const reportWriter = createReflectionAgent({
   generator: { model },
   reflector: { model },
+  reviser: { model },
   maxIterations: 3
 });
 

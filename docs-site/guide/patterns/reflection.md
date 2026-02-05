@@ -230,18 +230,32 @@ while (quality < threshold && iterations < maxIterations) {
 
 ## Customization
 
-### Custom Quality Metrics
+### Custom Quality Criteria
 
 ```typescript
+const generatorModel = new ChatOpenAI({ model: 'gpt-4' });
+const reflectorModel = new ChatOpenAI({ model: 'gpt-4' });
+
 const agent = createReflectionAgent({
-  model,
-  qualityMetrics: {
-    accuracy: { weight: 0.4, threshold: 0.9 },
-    completeness: { weight: 0.3, threshold: 0.8 },
-    clarity: { weight: 0.2, threshold: 0.85 },
-    style: { weight: 0.1, threshold: 0.7 }
+  generator: {
+    model: generatorModel,
+    systemPrompt: 'Create high-quality content'
   },
-  qualityThreshold: 0.85  // Weighted average
+  reflector: {
+    model: reflectorModel,
+    systemPrompt: 'Evaluate content quality across multiple dimensions',
+    qualityCriteria: {
+      accuracy: 0.9,
+      completeness: 0.8,
+      clarity: 0.85,
+      style: 0.7
+    }
+  },
+  reviser: {
+    model: generatorModel,
+    systemPrompt: 'Improve content based on feedback'
+  },
+  maxIterations: 3
 });
 ```
 
@@ -250,12 +264,22 @@ const agent = createReflectionAgent({
 Use a different model for reflection:
 
 ```typescript
+const generatorModel = new ChatOpenAI({ model: 'gpt-4', temperature: 0.7 });
+const reflectorModel = new ChatOpenAI({ model: 'gpt-4', temperature: 0 });  // More critical/consistent
+
 const agent = createReflectionAgent({
-  model: new ChatOpenAI({ model: 'gpt-4' }),  // For generation
-  reflectionModel: new ChatOpenAI({
-    model: 'gpt-4',  // For critique
-    temperature: 0  // More critical/consistent
-  })
+  generator: {
+    model: generatorModel,  // For generation
+    systemPrompt: 'Create comprehensive content'
+  },
+  reflector: {
+    model: reflectorModel,  // For critique
+    systemPrompt: 'Provide detailed, critical feedback'
+  },
+  reviser: {
+    model: generatorModel,  // For revision
+    systemPrompt: 'Improve based on feedback'
+  }
 });
 ```
 
@@ -264,30 +288,61 @@ const agent = createReflectionAgent({
 ```typescript
 // Code review reflection
 const codeReflectionAgent = createReflectionAgent({
-  model,
-  reflectionPrompt: `Review this code:
-  
+  generator: {
+    model,
+    systemPrompt: 'Generate clean, efficient code'
+  },
+  reflector: {
+    model,
+    systemPrompt: `Review this code:
+
 1. Correctness: Does it work as intended?
 2. Performance: Are there efficiency issues?
 3. Security: Any vulnerabilities?
 4. Maintainability: Is it clean and readable?
 5. Best Practices: Does it follow conventions?
 
-Provide specific improvements.`
+Provide specific improvements.`,
+    qualityCriteria: {
+      correctness: 0.95,
+      performance: 0.8,
+      security: 0.9,
+      maintainability: 0.85
+    }
+  },
+  reviser: {
+    model,
+    systemPrompt: 'Improve code based on review feedback'
+  }
 });
 
 // Writing reflection
 const writingReflectionAgent = createReflectionAgent({
-  model,
-  reflectionPrompt: `Critique this writing:
-  
+  generator: {
+    model,
+    systemPrompt: 'Write engaging, clear content'
+  },
+  reflector: {
+    model,
+    systemPrompt: `Critique this writing:
+
 1. Grammar and spelling
 2. Tone and voice
 3. Structure and flow
 4. Clarity and conciseness
 5. Engagement and impact
 
-Suggest specific edits.`
+Suggest specific edits.`,
+    qualityCriteria: {
+      grammar: 0.95,
+      clarity: 0.9,
+      engagement: 0.8
+    }
+  },
+  reviser: {
+    model,
+    systemPrompt: 'Revise writing based on critique'
+  }
 });
 ```
 
@@ -297,19 +352,23 @@ Monitor the reflection process in real-time:
 
 ```typescript
 const stream = await agent.stream({
-  messages: [{ role: 'user', content: 'Write a blog post about AI safety' }]
+  input: 'Write a blog post about AI safety'
 });
 
 for await (const chunk of stream) {
-  if (chunk.generation) {
-    console.log('Draft:', chunk.generation.content);
+  // Stream chunks are partial state updates
+  if (chunk.currentResponse) {
+    console.log('Current draft:', chunk.currentResponse);
   }
-  if (chunk.reflection) {
-    console.log('Reflection:', chunk.reflection.critique);
-    console.log('Quality:', chunk.reflection.quality);
+  if (chunk.reflections && chunk.reflections.length > 0) {
+    const latest = chunk.reflections[chunk.reflections.length - 1];
+    console.log('Latest reflection:', latest);
   }
-  if (chunk.revision) {
-    console.log('Revision:', chunk.revision.content);
+  if (chunk.status) {
+    console.log('Status:', chunk.status);
+  }
+  if (chunk.response) {
+    console.log('Final response:', chunk.response);
   }
 }
 ```
@@ -320,9 +379,15 @@ for await (const chunk of stream) {
 
 ```typescript
 const agent = createReflectionAgent({
-  model,
-  maxIterations: 3,  // Usually 2-4 iterations is optimal
-  qualityThreshold: 0.85  // Stop early if quality is good enough
+  generator: { model },
+  reflector: {
+    model,
+    qualityCriteria: {
+      quality: 0.85  // Stop early if quality is good enough
+    }
+  },
+  reviser: { model },
+  maxIterations: 3  // Usually 2-4 iterations is optimal
 });
 ```
 
@@ -330,16 +395,31 @@ const agent = createReflectionAgent({
 
 ```typescript
 const agent = createReflectionAgent({
-  model,
-  reflectionPrompt: `Evaluate on these specific criteria:
+  generator: {
+    model,
+    systemPrompt: 'Generate technical content'
+  },
+  reflector: {
+    model,
+    systemPrompt: `Evaluate on these specific criteria:
 
-1. Technical Accuracy (0-1): ${criterion1}
-2. Completeness (0-1): ${criterion2}
-3. Code Quality (0-1): ${criterion3}
+1. Technical Accuracy (0-1)
+2. Completeness (0-1)
+3. Code Quality (0-1)
 
 Overall Quality: (average of above)
 Specific Issues: [list]
-Improvement Suggestions: [list]`
+Improvement Suggestions: [list]`,
+    qualityCriteria: {
+      technicalAccuracy: 0.9,
+      completeness: 0.85,
+      codeQuality: 0.8
+    }
+  },
+  reviser: {
+    model,
+    systemPrompt: 'Improve based on specific feedback'
+  }
 });
 ```
 
@@ -347,9 +427,22 @@ Improvement Suggestions: [list]`
 
 ```typescript
 // Use cheaper model for drafts, expensive for final
+const draftModel = new ChatOpenAI({ model: 'gpt-3.5-turbo' });
+const critiqueModel = new ChatOpenAI({ model: 'gpt-4' });
+
 const agent = createReflectionAgent({
-  model: new ChatOpenAI({ model: 'gpt-3.5-turbo' }),  // Fast drafts
-  reflectionLLM: new ChatOpenAI({ model: 'gpt-4' }),  // Quality critique
+  generator: {
+    model: draftModel,  // Fast drafts
+    systemPrompt: 'Create initial draft'
+  },
+  reflector: {
+    model: critiqueModel,  // Quality critique
+    systemPrompt: 'Provide detailed critique'
+  },
+  reviser: {
+    model: draftModel,  // Fast revisions
+    systemPrompt: 'Improve based on feedback'
+  },
   maxIterations: 2  // Limit iterations to control cost
 });
 ```
@@ -357,15 +450,18 @@ const agent = createReflectionAgent({
 ### 4. Track Improvement Over Iterations
 
 ```typescript
-const result = await agent.invoke(input, {
-  returnReflections: true
+const result = await agent.invoke({
+  input: 'Your task here'
 });
 
-result.reflections.forEach((reflection, i) => {
-  console.log(`Iteration ${i + 1}:`);
-  console.log('Quality:', reflection.quality);
-  console.log('Issues:', reflection.issues);
+// Access reflections directly from result
+result.reflections?.forEach((reflection, i) => {
+  console.log(`Iteration ${i + 1}:`, reflection);
 });
+
+console.log('Final response:', result.response);
+console.log('Total iterations:', result.iteration);
+console.log('Status:', result.status);
 ```
 
 ## Common Patterns
@@ -373,10 +469,16 @@ result.reflections.forEach((reflection, i) => {
 ### Content Generation
 
 ```typescript
+const model = new ChatOpenAI({ model: 'gpt-4' });
+
 const contentAgent = createReflectionAgent({
-  model: new ChatOpenAI({ model: 'gpt-4' }),
-  maxIterations: 3,
-  reflectionPrompt: `Review this content:
+  generator: {
+    model,
+    systemPrompt: 'Create engaging, well-written content'
+  },
+  reflector: {
+    model,
+    systemPrompt: `Review this content:
 
 1. Is it engaging and well-written?
 2. Is the information accurate?
@@ -384,19 +486,34 @@ const contentAgent = createReflectionAgent({
 4. Are there grammar or style issues?
 5. How can it be improved?
 
-Quality score (0-1):
-Issues:
-Suggestions:`
+Provide specific feedback.`,
+    qualityCriteria: {
+      engagement: 0.8,
+      accuracy: 0.9,
+      grammar: 0.95
+    }
+  },
+  reviser: {
+    model,
+    systemPrompt: 'Improve content based on feedback'
+  },
+  maxIterations: 3
 });
 ```
 
 ### Code Generation
 
 ```typescript
+const model = new ChatOpenAI({ model: 'gpt-4' });
+
 const codeAgent = createReflectionAgent({
-  model: new ChatOpenAI({ model: 'gpt-4' }),
-  maxIterations: 4,
-  reflectionPrompt: `Review this code:
+  generator: {
+    model,
+    systemPrompt: 'Generate clean, efficient code'
+  },
+  reflector: {
+    model,
+    systemPrompt: `Review this code:
 
 1. Correctness: Does it solve the problem?
 2. Efficiency: Is it performant?
@@ -404,24 +521,35 @@ const codeAgent = createReflectionAgent({
 4. Best Practices: Does it follow conventions?
 5. Edge Cases: Are they handled?
 
-Quality score (0-1):
-Bugs/Issues:
-Improvements:`,
-
-  revisionPrompt: `Fix the issues and improve the code:
-{reflection}
-
-Provide the complete, improved code.`
+Provide specific feedback on bugs and improvements.`,
+    qualityCriteria: {
+      correctness: 0.95,
+      efficiency: 0.8,
+      readability: 0.85,
+      bestPractices: 0.9
+    }
+  },
+  reviser: {
+    model,
+    systemPrompt: 'Fix issues and improve the code based on feedback. Provide complete, improved code.'
+  },
+  maxIterations: 4
 });
 ```
 
 ### Research & Analysis
 
 ```typescript
+const model = new ChatOpenAI({ model: 'gpt-4' });
+
 const researchAgent = createReflectionAgent({
-  model: new ChatOpenAI({ model: 'gpt-4' }),
-  maxIterations: 3,
-  reflectionPrompt: `Evaluate this research:
+  generator: {
+    model,
+    systemPrompt: 'Conduct thorough research and analysis'
+  },
+  reflector: {
+    model,
+    systemPrompt: `Evaluate this research:
 
 1. Accuracy: Are facts correct and cited?
 2. Completeness: Is anything missing?
@@ -429,9 +557,19 @@ const researchAgent = createReflectionAgent({
 4. Clarity: Is it well-organized?
 5. Depth: Is the analysis thorough?
 
-Quality score (0-1):
-Gaps:
-Improvements:`
+Identify gaps and suggest improvements.`,
+    qualityCriteria: {
+      accuracy: 0.95,
+      completeness: 0.85,
+      balance: 0.8,
+      depth: 0.85
+    }
+  },
+  reviser: {
+    model,
+    systemPrompt: 'Improve research based on feedback'
+  },
+  maxIterations: 3
 });
 ```
 
@@ -440,97 +578,122 @@ Improvements:`
 ### Inspect Reflection History
 
 ```typescript
-const result = await agent.invoke(input, {
-  returnReflections: true
+const result = await agent.invoke({
+  input: 'Your task here'
 });
 
 console.log('Reflection History:');
-result.reflections.forEach((reflection, i) => {
-  console.log(`\nIteration ${i + 1}:`);
-  console.log('Quality:', reflection.quality);
-  console.log('Critique:', reflection.critique);
-  console.log('Draft:', reflection.draft.substring(0, 200) + '...');
+result.reflections?.forEach((reflection, i) => {
+  console.log(`\nIteration ${i + 1}:`, reflection);
 });
 
-console.log('\nFinal Output:', result.finalOutput);
+console.log('Revisions:', result.revisions);
+console.log('Final Response:', result.response);
+console.log('Status:', result.status);
+console.log('Total Iterations:', result.iteration);
 ```
 
-### Visualize Quality Improvement
+### Track Quality Improvement
 
 ```typescript
-import { visualizeReflectionProgress } from '@agentforge/core';
-
-const result = await agent.invoke(input, {
-  returnReflections: true
+const result = await agent.invoke({
+  input: 'Your task here'
 });
 
-// Generate chart showing quality over iterations
-const chart = visualizeReflectionProgress(result);
-console.log(chart);
+// Analyze improvement over iterations
+console.log('Reflection count:', result.reflections?.length);
+console.log('Revision count:', result.revisions?.length);
+console.log('Final status:', result.status);
+
+// Access individual reflections and revisions
+result.reflections?.forEach((reflection, i) => {
+  console.log(`Reflection ${i + 1}:`, reflection);
+});
+
+result.revisions?.forEach((revision, i) => {
+  console.log(`Revision ${i + 1}:`, revision);
+});
 ```
 
 ### Compare Iterations
 
 ```typescript
-const result = await agent.invoke(input, {
-  returnReflections: true
+const result = await agent.invoke({
+  input: 'Your task here'
 });
 
-// Show diff between iterations
-for (let i = 1; i < result.reflections.length; i++) {
-  const prev = result.reflections[i - 1].draft;
-  const curr = result.reflections[i].draft;
-
-  console.log(`\nChanges from iteration ${i} to ${i + 1}:`);
-  console.log(generateDiff(prev, curr));
+// Compare revisions over iterations
+if (result.revisions && result.revisions.length > 1) {
+  for (let i = 1; i < result.revisions.length; i++) {
+    console.log(`\nRevision ${i}:`, result.revisions[i]);
+  }
 }
+
+console.log('\nFinal response:', result.response);
 ```
 
 ## Performance Optimization
 
-### 1. Early Stopping
+### 1. Limit Iterations
 
 ```typescript
 const agent = createReflectionAgent({
-  model,
-  qualityThreshold: 0.9,  // Stop when quality is good enough
-  maxIterations: 5,  // But don't exceed this
-
-  // Custom stopping condition
-  shouldStop: (reflection, iteration) => {
-    return reflection.quality >= 0.9 ||
-           reflection.issues.length === 0 ||
-           iteration >= 3;
-  }
+  generator: { model },
+  reflector: {
+    model,
+    qualityCriteria: {
+      quality: 0.9  // Target quality threshold
+    }
+  },
+  reviser: { model },
+  maxIterations: 3  // Limit to control cost and latency
 });
 ```
 
-### 2. Parallel Reflection
+### 2. Use Quality Criteria
 
-Reflect on multiple aspects simultaneously:
+Set specific quality thresholds to guide the reflection process:
 
 ```typescript
 const agent = createReflectionAgent({
-  model,
-  parallelReflection: true,
-  reflectionAspects: [
-    'accuracy',
-    'completeness',
-    'clarity',
-    'style'
-  ]
+  generator: { model },
+  reflector: {
+    model,
+    systemPrompt: 'Evaluate content across multiple dimensions',
+    qualityCriteria: {
+      accuracy: 0.9,
+      completeness: 0.85,
+      clarity: 0.8,
+      style: 0.75
+    }
+  },
+  reviser: { model },
+  maxIterations: 5
 });
 ```
 
-### 3. Incremental Revision
+### 3. Use Verbose Mode for Debugging
 
-Only revise parts that need improvement:
+Enable verbose logging to understand the reflection process:
 
 ```typescript
 const agent = createReflectionAgent({
-  model,
-  revisionStrategy: 'incremental',  // Only revise problematic sections
-  minQualityForSection: 0.8  // Don't revise sections above this
+  generator: {
+    model,
+    systemPrompt: 'Generate content',
+    verbose: true  // Enable logging
+  },
+  reflector: {
+    model,
+    systemPrompt: 'Critique content',
+    verbose: true
+  },
+  reviser: {
+    model,
+    systemPrompt: 'Improve content',
+    verbose: true
+  },
+  verbose: true  // Enable overall logging
 });
 ```
 
@@ -549,24 +712,52 @@ const agent = createReflectionAgent({
 Combine with multi-agent for peer review:
 
 ```typescript
-import { createMultiAgentSystem } from '@agentforge/patterns';
+import { createMultiAgentSystem, createReflectionAgent } from '@agentforge/patterns';
+
+const writerAgent = createReflectionAgent({
+  generator: { model, systemPrompt: 'Create content' },
+  reflector: { model, systemPrompt: 'Self-critique' },
+  reviser: { model, systemPrompt: 'Self-improve' }
+});
+
+const reviewerAgent = createReflectionAgent({
+  generator: { model, systemPrompt: 'Review content critically' },
+  reflector: { model, systemPrompt: 'Evaluate review quality' },
+  reviser: { model, systemPrompt: 'Improve review' }
+});
 
 const system = createMultiAgentSystem({
-  agents: {
-    writer: createReflectionAgent({
-      model,
-      role: 'content creator'
-    }),
-    reviewer: createReflectionAgent({
-      model,
-      role: 'critical reviewer'
-    }),
-    editor: createReflectionAgent({
-      model,
-      role: 'final editor'
-    })
+  supervisor: {
+    strategy: 'supervisor',
+    model,
+    systemPrompt: 'Coordinate writing and review process'
   },
-  workflow: 'sequential'  // writer -> reviewer -> editor
+  workers: [
+    {
+      id: 'writer',
+      capabilities: {
+        skills: ['writing', 'content-creation'],
+        tools: [],
+        available: true,
+        currentWorkload: 0
+      },
+      agent: writerAgent
+    },
+    {
+      id: 'reviewer',
+      capabilities: {
+        skills: ['reviewing', 'critique'],
+        tools: [],
+        available: true,
+        currentWorkload: 0
+      },
+      agent: reviewerAgent
+    }
+  ],
+  aggregator: {
+    model,
+    systemPrompt: 'Combine writer and reviewer outputs'
+  }
 });
 ```
 
