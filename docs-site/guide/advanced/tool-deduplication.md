@@ -111,14 +111,21 @@ const system = createMultiAgentSystem({
   supervisor: { model, strategy: 'llm-based' },
   workers: [
     {
-      name: 'researcher',
+      id: 'researcher',
+      capabilities: {
+        skills: ['research', 'search'],
+        tools: ['search'],
+        available: true,
+        currentWorkload: 0
+      },
       agent: createReActAgent({
         model,
         tools: [searchTool],
         // Deduplication enabled automatically
       })
     }
-  ]
+  ],
+  aggregator: { model }
 });
 ```
 

@@ -15,33 +15,47 @@ The Reflection pattern:
 ```typescript
 import { createReflectionAgent } from '@agentforge/patterns';
 import { ChatOpenAI } from '@langchain/openai';
-import { webScraper, calculator } from '@agentforge/tools';
+
+const model = new ChatOpenAI({ model: 'gpt-4' });
 
 const agent = createReflectionAgent({
-  model: new ChatOpenAI({ model: 'gpt-4' }),
+  generator: {
+    model,
+    systemPrompt: 'You are an expert content writer. Create high-quality, comprehensive content.',
+    verbose: true
+  },
 
-  tools: [webScraper, calculator],
-
-  maxReflections: 3,
-
-  reflectionPrompt: `Critique the previous response:
+  reflector: {
+    model,
+    systemPrompt: `Critique the previous response:
 - Is it accurate and complete?
 - Is it well-structured and clear?
 - Are there any errors or omissions?
 - How can it be improved?`,
+    qualityCriteria: {
+      accuracy: 0.8,
+      completeness: 0.8,
+      clarity: 0.8
+    }
+  },
 
-  improvementThreshold: 0.8 // Quality score 0-1
+  reviser: {
+    model,
+    systemPrompt: 'Improve the content based on the reflection feedback. Address all identified issues.'
+  },
+
+  maxIterations: 3,  // Maximum reflection cycles
+  verbose: true
 });
 
 // Use the agent
 const result = await agent.invoke({
-  messages: [{
-    role: 'user',
-    content: 'Write a comprehensive blog post about the future of AI'
-  }]
+  input: 'Write a comprehensive blog post about the future of AI'
 });
 
-console.log('Final Output:', result.messages[result.messages.length - 1].content);
+console.log('Final Output:', result.response);
+console.log('Reflections:', result.reflections?.length);
+console.log('Revisions:', result.revisions?.length);
 ```
 
 ## Output Example

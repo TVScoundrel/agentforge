@@ -21,31 +21,34 @@ import {
   jsonParser
 } from '@agentforge/tools';
 
+const model = new ChatOpenAI({ model: 'gpt-4' });
+
 const agent = createPlanExecuteAgent({
-  model: new ChatOpenAI({ model: 'gpt-4' }),
-
-  tools: [webScraper, fileWriter, jsonParser],
-
-  plannerPrompt: `Create a detailed step-by-step plan to accomplish the task.
+  planner: {
+    model,
+    systemPrompt: `Create a detailed step-by-step plan to accomplish the task.
 Each step should be clear and actionable.
 Consider dependencies between steps.`,
+    maxSteps: 10
+  },
 
-  executorPrompt: `Execute the current step using available tools.
-Be thorough and accurate.
-Report results clearly.`,
+  executor: {
+    tools: [webScraper, fileWriter, jsonParser],
+    model,
+    parallel: false,  // Execute steps sequentially
+    stepTimeout: 60000  // 60 second timeout per step
+  },
 
-  maxSteps: 10
+  maxIterations: 3  // Allow up to 3 replanning cycles
 });
 
 // Use the agent
 const result = await agent.invoke({
-  messages: [{
-    role: 'user',
-    content: 'Research the top 5 AI frameworks and create a comparison report'
-  }]
+  input: 'Research the top 5 AI frameworks and create a comparison report'
 });
 
-console.log('Final Report:', result.messages[result.messages.length - 1].content);
+console.log('Final Report:', result.response);
+console.log('Completed Steps:', result.pastSteps?.length);
 ```
 
 ## Output Example

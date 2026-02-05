@@ -38,26 +38,45 @@ Not sure which pattern to use? See the [Agent Patterns Overview](/guide/concepts
 import { createReflectionAgent } from '@agentforge/patterns';
 import { ChatOpenAI } from '@langchain/openai';
 
+const model = new ChatOpenAI({ model: 'gpt-4' });
+
 const agent = createReflectionAgent({
-  model: new ChatOpenAI({ model: 'gpt-4' }),
-  maxIterations: 3,
-  reflectionPrompt: `Review the response and provide constructive criticism:
-  
+  generator: {
+    model,
+    systemPrompt: 'You are an expert technical writer. Create clear, comprehensive content.'
+  },
+
+  reflector: {
+    model,
+    systemPrompt: `Review the response and provide constructive criticism:
+
 - Is it accurate and complete?
 - Is it well-structured and clear?
 - Are there any errors or omissions?
-- How can it be improved?`
+- How can it be improved?`,
+    qualityCriteria: {
+      accuracy: 0.8,
+      completeness: 0.8,
+      clarity: 0.8
+    }
+  },
+
+  reviser: {
+    model,
+    systemPrompt: 'Improve the content based on the reflection feedback. Address all identified issues.'
+  },
+
+  maxIterations: 3
 });
 
 const result = await agent.invoke({
-  messages: [{
-    role: 'user',
-    content: 'Write a comprehensive guide to TypeScript generics'
-  }]
+  input: 'Write a comprehensive guide to TypeScript generics'
 });
 
-console.log('Final response:', result.messages[result.messages.length - 1].content);
-console.log('Iterations:', result.iterations);
+console.log('Final response:', result.response);
+console.log('Reflections:', result.reflections?.length);
+console.log('Revisions:', result.revisions?.length);
+console.log('Status:', result.status);
 ```
 
 ## Configuration Options
@@ -65,32 +84,62 @@ console.log('Iterations:', result.iterations);
 ### Core Options
 
 ```typescript
-interface ReflectionConfig {
+interface ReflectionAgentConfig {
   // Required
-  model: BaseChatModel;           // The language model
+  generator: GeneratorConfig;   // Initial response generator
+  reflector: ReflectorConfig;   // Response critic
+  reviser: ReviserConfig;       // Response improver
 
   // Optional
   maxIterations?: number;       // Max reflection cycles (default: 3)
-  reflectionPrompt?: string;    // Custom reflection prompt
-  revisionPrompt?: string;      // Custom revision prompt
-  qualityThreshold?: number;    // Stop when quality score >= threshold
-  returnReflections?: boolean;  // Include reflection history
+  qualityCriteria?: QualityCriteria;  // Quality thresholds
+  verbose?: boolean;            // Enable detailed logging
+  checkpointer?: BaseCheckpointSaver;  // For human-in-the-loop
+}
+
+interface GeneratorConfig {
+  model: BaseChatModel;         // The language model
+  systemPrompt?: string;        // Custom system prompt
+  verbose?: boolean;            // Enable logging
+}
+
+interface ReflectorConfig {
+  model: BaseChatModel;         // The language model
+  systemPrompt?: string;        // Custom reflection prompt
+  qualityCriteria?: QualityCriteria;  // Quality criteria
+  verbose?: boolean;            // Enable logging
+}
+
+interface ReviserConfig {
+  model: BaseChatModel;         // The language model
+  systemPrompt?: string;        // Custom revision prompt
+  verbose?: boolean;            // Enable logging
+}
+
+interface QualityCriteria {
+  accuracy?: number;            // Accuracy threshold (0-1)
+  completeness?: number;        // Completeness threshold (0-1)
+  clarity?: number;             // Clarity threshold (0-1)
+  [key: string]: number | undefined;  // Custom criteria
 }
 ```
 
 ### Advanced Configuration
 
 ```typescript
+const model = new ChatOpenAI({ model: 'gpt-4', temperature: 0.7 });
+
 const agent = createReflectionAgent({
-  model: new ChatOpenAI({ model: 'gpt-4', temperature: 0.7 }),
-  
-  // Iteration control
-  maxIterations: 5,
-  qualityThreshold: 0.9,  // Stop when 90% quality achieved
-  
-  // Custom prompts
-  reflectionPrompt: `Critically evaluate this response:
-  
+  generator: {
+    model,
+    systemPrompt: 'You are an expert technical writer. Create comprehensive, accurate content.',
+    verbose: true
+  },
+
+  reflector: {
+    model,
+    systemPrompt: `Critically evaluate this response:
+
 1. Accuracy: Are all facts correct?
 2. Completeness: Is anything missing?
 3. Clarity: Is it easy to understand?
@@ -98,14 +147,25 @@ const agent = createReflectionAgent({
 5. Quality: Rate 0-1, where 1 is perfect
 
 Provide specific suggestions for improvement.`,
-  
-  revisionPrompt: `Improve the response based on this feedback:
-{reflection}
+    qualityCriteria: {
+      accuracy: 0.9,
+      completeness: 0.9,
+      clarity: 0.9,
+      structure: 0.9
+    },
+    verbose: true
+  },
 
+  reviser: {
+    model,
+    systemPrompt: `Improve the response based on the reflection feedback.
 Create a better version that addresses all concerns.`,
-  
-  // Return full reflection history
-  returnReflections: true
+    verbose: true
+  },
+
+  // Iteration control
+  maxIterations: 5,
+  verbose: true
 });
 ```
 

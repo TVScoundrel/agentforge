@@ -250,10 +250,14 @@ import { createPlanExecuteAgent } from '@agentforge/patterns';
 import { createAskHumanTool } from '@agentforge/tools';
 
 const agent = createPlanExecuteAgent({
-  model: chatModel,
-  tools: [createAskHumanTool()],
-  plannerPrompt: `Create a plan. Use ask-human tool if you need clarification.`,
-  executorPrompt: `Execute the plan. Use ask-human tool for approvals.`
+  planner: {
+    model: chatModel,
+    systemPrompt: `Create a plan. Use ask-human tool if you need clarification.`
+  },
+  executor: {
+    tools: [createAskHumanTool()],
+    model: chatModel
+  }
 });
 ```
 

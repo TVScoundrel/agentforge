@@ -117,12 +117,20 @@ Show progress during long-running tasks:
 ```typescript
 import { createPlanExecuteAgent } from '@agentforge/patterns';
 
+const model = new ChatOpenAI({ model: 'gpt-4', streaming: true });
+
 const agent = createPlanExecuteAgent({
-  model: new ChatOpenAI({ model: 'gpt-4', streaming: true }),
-  tools: [webScraper, csvParser, fileWriter]
+  planner: {
+    model,
+    systemPrompt: 'Create a detailed plan'
+  },
+  executor: {
+    tools: [webScraper, csvParser, fileWriter],
+    model
+  }
 });
 
-const stream = await agent.stream(input);
+const stream = await agent.stream({ input: 'Your task here' });
 
 let currentStep = 0;
 const totalSteps = 10;
@@ -149,7 +157,7 @@ Display partial results as they become available:
 
 ```typescript
 const stream = await agent.stream({
-  messages: [{ role: 'user', content: 'Find the top 10 AI companies and their valuations' }]
+  input: 'Find the top 10 AI companies and their valuations'
 });
 
 const results = [];
@@ -173,8 +181,8 @@ import { EventEmitter } from 'events';
 
 class StreamingAgent extends EventEmitter {
   async execute(input: string) {
-    const stream = await agent.stream({ messages: [{ role: 'user', content: input }] });
-    
+    const stream = await agent.stream({ input });
+
     for await (const chunk of stream) {
       // Broadcast to all connected clients
       this.emit('chunk', chunk);

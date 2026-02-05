@@ -134,12 +134,12 @@ async function createQualityContent(topic: string) {
   const draft = await executionAgent.invoke({
     input: `Create content about: ${topic}`
   });
-  
+
   // Refine with reflection
   const refined = await reflectionAgent.invoke({
-    messages: [{ role: 'user', content: draft.response }]
+    input: draft.response || ''
   });
-  
+
   return refined.response;
 }
 
@@ -166,6 +166,10 @@ const codeReviewAgent = createReflectionAgent({
   reflector: {
     model,
     systemPrompt: 'Review code for bugs, style, and best practices'
+  },
+  reviser: {
+    model,
+    systemPrompt: 'Improve code based on review feedback'
   },
   maxIterations: 2
 });
@@ -436,8 +440,13 @@ const cachedResearchTool = withCache(researchTool, {
 });
 
 const agent = createPlanExecuteAgent({
+  planner: {
+    model,
+    systemPrompt: 'Create a research plan'
+  },
   executor: {
-    tools: [cachedResearchTool, ...otherTools]
+    tools: [cachedResearchTool, ...otherTools],
+    model
   }
 });
 ```
@@ -452,19 +461,40 @@ const simpleAgent = createReActAgent({ model, tools });
 
 // Then enhance if needed
 const enhancedAgent = createPlanExecuteAgent({
+  planner: {
+    model,
+    systemPrompt: 'Create a plan to solve the task'
+  },
   executor: {
-    tools: [wrapAgentAsTool(simpleAgent), ...otherTools]
+    tools: [wrapAgentAsTool(simpleAgent), ...otherTools],
+    model
   }
 });
 
 // ❌ Bad - over-engineering from the start
 const overEngineered = createMultiAgentSystem({
+  supervisor: {
+    strategy: 'supervisor',
+    model
+  },
   workers: [
-    createReflectionAgent({
-      generator: createPlanExecuteAgent({...}),
-      // Too complex!
-    })
-  ]
+    {
+      id: 'complex-worker',
+      capabilities: {
+        skills: ['everything'],
+        tools: [],
+        available: true,
+        currentWorkload: 0
+      },
+      agent: createReflectionAgent({
+        generator: { model },
+        reflector: { model },
+        reviser: { model }
+        // Too complex and unnecessary!
+      })
+    }
+  ],
+  aggregator: { model }
 });
 ```
 
