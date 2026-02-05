@@ -128,19 +128,25 @@ Always be thorough and accurate.`
 ### Tool Selection Strategy
 
 ```typescript
-// Conditional tool availability
+// Conditional tool availability - build tool list before creating agent
+function getToolsForTask(taskType: string): Tool[] {
+  const basicTools = [calculator, dateTime];
+
+  if (taskType === 'web-scraping') {
+    return [...basicTools, webScraper, htmlParser];
+  }
+
+  if (taskType === 'data-analysis') {
+    return [...basicTools, jsonParser, csvParser];
+  }
+
+  return basicTools;
+}
+
+// Create agent with appropriate tools
 const agent = createReActAgent({
   model,
-  tools: async (state) => {
-    // Only provide expensive tools if needed
-    const basicTools = [calculator, dateTime];
-
-    if (state.messages.some(m => m.content.includes('scrape'))) {
-      return [...basicTools, webScraper, htmlParser];
-    }
-
-    return basicTools;
-  }
+  tools: getToolsForTask('web-scraping')
 });
 ```
 
@@ -321,7 +327,7 @@ const researchAgent = createReActAgent({
   model: new ChatOpenAI({ model: 'gpt-4' }),
   tools: [webScraper, htmlParser, calculator],
   maxIterations: 20,
-  systemMessage: `You are a thorough research assistant.
+  systemPrompt: `You are a thorough research assistant.
 
 For each query:
 1. Search multiple sources
@@ -339,7 +345,7 @@ import { fileReader, csvParser, calculator } from '@agentforge/tools';
 const dataAgent = createReActAgent({
   model: new ChatOpenAI({ model: 'gpt-4' }),
   tools: [fileReader, csvParser, calculator],
-  systemMessage: `You are a data analysis expert.
+  systemPrompt: `You are a data analysis expert.
 
 When analyzing data:
 1. Read the data file first
@@ -358,7 +364,7 @@ const supportAgent = createReActAgent({
   model: new ChatOpenAI({ model: 'gpt-4' }),
   tools: [knowledgeBaseSearch, ticketCreate, emailSend],
   maxIterations: 10,
-  systemMessage: `You are a helpful customer support agent.
+  systemPrompt: `You are a helpful customer support agent.
 
 Always:
 - Search the knowledge base first
