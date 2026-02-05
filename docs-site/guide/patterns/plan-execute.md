@@ -279,7 +279,6 @@ const result = await agent.invoke({
     2. Compare with traditional vehicles
     3. Include manufacturing and lifecycle data
     4. Create a summary with citations`
-  }]
 });
 ```
 
@@ -428,9 +427,7 @@ const analysisAgent = createPlanExecuteAgent({
 ### Inspect the Plan
 
 ```typescript
-const result = await agent.invoke(input, {
-  returnIntermediateSteps: true
-});
+const result = await agent.invoke(input);
 
 console.log('Generated Plan:');
 result.plan.steps.forEach((step, i) => {
@@ -461,15 +458,15 @@ const result = await agent.invoke(input, {
 ### Visualize Plan Execution
 
 ```typescript
-import { visualizePlanExecution } from '@agentforge/core';
+const result = await agent.invoke(input);
 
-const result = await agent.invoke(input, {
-  returnIntermediateSteps: true
+// Inspect execution steps
+console.log('Execution Steps:');
+result.pastSteps.forEach((step, i) => {
+  console.log(`${i + 1}. ${step.step.description}`);
+  console.log(`   Status: ${step.status}`);
+  console.log(`   Result: ${step.result}`);
 });
-
-// Generate Gantt chart or flowchart
-const diagram = visualizePlanExecution(result);
-console.log(diagram);
 ```
 
 ## Performance Optimization
