@@ -15,14 +15,23 @@ pnpm add -D @agentforge/testing
 Mock language model for testing:
 
 ```typescript
-import { MockLLM } from '@agentforge/testing';
+import { MockLLM, createMockLLM } from '@agentforge/testing';
 
+// Using constructor
 const mockLLM = new MockLLM({
   responses: [
     'First response',
     'Second response',
     'Third response'
   ]
+});
+
+// Or using factory function
+const echoLLM = createMockLLM({
+  responseGenerator: (messages) => {
+    const lastMessage = messages[messages.length - 1];
+    return `You said: ${lastMessage.content}`;
+  }
 });
 
 // Use in agent
@@ -36,15 +45,29 @@ const result = await agent.invoke({
 });
 ```
 
-#### Options
+#### Configuration
 
 ```typescript
-interface MockLLMOptions {
-  responses?: string[];           // Predefined responses
-  delay?: number;                 // Response delay (ms)
-  shouldFail?: boolean;           // Simulate failures
-  errorMessage?: string;          // Error message
+interface MockLLMConfig {
+  responses?: string[];                              // Predefined responses (cycles through)
+  responseGenerator?: (messages: BaseMessage[]) => string;  // Dynamic response generation
+  delay?: number;                                    // Response delay (ms)
+  shouldError?: boolean;                             // Simulate failures
+  errorMessage?: string;                             // Error message
+  modelName?: string;                                // Model name to report
 }
+```
+
+#### Helper Functions
+
+```typescript
+import { createEchoLLM, createErrorLLM } from '@agentforge/testing';
+
+// Echo LLM - repeats the last message
+const echoLLM = createEchoLLM();
+
+// Error LLM - always throws an error
+const errorLLM = createErrorLLM('Custom error message');
 ```
 
 ## Mock Tools
@@ -55,86 +78,258 @@ Create mock tools for testing:
 
 ```typescript
 import { createMockTool } from '@agentforge/testing';
+import { z } from 'zod';
 
+// Basic mock tool
 const mockTool = createMockTool({
-  name: 'test-tool',
-  responses: [
-    { success: true, data: 'Result 1' },
-    { success: true, data: 'Result 2' }
-  ]
+  name: 'test_tool',
+  description: 'A test tool',
+  schema: z.object({
+    input: z.string().describe('Input parameter')
+  }),
+  implementation: async ({ input }) => `Processed: ${input}`
+});
+
+// Mock tool with error simulation
+const errorTool = createMockTool({
+  name: 'error_tool',
+  shouldError: true,
+  errorMessage: 'Tool failed'
+});
+
+// Mock tool with delay
+const delayedTool = createMockTool({
+  name: 'delayed_tool',
+  delay: 1000,
+  implementation: async ({ input }) => `Delayed result: ${input}`
 });
 ```
 
-### MockToolBuilder
-
-Fluent API for building mock tools:
+#### Configuration
 
 ```typescript
-import { MockToolBuilder } from '@agentforge/testing';
-
-const mockTool = new MockToolBuilder()
-  .name('search')
-  .response({ success: true, data: 'Found it!' })
-  .delay(100)
-  .build();
+interface MockToolConfig<T extends z.ZodType = z.ZodType> {
+  name?: string;                                     // Tool name
+  description?: string;                              // Tool description
+  category?: ToolCategory;                           // Tool category
+  schema?: T;                                        // Input schema (Zod)
+  implementation?: (input: z.infer<T>) => Promise<string> | string;  // Implementation function
+  shouldError?: boolean;                             // Whether to throw an error
+  errorMessage?: string;                             // Error message to throw
+  delay?: number;                                    // Delay in milliseconds
+}
 ```
 
-## Test Helpers
-
-### AgentTestHarness
-
-Test harness for agents:
+#### Helper Functions
 
 ```typescript
-import { AgentTestHarness } from '@agentforge/testing';
+import {
+  createEchoTool,
+  createErrorTool,
+  createDelayedTool,
+  createCalculatorTool
+} from '@agentforge/testing';
 
-const harness = new AgentTestHarness(agent);
+// Echo tool - returns the input
+const echoTool = createEchoTool('my_echo');
 
-// Test single invocation
-const result = await harness.invoke('What is 2+2?');
-expect(result).toContain('4');
+// Error tool - always throws
+const errorTool = createErrorTool('my_error', 'Custom error');
 
-// Test conversation
-const conversation = await harness.conversation([
+// Delayed tool - adds artificial delay
+const delayedTool = createDelayedTool('my_delayed', 500);
+
+// Calculator tool - performs arithmetic
+const calculatorTool = createCalculatorTool();
+```
+
+## Test Runners
+
+### AgentTestRunner
+
+Test runner for agent integration testing:
+
+```typescript
+import { AgentTestRunner, createAgentTestRunner } from '@agentforge/testing';
+import { HumanMessage } from '@langchain/core/messages';
+
+// Create test runner using constructor
+const runner = new AgentTestRunner(agent, {
+  timeout: 5000,
+  captureSteps: true,
+  validateState: true,
+  stateValidator: (state) => state.messages.length > 0
+});
+
+// Or use factory function
+const testRunner = createAgentTestRunner(agent, { timeout: 5000 });
+
+// Run a single test
+const result = await runner.run({
+  messages: [new HumanMessage('What is 2+2?')]
+});
+
+expect(result.passed).toBe(true);
+expect(result.messages.length).toBeGreaterThan(1);
+expect(result.executionTime).toBeLessThan(5000);
+
+// Run multiple tests
+const results = await runner.runMany([
+  { messages: [new HumanMessage('Hello')] },
+  { messages: [new HumanMessage('Calculate 5 + 3')] }
+]);
+```
+
+#### Configuration
+
+```typescript
+interface AgentTestConfig {
+  timeout?: number;                                  // Max wait time (ms)
+  captureSteps?: boolean;                            // Capture intermediate steps
+  validateState?: boolean;                           // Validate state after each step
+  stateValidator?: (state: any) => boolean | Promise<boolean>;  // Custom validator
+}
+
+interface AgentTestResult {
+  finalState: any;                                   // Final state after execution
+  messages: BaseMessage[];                           // Messages exchanged
+  executionTime: number;                             // Execution time (ms)
+  steps?: any[];                                     // Intermediate steps (if captured)
+  passed: boolean;                                   // Whether test passed
+  error?: Error;                                     // Error if test failed
+}
+```
+
+### ConversationSimulator
+
+Simulate multi-turn conversations:
+
+```typescript
+import { ConversationSimulator, createConversationSimulator } from '@agentforge/testing';
+
+// Create simulator
+const simulator = new ConversationSimulator(agent, {
+  maxTurns: 5,
+  turnDelay: 100,
+  verbose: true,
+  stopCondition: (messages) => {
+    const lastMsg = messages[messages.length - 1];
+    return lastMsg.content.includes('goodbye');
+  }
+});
+
+// Simulate conversation with predefined inputs
+const result = await simulator.simulate([
   'Hello',
-  'What is your name?',
-  'Goodbye'
+  'What can you do?',
+  'Help me calculate 2 + 2',
+  'Thank you, goodbye'
 ]);
 
-expect(conversation).toHaveLength(3);
+expect(result.turns).toBe(4);
+expect(result.completed).toBe(true);
+expect(result.stopReason).toBe('stop_condition');
 
-// Assert tool usage
-harness.assertToolCalled('calculator');
-harness.assertToolCalledWith('calculator', { expression: '2+2' });
+// Simulate with dynamic input generation
+const result = await simulator.simulateDynamic(
+  (messages) => {
+    if (messages.length >= 10) return null;  // Stop condition
+    return `Message ${messages.length / 2 + 1}`;
+  },
+  10  // max turns
+);
 ```
 
-### Assertions
+#### Configuration
+
+```typescript
+interface ConversationSimulatorConfig {
+  maxTurns?: number;                                 // Maximum number of turns
+  turnDelay?: number;                                // Delay between turns (ms)
+  verbose?: boolean;                                 // Whether to log conversation
+  stopCondition?: (messages: BaseMessage[]) => boolean;  // Stop condition
+}
+
+interface ConversationResult {
+  messages: BaseMessage[];                           // All messages in conversation
+  turns: number;                                     // Number of turns
+  totalTime: number;                                 // Total execution time (ms)
+  completed: boolean;                                // Whether conversation completed
+  stopReason: 'max_turns' | 'stop_condition' | 'error';  // Reason for stopping
+  error?: Error;                                     // Error if any
+}
+```
+
+## Assertions
 
 Custom assertions for testing:
 
 ```typescript
-import { 
-  assertAgentResponse,
+import {
+  assertIsMessage,
+  assertMessageContains,
+  assertLastMessageContains,
+  assertStateHasFields,
   assertToolCalled,
-  assertNoErrors,
-  assertWithinIterations 
+  assertCompletesWithin,
+  assertThrowsWithMessage,
+  assertStateSnapshot,
+  assertAlternatingMessages,
+  assertNotEmpty,
+  assertInRange,
+  assertIterationsWithinLimit,
+  assertHasKeys
 } from '@agentforge/testing';
+import { BaseMessage, HumanMessage } from '@langchain/core/messages';
 
-// Assert response content
-assertAgentResponse(result, {
-  contains: 'expected text',
-  notContains: 'error',
-  matches: /pattern/
-});
+// Assert message type
+const msg = new HumanMessage('Hello');
+assertIsMessage(msg, 'human');
 
-// Assert tool usage
-assertToolCalled(result, 'tool-name');
+// Assert messages contain specific content
+const messages: BaseMessage[] = [/* ... */];
+assertMessageContains(messages, 'expected text');
+assertLastMessageContains(messages, 'final response');
 
-// Assert no errors
-assertNoErrors(result);
+// Assert state has required fields
+assertStateHasFields(state, ['messages', 'iterations']);
 
-// Assert iteration count
-assertWithinIterations(result, 5);
+// Assert tool was called
+const toolCalls = [
+  { name: 'calculator', args: { operation: 'add', a: 2, b: 2 } }
+];
+assertToolCalled(toolCalls, 'calculator');
+assertToolCalled(toolCalls, 'calculator', { operation: 'add' });
+
+// Assert execution time
+await assertCompletesWithin(
+  async () => agent.invoke(input),
+  5000  // max 5 seconds
+);
+
+// Assert error message
+await assertThrowsWithMessage(
+  async () => errorTool.execute({}),
+  'Tool failed'
+);
+
+// Assert state matches snapshot
+assertStateSnapshot(state, expectedSnapshot);
+
+// Assert messages alternate between human and AI
+assertAlternatingMessages(messages);
+
+// Assert array is not empty
+assertNotEmpty(messages);
+
+// Assert value is in range
+assertInRange(iterations, 1, 10);
+
+// Assert iterations within limit
+assertIterationsWithinLimit(iterations, 5);
+
+// Assert object has keys
+assertHasKeys(result, ['messages', 'finalState', 'passed']);
 ```
 
 ## Fixtures
@@ -144,14 +339,39 @@ assertWithinIterations(result, 5);
 Pre-built conversation fixtures:
 
 ```typescript
-import { 
-  simpleConversation,
+import {
+  simpleGreeting,
   multiTurnConversation,
-  errorConversation 
-} from '@agentforge/testing/fixtures';
+  toolUsageConversation,
+  errorHandlingConversation,
+  complexReasoningConversation,
+  longContextConversation,
+  createConversation,
+  createConversationWithSystem,
+  sampleData
+} from '@agentforge/testing';
 
-// Use in tests
-const result = await agent.invoke(simpleConversation);
+// Use pre-built conversations
+const result = await agent.invoke({ messages: simpleGreeting });
+
+// Create custom conversation
+const customConversation = createConversation([
+  { human: 'Hello', ai: 'Hi there!' },
+  { human: 'How are you?', ai: 'I\'m doing well!' }
+]);
+
+// Create conversation with system message
+const conversation = createConversationWithSystem(
+  'You are a helpful assistant',
+  [
+    { human: 'Hello', ai: 'Hi!' },
+    { human: 'Help me', ai: 'Sure!' }
+  ]
+);
+
+// Use sample data
+const userInput = sampleData.userInputs[0];  // 'Hello'
+const toolCall = sampleData.toolCalls[0];    // { name: 'calculator', args: {...} }
 ```
 
 ### Sample Tools
@@ -159,111 +379,267 @@ const result = await agent.invoke(simpleConversation);
 Pre-built tool fixtures:
 
 ```typescript
-import { 
-  calculatorFixture,
-  searchFixture,
-  weatherFixture 
-} from '@agentforge/testing/fixtures';
+import {
+  calculatorTool,
+  searchTool,
+  timeTool,
+  weatherTool,
+  fileReaderTool,
+  databaseQueryTool,
+  sampleTools,
+  getToolsByCategory,
+  getToolByName
+} from '@agentforge/testing';
+import { ToolCategory } from '@agentforge/core';
 
+// Use individual tools
 const agent = createReActAgent({
   model: mockLLM,
-  tools: [calculatorFixture, searchFixture]
-});
-```
-
-## Integration Testing
-
-### TestEnvironment
-
-Set up test environment:
-
-```typescript
-import { TestEnvironment } from '@agentforge/testing';
-
-const env = new TestEnvironment({
-  llm: new MockLLM({ responses: ['Hello'] }),
-  tools: [tool1, tool2],
-  middleware: [loggingMiddleware]
+  tools: [calculatorTool, searchTool]
 });
 
-// Create test agent
-const agent = env.createAgent('react');
-
-// Run tests
-const result = await agent.invoke({
-  messages: [{ role: 'user', content: 'Test' }]
+// Use all sample tools
+const agent = createReActAgent({
+  model: mockLLM,
+  tools: sampleTools
 });
 
-// Clean up
-await env.cleanup();
+// Get tools by category
+const webTools = getToolsByCategory(ToolCategory.WEB);
+
+// Get specific tool
+const calculator = getToolByName('calculator');
 ```
 
-### Snapshot Testing
+## Snapshot Testing
+
+Test state and messages with snapshots:
 
 ```typescript
-import { createSnapshot, compareSnapshot } from '@agentforge/testing';
+import {
+  createSnapshot,
+  assertMatchesSnapshot,
+  createMessageSnapshot,
+  assertMessagesMatchSnapshot,
+  compareStates,
+  createStateDiff,
+  assertStateChanged,
+  type SnapshotConfig
+} from '@agentforge/testing';
 
-// Create snapshot
-const snapshot = createSnapshot(result);
+// Create snapshot with normalization
+const snapshot = createSnapshot(state, {
+  normalizeTimestamps: true,
+  normalizeIds: true,
+  excludeFields: ['_internal', 'timestamp'],
+  includeFields: ['messages', 'iterations']
+});
 
-// Compare with saved snapshot
-const matches = compareSnapshot(result, 'test-name');
-expect(matches).toBe(true);
+// Assert state matches snapshot (uses Vitest's toMatchSnapshot)
+assertMatchesSnapshot(state, {
+  normalizeTimestamps: true,
+  normalizeIds: true
+});
+
+// Create message snapshot
+const msgSnapshot = createMessageSnapshot(messages);
+// Returns: [{ type: 'human', content: '...' }, { type: 'ai', content: '...' }]
+
+// Assert messages match snapshot
+assertMessagesMatchSnapshot(messages);
+
+// Compare two states
+const areEqual = compareStates(stateBefore, stateAfter, {
+  excludeFields: ['timestamp']
+});
+
+// Create diff between states
+const diff = createStateDiff(stateBefore, stateAfter);
+console.log(diff.added);     // Fields added
+console.log(diff.removed);   // Fields removed
+console.log(diff.changed);   // Fields changed
+
+// Assert specific fields changed
+assertStateChanged(stateBefore, stateAfter, ['messages', 'iterations']);
 ```
 
-## Performance Testing
-
-### PerformanceMonitor
-
-Monitor agent performance:
+### Snapshot Configuration
 
 ```typescript
-import { PerformanceMonitor } from '@agentforge/testing';
+interface SnapshotConfig {
+  includeFields?: string[];                          // Fields to include
+  excludeFields?: string[];                          // Fields to exclude
+  normalizeTimestamps?: boolean;                     // Replace timestamps with [TIMESTAMP]
+  normalizeIds?: boolean;                            // Replace UUIDs with [UUID]
+  normalizer?: (value: any) => any;                  // Custom normalizer
+}
+```
 
-const monitor = new PerformanceMonitor();
+## State Builders
 
-monitor.start();
-await agent.invoke(input);
-const metrics = monitor.stop();
+Create test states easily:
 
-expect(metrics.duration).toBeLessThan(1000);
-expect(metrics.tokenCount).toBeLessThan(1000);
+```typescript
+import {
+  StateBuilder,
+  createStateBuilder,
+  createConversationState,
+  createReActState,
+  createPlanningState
+} from '@agentforge/testing';
+import { HumanMessage, AIMessage } from '@langchain/core/messages';
+
+// Use StateBuilder for custom states
+const state = new StateBuilder()
+  .addMessage(new HumanMessage('Hello'))
+  .addMessage(new AIMessage('Hi there!'))
+  .set('iterations', 1)
+  .set('customField', 'value')
+  .build();
+
+// Or use factory function
+const builder = createStateBuilder();
+
+// Create conversation state (alternates human/AI messages from strings)
+const conversationState = createConversationState([
+  'Hello',      // Human message
+  'Hi!',        // AI message
+  'How are you?',  // Human message
+  'I\'m doing well!'  // AI message
+]);
+
+// Create ReAct agent state
+const reactState = createReActState({
+  messages: [new HumanMessage('Calculate 2+2')],
+  iterations: 0
+});
+
+// Create planning agent state
+const planningState = createPlanningState({
+  messages: [new HumanMessage('Plan a trip')],
+  plan: [],
+  currentStep: 0
+});
 ```
 
 ## Example Test Suite
 
+Complete example using the testing utilities:
+
 ```typescript
-import { describe, it, expect } from 'vitest';
-import { MockLLM, AgentTestHarness } from '@agentforge/testing';
+import { describe, it, expect, beforeEach } from 'vitest';
+import {
+  createMockLLM,
+  createCalculatorTool,
+  AgentTestRunner,
+  ConversationSimulator,
+  assertLastMessageContains,
+  assertIterationsWithinLimit,
+  assertMatchesSnapshot,
+  simpleGreeting
+} from '@agentforge/testing';
 import { createReActAgent } from '@agentforge/patterns';
-import { calculator } from '@agentforge/tools';
+import { HumanMessage } from '@langchain/core/messages';
 
 describe('Calculator Agent', () => {
-  const mockLLM = new MockLLM({
-    responses: ['The answer is 4']
-  });
+  let agent: any;
+  let runner: AgentTestRunner;
+  let simulator: ConversationSimulator;
 
-  const agent = createReActAgent({
-    model: mockLLM as any,
-    tools: [calculator],
-    maxIterations: 3
-  });
+  beforeEach(() => {
+    // Create mock LLM with calculator responses
+    const mockLLM = createMockLLM({
+      responses: [
+        'Let me calculate that for you.',
+        'The answer is 4',
+        'The result is 50'
+      ]
+    });
 
-  const harness = new AgentTestHarness(agent);
+    // Create agent with calculator tool
+    agent = createReActAgent({
+      model: mockLLM as any,
+      tools: [createCalculatorTool()],
+      maxIterations: 5
+    });
+
+    // Create test utilities
+    runner = new AgentTestRunner(agent, {
+      timeout: 5000,
+      captureSteps: true
+    });
+
+    simulator = new ConversationSimulator(agent, {
+      maxTurns: 3,
+      verbose: false
+    });
+  });
 
   it('should perform calculations', async () => {
-    const result = await harness.invoke('What is 2+2?');
-    expect(result).toContain('4');
+    const result = await runner.run({
+      messages: [new HumanMessage('What is 2+2?')]
+    });
+
+    expect(result.passed).toBe(true);
+    expect(result.messages.length).toBeGreaterThan(1);
+    assertLastMessageContains(result.messages, '4');
   });
 
-  it('should use calculator tool', async () => {
-    await harness.invoke('Calculate 10 * 5');
-    harness.assertToolCalled('calculator');
+  it('should complete within iteration limit', async () => {
+    const result = await runner.run({
+      messages: [new HumanMessage('Calculate 10 * 5')]
+    });
+
+    expect(result.passed).toBe(true);
+    // Assuming iterations are tracked in finalState
+    if (result.finalState.iterations) {
+      assertIterationsWithinLimit(result.finalState.iterations, 5);
+    }
   });
 
-  it('should complete within iterations', async () => {
-    const result = await harness.invoke('What is 1+1?');
-    harness.assertWithinIterations(3);
+  it('should handle multi-turn conversations', async () => {
+    const result = await simulator.simulate([
+      'Hello',
+      'What is 2 + 2?',
+      'Thank you'
+    ]);
+
+    expect(result.completed).toBe(true);
+    expect(result.turns).toBe(3);
+    expect(result.messages.length).toBe(6); // 3 human + 3 AI
+  });
+
+  it('should match snapshot', async () => {
+    const result = await runner.run({
+      messages: simpleGreeting
+    });
+
+    assertMatchesSnapshot(result.finalState, {
+      excludeFields: ['timestamp', '_internal'],
+      normalizeTimestamps: true
+    });
+  });
+
+  it('should handle errors gracefully', async () => {
+    const errorLLM = createMockLLM({
+      shouldError: true,
+      errorMessage: 'LLM failed'
+    });
+
+    const errorAgent = createReActAgent({
+      model: errorLLM as any,
+      tools: [createCalculatorTool()],
+      maxIterations: 3
+    });
+
+    const errorRunner = new AgentTestRunner(errorAgent, { timeout: 5000 });
+    const result = await errorRunner.run({
+      messages: [new HumanMessage('Test')]
+    });
+
+    expect(result.passed).toBe(false);
+    expect(result.error).toBeDefined();
+    expect(result.error?.message).toContain('LLM failed');
   });
 });
 ```

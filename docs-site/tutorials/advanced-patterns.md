@@ -158,7 +158,7 @@ Use Multi-Agent for coordination, specialized patterns for workers.
 **Example: Software Development Team**
 
 ```typescript
-import { createMultiAgentSystem, registerWorkers } from '@agentforge/patterns';
+import { createMultiAgentSystem, createReflectionAgent, createPlanExecuteAgent, createReActAgent } from '@agentforge/patterns';
 
 // Create specialized worker agents
 const codeReviewAgent = createReflectionAgent({
@@ -185,34 +185,46 @@ const documentationAgent = createReActAgent({
   tools: [codeAnalysisTool, exampleGeneratorTool, markdownTool]
 });
 
-// Create multi-agent system
+// Create multi-agent system with workers
 const system = createMultiAgentSystem({
   supervisor: {
     model,
-    routingStrategy: 'skill-based'
+    strategy: 'skill-based'
   },
-  workers: [],
+  workers: [
+    {
+      id: 'code-reviewer',
+      capabilities: {
+        skills: ['code-review', 'quality-check', 'reflection'],
+        tools: [],
+        available: true,
+        currentWorkload: 0
+      },
+      agent: codeReviewAgent
+    },
+    {
+      id: 'tester',
+      capabilities: {
+        skills: ['testing', 'qa', 'planning'],
+        tools: ['unit_test', 'integration_test', 'e2e_test'],
+        available: true,
+        currentWorkload: 0
+      },
+      agent: testingAgent
+    },
+    {
+      id: 'documenter',
+      capabilities: {
+        skills: ['documentation', 'examples', 'code-analysis'],
+        tools: ['code_analysis', 'example_generator', 'markdown'],
+        available: true,
+        currentWorkload: 0
+      },
+      agent: documentationAgent
+    }
+  ],
   aggregator: { model }
 });
-
-// Register workers
-registerWorkers(system, [
-  {
-    name: 'code-reviewer',
-    capabilities: ['code-review', 'quality-check'],
-    agent: codeReviewAgent
-  },
-  {
-    name: 'tester',
-    capabilities: ['testing', 'qa'],
-    agent: testingAgent
-  },
-  {
-    name: 'documenter',
-    capabilities: ['documentation', 'examples'],
-    agent: documentationAgent
-  }
-]);
 
 // Use the system
 const result = await system.invoke({
@@ -538,12 +550,39 @@ const reportWriter = createReflectionAgent({
 const researchSystem = createMultiAgentSystem({
   supervisor: {
     model,
-    routingStrategy: 'skill-based'
+    strategy: 'skill-based'
   },
   workers: [
-    { name: 'researcher', capabilities: ['search', 'gather'], agent: webResearcher },
-    { name: 'analyzer', capabilities: ['analyze', 'visualize'], agent: dataAnalyzer },
-    { name: 'writer', capabilities: ['write', 'report'], agent: reportWriter }
+    {
+      id: 'researcher',
+      capabilities: {
+        skills: ['search', 'gather', 'web-research'],
+        tools: [],
+        available: true,
+        currentWorkload: 0
+      },
+      agent: webResearcher
+    },
+    {
+      id: 'analyzer',
+      capabilities: {
+        skills: ['analyze', 'visualize', 'data-processing'],
+        tools: [],
+        available: true,
+        currentWorkload: 0
+      },
+      agent: dataAnalyzer
+    },
+    {
+      id: 'writer',
+      capabilities: {
+        skills: ['write', 'report', 'documentation'],
+        tools: [],
+        available: true,
+        currentWorkload: 0
+      },
+      agent: reportWriter
+    }
   ],
   aggregator: { model }
 });

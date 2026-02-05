@@ -217,26 +217,20 @@ const builder = new MultiAgentSystemBuilder({
 
 builder.registerWorkers([
   {
-    id: 'researcher',
-    name: 'Research Specialist',
-    capabilities: {
-      skills: ['research', 'analysis', 'data-gathering'],
-      tools: ['web-search', 'database-query'],
-      available: true,
-    },
-    model: new ChatOpenAI({ model: 'gpt-4' }),
+    name: 'researcher',
+    description: 'Research Specialist',
+    capabilities: ['research', 'analysis', 'data-gathering'],
     tools: [webScraper, httpGet],
+    systemPrompt: 'You are a research specialist. Find accurate information.',
+    model: new ChatOpenAI({ model: 'gpt-4' }),
   },
   {
-    id: 'writer',
-    name: 'Content Writer',
-    capabilities: {
-      skills: ['writing', 'editing', 'formatting'],
-      tools: ['text-formatter', 'grammar-check'],
-      available: true,
-    },
-    model: new ChatOpenAI({ model: 'gpt-4' }),
+    name: 'writer',
+    description: 'Content Writer',
+    capabilities: ['writing', 'editing', 'formatting'],
     tools: [textFormatter, grammarCheck],
+    systemPrompt: 'You are a content writer. Create clear, engaging content.',
+    model: new ChatOpenAI({ model: 'gpt-4' }),
   },
 ]);
 
@@ -345,24 +339,22 @@ Patterns can be combined for more sophisticated systems:
 ```typescript
 // Create a reflection agent for writing
 const writerAgent = createReflectionAgent({
-  generator: { llm, systemPrompt: 'Expert writer' },
-  reflector: { llm, systemPrompt: 'Critical reviewer' },
+  generator: { model: llm, systemPrompt: 'Expert writer' },
+  reflector: { model: llm, systemPrompt: 'Critical reviewer' },
+  reviser: { model: llm, systemPrompt: 'Revise based on feedback' },
   maxIterations: 2,
 });
 
 // Use it as a worker in multi-agent system
+// Note: The builder converts this to WorkerConfig internally
 builder.registerWorkers([
   {
-    id: 'writer',
-    name: 'Quality Writer',
-    capabilities: { skills: ['writing'], tools: [], available: true },
-    model: llm,
+    name: 'writer',
+    description: 'Quality Writer',
+    capabilities: ['writing', 'editing', 'reflection'],
     tools: [],
-    // Custom node that uses reflection agent
-    customNode: async (state) => {
-      const result = await writerAgent.invoke({ input: state.input });
-      return { response: result.response };
-    },
+    systemPrompt: 'You are a quality writer with self-reflection capabilities.',
+    model: llm,
   },
 ]);
 ```
@@ -371,11 +363,11 @@ builder.registerWorkers([
 
 ```typescript
 const agent = createPlanExecuteAgent({
-  planner: { llm, maxSteps: 5 },
+  planner: { model: llm, maxSteps: 5 },
   executor: {
-    // Each step uses ReAct pattern
     tools: [calculator, webScraper],
-    useReActForSteps: true,
+    parallel: false,        // Execute steps sequentially
+    stepTimeout: 30000,     // 30 second timeout per step
   },
 });
 ```

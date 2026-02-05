@@ -35,43 +35,28 @@ const builder = new MultiAgentSystemBuilder({
 // Register specialized workers
 builder.registerWorkers([
   {
-    id: 'researcher',
-    name: 'Research Specialist',
+    name: 'researcher',
     description: 'Conducts research and gathers information',
-    capabilities: {
-      skills: ['research', 'web_scraping', 'data_collection'],
-      tools: ['scraper'],
-      available: true,
-    },
-    model,
+    capabilities: ['research', 'web-scraping', 'data-collection'],
     tools: [webScraper],
     systemPrompt: 'You are a research specialist. Find accurate information.',
+    model,
   },
   {
-    id: 'analyst',
-    name: 'Data Analyst',
+    name: 'analyst',
     description: 'Analyzes data and identifies patterns',
-    capabilities: {
-      skills: ['analysis', 'statistics', 'calculations'],
-      tools: ['calculator'],
-      available: true,
-    },
-    model,
+    capabilities: ['analysis', 'statistics', 'calculations'],
     tools: [calculator],
     systemPrompt: 'You are a data analyst. Analyze and interpret data.',
+    model,
   },
   {
-    id: 'writer',
-    name: 'Content Writer',
+    name: 'writer',
     description: 'Creates professional reports and documents',
-    capabilities: {
-      skills: ['writing', 'documentation', 'reporting'],
-      tools: ['file_writer'],
-      available: true,
-    },
-    model,
+    capabilities: ['writing', 'documentation', 'reporting'],
     tools: [fileWriter],
     systemPrompt: 'You are a professional writer. Create clear, engaging content.',
+    model,
   },
 ]);
 
@@ -177,34 +162,73 @@ Best for:
 ## Agent Communication
 
 ```typescript
+import { createMultiAgentSystem, createReActAgent } from '@agentforge/patterns';
+import { ChatOpenAI } from '@langchain/openai';
+
+const model = new ChatOpenAI({ model: 'gpt-4' });
+
+// Create specialized worker agents
+const researcher = createReActAgent({
+  model,
+  tools: [webScraper],
+  systemPrompt: 'You are a research specialist.'
+});
+
+const analyst = createReActAgent({
+  model,
+  tools: [calculator],
+  systemPrompt: 'You are a data analyst.'
+});
+
+const writer = createReActAgent({
+  model,
+  tools: [fileWriter],
+  systemPrompt: 'You are a professional writer.'
+});
+
 // Create multi-agent system with supervisor and workers
 const system = createMultiAgentSystem({
   supervisor: {
     strategy: 'skill-based',
-    model: new ChatOpenAI({ model: 'gpt-4' }),
+    model,
     maxIterations: 10
   },
 
   workers: [
     {
       id: 'researcher',
-      capabilities: { skills: ['research', 'data-gathering'], priority: 1 },
+      capabilities: {
+        skills: ['research', 'data-gathering'],
+        tools: ['web_scraper'],
+        available: true,
+        currentWorkload: 0
+      },
       agent: researcher
     },
     {
       id: 'analyst',
-      capabilities: { skills: ['analysis', 'evaluation'], priority: 2 },
+      capabilities: {
+        skills: ['analysis', 'evaluation'],
+        tools: ['calculator'],
+        available: true,
+        currentWorkload: 0
+      },
       agent: analyst
     },
     {
       id: 'writer',
-      capabilities: { skills: ['writing', 'summarization'], priority: 3 },
+      capabilities: {
+        skills: ['writing', 'summarization'],
+        tools: ['file_writer'],
+        available: true,
+        currentWorkload: 0
+      },
       agent: writer
     }
   ],
 
   aggregator: {
-    model: new ChatOpenAI({ model: 'gpt-4' }),
+    model,
     systemPrompt: 'Combine the results from all agents into a coherent response.'
   }
 });

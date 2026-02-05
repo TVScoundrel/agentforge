@@ -199,28 +199,20 @@ const builder = new MultiAgentSystemBuilder({
 // Register workers
 builder.registerWorkers([
   {
-    id: 'researcher',
-    name: 'Researcher',
+    name: 'researcher',
     description: 'Conducts research',
-    capabilities: {
-      skills: ['research', 'web_search'],
-      tools: ['search'],
-      available: true,
-    },
-    model: llm,
+    capabilities: ['research', 'web-search'],
     tools: [searchTool],
+    systemPrompt: 'You are a research specialist.',
+    model: llm,
   },
   {
-    id: 'analyst',
-    name: 'Analyst',
+    name: 'analyst',
     description: 'Analyzes data',
-    capabilities: {
-      skills: ['analysis', 'statistics'],
-      tools: ['calculator'],
-      available: true,
-    },
-    model: llm,
+    capabilities: ['analysis', 'statistics'],
     tools: [calculatorTool],
+    systemPrompt: 'You are a data analyst.',
+    model: llm,
   },
 ]);
 
@@ -264,25 +256,38 @@ type RoutingStrategy =
 
 #### Methods
 
-**registerWorkers(workers: WorkerConfig[])**
+**registerWorkers(workers: Array<{ name, description?, capabilities, tools?, systemPrompt?, model? }>)**
 
-Registers workers with the system. Must be called before `build()`.
+Registers workers with the system. Must be called before `build()`. The builder converts the simplified input format to the internal `WorkerConfig` format.
 
 ```typescript
+// Input format for registerWorkers
+interface RegisterWorkerInput {
+  name: string;                    // Worker identifier (becomes 'id' internally)
+  description?: string;            // Optional description
+  capabilities: string[];          // Array of skill names
+  tools?: any[];                   // Optional tools array
+  systemPrompt?: string;           // Optional system prompt
+  model?: BaseChatModel;           // Optional model (uses supervisor model if not provided)
+}
+
+// Internal WorkerConfig format (created by builder)
 interface WorkerConfig {
-  id: string;
-  name: string;
-  description: string;
-  capabilities: WorkerCapabilities;
-  model: BaseChatModel;
-  tools: StructuredTool[];
-  systemPrompt?: string;
+  id: string;                      // Worker identifier
+  capabilities: WorkerCapabilities; // Structured capabilities
+  model?: BaseChatModel;           // Language model
+  tools?: Tool[];                  // Available tools
+  systemPrompt?: string;           // System prompt
+  executeFn?: (state, config?) => Promise<Partial<MultiAgentStateType>>;
+  agent?: CompiledStateGraph;      // ReAct agent or nested multi-agent system
+  verbose?: boolean;
 }
 
 interface WorkerCapabilities {
-  skills: string[];
-  tools: string[];
-  available: boolean;
+  skills: string[];                // List of skills
+  tools: string[];                 // List of tool names
+  available: boolean;              // Availability status
+  currentWorkload: number;         // Current workload count
 }
 ```
 
@@ -305,10 +310,15 @@ const system = createMultiAgentSystem({
   workers: [
     {
       id: 'researcher',
-      name: 'Researcher',
-      capabilities: { skills: ['research'], tools: ['search'], available: true },
+      capabilities: {
+        skills: ['research', 'web-search'],
+        tools: ['search'],
+        available: true,
+        currentWorkload: 0
+      },
       model: llm,
       tools: [searchTool],
+      systemPrompt: 'You are a research specialist.'
     },
   ],
   aggregator: { model: llm },
@@ -333,78 +343,178 @@ interface MultiAgentSystemConfig {
 
 ## Custom Patterns
 
-### createCustomPattern()
+### Building Custom Patterns
 
-Build your own pattern:
+Build your own pattern using LangGraph's `StateGraph` directly:
 
 ```typescript
-import { createCustomPattern } from '@agentforge/patterns';
+import { z } from 'zod';
+import { StateGraph, END } from '@langchain/langgraph';
+import { createStateAnnotation } from '@agentforge/core';
+import { ChatOpenAI } from '@langchain/openai';
 
-const customAgent = createCustomPattern({
-  model: new ChatOpenAI({ model: 'gpt-4' }),
-  tools: [tool1, tool2],
-  graph: (builder) => {
-    builder
-      .addNode('start', startNode)
-      .addNode('process', processNode)
-      .addNode('end', endNode)
-      .addEdge('start', 'process')
-      .addEdge('process', 'end');
+// Define your custom state
+const CustomStateConfig = {
+  input: {
+    schema: z.string(),
+    description: 'User input'
+  },
+  customField: {
+    schema: z.string().optional(),
+    description: 'Custom field'
+  },
+  response: {
+    schema: z.string().optional(),
+    description: 'Final response'
   }
-});
+};
+
+const CustomState = createStateAnnotation(CustomStateConfig);
+
+// Create nodes
+const startNode = async (state: typeof CustomState.State) => {
+  return { customField: 'Processing...' };
+};
+
+const processNode = async (state: typeof CustomState.State) => {
+  const model = new ChatOpenAI({ model: 'gpt-4' });
+  const result = await model.invoke(state.input);
+  return { response: result.content };
+};
+
+// Build the graph
+const graph = new StateGraph(CustomState)
+  .addNode('start', startNode)
+  .addNode('process', processNode)
+  .addEdge('__start__', 'start')
+  .addEdge('start', 'process')
+  .addEdge('process', END);
+
+const customAgent = graph.compile();
+
+// Use it
+const result = await customAgent.invoke({ input: 'Your task' });
 ```
 
 ## Shared Interfaces
 
-### Agent
+### CompiledStateGraph
 
-All agents implement the `Agent` interface:
+All pattern creation functions return a LangGraph `CompiledStateGraph`:
 
 ```typescript
-interface Agent {
-  invoke(input: AgentInput): Promise<AgentOutput>;
-  stream(input: AgentInput): AsyncIterator<AgentChunk>;
-  batch(inputs: AgentInput[]): Promise<AgentOutput[]>;
+import type { CompiledStateGraph } from '@langchain/langgraph';
+
+// All patterns return this type
+const agent: CompiledStateGraph = createReActAgent({ ... });
+const system: CompiledStateGraph = createMultiAgentSystem({ ... });
+
+// Invoke with pattern-specific state
+const result = await agent.invoke({ input: 'Your task' });
+
+// Stream events
+for await (const event of agent.stream({ input: 'Your task' })) {
+  console.log(event);
 }
 ```
 
-### AgentInput
+### Pattern State Types
+
+Each pattern has its own state type with specific fields:
 
 ```typescript
-interface AgentInput {
-  messages: Message[];
-  config?: AgentConfig;
-}
-```
+import type {
+  ReActStateType,
+  PlanExecuteStateType,
+  ReflectionStateType,
+  MultiAgentStateType
+} from '@agentforge/patterns';
 
-### AgentOutput
+// ReAct state - tracks reasoning and actions
+const reactState: ReActStateType = {
+  messages: [],           // Conversation messages
+  thoughts: [],           // Reasoning steps
+  actions: [],            // Tool calls made
+  observations: [],       // Tool results
+  scratchpad: [],         // Intermediate reasoning
+  iteration: 0,           // Current iteration count
+  shouldContinue: true,   // Whether to continue loop
+  response: undefined     // Final response
+};
 
-```typescript
-interface AgentOutput {
-  messages: Message[];
-  metadata?: Record<string, any>;
-}
+// Plan-Execute state - tracks planning and execution
+const planExecuteState: PlanExecuteStateType = {
+  input: 'User query',
+  plan: undefined,        // Current plan (Plan type)
+  pastSteps: [],          // Completed steps (CompletedStep[])
+  currentStepIndex: undefined,
+  status: 'planning',     // 'planning' | 'executing' | 'replanning' | 'completed' | 'failed'
+  response: undefined,
+  error: undefined,
+  iteration: 0,
+  maxIterations: 5
+};
+
+// Reflection state - tracks iterative improvement
+const reflectionState: ReflectionStateType = {
+  input: 'Content to improve',
+  currentResponse: undefined,  // Current draft/response
+  reflections: [],             // Reflection[] - critiques
+  revisions: [],               // Revision[] - improvement history
+  iteration: 0,
+  status: 'generating',        // 'generating' | 'reflecting' | 'revising' | 'completed' | 'failed'
+  qualityCriteria: undefined,  // Optional quality criteria
+  maxIterations: 3,
+  response: undefined,
+  error: undefined
+};
+
+// Multi-Agent state - tracks agent coordination
+const multiAgentState: MultiAgentStateType = {
+  input: 'Task description',
+  messages: [],                // AgentMessage[] - inter-agent messages
+  workers: {},                 // Record<string, WorkerCapabilities>
+  currentAgent: undefined,     // Currently active agent ID
+  routingHistory: [],          // RoutingDecision[] - routing decisions
+  activeAssignments: [],       // TaskAssignment[] - active tasks
+  completedTasks: [],          // TaskResult[] - completed tasks
+  handoffs: [],                // HandoffRequest[] - agent handoffs
+  status: 'initializing',      // 'initializing' | 'routing' | 'executing' | 'aggregating' | 'completed' | 'failed'
+  iteration: 0,
+  maxIterations: 10,
+  response: undefined,
+  error: undefined
+};
 ```
 
 ## Utilities
 
-### Pattern Helpers
+### Deduplication Utilities
 
 ```typescript
-import { 
-  validatePattern,
-  optimizePattern,
-  debugPattern 
-} from '@agentforge/patterns/utils';
+import {
+  generateToolCallCacheKey,
+  createPatternLogger,
+  buildDeduplicationMetrics,
+  calculateDeduplicationSavings,
+  type DeduplicationMetrics
+} from '@agentforge/patterns';
 
-// Validate pattern configuration
-const isValid = validatePattern(agentConfig);
+// Generate cache key for tool calls
+const cacheKey = generateToolCallCacheKey(toolName, args);
 
-// Optimize for performance
-const optimized = optimizePattern(agent);
+// Create logger for patterns
+const logger = createPatternLogger('my-pattern');
 
-// Debug pattern execution
-await debugPattern(agent, input);
+// Build deduplication metrics
+const metrics: DeduplicationMetrics = buildDeduplicationMetrics(
+  totalCalls,
+  uniqueCalls,
+  cachedCalls
+);
+
+// Calculate savings
+const savings = calculateDeduplicationSavings(metrics);
 ```
 
 ## Examples

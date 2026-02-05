@@ -38,196 +38,399 @@ Not sure which pattern to use? See the [Agent Patterns Overview](/guide/concepts
 import { createMultiAgentSystem } from '@agentforge/patterns';
 import { ChatOpenAI } from '@langchain/openai';
 
+const model = new ChatOpenAI({ model: 'gpt-4' });
+
 const system = createMultiAgentSystem({
-  agents: {
-    researcher: {
-      model: new ChatOpenAI({ model: 'gpt-4' }),
-      tools: [webScraper, htmlParser],
-      systemMessage: 'You are a research specialist. Find accurate information.'
-    },
-    analyst: {
-      model: new ChatOpenAI({ model: 'gpt-4' }),
-      tools: [calculator, csvParser],
-      systemMessage: 'You are a data analyst. Analyze and interpret data.'
-    },
-    writer: {
-      model: new ChatOpenAI({ model: 'gpt-4' }),
-      tools: [fileWriter],
-      systemMessage: 'You are a technical writer. Create clear, structured reports.'
-    }
-  },
-  
-  // Coordination strategy
-  strategy: 'supervisor',  // supervisor, sequential, or consensus
-  
-  // Supervisor configuration
   supervisor: {
-    model: new ChatOpenAI({ model: 'gpt-4' }),
-    systemMessage: 'Route tasks to the most appropriate agent.'
-  }
+    strategy: 'skill-based',  // or 'llm-based', 'round-robin', 'load-balanced', 'rule-based'
+    model,
+    systemPrompt: 'Route tasks to the most appropriate agent based on their skills.'
+  },
+
+  workers: [
+    {
+      id: 'researcher',
+      capabilities: {
+        skills: ['research', 'web-scraping', 'information-gathering'],
+        tools: ['web_scraper', 'html_parser'],
+        available: true,
+        currentWorkload: 0
+      },
+      model,
+      tools: [webScraper, htmlParser],
+      systemPrompt: 'You are a research specialist. Find accurate information.'
+    },
+    {
+      id: 'analyst',
+      capabilities: {
+        skills: ['data-analysis', 'statistics', 'calculations'],
+        tools: ['calculator', 'csv_parser'],
+        available: true,
+        currentWorkload: 0
+      },
+      model,
+      tools: [calculator, csvParser],
+      systemPrompt: 'You are a data analyst. Analyze and interpret data.'
+    },
+    {
+      id: 'writer',
+      capabilities: {
+        skills: ['writing', 'documentation', 'reporting'],
+        tools: ['file_writer'],
+        available: true,
+        currentWorkload: 0
+      },
+      model,
+      tools: [fileWriter],
+      systemPrompt: 'You are a technical writer. Create clear, structured reports.'
+    }
+  ],
+
+  aggregator: {
+    model,
+    systemPrompt: 'Combine the results from all workers into a coherent final response.'
+  },
+
+  maxIterations: 10
 });
 
 const result = await system.invoke({
-  messages: [{
-    role: 'user',
-    content: 'Research AI trends in 2026, analyze the data, and create a report.'
-  }]
+  input: 'Research AI trends in 2026, analyze the data, and create a report.'
 });
 ```
 
-## Coordination Strategies
+## Routing Strategies
 
-### 1. Supervisor Pattern
+The supervisor uses different strategies to route tasks to workers:
 
-A supervisor agent routes tasks to specialized workers:
+### 1. Skill-Based Routing
+
+Routes tasks based on worker capabilities and skills:
 
 ```typescript
 const system = createMultiAgentSystem({
-  agents: {
-    coder: { llm, tools: [codeExecutor], role: 'Write code' },
-    tester: { llm, tools: [testRunner], role: 'Test code' },
-    reviewer: { llm, tools: [], role: 'Review code quality' }
-  },
-  
-  strategy: 'supervisor',
   supervisor: {
-    model: new ChatOpenAI({ model: 'gpt-4' }),
-    systemMessage: `You are a project manager.
-    
-Route tasks to agents:
-- coder: For writing code
-- tester: For running tests
-- reviewer: For code review
+    strategy: 'skill-based',
+    model,
+    systemPrompt: 'Route tasks based on worker skills and capabilities.'
+  },
 
-Coordinate their work to complete the task.`
-  }
+  workers: [
+    {
+      id: 'coder',
+      capabilities: {
+        skills: ['coding', 'programming', 'debugging'],
+        tools: ['code_executor'],
+        available: true,
+        currentWorkload: 0
+      },
+      model,
+      tools: [codeExecutor],
+      systemPrompt: 'You are an expert programmer. Write clean, efficient code.'
+    },
+    {
+      id: 'tester',
+      capabilities: {
+        skills: ['testing', 'qa', 'validation'],
+        tools: ['test_runner'],
+        available: true,
+        currentWorkload: 0
+      },
+      model,
+      tools: [testRunner],
+      systemPrompt: 'You are a QA specialist. Test code thoroughly.'
+    },
+    {
+      id: 'reviewer',
+      capabilities: {
+        skills: ['code-review', 'best-practices', 'security'],
+        tools: [],
+        available: true,
+        currentWorkload: 0
+      },
+      model,
+      systemPrompt: 'You are a senior engineer. Review code for quality and security.'
+    }
+  ],
+
+  aggregator: { model }
 });
 ```
 
-### 2. Sequential Pattern
+### 2. LLM-Based Routing
 
-Agents work in a defined sequence:
+Uses an LLM to make intelligent routing decisions:
 
 ```typescript
 const system = createMultiAgentSystem({
-  agents: {
-    planner: { llm, role: 'Create plan' },
-    executor: { llm, tools: [webScraper, calculator], role: 'Execute plan' },
-    validator: { llm, role: 'Validate results' }
+  supervisor: {
+    strategy: 'llm-based',
+    model,
+    systemPrompt: `You are a project manager routing tasks to specialized workers.
+
+Analyze the task and route to the most appropriate worker(s):
+- coder: For writing and implementing code
+- tester: For running tests and validation
+- reviewer: For code review and quality checks
+
+You can route to multiple workers in parallel if needed.`
   },
-  
-  strategy: 'sequential',
-  sequence: ['planner', 'executor', 'validator']
+
+  workers: [/* ... */],
+  aggregator: { model }
 });
 ```
 
-### 3. Consensus Pattern
+### 3. Round-Robin Routing
 
-Agents collaborate to reach agreement:
+Distributes tasks evenly across all available workers:
 
 ```typescript
 const system = createMultiAgentSystem({
-  agents: {
-    expert1: { llm, role: 'Domain expert 1' },
-    expert2: { llm, role: 'Domain expert 2' },
-    expert3: { llm, role: 'Domain expert 3' }
+  supervisor: {
+    strategy: 'round-robin'
+    // No model needed for round-robin
   },
-  
-  strategy: 'consensus',
-  consensusConfig: {
-    minAgreement: 0.7,  // 70% agreement required
-    maxRounds: 3,  // Max discussion rounds
-    votingMethod: 'majority'  // or 'unanimous', 'weighted'
-  }
+
+  workers: [/* ... */],
+  aggregator: { model }
 });
 ```
 
-### 4. Hierarchical Pattern
+### 4. Load-Balanced Routing
+
+Routes to workers with the lowest current workload:
+
+```typescript
+const system = createMultiAgentSystem({
+  supervisor: {
+    strategy: 'load-balanced'
+    // No model needed for load-balanced
+  },
+
+  workers: [/* ... */],
+  aggregator: { model }
+});
+```
+
+### 5. Rule-Based Routing
+
+Uses custom routing logic:
+
+```typescript
+const system = createMultiAgentSystem({
+  supervisor: {
+    strategy: 'rule-based',
+    routingFn: async (state) => {
+      const input = state.input.toLowerCase();
+
+      // Custom routing logic
+      if (input.includes('code') || input.includes('implement')) {
+        return {
+          targetAgent: 'coder',
+          reasoning: 'Task requires coding',
+          confidence: 0.9,
+          strategy: 'rule-based',
+          timestamp: Date.now()
+        };
+      } else if (input.includes('test')) {
+        return {
+          targetAgent: 'tester',
+          reasoning: 'Task requires testing',
+          confidence: 0.9,
+          strategy: 'rule-based',
+          timestamp: Date.now()
+        };
+      }
+
+      // Default to first worker
+      return {
+        targetAgent: state.workers ? Object.keys(state.workers)[0] : 'coder',
+        reasoning: 'Default routing',
+        confidence: 0.5,
+        strategy: 'rule-based',
+        timestamp: Date.now()
+      };
+    }
+  },
+
+  workers: [/* ... */],
+  aggregator: { model }
+});
+```
+
+## Advanced Patterns
+
+### Hierarchical Organization
 
 Multi-level agent organization:
 
 ```typescript
-const system = createMultiAgentSystem({
-  agents: {
-    // Top level
-    ceo: {
-      model,
-      role: 'Strategic decisions',
-      subordinates: ['manager1', 'manager2']
-    },
-    
-    // Middle level
-    manager1: {
-      model,
-      role: 'Manage team 1',
-      subordinates: ['worker1', 'worker2']
-    },
-    manager2: {
-      model,
-      role: 'Manage team 2',
-      subordinates: ['worker3', 'worker4']
-    },
-    
-    // Workers
-    worker1: { llm, tools: [tool1], role: 'Specialist 1' },
-    worker2: { llm, tools: [tool2], role: 'Specialist 2' },
-    worker3: { llm, tools: [tool3], role: 'Specialist 3' },
-    worker4: { llm, tools: [tool4], role: 'Specialist 4' }
+// Create a team lead multi-agent system
+const teamLead = createMultiAgentSystem({
+  supervisor: {
+    strategy: 'skill-based',
+    model,
+    systemPrompt: 'You are a team lead. Coordinate your team members.'
   },
-  
-  strategy: 'hierarchical'
+  workers: [
+    {
+      id: 'specialist1',
+      capabilities: {
+        skills: ['task1', 'task2'],
+        tools: ['tool1'],
+        available: true,
+        currentWorkload: 0
+      },
+      model,
+      tools: [tool1],
+      systemPrompt: 'You are specialist 1.'
+    },
+    {
+      id: 'specialist2',
+      capabilities: {
+        skills: ['task3', 'task4'],
+        tools: ['tool2'],
+        available: true,
+        currentWorkload: 0
+      },
+      model,
+      tools: [tool2],
+      systemPrompt: 'You are specialist 2.'
+    }
+  ],
+  aggregator: { model }
+});
+
+// Use the team lead as a worker in a higher-level system
+const organization = createMultiAgentSystem({
+  supervisor: {
+    strategy: 'skill-based',
+    model,
+    systemPrompt: 'You are the CEO. Delegate to department heads.'
+  },
+  workers: [
+    {
+      id: 'engineering_team',
+      capabilities: {
+        skills: ['engineering', 'development'],
+        tools: [],
+        available: true,
+        currentWorkload: 0
+      },
+      agent: teamLead,  // Nested multi-agent system
+      systemPrompt: 'You lead the engineering team.'
+    },
+    // ... other departments
+  ],
+  aggregator: { model }
 });
 ```
 
 ## Configuration Options
 
-### Core Options
+### Core Configuration
 
 ```typescript
-interface MultiAgentConfig {
+interface MultiAgentSystemConfig {
   // Required
-  agents: Record<string, AgentConfig>;  // Agent definitions
-  strategy: CoordinationStrategy;       // How agents collaborate
-  
+  supervisor: SupervisorConfig;         // Supervisor configuration
+  workers: WorkerConfig[];              // Worker configurations
+
   // Optional
-  supervisor?: SupervisorConfig;        // For supervisor strategy
-  sequence?: string[];                  // For sequential strategy
-  consensusConfig?: ConsensusConfig;    // For consensus strategy
-  sharedMemory?: boolean;               // Share context between agents
-  maxRounds?: number;                   // Max coordination rounds
+  aggregator?: AggregatorConfig;        // Aggregator configuration
+  maxIterations?: number;               // Max routing iterations (default: 10)
+  verbose?: boolean;                    // Enable verbose logging
+  checkpointer?: BaseCheckpointSaver;   // For state persistence and human-in-the-loop
+}
+
+interface SupervisorConfig {
+  strategy: RoutingStrategy;            // 'skill-based' | 'llm-based' | 'round-robin' | 'load-balanced' | 'rule-based'
+  model?: BaseChatModel;                // Required for 'llm-based' strategy
+  systemPrompt?: string;                // System prompt for LLM-based routing
+  routingFn?: (state) => Promise<RoutingDecision>;  // Custom routing function for 'rule-based'
+  verbose?: boolean;
+  maxIterations?: number;
+  maxToolRetries?: number;              // Max tool call retries (default: 3)
+}
+
+interface WorkerConfig {
+  id: string;                           // Unique worker identifier
+  capabilities: WorkerCapabilities;     // Worker capabilities
+  model?: BaseChatModel;                // Language model
+  tools?: Tool[];                       // Available tools
+  systemPrompt?: string;                // System prompt
+  executeFn?: (state, config?) => Promise<Partial<MultiAgentStateType>>;  // Custom execution
+  agent?: CompiledStateGraph;           // ReAct agent or nested multi-agent system
+  verbose?: boolean;
+}
+
+interface WorkerCapabilities {
+  skills: string[];                     // List of skills
+  tools: string[];                      // List of tool names
+  available: boolean;                   // Availability status
+  currentWorkload: number;              // Current workload count
+}
+
+interface AggregatorConfig {
+  model?: BaseChatModel;                // Language model for aggregation
+  systemPrompt?: string;                // System prompt
+  aggregateFn?: (state) => Promise<string>;  // Custom aggregation function
+  verbose?: boolean;
 }
 ```
 
 ### Advanced Configuration
 
 ```typescript
+import { MemorySaver } from '@langchain/langgraph';
+
 const system = createMultiAgentSystem({
-  agents: {
-    researcher: { llm, tools: [webScraper] },
-    analyst: { llm, tools: [calculator] },
-    writer: { llm, tools: [fileWriter] }
+  supervisor: {
+    strategy: 'llm-based',
+    model,
+    systemPrompt: 'Route tasks intelligently to workers.',
+    maxIterations: 5,
+    maxToolRetries: 3,
+    verbose: true
   },
-  
-  strategy: 'supervisor',
-  
-  // Shared memory across agents
-  sharedMemory: true,
-  memoryConfig: {
-    type: 'redis',
-    ttl: 3600
+
+  workers: [
+    {
+      id: 'researcher',
+      capabilities: {
+        skills: ['research', 'web-scraping'],
+        tools: ['web_scraper'],
+        available: true,
+        currentWorkload: 0
+      },
+      model,
+      tools: [webScraper],
+      systemPrompt: 'You are a research specialist.',
+      verbose: true
+    },
+    {
+      id: 'analyst',
+      capabilities: {
+        skills: ['analysis', 'calculations'],
+        tools: ['calculator'],
+        available: true,
+        currentWorkload: 0
+      },
+      model,
+      tools: [calculator],
+      systemPrompt: 'You are a data analyst.'
+    }
+  ],
+
+  aggregator: {
+    model,
+    systemPrompt: 'Combine worker results into a coherent response.'
   },
-  
-  // Communication protocol
-  communication: {
-    format: 'structured',  // or 'natural'
-    includeContext: true,
-    maxMessageLength: 1000
-  },
-  
-  // Performance settings
-  maxRounds: 10,
-  timeout: 300000,  // 5 minutes
-  parallelExecution: true
+
+  maxIterations: 10,
+  verbose: true,
+  checkpointer: new MemorySaver()  // Enable state persistence
 });
 ```
 
@@ -239,21 +442,23 @@ Enable worker agents to request human input mid-execution using checkpointers. T
 
 ```typescript
 import { MemorySaver } from '@langchain/langgraph';
-import { createMultiAgentSystem, ReActAgentBuilder } from '@agentforge/patterns';
+import { createMultiAgentSystem, createReActAgent } from '@agentforge/patterns';
 import { createAskHumanTool } from '@agentforge/tools';
 
 // Create worker agents with checkpointer: true
-const hrAgent = new ReActAgentBuilder()
-  .withModel(model)
-  .withTools([createAskHumanTool(), slackTool, emailTool])
-  .withCheckpointer(true)  // Use parent's checkpointer with separate namespace
-  .build();
+const hrAgent = createReActAgent({
+  model,
+  tools: [createAskHumanTool(), slackTool, emailTool],
+  systemPrompt: 'You are an HR specialist. Help with employee-related tasks.',
+  checkpointer: true  // Use parent's checkpointer with separate namespace
+});
 
-const legalAgent = new ReActAgentBuilder()
-  .withModel(model)
-  .withTools([createAskHumanTool(), contractTool, complianceTool])
-  .withCheckpointer(true)
-  .build();
+const legalAgent = createReActAgent({
+  model,
+  tools: [createAskHumanTool(), contractTool, complianceTool],
+  systemPrompt: 'You are a legal specialist. Help with contracts and compliance.',
+  checkpointer: true
+});
 
 // Create multi-agent system with checkpointer
 const system = createMultiAgentSystem({
@@ -264,15 +469,26 @@ const system = createMultiAgentSystem({
   workers: [
     {
       id: 'hr',
-      capabilities: { skills: ['hr', 'employee', 'slack'] },
+      capabilities: {
+        skills: ['hr', 'employee', 'slack'],
+        tools: ['askHuman', 'slack', 'email'],
+        available: true,
+        currentWorkload: 0
+      },
       agent: hrAgent
     },
     {
       id: 'legal',
-      capabilities: { skills: ['legal', 'contract', 'compliance'] },
+      capabilities: {
+        skills: ['legal', 'contract', 'compliance'],
+        tools: ['askHuman', 'contract', 'compliance'],
+        available: true,
+        currentWorkload: 0
+      },
       agent: legalAgent
     }
   ],
+  aggregator: { model },
   checkpointer: new MemorySaver()  // Parent checkpointer
 });
 ```
@@ -291,7 +507,7 @@ import { Command } from '@langchain/langgraph';
 
 // Start a conversation
 const result = await system.invoke(
-  { messages: [{ role: 'user', content: 'Send a Slack announcement about my promotion' }] },
+  { input: 'Send a Slack announcement about my promotion' },
   { configurable: { thread_id: 'user-123' } }
 );
 
@@ -318,36 +534,53 @@ const finalResult = await system.invoke(
 - **Parent must provide checkpointer** - The multi-agent system must have a checkpointer
 - **Unique thread IDs** - Always pass a `thread_id` in the config for conversation continuity
 
-## Agent Builder
+## Multi-Agent System Builder
 
-Use the fluent builder API for complex agent definitions:
+Use the builder pattern for dynamic worker registration:
 
 ```typescript
-import { agentBuilder } from '@agentforge/patterns';
+import { MultiAgentSystemBuilder } from '@agentforge/patterns';
 
-const researchAgent = agentBuilder()
-  .name('researcher')
-  .role('Research Specialist')
-  .model(new ChatOpenAI({ model: 'gpt-4' }))
-  .tools([webScraper, htmlParser, httpGet])
-  .systemMessage(`You are an expert researcher.
+const builder = new MultiAgentSystemBuilder({
+  supervisor: {
+    strategy: 'skill-based',
+    model
+  },
+  aggregator: { model }
+});
+
+// Register workers dynamically
+builder.registerWorkers([
+  {
+    name: 'researcher',
+    capabilities: ['research', 'web-scraping', 'information-gathering'],
+    tools: [webScraper, htmlParser, httpGet],
+    systemPrompt: `You are an expert researcher.
 
 Your responsibilities:
 - Find accurate, up-to-date information
 - Cite all sources
 - Verify facts from multiple sources
-- Summarize findings clearly`)
-  .memory({ type: 'buffer', maxMessages: 20 })
-  .build();
-
-const system = createMultiAgentSystem({
-  agents: {
-    researcher: researchAgent,
-    analyst: analystAgent,
-    writer: writerAgent
+- Summarize findings clearly`,
+    model
   },
-  strategy: 'supervisor'
-});
+  {
+    name: 'analyst',
+    capabilities: ['data-analysis', 'statistics'],
+    tools: [calculator, dataAnalyzer],
+    systemPrompt: 'You are a data analyst.',
+    model
+  },
+  {
+    name: 'writer',
+    capabilities: ['writing', 'documentation'],
+    tools: [fileWriter],
+    systemPrompt: 'You are a technical writer.',
+    model
+  }
+]);
+
+const system = builder.build();
 ```
 
 ## Streaming
@@ -356,101 +589,140 @@ Monitor multi-agent collaboration in real-time:
 
 ```typescript
 const stream = await system.stream({
-  messages: [{ role: 'user', content: 'Complex task' }]
+  input: 'Research AI trends and create a report'
 });
 
 for await (const chunk of stream) {
+  console.log('Node:', Object.keys(chunk)[0]);
+  console.log('State update:', chunk);
+
+  // Access specific node outputs
   if (chunk.supervisor) {
-    console.log('Supervisor:', chunk.supervisor.decision);
+    console.log('Supervisor routing:', chunk.supervisor.currentAgent);
   }
-  if (chunk.agent) {
-    console.log(`Agent ${chunk.agent.name}:`, chunk.agent.message);
+  if (chunk.researcher) {
+    console.log('Researcher output:', chunk.researcher.messages);
   }
-  if (chunk.handoff) {
-    console.log(`Handoff: ${chunk.handoff.from} -> ${chunk.handoff.to}`);
+  if (chunk.aggregator) {
+    console.log('Final result:', chunk.aggregator.output);
   }
 }
 ```
 
 ## Best Practices
 
-### 1. Clear Agent Roles
+### 1. Clear Worker Roles
 
 Define specific, non-overlapping responsibilities:
 
 ```typescript
 const system = createMultiAgentSystem({
-  agents: {
-    // ✅ Clear, specific roles
-    dataCollector: {
+  supervisor: {
+    strategy: 'skill-based',
+    model
+  },
+
+  workers: [
+    {
+      id: 'dataCollector',
+      capabilities: {
+        skills: ['data-collection', 'api-calls', 'web-scraping'],
+        tools: ['api_call', 'web_scrape'],
+        available: true,
+        currentWorkload: 0
+      },
       model,
       tools: [apiCall, webScrape],
-      role: 'Collect data from external sources'
+      systemPrompt: 'Collect data from external sources'
     },
-    dataProcessor: {
+    {
+      id: 'dataProcessor',
+      capabilities: {
+        skills: ['data-processing', 'transformation', 'calculations'],
+        tools: ['data_transform', 'calculator'],
+        available: true,
+        currentWorkload: 0
+      },
       model,
       tools: [dataTransform, calculator],
-      role: 'Clean and transform data'
+      systemPrompt: 'Clean and transform data'
     },
-    dataAnalyst: {
+    {
+      id: 'dataAnalyst',
+      capabilities: {
+        skills: ['data-analysis', 'statistics', 'visualization'],
+        tools: ['statistical_analysis', 'chart_generate'],
+        available: true,
+        currentWorkload: 0
+      },
       model,
       tools: [statisticalAnalysis, chartGenerate],
-      role: 'Analyze data and create visualizations'
+      systemPrompt: 'Analyze data and create visualizations'
     }
+  ],
+
+  aggregator: { model }
+});
+```
+
+### 2. Limit Worker Count
+
+Too many workers increases coordination overhead:
+
+```typescript
+// ✅ Good: 3-5 specialized workers
+const system = createMultiAgentSystem({
+  supervisor: { strategy: 'skill-based', model },
+  workers: [
+    { id: 'researcher', capabilities: { ... }, model },
+    { id: 'analyst', capabilities: { ... }, model },
+    { id: 'writer', capabilities: { ... }, model }
+  ],
+  aggregator: { model }
+});
+
+// ❌ Avoid: Too many workers
+const system = createMultiAgentSystem({
+  supervisor: { strategy: 'skill-based', model },
+  workers: [
+    // ... 15+ workers - too complex to coordinate
+  ]
+});
+```
+
+### 3. Set Iteration Limits
+
+```typescript
+const system = createMultiAgentSystem({
+  supervisor: {
+    strategy: 'llm-based',
+    model,
+    maxIterations: 5,  // Limit supervisor iterations
+    maxToolRetries: 3  // Limit tool call retries
   },
-  strategy: 'sequential'
+  workers: [/* ... */],
+  aggregator: { model },
+  maxIterations: 10  // Overall system iteration limit
 });
 ```
 
-### 2. Limit Agent Count
-
-Too many agents increases coordination overhead:
+### 4. Use Checkpointers for Long-Running Tasks
 
 ```typescript
-// ✅ Good: 3-5 specialized agents
+import { MemorySaver } from '@langchain/langgraph';
+
 const system = createMultiAgentSystem({
-  agents: {
-    researcher: { ... },
-    analyst: { ... },
-    writer: { ... }
-  }
+  supervisor: { strategy: 'skill-based', model },
+  workers: [/* ... */],
+  aggregator: { model },
+  checkpointer: new MemorySaver()  // Enable state persistence
 });
 
-// ❌ Avoid: Too many agents
-const system = createMultiAgentSystem({
-  agents: {
-    agent1: { ... },
-    agent2: { ... },
-    // ... 15 more agents
-  }
-});
-```
-
-### 3. Use Shared Memory Wisely
-
-```typescript
-const system = createMultiAgentSystem({
-  agents: { ... },
-
-  // Share context that all agents need
-  sharedMemory: true,
-  sharedContext: {
-    projectGoals: '...',
-    constraints: '...',
-    previousDecisions: []
-  }
-});
-```
-
-### 4. Set Timeouts and Limits
-
-```typescript
-const system = createMultiAgentSystem({
-  agents: { ... },
-  maxRounds: 10,  // Prevent infinite loops
-  timeout: 300000,  // 5 minute timeout
-  maxMessagesPerAgent: 50  // Limit verbosity
-});
+// Always use thread_id for conversation continuity
+const result = await system.invoke(
+  { input: 'Complex task' },
+  { configurable: { thread_id: 'task-123' } }
+);
 ```
 
 ## Common Patterns
@@ -459,34 +731,63 @@ const system = createMultiAgentSystem({
 
 ```typescript
 const devTeam = createMultiAgentSystem({
-  agents: {
-    productManager: {
-      model,
-      role: 'Define requirements and priorities',
-      tools: []
-    },
-    developer: {
-      model,
-      role: 'Write code',
-      tools: [codeExecutor, fileWrite]
-    },
-    tester: {
-      model,
-      role: 'Write and run tests',
-      tools: [testRunner, coverageAnalyzer]
-    },
-    reviewer: {
-      model,
-      role: 'Review code quality',
-      tools: [linter, securityScanner]
-    }
+  supervisor: {
+    strategy: 'skill-based',
+    model,
+    systemPrompt: 'Coordinate the development team to build high-quality software.'
   },
 
-  strategy: 'supervisor',
-  supervisor: {
-    model,
-    systemMessage: 'Coordinate the development team to build high-quality software.'
-  }
+  workers: [
+    {
+      id: 'productManager',
+      capabilities: {
+        skills: ['requirements', 'planning', 'prioritization'],
+        tools: [],
+        available: true,
+        currentWorkload: 0
+      },
+      model,
+      systemPrompt: 'Define requirements and priorities'
+    },
+    {
+      id: 'developer',
+      capabilities: {
+        skills: ['coding', 'implementation'],
+        tools: ['code_executor', 'file_write'],
+        available: true,
+        currentWorkload: 0
+      },
+      model,
+      tools: [codeExecutor, fileWrite],
+      systemPrompt: 'Write clean, efficient code'
+    },
+    {
+      id: 'tester',
+      capabilities: {
+        skills: ['testing', 'qa', 'validation'],
+        tools: ['test_runner', 'coverage_analyzer'],
+        available: true,
+        currentWorkload: 0
+      },
+      model,
+      tools: [testRunner, coverageAnalyzer],
+      systemPrompt: 'Write and run comprehensive tests'
+    },
+    {
+      id: 'reviewer',
+      capabilities: {
+        skills: ['code-review', 'security', 'best-practices'],
+        tools: ['linter', 'security_scanner'],
+        available: true,
+        currentWorkload: 0
+      },
+      model,
+      tools: [linter, securityScanner],
+      systemPrompt: 'Review code for quality and security'
+    }
+  ],
+
+  aggregator: { model }
 });
 ```
 
@@ -494,31 +795,63 @@ const devTeam = createMultiAgentSystem({
 
 ```typescript
 const researchTeam = createMultiAgentSystem({
-  agents: {
-    literatureReviewer: {
-      model,
-      tools: [webScraper, httpGet],
-      role: 'Find and review academic papers'
-    },
-    dataCollector: {
-      model,
-      tools: [apiCall, webScrape],
-      role: 'Gather experimental data'
-    },
-    statistician: {
-      model,
-      tools: [statisticalAnalysis, rScript],
-      role: 'Perform statistical analysis'
-    },
-    writer: {
-      model,
-      tools: [latexCompiler, fileWrite],
-      role: 'Write research paper'
-    }
+  supervisor: {
+    strategy: 'skill-based',
+    model
   },
 
-  strategy: 'sequential',
-  sequence: ['literatureReviewer', 'dataCollector', 'statistician', 'writer']
+  workers: [
+    {
+      id: 'literatureReviewer',
+      capabilities: {
+        skills: ['literature-review', 'research', 'academic-papers'],
+        tools: ['web_scraper', 'http_get'],
+        available: true,
+        currentWorkload: 0
+      },
+      model,
+      tools: [webScraper, httpGet],
+      systemPrompt: 'Find and review academic papers'
+    },
+    {
+      id: 'dataCollector',
+      capabilities: {
+        skills: ['data-collection', 'experiments'],
+        tools: ['api_call', 'web_scrape'],
+        available: true,
+        currentWorkload: 0
+      },
+      model,
+      tools: [apiCall, webScrape],
+      systemPrompt: 'Gather experimental data'
+    },
+    {
+      id: 'statistician',
+      capabilities: {
+        skills: ['statistics', 'data-analysis'],
+        tools: ['statistical_analysis', 'r_script'],
+        available: true,
+        currentWorkload: 0
+      },
+      model,
+      tools: [statisticalAnalysis, rScript],
+      systemPrompt: 'Perform statistical analysis'
+    },
+    {
+      id: 'writer',
+      capabilities: {
+        skills: ['writing', 'documentation', 'academic-writing'],
+        tools: ['latex_compiler', 'file_write'],
+        available: true,
+        currentWorkload: 0
+      },
+      model,
+      tools: [latexCompiler, fileWrite],
+      systemPrompt: 'Write research paper'
+    }
+  ],
+
+  aggregator: { model }
 });
 ```
 
@@ -526,122 +859,188 @@ const researchTeam = createMultiAgentSystem({
 
 ```typescript
 const supportTeam = createMultiAgentSystem({
-  agents: {
-    triageAgent: {
-      model,
-      tools: [ticketClassifier],
-      role: 'Classify and prioritize tickets'
-    },
-    technicalSupport: {
-      model,
-      tools: [knowledgeBase, diagnosticTools],
-      role: 'Resolve technical issues'
-    },
-    billingSupport: {
-      model,
-      tools: [billingSystem, paymentProcessor],
-      role: 'Handle billing inquiries'
-    },
-    escalationAgent: {
-      model,
-      tools: [emailSend, slackNotify],
-      role: 'Escalate complex issues'
-    }
+  supervisor: {
+    strategy: 'llm-based',
+    model,
+    systemPrompt: 'Route customer inquiries to the appropriate support agent.'
   },
 
-  strategy: 'supervisor',
-  supervisor: {
-    model,
-    systemMessage: 'Route customer inquiries to the appropriate support agent.'
-  }
+  workers: [
+    {
+      id: 'triageAgent',
+      capabilities: {
+        skills: ['triage', 'classification', 'prioritization'],
+        tools: ['ticket_classifier'],
+        available: true,
+        currentWorkload: 0
+      },
+      model,
+      tools: [ticketClassifier],
+      systemPrompt: 'Classify and prioritize tickets'
+    },
+    {
+      id: 'technicalSupport',
+      capabilities: {
+        skills: ['technical-support', 'troubleshooting', 'diagnostics'],
+        tools: ['knowledge_base', 'diagnostic_tools'],
+        available: true,
+        currentWorkload: 0
+      },
+      model,
+      tools: [knowledgeBase, diagnosticTools],
+      systemPrompt: 'Resolve technical issues'
+    },
+    {
+      id: 'billingSupport',
+      capabilities: {
+        skills: ['billing', 'payments', 'invoicing'],
+        tools: ['billing_system', 'payment_processor'],
+        available: true,
+        currentWorkload: 0
+      },
+      model,
+      tools: [billingSystem, paymentProcessor],
+      systemPrompt: 'Handle billing inquiries'
+    },
+    {
+      id: 'escalationAgent',
+      capabilities: {
+        skills: ['escalation', 'communication'],
+        tools: ['email_send', 'slack_notify'],
+        available: true,
+        currentWorkload: 0
+      },
+      model,
+      tools: [emailSend, slackNotify],
+      systemPrompt: 'Escalate complex issues'
+    }
+  ],
+
+  aggregator: { model }
 });
 ```
 
 ## Debugging
 
-### Visualize Agent Communication
+### Enable Verbose Logging
 
 ```typescript
-const result = await system.invoke(input, {
-  returnCommunicationLog: true
-});
-
-console.log('Communication Log:');
-result.communicationLog.forEach((msg, i) => {
-  console.log(`${i + 1}. ${msg.from} -> ${msg.to}: ${msg.content}`);
+const system = createMultiAgentSystem({
+  supervisor: {
+    strategy: 'llm-based',
+    model,
+    verbose: true  // Enable supervisor logging
+  },
+  workers: [
+    {
+      id: 'worker1',
+      capabilities: { ... },
+      model,
+      verbose: true  // Enable worker logging
+    }
+  ],
+  aggregator: {
+    model,
+    verbose: true  // Enable aggregator logging
+  },
+  verbose: true  // Enable system-level logging
 });
 ```
 
-### Track Agent Performance
+### Stream State Updates
+
+Monitor the system in real-time:
 
 ```typescript
-const result = await system.invoke(input, {
-  trackMetrics: true
+const stream = await system.stream({
+  input: 'Complex task'
 });
 
-console.log('Agent Metrics:');
-Object.entries(result.metrics).forEach(([agent, metrics]) => {
-  console.log(`${agent}:`);
-  console.log('  Messages:', metrics.messageCount);
-  console.log('  Tokens:', metrics.tokenUsage);
-  console.log('  Duration:', metrics.duration);
-  console.log('  Success Rate:', metrics.successRate);
-});
+for await (const chunk of stream) {
+  const nodeName = Object.keys(chunk)[0];
+  console.log(`\n=== ${nodeName} ===`);
+  console.log('State:', JSON.stringify(chunk[nodeName], null, 2));
+}
 ```
 
-### Generate Collaboration Diagram
+### Inspect State After Execution
 
 ```typescript
-import { visualizeMultiAgentSystem } from '@agentforge/core';
-
-const result = await system.invoke(input, {
-  returnCommunicationLog: true
+const result = await system.invoke({
+  input: 'Task description'
 });
 
-// Generate sequence diagram
-const diagram = visualizeMultiAgentSystem(result);
-console.log(diagram);
+console.log('Final output:', result.output);
+console.log('Completed tasks:', result.completedTasks);
+console.log('Status:', result.status);
+console.log('Iterations:', result.iteration);
+console.log('Messages:', result.messages);
 ```
 
 ## Performance Optimization
 
-### 1. Parallel Agent Execution
+### 1. Parallel Worker Execution
 
-Execute independent agents in parallel:
-
-```typescript
-const system = createMultiAgentSystem({
-  agents: { ... },
-  parallelExecution: true,
-  maxParallelAgents: 3
-});
-```
-
-### 2. Agent Caching
-
-Cache agent responses for similar inputs:
-
-```typescript
-import { withAgentCache } from '@agentforge/patterns';
-
-const cachedSystem = withAgentCache(system, {
-  ttl: 3600,
-  cacheKey: (input) => input.messages[0].content
-});
-```
-
-### 3. Lazy Agent Loading
-
-Only initialize agents when needed:
+The supervisor can route to multiple workers in parallel using LLM-based routing:
 
 ```typescript
 const system = createMultiAgentSystem({
-  agents: {
-    researcher: { llm, tools: [webScraper], lazy: true },
-    analyst: { llm, tools: [calculator], lazy: true },
-    writer: { llm, tools: [fileWriter], lazy: true }
+  supervisor: {
+    strategy: 'llm-based',
+    model,
+    systemPrompt: `Route tasks to workers. You can route to multiple workers in parallel by specifying them in the targetAgents array.`
   },
-  lazyLoading: true
+  workers: [/* ... */],
+  aggregator: { model }
+});
+
+// The supervisor can return targetAgents: ['worker1', 'worker2'] for parallel execution
+```
+
+### 2. Limit Iterations
+
+Prevent excessive routing iterations:
+
+```typescript
+const system = createMultiAgentSystem({
+  supervisor: {
+    strategy: 'llm-based',
+    model,
+    maxIterations: 5,  // Limit supervisor iterations
+    maxToolRetries: 3  // Limit tool call retries
+  },
+  workers: [/* ... */],
+  aggregator: { model },
+  maxIterations: 10  // Overall system iteration limit
+});
+```
+
+### 3. Use Efficient Routing Strategies
+
+Choose the right strategy for your use case:
+
+// Skill-based: Fast, deterministic routing based on worker skills
+const skillBased = createMultiAgentSystem({
+  supervisor: { strategy: 'skill-based' },  // No model needed
+  workers: [/* ... */],
+  aggregator: { model }
+});
+
+// Round-robin: Simple load distribution
+const roundRobin = createMultiAgentSystem({
+  supervisor: { strategy: 'round-robin' },  // No model needed
+  workers: [/* ... */],
+  aggregator: { model }
+});
+
+// LLM-based: Intelligent routing but slower and more expensive
+const llmBased = createMultiAgentSystem({
+  supervisor: {
+    strategy: 'llm-based',
+    model  // Model required for LLM-based routing
+  },
+  workers: [/* ... */],
+  aggregator: { model }
 });
 ```
 
@@ -656,50 +1055,6 @@ const system = createMultiAgentSystem({
 | Latency | Higher (coordination) | Lower |
 | Token usage | Higher | Lower |
 | Best for | Complex, multi-domain | Simple, single-domain |
-
-## Advanced: Agent Communication Protocols
-
-### Structured Messages
-
-```typescript
-const system = createMultiAgentSystem({
-  agents: { ... },
-  communicationProtocol: {
-    format: 'structured',
-    schema: z.object({
-      from: z.string(),
-      to: z.string(),
-      type: z.enum(['request', 'response', 'notification']),
-      content: z.string(),
-      metadata: z.object({
-        priority: z.enum(['low', 'medium', 'high']),
-        requiresResponse: z.boolean()
-      })
-    })
-  }
-});
-```
-
-### Message Routing
-
-```typescript
-const system = createMultiAgentSystem({
-  agents: { ... },
-  messageRouter: {
-    rules: [
-      {
-        condition: (msg) => msg.content.includes('urgent'),
-        route: 'escalationAgent'
-      },
-      {
-        condition: (msg) => msg.type === 'technical',
-        route: 'technicalSupport'
-      }
-    ],
-    defaultRoute: 'triageAgent'
-  }
-});
-```
 
 ## Advanced: Parallel Routing
 
@@ -756,27 +1111,39 @@ const system = createMultiAgentSystem({
   workers: [
     {
       id: 'code',
-      name: 'Code Agent',
-      description: 'Analyzes codebase',
-      capabilities: { skills: ['code-analysis'], tools: [], available: true },
+      capabilities: {
+        skills: ['code-analysis', 'codebase-search'],
+        tools: ['code_search'],
+        available: true,
+        currentWorkload: 0
+      },
       model: llm,
       tools: [codeSearchTool],
+      systemPrompt: 'You analyze codebases and find relevant code.'
     },
     {
       id: 'security',
-      name: 'Security Agent',
-      description: 'Performs security audits',
-      capabilities: { skills: ['security'], tools: [], available: true },
+      capabilities: {
+        skills: ['security', 'vulnerability-scanning', 'security-audit'],
+        tools: ['security_scan'],
+        available: true,
+        currentWorkload: 0
+      },
       model: llm,
       tools: [securityScanTool],
+      systemPrompt: 'You perform security audits and find vulnerabilities.'
     },
     {
       id: 'docs',
-      name: 'Documentation Agent',
-      description: 'Searches documentation',
-      capabilities: { skills: ['documentation'], tools: [], available: true },
+      capabilities: {
+        skills: ['documentation', 'doc-search'],
+        tools: ['doc_search'],
+        available: true,
+        currentWorkload: 0
+      },
       model: llm,
       tools: [docSearchTool],
+      systemPrompt: 'You search and analyze documentation.'
     },
   ],
   aggregator: { model: llm },
