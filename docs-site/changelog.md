@@ -7,6 +7,49 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.11.6] - 2026-02-05
+
+### Fixed
+
+#### @agentforge/cli
+- **Tool Publish Command Skips Missing Scripts** [P2]
+  - **Problem**: The `tool:publish` command attempted to run test and build scripts even when they didn't exist in package.json, causing failures in projects without those scripts
+  - **Impact**: Publishing simple tool packages without test or build scripts would fail with script execution errors
+  - **Solution**: Modified `resolveToolPath()` to return `ToolPathInfo` interface with script availability flags; conditionally run test/build only if scripts exist; show clear skip messages
+  - **Location**: `packages/cli/src/commands/tool/publish.ts` lines 29-60, 115-119, 183-237
+
+- **Scoped Package Names Misinterpreted as Paths** [P2]
+  - **Problem**: Scoped package names like `@agentforge/myTool` were incorrectly treated as file paths due to the `/` character check
+  - **Impact**: Publishing scoped packages would fail with "directory not found" errors
+  - **Solution**: Added regex check `/^@[^/]+\/[^/]+$/` to distinguish scoped packages from actual file paths
+  - **Location**: `packages/cli/src/commands/tool/publish.ts` lines 131-139
+
+- **Scoped Package Common Location Resolution** [P2]
+  - **Problem**: When running `tool:publish @scope/name` from repo root, only looked for `packages/@scope/name` but most repos store scoped packages in unscoped folders like `packages/name`
+  - **Impact**: Publishing scoped packages from repo root would fail unless user was in the tool directory
+  - **Solution**: Extract unscoped name from scoped packages and try both scoped and unscoped paths in common locations; prefer scoped folder if both exist
+  - **Location**: `packages/cli/src/commands/tool/publish.ts` lines 150-168
+
+### Tests
+
+#### @agentforge/cli
+- Added 6 comprehensive tests for `tool:publish` command:
+  - Skip build when no build script exists
+  - Skip test when no test script exists
+  - Skip both test and build when neither script exists
+  - Handle scoped package names correctly (not treat as paths)
+  - Resolve scoped package from unscoped folder in packages/
+  - Resolve scoped package from unscoped folder in tools/
+  - Prefer scoped folder if it exists over unscoped
+
+### Published
+- All packages published to npm registry at version 0.11.6:
+  - @agentforge/core@0.11.6
+  - @agentforge/patterns@0.11.6
+  - @agentforge/tools@0.11.6
+  - @agentforge/testing@0.11.6
+  - @agentforge/cli@0.11.6
+
 ## [0.11.5] - 2026-02-04
 
 ### Fixed
