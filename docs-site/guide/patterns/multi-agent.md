@@ -125,7 +125,8 @@ const system = createMultiAgentSystem({
         currentWorkload: 0
       },
       model,
-      tools: [codeExecutor],
+      // Note: customCodeExecutor is a custom tool - implement for your use case
+      tools: [customCodeExecutor],
       systemPrompt: 'You are an expert programmer. Write clean, efficient code.'
     },
     {
@@ -137,7 +138,8 @@ const system = createMultiAgentSystem({
         currentWorkload: 0
       },
       model,
-      tools: [testRunner],
+      // Note: customTestRunner is a custom tool - implement for your use case
+      tools: [customTestRunner],
       systemPrompt: 'You are a QA specialist. Test code thoroughly.'
     },
     {
