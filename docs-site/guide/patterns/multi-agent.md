@@ -758,7 +758,8 @@ const devTeam = createMultiAgentSystem({
         currentWorkload: 0
       },
       model,
-      tools: [codeExecutor, fileWrite],
+      // Note: These are custom tools - implement them for your use case
+      tools: [customCodeExecutor, customFileWrite],
       systemPrompt: 'Write clean, efficient code'
     },
     {
@@ -770,7 +771,8 @@ const devTeam = createMultiAgentSystem({
         currentWorkload: 0
       },
       model,
-      tools: [testRunner, coverageAnalyzer],
+      // Note: These are custom tools - implement them for your use case
+      tools: [customTestRunner, customCoverageAnalyzer],
       systemPrompt: 'Write and run comprehensive tests'
     },
     {
@@ -782,7 +784,8 @@ const devTeam = createMultiAgentSystem({
         currentWorkload: 0
       },
       model,
-      tools: [linter, securityScanner],
+      // Note: These are custom tools - implement them for your use case
+      tools: [customLinter, customSecurityScanner],
       systemPrompt: 'Review code for quality and security'
     }
   ],
@@ -810,6 +813,7 @@ const researchTeam = createMultiAgentSystem({
         currentWorkload: 0
       },
       model,
+      // From @agentforge/tools
       tools: [webScraper, httpGet],
       systemPrompt: 'Find and review academic papers'
     },
@@ -817,36 +821,39 @@ const researchTeam = createMultiAgentSystem({
       id: 'dataCollector',
       capabilities: {
         skills: ['data-collection', 'experiments'],
-        tools: ['api_call', 'web_scrape'],
+        tools: ['http_get', 'web_scraper'],
         available: true,
         currentWorkload: 0
       },
       model,
-      tools: [apiCall, webScrape],
+      // From @agentforge/tools
+      tools: [httpGet, webScraper],
       systemPrompt: 'Gather experimental data'
     },
     {
       id: 'statistician',
       capabilities: {
         skills: ['statistics', 'data-analysis'],
-        tools: ['statistical_analysis', 'r_script'],
+        tools: ['calculator', 'csv_parser'],
         available: true,
         currentWorkload: 0
       },
       model,
-      tools: [statisticalAnalysis, rScript],
+      // From @agentforge/tools - or implement custom statistical tools
+      tools: [calculator, csvParser],
       systemPrompt: 'Perform statistical analysis'
     },
     {
       id: 'writer',
       capabilities: {
         skills: ['writing', 'documentation', 'academic-writing'],
-        tools: ['latex_compiler', 'file_write'],
+        tools: ['file_write'],
         available: true,
         currentWorkload: 0
       },
       model,
-      tools: [latexCompiler, fileWrite],
+      // Note: customFileWrite is a custom tool - implement for your use case
+      tools: [customFileWrite],
       systemPrompt: 'Write research paper'
     }
   ],
