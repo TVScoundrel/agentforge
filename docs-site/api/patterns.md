@@ -133,7 +133,7 @@ const agent = createReflectionAgent({
 });
 
 const result = await agent.invoke({
-  messages: [{ role: 'user', content: 'Write a blog post about AI' }]
+  input: 'Write a blog post about AI'
 });
 ```
 

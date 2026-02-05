@@ -191,7 +191,7 @@ try {
 
 ```typescript
 import { describe, it, expect } from 'vitest';
-import { MockLLM, AgentTestHarness } from '@agentforge/testing';
+import { MockLLM, AgentTestRunner } from '@agentforge/testing';
 import { createReActAgent } from '@agentforge/patterns';
 import { calculator } from '@agentforge/tools';
 
@@ -209,10 +209,17 @@ describe('ReAct Agent', () => {
     maxIterations: 3
   });
 
-  const harness = new AgentTestHarness(agent);
+  const runner = new AgentTestRunner(agent, {
+    timeout: 5000,
+    captureSteps: true
+  });
 
   it('should use tools correctly', async () => {
-    await harness.invoke('What is 2+2?');
+    const result = await runner.run({
+      messages: [{ role: 'user', content: 'What is 2+2?' }]
+    });
+
+    expect(result.passed).toBe(true);
     harness.assertToolCalled('calculator');
   });
 

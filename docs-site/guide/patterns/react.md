@@ -62,16 +62,17 @@ console.log(result.messages[result.messages.length - 1].content);
 ### Core Options
 
 ```typescript
-interface ReActConfig {
+interface ReActAgentConfig {
   // Required
-  model: BaseChatModel;           // The language model
-  tools: StructuredTool[];      // Available tools
+  model: BaseChatModel;                    // The language model
+  tools: ToolRegistry | Tool[];            // Available tools
 
   // Optional
-  maxIterations?: number;       // Max reasoning loops (default: 15)
-  returnIntermediateSteps?: boolean;  // Include reasoning steps (default: false)
-  handleParsingErrors?: boolean | string;  // How to handle errors
-  trimIntermediateSteps?: number;  // Keep only N recent steps
+  systemPrompt?: string;                   // System prompt (default: "You are a helpful assistant...")
+  maxIterations?: number;                  // Max reasoning loops (default: 10)
+  returnIntermediateSteps?: boolean;       // Include reasoning steps (default: false)
+  stopCondition?: (state: ReActStateType) => boolean;  // Custom stop condition
+  checkpointer?: BaseCheckpointSaver;      // For state persistence and human-in-the-loop
 }
 ```
 
@@ -82,17 +83,22 @@ const agent = createReActAgent({
   model: new ChatOpenAI({ model: 'gpt-4' }),
   tools: [calculator, currentDateTime],
 
+  // Custom system prompt
+  systemPrompt: 'You are a helpful assistant that uses tools to solve problems.',
+
   // Limit iterations to prevent infinite loops
   maxIterations: 20,
-  
+
   // Return intermediate steps for debugging
   returnIntermediateSteps: true,
-  
-  // Trim old steps to save tokens
-  trimIntermediateSteps: 5,
-  
-  // Custom error handling
-  handleParsingErrors: 'Check your output and make sure it conforms to the schema!'
+
+  // Custom stop condition
+  stopCondition: (state) => {
+    return state.iterations >= 15 || state.scratchpad.includes('FINAL_ANSWER');
+  },
+
+  // Add checkpointer for state persistence
+  checkpointer: new MemorySaver()
 });
 ```
 
@@ -367,26 +373,35 @@ const agent = createReActAgent({
 
 const result = await agent.invoke(input);
 
-// Inspect reasoning steps
-result.intermediateSteps.forEach((step, i) => {
-  console.log(`Step ${i + 1}:`);
-  console.log('Action:', step.action);
-  console.log('Observation:', step.observation);
-});
+// Inspect reasoning steps from state
+if (result.actions && result.observations) {
+  result.actions.forEach((action, i) => {
+    console.log(`Step ${i + 1}:`);
+    console.log('Action:', action);
+    console.log('Observation:', result.observations[i]);
+  });
+}
+
+// Or inspect the scratchpad
+console.log('Scratchpad:', result.scratchpad);
 ```
 
-### Visualize Agent Flow
+### Debug Agent State
 
 ```typescript
-import { visualizeAgentExecution } from '@agentforge/core';
-
-const result = await agent.invoke(input, {
+const agent = createReActAgent({
+  model,
+  tools,
   returnIntermediateSteps: true
 });
 
-// Generate Mermaid diagram
-const diagram = visualizeAgentExecution(result);
-console.log(diagram);
+const result = await agent.invoke(input);
+
+// Access state fields
+console.log('Iterations:', result.iterations);
+console.log('Actions taken:', result.actions);
+console.log('Observations:', result.observations);
+console.log('Scratchpad:', result.scratchpad);
 ```
 
 ## Performance Optimization

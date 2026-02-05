@@ -397,8 +397,9 @@ const pipelineAgent = createPlanExecuteAgent({
 ### Multi-Source Analysis
 
 ```typescript
-import { apiCall, webScrape, calculator, chartGenerate } from '@agentforge/tools';
+import { httpGet, calculator, jsonParser } from '@agentforge/tools';
 
+// Note: webScraper and chartGenerate are user-defined tools for this example
 const analysisAgent = createPlanExecuteAgent({
   planner: {
     model: new ChatOpenAI({ model: 'gpt-4' }),
@@ -412,7 +413,7 @@ const analysisAgent = createPlanExecuteAgent({
 5. Create summary report`
   },
   executor: {
-    tools: [apiCall, webScrape, calculator, chartGenerate],
+    tools: [httpGet, calculator, jsonParser],
     parallel: false
   },
   replanner: {

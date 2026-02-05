@@ -308,8 +308,8 @@ import {
   jsonParser,
   fileReader,
   fileWriter,
-  stringCase,
-  validateEmail
+  stringCaseConverter,
+  emailValidator
 } from '@agentforge/tools';
 
 const registry = new ToolRegistry();

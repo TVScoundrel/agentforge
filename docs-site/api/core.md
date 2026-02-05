@@ -696,8 +696,11 @@ const httpPool = createHttpPool({
 
 ### Health Checks
 
+> **Note:** Health checker utilities are not currently exported from `@agentforge/core`.
+> Implement custom health checks for your application as needed.
+
 ```typescript
-import { createHealthChecker } from '@agentforge/core';
+// Example custom health checker implementation
 
 const healthChecker = createHealthChecker({
   checks: {

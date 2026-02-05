@@ -129,9 +129,43 @@ Add health checks for monitoring:
 
 ```typescript
 // src/health.ts
-import { createHealthChecker } from '@agentforge/core';
+// Note: Implement custom health checker (not exported from @agentforge/core)
 
-export const healthChecker = createHealthChecker({
+interface HealthCheck {
+  healthy: boolean;
+  status: string;
+  checks?: Record<string, any>;
+}
+
+class HealthChecker {
+  constructor(private checks: Record<string, () => Promise<any>>) {}
+
+  async getHealth(): Promise<HealthCheck> {
+    const results: Record<string, any> = {};
+    let allHealthy = true;
+
+    for (const [name, check] of Object.entries(this.checks)) {
+      try {
+        results[name] = await check();
+      } catch (error) {
+        results[name] = { healthy: false, error: error.message };
+        allHealthy = false;
+      }
+    }
+
+    return {
+      healthy: allHealthy,
+      status: allHealthy ? 'healthy' : 'unhealthy',
+      checks: results
+    };
+  }
+
+  async getReadiness(): Promise<HealthCheck> {
+    return this.getHealth();
+  }
+}
+
+export const healthChecker = new HealthChecker({
   checks: {
     llm: async () => {
       // Test LLM connection
@@ -178,7 +212,7 @@ app.get('/health/live', (req, res) => {
 });
 
 app.get('/health/ready', async (req, res) => {
-  const health = await healthChecker.check();
+  const health = await healthChecker.getHealth();
   res.status(health.healthy ? 200 : 503).json(health);
 });
 
