@@ -225,9 +225,9 @@ import { z } from 'zod';
 const schema = z.object({ query: z.string() });
 
 const enhancedNode = compose(
-  withLogging({ name: 'search', level: 'info' }),
-  withValidation({ inputSchema: schema }),
-  withCache({ ttl: 3600000 }),
+  (node) => withLogging({ name: 'search', level: 'info' })(node),
+  (node) => withValidation(node, { inputSchema: schema }),
+  (node) => withCache(node, { ttl: 3600000 }),
 )(myNode);
 ```
 
@@ -245,10 +245,10 @@ Fluent API for building middleware stacks:
 import { MiddlewareChain } from '@agentforge/core';
 
 const enhancedNode = new MiddlewareChain()
-  .use(withLogging({ name: 'search' }))
-  .use(withValidation({ inputSchema: schema }))
-  .use(withCache({ ttl: 3600000 }))
-  .use(withRetry({ maxAttempts: 3 }))
+  .use((node) => withLogging({ name: 'search' })(node))
+  .use((node) => withValidation(node, { inputSchema: schema }))
+  .use((node) => withCache(node, { ttl: 3600000 }))
+  .use((node) => withRetry(node, { maxAttempts: 3 }))
   .build(myNode);
 ```
 
@@ -258,14 +258,14 @@ Apply middleware based on conditions:
 
 ```typescript
 const enhancedNode = new MiddlewareChain()
-  .use(withLogging({ name: 'search' }))
+  .use((node) => withLogging({ name: 'search' })(node))
   .useIf(
     process.env.NODE_ENV === 'production',
-    withCache({ ttl: 3600000 })
+    (node) => withCache(node, { ttl: 3600000 })
   )
   .useIf(
     process.env.ENABLE_METRICS === 'true',
-    withMetrics({ name: 'search' })
+    (node) => withMetrics(node, { name: 'search' })
   )
   .build(myNode);
 ```
@@ -387,17 +387,17 @@ Place middleware in the right order:
 ```typescript
 // ✅ Good - logging outermost for visibility
 compose(
-  withLogging({ name: 'node' }),      // 1. Log everything
-  withErrorHandler({ ... }),          // 2. Handle errors
-  withRetry({ maxAttempts: 3 }),      // 3. Retry on failure
-  withValidation({ inputSchema }),    // 4. Validate input
-  withCache({ ttl: 3600 }),           // 5. Cache results
+  (node) => withLogging({ name: 'node' })(node),      // 1. Log everything
+  (node) => withErrorHandler(node, { ... }),          // 2. Handle errors
+  (node) => withRetry(node, { maxAttempts: 3 }),      // 3. Retry on failure
+  (node) => withValidation(node, { inputSchema }),    // 4. Validate input
+  (node) => withCache(node, { ttl: 3600 }),           // 5. Cache results
 )(myNode);
 
 // ❌ Bad - cache before validation
 compose(
-  withCache({ ttl: 3600 }),           // Caches invalid inputs!
-  withValidation({ inputSchema }),
+  (node) => withCache(node, { ttl: 3600 }),           // Caches invalid inputs!
+  (node) => withValidation(node, { inputSchema }),
 )(myNode);
 ```
 
@@ -407,15 +407,15 @@ Don't reinvent the wheel:
 
 ```typescript
 // ✅ Good - use preset
-const node = productionPreset(myNode, { nodeName: 'search' });
+const node = production(myNode, { nodeName: 'search' });
 
 // ❌ Bad - manual composition of common stack
 const node = compose(
-  withLogging({ ... }),
-  withMetrics({ ... }),
-  withRetry({ ... }),
-  withTimeout({ ... }),
-  withErrorHandler({ ... }),
+  (node) => withLogging({ ... })(node),
+  (node) => withMetrics(node, { ... }),
+  (node) => withRetry(node, { ... }),
+  (node) => withTimeout(node, { ... }),
+  (node) => withErrorHandler(node, { ... }),
 )(myNode);
 ```
 
@@ -474,10 +474,10 @@ export const withSafeMiddleware: Middleware<any> = (node, options) => {
 
 ```typescript
 const apiClient = compose(
-  withTimeout({ timeout: 10000 }),
-  withRetry({ maxAttempts: 3, backoff: 'exponential' }),
-  withRateLimit({ maxRequests: 100, windowMs: 60000 }),
-  withCache({ ttl: 300000 }),
+  (node) => withTimeout(node, { timeout: 10000 }),
+  (node) => withRetry(node, { maxAttempts: 3, backoff: 'exponential' }),
+  (node) => withRateLimit(node, { maxRequests: 100, windowMs: 60000 }),
+  (node) => withCache(node, { ttl: 300000 }),
 )(fetchData);
 ```
 
@@ -485,11 +485,11 @@ const apiClient = compose(
 
 ```typescript
 const dbQuery = compose(
-  withLogging({ name: 'db-query', level: 'debug' }),
-  withMetrics({ name: 'db-query' }),
-  withTimeout({ timeout: 5000 }),
-  withRetry({ maxAttempts: 2 }),
-  withCache({ ttl: 60000 }),
+  (node) => withLogging({ name: 'db-query', level: 'debug' })(node),
+  (node) => withMetrics(node, { name: 'db-query' }),
+  (node) => withTimeout(node, { timeout: 5000 }),
+  (node) => withRetry(node, { maxAttempts: 2 }),
+  (node) => withCache(node, { ttl: 60000 }),
 )(executeQuery);
 ```
 
@@ -497,11 +497,11 @@ const dbQuery = compose(
 
 ```typescript
 const llmCall = compose(
-  withLogging({ name: 'llm', level: 'info' }),
-  withMetrics({ name: 'llm' }),
-  withTimeout({ timeout: 30000 }),
-  withRetry({ maxAttempts: 2, retryIf: (e) => e.code === 'RATE_LIMIT' }),
-  withRateLimit({ maxRequests: 10, windowMs: 60000 }),
+  (node) => withLogging({ name: 'llm', level: 'info' })(node),
+  (node) => withMetrics(node, { name: 'llm' }),
+  (node) => withTimeout(node, { timeout: 30000 }),
+  (node) => withRetry(node, { maxAttempts: 2, retryIf: (e) => e.code === 'RATE_LIMIT' }),
+  (node) => withRateLimit(node, { maxRequests: 10, windowMs: 60000 }),
 )(callLLM);
 ```
 

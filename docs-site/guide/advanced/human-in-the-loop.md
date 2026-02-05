@@ -168,29 +168,35 @@ AgentForge provides SSE utilities for real-time communication with humans.
 ### Setting Up SSE
 
 ```typescript
-import { createHumanInLoopSSE } from '@agentforge/core';
+import {
+  createSSEFormatter,
+  formatHumanRequestEvent,
+  formatHumanResponseEvent
+} from '@agentforge/core';
 import express from 'express';
 
 const app = express();
 
 app.get('/api/stream', (req, res) => {
-  const sse = createHumanInLoopSSE(res);
+  const sse = createSSEFormatter(res);
 
-  // Send human request
-  sse.sendHumanRequest({
+  // Send human request event
+  const requestEvent = formatHumanRequestEvent({
     id: 'req-123',
     question: 'Approve this action?',
     priority: 'high',
     createdAt: Date.now(),
     status: 'pending'
   });
+  sse.send(requestEvent);
 
-  // Send response when human answers
-  sse.sendHumanResponse({
+  // Send response event when human answers
+  const responseEvent = formatHumanResponseEvent({
     requestId: 'req-123',
     response: 'yes',
     respondedAt: Date.now()
   });
+  sse.send(responseEvent);
 });
 ```
 
