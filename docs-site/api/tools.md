@@ -584,33 +584,38 @@ import { dateFormatter, currentDateTime, dateArithmetic, dateDifference } from '
 ### String Utilities
 
 ```typescript
-import { 
-  stringCase, 
-  stringTrim, 
+import {
+  stringCaseConverter,
+  stringTrim,
   stringReplace,
   stringSplit,
   stringJoin,
-  stringTemplate,
-  stringHash 
+  stringSubstring,
+  stringLength
 } from '@agentforge/tools';
 ```
 
 ### Math Operations
 
 ```typescript
-import { calculator, randomNumber, round, percentage } from '@agentforge/tools';
+import {
+  calculator,
+  mathFunctions,  // Includes round, abs, floor, ceil, etc.
+  randomNumber,
+  statistics
+} from '@agentforge/tools';
 ```
 
 ### Validation
 
 ```typescript
-import { 
-  validateEmail, 
-  validateUrl, 
-  validatePhone,
-  validateCreditCard,
-  validateIPAddress,
-  validateUUID 
+import {
+  emailValidator,
+  urlValidatorSimple,
+  phoneValidator,
+  creditCardValidator,
+  ipValidator,
+  uuidValidator
 } from '@agentforge/tools';
 ```
 
