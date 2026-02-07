@@ -567,29 +567,38 @@ Utilities for working with LangGraph's interrupt mechanism:
 
 ```typescript
 import {
-  isNodeInterrupt,
-  extractHumanRequest,
-  createInterruptResponse
+  createHumanRequestInterrupt,
+  isHumanRequestInterrupt,
+  type HumanRequest,
+  type AnyInterrupt
 } from '@agentforge/core';
 
-// Check if error is a NodeInterrupt
-try {
-  await app.invoke(input, config);
-} catch (error) {
-  if (isNodeInterrupt(error)) {
-    // Extract human request from interrupt
-    const request = extractHumanRequest(error);
-    console.log('Human input needed:', request);
+// Create a human request interrupt
+const humanRequest: HumanRequest = {
+  id: 'req-123',
+  question: 'Should I proceed with this action?',
+  priority: 'high',
+  createdAt: Date.now(),
+  timeout: 30000,
+  status: 'pending'
+};
 
-    // Create response to resume execution
-    const response = createInterruptResponse(request.id, 'approved');
+const interrupt = createHumanRequestInterrupt(humanRequest);
 
-    // Resume execution with response
-    await app.invoke(null, {
-      ...config,
-      resumeValue: response
-    });
-  }
+// Check interrupt type
+if (isHumanRequestInterrupt(interrupt)) {
+  console.log('Human input needed:', interrupt.data.question);
+
+  // In LangGraph, interrupts are handled via checkpointer
+  // Resume by invoking with the response value
+  const result = await app.invoke(
+    null,
+    {
+      configurable: { thread_id: 'thread-123' },
+      // Provide the human's response to resume execution
+      input: { response: 'approved' }
+    }
+  );
 }
 ```
 
@@ -599,8 +608,7 @@ try {
 import type {
   HumanRequest,
   HumanRequestPriority,
-  HumanRequestStatus,
-  HumanResponse
+  HumanRequestStatus
 } from '@agentforge/core';
 
 // HumanRequest - Request for human input
@@ -608,26 +616,21 @@ interface HumanRequest {
   id: string;
   question: string;
   context?: Record<string, unknown>;
-  priority?: HumanRequestPriority;
+  priority: HumanRequestPriority;  // Required field
   createdAt: number;
-  timeout?: number;
+  timeout: number;  // Required field (0 = no timeout)
   defaultResponse?: string;
   suggestions?: string[];
   status: HumanRequestStatus;
+  response?: string;  // The response (if answered)
+  respondedAt?: number;  // When the response was received
 }
 
 // HumanRequestPriority - Priority levels
 type HumanRequestPriority = 'low' | 'normal' | 'high' | 'critical';
 
 // HumanRequestStatus - Request status
-type HumanRequestStatus = 'pending' | 'responded' | 'timeout' | 'error';
-
-// HumanResponse - Response from human
-interface HumanResponse {
-  requestId: string;
-  response: string;
-  respondedAt: number;
-}
+type HumanRequestStatus = 'pending' | 'answered' | 'timeout' | 'cancelled';
 ```
 
 ### Usage with askHuman Tool

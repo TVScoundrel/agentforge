@@ -136,17 +136,29 @@ let currentStep = 0;
 const totalSteps = 10;
 
 for await (const chunk of stream) {
-  if (chunk.planning) {
-    console.log('📋 Planning:', chunk.planning.step);
+  // Check if we're in planning phase
+  if (chunk.status === 'planning' && chunk.plan) {
+    console.log('📋 Planning:', chunk.plan.goal);
+    console.log(`   Steps: ${chunk.plan.steps.length}`);
   }
-  if (chunk.execution) {
-    currentStep++;
-    const progress = Math.round((currentStep / totalSteps) * 100);
-    console.log(`⚙️  Executing step ${currentStep}/${totalSteps} (${progress}%)`);
-    console.log(`   ${chunk.execution.description}`);
+
+  // Check if we're executing steps
+  if (chunk.status === 'executing' && chunk.currentStepIndex !== undefined) {
+    const totalSteps = chunk.plan?.steps.length || 0;
+    const progress = Math.round(((chunk.currentStepIndex + 1) / totalSteps) * 100);
+    console.log(`⚙️  Executing step ${chunk.currentStepIndex + 1}/${totalSteps} (${progress}%)`);
+
+    // Show the current step description
+    const currentStep = chunk.plan?.steps[chunk.currentStepIndex];
+    if (currentStep) {
+      console.log(`   ${currentStep.description}`);
+    }
   }
-  if (chunk.completion) {
+
+  // Check if execution is complete
+  if (chunk.status === 'completed' && chunk.response) {
     console.log('✅ Complete!');
+    console.log('Response:', chunk.response);
   }
 }
 ```
