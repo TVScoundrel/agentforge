@@ -7,6 +7,32 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.11.7] - 2026-02-07
+
+### Fixed
+
+#### @agentforge/core
+- **Middleware Helpers Not Exported from Package Root** [P2]
+  - **Problem**: Middleware helpers (`withLogging`, `withCache`, `withRateLimit`, `withValidation`, `withConcurrency`) and their factory functions (`createSharedCache`, `createSharedRateLimiter`, `createSharedConcurrencyController`) were defined in `langgraph/middleware/index.ts` but not re-exported from `langgraph/index.ts`, making them unavailable when importing from `@agentforge/core`
+  - **Impact**: Users following documentation examples would get import errors when trying to use middleware helpers
+  - **Solution**: Added re-exports for all middleware helpers and their associated types to `packages/core/src/langgraph/index.ts`
+  - **Location**: `packages/core/src/langgraph/index.ts` lines 118-138
+
+#### Documentation
+- **Invalid Imports in Advanced Patterns Tutorial** [P2]
+  - **Problem**: Tutorial showed imports of `createReasoningNode` and `createActionNode` from `@agentforge/patterns`, but these are internal implementation details not exported from the package
+  - **Impact**: Users copying the example code would get import errors
+  - **Solution**: Removed incorrect imports and improved the custom workflow example with proper model initialization and helper functions
+  - **Location**: `docs-site/tutorials/advanced-patterns.md` lines 241-295
+
+### Published
+- All packages published to npm registry at version 0.11.7:
+  - @agentforge/core@0.11.7
+  - @agentforge/patterns@0.11.7
+  - @agentforge/tools@0.11.7
+  - @agentforge/testing@0.11.7
+  - @agentforge/cli@0.11.7
+
 ## [0.11.6] - 2026-02-05
 
 ### Fixed
