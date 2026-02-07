@@ -1,9 +1,8 @@
 import { z } from 'zod';
 import { createReActAgent } from '@agentforge/patterns';
-import { toolBuilder, ToolCategory, ToolRegistry } from '@agentforge/core';
+import { toolBuilder, ToolCategory, ToolRegistry, loadPrompt } from '@agentforge/core';
 import type { BaseLanguageModel } from '@langchain/core/language_models/base';
 import { ChatOpenAI } from '@langchain/openai';
-import { loadPrompt } from './prompt-loader.js';
 
 /**
  * Configuration schema for {{AGENT_NAME_PASCAL}}Agent

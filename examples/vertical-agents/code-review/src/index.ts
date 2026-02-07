@@ -10,11 +10,10 @@
 
 import { createReActAgent } from '@agentforge/patterns';
 import { ChatOpenAI } from '@langchain/openai';
-import { ToolRegistry, toolBuilder, ToolCategory, type Tool } from '@agentforge/core';
+import { ToolRegistry, toolBuilder, ToolCategory, type Tool, loadPrompt } from '@agentforge/core';
 import { currentDateTime, createAskHumanTool } from '@agentforge/tools';
 import { z } from 'zod';
 import type { BaseLanguageModel } from '@langchain/core/language_models/base';
-import { loadPrompt } from './prompt-loader.js';
 
 /**
  * Configuration schema for the code review agent

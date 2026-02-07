@@ -3,7 +3,7 @@
  */
 
 import { describe, it, expect } from 'vitest';
-import { renderTemplate, sanitizeValue } from './prompt-loader';
+import { renderTemplate, sanitizeValue } from '../../src/prompt-loader/index.js';
 
 describe('Prompt Injection Protection', () => {
   describe('sanitizeValue', () => {

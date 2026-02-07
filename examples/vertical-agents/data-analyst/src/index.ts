@@ -9,11 +9,10 @@
 
 import { z } from 'zod';
 import { ChatOpenAI } from '@langchain/openai';
-import { toolBuilder, ToolCategory, ToolRegistry } from '@agentforge/core';
+import { toolBuilder, ToolCategory, ToolRegistry, loadPrompt } from '@agentforge/core';
 import { createReActAgent } from '@agentforge/patterns';
 import type { BaseLanguageModel } from '@langchain/core/language_models/base';
 import type { Tool } from '@langchain/core/tools';
-import { loadPrompt } from './prompt-loader.js';
 
 /**
  * Configuration schema for the data analyst agent

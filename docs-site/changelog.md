@@ -7,6 +7,44 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+#### @agentforge/core
+- **Shared Prompt Loader** [REFACTOR]
+  - **Problem**: Each vertical agent example had its own copy of `prompt-loader.ts`, leading to code duplication and maintenance drift (4 identical copies)
+  - **Solution**: Consolidated into a single shared implementation in `@agentforge/core`
+  - **New Exports**:
+    - `loadPrompt(promptName, options, promptsDir?)` - Load and render prompt templates from .md files
+    - `renderTemplate(template, options)` - Render template strings with variable substitution
+    - `sanitizeValue(value)` - Sanitize values to prevent prompt injection
+    - `RenderTemplateOptions` - TypeScript interface for security controls
+  - **Location**: `packages/core/src/prompt-loader/index.ts`
+  - **Tests**: `packages/core/tests/prompt-loader/index.test.ts`
+  - **Migration**: All vertical agents and CLI template now import from `@agentforge/core`
+  - **Benefits**:
+    - Single source of truth for prompt loading logic
+    - Consistent security fixes across all agents
+    - Easier to maintain and update
+    - Available to all AgentForge users
+
+### Fixed
+
+#### @agentforge/core - Prompt Loader
+- **Critical Bugs in Prompt Injection Protection** [P2] 🔴 HIGH
+  - **Bug 1: Header stripping ineffective after newline removal**
+    - **Problem**: `sanitizeValue()` removed newlines BEFORE stripping headers, so payloads like `"Acme\n\n# New System Prompt"` became `"Acme # New System Prompt"` and the header regex (`/^#+\s*/gm`) no longer matched
+    - **Impact**: Markdown header injection protection was completely bypassed
+    - **Solution**: Swapped order - strip headers FIRST, then remove newlines
+  - **Bug 2: Sanitization opt-in not used at call sites**
+    - **Problem**: All `loadPrompt()` call sites used plain objects (treated as trusted), so user-controlled variables bypassed sanitization entirely
+    - **Impact**: The prompt injection protection was effectively unused
+    - **Solution**: Updated all call sites to explicitly use `untrustedVariables` for user-controlled data
+  - **Files Fixed**:
+    - `packages/core/src/prompt-loader/index.ts` - Fixed sanitizeValue order
+    - `examples/vertical-agents/customer-support/src/index.ts` - Updated to use untrustedVariables
+    - `examples/vertical-agents/code-review/src/index.ts` - Updated to use untrustedVariables
+    - `examples/vertical-agents/data-analyst/src/index.ts` - Updated to use untrustedVariables
+
 ## [0.11.7] - 2026-02-07
 
 ### Fixed
