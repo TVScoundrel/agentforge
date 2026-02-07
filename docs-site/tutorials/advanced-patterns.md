@@ -516,12 +516,12 @@ Add logging to understand workflow:
 ```typescript
 import { withLogging } from '@agentforge/core';
 
-const loggedNode = withLogging(myNode, {
+const loggedNode = withLogging({
   name: 'custom-node',
   level: 'debug',
   logInput: true,
   logOutput: true
-});
+})(myNode);
 ```
 
 ### 3. Handle Failures Gracefully

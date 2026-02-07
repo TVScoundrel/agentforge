@@ -68,7 +68,7 @@ interface PlanExecuteConfig {
   planner: {
     model: BaseChatModel;         // Language model for planning
     systemPrompt?: string;        // Custom planning prompt
-    maxSteps?: number;            // Max steps in a plan (default: 10)
+    maxSteps?: number;            // Max steps in a plan (default: 7)
     includeToolDescriptions?: boolean;  // Include tool info in planning
   };
 
@@ -87,7 +87,7 @@ interface PlanExecuteConfig {
   };
 
   maxIterations?: number;         // Max planning iterations (default: 5)
-  returnIntermediateSteps?: boolean;  // Include execution steps
+  returnIntermediateSteps?: boolean;  // [Not yet implemented] Include execution steps
   verbose?: boolean;              // Enable verbose logging
   checkpointer?: BaseCheckpointSaver;  // State persistence
 }
@@ -118,9 +118,7 @@ Each step should:
     replanThreshold: 0.7
   },
   maxIterations: 30,
-
-  // Return detailed execution trace
-  returnIntermediateSteps: true
+  verbose: true  // Enable verbose logging for detailed execution trace
 });
 ```
 

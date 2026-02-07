@@ -142,14 +142,14 @@ Structured logging for observability:
 ```typescript
 import { withLogging } from '@agentforge/core';
 
-const loggedNode = withLogging(myNode, {
+const loggedNode = withLogging({
   name: 'search-node',
   level: 'info', // 'debug' | 'info' | 'warn' | 'error'
   logInput: true,
   logOutput: true,
   logDuration: true,
   logErrors: true,
-});
+})(myNode);
 ```
 
 ### Error Handling
@@ -173,14 +173,22 @@ const safeNode = withErrorHandler(myNode, {
 Collect performance metrics:
 
 ```typescript
-import { withMetrics } from '@agentforge/core';
+import { withMetrics, createMetrics } from '@agentforge/core';
+
+// Create a shared metrics collector
+const metrics = createMetrics('my-agent');
 
 const monitoredNode = withMetrics(myNode, {
   name: 'search-node',
-  onMetric: (metric) => {
-    console.log(`${metric.name}: ${metric.duration}ms`);
-  },
+  metrics, // Use shared metrics collector
+  trackDuration: true,
+  trackErrors: true,
+  trackInvocations: true,
 });
+
+// Access collected metrics
+const allMetrics = metrics.getMetrics();
+console.log('Metrics:', allMetrics);
 ```
 
 ### Tracing

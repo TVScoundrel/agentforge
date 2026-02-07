@@ -474,23 +474,29 @@ Create SSE formatters for real-time communication:
 ```typescript
 import { createSSEFormatter, createHeartbeat, parseSSEEvent } from '@agentforge/core';
 
-// Create formatter
+// Create formatter with event type mappers
 const formatter = createSSEFormatter({
-  eventPrefix: 'agent',
-  includeId: true
+  eventTypes: {
+    token: (data) => ({ event: 'token', data: data.content }),
+    error: (data) => ({ event: 'error', data: data.message }),
+  },
+  heartbeat: 30000, // Heartbeat interval in ms
+  retry: 3000, // Retry interval in ms
 });
 
-// Format events
-const eventString = formatter.format({
-  event: 'message',
-  data: { content: 'Hello' }
-});
+// Format a stream of events
+async function* eventStream() {
+  yield { content: 'Hello' };
+  yield { content: 'World' };
+}
 
-// Create heartbeat
-const heartbeat = createHeartbeat({
-  intervalMs: 30000,
-  onHeartbeat: () => console.log('ping')
-});
+for await (const eventString of formatter.format(eventStream())) {
+  // Send to client via SSE
+  console.log(eventString);
+}
+
+// Create heartbeat comment
+const heartbeat = createHeartbeat(); // Returns ': heartbeat\n\n'
 
 // Parse SSE events
 const event = parseSSEEvent('event: message\ndata: {"content":"Hello"}\n\n');
@@ -510,33 +516,39 @@ import {
   formatAgentResumedEvent
 } from '@agentforge/core';
 
+const threadId = 'thread-123';
+
 // Format human request event
-const requestEvent = formatHumanRequestEvent({
+const humanRequest = {
   id: 'req-123',
   question: 'Approve this action?',
-  priority: 'high',
+  priority: 'high' as const,
   createdAt: Date.now(),
-  status: 'pending'
-});
+  timeout: 0,
+  status: 'pending' as const
+};
+const requestEvent = formatHumanRequestEvent(humanRequest, threadId);
 
 // Format human response event
-const responseEvent = formatHumanResponseEvent({
-  requestId: 'req-123',
-  response: 'yes',
-  respondedAt: Date.now()
-});
+const responseEvent = formatHumanResponseEvent('req-123', 'yes', threadId);
 
 // Format interrupt event
-const interruptEvent = formatInterruptEvent({
-  reason: 'User requested pause',
-  timestamp: Date.now()
-});
+const interrupt = {
+  type: 'custom' as const,
+  id: 'int-123',
+  createdAt: Date.now(),
+  data: { reason: 'User requested pause' }
+};
+const interruptEvent = formatInterruptEvent(interrupt, threadId);
+
+// Format resume event
+const resumeEvent = formatResumeEvent('int-123', { approved: true }, threadId);
 
 // Format agent waiting event
-const waitingEvent = formatAgentWaitingEvent({
-  requestId: 'req-123',
-  message: 'Waiting for approval'
-});
+const waitingEvent = formatAgentWaitingEvent('Waiting for approval', threadId);
+
+// Format agent resumed event
+const resumedEvent = formatAgentResumedEvent(threadId);
 ```
 
 **Human-in-Loop Event Types:**

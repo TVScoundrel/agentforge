@@ -97,7 +97,7 @@ interface PlanExecuteAgentConfig {
     systemPrompt?: string;
   };
   maxIterations?: number;
-  returnIntermediateSteps?: boolean;
+  returnIntermediateSteps?: boolean;  // Note: Not yet implemented
   verbose?: boolean;
   checkpointer?: BaseCheckpointSaver;
 }

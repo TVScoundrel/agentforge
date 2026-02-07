@@ -482,7 +482,9 @@ import {
   calculator,
   fileReader,
   fileWriter,
-  currentDateTime
+  currentDateTime,
+  stringCaseConverter,
+  emailValidator
 } from '@agentforge/tools';
 
 // Registry for a web scraping agent
@@ -490,7 +492,7 @@ const webScraperRegistry = new ToolRegistry();
 webScraperRegistry.registerMany([
   httpGet,
   jsonParser,
-  stringCase,
+  stringCaseConverter,
   fileWriter  // Save scraped data
 ]);
 
@@ -509,7 +511,7 @@ generalRegistry.registerMany([
   calculator,
   currentDateTime,
   httpGet,
-  validateEmail
+  emailValidator
 ]);
 
 // Create specialized agents with different toolsets
