@@ -78,14 +78,14 @@ export async function agentCreateReusableCommand(
     // Move files from template root to src/
     logger.startSpinner('Organizing files...');
     const fs = await import('fs-extra');
-    
-    // Move index.ts and prompt-loader.ts to src/
+
+    // Move index.ts and test file to src/
+    // Note: prompt-loader.ts was removed in favor of shared @agentforge/core loadPrompt
     const srcDir = path.join(agentDir, 'src');
     await fs.ensureDir(srcDir);
     await fs.move(path.join(agentDir, 'index.ts'), path.join(srcDir, 'index.ts'));
-    await fs.move(path.join(agentDir, 'prompt-loader.ts'), path.join(srcDir, 'prompt-loader.ts'));
     await fs.move(path.join(agentDir, 'index.test.ts'), path.join(srcDir, 'index.test.ts'));
-    
+
     logger.succeedSpinner('Files organized');
 
     logger.newLine();

@@ -1064,8 +1064,7 @@ A fully-featured customer support agent demonstrating:
 - ✅ 24 comprehensive tests demonstrating reusability
 
 **Key Files:**
-- `src/index.ts` - Agent factory function
-- `src/prompt-loader.ts` - Prompt template utility
+- `src/index.ts` - Agent factory function (uses `loadPrompt` from `@agentforge/core`)
 - `prompts/system.md` - External prompt with `{{variables}}`
 - `src/index.test.ts` - Comprehensive test suite
 - `README.md` - Full documentation
@@ -1085,8 +1084,7 @@ A configurable code review agent demonstrating:
 - ✅ 26 comprehensive tests demonstrating reusability
 
 **Key Files:**
-- `src/index.ts` - Agent factory function
-- `src/prompt-loader.ts` - Prompt template utility
+- `src/index.ts` - Agent factory function (uses `loadPrompt` from `@agentforge/core`)
 - `prompts/system.md` - External prompt with `{{variables}}`
 - `src/index.test.ts` - Comprehensive test suite
 - `README.md` - Full documentation
@@ -1106,8 +1104,7 @@ A flexible data analyst agent demonstrating:
 - ✅ 28 comprehensive tests demonstrating reusability
 
 **Key Files:**
-- `src/index.ts` - Agent factory function
-- `src/prompt-loader.ts` - Prompt template utility
+- `src/index.ts` - Agent factory function (uses `loadPrompt` from `@agentforge/core`)
 - `prompts/system.md` - External prompt with `{{variables}}`
 - `src/index.test.ts` - Comprehensive test suite
 - `README.md` - Full documentation

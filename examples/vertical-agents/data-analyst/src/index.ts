@@ -13,6 +13,8 @@ import { toolBuilder, ToolCategory, ToolRegistry, loadPrompt } from '@agentforge
 import { createReActAgent } from '@agentforge/patterns';
 import type { BaseLanguageModel } from '@langchain/core/language_models/base';
 import type { Tool } from '@langchain/core/tools';
+import { fileURLToPath } from 'url';
+import { dirname, join } from 'path';
 
 /**
  * Configuration schema for the data analyst agent
@@ -81,6 +83,12 @@ function buildSystemPrompt(config: DataAnalystConfig): string {
     return systemPrompt;
   }
 
+  // Resolve prompts directory relative to this module (not cwd)
+  // This ensures prompts are found when the package is published/consumed
+  const __filename = fileURLToPath(import.meta.url);
+  const __dirname = dirname(__filename);
+  const promptsDir = join(__dirname, '../../prompts');
+
   // Load and render prompt template with variables
   // SECURITY: organizationName and dataTypes are treated as untrusted since they
   // can be set by users. Feature flags and derived booleans are trusted.
@@ -100,7 +108,7 @@ function buildSystemPrompt(config: DataAnalystConfig): string {
       organizationName,
       dataTypes,
     },
-  });
+  }, promptsDir);
 }
 
 /**

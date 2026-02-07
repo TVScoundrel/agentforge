@@ -56,6 +56,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
     - `examples/vertical-agents/data-analyst/src/index.ts` - Updated to use untrustedVariables
     - `packages/cli/templates/reusable-agent/index.ts` - Updated to use untrustedVariables and promptsDir
 
+#### @agentforge/cli
+- **[P1] Reusable Agent Creation Failure** 🔴 CRITICAL
+  - **Problem**: `agent:create-reusable` command tried to move `prompt-loader.ts` file that no longer exists in template (removed during consolidation)
+  - **Impact**: CLI command would throw `fs.move` error and fail after template copy
+  - **Solution**: Removed `prompt-loader.ts` move operation from file organization step
+  - **Files Fixed**:
+    - `packages/cli/src/commands/agent/create-reusable.ts` - Removed obsolete file move
+    - `packages/cli/tests/commands/agent/create-reusable.test.ts` - Updated test expectations
+
 #### Documentation
 - **Outdated Prompt Loader References** [P2]
   - **Problem**: Documentation and example READMEs still referenced deleted local `prompt-loader.ts` files after consolidation into `@agentforge/core`
@@ -66,6 +75,25 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
     - `examples/vertical-agents/customer-support/README.md` - Updated import and added `promptsDir` resolution
     - `examples/vertical-agents/code-review/README.md` - Updated import and added `promptsDir` resolution
     - `examples/vertical-agents/data-analyst/README.md` - Updated import and added `promptsDir` resolution
+
+- **Outdated File Tree Documentation** [P2]
+  - **Problem**: CLI README and vertical agents guide still listed `src/prompt-loader.ts` in file trees and key files sections
+  - **Impact**: Documentation showed files that are no longer created/present
+  - **Solution**: Removed `prompt-loader.ts` references and updated to reflect shared `@agentforge/core` loader
+  - **Files Updated**:
+    - `packages/cli/README.md` - Updated scaffolded file tree, added note about shared loader
+    - `docs-site/guide/advanced/vertical-agents.md` - Updated key files sections for all 3 example agents
+
+#### Example Agents
+- **[P2] Missing promptsDir in Example Agents**
+  - **Problem**: All 3 example agents called `loadPrompt` without `promptsDir` parameter, falling back to `process.cwd()`
+  - **Impact**: When consumed as published packages, prompts wouldn't resolve (would look in consumer's cwd instead of package directory)
+  - **Solution**: Added `promptsDir` resolution using `import.meta.url` pattern to all example agents
+  - **Files Fixed**:
+    - `examples/vertical-agents/customer-support/src/index.ts` - Added promptsDir derived from module path
+    - `examples/vertical-agents/code-review/src/index.ts` - Added promptsDir derived from module path
+    - `examples/vertical-agents/data-analyst/src/index.ts` - Added promptsDir derived from module path
+  - **Result**: Example agents now work correctly when consumed as library dependencies
 
 ## [0.11.7] - 2026-02-07
 

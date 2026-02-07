@@ -164,8 +164,7 @@ agentforge agent:create-reusable data-analyst --description "Analyze data and ge
 customer-support/
 ├── src/
 │   ├── index.ts           # Agent factory function
-│   ├── index.test.ts      # Comprehensive tests
-│   └── prompt-loader.ts   # Prompt template utility
+│   └── index.test.ts      # Comprehensive tests
 ├── prompts/
 │   └── system.md          # External prompt template
 ├── package.json
@@ -173,6 +172,8 @@ customer-support/
 ├── vitest.config.ts
 └── README.md
 ```
+
+**Note:** The agent uses `loadPrompt` from `@agentforge/core` for secure prompt template loading with built-in injection protection.
 
 **Next Steps After Creation:**
 1. `cd customer-support`

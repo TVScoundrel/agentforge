@@ -123,10 +123,7 @@ describe('agent:create-reusable command', () => {
       expect.stringContaining('index.ts'),
       expect.stringContaining('src/index.ts')
     );
-    expect(fsExtra.move).toHaveBeenCalledWith(
-      expect.stringContaining('prompt-loader.ts'),
-      expect.stringContaining('src/prompt-loader.ts')
-    );
+    // Note: prompt-loader.ts is no longer moved (consolidated into @agentforge/core)
     expect(fsExtra.move).toHaveBeenCalledWith(
       expect.stringContaining('index.test.ts'),
       expect.stringContaining('src/index.test.ts')
