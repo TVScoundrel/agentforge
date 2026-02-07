@@ -3,6 +3,8 @@ import { createReActAgent } from '@agentforge/patterns';
 import { toolBuilder, ToolCategory, ToolRegistry, loadPrompt } from '@agentforge/core';
 import type { BaseLanguageModel } from '@langchain/core/language_models/base';
 import { ChatOpenAI } from '@langchain/openai';
+import { fileURLToPath } from 'url';
+import { dirname, join } from 'path';
 
 /**
  * Configuration schema for {{AGENT_NAME_PASCAL}}Agent
@@ -90,12 +92,25 @@ function buildSystemPrompt(config: {{AGENT_NAME_PASCAL}}Config): string {
     return config.systemPrompt;
   }
 
+  // Resolve prompts directory relative to this module (not cwd)
+  // This ensures prompts are found when the package is published
+  const __filename = fileURLToPath(import.meta.url);
+  const __dirname = dirname(__filename);
+  const promptsDir = join(__dirname, '../prompts');
+
   // Load prompt from external file with variable substitution
+  // SECURITY: Distinguish between trusted (config) and untrusted (user-supplied) variables
   return loadPrompt('system', {
-    organizationName: config.organizationName || 'your organization',
-    description: config.description || '{{AGENT_DESCRIPTION}}',
-    enableExampleFeature: config.enableExampleFeature,
-  });
+    // Trusted variables: from config/hardcoded values (NOT sanitized)
+    trustedVariables: {
+      enableExampleFeature: config.enableExampleFeature,
+    },
+    // Untrusted variables: potentially user-supplied (WILL be sanitized)
+    untrustedVariables: {
+      organizationName: config.organizationName || 'your organization',
+      description: config.description || '{{AGENT_DESCRIPTION}}',
+    },
+  }, promptsDir);
 }
 
 /**

@@ -303,38 +303,14 @@ When you encounter issues you cannot resolve, use the `ask-human` tool to escala
 {{/if}}
 ```
 
-**Prompt Loader Utility:**
-```typescript
-import { readFileSync } from 'fs';
-import { join } from 'path';
-
-export function renderTemplate(template: string, variables: Record<string, any>): string {
-  let result = template;
-
-  // Handle conditional blocks: {{#if variable}}...{{/if}}
-  const conditionalRegex = /\{\{#if\s+(\w+)\}\}([\s\S]*?)\{\{\/if\}\}/g;
-  result = result.replace(conditionalRegex, (match, varName, content) => {
-    return variables[varName] ? content : '';
-  });
-
-  // Handle simple variables: {{variable}}
-  const variableRegex = /\{\{(\w+)\}\}/g;
-  result = result.replace(variableRegex, (match, varName) => {
-    return variables[varName] !== undefined ? String(variables[varName]) : '';
-  });
-
-  return result;
-}
-
-export function loadPrompt(promptName: string, variables: Record<string, any> = {}): string {
-  const template = readFileSync(join(__dirname, '..', 'prompts', `${promptName}.md`), 'utf-8');
-  return renderTemplate(template, variables);
-}
-```
-
 **Usage in Agent:**
+
+AgentForge provides a built-in `loadPrompt` utility in `@agentforge/core` that handles template loading with security features:
+
 ```typescript
-import { loadPrompt } from './prompt-loader';
+import { loadPrompt } from '@agentforge/core';
+import { fileURLToPath } from 'url';
+import { dirname, join } from 'path';
 
 export interface PromptConfig {
   role?: string;
@@ -352,22 +328,34 @@ export function buildSystemPrompt(config: CustomerSupportConfig): string {
     return systemPrompt;
   }
 
+  // Resolve prompts directory relative to this module
+  const __filename = fileURLToPath(import.meta.url);
+  const __dirname = dirname(__filename);
+  const promptsDir = join(__dirname, '../prompts');
+
   // Load and render prompt from external .md file
+  // SECURITY: Distinguish between trusted (config) and untrusted (user-supplied) variables
   return loadPrompt('system', {
-    agentRole: 'customer support agent',
-    companyName,
-    enableEscalation: enableHumanEscalation,
-    responsibilities: [
-      'Greet customers warmly',
-      'Listen actively to understand issues',
-      'Provide clear solutions',
-    ],
-    guidelines: [
-      'Be polite and empathetic',
-      'Use simple language',
-      'Document all interactions',
-    ],
-  });
+    // Trusted variables: from config/hardcoded values (NOT sanitized)
+    trustedVariables: {
+      agentRole: 'customer support agent',
+      enableEscalation: enableHumanEscalation,
+      responsibilities: [
+        'Greet customers warmly',
+        'Listen actively to understand issues',
+        'Provide clear solutions',
+      ],
+      guidelines: [
+        'Be polite and empathetic',
+        'Use simple language',
+        'Document all interactions',
+      ],
+    },
+    // Untrusted variables: potentially user-supplied (WILL be sanitized)
+    untrustedVariables: {
+      companyName,
+    },
+  }, promptsDir);
 }
 
 // Usage

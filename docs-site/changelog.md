@@ -39,11 +39,33 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
     - **Problem**: All `loadPrompt()` call sites used plain objects (treated as trusted), so user-controlled variables bypassed sanitization entirely
     - **Impact**: The prompt injection protection was effectively unused
     - **Solution**: Updated all call sites to explicitly use `untrustedVariables` for user-controlled data
+  - **Bug 3: Untrusted variables stringified before conditionals, making false/0 truthy**
+    - **Problem**: `renderTemplate()` sanitized untrusted values into strings and then used the merged variables for `{{#if ...}}` conditionals. This made `false` → `'false'` (truthy) and `0` → `'0'` (truthy)
+    - **Impact**: Untrusted boolean/numeric variables didn't work correctly in conditionals
+    - **Solution**: Evaluate conditionals against RAW values, only use sanitized values for substitution
+  - **Bug 4: CLI template bypassed sanitization and used wrong promptsDir**
+    - **Problem 1**: Reusable-agent template passed plain object to `loadPrompt`, so user-supplied values weren't sanitized
+    - **Problem 2**: Template didn't pass `promptsDir`, so published packages would look for `./prompts` in consumer's cwd
+    - **Impact**: Generated agents had prompt injection vulnerability and wouldn't work when published
+    - **Solution**: Updated template to use `trustedVariables`/`untrustedVariables` and pass `promptsDir` derived from `import.meta.url`
   - **Files Fixed**:
-    - `packages/core/src/prompt-loader/index.ts` - Fixed sanitizeValue order
+    - `packages/core/src/prompt-loader/index.ts` - Fixed sanitizeValue order, conditional evaluation, and added tests
+    - `packages/core/tests/prompt-loader/index.test.ts` - Added tests for false/0 in conditionals
     - `examples/vertical-agents/customer-support/src/index.ts` - Updated to use untrustedVariables
     - `examples/vertical-agents/code-review/src/index.ts` - Updated to use untrustedVariables
     - `examples/vertical-agents/data-analyst/src/index.ts` - Updated to use untrustedVariables
+    - `packages/cli/templates/reusable-agent/index.ts` - Updated to use untrustedVariables and promptsDir
+
+#### Documentation
+- **Outdated Prompt Loader References** [P2]
+  - **Problem**: Documentation and example READMEs still referenced deleted local `prompt-loader.ts` files after consolidation into `@agentforge/core`
+  - **Impact**: Users following documentation would get import errors and outdated security patterns
+  - **Solution**: Updated all documentation to use shared `loadPrompt` from `@agentforge/core` with proper security API
+  - **Files Updated**:
+    - `docs-site/guide/advanced/vertical-agents.md` - Updated to use `@agentforge/core` import and security-aware API
+    - `examples/vertical-agents/customer-support/README.md` - Updated import and added `promptsDir` resolution
+    - `examples/vertical-agents/code-review/README.md` - Updated import and added `promptsDir` resolution
+    - `examples/vertical-agents/data-analyst/README.md` - Updated import and added `promptsDir` resolution
 
 ## [0.11.7] - 2026-02-07
 

@@ -207,13 +207,24 @@ You can either:
 3. **Add new templates**: Create new `.md` files and load them
 
 ```typescript
-import { loadPrompt } from './prompt-loader';
+import { loadPrompt } from '@agentforge/core';
+import { fileURLToPath } from 'url';
+import { dirname, join } from 'path';
 
-// Load custom prompt
+// Resolve prompts directory relative to this module
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+const promptsDir = join(__dirname, '../prompts');
+
+// Load custom prompt with security-aware variable handling
 const customPrompt = loadPrompt('my-custom-prompt', {
-  teamName: 'Security Team',
-  strictMode: true,
-});
+  trustedVariables: {
+    strictMode: true,
+  },
+  untrustedVariables: {
+    teamName: 'Security Team',
+  },
+}, promptsDir);
 ```
 
 ## Examples

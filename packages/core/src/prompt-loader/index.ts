@@ -116,39 +116,47 @@ export function renderTemplate(
 ): string {
   // Backwards compatibility: if options is a plain object without
   // trustedVariables/untrustedVariables, treat all as trusted
-  let allVariables: Record<string, any>;
-  
+  let rawVariables: Record<string, any>;
+  let sanitizedVariables: Record<string, any>;
+
   if ('trustedVariables' in options || 'untrustedVariables' in options) {
     const opts = options as RenderTemplateOptions;
-    
-    // Sanitize untrusted variables
+
+    // Keep raw values for conditional evaluation
+    rawVariables = {
+      ...opts.trustedVariables,
+      ...opts.untrustedVariables,
+    };
+
+    // Sanitize untrusted variables for substitution
     const sanitizedUntrusted: Record<string, any> = {};
     if (opts.untrustedVariables) {
       for (const [key, value] of Object.entries(opts.untrustedVariables)) {
         sanitizedUntrusted[key] = sanitizeValue(value);
       }
     }
-    
+
     // Merge: trusted variables are used as-is, untrusted are sanitized
-    allVariables = {
+    sanitizedVariables = {
       ...opts.trustedVariables,
       ...sanitizedUntrusted,
     };
   } else {
     // Backwards compatible: treat all as trusted
-    allVariables = options as Record<string, any>;
+    rawVariables = options as Record<string, any>;
+    sanitizedVariables = options as Record<string, any>;
   }
 
   let result = template;
 
-  // Handle conditional blocks: {{#if variable}}...{{/if}}
+  // Handle conditional blocks using RAW values (prevents false/0 from becoming truthy strings)
   result = result.replace(/\{\{#if\s+(\w+)\}\}([\s\S]*?)\{\{\/if\}\}/g, (_, varName, content) => {
-    return allVariables[varName] ? content : '';
+    return rawVariables[varName] ? content : '';
   });
 
-  // Handle simple variable substitution: {{variable}}
+  // Handle simple variable substitution using SANITIZED values
   result = result.replace(/\{\{(\w+)\}\}/g, (_, varName) => {
-    const value = allVariables[varName];
+    const value = sanitizedVariables[varName];
     if (value === undefined || value === null) return '';
     return String(value);
   });
