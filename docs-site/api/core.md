@@ -590,13 +590,13 @@ if (isHumanRequestInterrupt(interrupt)) {
   console.log('Human input needed:', interrupt.data.question);
 
   // In LangGraph, interrupts are handled via checkpointer
-  // Resume by invoking with the response value
+  // Resume by passing the response as input using Command
+  const { Command } = await import('@langchain/langgraph');
+
   const result = await app.invoke(
-    null,
+    new Command({ resume: 'approved' }),
     {
-      configurable: { thread_id: 'thread-123' },
-      // Provide the human's response to resume execution
-      input: { response: 'approved' }
+      configurable: { thread_id: 'thread-123' }
     }
   );
 }
@@ -652,14 +652,25 @@ const checkpointer = new MemorySaver();
 const app = agent.compile({ checkpointer });
 
 // Execute - will pause when askHuman is called
-try {
-  const result = await app.invoke(input, config);
-} catch (error) {
-  if (isNodeInterrupt(error)) {
-    // Handle human request via SSE
-    const request = extractHumanRequest(error);
-    // Send to frontend, wait for response, resume execution
-  }
+// LangGraph saves the interrupt to the checkpoint automatically
+const result = await app.invoke(input, {
+  configurable: { thread_id: 'conversation-123' }
+});
+
+// When interrupted, get the state to access the interrupt
+const state = await app.getState({ configurable: { thread_id: 'conversation-123' } });
+
+// Check for interrupts in the state
+if (state.next && state.next.length > 0) {
+  // Graph is interrupted - handle the human request
+  // The interrupt data is available in state.tasks
+  // Send to frontend via SSE, wait for response, then resume:
+
+  const { Command } = await import('@langchain/langgraph');
+  const resumeResult = await app.invoke(
+    new Command({ resume: userResponse }),
+    { configurable: { thread_id: 'conversation-123' } }
+  );
 }
 ```
 

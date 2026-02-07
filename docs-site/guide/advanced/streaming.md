@@ -50,11 +50,22 @@ const stream = await agent.stream({
 });
 
 for await (const chunk of stream) {
-  if (chunk.agent) {
-    console.log('Agent:', chunk.agent.messages);
+  // Check for new messages
+  if (chunk.messages && chunk.messages.length > 0) {
+    const lastMessage = chunk.messages[chunk.messages.length - 1];
+    console.log('Message:', lastMessage.role, lastMessage.content);
   }
-  if (chunk.tools) {
-    console.log('Tool:', chunk.tools.name, chunk.tools.output);
+
+  // Check for new tool calls (actions)
+  if (chunk.actions && chunk.actions.length > 0) {
+    const lastAction = chunk.actions[chunk.actions.length - 1];
+    console.log('Tool Call:', lastAction.name, lastAction.arguments);
+  }
+
+  // Check for tool results (observations)
+  if (chunk.observations && chunk.observations.length > 0) {
+    const lastObservation = chunk.observations[chunk.observations.length - 1];
+    console.log('Tool Result:', lastObservation.result);
   }
 }
 ```
