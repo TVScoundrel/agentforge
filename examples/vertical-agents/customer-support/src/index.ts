@@ -75,12 +75,18 @@ function buildSystemPrompt(config: CustomerSupportConfig): string {
   }
 
   // Load and render prompt template with variables
+  // SECURITY: companyName and supportEmail are treated as untrusted since they
+  // can be set by users. Feature flags are trusted (booleans from config).
   return loadPrompt('system', {
-    companyName,
-    supportEmail,
-    enableHumanEscalation,
-    enableTicketCreation,
-    enableKnowledgeBase,
+    trustedVariables: {
+      enableHumanEscalation,
+      enableTicketCreation,
+      enableKnowledgeBase,
+    },
+    untrustedVariables: {
+      companyName,
+      supportEmail,
+    },
   });
 }
 

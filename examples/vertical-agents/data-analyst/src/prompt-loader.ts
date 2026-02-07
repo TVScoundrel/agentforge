@@ -45,11 +45,12 @@ export function sanitizeValue(value: any): string {
 
   let sanitized = String(value);
 
+  // Remove markdown headers FIRST (before newline removal)
+  // This catches patterns like "Acme\n\n# New System Prompt"
+  sanitized = sanitized.replace(/^#+\s*/gm, '');
+
   // Remove newlines and carriage returns (prevents multi-line injection)
   sanitized = sanitized.replace(/[\r\n]+/g, ' ');
-
-  // Remove markdown headers (prevents structure hijacking)
-  sanitized = sanitized.replace(/^#+\s*/gm, '');
 
   // Trim excessive whitespace
   sanitized = sanitized.trim().replace(/\s+/g, ' ');

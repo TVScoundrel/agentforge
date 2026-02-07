@@ -81,20 +81,26 @@ function buildSystemPrompt(config: DataAnalystConfig): string {
   if (systemPrompt) {
     return systemPrompt;
   }
-  
+
   // Load and render prompt template with variables
+  // SECURITY: organizationName and dataTypes are treated as untrusted since they
+  // can be set by users. Feature flags and derived booleans are trusted.
   return loadPrompt('system', {
-    organizationName,
-    dataTypes,
-    enableStatisticalAnalysis,
-    enableDataValidation,
-    enableVisualization,
-    enableHumanEscalation,
-    analysisDepth,
-    quickAnalysis: analysisDepth === 'quick',
-    standardAnalysis: analysisDepth === 'standard',
-    deepAnalysis: analysisDepth === 'deep',
-    confidentialData,
+    trustedVariables: {
+      enableStatisticalAnalysis,
+      enableDataValidation,
+      enableVisualization,
+      enableHumanEscalation,
+      analysisDepth,
+      quickAnalysis: analysisDepth === 'quick',
+      standardAnalysis: analysisDepth === 'standard',
+      deepAnalysis: analysisDepth === 'deep',
+      confidentialData,
+    },
+    untrustedVariables: {
+      organizationName,
+      dataTypes,
+    },
   });
 }
 

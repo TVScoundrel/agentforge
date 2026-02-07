@@ -77,16 +77,22 @@ function buildSystemPrompt(config: CodeReviewConfig): string {
   if (systemPrompt) {
     return systemPrompt;
   }
-  
+
   // Load and render prompt template with variables
+  // SECURITY: teamName and languages are treated as untrusted since they
+  // can be set by users. Feature flags are trusted (booleans from config).
   return loadPrompt('system', {
-    teamName,
-    languages,
-    enableSecurityChecks,
-    enablePerformanceChecks,
-    enableHumanEscalation,
-    strictMode,
-    autoApprove,
+    trustedVariables: {
+      enableSecurityChecks,
+      enablePerformanceChecks,
+      enableHumanEscalation,
+      strictMode,
+      autoApprove,
+    },
+    untrustedVariables: {
+      teamName,
+      languages,
+    },
   });
 }
 
