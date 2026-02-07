@@ -83,7 +83,7 @@ function buildSystemPrompt(config: CodeReviewConfig): string {
   // This ensures prompts are found when the package is published/consumed
   const __filename = fileURLToPath(import.meta.url);
   const __dirname = dirname(__filename);
-  const promptsDir = join(__dirname, '../../prompts');
+  const promptsDir = join(__dirname, '../prompts');
 
   // Load and render prompt template with variables
   // SECURITY: teamName and languages are treated as untrusted since they

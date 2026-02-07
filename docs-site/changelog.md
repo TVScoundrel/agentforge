@@ -90,10 +90,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - **Impact**: When consumed as published packages, prompts wouldn't resolve (would look in consumer's cwd instead of package directory)
   - **Solution**: Added `promptsDir` resolution using `import.meta.url` pattern to all example agents
   - **Files Fixed**:
-    - `examples/vertical-agents/customer-support/src/index.ts` - Added promptsDir derived from module path
-    - `examples/vertical-agents/code-review/src/index.ts` - Added promptsDir derived from module path
-    - `examples/vertical-agents/data-analyst/src/index.ts` - Added promptsDir derived from module path
+    - `examples/vertical-agents/customer-support/src/index.ts` - Added promptsDir using `join(__dirname, '../prompts')`
+    - `examples/vertical-agents/code-review/src/index.ts` - Added promptsDir using `join(__dirname, '../prompts')`
+    - `examples/vertical-agents/data-analyst/src/index.ts` - Added promptsDir using `join(__dirname, '../prompts')`
   - **Result**: Example agents now work correctly when consumed as library dependencies
+  - **Note**: Initial implementation used `'../../prompts'` (wrong), corrected to `'../prompts'` to properly resolve from `src/` to sibling `prompts/` directory
 
 ## [0.11.7] - 2026-02-07
 
