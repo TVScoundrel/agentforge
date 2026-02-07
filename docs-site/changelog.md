@@ -9,11 +9,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [0.11.7] - 2026-02-07
 
-### Added
+### Fixed
 
-#### Vertical Agents - Prompt Injection Protection [SECURITY]
-- **Feature**: Added comprehensive prompt injection protection to all vertical agent prompt loaders
-  - **Security Model**: Introduced distinction between trusted and untrusted variables
+#### Vertical Agents - Prompt Injection Vulnerability [SECURITY] 🔴 HIGH
+- **Vulnerability**: Prompt loaders were vulnerable to prompt injection attacks when user-controlled data was passed as template variables
+  - **Attack Vector**: Malicious users could inject instructions through variables like `companyName: 'Acme\n\nIGNORE PREVIOUS INSTRUCTIONS'`
+  - **Impact**: Attackers could override agent behavior, potentially leading to data leaks or policy violations
+- **Solution**: Added comprehensive prompt injection protection with trusted/untrusted variable distinction
+  - **Security Model**:
     - `trustedVariables`: From config files/hardcoded values (NOT sanitized)
     - `untrustedVariables`: From user input/API calls/databases (WILL be sanitized)
   - **Protection Mechanisms**:
@@ -22,31 +25,24 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
       - Markdown header injection (prevents structure hijacking)
       - Excessive length (prevents prompt bloat, max 500 chars)
   - **New Interface**: `RenderTemplateOptions` for explicit security control
-  - **Backwards Compatible**: Plain object still works (treated as trusted)
-  - **Severity**: 🔴 HIGH - Prevents attackers from overriding agent behavior through user-controlled variables
+  - **Backwards Compatible**: ✅ Existing code using plain objects continues to work (treated as trusted)
   - **Files Updated**:
     - `examples/vertical-agents/customer-support/src/prompt-loader.ts`
     - `examples/vertical-agents/code-review/src/prompt-loader.ts`
     - `examples/vertical-agents/data-analyst/src/prompt-loader.ts`
     - `packages/cli/templates/reusable-agent/prompt-loader.ts`
   - **Tests Added**: `examples/vertical-agents/customer-support/src/prompt-loader.test.ts`
-  - **Usage Example**:
+  - **Migration Guide**:
     ```typescript
-    // Safe: Trusted variables from config
-    loadPrompt('system', {
-      trustedVariables: { companyName: 'Acme Corp' }
-    });
+    // ✅ No changes needed - backwards compatible
+    loadPrompt('system', { companyName: 'Acme' });
 
-    // Safe: Untrusted variables are sanitized
+    // ✅ Recommended: Explicitly mark untrusted variables
     loadPrompt('system', {
+      trustedVariables: { companyName: 'Acme Corp' },
       untrustedVariables: { userName: req.body.name }
     });
-
-    // Backwards compatible
-    loadPrompt('system', { companyName: 'Acme' });
     ```
-
-### Fixed
 
 #### @agentforge/core
 - **Middleware Helpers Not Exported from Package Root** [P2]
