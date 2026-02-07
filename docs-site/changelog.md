@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.11.8] - 2026-02-07
+
 ### Added
 
 #### @agentforge/core
@@ -95,6 +97,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
     - `examples/vertical-agents/data-analyst/src/index.ts` - Added promptsDir using `join(__dirname, '../prompts')`
   - **Result**: Example agents now work correctly when consumed as library dependencies
   - **Note**: Initial implementation used `'../../prompts'` (wrong), corrected to `'../prompts'` to properly resolve from `src/` to sibling `prompts/` directory
+
+### Published
+- All packages published to npm registry at version 0.11.8:
+  - @agentforge/core@0.11.8
+  - @agentforge/patterns@0.11.8
+  - @agentforge/tools@0.11.8
+  - @agentforge/testing@0.11.8
+  - @agentforge/cli@0.11.8
 
 ## [0.11.7] - 2026-02-07
 

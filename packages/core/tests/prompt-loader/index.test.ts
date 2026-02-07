@@ -30,7 +30,7 @@ describe('Prompt Injection Protection', () => {
       const longString = 'A'.repeat(600);
       const result = sanitizeValue(longString);
       expect(result.length).toBeLessThanOrEqual(503); // 500 + '...'
-      expect(result).toEndWith('...');
+      expect(result.endsWith('...')).toBe(true);
     });
 
     it('should handle null and undefined', () => {
