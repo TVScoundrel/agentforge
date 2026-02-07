@@ -114,6 +114,27 @@ export {
   type ProductionPresetOptions,
   type DevelopmentPresetOptions,
   type TestingPresetOptions,
+  // Individual middleware helpers
+  withLogging,
+  type LoggingOptions,
+  withCache,
+  createSharedCache,
+  type CachingOptions,
+  type CacheKeyGenerator,
+  type EvictionStrategy,
+  withRateLimit,
+  createSharedRateLimiter,
+  type RateLimitOptions,
+  type RateLimitStrategy,
+  withValidation,
+  type ValidationOptions,
+  type ValidationMode,
+  type ValidatorFunction,
+  type ValidationErrorHandler,
+  withConcurrency,
+  createSharedConcurrencyController,
+  type ConcurrencyOptions,
+  // Note: Priority is already exported from tools/index.js, so we don't re-export it here
 } from './middleware/index.js';
 
 export {

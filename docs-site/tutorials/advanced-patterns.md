@@ -244,7 +244,10 @@ Create completely custom workflows by composing nodes manually:
 
 ```typescript
 import { StateGraph, END } from '@langchain/langgraph';
-import { createReasoningNode, createActionNode } from '@agentforge/patterns';
+import { ChatOpenAI } from '@langchain/openai';
+
+// Initialize model
+const model = new ChatOpenAI({ model: 'gpt-4' });
 
 // Define custom state
 interface CustomState {
@@ -255,12 +258,20 @@ interface CustomState {
   finalOutput?: string;
 }
 
+// Helper function to execute a step
+async function executeTool(step: string): Promise<string> {
+  // In a real implementation, this would call actual tools
+  const response = await model.invoke(`Execute this step: ${step}`);
+  return response.content as string;
+}
+
 // Create custom nodes
 async function planningNode(state: CustomState): Promise<CustomState> {
-  const plan = await model.invoke(`Create a plan for: ${state.input}`);
+  const response = await model.invoke(`Create a plan for: ${state.input}`);
+  const plan = (response.content as string).split('\n').filter(line => line.trim());
   return {
     ...state,
-    plan: plan.split('\n'),
+    plan,
     currentStep: 0
   };
 }
@@ -277,10 +288,10 @@ async function executionNode(state: CustomState): Promise<CustomState> {
 }
 
 async function aggregationNode(state: CustomState): Promise<CustomState> {
-  const finalOutput = await model.invoke(
+  const response = await model.invoke(
     `Summarize results: ${state.results.join('\n')}`
   );
-  return { ...state, finalOutput };
+  return { ...state, finalOutput: response.content as string };
 }
 
 // Build workflow
