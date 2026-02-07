@@ -40,7 +40,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
     - **Impact**: The prompt injection protection was effectively unused
     - **Solution**: Updated all call sites to explicitly use `untrustedVariables` for user-controlled data
   - **Bug 3: Untrusted variables stringified before conditionals, making false/0 truthy**
-    - **Problem**: `renderTemplate()` sanitized untrusted values into strings and then used the merged variables for `{{#if ...}}` conditionals. This made `false` → `'false'` (truthy) and `0` → `'0'` (truthy)
+    - **Problem**: `renderTemplate()` sanitized untrusted values into strings and then used the merged variables for <code v-pre>{{#if ...}}</code> conditionals. This made `false` → `'false'` (truthy) and `0` → `'0'` (truthy)
     - **Impact**: Untrusted boolean/numeric variables didn't work correctly in conditionals
     - **Solution**: Evaluate conditionals against RAW values, only use sanitized values for substitution
   - **Bug 4: CLI template bypassed sanitization and used wrong promptsDir**
@@ -1339,7 +1339,7 @@ This feature was removed in a later version. See [Unreleased] section for migrat
 - **New Command: `agent:create-reusable`** - Scaffold production-ready reusable agents
   - Interactive prompts for agent name, description, and author
   - Complete template with factory function pattern
-  - External prompt templates (`.md` files with `{{variable}}` placeholders)
+  - External prompt templates (`.md` files with <code v-pre>{{variable}}</code> placeholders)
   - Prompt loader utility for template rendering
   - Comprehensive test suite (14 test cases)
   - Configuration validation with Zod
