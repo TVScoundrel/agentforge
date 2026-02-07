@@ -9,6 +9,43 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [0.11.7] - 2026-02-07
 
+### Added
+
+#### Vertical Agents - Prompt Injection Protection [SECURITY]
+- **Feature**: Added comprehensive prompt injection protection to all vertical agent prompt loaders
+  - **Security Model**: Introduced distinction between trusted and untrusted variables
+    - `trustedVariables`: From config files/hardcoded values (NOT sanitized)
+    - `untrustedVariables`: From user input/API calls/databases (WILL be sanitized)
+  - **Protection Mechanisms**:
+    - `sanitizeValue()` function prevents:
+      - Newline injection (prevents multi-line instruction injection)
+      - Markdown header injection (prevents structure hijacking)
+      - Excessive length (prevents prompt bloat, max 500 chars)
+  - **New Interface**: `RenderTemplateOptions` for explicit security control
+  - **Backwards Compatible**: Plain object still works (treated as trusted)
+  - **Severity**: 🔴 HIGH - Prevents attackers from overriding agent behavior through user-controlled variables
+  - **Files Updated**:
+    - `examples/vertical-agents/customer-support/src/prompt-loader.ts`
+    - `examples/vertical-agents/code-review/src/prompt-loader.ts`
+    - `examples/vertical-agents/data-analyst/src/prompt-loader.ts`
+    - `packages/cli/templates/reusable-agent/prompt-loader.ts`
+  - **Tests Added**: `examples/vertical-agents/customer-support/src/prompt-loader.test.ts`
+  - **Usage Example**:
+    ```typescript
+    // Safe: Trusted variables from config
+    loadPrompt('system', {
+      trustedVariables: { companyName: 'Acme Corp' }
+    });
+
+    // Safe: Untrusted variables are sanitized
+    loadPrompt('system', {
+      untrustedVariables: { userName: req.body.name }
+    });
+
+    // Backwards compatible
+    loadPrompt('system', { companyName: 'Acme' });
+    ```
+
 ### Fixed
 
 #### @agentforge/core
