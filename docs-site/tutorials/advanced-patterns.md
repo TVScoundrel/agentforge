@@ -40,6 +40,7 @@ Use Plan-Execute for overall structure, ReAct for complex steps.
 import { createPlanExecuteAgent, createReActAgent } from '@agentforge/patterns';
 import { ChatOpenAI } from '@langchain/openai';
 import { toolBuilder, ToolCategory } from '@agentforge/core';
+import { webSearch, webScraper, calculator } from '@agentforge/tools';
 import { z } from 'zod';
 
 const model = new ChatOpenAI({ model: 'gpt-4' });
@@ -47,7 +48,7 @@ const model = new ChatOpenAI({ model: 'gpt-4' });
 // Create a ReAct agent for complex research
 const researchAgent = createReActAgent({
   model,
-  tools: [webSearchTool, scrapeTool, analyzeTool],
+  tools: [webSearch, webScraper, calculator],  // Real exports from @agentforge/tools
   maxIterations: 10
 });
 
@@ -68,6 +69,30 @@ const complexResearchTool = toolBuilder()
   })
   .build();
 
+// Note: Define custom tools for summarization and reporting
+// These are user-defined tools - replace with your own implementations
+const customSummarizeTool = toolBuilder()
+  .name('custom-summarize')
+  .description('Summarize research findings')
+  .category(ToolCategory.TEXT)
+  .schema(z.object({ text: z.string() }))
+  .implement(async ({ text }) => {
+    // Your summarization logic here
+    return `Summary of: ${text}`;
+  })
+  .build();
+
+const customReportTool = toolBuilder()
+  .name('custom-report')
+  .description('Generate formatted report')
+  .category(ToolCategory.TEXT)
+  .schema(z.object({ content: z.string() }))
+  .implement(async ({ content }) => {
+    // Your report generation logic here
+    return `Report: ${content}`;
+  })
+  .build();
+
 // Use in Plan-Execute agent
 const agent = createPlanExecuteAgent({
   planner: {
@@ -78,8 +103,8 @@ const agent = createPlanExecuteAgent({
   executor: {
     tools: [
       complexResearchTool,  // Uses ReAct internally
-      summarizeTool,
-      reportTool
+      customSummarizeTool,  // Custom tool
+      customReportTool      // Custom tool
     ],
     parallel: false
   }
@@ -104,6 +129,54 @@ Use Plan-Execute for execution, Reflection for quality improvement.
 
 ```typescript
 import { createPlanExecuteAgent, createReflectionAgent } from '@agentforge/patterns';
+import { webSearch, toolBuilder, ToolCategory } from '@agentforge/tools';
+import { z } from 'zod';
+
+// Note: Define custom tools for content creation workflow
+// These are user-defined tools - replace with your own implementations
+const customResearchTool = toolBuilder()
+  .name('custom-research')
+  .description('Research topic')
+  .category(ToolCategory.SEARCH)
+  .schema(z.object({ topic: z.string() }))
+  .implement(async ({ topic }) => {
+    // Your research logic here (could use webSearch internally)
+    return `Research on: ${topic}`;
+  })
+  .build();
+
+const customOutlineTool = toolBuilder()
+  .name('custom-outline')
+  .description('Create content outline')
+  .category(ToolCategory.TEXT)
+  .schema(z.object({ topic: z.string() }))
+  .implement(async ({ topic }) => {
+    // Your outline logic here
+    return `Outline for: ${topic}`;
+  })
+  .build();
+
+const customDraftTool = toolBuilder()
+  .name('custom-draft')
+  .description('Write content draft')
+  .category(ToolCategory.TEXT)
+  .schema(z.object({ outline: z.string() }))
+  .implement(async ({ outline }) => {
+    // Your drafting logic here
+    return `Draft based on: ${outline}`;
+  })
+  .build();
+
+const customFormatTool = toolBuilder()
+  .name('custom-format')
+  .description('Format content')
+  .category(ToolCategory.TEXT)
+  .schema(z.object({ content: z.string() }))
+  .implement(async ({ content }) => {
+    // Your formatting logic here
+    return `Formatted: ${content}`;
+  })
+  .build();
 
 // Step 1: Execute content creation plan
 const executionAgent = createPlanExecuteAgent({
@@ -113,7 +186,7 @@ const executionAgent = createPlanExecuteAgent({
     systemPrompt: 'Plan content creation: research, outline, draft, format'
   },
   executor: {
-    tools: [researchTool, outlineTool, draftTool, formatTool]
+    tools: [customResearchTool, customOutlineTool, customDraftTool, customFormatTool]  // Custom tools
   }
 });
 

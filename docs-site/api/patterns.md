@@ -197,12 +197,14 @@ const builder = new MultiAgentSystemBuilder({
 });
 
 // Register workers
+import { webSearch, calculator } from '@agentforge/tools';
+
 builder.registerWorkers([
   {
     name: 'researcher',
     description: 'Conducts research',
     capabilities: ['research', 'web-search'],
-    tools: [searchTool],
+    tools: [webSearch],  // Real export from @agentforge/tools
     systemPrompt: 'You are a research specialist.',
     model: llm,
   },
@@ -210,7 +212,7 @@ builder.registerWorkers([
     name: 'analyst',
     description: 'Analyzes data',
     capabilities: ['analysis', 'statistics'],
-    tools: [calculatorTool],
+    tools: [calculator],  // Real export from @agentforge/tools
     systemPrompt: 'You are a data analyst.',
     model: llm,
   },

@@ -74,11 +74,12 @@ Before executing a tool, the framework:
 
 ```typescript
 import { createReActAgent } from '@agentforge/patterns';
+import { webSearch, calculator } from '@agentforge/tools';
 
 const agent = createReActAgent({
   model,
-  tools: [searchTool, calculatorTool],
-  
+  tools: [webSearch, calculator],  // Real exports from @agentforge/tools
+
   // Deduplication is enabled by default
   enableDeduplication: true  // Optional: set to false to disable
 });
@@ -88,12 +89,13 @@ const agent = createReActAgent({
 
 ```typescript
 import { createPlanExecuteAgent } from '@agentforge/patterns';
+import { webSearch, httpGet } from '@agentforge/tools';
 
 const agent = createPlanExecuteAgent({
   planner: { model, maxSteps: 5 },
   executor: {
-    tools: [searchTool, apiTool],
-    
+    tools: [webSearch, httpGet],  // Real exports from @agentforge/tools
+
     // Deduplication is enabled by default
     enableDeduplication: true  // Optional: set to false to disable
   }
