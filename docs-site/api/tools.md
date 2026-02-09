@@ -419,13 +419,14 @@ if (stringifyResult.success) {
   console.log(stringifyResult.data?.length); // 24
 }
 
-// Query JSON (JSONPath)
+// Query JSON (dot notation)
 const queryResult = await jsonQuery.invoke({
   data: { users: [{ name: 'John' }] },
-  query: '$.users[0].name'
+  path: 'users[0].name'
 });
 if (queryResult.success) {
-  console.log(queryResult.data); // 'John'
+  console.log(queryResult.data?.value); // 'John'
+  console.log(queryResult.data?.type); // 'string'
 }
 
 // Validate JSON
@@ -518,28 +519,40 @@ import {
 } from '@agentforge/tools';
 
 // Filter array
-const filtered = await arrayFilter.invoke({
-  array: [1, 2, 3, 4],
-  predicate: 'x > 2'
+const filterResult = await arrayFilter.invoke({
+  array: [{ age: 25 }, { age: 30 }, { age: 35 }],
+  property: 'age',
+  operator: 'greater-than',
+  value: 28
 });
+console.log(filterResult.filtered); // [{ age: 30 }, { age: 35 }]
+console.log(filterResult.filteredCount); // 2
 
-// Map array
-const mapped = await arrayMap.invoke({
-  array: [1, 2, 3],
-  transform: 'x * 2'
+// Map array (extract properties)
+const mapResult = await arrayMap.invoke({
+  array: [{ name: 'John', age: 30 }, { name: 'Jane', age: 25 }],
+  properties: ['name']
 });
+console.log(mapResult.mapped); // [{ name: 'John' }, { name: 'Jane' }]
+console.log(mapResult.count); // 2
 
 // Sort array
-const sorted = await arraySort.invoke({
-  array: [3, 1, 2],
+const sortResult = await arraySort.invoke({
+  array: [{ score: 3 }, { score: 1 }, { score: 2 }],
+  property: 'score',
   order: 'asc'
 });
+console.log(sortResult.sorted); // [{ score: 1 }, { score: 2 }, { score: 3 }]
+console.log(sortResult.count); // 3
 
 // Group by
-const grouped = await arrayGroupBy.invoke({
-  array: [{ type: 'a', val: 1 }, { type: 'a', val: 2 }],
-  key: 'type'
+const groupResult = await arrayGroupBy.invoke({
+  array: [{ type: 'a', val: 1 }, { type: 'a', val: 2 }, { type: 'b', val: 3 }],
+  property: 'type'
 });
+console.log(groupResult.groups); // { a: [{ type: 'a', val: 1 }, { type: 'a', val: 2 }], b: [{ type: 'b', val: 3 }] }
+console.log(groupResult.groupCount); // 2
+console.log(groupResult.totalItems); // 3
 ```
 
 ## File Tools (18)
