@@ -12,7 +12,7 @@
  *
  * @example
  * ```typescript
- * import { chunk, collect, createProgressTracker } from '@agentforge/core/streaming';
+ * import { chunk, collect, createProgressTracker } from '@agentforge/core';
  *
  * // Transform stream into chunks
  * const chunked = chunk(stream, { size: 10 });

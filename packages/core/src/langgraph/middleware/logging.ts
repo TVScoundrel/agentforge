@@ -82,7 +82,7 @@ export interface LoggingOptions {
  *
  * @example
  * ```typescript
- * import { withLogging } from '@agentforge/core/langgraph/middleware';
+ * import { withLogging } from '@agentforge/core';
  *
  * const loggedNode = withLogging({
  *   name: 'my-node',

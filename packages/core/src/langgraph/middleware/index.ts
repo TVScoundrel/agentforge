@@ -8,8 +8,7 @@
  *
  * @example
  * ```typescript
- * import { compose, presets } from '@agentforge/core/langgraph/middleware';
- * import { withRetry, withMetrics } from '@agentforge/core/langgraph/middleware';
+ * import { compose, presets, withRetry, withMetrics, withLogging } from '@agentforge/core';
  *
  * // Using compose
  * const enhanced = compose(
