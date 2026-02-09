@@ -66,7 +66,7 @@ export {
 export {
   ManagedTool,
   createManagedTool,
-  type HealthCheckResult,
+  type ToolHealthCheckResult,
   type ManagedToolConfig,
   type ManagedToolStats,
 } from './lifecycle.js';

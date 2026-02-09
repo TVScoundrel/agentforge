@@ -7,7 +7,7 @@ import { createLogger, LogLevel } from '../langgraph/observability/logger.js';
 
 const logger = createLogger('agentforge:core:tools:lifecycle', { level: LogLevel.INFO });
 
-export interface HealthCheckResult {
+export interface ToolHealthCheckResult {
   healthy: boolean;
   error?: string;
   metadata?: Record<string, any>;
@@ -24,7 +24,7 @@ export interface ManagedToolConfig<TContext = any, TInput = any, TOutput = any> 
   cleanup?: (this: ManagedTool<TContext, TInput, TOutput>) => Promise<void>;
   healthCheck?: (
     this: ManagedTool<TContext, TInput, TOutput>
-  ) => Promise<HealthCheckResult>;
+  ) => Promise<ToolHealthCheckResult>;
   context?: TContext;
   autoCleanup?: boolean;
   healthCheckInterval?: number;
@@ -36,7 +36,7 @@ export interface ManagedToolStats {
   successfulExecutions: number;
   failedExecutions: number;
   lastExecutionTime?: number;
-  lastHealthCheck?: HealthCheckResult;
+  lastHealthCheck?: ToolHealthCheckResult;
   lastHealthCheckTime?: number;
 }
 
@@ -49,7 +49,7 @@ export class ManagedTool<TContext = any, TInput = any, TOutput = any> {
   private readonly initializeFn?: () => Promise<void>;
   private readonly executeFn: (input: TInput) => Promise<TOutput>;
   private readonly cleanupFn?: () => Promise<void>;
-  private readonly healthCheckFn?: () => Promise<HealthCheckResult>;
+  private readonly healthCheckFn?: () => Promise<ToolHealthCheckResult>;
   private readonly autoCleanup: boolean;
   private readonly healthCheckInterval?: number;
 
@@ -190,7 +190,7 @@ export class ManagedTool<TContext = any, TInput = any, TOutput = any> {
   /**
    * Run health check
    */
-  async healthCheck(): Promise<HealthCheckResult> {
+  async healthCheck(): Promise<ToolHealthCheckResult> {
     if (!this._initialized) {
       return {
         healthy: false,
@@ -211,7 +211,7 @@ export class ManagedTool<TContext = any, TInput = any, TOutput = any> {
       this._stats.lastHealthCheckTime = Date.now();
       return result;
     } catch (error) {
-      const result: HealthCheckResult = {
+      const result: ToolHealthCheckResult = {
         healthy: false,
         error: (error as Error).message,
       };
