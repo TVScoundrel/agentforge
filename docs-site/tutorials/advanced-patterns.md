@@ -547,14 +547,16 @@ Test patterns individually before combining:
 ```typescript
 import { testing } from '@agentforge/core';
 
-// Test individual components
-const testAgent = testing(myAgent, {
+// Test individual node components
+const testNode = testing(myNode, {
+  nodeName: 'my-node',
   mockResponse: { result: 'test' },
   trackInvocations: true
 });
 
-await testAgent.invoke({ input: 'test' });
-console.log(testAgent.invocations); // Verify behavior
+// Call the wrapped node directly
+await testNode({ input: 'test' });
+console.log(testNode.invocations); // Verify behavior
 ```
 
 ## Complete Example: AI Research Assistant
