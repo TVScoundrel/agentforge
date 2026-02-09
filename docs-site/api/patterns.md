@@ -410,10 +410,15 @@ const agent: CompiledStateGraph = createReActAgent({ ... });
 const system: CompiledStateGraph = createMultiAgentSystem({ ... });
 
 // Invoke with pattern-specific state
-const result = await agent.invoke({ input: 'Your task' });
+// ReAct uses { messages: [...] }
+const result = await agent.invoke({
+  messages: [{ role: 'user', content: 'Your task' }]
+});
 
 // Stream events
-for await (const event of agent.stream({ input: 'Your task' })) {
+for await (const event of agent.stream({
+  messages: [{ role: 'user', content: 'Your task' }]
+})) {
   console.log(event);
 }
 ```
