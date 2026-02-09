@@ -151,7 +151,7 @@ registry.register(myTool);
 registry.registerMany([tool1, tool2, tool3]);
 
 // Find tools
-const webTools = registry.getByCategory(ToolCategory.FILE_SYSTEM);
+const fileTools = registry.getByCategory(ToolCategory.FILE_SYSTEM);  // Variable name now matches category
 const searchTools = registry.getByTag('search');
 const tool = registry.get('tool-name');
 
