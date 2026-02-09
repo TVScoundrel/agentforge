@@ -643,17 +643,18 @@ import {
   createReflectionAgent,
   createMultiAgentSystem
 } from '@agentforge/patterns';
+import { webSearch, webScraper, calculator, jsonParser } from '@agentforge/tools';
 
 // 1. Create specialized agents
 const webResearcher = createReActAgent({
   model,
-  tools: [webSearchTool, scrapeTool],
+  tools: [webSearch, webScraper],  // Real exports from @agentforge/tools
   maxIterations: 10
 });
 
 const dataAnalyzer = createPlanExecuteAgent({
   planner: { model, maxSteps: 5 },
-  executor: { tools: [analyzeTool, visualizeTool] }
+  executor: { tools: [calculator, jsonParser] }  // Real exports from @agentforge/tools
 });
 
 const reportWriter = createReflectionAgent({
