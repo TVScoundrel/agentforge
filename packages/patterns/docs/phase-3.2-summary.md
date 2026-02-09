@@ -76,7 +76,7 @@ Creates structured plans from user input:
 
 ```typescript
 const plannerNode = createPlannerNode({
-  llm: ChatOpenAI,
+  model: ChatOpenAI,
   systemPrompt?: string,
   maxSteps?: number,
   includeToolDescriptions?: boolean,
@@ -102,10 +102,10 @@ Executes plan steps using available tools:
 ```typescript
 const executorNode = createExecutorNode({
   tools: Tool[],
-  llm?: BaseChatModel,
+  model?: BaseChatModel,
   parallel?: boolean,
   stepTimeout?: number,
-  maxParallelSteps?: number,
+  enableDeduplication?: boolean,
 });
 ```
 

@@ -98,22 +98,21 @@ npx tsx packages/patterns/examples/multi-agent/05-supervisor-with-askhuman.ts
 ### Basic Usage
 
 ```typescript
-import { createMultiAgentSystem, registerWorkers } from '@agentforge/patterns';
+import { MultiAgentSystemBuilder } from '@agentforge/patterns';
 
-// Create the system
-const system = createMultiAgentSystem({
+// Create the builder
+const builder = new MultiAgentSystemBuilder({
   supervisor: {
     model: ChatOpenAI,
-    routingStrategy: 'skill-based',
+    strategy: 'skill-based',
   },
-  workers: [],
   aggregator: {
     model: ChatOpenAI,
   },
 });
 
 // Register workers
-registerWorkers(system, [
+builder.registerWorkers([
   {
     name: 'specialist1',
     capabilities: ['skill1', 'skill2'],
@@ -125,6 +124,9 @@ registerWorkers(system, [
     tools: [tool3, tool4],
   },
 ]);
+
+// Build the system
+const system = builder.build();
 
 // Execute
 const result = await system.invoke({ input: 'task description' });

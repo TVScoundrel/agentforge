@@ -555,21 +555,21 @@ interface AggregatorConfig {
 
 **Methods**:
 
-#### registerWorkers(workers: WorkerConfig[])
+#### registerWorkers(workers: RegisterWorkerInput[])
 
-Registers workers with the system. Must be called before `build()`.
+Registers workers with the system. Must be called before `build()`. The builder converts the simplified input format to the internal `WorkerConfig` format.
 
 ```typescript
-interface WorkerConfig {
-  id: string;
-  name: string;
-  description: string;
-  capabilities: WorkerCapabilities;
-  model: BaseChatModel;
-  tools: StructuredTool[];
-  systemPrompt?: string;
+interface RegisterWorkerInput {
+  name: string;                    // Worker identifier (becomes 'id' internally)
+  description?: string;            // Optional description
+  capabilities: string[];          // Array of skill names (converted to WorkerCapabilities)
+  tools?: Tool[];                  // Optional tools array
+  systemPrompt?: string;           // Optional system prompt
+  model?: BaseChatModel;           // Optional model (uses supervisor model if not provided)
 }
 
+// Internal WorkerConfig (for reference)
 interface WorkerCapabilities {
   skills: string[];
   tools: string[];

@@ -25,7 +25,7 @@ const agent = new ReActAgentBuilder()
   .withReturnIntermediateSteps(true)
   .withStopCondition((state) => state.iteration >= 5)
   .withVerbose(true)
-  .withNodeNames({ agent: 'custom-agent', tools: 'custom-tools' })
+  .withNodeNames({ reasoning: 'think', action: 'act', observation: 'observe' })
   .build();
 ```
 
