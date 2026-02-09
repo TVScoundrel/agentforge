@@ -278,7 +278,7 @@ const doEverythingTool = {
 ```typescript
 // ✅ DO: Handle errors gracefully
 const tool = {
-  execute: async (args) => {
+  invoke: async (args) => {
     try {
       return await operation(args);
     } catch (error) {

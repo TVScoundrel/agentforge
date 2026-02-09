@@ -169,7 +169,7 @@ const myTool = {
   schema: z.object({
     param: z.string().describe('Parameter description'),
   }),
-  execute: async ({ param }) => {
+  invoke: async ({ param }) => {
     // Tool implementation
     return { result: 'value' };
   },

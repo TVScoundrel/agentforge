@@ -223,7 +223,7 @@ User Input → Supervisor → Worker(s) → Aggregator → Output
    ```typescript
    // Example: "Fetch data from 3 sources, validate, and create report"
    const agent = createPlanExecuteAgent({
-     planner: { llm, maxSteps: 7 },
+     planner: { model: llm, maxSteps: 7 },
      executor: { tools, parallel: true },
    });
    ```
@@ -354,7 +354,7 @@ const agent = new ReActAgentBuilder()
 **Plan-Execute Approach**:
 ```typescript
 const agent = createPlanExecuteAgent({
-  planner: { llm, maxSteps: 5 },
+  planner: { model: llm, maxSteps: 5 },
   executor: { tools: [searchTool, summarizeTool], parallel: true },
 });
 
@@ -394,7 +394,7 @@ const agent = new ReActAgentBuilder()
 **Plan-Execute Approach**:
 ```typescript
 const agent = createPlanExecuteAgent({
-  planner: { llm, maxSteps: 5 },
+  planner: { model: llm, maxSteps: 5 },
   executor: { tools: [checkLogsTool, checkDatabaseTool, checkConfigTool] },
 });
 
@@ -433,7 +433,7 @@ const agent = new ReActAgentBuilder()
 **Plan-Execute Approach**:
 ```typescript
 const agent = createPlanExecuteAgent({
-  planner: { llm, maxSteps: 8 },
+  planner: { model: llm, maxSteps: 8 },
   executor: {
     tools: [extractTool, transformTool, validateTool, loadTool],
     parallel: true,
@@ -569,7 +569,7 @@ Use Plan-Execute for overall structure, ReAct for complex steps:
 
 ```typescript
 const planExecuteAgent = createPlanExecuteAgent({
-  planner: { llm, maxSteps: 5 },
+  planner: { model: llm, maxSteps: 5 },
   executor: {
     tools: [
       // Some steps use ReAct internally
@@ -653,7 +653,7 @@ const agent = new ReActAgentBuilder()
 
 // After (Plan-Execute)
 const agent = createPlanExecuteAgent({
-  planner: { llm, maxSteps: 5 },
+  planner: { model: llm, maxSteps: 5 },
   executor: { tools: [tool1, tool2, tool3], parallel: true },
 });
 ```
@@ -670,9 +670,9 @@ Consider using ReAct:
 ```typescript
 // Before (Plan-Execute)
 const agent = createPlanExecuteAgent({
-  planner: { llm, maxSteps: 5 },
+  planner: { model: llm, maxSteps: 5 },
   executor: { tools },
-  replanner: { llm, replanThreshold: 0.3 }, // Replanning often
+  replanner: { model: llm, replanThreshold: 0.3 }, // Replanning often
 });
 
 // After (ReAct)

@@ -156,7 +156,7 @@ const searchTool = {
   name: 'search',
   description: 'Search for information',
   schema: z.object({ query: z.string() }),
-  execute: async ({ query }) => {
+  invoke: async ({ query }) => {
     // Search implementation
     return { results: [...] };
   },
@@ -166,7 +166,7 @@ const analyzeTool = {
   name: 'analyze',
   description: 'Analyze data',
   schema: z.object({ data: z.any() }),
-  execute: async ({ data }) => {
+  invoke: async ({ data }) => {
     // Analysis implementation
     return { insights: [...] };
   },

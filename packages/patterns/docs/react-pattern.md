@@ -232,7 +232,7 @@ const searchTool = {
   schema: z.object({
     query: z.string(),
   }),
-  execute: async ({ query }) => {
+  invoke: async ({ query }) => {
     // Implementation
     return { results: [...] };
   },

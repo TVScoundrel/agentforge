@@ -531,7 +531,7 @@ const fetchUserTool = {
   name: 'fetch_user',
   description: 'Fetch user data by ID',
   schema: z.object({ userId: z.string() }),
-  execute: async ({ userId }) => {
+  invoke: async ({ userId }) => {
     // Focused, single-purpose tool
     return await db.users.findOne({ id: userId });
   },
@@ -1113,21 +1113,20 @@ function createPlanExecuteAgent(
 **config: PlanExecuteAgentConfig**
 
 **planner: PlannerConfig**
-- `llm: BaseChatModel` - Language model for planning
+- `model: BaseChatModel` - Language model for planning
 - `systemPrompt?: string` - Custom planning prompt
-- `maxSteps?: number` - Maximum steps in plan (default: 10)
+- `maxSteps?: number` - Maximum steps in plan (default: 7)
 - `includeToolDescriptions?: boolean` - Include tool info in planning
 
 **executor: ExecutorConfig**
 - `tools: Tool[]` - Available tools
-- `llm?: BaseChatModel` - Optional LLM for sub-tasks
+- `model?: BaseChatModel` - Optional LLM for sub-tasks
 - `parallel?: boolean` - Enable parallel execution (default: false)
 - `stepTimeout?: number` - Timeout per step in ms
-- `maxParallelSteps?: number` - Max concurrent steps
-- `continueOnError?: boolean` - Continue if steps fail
+- `enableDeduplication?: boolean` - Deduplicate identical tool calls
 
 **replanner?: ReplannerConfig**
-- `llm: BaseChatModel` - LLM for replanning
+- `model: BaseChatModel` - LLM for replanning
 - `replanThreshold?: number` - Confidence threshold (0-1)
 - `systemPrompt?: string` - Custom replanning prompt
 

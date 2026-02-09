@@ -1362,7 +1362,7 @@ const system = createMultiAgentSystem({
 ```typescript
 const robustTool = {
   name: 'tool',
-  execute: async (input: any) => {
+  invoke: async (input: any) => {
     try {
       return await actualExecution(input);
     } catch (error) {
