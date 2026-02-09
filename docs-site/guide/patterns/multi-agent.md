@@ -280,24 +280,24 @@ const teamLead = createMultiAgentSystem({
       id: 'specialist1',
       capabilities: {
         skills: ['task1', 'task2'],
-        tools: ['tool1'],
+        tools: ['custom-tool-1'],  // Custom tool - replace with your implementation
         available: true,
         currentWorkload: 0
       },
       model,
-      tools: [tool1],
+      tools: [customTool1],  // User-defined tool
       systemPrompt: 'You are specialist 1.'
     },
     {
       id: 'specialist2',
       capabilities: {
         skills: ['task3', 'task4'],
-        tools: ['tool2'],
+        tools: ['custom-tool-2'],  // Custom tool - replace with your implementation
         available: true,
         currentWorkload: 0
       },
       model,
-      tools: [tool2],
+      tools: [customTool2],  // User-defined tool
       systemPrompt: 'You are specialist 2.'
     }
   ],
@@ -476,7 +476,7 @@ const system = createMultiAgentSystem({
       id: 'hr',
       capabilities: {
         skills: ['hr', 'employee', 'slack'],
-        tools: ['askHuman', 'slack', 'email'],
+        tools: ['ask-human', 'send-slack-message', 'http-post'],  // Real tools from @agentforge/tools
         available: true,
         currentWorkload: 0
       },
@@ -486,7 +486,7 @@ const system = createMultiAgentSystem({
       id: 'legal',
       capabilities: {
         skills: ['legal', 'contract', 'compliance'],
-        tools: ['askHuman', 'contract', 'compliance'],
+        tools: ['ask-human', 'custom-contract', 'custom-compliance'],  // ask-human is real, others are custom
         available: true,
         currentWorkload: 0
       },

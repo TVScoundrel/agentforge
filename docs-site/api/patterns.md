@@ -312,12 +312,12 @@ const system = createMultiAgentSystem({
       id: 'researcher',
       capabilities: {
         skills: ['research', 'web-search'],
-        tools: ['search'],
+        tools: ['web-search'],  // Real tool from @agentforge/tools
         available: true,
         currentWorkload: 0
       },
       model: llm,
-      tools: [searchTool],
+      tools: [webSearch],  // Use webSearch from @agentforge/tools
       systemPrompt: 'You are a research specialist.'
     },
   ],

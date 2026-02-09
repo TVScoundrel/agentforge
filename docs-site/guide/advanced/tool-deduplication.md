@@ -114,13 +114,13 @@ const system = createMultiAgentSystem({
       id: 'researcher',
       capabilities: {
         skills: ['research', 'search'],
-        tools: ['search'],
+        tools: ['web-search'],  // Real tool from @agentforge/tools
         available: true,
         currentWorkload: 0
       },
       agent: createReActAgent({
         model,
-        tools: [searchTool],
+        tools: [webSearch],  // Use webSearch from @agentforge/tools
         // Deduplication enabled automatically
       })
     }
