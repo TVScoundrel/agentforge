@@ -7,6 +7,25 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.11.9] - 2026-02-09
+
+### Added
+
+#### @agentforge/core
+- **Monitoring Module Export**
+  - **Problem**: Monitoring utilities (health checks, profiling, alerting, audit logging) were implemented and documented but not exported from package root
+  - **Impact**: Users couldn't access production-ready monitoring features despite documentation showing `import { ... } from '@agentforge/core'`
+  - **Solution**: Added `export * from './monitoring/index.js'` to `packages/core/src/index.ts`
+  - **New Public Exports**:
+    - `createHealthChecker()` - Health check system with liveness/readiness probes
+    - `createProfiler()` - Performance profiling with execution time and memory tracking
+    - `createAlertManager()` - Alert rules and multi-channel notifications
+    - `createAuditLogger()` - Compliance and security audit logging
+  - **Benefits**:
+    - Monitoring features now accessible to all consumers
+    - Aligns with package description and documentation
+    - Consistent with other module exports (resources, streaming, etc.)
+
 ## [0.11.8] - 2026-02-07
 
 ### Added
