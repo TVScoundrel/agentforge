@@ -88,7 +88,7 @@ interface PlanExecuteConfig {
 
   maxIterations?: number;         // Max planning iterations (default: 5)
   returnIntermediateSteps?: boolean;  // [Not yet implemented] Include execution steps
-  verbose?: boolean;              // Enable verbose logging
+  verbose?: boolean;              // [Not yet implemented] Enable verbose logging
   checkpointer?: BaseCheckpointSaver;  // State persistence
 }
 ```
@@ -118,7 +118,7 @@ Each step should:
     replanThreshold: 0.7
   },
   maxIterations: 30,
-  verbose: true  // Enable verbose logging for detailed execution trace
+  // verbose: true  // [Not yet implemented] Enable verbose logging for detailed execution trace
 });
 ```
 

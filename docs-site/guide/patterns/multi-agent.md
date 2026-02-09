@@ -353,7 +353,6 @@ interface SupervisorConfig {
   routingFn?: (state) => Promise<RoutingDecision>;  // Custom routing function for 'rule-based'
   verbose?: boolean;
   maxIterations?: number;
-  maxToolRetries?: number;              // Max tool call retries (default: 3)
 }
 
 interface WorkerConfig {
@@ -393,7 +392,6 @@ const system = createMultiAgentSystem({
     model,
     systemPrompt: 'Route tasks intelligently to workers.',
     maxIterations: 5,
-    maxToolRetries: 3,
     verbose: true
   },
 
@@ -702,8 +700,7 @@ const system = createMultiAgentSystem({
   supervisor: {
     strategy: 'llm-based',
     model,
-    maxIterations: 5,  // Limit supervisor iterations
-    maxToolRetries: 3  // Limit tool call retries
+    maxIterations: 5  // Limit supervisor iterations
   },
   workers: [/* ... */],
   aggregator: { model },
@@ -1018,8 +1015,7 @@ const system = createMultiAgentSystem({
   supervisor: {
     strategy: 'llm-based',
     model,
-    maxIterations: 5,  // Limit supervisor iterations
-    maxToolRetries: 3  // Limit tool call retries
+    maxIterations: 5  // Limit supervisor iterations
   },
   workers: [/* ... */],
   aggregator: { model },
