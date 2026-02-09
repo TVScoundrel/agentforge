@@ -19,5 +19,8 @@ export * from './streaming/index.js';
 // Resource management
 export * from './resources/index.js';
 
+// Monitoring utilities
+export * from './monitoring/index.js';
+
 // Prompt template loader
 export * from './prompt-loader/index.js';

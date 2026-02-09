@@ -101,7 +101,7 @@ npx tsx examples/monitoring/audit-logging.ts
 ### Pattern 1: Health Check Endpoints
 
 ```typescript
-import { createHealthChecker } from '../../src/monitoring/health.js';
+import { createHealthChecker } from '@agentforge/core';
 import express from 'express';
 
 const healthChecker = createHealthChecker({
@@ -139,7 +139,7 @@ app.get('/health/ready', async (req, res) => {
 ### Pattern 2: Performance Profiling
 
 ```typescript
-import { createProfiler } from '../../src/monitoring/profiler.js';
+import { createProfiler } from '@agentforge/core';
 
 const profiler = createProfiler({
   enabled: process.env.NODE_ENV === 'production',
@@ -163,7 +163,7 @@ setInterval(() => {
 ### Pattern 3: Alert Configuration
 
 ```typescript
-import { createAlertManager } from '../../src/monitoring/alerts.js';
+import { createAlertManager } from '@agentforge/core';
 
 const alertManager = createAlertManager({
   channels: {
@@ -193,7 +193,7 @@ alertManager.start(() => getMetrics(), 60000);
 ### Pattern 4: Audit Logging
 
 ```typescript
-import { createAuditLogger } from '../../src/monitoring/audit.js';
+import { createAuditLogger } from '@agentforge/core';
 
 const auditLogger = createAuditLogger({
   storage: { type: 'database', config: { /* DB config */ } },
