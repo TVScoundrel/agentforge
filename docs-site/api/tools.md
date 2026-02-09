@@ -514,14 +514,39 @@ if (jsonToCsvResult.success) {
 import { xmlParser, xmlGenerator, xmlToJson, jsonToXml } from '@agentforge/tools';
 
 // Parse XML
-const data = await xmlParser.invoke({
+const parseResult = await xmlParser.invoke({
   xml: '<root><name>John</name></root>'
 });
+if (parseResult.success) {
+  console.log(parseResult.data); // { root: { name: 'John' } }
+}
 
 // Generate XML
-const xml = await xmlGenerator.invoke({
+const generateResult = await xmlGenerator.invoke({
   data: { root: { name: 'John' } }
 });
+if (generateResult.success) {
+  console.log(generateResult.xml); // '<root><name>John</name></root>'
+}
+
+// Convert XML to JSON
+const xmlToJsonResult = await xmlToJson.invoke({
+  xml: '<root><name>John</name></root>',
+  pretty: true
+});
+if (xmlToJsonResult.success) {
+  console.log(xmlToJsonResult.json); // '{\n  "root": {\n    "name": "John"\n  }\n}'
+}
+
+// Convert JSON to XML
+const jsonToXmlResult = await jsonToXml.invoke({
+  json: '{"name":"John"}',
+  rootName: 'person',
+  format: true
+});
+if (jsonToXmlResult.success) {
+  console.log(jsonToXmlResult.xml); // '<person>\n  <name>John</name>\n</person>'
+}
 ```
 
 ### Data Transformation
