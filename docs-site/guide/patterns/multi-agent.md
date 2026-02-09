@@ -52,7 +52,7 @@ const system = createMultiAgentSystem({
       id: 'researcher',
       capabilities: {
         skills: ['research', 'web-scraping', 'information-gathering'],
-        tools: ['web_scraper', 'html_parser'],
+        tools: ['web-scraper', 'html-parser'],
         available: true,
         currentWorkload: 0
       },
@@ -64,7 +64,7 @@ const system = createMultiAgentSystem({
       id: 'analyst',
       capabilities: {
         skills: ['data-analysis', 'statistics', 'calculations'],
-        tools: ['calculator', 'csv_parser'],
+        tools: ['calculator', 'csv-parser'],
         available: true,
         currentWorkload: 0
       },
@@ -76,7 +76,7 @@ const system = createMultiAgentSystem({
       id: 'writer',
       capabilities: {
         skills: ['writing', 'documentation', 'reporting'],
-        tools: ['file_writer'],
+        tools: ['file-writer'],
         available: true,
         currentWorkload: 0
       },

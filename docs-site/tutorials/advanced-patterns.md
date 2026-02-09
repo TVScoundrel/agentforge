@@ -636,7 +636,7 @@ const result = await researchSystem.invoke({
   input: 'Research AI trends, analyze data, and create a comprehensive report'
 });
 
-console.log(result.finalOutput);
+console.log(result.response);
 ```
 
 ## Next Steps
