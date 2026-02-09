@@ -199,7 +199,7 @@ const system = createMultiAgentSystem({
       id: 'researcher',
       capabilities: {
         skills: ['research', 'data-gathering'],
-        tools: ['web_scraper'],
+        tools: ['web-scraper'],  // Real tool from @agentforge/tools
         available: true,
         currentWorkload: 0
       },
@@ -219,7 +219,7 @@ const system = createMultiAgentSystem({
       id: 'writer',
       capabilities: {
         skills: ['writing', 'summarization'],
-        tools: ['file_writer'],
+        tools: ['file-writer'],  // Real tool from @agentforge/tools
         available: true,
         currentWorkload: 0
       },

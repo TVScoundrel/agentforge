@@ -210,7 +210,7 @@ const system = createMultiAgentSystem({
       id: 'tester',
       capabilities: {
         skills: ['testing', 'qa', 'planning'],
-        tools: ['unit_test', 'integration_test', 'e2e_test'],
+        tools: ['custom-unit-test', 'custom-integration-test', 'custom-e2e-test'],  // Custom tools
         available: true,
         currentWorkload: 0
       },
@@ -220,7 +220,7 @@ const system = createMultiAgentSystem({
       id: 'documenter',
       capabilities: {
         skills: ['documentation', 'examples', 'code-analysis'],
-        tools: ['code_analysis', 'example_generator', 'markdown'],
+        tools: ['custom-code-analysis', 'custom-example-generator', 'custom-markdown'],  // Custom tools
         available: true,
         currentWorkload: 0
       },
