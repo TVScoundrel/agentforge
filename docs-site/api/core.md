@@ -128,12 +128,13 @@ Enum for categorizing tools:
 
 ```typescript
 enum ToolCategory {
-  WEB = 'web',
-  DATA = 'data',
-  FILE = 'file',
-  UTILITY = 'utility',
-  COMMUNICATION = 'communication',
-  CUSTOM = 'custom'
+  FILE_SYSTEM = 'file-system',  // File system operations
+  WEB = 'web',                   // Web/HTTP operations
+  CODE = 'code',                 // Code operations
+  DATABASE = 'database',         // Database operations
+  API = 'api',                   // API integrations
+  UTILITY = 'utility',           // General utilities
+  CUSTOM = 'custom'              // Custom tools
 }
 ```
 

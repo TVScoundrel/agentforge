@@ -112,14 +112,13 @@ AgentForge provides predefined categories for organizing tools:
 
 ```typescript
 enum ToolCategory {
-  FILE_SYSTEM = 'file-system',  // File operations
-  WEB = 'web',                   // HTTP, scraping
+  FILE_SYSTEM = 'file-system',  // File system operations
+  WEB = 'web',                   // Web/HTTP operations
   CODE = 'code',                 // Code execution, analysis
-  DATA = 'data',                 // Data processing
-  SEARCH = 'search',             // Search operations
-  COMMUNICATION = 'communication', // Email, messaging
+  DATABASE = 'database',         // Database operations
+  API = 'api',                   // API integrations
   UTILITY = 'utility',           // General utilities
-  CUSTOM = 'custom',             // Custom tools
+  CUSTOM = 'custom'              // Custom tools
 }
 ```
 
