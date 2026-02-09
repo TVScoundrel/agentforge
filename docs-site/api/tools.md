@@ -242,82 +242,96 @@ import {
 } from '@agentforge/tools';
 
 // Search for pages across all spaces
-const searchResults = await searchConfluence.invoke({
+const searchResult = await searchConfluence.invoke({
   query: 'API documentation',
   limit: 10
 });
 
-console.log(`Found ${searchResults.results.length} pages`);
-searchResults.results.forEach(page => {
-  console.log(`${page.title} (${page.space.name})`);
+// Parse JSON string result
+const searchData = JSON.parse(searchResult);
+console.log(`Found ${searchData.count} pages (total: ${searchData.total})`);
+searchData.results.forEach(page => {
+  console.log(`${page.title} (${page.space})`);
   console.log(`  URL: ${page.url}`);
 });
 
 // Get a specific page by ID
-const page = await getConfluencePage.invoke({
+const pageResult = await getConfluencePage.invoke({
   page_id: '123456'
 });
 
-console.log(`Title: ${page.page.title}`);
-console.log(`Space: ${page.page.space.name}`);
-console.log(`Content: ${page.page.body.storage.value}`);
-console.log(`Version: ${page.page.version.number}`);
+// Parse JSON string result
+const pageData = JSON.parse(pageResult);
+console.log(`Title: ${pageData.page.title}`);
+console.log(`Space: ${pageData.page.space}`);
+console.log(`Content: ${pageData.page.content}`);
+console.log(`Version: ${pageData.page.version}`);
 
 // List all available spaces
-const spaces = await listConfluenceSpaces.invoke({
+const spacesResult = await listConfluenceSpaces.invoke({
   limit: 25
 });
 
-console.log(`Found ${spaces.spaces.length} spaces`);
-spaces.spaces.forEach(space => {
+// Parse JSON string result
+const spacesData = JSON.parse(spacesResult);
+console.log(`Found ${spacesData.count} spaces`);
+spacesData.spaces.forEach(space => {
   console.log(`${space.name} (${space.key})`);
 });
 
 // Get all pages in a specific space
-const spacePages = await getSpacePages.invoke({
+const spacePagesResult = await getSpacePages.invoke({
   space_key: 'DOCS',
   limit: 50
 });
 
-console.log(`Found ${spacePages.pages.length} pages in space`);
-spacePages.pages.forEach(page => {
+// Parse JSON string result
+const spacePagesData = JSON.parse(spacePagesResult);
+console.log(`Found ${spacePagesData.count} pages in space ${spacePagesData.space}`);
+spacePagesData.pages.forEach(page => {
   console.log(`${page.title} (ID: ${page.id})`);
 });
 
 // Create a new page
-const newPage = await createConfluencePage.invoke({
+const newPageResult = await createConfluencePage.invoke({
   space_key: 'DOCS',
   title: 'New Documentation Page',
-  body: '<p>This is the page content in Confluence storage format.</p>'
+  content: '<p>This is the page content in Confluence storage format.</p>'
 });
 
-console.log(`Created page: ${newPage.page.title}`);
-console.log(`Page ID: ${newPage.page.id}`);
-console.log(`URL: ${newPage.page._links.webui}`);
+// Parse JSON string result
+const newPageData = JSON.parse(newPageResult);
+console.log(`Created page: ${newPageData.page.title}`);
+console.log(`Page ID: ${newPageData.page.id}`);
+console.log(`URL: ${newPageData.page.url}`);
 
 // Create a child page
-const childPage = await createConfluencePage.invoke({
+const childPageResult = await createConfluencePage.invoke({
   space_key: 'DOCS',
   title: 'Child Page',
-  body: '<p>This is a child page.</p>',
+  content: '<p>This is a child page.</p>',
   parent_page_id: '123456'
 });
 
 // Update an existing page
-const updatedPage = await updateConfluencePage.invoke({
+const updatedPageResult = await updateConfluencePage.invoke({
   page_id: '123456',
   title: 'Updated Title',
-  body: '<p>Updated content.</p>'
+  content: '<p>Updated content.</p>'
 });
 
-console.log(`Updated page to version ${updatedPage.page.version.number}`);
+// Parse JSON string result
+const updatedPageData = JSON.parse(updatedPageResult);
+console.log(`Updated page to version ${updatedPageData.page.version}`);
 
 // Archive a page (move to trash)
-const archivedPage = await archiveConfluencePage.invoke({
+const archivedPageResult = await archiveConfluencePage.invoke({
   page_id: '123456'
 });
 
-console.log(`Archived page: ${archivedPage.page.title}`);
+// Parse JSON string result
+const archivedPageData = JSON.parse(archivedPageResult);
+console.log(`Archived page: ${archivedPageData.page.title}`);
 
 // Custom configuration with factory function
 const customConfluenceTools = createConfluenceTools({
@@ -326,11 +340,15 @@ const customConfluenceTools = createConfluenceTools({
   siteUrl: 'https://custom.atlassian.net'
 });
 
-// Use custom tools
-const customResult = await customConfluenceTools[0].invoke({
+// Use custom tools (returns object with named properties, not array)
+const customResult = await customConfluenceTools.searchConfluence.invoke({
   query: 'search query',
   limit: 10
 });
+
+// Parse JSON string result
+const customData = JSON.parse(customResult);
+console.log(`Found ${customData.count} results`);
 ```
 
 **Features:**
