@@ -114,7 +114,7 @@ const result = await executor.invoke(myTool, input);
 ### Pattern 2: Resource Management
 
 ```typescript
-import { createManagedTool } from '@agentforge/core/tools';
+import { createManagedTool } from '@agentforge/core';
 
 const dbTool = createManagedTool({
   name: 'database',
@@ -142,7 +142,7 @@ await dbTool.cleanup();
 ### Pattern 3: Complex Workflows
 
 ```typescript
-import { composeTool, parallel, sequential, conditional } from '@agentforge/core/tools';
+import { composeTool, parallel, sequential, conditional } from '@agentforge/core';
 
 const workflow = composeTool({
   name: 'research-workflow',
@@ -163,7 +163,7 @@ const result = await workflow.invoke(input);
 ### Pattern 4: Testing with Mocks
 
 ```typescript
-import { createMockTool, createToolSimulator } from '@agentforge/core/tools';
+import { createMockTool, createToolSimulator } from '@agentforge/core';
 
 // Create mock for testing
 const mockAPI = createMockTool({

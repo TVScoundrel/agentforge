@@ -134,7 +134,7 @@ await pool.clear();
 ### Pattern 2: Memory Monitoring
 
 ```typescript
-import { createMemoryManager } from '@agentforge/core/resources';
+import { createMemoryManager } from '@agentforge/core';
 
 const memoryManager = createMemoryManager({
   maxMemory: 512 * 1024 * 1024, // 512 MB
@@ -158,7 +158,7 @@ memoryManager.start();
 ### Pattern 3: Request Batching
 
 ```typescript
-import { createBatchProcessor } from '@agentforge/core/resources';
+import { createBatchProcessor } from '@agentforge/core';
 
 const batcher = createBatchProcessor({
   maxBatchSize: 10,
@@ -178,7 +178,7 @@ const [res1, res2] = await Promise.all([result1, result2]);
 ### Pattern 4: Circuit Breaker Protection
 
 ```typescript
-import { createCircuitBreaker } from '@agentforge/core/resources';
+import { createCircuitBreaker } from '@agentforge/core';
 
 const breaker = createCircuitBreaker({
   failureThreshold: 5,
