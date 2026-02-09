@@ -1133,7 +1133,7 @@ function createPlanExecuteAgent(
 
 **Other Options**
 - `maxIterations?: number` - Max planning iterations (default: 5)
-- `returnIntermediateSteps?: boolean` - Return step details
+- `returnIntermediateSteps?: boolean` - ⚠️ **Not yet implemented** - Defined in types but not currently used
 - `verbose?: boolean` - Enable logging
 
 #### Returns

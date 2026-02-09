@@ -1111,25 +1111,23 @@ const agent = createReActAgent({
 
 ```typescript
 import { describe, it, expect } from 'vitest';
-import { createReasoningNode } from '@agentforge/patterns';
+import { createReActAgent } from '@agentforge/patterns';
 
-describe('ReasoningNode', () => {
+describe('ReActAgent', () => {
   it('should generate reasoning', async () => {
-    const node = createReasoningNode(llm, tools, systemPrompt, 10, false);
+    const agent = createReActAgent({
+      model: llm,
+      tools,
+      systemPrompt,
+      maxIterations: 10,
+    });
 
-    const state = {
+    const result = await agent.invoke({
       messages: [new HumanMessage('What is 2+2?')],
-      thoughts: [],
-      actions: [],
-      observations: [],
-      scratchpad: [],
-      iteration: 0,
-    };
+    });
 
-    const result = await node(state);
-
-    expect(result.thoughts).toBeDefined();
-    expect(result.thoughts.length).toBeGreaterThan(0);
+    expect(result.messages).toBeDefined();
+    expect(result.messages.length).toBeGreaterThan(0);
   });
 });
 ```
@@ -1273,71 +1271,9 @@ const agent = createReActAgent(
 );
 ```
 
-### createReasoningNode()
-
-Creates the reasoning node for custom workflows.
-
-```typescript
-function createReasoningNode(
-  model: BaseChatModel,
-  tools: Tool[],
-  systemPrompt: string,
-  maxIterations: number,
-  verbose?: boolean
-): (state: ReActStateType) => Promise<Partial<ReActStateType>>
-```
-
-#### Parameters
-
-- `llm` - Language model instance
-- `tools` - Array of available tools
-- `systemPrompt` - System prompt for reasoning
-- `maxIterations` - Maximum allowed iterations
-- `verbose` - Enable logging (default: false)
-
-#### Returns
-
-Node function that generates reasoning and decides next action
-
-### createActionNode()
-
-Creates the action node for custom workflows.
-
-```typescript
-function createActionNode(
-  tools: Tool[],
-  verbose?: boolean
-): (state: ReActStateType) => Promise<Partial<ReActStateType>>
-```
-
-#### Parameters
-
-- `tools` - Array of available tools
-- `verbose` - Enable logging (default: false)
-
-#### Returns
-
-Node function that executes tool calls
-
-### createObservationNode()
-
-Creates the observation node for custom workflows.
-
-```typescript
-function createObservationNode(
-  verbose?: boolean
-): (state: ReActStateType) => Promise<Partial<ReActStateType>>
-```
-
-#### Parameters
-
-- `verbose` - Enable logging (default: false)
-
-#### Returns
-
-Node function that processes tool results
-
 ### State Types
+
+> **Note**: Individual node creators (`createReasoningNode`, `createActionNode`, `createObservationNode`) are internal implementation details and not exported from the package. Use `createReActAgent` or `ReActAgentBuilder` for creating agents.
 
 #### ReActStateType
 
@@ -1683,8 +1619,13 @@ ReAct can be combined with other patterns:
 
 ```typescript
 // ReAct + Reflection
-const reactAgent = createReActAgent({ llm, tools });
-const reflectionAgent = createReflectionAgent({ llm });
+const reactAgent = createReActAgent({ model: llm, tools });
+const reflectionAgent = createReflectionAgent({
+  generator: { model: llm },
+  reflector: { model: llm },
+  reviser: { model: llm },
+  maxIterations: 3,
+});
 
 async function reactWithReflection(query: string) {
   // 1. Use ReAct to gather information

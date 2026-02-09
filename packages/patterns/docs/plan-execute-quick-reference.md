@@ -27,7 +27,7 @@ const result = await agent.invoke({ input: 'Your task here' });
 planner: {
   model: BaseChatModel,              // Required: LLM for planning
   systemPrompt?: string,            // Custom planning prompt
-  maxSteps?: number,                // Max steps (default: 10)
+  maxSteps?: number,                // Max steps (default: 7)
   includeToolDescriptions?: boolean, // Include tool info
 }
 ```
