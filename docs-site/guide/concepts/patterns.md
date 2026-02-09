@@ -399,20 +399,24 @@ Track metrics for each pattern:
 
 ### 4. Handle Errors Gracefully
 
-All patterns support error handling:
+Handle errors using try-catch or middleware:
 
 ```typescript
-const agent = createReActAgent({
-  model: llm,
-  tools,
-  maxIterations: 10,
-  onError: (error, state) => {
-    console.error('Agent error:', error);
-    // Return fallback response
-    return { response: 'I encountered an error. Please try again.' };
-  },
-});
+// Option 1: Try-catch in calling code
+try {
+  const result = await agent.invoke({ messages });
+} catch (error) {
+  console.error('Agent error:', error);
+  // Handle error appropriately
+}
+
+// Option 2: Use withErrorHandler middleware on custom nodes
+// See the Middleware guide for details on wrapping nodes with error handling
 ```
+
+::: tip Error Handling
+ReActAgentConfig does not support an `onError` field. Use try-catch blocks in your calling code, or apply `withErrorHandler` middleware to custom nodes. See the [Middleware Guide](/guide/concepts/middleware) for more details.
+:::
 
 ## Next Steps
 
