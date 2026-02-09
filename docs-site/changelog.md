@@ -7,7 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-## [0.11.9] - 2026-02-09
+## [0.12.0] - 2026-02-09
 
 ### Added
 
@@ -25,6 +25,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
     - Monitoring features now accessible to all consumers
     - Aligns with package description and documentation
     - Consistent with other module exports (resources, streaming, etc.)
+
+### Changed
+
+#### @agentforge/core
+- **BREAKING: Renamed HealthCheckResult to ToolHealthCheckResult**
+  - **Problem**: Type name conflict between `tools/lifecycle.ts` and `monitoring/health.ts` when both exported from package root
+  - **Solution**: Renamed the tools lifecycle type from `HealthCheckResult` to `ToolHealthCheckResult`
+  - **Migration**: If you were using `HealthCheckResult` from the tools lifecycle module, update imports to `ToolHealthCheckResult`
+  - **Impact**: Minimal - the tools lifecycle health check is a niche feature; most users will use the monitoring module's `HealthCheckResult`
 
 ## [0.11.8] - 2026-02-07
 
