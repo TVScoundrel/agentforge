@@ -183,11 +183,12 @@ const result2 = await agent.invoke(
 
 ```typescript
 import { ReActAgentBuilder } from '@agentforge/patterns';
+import { createAskHumanTool, sendSlackMessage } from '@agentforge/tools';
 
 // Worker agent that uses parent's checkpointer
 const hrAgent = new ReActAgentBuilder()
   .withModel(model)
-  .withTools([askHumanTool, slackTool])
+  .withTools([createAskHumanTool(), sendSlackMessage])
   .withCheckpointer(true)  // Use parent's checkpointer with separate namespace
   .build();
 

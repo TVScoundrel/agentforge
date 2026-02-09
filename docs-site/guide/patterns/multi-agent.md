@@ -445,19 +445,22 @@ Enable worker agents to request human input mid-execution using checkpointers. T
 ```typescript
 import { MemorySaver } from '@langchain/langgraph';
 import { createMultiAgentSystem, createReActAgent } from '@agentforge/patterns';
-import { createAskHumanTool } from '@agentforge/tools';
+import { createAskHumanTool, sendSlackMessage, httpPost } from '@agentforge/tools';
+
+// Note: customContractTool and customComplianceTool are user-defined tools
+// Replace with your own tool implementations
 
 // Create worker agents with checkpointer: true
 const hrAgent = createReActAgent({
   model,
-  tools: [createAskHumanTool(), slackTool, emailTool],
+  tools: [createAskHumanTool(), sendSlackMessage, httpPost],
   systemPrompt: 'You are an HR specialist. Help with employee-related tasks.',
   checkpointer: true  // Use parent's checkpointer with separate namespace
 });
 
 const legalAgent = createReActAgent({
   model,
-  tools: [createAskHumanTool(), contractTool, complianceTool],
+  tools: [createAskHumanTool(), customContractTool, customComplianceTool],
   systemPrompt: 'You are a legal specialist. Help with contracts and compliance.',
   checkpointer: true
 });
