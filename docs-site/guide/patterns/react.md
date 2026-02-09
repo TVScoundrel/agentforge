@@ -214,11 +214,15 @@ const stream = await agent.stream({
 });
 
 for await (const chunk of stream) {
-  if (chunk.agent) {
-    console.log('Thinking:', chunk.agent.messages);
+  // Access ReAct state fields
+  if (chunk.thoughts && chunk.thoughts.length > 0) {
+    console.log('Thinking:', chunk.thoughts[chunk.thoughts.length - 1]);
   }
-  if (chunk.tools) {
-    console.log('Using tool:', chunk.tools);
+  if (chunk.actions && chunk.actions.length > 0) {
+    console.log('Using tool:', chunk.actions[chunk.actions.length - 1]);
+  }
+  if (chunk.observations && chunk.observations.length > 0) {
+    console.log('Observation:', chunk.observations[chunk.observations.length - 1]);
   }
 }
 ```

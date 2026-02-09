@@ -116,10 +116,13 @@ const stream = await agent.stream({
 });
 
 for await (const chunk of stream) {
-  if (chunk.type === 'text') {
-    process.stdout.write(chunk.content);
-  } else if (chunk.type === 'tool_call') {
-    console.log(`\n🔧 Using tool: ${chunk.tool}`);
+  // Access ReAct state fields for incremental updates
+  if (chunk.actions && chunk.actions.length > 0) {
+    const latestAction = chunk.actions[chunk.actions.length - 1];
+    console.log(`\n🔧 Using tool: ${latestAction.name}`);
+  }
+  if (chunk.response) {
+    console.log('\n✅ Response:', chunk.response);
   }
 }
 ```

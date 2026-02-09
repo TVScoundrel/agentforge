@@ -591,15 +591,16 @@ const system = builder.build();
 Monitor multi-agent collaboration in real-time:
 
 ```typescript
-const stream = await system.stream({
-  input: 'Research AI trends and create a report'
-});
+const stream = await system.stream(
+  { input: 'Research AI trends and create a report' },
+  { streamMode: 'updates' }  // Required for node-keyed updates
+);
 
 for await (const chunk of stream) {
   console.log('Node:', Object.keys(chunk)[0]);
   console.log('State update:', chunk);
 
-  // Access specific node outputs
+  // Access specific node outputs (only available with streamMode: 'updates')
   if (chunk.supervisor) {
     console.log('Supervisor routing:', chunk.supervisor.currentAgent);
   }

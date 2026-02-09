@@ -188,9 +188,11 @@ const stream = await agent.stream({
 const results = [];
 
 for await (const chunk of stream) {
-  if (chunk.result) {
-    results.push(chunk.result);
-    console.log(`Found ${results.length}/10:`, chunk.result);
+  // Access actual state fields (e.g., pastSteps for Plan-Execute pattern)
+  if (chunk.pastSteps && chunk.pastSteps.length > results.length) {
+    const newSteps = chunk.pastSteps.slice(results.length);
+    results.push(...newSteps);
+    console.log(`Found ${results.length}/10:`, newSteps[newSteps.length - 1]);
   }
 }
 
