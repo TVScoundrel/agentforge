@@ -180,6 +180,7 @@ Builder class for creating multi-agent systems with dynamic worker registration.
 ```typescript
 import { MultiAgentSystemBuilder } from '@agentforge/patterns';
 import { ChatOpenAI } from '@langchain/openai';
+import { webSearch, calculator } from '@agentforge/tools';
 
 const llm = new ChatOpenAI({ model: 'gpt-4' });
 
@@ -197,7 +198,6 @@ const builder = new MultiAgentSystemBuilder({
 });
 
 // Register workers
-import { webSearch, calculator } from '@agentforge/tools';
 
 builder.registerWorkers([
   {

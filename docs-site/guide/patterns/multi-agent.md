@@ -923,7 +923,7 @@ const supportTeam = createMultiAgentSystem({
         currentWorkload: 0
       },
       model,
-      tools: [emailSend, slackNotify],
+      tools: [httpPost, sendSlackMessage],  // Real exports from @agentforge/tools
       systemPrompt: 'Escalate complex issues'
     }
   ],
