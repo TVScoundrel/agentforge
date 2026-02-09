@@ -25,7 +25,9 @@ Streaming provides progressive updates:
 
 ```typescript
 // ✅ Streaming: User sees progress immediately
-const stream = await agent.stream(input);
+const stream = await agent.stream({
+  messages: [{ role: 'user', content: 'Research AI trends and analyze the data' }]
+});
 for await (const chunk of stream) {
   console.log(chunk);  // Shows updates in real-time
 }
@@ -553,6 +555,10 @@ async function* aggregateStreams(...streams: AsyncIterable<any>[]) {
 }
 
 // Usage: Stream from multiple agents simultaneously
+const input = {
+  messages: [{ role: 'user', content: 'Analyze this data from multiple perspectives' }]
+};
+
 const stream1 = agent1.stream(input);
 const stream2 = agent2.stream(input);
 const stream3 = agent3.stream(input);
