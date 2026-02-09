@@ -37,11 +37,10 @@ planner: {
 ```typescript
 executor: {
   tools: Tool[],                    // Required: Available tools
-  llm?: BaseChatModel,              // Optional LLM for sub-tasks
+  model?: BaseChatModel,            // Optional LLM for sub-tasks
   parallel?: boolean,               // Enable parallel execution
   stepTimeout?: number,             // Timeout per step (ms)
-  maxParallelSteps?: number,        // Max concurrent steps
-  continueOnError?: boolean,        // Continue if steps fail
+  enableDeduplication?: boolean,    // Prevent duplicate tool calls
 }
 ```
 

@@ -282,20 +282,30 @@ User Input → Supervisor → Worker(s) → Aggregator → Output
    ```typescript
    // Example: "Handle customer support across technical and billing"
    const system = createMultiAgentSystem({
-     supervisor: { llm, routingStrategy: 'llm-based' },
+     supervisor: { model: llm, strategy: 'llm-based' },
      workers: [],
-     aggregator: { llm },
+     aggregator: { model: llm },
    });
 
    registerWorkers(system, [
      {
        name: 'tech_support',
-       capabilities: ['technical', 'troubleshooting'],
+       capabilities: {
+         skills: ['technical', 'troubleshooting'],
+         tools: ['diagnostic'],
+         available: true,
+       },
+       model: llm,
        tools: [diagnosticTool],
      },
      {
        name: 'billing_support',
-       capabilities: ['billing', 'payments'],
+       capabilities: {
+         skills: ['billing', 'payments'],
+         tools: ['account'],
+         available: true,
+       },
+       model: llm,
        tools: [accountTool],
      },
    ]);
@@ -467,20 +477,30 @@ const agent = new ReActAgentBuilder()
 **Multi-Agent Approach**:
 ```typescript
 const system = createMultiAgentSystem({
-  supervisor: { llm, routingStrategy: 'llm-based' },
+  supervisor: { model: llm, strategy: 'llm-based' },
   workers: [],
-  aggregator: { llm },
+  aggregator: { model: llm },
 });
 
 registerWorkers(system, [
   {
     name: 'billing_support',
-    capabilities: ['billing', 'payments'],
+    capabilities: {
+      skills: ['billing', 'payments'],
+      tools: ['checkAccount', 'processRefund'],
+      available: true,
+    },
+    model: llm,
     tools: [checkAccountTool, processRefundTool],
   },
   {
     name: 'tech_support',
-    capabilities: ['technical', 'troubleshooting'],
+    capabilities: {
+      skills: ['technical', 'troubleshooting'],
+      tools: ['diagnostic', 'troubleshoot'],
+      available: true,
+    },
+    model: llm,
     tools: [diagnosticTool, troubleshootTool],
   },
 ]);
@@ -580,9 +600,9 @@ Use Multi-Agent for coordination, ReAct for worker execution:
 
 ```typescript
 const system = createMultiAgentSystem({
-  supervisor: { llm, routingStrategy: 'skill-based' },
+  supervisor: { model: llm, strategy: 'skill-based' },
   workers: [],
-  aggregator: { llm },
+  aggregator: { model: llm },
 });
 
 registerWorkers(system, [
@@ -684,9 +704,9 @@ const agent = new ReActAgentBuilder()
 
 // After (Multi-Agent with specialized workers)
 const system = createMultiAgentSystem({
-  supervisor: { llm, routingStrategy: 'skill-based' },
+  supervisor: { model: llm, strategy: 'skill-based' },
   workers: [],
-  aggregator: { llm },
+  aggregator: { model: llm },
 });
 
 registerWorkers(system, [

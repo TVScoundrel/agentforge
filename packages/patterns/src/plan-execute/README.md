@@ -34,7 +34,7 @@ import { ChatOpenAI } from '@langchain/openai';
 
 const agent = createPlanExecuteAgent({
   planner: {
-    llm: new ChatOpenAI({ model: 'gpt-4' }),
+    model: new ChatOpenAI({ model: 'gpt-4' }),
     maxSteps: 5,
   },
   executor: {
@@ -74,7 +74,7 @@ Creates structured plans from user input.
 **Configuration:**
 ```typescript
 {
-  llm: BaseChatModel,
+  model: BaseChatModel,
   systemPrompt?: string,
   maxSteps?: number,
   includeToolDescriptions?: boolean,
@@ -115,7 +115,7 @@ Adapts the plan based on execution results.
 **Configuration:**
 ```typescript
 {
-  llm: BaseChatModel,
+  model: BaseChatModel,
   replanThreshold?: number,
   systemPrompt?: string,
 }
@@ -214,7 +214,7 @@ interface CompletedStep {
 ```typescript
 const agent = createPlanExecuteAgent({
   planner: {
-    llm: new ChatOpenAI({ model: 'gpt-4' }),
+    model: new ChatOpenAI({ model: 'gpt-4' }),
     maxSteps: 5,
   },
   executor: {

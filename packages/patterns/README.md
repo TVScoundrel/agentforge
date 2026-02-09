@@ -175,7 +175,7 @@ const analyzeTool = {
 // Create the agent
 const agent = createPlanExecuteAgent({
   planner: {
-    llm: new ChatOpenAI({ model: 'gpt-4' }),
+    model: new ChatOpenAI({ model: 'gpt-4' }),
     maxSteps: 5,
   },
   executor: {
@@ -183,7 +183,7 @@ const agent = createPlanExecuteAgent({
     parallel: true, // Enable parallel execution
   },
   replanner: {
-    llm: new ChatOpenAI({ model: 'gpt-4' }),
+    model: new ChatOpenAI({ model: 'gpt-4' }),
     replanThreshold: 0.7, // Replan if confidence < 0.7
   },
 });
@@ -209,12 +209,16 @@ import { ChatOpenAI } from '@langchain/openai';
 // Create the agent
 const agent = createReflectionAgent({
   generator: {
-    llm: new ChatOpenAI({ model: 'gpt-4' }),
+    model: new ChatOpenAI({ model: 'gpt-4' }),
     systemPrompt: 'You are a professional writer. Create high-quality content.',
   },
   reflector: {
-    llm: new ChatOpenAI({ model: 'gpt-4' }),
+    model: new ChatOpenAI({ model: 'gpt-4' }),
     systemPrompt: 'Critique the content for clarity, engagement, and professionalism.',
+  },
+  reviser: {
+    model: new ChatOpenAI({ model: 'gpt-4' }),
+    systemPrompt: 'Revise the content based on the critique.',
   },
   maxIterations: 3,
   verbose: true,
@@ -222,7 +226,7 @@ const agent = createReflectionAgent({
 
 // Use the agent
 const result = await agent.invoke({
-  messages: [{ role: 'user', content: 'Write a blog post about AI' }],
+  input: 'Write a blog post about AI',
 });
 
 console.log(result.reflections); // All critiques
@@ -237,15 +241,15 @@ Coordinate specialized agents:
 import { MultiAgentSystemBuilder } from '@agentforge/patterns';
 import { ChatOpenAI } from '@langchain/openai';
 
-const llm = new ChatOpenAI({ model: 'gpt-4' });
+const model = new ChatOpenAI({ model: 'gpt-4' });
 
 // Create builder
 const builder = new MultiAgentSystemBuilder({
   supervisor: {
-    llm,
+    model,
     strategy: 'skill-based', // or 'llm-based', 'round-robin', etc.
   },
-  aggregator: { llm },
+  aggregator: { model },
 });
 
 // Register specialized workers
@@ -259,7 +263,7 @@ builder.registerWorkers([
       tools: ['diagnostic', 'troubleshoot'],
       available: true,
     },
-    llm,
+    model,
     tools: [diagnosticTool, troubleshootTool],
   },
   {
@@ -271,7 +275,7 @@ builder.registerWorkers([
       tools: ['account_check', 'refund_process'],
       available: true,
     },
-    llm,
+    model,
     tools: [checkAccountTool, processRefundTool],
   },
 ]);

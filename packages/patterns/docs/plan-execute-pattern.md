@@ -453,20 +453,11 @@ Track execution progress:
 
 ```typescript
 const agent = createPlanExecuteAgent({
-  planner: { llm, maxSteps: 5 },
+  planner: { model, maxSteps: 5 },
   executor: {
     tools,
-    onStepStart: (step) => {
-      console.log(`Starting: ${step.description}`);
-    },
-    onStepComplete: (step, result) => {
-      console.log(`Completed: ${step.description}`);
-      console.log(`Result: ${JSON.stringify(result)}`);
-    },
-    onStepError: (step, error) => {
-      console.error(`Failed: ${step.description}`);
-      console.error(`Error: ${error.message}`);
-    },
+    // Note: Progress callbacks are not currently supported in ExecutorConfig
+    // Use state inspection or custom middleware for progress tracking
   },
 });
 ```

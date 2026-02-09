@@ -97,12 +97,12 @@ interface Revision {
 import { ChatOpenAI } from '@langchain/openai';
 import { createReflectionAgent } from '@agentforge/patterns';
 
-const llm = new ChatOpenAI({ modelName: 'gpt-4' });
+const model = new ChatOpenAI({ modelName: 'gpt-4' });
 
 const agent = createReflectionAgent({
-  generator: { llm },
-  reflector: { llm },
-  reviser: { llm },
+  generator: { model },
+  reflector: { model },
+  reviser: { model },
   maxIterations: 3,
 });
 
@@ -180,9 +180,9 @@ import {
 import { StateGraph, END } from '@langchain/langgraph';
 
 const workflow = new StateGraph(ReflectionState)
-  .addNode('generator', createGeneratorNode({ llm }))
-  .addNode('reflector', createReflectorNode({ llm }))
-  .addNode('reviser', createReviserNode({ llm }))
+  .addNode('generator', createGeneratorNode({ model }))
+  .addNode('reflector', createReflectorNode({ model }))
+  .addNode('reviser', createReviserNode({ model }))
   .addNode('finisher', createFinisherNode());
 
 // Add custom routing logic

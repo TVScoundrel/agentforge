@@ -121,7 +121,7 @@ qualityCriteria: {
 #### Generator Config
 ```typescript
 generator: {
-  llm: ChatOpenAI,          // LLM instance
+  model: ChatOpenAI,        // LLM instance
   systemPrompt: string,     // System prompt for generation
   verbose: boolean          // Enable logging
 }
@@ -130,7 +130,7 @@ generator: {
 #### Reflector Config
 ```typescript
 reflector: {
-  llm: ChatOpenAI,          // LLM instance
+  model: ChatOpenAI,        // LLM instance
   systemPrompt: string,     // System prompt for reflection
   verbose: boolean          // Enable logging
 }
@@ -139,7 +139,7 @@ reflector: {
 #### Reviser Config
 ```typescript
 reviser: {
-  llm: ChatOpenAI,          // LLM instance
+  model: ChatOpenAI,        // LLM instance
   systemPrompt: string,     // System prompt for revision
   verbose: boolean          // Enable logging
 }

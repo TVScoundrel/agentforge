@@ -170,7 +170,7 @@ Routes tasks to appropriate workers based on the routing strategy.
 ```typescript
 const supervisorNode = createSupervisorNode({
   model: ChatOpenAI,
-  routingStrategy: 'skill-based',
+  strategy: 'skill-based',
   systemPrompt: 'Custom supervisor instructions',
 });
 ```
@@ -255,7 +255,8 @@ Uses an LLM to analyze the task and select the best worker.
 ```typescript
 const system = createMultiAgentSystem({
   supervisor: {
-    model: llm,    routingStrategy: 'llm-based',
+    model: llm,
+    strategy: 'llm-based',
     systemPrompt: `Analyze the task and route to the most appropriate worker:
       - Worker A: handles X
       - Worker B: handles Y
@@ -289,7 +290,7 @@ When using `llm-based` routing, the supervisor can select multiple workers to ex
 const system = createMultiAgentSystem({
   supervisor: {
     model: llm,
-    routingStrategy: 'llm-based',
+    strategy: 'llm-based',
     systemPrompt: `Route queries to appropriate workers.
 
     **PARALLEL ROUTING**: Select MULTIPLE workers when the query benefits from
@@ -410,7 +411,8 @@ Matches task requirements to worker capabilities.
 ```typescript
 const system = createMultiAgentSystem({
   supervisor: {
-    model: llm,    routingStrategy: 'skill-based',
+    model: llm,
+    strategy: 'skill-based',
   },
   // ...
 });
@@ -434,7 +436,8 @@ Distributes tasks evenly across all workers.
 ```typescript
 const system = createMultiAgentSystem({
   supervisor: {
-    model: llm,    routingStrategy: 'round-robin',
+    model: llm,
+    strategy: 'round-robin',
   },
   // ...
 });
@@ -458,7 +461,8 @@ Uses custom rules to determine routing.
 ```typescript
 const system = createMultiAgentSystem({
   supervisor: {
-    model: llm,    routingStrategy: {
+    model: llm,
+    strategy: {
       type: 'rule-based',
       rules: [
         {
@@ -495,7 +499,8 @@ Routes to the least busy worker.
 ```typescript
 const system = createMultiAgentSystem({
   supervisor: {
-    model: llm,    routingStrategy: 'load-balanced',
+    model: llm,
+    strategy: 'load-balanced',
   },
   // ...
 });
@@ -613,7 +618,7 @@ function createMultiAgentSystem(config: MultiAgentSystemConfig): CompiledStateGr
 interface MultiAgentConfig {
   supervisor: {
     model: BaseChatModel;
-    routingStrategy: RoutingStrategy;
+    strategy: RoutingStrategy;
     systemPrompt?: string;
   };
   workers: WorkerConfig[];
@@ -634,7 +639,7 @@ interface MultiAgentConfig {
 const system = createMultiAgentSystem({
   supervisor: {
     model: new ChatOpenAI({ modelName: 'gpt-4' }),
-    routingStrategy: 'skill-based',
+    strategy: 'skill-based',
   },
   workers: [],
   aggregator: {
@@ -723,7 +728,7 @@ function createSupervisorNode(config: SupervisorConfig): NodeFunction
 ```typescript
 interface SupervisorConfig {
   model: BaseChatModel;
-  routingStrategy: RoutingStrategy;
+  strategy: RoutingStrategy;
   systemPrompt?: string;
 }
 ```
@@ -733,7 +738,7 @@ interface SupervisorConfig {
 ```typescript
 const supervisor = createSupervisorNode({
   model: new ChatOpenAI({ modelName: 'gpt-4' }),
-  routingStrategy: 'llm-based',
+  strategy: 'llm-based',
   systemPrompt: 'Route tasks to appropriate specialists',
 });
 ```
@@ -957,7 +962,8 @@ import {
 
 // Create nodes
 const supervisor = createSupervisorNode({
-  model: llm,  routingStrategy: {
+  model: llm,
+  strategy: {
     type: 'rule-based',
     rules: [
       { condition: (s) => s.iterations === 0, workerId: 'validator' },
@@ -1104,12 +1110,12 @@ for (const test of testCases) {
 Implement custom routing logic:
 
 ```typescript
-interface CustomRoutingStrategy {
+interface CustomStrategy {
   type: 'custom';
   route: (state: MultiAgentStateType) => string;
 }
 
-const customStrategy: CustomRoutingStrategy = {
+const customStrategy: CustomStrategy = {
   type: 'custom',
   route: (state) => {
     // Custom logic
@@ -1121,7 +1127,8 @@ const customStrategy: CustomRoutingStrategy = {
 
 const system = createMultiAgentSystem({
   supervisor: {
-    model: llm,    routingStrategy: customStrategy,
+    model: llm,
+    strategy: customStrategy,
   },
   // ...
 });
@@ -1272,7 +1279,8 @@ const healthAwareRouting = {
 // Debug routing
 const system = createMultiAgentSystem({
   supervisor: {
-    model: llm,    routingStrategy: 'skill-based',
+    model: llm,
+    strategy: 'skill-based',
   },
   workers: [],
   aggregator: { model: llm },
@@ -1308,7 +1316,8 @@ const system = createMultiAgentSystem({
 ```typescript
 const system = createMultiAgentSystem({
   supervisor: {
-    model: llm,    routingStrategy: 'llm-based',
+    model: llm,
+    strategy: 'llm-based',
     systemPrompt: `Detailed routing instructions:
       - For X tasks, use worker A because...
       - For Y tasks, use worker B because...
@@ -1334,7 +1343,8 @@ const system = createMultiAgentSystem({
 // Fast routing
 const system = createMultiAgentSystem({
   supervisor: {
-    model: llm,    routingStrategy: 'skill-based', // Faster than LLM-based
+    model: llm,
+    strategy: 'skill-based', // Faster than LLM-based
   },
   // ...
 });

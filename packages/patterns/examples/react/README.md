@@ -128,7 +128,7 @@ while (!done) {
 #### Basic Configuration
 ```typescript
 const agent = createReActAgent({
-  llm: ChatOpenAI,              // LLM instance
+  model: ChatOpenAI,            // LLM instance
   tools: ToolRegistry | Tool[], // Available tools
   systemPrompt: string,         // System prompt
   maxIterations: number,        // Max iterations (default: 10)

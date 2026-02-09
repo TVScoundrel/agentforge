@@ -136,7 +136,7 @@ toolRegistry.register(myTool);
 
 // Create agent
 const agent = createReActAgent({
-  llm: new ChatOpenAI({ model: 'gpt-4' }),
+  model: new ChatOpenAI({ model: 'gpt-4' }),
   tools: toolRegistry,
   maxIterations: 10,
 });
@@ -153,7 +153,7 @@ console.log(result.messages[result.messages.length - 1].content);
 
 ```typescript
 const agent = createReActAgent({
-  llm: new ChatOpenAI({ model: 'gpt-4' }),
+  model: new ChatOpenAI({ model: 'gpt-4' }),
   tools: toolRegistry,
   maxIterations: 10,
   returnIntermediateSteps: true, // Enable intermediate steps
@@ -259,7 +259,7 @@ For straightforward tasks requiring one or two tools:
 
 ```typescript
 const agent = createReActAgent({
-  llm: new ChatOpenAI({ model: 'gpt-4', temperature: 0 }),
+  model: new ChatOpenAI({ model: 'gpt-4', temperature: 0 }),
   tools: [calculatorTool, weatherTool],
   systemPrompt: 'You are a helpful assistant.',
   maxIterations: 5,
@@ -278,7 +278,7 @@ For complex tasks requiring multiple steps:
 
 ```typescript
 const agent = createReActAgent({
-  llm: new ChatOpenAI({ model: 'gpt-4', temperature: 0 }),
+  model: new ChatOpenAI({ model: 'gpt-4', temperature: 0 }),
   tools: [searchTool, calculatorTool, analysisTool],
   systemPrompt: `You are a research assistant.
     Break down complex tasks into steps.
@@ -302,7 +302,7 @@ For workflows where tools build on each other:
 
 ```typescript
 const agent = createReActAgent({
-  llm: new ChatOpenAI({ model: 'gpt-4', temperature: 0 }),
+  model: new ChatOpenAI({ model: 'gpt-4', temperature: 0 }),
   tools: [
     fetchDataTool,      // Step 1: Get data
     transformTool,      // Step 2: Transform
@@ -326,7 +326,7 @@ For open-ended exploration:
 
 ```typescript
 const agent = createReActAgent({
-  llm: new ChatOpenAI({ model: 'gpt-4', temperature: 0.3 }),
+  model: new ChatOpenAI({ model: 'gpt-4', temperature: 0.3 }),
   tools: [searchTool, summarizeTool, compareTool],
   systemPrompt: `You are an exploratory research assistant.
     Investigate topics thoroughly.
@@ -671,7 +671,7 @@ const tool = {
 
 ```typescript
 const researchAgent = createReActAgent({
-  llm: new ChatOpenAI({ model: 'gpt-4', temperature: 0.2 }),
+  model: new ChatOpenAI({ model: 'gpt-4', temperature: 0.2 }),
   tools: [
     searchTool,
     summarizeTool,
@@ -692,7 +692,7 @@ const researchAgent = createReActAgent({
 
 ```typescript
 const analystAgent = createReActAgent({
-  llm: new ChatOpenAI({ model: 'gpt-4', temperature: 0 }),
+  model: new ChatOpenAI({ model: 'gpt-4', temperature: 0 }),
   tools: [
     loadDataTool,
     calculateStatsTool,
@@ -712,7 +712,7 @@ const analystAgent = createReActAgent({
 
 ```typescript
 const supportAgent = createReActAgent({
-  llm: new ChatOpenAI({ model: 'gpt-4', temperature: 0.3 }),
+  model: new ChatOpenAI({ model: 'gpt-4', temperature: 0.3 }),
   tools: [
     lookupAccountTool,
     checkOrderStatusTool,
@@ -1002,7 +1002,7 @@ const agent = createReActAgent({
 ```typescript
 // Use lower temperature for deterministic tasks
 const agent = createReActAgent({
-  llm: new ChatOpenAI({
+  model: new ChatOpenAI({
     model: 'gpt-4',
     temperature: 0,  // Deterministic
   }),
@@ -1011,7 +1011,7 @@ const agent = createReActAgent({
 
 // Use faster model for simple tasks
 const fastAgent = createReActAgent({
-  llm: new ChatOpenAI({
+  model: new ChatOpenAI({
     model: 'gpt-3.5-turbo',  // Faster, cheaper
   }),
   tools,
@@ -1140,7 +1140,7 @@ describe('ReasoningNode', () => {
 describe('ReAct Agent Integration', () => {
   it('should solve multi-step problem', async () => {
     const agent = createReActAgent({
-      llm: new ChatOpenAI({ model: 'gpt-4', temperature: 0 }),
+      model: new ChatOpenAI({ model: 'gpt-4', temperature: 0 }),
       tools: [calculatorTool, searchTool],
       maxIterations: 10,
       returnIntermediateSteps: true,
@@ -1172,7 +1172,7 @@ describe('ReAct Agent Integration', () => {
     };
 
     const agent = createReActAgent({
-      llm: new ChatOpenAI({ model: 'gpt-4' }),
+      model: new ChatOpenAI({ model: 'gpt-4' }),
       tools: [failingTool],
       maxIterations: 5,
     });
@@ -1202,7 +1202,7 @@ describe('ReAct with Mock LLM', () => {
     });
 
     const agent = createReActAgent({
-      llm: mockLLM,
+      model: mockLLM,
       tools: [calculatorTool],
       maxIterations: 5,
     });
@@ -1255,7 +1255,7 @@ function createReActAgent(
 ```typescript
 const agent = createReActAgent(
   {
-    llm: new ChatOpenAI({ model: 'gpt-4' }),
+    model: new ChatOpenAI({ model: 'gpt-4' }),
     tools: toolRegistry,
     systemPrompt: 'You are a helpful assistant.',
     maxIterations: 10,
@@ -1279,7 +1279,7 @@ Creates the reasoning node for custom workflows.
 
 ```typescript
 function createReasoningNode(
-  llm: BaseChatModel,
+  model: BaseChatModel,
   tools: Tool[],
   systemPrompt: string,
   maxIterations: number,
@@ -1487,10 +1487,10 @@ console.log('Registered tools:', toolRegistry.getAll().map(t => t.name));
 **Solutions:**
 ```typescript
 // 1. Use better model
-llm: new ChatOpenAI({ model: 'gpt-4' })  // vs gpt-3.5-turbo
+model: new ChatOpenAI({ model: 'gpt-4' })  // vs gpt-3.5-turbo
 
 // 2. Lower temperature
-llm: new ChatOpenAI({ temperature: 0 })  // More deterministic
+model: new ChatOpenAI({ temperature: 0 })  // More deterministic
 
 // 3. Improve system prompt with examples
 systemPrompt: `...

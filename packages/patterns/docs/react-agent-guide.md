@@ -230,10 +230,10 @@ const agent = new ReActAgentBuilder()
 Alternative to the builder pattern:
 
 ```typescript
-import { createReActAgent } from '@agentforge/core';
+import { createReActAgent } from '@agentforge/patterns';
 
 const agent = createReActAgent({
-  llm: new ChatOpenAI({ model: 'gpt-4' }),
+  model: new ChatOpenAI({ model: 'gpt-4' }),
   tools: [calculatorTool],
   systemPrompt: 'Custom prompt',
   maxIterations: 10,

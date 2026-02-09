@@ -131,7 +131,7 @@ const response = await finisher(pastSteps);
 ```typescript
 const agent = createPlanExecuteAgent({
   planner: {
-    llm: ChatOpenAI,        // LLM for planning
+    model: ChatOpenAI,      // LLM for planning
     maxSteps: 5,            // Max steps in plan
   },
   executor: {
@@ -145,24 +145,23 @@ const agent = createPlanExecuteAgent({
 ```typescript
 const agent = createPlanExecuteAgent({
   planner: {
-    llm,
+    model,
     maxSteps: 10,
     systemPrompt: 'Custom planning instructions',
     includeToolDescriptions: true,
   },
   executor: {
     tools,
-    llm,                    // Optional LLM for sub-tasks
+    model,                  // Optional LLM for sub-tasks
     parallel: true,         // Enable parallel execution
     stepTimeout: 5000,      // Timeout per step (ms)
   },
   replanner: {
-    llm,
+    model,
     replanThreshold: 0.7,   // Confidence threshold
     systemPrompt: 'Custom replanning logic',
   },
   maxIterations: 5,
-  returnIntermediateSteps: true,
   verbose: true,
 });
 ```
