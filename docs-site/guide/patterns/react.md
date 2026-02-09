@@ -280,7 +280,7 @@ const weatherTool = toolBuilder()
   .category(ToolCategory.WEB)
   .schema(z.object({
     city: z.string().describe('The city name, e.g., "San Francisco"'),
-    units: z.enum(['celsius', 'fahrenheit']).default('celsius')
+    units: z.enum(['celsius', 'fahrenheit']).default('celsius').describe('Temperature units (default: celsius)')
   }))
   .implement(async ({ city, units }) => {
     // Implementation

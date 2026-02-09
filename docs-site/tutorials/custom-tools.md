@@ -67,16 +67,15 @@ export const queryDatabase = toolBuilder()
   .category(ToolCategory.DATABASE)  // Use DATABASE for database operations
   .tags(['database', 'query', 'users'])
   .schema(z.object({
-    table: z.enum(['users', 'orders', 'products']),
-    filters: z.record(z.any()).optional(),
-    limit: z.number().min(1).max(100).default(10)
+    table: z.enum(['users', 'orders', 'products']).describe('Database table to query'),
+    filters: z.record(z.any()).optional().describe('Optional filters to apply'),
+    limit: z.number().min(1).max(100).default(10).describe('Maximum number of results (1-100, default: 10)')
   }))
-  .examples([
-    {
-      input: { table: 'users', filters: { active: true }, limit: 5 },
-      output: { count: 5, rows: [] }
-    }
-  ])
+  .example({
+    description: 'Query active users with limit',
+    input: { table: 'users', filters: { active: true }, limit: 5 },
+    output: { count: 5, rows: [] }
+  })
   .implement(async ({ table, filters = {}, limit }) => {
     try {
       const results = await db
@@ -176,7 +175,7 @@ export const readFile = toolBuilder()
   .tags(['file', 'read', 'filesystem'])
   .schema(z.object({
     path: z.string().describe('File path'),
-    encoding: z.enum(['utf-8', 'ascii', 'base64']).default('utf-8')
+    encoding: z.enum(['utf-8', 'ascii', 'base64']).default('utf-8').describe('File encoding (default: utf-8)')
   }))
   .implement(async ({ path: filePath, encoding }) => {
     try {

@@ -75,7 +75,7 @@ const customSummarizeTool = toolBuilder()
   .name('custom-summarize')
   .description('Summarize research findings')
   .category(ToolCategory.UTILITY)  // Use UTILITY for text processing tools
-  .schema(z.object({ text: z.string() }))
+  .schema(z.object({ text: z.string().describe('Text to summarize') }))
   .implement(async ({ text }) => {
     // Your summarization logic here
     return `Summary of: ${text}`;
@@ -86,7 +86,7 @@ const customReportTool = toolBuilder()
   .name('custom-report')
   .description('Generate formatted report')
   .category(ToolCategory.UTILITY)  // Use UTILITY for text processing tools
-  .schema(z.object({ content: z.string() }))
+  .schema(z.object({ content: z.string().describe('Content to format into a report') }))
   .implement(async ({ content }) => {
     // Your report generation logic here
     return `Report: ${content}`;
@@ -139,7 +139,7 @@ const customResearchTool = toolBuilder()
   .name('custom-research')
   .description('Research topic')
   .category(ToolCategory.WEB)  // Use WEB for search/research tools
-  .schema(z.object({ topic: z.string() }))
+  .schema(z.object({ topic: z.string().describe('Topic to research') }))
   .implement(async ({ topic }) => {
     // Your research logic here (could use webSearch internally)
     return `Research on: ${topic}`;
@@ -150,7 +150,7 @@ const customOutlineTool = toolBuilder()
   .name('custom-outline')
   .description('Create content outline')
   .category(ToolCategory.UTILITY)  // Use UTILITY for text processing tools
-  .schema(z.object({ topic: z.string() }))
+  .schema(z.object({ topic: z.string().describe('Topic to create outline for') }))
   .implement(async ({ topic }) => {
     // Your outline logic here
     return `Outline for: ${topic}`;
@@ -161,7 +161,7 @@ const customDraftTool = toolBuilder()
   .name('custom-draft')
   .description('Write content draft')
   .category(ToolCategory.UTILITY)  // Use UTILITY for text processing tools
-  .schema(z.object({ outline: z.string() }))
+  .schema(z.object({ outline: z.string().describe('Outline to base the draft on') }))
   .implement(async ({ outline }) => {
     // Your drafting logic here
     return `Draft based on: ${outline}`;
@@ -172,7 +172,7 @@ const customFormatTool = toolBuilder()
   .name('custom-format')
   .description('Format content')
   .category(ToolCategory.UTILITY)  // Use UTILITY for text processing tools
-  .schema(z.object({ content: z.string() }))
+  .schema(z.object({ content: z.string().describe('Content to format') }))
   .implement(async ({ content }) => {
     // Your formatting logic here
     return `Formatted: ${content}`;

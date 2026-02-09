@@ -59,8 +59,8 @@ const editFileTool = toolBuilder()
 - **`.description(desc: string)`** - Set description (required)
 - **`.category(category: ToolCategory)`** - Set category (required)
 - **`.tags(tags: string[])`** - Add tags for discovery
-- **`.schema(schema: ZodSchema)`** - Define input schema (required)
-- **`.examples(examples: Example[])`** - Add usage examples
+- **`.schema(schema: ZodSchema)`** - Define input schema (required, all fields must have `.describe()`)
+- **`.example(example: ToolExample)`** - Add a usage example (can be called multiple times)
 
 **Implementation (choose one):**
 - **`.implement(fn: ToolFunction)`** - Implement tool logic with manual error handling
@@ -96,7 +96,7 @@ const readFileTool = toolBuilder()
   .implementSafe(async ({ path }) => {
     // No try-catch needed! Just write the happy path
     const content = await fs.readFile(path, 'utf-8');
-    return { data: content };
+    return content;  // Return raw value - implementSafe wraps it automatically
   })
   .build();
 

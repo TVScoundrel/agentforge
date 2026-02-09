@@ -343,7 +343,7 @@ const cachedWebSearch = toolBuilder()
   .name('web-search')
   .description('Search the web')
   .category(ToolCategory.WEB)
-  .schema(z.object({ query: z.string() }))
+  .schema(z.object({ query: z.string().describe('Search query') }))
   .implement(async ({ query }) => {
     const cacheKey = `search:${query}`;
 

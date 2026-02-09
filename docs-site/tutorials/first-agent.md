@@ -46,14 +46,13 @@ export const getWeather = toolBuilder()
   .tags(['weather', 'api'])
   .schema(z.object({
     city: z.string().describe('City name'),
-    units: z.enum(['celsius', 'fahrenheit']).default('celsius')
+    units: z.enum(['celsius', 'fahrenheit']).default('celsius').describe('Temperature units (default: celsius)')
   }))
-  .examples([
-    {
-      input: { city: 'London', units: 'celsius' },
-      output: { temperature: 15, condition: 'Cloudy' }
-    }
-  ])
+  .example({
+    description: 'Get weather for London in Celsius',
+    input: { city: 'London', units: 'celsius' },
+    output: { temperature: 15, condition: 'Cloudy' }
+  })
   .implement(async ({ city, units }) => {
     // In production, call a real weather API
     // For demo, return mock data

@@ -88,7 +88,7 @@ const readFileTool = toolBuilder()
   .implementSafe(async ({ path, encoding }) => {
     // No try-catch needed! Automatic error handling
     const content = await fs.readFile(path, encoding);
-    return { data: content };
+    return content;  // Return raw value - implementSafe wraps it automatically
   })
   .build();
 

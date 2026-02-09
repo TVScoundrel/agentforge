@@ -987,7 +987,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
     ```typescript
     const tool = toolBuilder()
       .name('read-file')
-      .schema(z.object({ path: z.string() }))
+      .schema(z.object({ path: z.string().describe('Path to the file to read') }))
       .implementSafe(async ({ path }) => {
         return await fs.readFile(path, 'utf-8');
       })

@@ -310,7 +310,7 @@ Use `.implementSafe()` for automatic error handling with consistent response for
   // No try-catch needed! Just write the happy path
   const fs = await import('fs/promises');
   const content = await fs.readFile(path, 'utf-8');
-  return { data: content };
+  return content;  // Return raw value - implementSafe wraps it automatically
 })
 // Returns: { success: true, data: "..." } or { success: false, error: "..." }
 ```

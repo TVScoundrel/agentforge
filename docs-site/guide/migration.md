@@ -74,7 +74,7 @@ const readFileTool = toolBuilder()
   .implementSafe(async ({ path }) => {
     // No try-catch needed! Automatic error handling
     const content = await fs.readFile(path, 'utf-8');
-    return { data: content };
+    return content;  // Return raw value - implementSafe wraps it automatically
   })
   .build();
 
@@ -199,7 +199,7 @@ const httpRequestTool = toolBuilder()
       headers,
       data: body,
     });
-    return { data: JSON.stringify(response.data) };
+    return JSON.stringify(response.data);  // Return raw value - implementSafe wraps it automatically
   })
   .build();
 ```
@@ -276,7 +276,7 @@ const calculatorTool = toolBuilder()
       case 'multiply': result = a * b; break;
       case 'divide': result = a / b; break;
     }
-    return { data: String(result) };
+    return String(result);  // Return raw value - implementSafe wraps it automatically
   })
   .build();
 ```

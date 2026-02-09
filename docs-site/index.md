@@ -120,8 +120,11 @@ registry.register(
     .category(ToolCategory.WEB)
     .tag('search')
     .tag('internet')
-    .schema(z.object({ query: z.string() }))
-    .example('Search for TypeScript tutorials', { query: 'TypeScript tutorials' })
+    .schema(z.object({ query: z.string().describe('Search query') }))
+    .example({
+      description: 'Search for TypeScript tutorials',
+      input: { query: 'TypeScript tutorials' }
+    })
     .implement(async ({ query }) => {
       // Implementation here
       return `Results for: ${query}`;
