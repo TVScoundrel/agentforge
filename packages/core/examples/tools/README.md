@@ -96,7 +96,7 @@ npx tsx examples/tools/testing.ts
 ### Pattern 1: Reliable Tool Execution
 
 ```typescript
-import { createToolExecutor, retry, timeout } from '@agentforge/core/tools';
+import { createToolExecutor, retry, timeout } from '@agentforge/core';
 
 const executor = createToolExecutor({
   maxConcurrent: 5,

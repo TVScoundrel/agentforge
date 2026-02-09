@@ -101,7 +101,7 @@ npx tsx examples/resources/circuit-breaker.ts
 ### Pattern 1: Database Connection Pooling
 
 ```typescript
-import { createDatabasePool } from '@agentforge/core/resources';
+import { createDatabasePool } from '@agentforge/core';
 
 const pool = createDatabasePool({
   config: {

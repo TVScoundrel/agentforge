@@ -173,7 +173,7 @@ AgentForge provides a powerful middleware system for adding cross-cutting concer
 
 ### Quick Example
 ```typescript
-import { compose, withCache, withValidation, withRateLimit } from '@agentforge/core/middleware';
+import { compose, withCache, withValidation, withRateLimit } from '@agentforge/core';
 import { z } from 'zod';
 
 const schema = z.object({ query: z.string() }).strict();
@@ -188,7 +188,7 @@ const enhancedNode = compose(
 
 ### Production Presets
 ```typescript
-import { productionPreset } from '@agentforge/core/middleware';
+import { production } from '@agentforge/core';
 
 const productionNode = productionPreset(myNode, {
   cache: { ttl: 3600000 },
