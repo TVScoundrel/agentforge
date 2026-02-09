@@ -401,32 +401,48 @@ import {
 } from '@agentforge/tools';
 
 // Parse JSON
-const data = await jsonParser.invoke({
+const parseResult = await jsonParser.invoke({
   json: '{"name": "John"}'
 });
+if (parseResult.success) {
+  console.log(parseResult.data?.data); // { name: 'John' }
+  console.log(parseResult.data?.type); // 'object'
+}
 
 // Stringify
-const json = await jsonStringify.invoke({
+const stringifyResult = await jsonStringify.invoke({
   data: { name: 'John' },
   pretty: true
 });
+if (stringifyResult.success) {
+  console.log(stringifyResult.data?.json); // '{\n  "name": "John"\n}'
+  console.log(stringifyResult.data?.length); // 24
+}
 
 // Query JSON (JSONPath)
-const result = await jsonQuery.invoke({
+const queryResult = await jsonQuery.invoke({
   data: { users: [{ name: 'John' }] },
   query: '$.users[0].name'
 });
+if (queryResult.success) {
+  console.log(queryResult.data); // 'John'
+}
 
 // Validate JSON
-const isValid = await jsonValidator.invoke({
+const validationResult = await jsonValidator.invoke({
   json: '{"name": "John"}',
   schema: { type: 'object' }
 });
+if (validationResult.success) {
+  console.log(validationResult.data?.valid); // true
+  console.log(validationResult.data?.message); // 'Valid JSON'
+}
 
-// Merge JSON objects
+// Merge JSON objects (uses .implement, returns raw value)
 const merged = await jsonMerge.invoke({
   objects: [{ a: 1 }, { b: 2 }]
 });
+console.log(merged); // { a: 1, b: 2 }
 ```
 
 ### CSV Processing
@@ -435,25 +451,42 @@ const merged = await jsonMerge.invoke({
 import { csvParser, csvGenerator, csvToJson, jsonToCsv } from '@agentforge/tools';
 
 // Parse CSV
-const data = await csvParser.invoke({
+const parseResult = await csvParser.invoke({
   csv: 'name,age\nJohn,30',
   delimiter: ','
 });
+if (parseResult.success) {
+  console.log(parseResult.data); // [{ name: 'John', age: '30' }]
+  console.log(parseResult.rowCount); // 1
+  console.log(parseResult.columnCount); // 2
+}
 
 // Generate CSV
-const csv = await csvGenerator.invoke({
+const generateResult = await csvGenerator.invoke({
   data: [{ name: 'John', age: 30 }]
 });
+if (generateResult.success) {
+  console.log(generateResult.csv); // 'name,age\nJohn,30\n'
+  console.log(generateResult.rowCount); // 1
+}
 
 // Convert CSV to JSON
-const json = await csvToJson.invoke({
+const csvToJsonResult = await csvToJson.invoke({
   csv: 'name,age\nJohn,30'
 });
+if (csvToJsonResult.success) {
+  console.log(csvToJsonResult.json); // '[{"name":"John","age":"30"}]'
+  console.log(csvToJsonResult.recordCount); // 1
+}
 
 // Convert JSON to CSV
-const csvData = await jsonToCsv.invoke({
-  data: [{ name: 'John', age: 30 }]
+const jsonToCsvResult = await jsonToCsv.invoke({
+  json: '[{"name":"John","age":30}]'
 });
+if (jsonToCsvResult.success) {
+  console.log(jsonToCsvResult.csv); // 'name,age\nJohn,30\n'
+  console.log(jsonToCsvResult.rowCount); // 1
+}
 ```
 
 ### XML Processing
@@ -523,10 +556,16 @@ import {
 } from '@agentforge/tools';
 
 // Read file
-const content = await fileReader.invoke({
+const readResult = await fileReader.invoke({
   path: '/path/to/file.txt',
   encoding: 'utf-8'
 });
+if (readResult.success) {
+  console.log(readResult.data?.content); // File contents
+  console.log(readResult.data?.size); // File size in bytes
+  console.log(readResult.data?.path); // '/path/to/file.txt'
+  console.log(readResult.data?.encoding); // 'utf-8'
+}
 
 // Write file
 await fileWriter.invoke({
@@ -562,10 +601,15 @@ import {
 } from '@agentforge/tools';
 
 // List directory
-const files = await directoryList.invoke({
+const listResult = await directoryList.invoke({
   path: '/path/to/dir',
   recursive: true
 });
+if (listResult.success) {
+  console.log(listResult.data?.files); // Array of file objects
+  console.log(listResult.data?.count); // Number of files
+  console.log(listResult.data?.path); // '/path/to/dir'
+}
 
 // Create directory
 await directoryCreate.invoke({
@@ -573,11 +617,17 @@ await directoryCreate.invoke({
 });
 
 // Search files
-const results = await fileSearch.invoke({
-  path: '/path/to/dir',
+const searchResult = await fileSearch.invoke({
+  directory: '/path/to/dir',
   pattern: '*.ts',
   recursive: true
 });
+if (searchResult.success) {
+  console.log(searchResult.data?.matches); // Array of matching file paths
+  console.log(searchResult.data?.count); // Number of matches
+  console.log(searchResult.data?.directory); // '/path/to/dir'
+  console.log(searchResult.data?.pattern); // '*.ts'
+}
 ```
 
 ## Utility Tools (22)
