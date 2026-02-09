@@ -106,22 +106,29 @@ const links = await extractLinks.invoke({
 ```typescript
 import { urlValidator, urlBuilder, urlQueryParser } from '@agentforge/tools';
 
-// Validate URL
-const isValid = await urlValidator.invoke({
-  url: 'https://example.com'
+// Validate URL - returns detailed URL components
+const result = await urlValidator.invoke({
+  url: 'https://example.com/path?query=value#hash'
 });
+console.log(result.data?.protocol);  // 'https:'
+console.log(result.data?.hostname);  // 'example.com'
+console.log(result.data?.pathname);  // '/path'
 
-// Build URL
+// Build URL from components
 const url = await urlBuilder.invoke({
-  base: 'https://api.example.com',
-  path: '/users',
-  query: { page: 1, limit: 10 }
+  protocol: 'https',
+  hostname: 'api.example.com',
+  pathname: '/users',
+  query: { page: '1', limit: '10' }
 });
+console.log(url.url);  // 'https://api.example.com/users?page=1&limit=10'
 
-// Parse query string
+// Parse query string - accepts URL or query string
 const params = await urlQueryParser.invoke({
-  url: 'https://example.com?foo=bar&baz=qux'
+  input: 'https://example.com?foo=bar&baz=qux'
 });
+console.log(params.params);  // { foo: 'bar', baz: 'qux' }
+console.log(params.count);   // 2
 ```
 
 ### Slack Integration
@@ -137,35 +144,35 @@ import {
 
 // Send a message to a Slack channel
 const result = await sendSlackMessage.invoke({
-  channel: '#general',
-  text: 'Hello from AgentForge! 👋'
+  channel: 'general',  // Channel name (no #) or ID
+  message: 'Hello from AgentForge! 👋'
 });
 
 // Send a notification with @mentions
 const notification = await notifySlack.invoke({
-  channel: '#alerts',
-  text: 'Deployment completed successfully!',
-  mentions: ['@john', '@jane']
+  channel: 'alerts',  // Channel name (no #) or ID
+  message: 'Deployment completed successfully!',
+  mentions: ['john', 'jane']  // Usernames without @
 });
 
 // List available channels
 const channels = await getSlackChannels.invoke({
-  includePrivate: true
+  include_private: true  // Note: underscore, not camelCase
 });
 
-console.log(`Found ${channels.channels.length} channels`);
-channels.channels.forEach(ch => {
-  console.log(`${ch.name} (${ch.memberCount} members)`);
+console.log(`Found ${channels.data?.count} channels`);
+channels.data?.channels.forEach(ch => {
+  console.log(`${ch.name} (${ch.num_members} members)`);
 });
 
 // Read message history
 const messages = await getSlackMessages.invoke({
-  channel: '#general',
+  channel: 'general',  // Channel name (no #) or ID
   limit: 10
 });
 
-console.log(`Retrieved ${messages.messages.length} messages`);
-messages.messages.forEach(msg => {
+console.log(`Retrieved ${messages.data?.count} messages`);
+messages.data?.messages.forEach(msg => {
   console.log(`[${msg.timestamp}] ${msg.user}: ${msg.text}`);
 });
 
@@ -175,9 +182,9 @@ const customSlackTools = createSlackTools({
 });
 
 // Use custom tools
-const customResult = await customSlackTools[0].invoke({
-  channel: '#custom',
-  text: 'Using custom token configuration'
+const customResult = await customSlackTools.sendMessage.invoke({
+  channel: 'custom',  // Channel name (no #) or ID
+  message: 'Using custom token configuration'
 });
 ```
 
