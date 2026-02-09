@@ -591,9 +591,9 @@ describe('Calculator Agent', () => {
     });
 
     expect(result.passed).toBe(true);
-    // Assuming iterations are tracked in finalState
-    if (result.finalState.iterations) {
-      assertIterationsWithinLimit(result.finalState.iterations, 5);
+    // Check iteration count (ReAct state uses 'iteration' singular)
+    if (result.finalState.iteration !== undefined) {
+      assertIterationsWithinLimit(result.finalState.iteration, 5);
     }
   });
 

@@ -486,7 +486,7 @@ const multiAgentState: MultiAgentStateType = {
   activeAssignments: [],       // TaskAssignment[] - active tasks
   completedTasks: [],          // TaskResult[] - completed tasks
   handoffs: [],                // HandoffRequest[] - agent handoffs
-  status: 'initializing',      // 'initializing' | 'routing' | 'executing' | 'aggregating' | 'completed' | 'failed'
+  status: 'initializing',      // 'initializing' | 'routing' | 'executing' | 'coordinating' | 'aggregating' | 'completed' | 'failed'
   iteration: 0,
   maxIterations: 10,
   response: undefined,
