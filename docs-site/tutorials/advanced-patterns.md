@@ -129,7 +129,8 @@ Use Plan-Execute for execution, Reflection for quality improvement.
 
 ```typescript
 import { createPlanExecuteAgent, createReflectionAgent } from '@agentforge/patterns';
-import { webSearch, toolBuilder, ToolCategory } from '@agentforge/tools';
+import { toolBuilder, ToolCategory } from '@agentforge/core';
+import { webSearch } from '@agentforge/tools';
 import { z } from 'zod';
 
 // Note: Define custom tools for content creation workflow
