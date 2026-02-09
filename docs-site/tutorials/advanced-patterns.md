@@ -56,7 +56,7 @@ const researchAgent = createReActAgent({
 const complexResearchTool = toolBuilder()
   .name('complex-research')
   .description('Perform complex research using exploratory reasoning')
-  .category(ToolCategory.SEARCH)
+  .category(ToolCategory.WEB)  // Use WEB for search/research tools
   .schema(z.object({
     topic: z.string().describe('Research topic'),
     depth: z.enum(['shallow', 'deep']).describe('Research depth')
@@ -74,7 +74,7 @@ const complexResearchTool = toolBuilder()
 const customSummarizeTool = toolBuilder()
   .name('custom-summarize')
   .description('Summarize research findings')
-  .category(ToolCategory.TEXT)
+  .category(ToolCategory.UTILITY)  // Use UTILITY for text processing tools
   .schema(z.object({ text: z.string() }))
   .implement(async ({ text }) => {
     // Your summarization logic here
@@ -85,7 +85,7 @@ const customSummarizeTool = toolBuilder()
 const customReportTool = toolBuilder()
   .name('custom-report')
   .description('Generate formatted report')
-  .category(ToolCategory.TEXT)
+  .category(ToolCategory.UTILITY)  // Use UTILITY for text processing tools
   .schema(z.object({ content: z.string() }))
   .implement(async ({ content }) => {
     // Your report generation logic here
@@ -138,7 +138,7 @@ import { z } from 'zod';
 const customResearchTool = toolBuilder()
   .name('custom-research')
   .description('Research topic')
-  .category(ToolCategory.SEARCH)
+  .category(ToolCategory.WEB)  // Use WEB for search/research tools
   .schema(z.object({ topic: z.string() }))
   .implement(async ({ topic }) => {
     // Your research logic here (could use webSearch internally)
@@ -149,7 +149,7 @@ const customResearchTool = toolBuilder()
 const customOutlineTool = toolBuilder()
   .name('custom-outline')
   .description('Create content outline')
-  .category(ToolCategory.TEXT)
+  .category(ToolCategory.UTILITY)  // Use UTILITY for text processing tools
   .schema(z.object({ topic: z.string() }))
   .implement(async ({ topic }) => {
     // Your outline logic here
@@ -160,7 +160,7 @@ const customOutlineTool = toolBuilder()
 const customDraftTool = toolBuilder()
   .name('custom-draft')
   .description('Write content draft')
-  .category(ToolCategory.TEXT)
+  .category(ToolCategory.UTILITY)  // Use UTILITY for text processing tools
   .schema(z.object({ outline: z.string() }))
   .implement(async ({ outline }) => {
     // Your drafting logic here
@@ -171,7 +171,7 @@ const customDraftTool = toolBuilder()
 const customFormatTool = toolBuilder()
   .name('custom-format')
   .description('Format content')
-  .category(ToolCategory.TEXT)
+  .category(ToolCategory.UTILITY)  // Use UTILITY for text processing tools
   .schema(z.object({ content: z.string() }))
   .implement(async ({ content }) => {
     // Your formatting logic here

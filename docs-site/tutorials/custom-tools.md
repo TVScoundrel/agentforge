@@ -64,7 +64,7 @@ import { db } from './database.js';
 export const queryDatabase = toolBuilder()
   .name('query-database')
   .description('Query the database for user information')
-  .category(ToolCategory.DATA)
+  .category(ToolCategory.DATABASE)  // Use DATABASE for database operations
   .tags(['database', 'query', 'users'])
   .schema(z.object({
     table: z.enum(['users', 'orders', 'products']),
@@ -172,7 +172,7 @@ import path from 'path';
 export const readFile = toolBuilder()
   .name('read-file')
   .description('Read contents of a file')
-  .category(ToolCategory.FILE)
+  .category(ToolCategory.FILE_SYSTEM)  // Use FILE_SYSTEM for file operations
   .tags(['file', 'read', 'filesystem'])
   .schema(z.object({
     path: z.string().describe('File path'),

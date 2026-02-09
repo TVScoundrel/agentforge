@@ -272,10 +272,10 @@ toolBuilder()
   .category(ToolCategory.FILE_SYSTEM)
   .tags(['file', 'json', 'read'])
 
-// ❌ Bad - DATA is not the primary purpose
+// ❌ Bad - DATABASE is not the primary purpose (file operations should use FILE_SYSTEM)
 toolBuilder()
   .name('read-json-file')
-  .category(ToolCategory.DATA)
+  .category(ToolCategory.DATABASE)
 ```
 
 ### 5. Validate Inputs
