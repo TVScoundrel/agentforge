@@ -223,8 +223,8 @@ const slackTools = createSlackTools({
   token: 'xoxb-your-custom-token'
 });
 
-// Use the custom tools
-const [sendMessage, notify, getChannels, getMessages] = slackTools;
+// Use the custom tools (returns object with named properties)
+const { sendMessage, notify, getChannels, getMessages } = slackTools;
 ```
 
 ### Confluence Integration
@@ -388,8 +388,8 @@ const confluenceTools = createConfluenceTools({
   siteUrl: 'https://custom.atlassian.net'
 });
 
-// Use the custom tools
-const [search, getPage, listSpaces, getPages, create, update, archive] = confluenceTools;
+// Use the custom tools (returns object with named properties)
+const { searchConfluence, getConfluencePage, listConfluenceSpaces, getSpacePages, createConfluencePage, updateConfluencePage, archiveConfluencePage } = confluenceTools;
 ```
 
 **Content Format:**
