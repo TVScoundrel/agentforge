@@ -479,7 +479,9 @@ const buffer = new StreamBuffer((chunks) => {
 
 buffer.start();
 
-const stream = await agent.stream(input);
+const stream = await agent.stream({
+  messages: [{ role: 'user', content: input }]
+});
 for await (const chunk of stream) {
   buffer.add(chunk);
 }
@@ -493,7 +495,9 @@ Stream only specific event types:
 
 ```typescript
 async function streamAgentThoughts(input: string) {
-  const stream = await agent.streamEvents(input);
+  const stream = await agent.streamEvents({
+    messages: [{ role: 'user', content: input }]
+  });
 
   for await (const event of stream) {
     // Only stream agent reasoning, not tool outputs
@@ -680,7 +684,9 @@ app.get('/api/agent/stream', async (req, res) => {
     if (err) console.error('Pipeline error:', err);
   });
 
-  const stream = await agent.stream(input);
+  const stream = await agent.stream({
+    messages: [{ role: 'user', content: input }]
+  });
 
   for await (const chunk of stream) {
     gzip.write(`data: ${JSON.stringify(chunk)}\n\n`);
@@ -734,7 +740,9 @@ async function streamWithTimeout(input: string, timeoutMs: number = 30000) {
   });
 
   const streamPromise = (async function* () {
-    const stream = await agent.stream(input);
+    const stream = await agent.stream({
+      messages: [{ role: 'user', content: input }]
+    });
     for await (const chunk of stream) {
       yield chunk;
     }
@@ -747,7 +755,9 @@ async function streamWithTimeout(input: string, timeoutMs: number = 30000) {
 ### 2. Provide Progress Feedback
 
 ```typescript
-const stream = await agent.stream(input);
+const stream = await agent.stream({
+  messages: [{ role: 'user', content: input }]
+});
 
 let lastUpdate = Date.now();
 const updateInterval = 1000; // Update every second
@@ -770,9 +780,10 @@ for await (const chunk of stream) {
 const controller = new AbortController();
 
 try {
-  const stream = await agent.stream(input, {
-    signal: controller.signal
-  });
+  const stream = await agent.stream(
+    { messages: [{ role: 'user', content: input }] },
+    { signal: controller.signal }
+  );
 
   for await (const chunk of stream) {
     processChunk(chunk);
@@ -797,7 +808,9 @@ import { describe, it, expect } from 'vitest';
 describe('Agent Streaming', () => {
   it('should stream chunks progressively', async () => {
     const chunks: any[] = [];
-    const stream = await agent.stream(input);
+    const stream = await agent.stream({
+      messages: [{ role: 'user', content: input }]
+    });
 
     for await (const chunk of stream) {
       chunks.push(chunk);

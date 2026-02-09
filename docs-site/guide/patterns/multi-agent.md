@@ -569,7 +569,7 @@ Your responsibilities:
   {
     name: 'analyst',
     capabilities: ['data-analysis', 'statistics'],
-    tools: [calculator, dataAnalyzer],
+    tools: [calculator, statistics],
     systemPrompt: 'You are a data analyst.',
     model
   },

@@ -190,6 +190,7 @@ app.get('/api/stream', (req, res) => {
     question: 'Approve this action?',
     priority: 'high' as const,
     createdAt: Date.now(),
+    timeout: 0, // 0 = no timeout
     status: 'pending' as const
   };
   const requestEvent = formatHumanRequestEvent(humanRequest, threadId);
