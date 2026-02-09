@@ -120,7 +120,7 @@ const system = createMultiAgentSystem({
       id: 'coder',
       capabilities: {
         skills: ['coding', 'programming', 'debugging'],
-        tools: ['code_executor'],
+        tools: ['custom-code-executor'],  // Custom tool
         available: true,
         currentWorkload: 0
       },
@@ -133,7 +133,7 @@ const system = createMultiAgentSystem({
       id: 'tester',
       capabilities: {
         skills: ['testing', 'qa', 'validation'],
-        tools: ['test_runner'],
+        tools: ['custom-test-runner'],  // Custom tool
         available: true,
         currentWorkload: 0
       },
@@ -402,7 +402,7 @@ const system = createMultiAgentSystem({
       id: 'researcher',
       capabilities: {
         skills: ['research', 'web-scraping'],
-        tools: ['web_scraper'],
+        tools: ['web-scraper'],  // Real tool from @agentforge/tools
         available: true,
         currentWorkload: 0
       },
@@ -632,7 +632,7 @@ const system = createMultiAgentSystem({
       id: 'dataCollector',
       capabilities: {
         skills: ['data-collection', 'api-calls', 'web-scraping'],
-        tools: ['http_get', 'web_scraper'],
+        tools: ['http-get', 'web-scraper'],  // Real tools from @agentforge/tools
         available: true,
         currentWorkload: 0
       },
@@ -644,7 +644,7 @@ const system = createMultiAgentSystem({
       id: 'dataProcessor',
       capabilities: {
         skills: ['data-processing', 'transformation', 'calculations'],
-        tools: ['csv_parser', 'calculator'],
+        tools: ['csv-parser', 'calculator'],  // Real tools from @agentforge/tools
         available: true,
         currentWorkload: 0
       },
@@ -656,7 +656,7 @@ const system = createMultiAgentSystem({
       id: 'dataAnalyst',
       capabilities: {
         skills: ['data-analysis', 'statistics', 'visualization'],
-        tools: ['json_parser', 'calculator'],
+        tools: ['json-parser', 'calculator'],  // Real tools from @agentforge/tools
         available: true,
         currentWorkload: 0
       },
@@ -758,7 +758,7 @@ const devTeam = createMultiAgentSystem({
       id: 'developer',
       capabilities: {
         skills: ['coding', 'implementation'],
-        tools: ['code_executor', 'file_write'],
+        tools: ['custom-code-executor', 'file-writer'],  // custom-code-executor is custom, file-writer is real
         available: true,
         currentWorkload: 0
       },
@@ -771,7 +771,7 @@ const devTeam = createMultiAgentSystem({
       id: 'tester',
       capabilities: {
         skills: ['testing', 'qa', 'validation'],
-        tools: ['test_runner', 'coverage_analyzer'],
+        tools: ['custom-test-runner', 'custom-coverage-analyzer'],  // Custom tools
         available: true,
         currentWorkload: 0
       },
@@ -784,7 +784,7 @@ const devTeam = createMultiAgentSystem({
       id: 'reviewer',
       capabilities: {
         skills: ['code-review', 'security', 'best-practices'],
-        tools: ['linter', 'security_scanner'],
+        tools: ['custom-linter', 'custom-security-scanner'],  // Custom tools
         available: true,
         currentWorkload: 0
       },
@@ -813,7 +813,7 @@ const researchTeam = createMultiAgentSystem({
       id: 'literatureReviewer',
       capabilities: {
         skills: ['literature-review', 'research', 'academic-papers'],
-        tools: ['web_scraper', 'http_get'],
+        tools: ['web-scraper', 'http-get'],  // Real tools from @agentforge/tools
         available: true,
         currentWorkload: 0
       },
@@ -826,7 +826,7 @@ const researchTeam = createMultiAgentSystem({
       id: 'dataCollector',
       capabilities: {
         skills: ['data-collection', 'experiments'],
-        tools: ['http_get', 'web_scraper'],
+        tools: ['http-get', 'web-scraper'],  // Real tools from @agentforge/tools
         available: true,
         currentWorkload: 0
       },
@@ -839,7 +839,7 @@ const researchTeam = createMultiAgentSystem({
       id: 'statistician',
       capabilities: {
         skills: ['statistics', 'data-analysis'],
-        tools: ['calculator', 'csv_parser'],
+        tools: ['calculator', 'csv-parser'],  // Real tools from @agentforge/tools
         available: true,
         currentWorkload: 0
       },
@@ -852,7 +852,7 @@ const researchTeam = createMultiAgentSystem({
       id: 'writer',
       capabilities: {
         skills: ['writing', 'documentation', 'academic-writing'],
-        tools: ['file_write'],
+        tools: ['custom-file-write'],  // Custom tool - matches customFileWrite below
         available: true,
         currentWorkload: 0
       },
@@ -882,7 +882,7 @@ const supportTeam = createMultiAgentSystem({
       id: 'triageAgent',
       capabilities: {
         skills: ['triage', 'classification', 'prioritization'],
-        tools: ['ticket_classifier'],
+        tools: ['custom-ticket-classifier'],  // Custom tool
         available: true,
         currentWorkload: 0
       },
@@ -894,7 +894,7 @@ const supportTeam = createMultiAgentSystem({
       id: 'technicalSupport',
       capabilities: {
         skills: ['technical-support', 'troubleshooting', 'diagnostics'],
-        tools: ['knowledge_base', 'diagnostic_tools'],
+        tools: ['custom-knowledge-base', 'custom-diagnostic-tools'],  // Custom tools
         available: true,
         currentWorkload: 0
       },
@@ -906,7 +906,7 @@ const supportTeam = createMultiAgentSystem({
       id: 'billingSupport',
       capabilities: {
         skills: ['billing', 'payments', 'invoicing'],
-        tools: ['billing_system', 'payment_processor'],
+        tools: ['custom-billing-system', 'custom-payment-processor'],  // Custom tools
         available: true,
         currentWorkload: 0
       },
@@ -918,7 +918,7 @@ const supportTeam = createMultiAgentSystem({
       id: 'escalationAgent',
       capabilities: {
         skills: ['escalation', 'communication'],
-        tools: ['email_send', 'slack_notify'],
+        tools: ['http-post', 'send-slack-message'],  // Real tools from @agentforge/tools
         available: true,
         currentWorkload: 0
       },
@@ -1125,7 +1125,7 @@ const system = createMultiAgentSystem({
       id: 'code',
       capabilities: {
         skills: ['code-analysis', 'codebase-search'],
-        tools: ['code_search'],
+        tools: ['custom-code-search'],  // Custom tool
         available: true,
         currentWorkload: 0
       },
@@ -1137,7 +1137,7 @@ const system = createMultiAgentSystem({
       id: 'security',
       capabilities: {
         skills: ['security', 'vulnerability-scanning', 'security-audit'],
-        tools: ['security_scan'],
+        tools: ['custom-security-scan'],  // Custom tool
         available: true,
         currentWorkload: 0
       },
@@ -1149,7 +1149,7 @@ const system = createMultiAgentSystem({
       id: 'docs',
       capabilities: {
         skills: ['documentation', 'doc-search'],
-        tools: ['doc_search'],
+        tools: ['custom-doc-search'],  // Custom tool
         available: true,
         currentWorkload: 0
       },
