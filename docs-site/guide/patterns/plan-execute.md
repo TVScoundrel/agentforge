@@ -133,22 +133,24 @@ The agent creates a structured plan:
 {
   steps: [
     {
-      id: 1,
+      id: "step-1",
       description: "Search for '2026 programming language popularity'",
       tool: "web-search",
-      expectedOutcome: "List of top programming languages"
+      args: { query: "2026 programming language popularity" }
     },
     {
-      id: 2,
+      id: "step-2",
       description: "Extract statistics for top 5 languages",
       tool: "calculator",
-      expectedOutcome: "Numerical comparison data"
+      args: { operation: "analyze" },
+      dependencies: ["step-1"]
     },
     {
-      id: 3,
+      id: "step-3",
       description: "Write summary report to file",
       tool: "file-write",
-      expectedOutcome: "Report saved successfully"
+      args: { path: "report.md" },
+      dependencies: ["step-2"]
     }
   ]
 }
@@ -160,11 +162,11 @@ Each step is executed sequentially:
 
 ```typescript
 for (const step of plan.steps) {
-  const result = await executeTool(step.tool, step.params);
-  
-  // Check if re-planning is needed
-  if (result.requiresReplanning) {
-    plan = await replan(plan, result);
+  const result = await executeTool(step.tool, step.args);
+
+  // Check if re-planning is needed based on state
+  if (state.status === 'replanning' || state.iteration > 0) {
+    plan = await replan(plan, state.pastSteps);
   }
 }
 ```
@@ -248,12 +250,18 @@ const stream = await agent.stream({
 });
 
 for await (const chunk of stream) {
-  if (chunk.planning) {
-    console.log('Planning:', chunk.planning.currentStep);
+  if (chunk.status === 'planning') {
+    console.log('Planning in progress...');
   }
-  if (chunk.execution) {
-    console.log('Executing step:', chunk.execution.stepId);
-    console.log('Result:', chunk.execution.result);
+  if (chunk.status === 'executing' && chunk.currentStepIndex !== undefined) {
+    const currentStep = chunk.plan?.steps[chunk.currentStepIndex];
+    console.log('Executing step:', currentStep?.id);
+    console.log('Description:', currentStep?.description);
+  }
+  if (chunk.pastSteps && chunk.pastSteps.length > 0) {
+    const lastStep = chunk.pastSteps[chunk.pastSteps.length - 1];
+    console.log('Completed:', lastStep.step.description);
+    console.log('Result:', lastStep.result);
   }
 }
 ```
@@ -431,8 +439,11 @@ const result = await agent.invoke(input);
 console.log('Generated Plan:');
 result.plan.steps.forEach((step, i) => {
   console.log(`${i + 1}. ${step.description}`);
-  console.log(`   Tool: ${step.tool}`);
-  console.log(`   Expected: ${step.expectedOutcome}`);
+  console.log(`   Tool: ${step.tool || 'none'}`);
+  console.log(`   Args: ${JSON.stringify(step.args || {})}`);
+  if (step.dependencies) {
+    console.log(`   Dependencies: ${step.dependencies.join(', ')}`);
+  }
 });
 ```
 
