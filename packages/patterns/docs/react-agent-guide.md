@@ -13,7 +13,7 @@ The ReAct (Reasoning and Action) pattern implements a thought-action-observation
 ### Basic Usage
 
 ```typescript
-import { ReActAgentBuilder } from '@agentforge/core';
+import { ReActAgentBuilder } from '@agentforge/patterns';
 import { ChatOpenAI } from '@langchain/openai';
 import { toolBuilder, ToolCategory } from '@agentforge/core';
 import { z } from 'zod';
@@ -169,13 +169,14 @@ Enable verbose logging (default: false).
 builder.withVerbose(true);
 ```
 
-#### `withNodeNames(names: { agent?: string; tools?: string })`
+#### `withNodeNames(names: { reasoning?: string; action?: string; observation?: string })`
 Customize node names in the graph.
 
 ```typescript
 builder.withNodeNames({
-  agent: 'reasoning-node',
-  tools: 'action-node'
+  reasoning: 'reasoning-node',
+  action: 'action-node',
+  observation: 'observation-node'
 });
 ```
 
