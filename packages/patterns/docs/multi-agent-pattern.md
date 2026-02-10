@@ -62,25 +62,15 @@ const builder = new MultiAgentSystemBuilder({
 // Register workers dynamically
 builder.registerWorkers([
   {
-    id: 'math_specialist',
-    name: 'Math Specialist',
+    name: 'math_specialist',
     description: 'Solves mathematical problems',
-    capabilities: {
-      skills: ['mathematics', 'calculations', 'algebra'],
-      tools: ['calculator'],
-      available: true,
-    },
+    capabilities: ['mathematics', 'calculations', 'algebra'],
     model: llm,    tools: [calculatorTool],
   },
   {
-    id: 'researcher',
-    name: 'Researcher',
+    name: 'researcher',
     description: 'Conducts research and gathers information',
-    capabilities: {
-      skills: ['research', 'web_search', 'data_collection'],
-      tools: ['search', 'fetch'],
-      available: true,
-    },
+    capabilities: ['research', 'web_search', 'data_collection'],
     model: llm,    tools: [searchTool, fetchTool],
   },
 ]);
@@ -110,7 +100,6 @@ const system = createMultiAgentSystem({
   workers: [
     {
       id: 'math_specialist',
-      name: 'Math Specialist',
       capabilities: { skills: ['math'], tools: ['calculator'], available: true },
       model: llm,      tools: [calculatorTool],
     },
@@ -172,7 +161,7 @@ Routes tasks to appropriate workers based on the routing strategy.
 
 ```typescript
 const supervisorNode = createSupervisorNode({
-  model: ChatOpenAI,
+  model: new ChatOpenAI({ model: 'gpt-4' }),
   strategy: 'skill-based',
   systemPrompt: 'Custom supervisor instructions',
 });
@@ -187,10 +176,11 @@ const workerNode = createWorkerNode({
   id: 'specialist',
   capabilities: {
     skills: ['analysis', 'processing'],
-    tools: [tool1, tool2],
+    tools: ['tool1', 'tool2'],
     available: true,
     currentWorkload: 0,
   },
+  tools: [tool1, tool2],
   systemPrompt: 'Worker-specific instructions',
 });
 ```
@@ -201,7 +191,7 @@ Combines results from multiple workers.
 
 ```typescript
 const aggregatorNode = createAggregatorNode({
-  model: ChatOpenAI,
+  model: new ChatOpenAI({ model: 'gpt-4' }),
   systemPrompt: 'Combine results into coherent response',
 });
 ```
@@ -467,20 +457,15 @@ Uses custom rules to determine routing.
 ```typescript
 const system = createMultiAgentSystem({
   supervisor: {
-    model: llm,
-    strategy: {
-      type: 'rule-based',
-      rules: [
-        {
-          condition: (state) => state.input.includes('technical'),
-          workerId: 'tech_support',
-        },
-        {
-          condition: (state) => state.input.includes('billing'),
-          workerId: 'billing_support',
-        },
-      ],
-      defaultWorkerId: 'general_support',
+    strategy: 'rule-based',
+    routingFn: async (state) => {
+      if (state.input.includes('technical')) {
+        return { workerId: 'tech_support', reason: 'Technical query detected' };
+      }
+      if (state.input.includes('billing')) {
+        return { workerId: 'billing_support', reason: 'Billing query detected' };
+      }
+      return { workerId: 'general_support', reason: 'Default routing' };
     },
   },
   // ...
@@ -599,10 +584,9 @@ const builder = new MultiAgentSystemBuilder({
 
 builder.registerWorkers([
   {
-    id: 'worker1',
-    name: 'Worker 1',
+    name: 'worker1',
     description: 'First worker',
-    capabilities: { skills: ['skill1'], tools: ['tool1'], available: true },
+    capabilities: ['skill1'],
     model: llm,    tools: [tool1],
   },
 ]);
@@ -754,16 +738,25 @@ const supervisor = createSupervisorNode({
 Creates a worker node for custom workflows.
 
 ```typescript
-function createWorkerNode(config: WorkerNodeConfig): NodeFunction
+function createWorkerNode(config: WorkerConfig): NodeFunction
 ```
 
 **Parameters**:
 
 ```typescript
-interface WorkerNodeConfig {
-  workerId: string;
-  tools: Tool[];
+interface WorkerConfig {
+  id: string;
+  capabilities: WorkerCapabilities;
+  model?: BaseChatModel;
+  tools?: Tool[];
   systemPrompt?: string;
+}
+
+interface WorkerCapabilities {
+  skills: string[];
+  tools: string[];
+  available: boolean;
+  currentWorkload?: number;
 }
 ```
 
@@ -771,7 +764,12 @@ interface WorkerNodeConfig {
 
 ```typescript
 const worker = createWorkerNode({
-  workerId: 'specialist',
+  id: 'specialist',
+  capabilities: {
+    skills: ['analysis', 'processing'],
+    tools: ['tool1', 'tool2'],
+    available: true,
+  },
   tools: [tool1, tool2],
   systemPrompt: 'You are a specialist in X',
 });
@@ -824,25 +822,15 @@ const builder = new MultiAgentSystemBuilder({
 // Register workers
 builder.registerWorkers([
   {
-    id: 'math_expert',
-    name: 'Math Expert',
+    name: 'math_expert',
     description: 'Solves mathematical problems',
-    capabilities: {
-      skills: ['mathematics', 'calculations', 'arithmetic'],
-      tools: ['calculator'],
-      available: true,
-    },
+    capabilities: ['mathematics', 'calculations', 'arithmetic'],
     model: llm,    tools: [calculatorTool],
   },
   {
-    id: 'weather_expert',
-    name: 'Weather Expert',
+    name: 'weather_expert',
     description: 'Provides weather information',
-    capabilities: {
-      skills: ['weather', 'forecasts', 'meteorology'],
-      tools: ['weather_api'],
-      available: true,
-    },
+    capabilities: ['weather', 'forecasts', 'meteorology'],
     model: llm,    tools: [weatherTool],
   },
 ]);
@@ -873,8 +861,6 @@ const system = createMultiAgentSystem({
   workers: [
     {
       id: 'tech_support',
-      name: 'Tech Support',
-      description: 'Handles technical issues',
       capabilities: {
         skills: ['technical', 'troubleshooting', 'debugging'],
         tools: ['diagnostic', 'troubleshoot'],
@@ -884,8 +870,6 @@ const system = createMultiAgentSystem({
     },
     {
       id: 'billing_support',
-      name: 'Billing Support',
-      description: 'Handles billing inquiries',
       capabilities: {
         skills: ['billing', 'payments', 'refunds'],
         tools: ['account_check', 'refund_process'],
@@ -895,8 +879,6 @@ const system = createMultiAgentSystem({
     },
     {
       id: 'general_support',
-      name: 'General Support',
-      description: 'Handles general questions',
       capabilities: {
         skills: ['general', 'faq', 'information'],
         tools: ['faq_search', 'ticket_create'],
@@ -930,8 +912,7 @@ const builder = new MultiAgentSystemBuilder({
 
 builder.registerWorkers([
   {
-    id: 'data_collector',
-    name: 'Data Collector',
+    name: 'data_collector',
     description: 'Gathers information from sources',
     capabilities: ['search', 'data_collection'],
     tools: [searchTool, fetchDataTool],
@@ -949,6 +930,8 @@ builder.registerWorkers([
     tools: [generateReportTool, citeTool],
   },
 ]);
+
+const system = builder.build();
 
 const result = await system.invoke({
   input: 'Research AI impact on healthcare and create a summary report',
@@ -969,12 +952,15 @@ import {
 // Create nodes
 const supervisor = createSupervisorNode({
   model: llm,
-  strategy: {
-    type: 'rule-based',
-    rules: [
-      { condition: (s) => s.iteration === 0, workerId: 'validator' },
-      { condition: (s) => s.iteration === 1, workerId: 'processor' },
-    ],
+  strategy: 'rule-based',
+  routingFn: async (state) => {
+    if (state.iteration === 0) {
+      return { workerId: 'validator', reason: 'First iteration - validate input' };
+    }
+    if (state.iteration === 1) {
+      return { workerId: 'processor', reason: 'Second iteration - process data' };
+    }
+    return { workerId: '__end__', reason: 'Complete' };
   },
 });
 
@@ -982,20 +968,22 @@ const validator = createWorkerNode({
   id: 'validator',
   capabilities: {
     skills: ['validation'],
-    tools: [validateTool],
+    tools: ['validateTool'],
     available: true,
     currentWorkload: 0,
   },
+  tools: [validateTool],
 });
 
 const processor = createWorkerNode({
   id: 'processor',
   capabilities: {
     skills: ['processing'],
-    tools: [processTool],
+    tools: ['processTool'],
     available: true,
     currentWorkload: 0,
   },
+  tools: [processTool],
 });
 
 const aggregator = createAggregatorNode({ model: llm });
@@ -1069,14 +1057,19 @@ Implement error handling for worker failures:
 
 ```typescript
 const workerNode = createWorkerNode({
-  workerId: 'specialist',
+  id: 'specialist',
+  capabilities: {
+    skills: ['specialized_task'],
+    tools: ['tool'],
+    available: true,
+  },
   tools: [tool],
   systemPrompt: 'Handle errors gracefully and provide fallback responses',
 });
 
 // Check results
-if (result.workerResults.some(r => r.status === 'failed')) {
-  console.error('Some workers failed');
+if (result.completedTasks.some(t => !t.success)) {
+  console.error('Some tasks failed');
   // Implement retry or fallback logic
 }
 ```
@@ -1126,25 +1119,19 @@ for (const test of testCases) {
 Implement custom routing logic:
 
 ```typescript
-interface CustomStrategy {
-  type: 'custom';
-  route: (state: MultiAgentStateType) => string;
-}
-
-const customStrategy: CustomStrategy = {
-  type: 'custom',
-  route: (state) => {
-    // Custom logic
-    if (state.input.length > 100) return 'detailed_worker';
-    if (state.iterations > 5) return 'fallback_worker';
-    return 'default_worker';
-  },
-};
-
 const system = createMultiAgentSystem({
   supervisor: {
-    model: llm,
-    strategy: customStrategy,
+    strategy: 'rule-based',
+    routingFn: async (state) => {
+      // Custom logic
+      if (state.input.length > 100) {
+        return { workerId: 'detailed_worker', reason: 'Long input requires detailed analysis' };
+      }
+      if (state.iteration > 5) {
+        return { workerId: 'fallback_worker', reason: 'Too many iterations, using fallback' };
+      }
+      return { workerId: 'default_worker', reason: 'Standard routing' };
+    },
   },
   // ...
 });
@@ -1199,18 +1186,30 @@ const system = builder.build();
 Implement priority-based routing:
 
 ```typescript
-interface PriorityWorker extends WorkerConfig {
-  priority: number;
-}
-
-const priorityStrategy = {
-  type: 'custom' as const,
-  route: (state: MultiAgentStateType) => {
-    const workers = state.workers as PriorityWorker[];
-    const sorted = workers.sort((a, b) => b.priority - a.priority);
-    return sorted[0].id;
-  },
+// Maintain a separate priority registry
+const workerPriorities: Record<string, number> = {
+  'high_priority_worker': 10,
+  'medium_priority_worker': 5,
+  'low_priority_worker': 1,
 };
+
+const system = createMultiAgentSystem({
+  supervisor: {
+    strategy: 'rule-based',
+    routingFn: async (state) => {
+      const availableWorkers = Object.entries(state.workers)
+        .filter(([_, caps]) => caps.available)
+        .map(([id]) => ({ id, priority: workerPriorities[id] || 0 }))
+        .sort((a, b) => b.priority - a.priority);
+
+      return {
+        workerId: availableWorkers[0].id,
+        reason: `Highest priority worker (priority: ${availableWorkers[0].priority})`
+      };
+    },
+  },
+  // ...
+});
 ```
 
 ### Result Caching
@@ -1221,15 +1220,18 @@ Cache worker results for efficiency:
 const cache = new Map<string, TaskResult>();
 
 const cachedWorkerNode = async (state: MultiAgentStateType) => {
-  const cacheKey = `${state.currentTask?.taskId}`;
+  const currentAssignment = state.activeAssignments[0];
+  const cacheKey = `${currentAssignment?.taskId}`;
 
   if (cache.has(cacheKey)) {
     console.log('[Cache] Hit');
-    return { workerResults: [cache.get(cacheKey)!] };
+    return { completedTasks: [cache.get(cacheKey)!] };
   }
 
   const result = await workerNode(state);
-  cache.set(cacheKey, result.workerResults[0]);
+  if (result.completedTasks && result.completedTasks.length > 0) {
+    cache.set(cacheKey, result.completedTasks[0]);
+  }
   return result;
 };
 ```
@@ -1240,8 +1242,8 @@ Aggregate only when conditions are met:
 
 ```typescript
 const conditionalAggregator = async (state: MultiAgentStateType) => {
-  const allCompleted = state.workerResults?.every(r => r.status === 'completed');
-  const hasMinResults = (state.workerResults?.length ?? 0) >= 3;
+  const allCompleted = state.completedTasks?.every(t => t.success);
+  const hasMinResults = (state.completedTasks?.length ?? 0) >= 3;
 
   if (!allCompleted || !hasMinResults) {
     return { status: 'routing' }; // Continue routing
@@ -1256,25 +1258,34 @@ const conditionalAggregator = async (state: MultiAgentStateType) => {
 Monitor worker health and route accordingly:
 
 ```typescript
-interface HealthyWorker extends WorkerAgent {
-  health: 'healthy' | 'degraded' | 'unhealthy';
-  errorRate: number;
-}
-
-const healthAwareRouting = {
-  type: 'custom' as const,
-  route: (state: MultiAgentStateType) => {
-    const workers = state.workers as HealthyWorker[];
-    const healthy = workers.filter(w => w.health === 'healthy');
-
-    if (healthy.length === 0) {
-      throw new Error('No healthy workers available');
-    }
-
-    // Route to healthiest worker
-    return healthy.sort((a, b) => a.errorRate - b.errorRate)[0].id;
-  },
+// Maintain a separate health registry
+const workerHealth: Record<string, { health: 'healthy' | 'degraded' | 'unhealthy'; errorRate: number }> = {
+  'worker1': { health: 'healthy', errorRate: 0.01 },
+  'worker2': { health: 'healthy', errorRate: 0.05 },
+  'worker3': { health: 'degraded', errorRate: 0.15 },
 };
+
+const system = createMultiAgentSystem({
+  supervisor: {
+    strategy: 'rule-based',
+    routingFn: async (state) => {
+      const availableWorkers = Object.entries(state.workers)
+        .filter(([id, caps]) => caps.available && workerHealth[id]?.health === 'healthy')
+        .map(([id]) => ({ id, errorRate: workerHealth[id].errorRate }))
+        .sort((a, b) => a.errorRate - b.errorRate);
+
+      if (availableWorkers.length === 0) {
+        throw new Error('No healthy workers available');
+      }
+
+      return {
+        workerId: availableWorkers[0].id,
+        reason: `Healthiest worker (error rate: ${availableWorkers[0].errorRate})`
+      };
+    },
+  },
+  // ...
+});
 ```
 
 ## Troubleshooting
@@ -1462,9 +1473,9 @@ If `resultCount` is 0, check if workers are producing results.
 ```typescript
 const result = await system.invoke({ input: 'task' });
 
-console.log('Worker Results:', result.workerResults);
-console.log('Aggregated Result:', result.aggregatedResult);
+console.log('Completed Tasks:', result.completedTasks);
 console.log('Final Response:', result.response);
+console.log('Status:', result.status);
 ```
 
 #### Test Individual Components
