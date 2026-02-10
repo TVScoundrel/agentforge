@@ -44,10 +44,10 @@ Comprehensive guides for each pattern:
   - Troubleshooting tips
 
 #### Reflection Pattern
-- **[Reflection Pattern](./reflection-pattern.md)** - Coming in Phase 3.3
-  - Self-critique and improvement
-  - Iterative refinement
-  - Quality assessment
+- **[Reflection Pattern](./reflection-pattern.md)** - Self-critique and improvement
+  - Iterative refinement through reflection
+  - Quality assessment and revision
+  - Generator-Reflector-Reviser architecture
 
 ### 🔄 Pattern Comparison
 
@@ -66,7 +66,8 @@ Start with the [Pattern Comparison Guide](./pattern-comparison.md) to understand
 
 - **ReAct**: For exploratory tasks, dynamic problem-solving, transparent reasoning
 - **Plan-Execute**: For well-defined workflows, parallel execution, structured processes
-- **Reflection**: For quality-critical tasks, iterative refinement (coming soon)
+- **Reflection**: For quality-critical tasks, iterative refinement, content improvement
+- **Multi-Agent**: For specialized task delegation, parallel worker execution, complex workflows
 
 ### 2. Read the Pattern Guide
 
@@ -213,8 +214,8 @@ We welcome documentation improvements! When contributing:
 - Complete pattern guides
 - Quick reference guides
 - Pattern comparison guide
-- Implementation summaries
 - Comprehensive examples
+- Migration guides
 
 ## License
 
