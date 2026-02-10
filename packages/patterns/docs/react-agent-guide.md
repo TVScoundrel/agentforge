@@ -244,5 +244,3 @@ const agent = createReActAgent({
 
 - See [Integration Tests](../tests/langgraph/patterns/react/integration.test.ts) for more examples
 - See [Builder Tests](../tests/langgraph/patterns/react/builder.test.ts) for API usage
-- See [Phase 3.1.4 Summary](./phase-3.1.4-summary.md) for implementation details
-
