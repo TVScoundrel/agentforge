@@ -89,10 +89,10 @@ const agent = createPlanExecuteAgent({
 
 ```typescript
 const agent = createPlanExecuteAgent({
-  planner: { llm, maxSteps: 5 },
+  planner: { model: llm, maxSteps: 5 },
   executor: { tools },
   replanner: {
-    llm,
+    model: llm,
     replanThreshold: 0.7, // Replan if confidence < 0.7
   },
 });
@@ -103,7 +103,7 @@ const agent = createPlanExecuteAgent({
 ```typescript
 const agent = createPlanExecuteAgent({
   planner: {
-    llm,
+    model: llm,
     maxSteps: 8,
     systemPrompt: `Create a research plan:
       1. Identify information sources
@@ -115,7 +115,7 @@ const agent = createPlanExecuteAgent({
     tools: [searchTool, validateTool, synthesizeTool],
     parallel: true,
   },
-  replanner: { llm, replanThreshold: 0.8 },
+  replanner: { model: llm, replanThreshold: 0.8 },
 });
 ```
 
@@ -124,7 +124,7 @@ const agent = createPlanExecuteAgent({
 ```typescript
 const agent = createPlanExecuteAgent({
   planner: {
-    llm,
+    model: llm,
     maxSteps: 10,
     systemPrompt: `Create a data pipeline:
       1. Extract from sources (parallel)
@@ -151,7 +151,7 @@ import {
 } from '@agentforge/patterns';
 import { StateGraph, END } from '@langchain/langgraph';
 
-const plannerNode = createPlannerNode({ llm, maxSteps: 5 });
+const plannerNode = createPlannerNode({ model: llm, maxSteps: 5 });
 const executorNode = createExecutorNode({ tools });
 const finisherNode = createFinisherNode();
 
@@ -262,14 +262,18 @@ systemPrompt: 'Create a plan'
 const fetchUserTool = {
   name: 'fetch_user',
   description: 'Fetch user data by ID',
-  // Single, focused purpose
+  schema: z.object({ userId: z.string() }),
+  metadata: { category: 'database' },
+  invoke: async ({ userId }) => { /* implementation */ }
 };
 
 // ❌ DON'T: Create overly complex tools
 const doEverythingTool = {
   name: 'process_all',
   description: 'Fetch, validate, transform, and save',
-  // Too many responsibilities
+  schema: z.object({ data: z.any() }),
+  metadata: { category: 'utility' },
+  invoke: async ({ data }) => { /* too many responsibilities */ }
 };
 ```
 
@@ -293,7 +297,7 @@ const tool = {
 
 // Enable replanning for errors
 replanner: {
-  llm,
+  model: llm,
   replanThreshold: 0.5,
 }
 ```
@@ -303,7 +307,7 @@ replanner: {
 ### Plan is too vague
 ```typescript
 planner: {
-  llm,
+  model: llm,
   includeToolDescriptions: true,
   systemPrompt: 'Create specific plans using available tools',
 }
@@ -314,7 +318,6 @@ planner: {
 executor: {
   tools,
   parallel: true,
-  maxParallelSteps: 5,
   stepTimeout: 5000,
 }
 ```

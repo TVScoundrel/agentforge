@@ -751,7 +751,7 @@ console.log('Progress:',
 );
 
 // Check for issues
-const failedSteps = result.pastSteps.filter(s => s.status === 'failed');
+const failedSteps = result.pastSteps.filter(s => !s.success);
 if (failedSteps.length > 0) {
   console.warn('Failed steps:', failedSteps);
 }
@@ -820,33 +820,25 @@ For more debugging techniques, see the [Debugging Guide](../../../docs/DEBUGGING
 
 ```typescript
 const agent = createPlanExecuteAgent({
-  planner: { llm, maxSteps: 5 },
+  planner: { model: llm, maxSteps: 5 },
   executor: {
     tools,
-    onStepError: async (step, error) => {
-      console.error(`Step "${step.description}" failed:`, error);
-
-      // Decide how to handle
-      if (error.canRetry) {
-        console.log('Retrying step...');
-        return 'retry';
-      }
-
-      if (error.canSkip) {
-        console.log('Skipping step...');
-        return 'skip';
-      }
-
-      console.log('Aborting execution...');
-      return 'abort';
-    },
+    // Note: Error handling is done through tool implementations
+    // Tools should return success/error information in their results
   },
   replanner: {
-    llm,
+    model: llm,
     // Trigger replanning on errors
     replanThreshold: 0.5,
   },
 });
+
+// Handle errors in tool results
+const result = await agent.invoke({ input: query });
+const failedSteps = result.pastSteps.filter(s => !s.success);
+if (failedSteps.length > 0) {
+  console.error('Some steps failed:', failedSteps.map(s => s.error));
+}
 ```
 
 ### Plan-Level Errors
@@ -873,13 +865,13 @@ try {
 
 ```typescript
 const agent = createPlanExecuteAgent({
-  planner: { llm, maxSteps: 5 },
+  planner: { model: llm, maxSteps: 5 },
   executor: {
     tools,
-    continueOnError: true, // Continue even if steps fail
+    // Note: Tools should handle errors gracefully and return success/error info
   },
   replanner: {
-    llm,
+    model: llm,
     replanThreshold: 0.6,
     systemPrompt: `If steps fail:
       - Skip non-critical steps
@@ -925,7 +917,8 @@ const cachedTool = {
   name: 'cached_search',
   description: 'Search with caching',
   schema: z.object({ query: z.string() }),
-  execute: async ({ query }) => {
+  metadata: { category: 'search' },
+  invoke: async ({ query }) => {
     if (cache.has(query)) {
       return cache.get(query);
     }
@@ -1077,7 +1070,7 @@ describe('Plan-Execute with Mock LLM', () => {
     });
 
     const agent = createPlanExecuteAgent({
-      planner: { llm: mockLLM, maxSteps: 5 },
+      planner: { model: mockLLM, maxSteps: 5 },
       executor: { tools: [tool1, tool2] },
     });
 
@@ -1281,7 +1274,7 @@ GOOD: "Fetch user data from API using fetch_user tool"`
 
 // 2. Include tool descriptions
 planner: {
-  llm,
+  model: llm,
   includeToolDescriptions: true,
   systemPrompt: 'Use the available tools to create your plan',
 }
@@ -1303,22 +1296,28 @@ Step 3: Transform data (tool: transform, deps: [2])`
 **Solutions:**
 ```typescript
 // 1. Add error handling in tools
-execute: async (args) => {
-  try {
-    const result = await operation(args);
-    return { success: true, result };
-  } catch (error) {
-    return {
-      success: false,
-      error: error.message,
-      canRetry: true,
-    };
+const errorHandlingTool = {
+  name: 'safe_operation',
+  description: 'Operation with error handling',
+  schema: z.object({ input: z.string() }),
+  metadata: { category: 'utility' },
+  invoke: async (args) => {
+    try {
+      const result = await operation(args);
+      return { success: true, result };
+    } catch (error) {
+      return {
+        success: false,
+        error: error.message,
+        canRetry: true,
+      };
+    }
   }
-}
+};
 
 // 2. Enable replanning
 replanner: {
-  llm,
+  model: llm,
   replanThreshold: 0.7,
   systemPrompt: 'If steps fail, create alternative plan',
 }
@@ -1327,7 +1326,6 @@ replanner: {
 executor: {
   tools,
   stepTimeout: 10000, // 10 seconds
-  continueOnError: true,
 }
 ```
 
@@ -1356,8 +1354,7 @@ planner: {
 // 3. Add timeouts
 executor: {
   tools,
-  stepTimeout: 5000,
-  totalTimeout: 30000,
+  stepTimeout: 5000, // Timeout per step
 }
 
 // 4. Cache expensive operations
@@ -1385,7 +1382,7 @@ const cachedTool = {
 ```typescript
 // 1. Include tool descriptions in planning
 planner: {
-  llm,
+  model: llm,
   includeToolDescriptions: true,
   systemPrompt: `Available tools:
     ${tools.map(t => `- ${t.name}: ${t.description}`).join('\n')}
@@ -1407,7 +1404,11 @@ const validatePlan = (plan: Plan, tools: Tool[]) => {
 const tool = {
   name: 'search_api',
   description: 'Search for information using external API. Use this when you need current information.',
-  // Clear, specific description
+  schema: z.object({ query: z.string() }),
+  metadata: { category: 'api' },
+  invoke: async ({ query }) => {
+    // Implementation
+  }
 };
 ```
 
@@ -1505,7 +1506,7 @@ async function planExecuteWithReflection(query: string) {
 
   // 2. Refine result with reflection
   const refinedResult = await reflectionAgent.invoke({
-    messages: [new HumanMessage(executionResult.response)],
+    input: executionResult.response ?? '',
   });
 
   return refinedResult;
@@ -1519,7 +1520,7 @@ Multi-level plans for complex tasks:
 ```typescript
 const hierarchicalAgent = createPlanExecuteAgent({
   planner: {
-    llm,
+    model: llm,
     systemPrompt: `Create hierarchical plans:
       - High-level phases
       - Detailed steps within each phase
@@ -1539,17 +1540,13 @@ Select tools based on plan requirements:
 ```typescript
 const dynamicAgent = createPlanExecuteAgent({
   planner: {
-    llm,
+    model: llm,
     systemPrompt: 'Identify required tools for each step',
   },
   executor: {
     tools: allTools,
-    toolSelector: (step) => {
-      // Dynamically select tools for each step
-      return allTools.filter(t =>
-        step.description.toLowerCase().includes(t.name)
-      );
-    },
+    // Note: Tool selection is handled by the executor based on step requirements
+    // All tools in the array are available to the executor
   },
 });
 ```
