@@ -20,21 +20,21 @@
 import { ChatOpenAI } from '@langchain/openai';
 import { HumanMessage } from '@langchain/core/messages';
 import { createReActAgent } from '../../src/react/index.js';
-import { ToolRegistry } from '@agentforge/core';
+import { ToolRegistry, ToolCategory } from '@agentforge/core';
 import { z } from 'zod';
 
 // Define some simple tools
 const calculatorTool = {
-  name: 'calculator',
-  description: 'Performs basic arithmetic operations (add, subtract, multiply, divide)',
+  metadata: {
+    name: 'calculator',
+    description: 'Performs basic arithmetic operations (add, subtract, multiply, divide)',
+    category: ToolCategory.UTILITY,
+  },
   schema: z.object({
     operation: z.enum(['add', 'subtract', 'multiply', 'divide']),
     a: z.number().describe('First number'),
     b: z.number().describe('Second number'),
   }),
-  metadata: {
-    category: 'utility',
-  },
   invoke: async ({ operation, a, b }: { operation: string; a: number; b: number }) => {
     switch (operation) {
       case 'add':

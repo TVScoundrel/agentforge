@@ -21,19 +21,19 @@
 import { ChatOpenAI } from '@langchain/openai';
 import { HumanMessage } from '@langchain/core/messages';
 import { createReActAgent } from '../../src/react/index.js';
-import { ToolRegistry } from '@agentforge/core';
+import { ToolRegistry, ToolCategory } from '@agentforge/core';
 import { z } from 'zod';
 
 // Define tools that work together in a chain
 const fetchUserDataTool = {
-  name: 'fetch_user_data',
-  description: 'Fetch user data by user ID',
+  metadata: {
+    name: 'fetch-user-data',
+    description: 'Fetch user data by user ID',
+    category: ToolCategory.DATABASE,
+  },
   schema: z.object({
     userId: z.string().describe('User ID'),
   }),
-  metadata: {
-    category: 'data',
-  },
   invoke: async ({ userId }: { userId: string }) => {
     // Simulated user database
     const users: Record<string, any> = {
@@ -58,14 +58,14 @@ const fetchUserDataTool = {
 };
 
 const fetchAccountDataTool = {
-  name: 'fetch_account_data',
-  description: 'Fetch account data by account ID',
+  metadata: {
+    name: 'fetch-account-data',
+    description: 'Fetch account data by account ID',
+    category: ToolCategory.DATABASE,
+  },
   schema: z.object({
     accountId: z.string().describe('Account ID'),
   }),
-  metadata: {
-    category: 'data',
-  },
   invoke: async ({ accountId }: { accountId: string }) => {
     // Simulated account database
     const accounts: Record<string, any> = {
@@ -92,14 +92,14 @@ const fetchAccountDataTool = {
 };
 
 const calculateAccountAgeTool = {
-  name: 'calculate_account_age',
-  description: 'Calculate how long an account has been active',
+  metadata: {
+    name: 'calculate-account-age',
+    description: 'Calculate how long an account has been active',
+    category: ToolCategory.UTILITY,
+  },
   schema: z.object({
     createdAt: z.string().describe('Account creation date (YYYY-MM-DD)'),
   }),
-  metadata: {
-    category: 'utility',
-  },
   invoke: async ({ createdAt }: { createdAt: string }) => {
     const created = new Date(createdAt);
     const now = new Date();

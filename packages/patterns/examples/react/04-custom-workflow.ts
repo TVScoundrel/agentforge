@@ -29,19 +29,19 @@ import {
   createObservationNode,
   type ReActStateType,
 } from '../../src/react/index.js';
-import { ToolRegistry } from '@agentforge/core';
+import { ToolRegistry, ToolCategory } from '@agentforge/core';
 import { z } from 'zod';
 
 // Define a simple search tool
 const searchTool = {
-  name: 'search',
-  description: 'Search for information on a topic',
+  metadata: {
+    name: 'search',
+    description: 'Search for information on a topic',
+    category: ToolCategory.WEB,
+  },
   schema: z.object({
     query: z.string().describe('Search query'),
   }),
-  metadata: {
-    category: 'data',
-  },
   invoke: async ({ query }: { query: string }) => {
     // Simulated search results
     const results: Record<string, string> = {

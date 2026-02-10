@@ -21,21 +21,21 @@
 import { ChatOpenAI } from '@langchain/openai';
 import { HumanMessage } from '@langchain/core/messages';
 import { createReActAgent } from '../../src/react/index.js';
-import { ToolRegistry } from '@agentforge/core';
+import { ToolRegistry, ToolCategory } from '@agentforge/core';
 import { z } from 'zod';
 
 // Define tools for a travel planning scenario
 const flightSearchTool = {
-  name: 'search_flights',
-  description: 'Search for flights between two cities',
+  metadata: {
+    name: 'search-flights',
+    description: 'Search for flights between two cities',
+    category: ToolCategory.API,
+  },
   schema: z.object({
     origin: z.string().describe('Origin city'),
     destination: z.string().describe('Destination city'),
     date: z.string().describe('Travel date (YYYY-MM-DD)'),
   }),
-  metadata: {
-    category: 'travel',
-  },
   invoke: async ({ origin, destination, date }: { origin: string; destination: string; date: string }) => {
     // Simulated flight data
     return {
@@ -49,16 +49,16 @@ const flightSearchTool = {
 };
 
 const hotelSearchTool = {
-  name: 'search_hotels',
-  description: 'Search for hotels in a city',
+  metadata: {
+    name: 'search-hotels',
+    description: 'Search for hotels in a city',
+    category: ToolCategory.API,
+  },
   schema: z.object({
     city: z.string().describe('City name'),
     checkIn: z.string().describe('Check-in date (YYYY-MM-DD)'),
     checkOut: z.string().describe('Check-out date (YYYY-MM-DD)'),
   }),
-  metadata: {
-    category: 'travel',
-  },
   invoke: async ({ city, checkIn, checkOut }: { city: string; checkIn: string; checkOut: string }) => {
     // Simulated hotel data
     return {
@@ -73,17 +73,17 @@ const hotelSearchTool = {
 };
 
 const budgetCalculatorTool = {
-  name: 'calculate_budget',
-  description: 'Calculate total budget for a trip',
+  metadata: {
+    name: 'calculate-budget',
+    description: 'Calculate total budget for a trip',
+    category: ToolCategory.UTILITY,
+  },
   schema: z.object({
     items: z.array(z.object({
       name: z.string(),
       cost: z.number(),
     })),
   }),
-  metadata: {
-    category: 'utility',
-  },
   invoke: async ({ items }: { items: Array<{ name: string; cost: number }> }) => {
     const total = items.reduce((sum, item) => sum + item.cost, 0);
     return {

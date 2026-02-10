@@ -127,8 +127,10 @@ while (!done) {
 
 #### Basic Configuration
 ```typescript
+const model = new ChatOpenAI({ model: 'gpt-4' });
+
 const agent = createReActAgent({
-  model: ChatOpenAI,            // LLM instance
+  model,                        // LLM instance
   tools: ToolRegistry | Tool[], // Available tools
   systemPrompt: string,         // System prompt
   maxIterations: number,        // Max iterations (default: 10)
@@ -140,7 +142,7 @@ const agent = createReActAgent({
 ```typescript
 const agent = createReActAgent(
   {
-    llm,
+    model,
     tools,
     stopCondition: (state) => {
       // Custom stop logic
@@ -164,8 +166,11 @@ Tools follow the standard `@agentforge/core` format:
 
 ```typescript
 const myTool = {
-  name: 'tool_name',
-  description: 'What the tool does',
+  metadata: {
+    name: 'tool-name',
+    description: 'What the tool does',
+    category: ToolCategory.UTILITY,
+  },
   schema: z.object({
     param: z.string().describe('Parameter description'),
   }),
