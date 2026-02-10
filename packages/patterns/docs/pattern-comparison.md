@@ -284,32 +284,30 @@ User Input → Supervisor → Worker(s) → Aggregator → Output
    // Example: "Handle customer support across technical and billing"
    const system = createMultiAgentSystem({
      supervisor: { model: llm, strategy: 'llm-based' },
-     workers: [],
+     workers: [
+       {
+         id: 'tech_support',
+         capabilities: {
+           skills: ['technical', 'troubleshooting'],
+           tools: ['diagnostic'],
+           available: true,
+         },
+         model: llm,
+         tools: [diagnosticTool],
+       },
+       {
+         id: 'billing_support',
+         capabilities: {
+           skills: ['billing', 'payments'],
+           tools: ['account'],
+           available: true,
+         },
+         model: llm,
+         tools: [accountTool],
+       },
+     ],
      aggregator: { model: llm },
    });
-
-   registerWorkers(system, [
-     {
-       name: 'tech_support',
-       capabilities: {
-         skills: ['technical', 'troubleshooting'],
-         tools: ['diagnostic'],
-         available: true,
-       },
-       model: llm,
-       tools: [diagnosticTool],
-     },
-     {
-       name: 'billing_support',
-       capabilities: {
-         skills: ['billing', 'payments'],
-         tools: ['account'],
-         available: true,
-       },
-       model: llm,
-       tools: [accountTool],
-     },
-   ]);
    ```
 
 2. **Multiple distinct tasks**
@@ -479,32 +477,30 @@ const agent = new ReActAgentBuilder()
 ```typescript
 const system = createMultiAgentSystem({
   supervisor: { model: llm, strategy: 'llm-based' },
-  workers: [],
+  workers: [
+    {
+      id: 'billing_support',
+      capabilities: {
+        skills: ['billing', 'payments'],
+        tools: ['checkAccount', 'processRefund'],
+        available: true,
+      },
+      model: llm,
+      tools: [checkAccountTool, processRefundTool],
+    },
+    {
+      id: 'tech_support',
+      capabilities: {
+        skills: ['technical', 'troubleshooting'],
+        tools: ['diagnostic', 'troubleshoot'],
+        available: true,
+      },
+      model: llm,
+      tools: [diagnosticTool, troubleshootTool],
+    },
+  ],
   aggregator: { model: llm },
 });
-
-registerWorkers(system, [
-  {
-    name: 'billing_support',
-    capabilities: {
-      skills: ['billing', 'payments'],
-      tools: ['checkAccount', 'processRefund'],
-      available: true,
-    },
-    model: llm,
-    tools: [checkAccountTool, processRefundTool],
-  },
-  {
-    name: 'tech_support',
-    capabilities: {
-      skills: ['technical', 'troubleshooting'],
-      tools: ['diagnostic', 'troubleshoot'],
-      available: true,
-    },
-    model: llm,
-    tools: [diagnosticTool, troubleshootTool],
-  },
-]);
 
 // System will:
 // 1. Supervisor analyzes inquiry
@@ -539,12 +535,16 @@ const agent = new ReActAgentBuilder()
 ```typescript
 const agent = createReflectionAgent({
   generator: {
-    llm,
+    model: llm,
     systemPrompt: 'Write engaging blog posts',
   },
   reflector: {
-    llm,
+    model: llm,
     systemPrompt: 'Critique for clarity, engagement, and professionalism',
+  },
+  reviser: {
+    model: llm,
+    systemPrompt: 'Revise content based on feedback',
   },
   maxIterations: 3,
 });
@@ -591,7 +591,7 @@ const executionResult = await planExecuteAgent.invoke({ input: query });
 
 // 2. Refine with reflection
 const refinedResult = await reflectionAgent.invoke({
-  messages: [new HumanMessage(executionResult.response)],
+  input: executionResult.response ?? '',
 });
 ```
 
@@ -602,22 +602,28 @@ Use Multi-Agent for coordination, ReAct for worker execution:
 ```typescript
 const system = createMultiAgentSystem({
   supervisor: { model: llm, strategy: 'skill-based' },
-  workers: [],
+  workers: [
+    {
+      id: 'researcher',
+      capabilities: {
+        skills: ['research'],
+        tools: ['search'],
+        available: true,
+      },
+      tools: [searchTool], // Worker uses ReAct internally
+    },
+    {
+      id: 'analyst',
+      capabilities: {
+        skills: ['analysis'],
+        tools: ['analyze'],
+        available: true,
+      },
+      tools: [analyzeTool], // Worker uses ReAct internally
+    },
+  ],
   aggregator: { model: llm },
 });
-
-registerWorkers(system, [
-  {
-    name: 'researcher',
-    capabilities: ['research'],
-    tools: [searchTool], // Worker uses ReAct internally
-  },
-  {
-    name: 'analyst',
-    capabilities: ['analysis'],
-    tools: [analyzeTool], // Worker uses ReAct internally
-  },
-]);
 ```
 
 ### Multi-Agent + Reflection
@@ -630,7 +636,7 @@ const generationResult = await multiAgentSystem.invoke({ input: query });
 
 // 2. Reflection refines the output
 const refinedResult = await reflectionAgent.invoke({
-  messages: [new HumanMessage(generationResult.response)],
+  input: generationResult.response ?? '',
 });
 ```
 
@@ -706,27 +712,37 @@ const agent = new ReActAgentBuilder()
 // After (Multi-Agent with specialized workers)
 const system = createMultiAgentSystem({
   supervisor: { model: llm, strategy: 'skill-based' },
-  workers: [],
+  workers: [
+    {
+      id: 'tech_support',
+      capabilities: {
+        skills: ['technical'],
+        tools: ['tech1', 'tech2'],
+        available: true,
+      },
+      tools: [techTool1, techTool2],
+    },
+    {
+      id: 'billing_support',
+      capabilities: {
+        skills: ['billing'],
+        tools: ['billing1', 'billing2'],
+        available: true,
+      },
+      tools: [billingTool1, billingTool2],
+    },
+    {
+      id: 'general_support',
+      capabilities: {
+        skills: ['general'],
+        tools: ['general1', 'general2'],
+        available: true,
+      },
+      tools: [generalTool1, generalTool2],
+    },
+  ],
   aggregator: { model: llm },
 });
-
-registerWorkers(system, [
-  {
-    name: 'tech_support',
-    capabilities: ['technical'],
-    tools: [techTool1, techTool2],
-  },
-  {
-    name: 'billing_support',
-    capabilities: ['billing'],
-    tools: [billingTool1, billingTool2],
-  },
-  {
-    name: 'general_support',
-    capabilities: ['general'],
-    tools: [generalTool1, generalTool2],
-  },
-]);
 ```
 
 ### To Reflection
@@ -748,12 +764,16 @@ const agent = new ReActAgentBuilder()
 // After (Reflection with iterative improvement)
 const agent = createReflectionAgent({
   generator: {
-    llm,
+    model: llm,
     systemPrompt: 'Generate high-quality content',
   },
   reflector: {
-    llm,
+    model: llm,
     systemPrompt: 'Critique and suggest improvements',
+  },
+  reviser: {
+    model: llm,
+    systemPrompt: 'Revise content based on feedback',
   },
   maxIterations: 3,
 });
