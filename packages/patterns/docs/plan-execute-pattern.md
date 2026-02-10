@@ -243,14 +243,11 @@ The executor runs each step:
 
 ```typescript
 interface CompletedStep {
-  id: string;
-  description: string;
-  tool?: string;
-  result: any;
-  status: 'success' | 'failed' | 'skipped';
-  error?: string;
-  duration?: number;
-  timestamp: string;
+  step: PlanStep;        // The step that was executed
+  result: any;           // The result of executing the step
+  success: boolean;      // Whether the step succeeded
+  error?: string;        // Optional error message if failed
+  timestamp: string;     // ISO timestamp when completed
 }
 ```
 
@@ -856,7 +853,7 @@ try {
     console.error('Execution failed:', result.error);
 
     // Check which step failed
-    const failedStep = result.pastSteps.find(s => s.status === 'failed');
+    const failedStep = result.pastSteps.find(s => !s.success);
     console.error('Failed at step:', failedStep);
   }
 
@@ -972,7 +969,7 @@ import { createPlannerNode } from '@agentforge/patterns';
 describe('PlannerNode', () => {
   it('should create a valid plan', async () => {
     const node = createPlannerNode({
-      llm,
+      model: llm,
       maxSteps: 5,
     });
 
@@ -1019,7 +1016,7 @@ describe('Plan-Execute Agent Integration', () => {
     expect(result.pastSteps.length).toBe(result.plan.steps.length);
 
     // Verify all steps succeeded
-    const allSucceeded = result.pastSteps.every(s => s.status === 'success');
+    const allSucceeded = result.pastSteps.every(s => s.success === true);
     expect(allSucceeded).toBe(true);
 
     // Verify final response
@@ -1032,7 +1029,8 @@ describe('Plan-Execute Agent Integration', () => {
       name: 'failing_tool',
       description: 'A tool that fails',
       schema: z.object({ input: z.string() }),
-      execute: async () => {
+      metadata: { category: 'utility' },
+      invoke: async () => {
         throw new Error('Tool failed');
       },
     };
@@ -1234,14 +1232,11 @@ interface PlanStep {
 
 ```typescript
 interface CompletedStep {
-  id: string;
-  description: string;
-  tool?: string;
-  result: any;
-  status: 'success' | 'failed' | 'skipped';
-  error?: string;
-  duration?: number;
-  timestamp: string;
+  step: PlanStep;        // The step that was executed
+  result: any;           // The result of executing the step
+  success: boolean;      // Whether the step succeeded
+  error?: string;        // Optional error message if failed
+  timestamp: string;     // ISO timestamp when completed
 }
 ```
 

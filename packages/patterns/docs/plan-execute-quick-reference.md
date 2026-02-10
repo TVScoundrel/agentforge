@@ -192,7 +192,7 @@ console.log(result.plan);
 
 // Executed steps
 console.log(result.pastSteps);
-// [{ id, description, result, status, ... }, ...]
+// [{ step, result, success, error?, timestamp }, ...]
 
 // Final response
 console.log(result.response);
@@ -212,9 +212,9 @@ try {
   
   if (result.status === 'failed') {
     console.error('Execution failed:', result.error);
-    
+
     // Check which step failed
-    const failedStep = result.pastSteps.find(s => s.status === 'failed');
+    const failedStep = result.pastSteps.find(s => !s.success);
     console.error('Failed at:', failedStep);
   }
 } catch (error) {
