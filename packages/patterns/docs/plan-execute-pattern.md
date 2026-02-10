@@ -575,7 +575,8 @@ const robustTool = {
   name: 'api_call',
   description: 'Call external API',
   schema: z.object({ endpoint: z.string() }),
-  execute: async ({ endpoint }) => {
+  metadata: { category: 'api' },
+  invoke: async ({ endpoint }) => {
     try {
       const response = await fetch(endpoint, { timeout: 5000 });
       if (!response.ok) {
@@ -630,7 +631,6 @@ const agent = createPlanExecuteAgent({
     tools,
     parallel: true,           // Enable parallelization
     stepTimeout: 5000,        // Prevent hanging
-    maxParallelSteps: 5,      // Limit concurrency
   },
 });
 ```
@@ -901,7 +901,6 @@ const agent = createPlanExecuteAgent({
   executor: {
     tools,
     parallel: true,
-    maxParallelSteps: 5, // Limit concurrency
   },
 });
 ```
@@ -1344,12 +1343,11 @@ executor: {
 executor: {
   tools,
   parallel: true,
-  maxParallelSteps: 5,
 }
 
 // 2. Optimize planner for parallelization
 planner: {
-  llm,
+  model: llm,
   systemPrompt: `Identify independent steps that can run in parallel.
     Mark steps with no dependencies as parallel: true`,
 }

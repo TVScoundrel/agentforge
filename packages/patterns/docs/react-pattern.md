@@ -211,7 +211,7 @@ interface ScratchpadEntry {
   thought?: string;
   action?: string;
   observation?: string;
-  timestamp: string;
+  timestamp?: number;
 }
 ```
 
@@ -232,6 +232,7 @@ const searchTool = {
   schema: z.object({
     query: z.string(),
   }),
+  metadata: { category: 'search' },
   invoke: async ({ query }) => {
     // Implementation
     return { results: [...] };
@@ -245,9 +246,9 @@ Thoughts capture the agent's reasoning:
 
 ```typescript
 interface Thought {
-  content: string;      // The reasoning text
-  timestamp: string;    // When it was generated
-  iteration: number;    // Which iteration
+  content: string;                  // The reasoning text
+  timestamp?: number;               // When it was generated (Unix timestamp)
+  metadata?: Record<string, any>;   // Optional metadata
 }
 ```
 
@@ -351,7 +352,7 @@ Control when the agent stops:
 
 ```typescript
 const agent = createReActAgent({
-  llm,
+  model: llm,
   tools,
   stopCondition: (state) => {
     // Stop if we have high confidence
@@ -487,7 +488,8 @@ const searchTool = {
     keyword: z.string().min(1).describe('Search keyword or phrase'),
     limit: z.number().min(1).max(10).default(5).describe('Maximum results'),
   }),
-  execute: async ({ keyword, limit }) => {
+  metadata: { category: 'search' },
+  invoke: async ({ keyword, limit }) => {
     try {
       const results = await api.search(keyword, limit);
       return { success: true, results };
@@ -502,7 +504,8 @@ const tool = {
   name: 'search',
   description: 'Search',
   schema: z.object({ q: z.string() }),
-  execute: async ({ q }) => {
+  metadata: { category: 'search' },
+  invoke: async ({ q }) => {
     return await api.search(q); // No error handling
   },
 };
