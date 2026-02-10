@@ -525,10 +525,12 @@ Tools should match plan step granularity:
 ```typescript
 // ✅ GOOD: Tools match plan steps
 const fetchUserTool = {
-  name: 'fetch_user',
-  description: 'Fetch user data by ID',
+  metadata: {
+    name: 'fetch-user',
+    description: 'Fetch user data by ID',
+    category: ToolCategory.DATABASE,
+  },
   schema: z.object({ userId: z.string() }),
-  metadata: { category: 'database' },
   invoke: async ({ userId }) => {
     // Focused, single-purpose tool
     return await db.users.findOne({ id: userId });
@@ -1035,9 +1037,9 @@ describe('Plan-Execute Agent Integration', () => {
     };
 
     const agent = createPlanExecuteAgent({
-      planner: { llm, maxSteps: 3 },
+      planner: { model: llm, maxSteps: 3 },
       executor: { tools: [failingTool] },
-      replanner: { llm, replanThreshold: 0.5 },
+      replanner: { model: llm, replanThreshold: 0.5 },
     });
 
     const result = await agent.invoke({
@@ -1359,7 +1361,13 @@ executor: {
 
 // 4. Cache expensive operations
 const cachedTool = {
-  execute: async (args) => {
+  metadata: {
+    name: 'cached-operation',
+    description: 'Perform expensive operation with caching',
+    category: ToolCategory.UTILITY,
+  },
+  schema: z.object({ /* define schema */ }),
+  invoke: async (args) => {
     const cacheKey = JSON.stringify(args);
     if (cache.has(cacheKey)) {
       return cache.get(cacheKey);

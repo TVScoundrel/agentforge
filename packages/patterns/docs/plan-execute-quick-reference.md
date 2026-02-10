@@ -260,19 +260,23 @@ systemPrompt: 'Create a plan'
 ```typescript
 // ✅ DO: Match tool granularity to steps
 const fetchUserTool = {
-  name: 'fetch_user',
-  description: 'Fetch user data by ID',
+  metadata: {
+    name: 'fetch-user',
+    description: 'Fetch user data by ID',
+    category: ToolCategory.DATABASE,
+  },
   schema: z.object({ userId: z.string() }),
-  metadata: { category: 'database' },
   invoke: async ({ userId }) => { /* implementation */ }
 };
 
 // ❌ DON'T: Create overly complex tools
 const doEverythingTool = {
-  name: 'process_all',
-  description: 'Fetch, validate, transform, and save',
+  metadata: {
+    name: 'process-all',
+    description: 'Fetch, validate, transform, and save',
+    category: ToolCategory.UTILITY,
+  },
   schema: z.object({ data: z.any() }),
-  metadata: { category: 'utility' },
   invoke: async ({ data }) => { /* too many responsibilities */ }
 };
 ```

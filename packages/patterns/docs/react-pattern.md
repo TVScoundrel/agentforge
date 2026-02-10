@@ -227,12 +227,14 @@ Tools are the agent's way to interact with the world:
 
 ```typescript
 const searchTool = {
-  name: 'search',
-  description: 'Search for information on a topic',
+  metadata: {
+    name: 'search',
+    description: 'Search for information on a topic',
+    category: ToolCategory.WEB,
+  },
   schema: z.object({
     query: z.string(),
   }),
-  metadata: { category: 'search' },
   invoke: async ({ query }) => {
     // Implementation
     return { results: [...] };

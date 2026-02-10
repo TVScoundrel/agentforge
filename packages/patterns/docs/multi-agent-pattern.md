@@ -100,7 +100,7 @@ const system = createMultiAgentSystem({
   workers: [
     {
       id: 'math_specialist',
-      capabilities: { skills: ['math'], tools: ['calculator'], available: true },
+      capabilities: { skills: ['math'], tools: ['calculator'], available: true, currentWorkload: 0 },
       model: llm,      tools: [calculatorTool],
     },
   ],
@@ -460,12 +460,12 @@ const system = createMultiAgentSystem({
     strategy: 'rule-based',
     routingFn: async (state) => {
       if (state.input.includes('technical')) {
-        return { workerId: 'tech_support', reason: 'Technical query detected' };
+        return { targetAgent: 'tech_support', reasoning: 'Technical query detected' };
       }
       if (state.input.includes('billing')) {
-        return { workerId: 'billing_support', reason: 'Billing query detected' };
+        return { targetAgent: 'billing_support', reasoning: 'Billing query detected' };
       }
-      return { workerId: 'general_support', reason: 'Default routing' };
+      return { targetAgent: 'general_support', reasoning: 'Default routing' };
     },
   },
   // ...
@@ -517,7 +517,14 @@ Builder class for creating multi-agent systems with dynamic worker registration.
 ```typescript
 class MultiAgentSystemBuilder {
   constructor(config: Omit<MultiAgentSystemConfig, 'workers'>);
-  registerWorkers(workers: WorkerConfig[]): void;
+  registerWorkers(workers: Array<{
+    name: string;
+    description?: string;
+    capabilities: string[];
+    tools?: any[];
+    systemPrompt?: string;
+    model?: any;
+  }>): this;
   build(): CompiledStateGraph;
 }
 ```
