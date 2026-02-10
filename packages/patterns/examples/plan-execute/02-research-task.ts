@@ -20,19 +20,20 @@
 
 import { ChatOpenAI } from '@langchain/openai';
 import { createPlanExecuteAgent } from '../../src/plan-execute/index.js';
+import { ToolCategory } from '@agentforge/core';
 import { z } from 'zod';
 
 // Define research tools
 const searchTool = {
-  name: 'search',
-  description: 'Search for information on a topic',
+  metadata: {
+    name: 'search',
+    description: 'Search for information on a topic',
+    category: ToolCategory.WEB,
+  },
   schema: z.object({
     query: z.string().describe('Search query'),
     source: z.enum(['academic', 'news', 'general']).optional(),
   }),
-  metadata: {
-    category: 'data',
-  },
   invoke: async ({ query, source = 'general' }: { query: string; source?: string }) => {
     // Simulated search results
     const results: Record<string, any> = {

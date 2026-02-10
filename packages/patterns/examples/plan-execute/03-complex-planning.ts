@@ -23,18 +23,19 @@
 
 import { ChatOpenAI } from '@langchain/openai';
 import { createPlanExecuteAgent } from '../../src/plan-execute/index.js';
+import { ToolCategory } from '@agentforge/core';
 import { z } from 'zod';
 
 // Define tools for a data analysis workflow
 const fetchDataTool = {
-  name: 'fetch_data',
-  description: 'Fetch data from a source',
+  metadata: {
+    name: 'fetch-data',
+    description: 'Fetch data from a source',
+    category: ToolCategory.DATABASE,
+  },
   schema: z.object({
     source: z.string().describe('Data source name'),
   }),
-  metadata: {
-    category: 'data',
-  },
   invoke: async ({ source }: { source: string }) => {
     // Simulated data fetching
     await new Promise(resolve => setTimeout(resolve, 500)); // Simulate delay

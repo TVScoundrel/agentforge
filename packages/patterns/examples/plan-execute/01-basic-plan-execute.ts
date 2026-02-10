@@ -20,20 +20,21 @@
 
 import { ChatOpenAI } from '@langchain/openai';
 import { createPlanExecuteAgent } from '../../src/plan-execute/index.js';
+import { ToolCategory } from '@agentforge/core';
 import { z } from 'zod';
 
 // Define some simple tools
 const calculatorTool = {
-  name: 'calculator',
-  description: 'Performs basic arithmetic operations',
+  metadata: {
+    name: 'calculator',
+    description: 'Performs basic arithmetic operations',
+    category: ToolCategory.UTILITY,
+  },
   schema: z.object({
     operation: z.enum(['add', 'subtract', 'multiply', 'divide']),
     a: z.number(),
     b: z.number(),
   }),
-  metadata: {
-    category: 'utility',
-  },
   invoke: async ({ operation, a, b }: { operation: string; a: number; b: number }) => {
     switch (operation) {
       case 'add':

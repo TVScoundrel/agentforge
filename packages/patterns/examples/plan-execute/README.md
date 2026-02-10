@@ -129,9 +129,11 @@ const response = await finisher(pastSteps);
 
 #### Basic Configuration
 ```typescript
+const model = new ChatOpenAI({ model: 'gpt-4' });
+
 const agent = createPlanExecuteAgent({
   planner: {
-    model: ChatOpenAI,      // LLM for planning
+    model,                  // LLM for planning
     maxSteps: 5,            // Max steps in plan
   },
   executor: {

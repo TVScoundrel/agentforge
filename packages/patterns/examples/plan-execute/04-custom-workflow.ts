@@ -29,18 +29,19 @@ import {
   createFinisherNode,
   type PlanExecuteStateType,
 } from '../../src/plan-execute/index.js';
+import { ToolCategory } from '@agentforge/core';
 import { z } from 'zod';
 
 // Define a simple tool
 const taskTool = {
-  name: 'execute_task',
-  description: 'Execute a specific task',
+  metadata: {
+    name: 'execute-task',
+    description: 'Execute a specific task',
+    category: ToolCategory.UTILITY,
+  },
   schema: z.object({
     task: z.string().describe('Task description'),
   }),
-  metadata: {
-    category: 'utility',
-  },
   invoke: async ({ task }: { task: string }) => {
     console.log(`  [Tool] Executing: ${task}`);
     await new Promise(resolve => setTimeout(resolve, 200));
