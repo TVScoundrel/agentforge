@@ -58,22 +58,6 @@ Comprehensive guides for each pattern:
   - Migration guide
   - When to use each pattern
 
-### 📋 Implementation Summaries
-
-Technical summaries of each implementation phase:
-
-- **[Phase 3.1 Summary](./phase-3.1.4-summary.md)** - ReAct Pattern
-  - Implementation details
-  - Design decisions
-  - Test coverage
-  - Lessons learned
-
-- **[Phase 3.2 Summary](./phase-3.2-summary.md)** - Plan-Execute Pattern
-  - Implementation details
-  - Architecture decisions
-  - Performance characteristics
-  - Future enhancements
-
 ## Getting Started
 
 ### 1. Choose Your Pattern
@@ -239,4 +223,3 @@ MIT License - see [LICENSE](../LICENSE) for details.
 ---
 
 **Need help?** Check the troubleshooting sections in each pattern guide or open an issue on GitHub.
-

@@ -420,7 +420,7 @@ Step 5: Generate report (depends on step 4)`;
 
 const agent = createPlanExecuteAgent({
   planner: {
-    llm,
+    model: llm,
     systemPrompt: plannerPrompt,
     maxSteps: 7,
   },
@@ -528,6 +528,7 @@ const fetchUserTool = {
   name: 'fetch_user',
   description: 'Fetch user data by ID',
   schema: z.object({ userId: z.string() }),
+  metadata: { category: 'database' },
   invoke: async ({ userId }) => {
     // Focused, single-purpose tool
     return await db.users.findOne({ id: userId });
@@ -575,7 +576,12 @@ const robustTool = {
   metadata: { category: 'api' },
   invoke: async ({ endpoint }) => {
     try {
-      const response = await fetch(endpoint, { timeout: 5000 });
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 5000);
+
+      const response = await fetch(endpoint, { signal: controller.signal });
+      clearTimeout(timeoutId);
+
       if (!response.ok) {
         return {
           success: false,
