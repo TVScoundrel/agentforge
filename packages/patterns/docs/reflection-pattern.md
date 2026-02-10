@@ -40,22 +40,23 @@ The state tracks the entire reflection process:
 interface ReflectionStateType {
   // Input
   input: string;                    // Original request
-  
+
   // Output
-  response: string;                 // Current/final response
-  
+  currentResponse?: string;         // Current draft/response
+  response?: string;                // Final response (when completed)
+
   // Reflection tracking
   reflections: Reflection[];        // All critiques
   revisions: Revision[];            // All revisions
-  
+
   // Control flow
   iteration: number;                // Current iteration
   maxIterations: number;            // Maximum iterations
   status: ReflectionStatus;         // Current status
-  
+
   // Quality criteria
   qualityCriteria?: QualityCriteria;
-  
+
   // Error handling
   error?: string;
 }
@@ -68,11 +69,11 @@ Each reflection contains:
 ```typescript
 interface Reflection {
   critique: string;                 // Overall critique
-  score: number;                    // Quality score (0-10)
+  score?: number;                   // Quality score (0-10)
   meetsStandards: boolean;          // Meets quality criteria?
   issues: string[];                 // Identified issues
   suggestions: string[];            // Improvement suggestions
-  timestamp: string;                // When created
+  timestamp?: Date;                 // When created
 }
 ```
 
@@ -83,9 +84,9 @@ Each revision contains:
 ```typescript
 interface Revision {
   content: string;                  // Revised content
-  basedOn: Reflection;              // Which reflection it addresses
-  changes: string[];                // What changed
-  timestamp: string;                // When created
+  iteration: number;                // Iteration number
+  basedOn?: Reflection;             // Which reflection it addresses
+  timestamp?: Date;                 // When created
 }
 ```
 
@@ -124,17 +125,17 @@ Tailor the agent to your specific use case:
 ```typescript
 const agent = createReflectionAgent({
   generator: {
-    llm,
-    systemPrompt: `You are an expert technical writer. 
+    model: llm,
+    systemPrompt: `You are an expert technical writer.
     Create clear, accurate documentation.`,
   },
   reflector: {
-    llm,
+    model: llm,
     systemPrompt: `You are a senior technical reviewer.
     Evaluate documentation for clarity, accuracy, and completeness.`,
   },
   reviser: {
-    llm,
+    model: llm,
     systemPrompt: `You are a documentation editor.
     Improve docs based on review feedback.`,
   },
@@ -280,15 +281,15 @@ workflow.addNode('validator', customValidatorNode);
 ```typescript
 const essayAgent = createReflectionAgent({
   generator: {
-    llm,
+    model: llm,
     systemPrompt: 'Expert essay writer with academic style',
   },
   reflector: {
-    llm,
+    model: llm,
     systemPrompt: 'Academic reviewer checking thesis, arguments, evidence',
   },
   reviser: {
-    llm,
+    model: llm,
     systemPrompt: 'Essay editor improving structure and clarity',
   },
   maxIterations: 4,
@@ -320,15 +321,15 @@ const codeAgent = createReflectionAgent({
 ```typescript
 const marketingAgent = createReflectionAgent({
   generator: {
-    llm,
+    model: llm,
     systemPrompt: 'Creative copywriter for marketing content',
   },
   reflector: {
-    llm,
+    model: llm,
     systemPrompt: 'Marketing strategist evaluating persuasiveness and clarity',
   },
   reviser: {
-    llm,
+    model: llm,
     systemPrompt: 'Content editor enhancing engagement and conversion',
   },
   maxIterations: 3,
@@ -564,7 +565,7 @@ Creates a complete reflection agent.
 Creates a generator node.
 
 **Parameters**:
-- `config.llm`: LLM instance
+- `config.model`: LLM instance
 - `config.systemPrompt`: System prompt (optional)
 - `config.verbose`: Enable logging (default: false)
 
@@ -575,7 +576,7 @@ Creates a generator node.
 Creates a reflector node.
 
 **Parameters**:
-- `config.llm`: LLM instance
+- `config.model`: LLM instance
 - `config.systemPrompt`: System prompt (optional)
 - `config.verbose`: Enable logging (default: false)
 
@@ -586,7 +587,7 @@ Creates a reflector node.
 Creates a reviser node.
 
 **Parameters**:
-- `config.llm`: LLM instance
+- `config.model`: LLM instance
 - `config.systemPrompt`: System prompt (optional)
 - `config.verbose`: Enable logging (default: false)
 
