@@ -32,7 +32,10 @@ const fetchDataTool = {
   schema: z.object({
     source: z.string().describe('Data source name'),
   }),
-  execute: async ({ source }: { source: string }) => {
+  metadata: {
+    category: 'data',
+  },
+  invoke: async ({ source }: { source: string }) => {
     // Simulated data fetching
     await new Promise(resolve => setTimeout(resolve, 500)); // Simulate delay
 
@@ -52,7 +55,10 @@ const validateDataTool = {
   schema: z.object({
     dataset: z.string().describe('Dataset name'),
   }),
-  execute: async ({ dataset }: { dataset: string }) => {
+  metadata: {
+    category: 'utility',
+  },
+  invoke: async ({ dataset }: { dataset: string }) => {
     await new Promise(resolve => setTimeout(resolve, 300));
 
     return {
@@ -71,7 +77,10 @@ const transformDataTool = {
     dataset: z.string(),
     operations: z.array(z.string()),
   }),
-  execute: async ({ dataset, operations }: { dataset: string; operations: string[] }) => {
+  metadata: {
+    category: 'utility',
+  },
+  invoke: async ({ dataset, operations }: { dataset: string; operations: string[] }) => {
     await new Promise(resolve => setTimeout(resolve, 400));
 
     return {
@@ -90,7 +99,10 @@ const analyzeDataTool = {
     dataset: z.string(),
     metrics: z.array(z.string()),
   }),
-  execute: async ({ dataset, metrics }: { dataset: string; metrics: string[] }) => {
+  metadata: {
+    category: 'utility',
+  },
+  invoke: async ({ dataset, metrics }: { dataset: string; metrics: string[] }) => {
     await new Promise(resolve => setTimeout(resolve, 600));
 
     return {
@@ -111,7 +123,10 @@ const visualizeTool = {
     data: z.string(),
     chart_type: z.enum(['bar', 'line', 'pie', 'scatter']),
   }),
-  execute: async ({ data, chart_type }: { data: string; chart_type: string }) => {
+  metadata: {
+    category: 'utility',
+  },
+  invoke: async ({ data, chart_type }: { data: string; chart_type: string }) => {
     await new Promise(resolve => setTimeout(resolve, 300));
 
     return {
@@ -129,7 +144,10 @@ const generateReportTool = {
   schema: z.object({
     sections: z.array(z.string()),
   }),
-  execute: async ({ sections }: { sections: string[] }) => {
+  metadata: {
+    category: 'utility',
+  },
+  invoke: async ({ sections }: { sections: string[] }) => {
     await new Promise(resolve => setTimeout(resolve, 400));
 
     return {
@@ -160,7 +178,7 @@ async function main() {
   // Create agent with parallel execution enabled
   const agent = createPlanExecuteAgent({
     planner: {
-      llm,
+      model: llm,
       maxSteps: 10,
       systemPrompt: `You are an expert data analysis planner.
         Create efficient plans that:
@@ -182,7 +200,7 @@ async function main() {
       stepTimeout: 5000,
     },
     replanner: {
-      llm,
+      model: llm,
       replanThreshold: 0.8,
       systemPrompt: 'Replan if data quality issues are found or steps fail',
     },

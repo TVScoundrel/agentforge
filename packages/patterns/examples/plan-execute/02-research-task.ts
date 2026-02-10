@@ -30,7 +30,10 @@ const searchTool = {
     query: z.string().describe('Search query'),
     source: z.enum(['academic', 'news', 'general']).optional(),
   }),
-  execute: async ({ query, source = 'general' }: { query: string; source?: string }) => {
+  metadata: {
+    category: 'data',
+  },
+  invoke: async ({ query, source = 'general' }: { query: string; source?: string }) => {
     // Simulated search results
     const results: Record<string, any> = {
       'quantum computing': {
@@ -72,7 +75,10 @@ const summarizeTool = {
     text: z.string().describe('Text to summarize'),
     maxLength: z.number().optional().describe('Maximum summary length'),
   }),
-  execute: async ({ text, maxLength = 100 }: { text: string; maxLength?: number }) => {
+  metadata: {
+    category: 'utility',
+  },
+  invoke: async ({ text, maxLength = 100 }: { text: string; maxLength?: number }) => {
     // Simple summarization (in practice, would use LLM)
     const summary = text.length > maxLength
       ? text.substring(0, maxLength) + '...'
@@ -92,7 +98,10 @@ const compareTool = {
   schema: z.object({
     items: z.array(z.string()).describe('Items to compare'),
   }),
-  execute: async ({ items }: { items: string[] }) => {
+  metadata: {
+    category: 'utility',
+  },
+  invoke: async ({ items }: { items: string[] }) => {
     return {
       count: items.length,
       comparison: `Compared ${items.length} items`,
@@ -111,7 +120,10 @@ const synthesizeTool = {
       content: z.string(),
     })),
   }),
-  execute: async ({ sources }: { sources: Array<{ title: string; content: string }> }) => {
+  metadata: {
+    category: 'utility',
+  },
+  invoke: async ({ sources }: { sources: Array<{ title: string; content: string }> }) => {
     const report = `
 # Research Synthesis Report
 
@@ -141,7 +153,7 @@ async function main() {
   // Create a Plan-Execute agent for research
   const agent = createPlanExecuteAgent({
     planner: {
-      llm,
+      model: llm,
       maxSteps: 6,
       systemPrompt: `You are a research planning assistant.
         Create a structured plan to gather and synthesize information.
@@ -152,7 +164,7 @@ async function main() {
       parallel: false,
     },
     replanner: {
-      llm,
+      model: llm,
       replanThreshold: 0.7,
     },
     maxIterations: 5,

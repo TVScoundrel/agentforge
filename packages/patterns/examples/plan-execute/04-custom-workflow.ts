@@ -38,7 +38,10 @@ const taskTool = {
   schema: z.object({
     task: z.string().describe('Task description'),
   }),
-  execute: async ({ task }: { task: string }) => {
+  metadata: {
+    category: 'utility',
+  },
+  invoke: async ({ task }: { task: string }) => {
     console.log(`  [Tool] Executing: ${task}`);
     await new Promise(resolve => setTimeout(resolve, 200));
     return { task, status: 'completed', result: `Completed: ${task}` };
@@ -55,7 +58,7 @@ async function main() {
 
   // Create individual nodes
   const plannerNode = createPlannerNode({
-    llm,
+    model: llm,
     maxSteps: 5,
     systemPrompt: 'Create a clear, step-by-step plan.',
   });
@@ -66,7 +69,7 @@ async function main() {
   });
 
   const replannerNode = createReplannerNode({
-    llm,
+    model: llm,
     replanThreshold: 0.8,
   });
 
