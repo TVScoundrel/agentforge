@@ -252,8 +252,9 @@ User Input → Supervisor → Worker(s) → Aggregator → Output
    ```typescript
    // Example: "Write a professional email to a client"
    const agent = createReflectionAgent({
-     generator: { llm, systemPrompt: 'Write professional emails' },
-     reflector: { llm, systemPrompt: 'Critique for professionalism' },
+     generator: { model: llm, systemPrompt: 'Write professional emails' },
+     reflector: { model: llm, systemPrompt: 'Critique for professionalism' },
+     reviser: { model: llm, systemPrompt: 'Revise based on feedback' },
      maxIterations: 3,
    });
    ```

@@ -450,7 +450,7 @@ for await (const event of await agent.stream({
     console.log('💭', event.thoughts[event.thoughts.length - 1].content);
   }
   if (event.actions) {
-    console.log('🔧', event.actions[event.actions.length - 1].tool);
+    console.log('🔧', event.actions[event.actions.length - 1].name);
   }
   if (event.observations) {
     console.log('👁️ ', event.observations[event.observations.length - 1].result);
@@ -778,7 +778,7 @@ const result = await agent.invoke({ messages });
 
 // Analyze the process
 console.log('Reasoning steps:', result.thoughts.length);
-console.log('Tools used:', result.actions.map(a => a.tool));
+console.log('Tools used:', result.actions.map(a => a.name));
 console.log('Iterations:', result.iteration);
 
 // Check for issues
@@ -1150,8 +1150,8 @@ describe('ReAct Agent Integration', () => {
 
     // Verify multiple tools were used
     expect(result.actions.length).toBeGreaterThanOrEqual(2);
-    expect(result.actions.some(a => a.tool === 'calculator')).toBe(true);
-    expect(result.actions.some(a => a.tool === 'get_weather')).toBe(true);
+    expect(result.actions.some(a => a.name === 'calculator')).toBe(true);
+    expect(result.actions.some(a => a.name === 'get_weather')).toBe(true);
 
     // Verify final answer
     const finalMessage = result.messages[result.messages.length - 1];

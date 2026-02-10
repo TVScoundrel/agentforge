@@ -966,23 +966,33 @@ const supervisor = createSupervisorNode({
   strategy: {
     type: 'rule-based',
     rules: [
-      { condition: (s) => s.iterations === 0, workerId: 'validator' },
-      { condition: (s) => s.iterations === 1, workerId: 'processor' },
+      { condition: (s) => s.iteration === 0, workerId: 'validator' },
+      { condition: (s) => s.iteration === 1, workerId: 'processor' },
     ],
   },
 });
 
 const validator = createWorkerNode({
-  workerId: 'validator',
-  tools: [validateTool],
+  id: 'validator',
+  capabilities: {
+    skills: ['validation'],
+    tools: [validateTool],
+    available: true,
+    currentWorkload: 0,
+  },
 });
 
 const processor = createWorkerNode({
-  workerId: 'processor',
-  tools: [processTool],
+  id: 'processor',
+  capabilities: {
+    skills: ['processing'],
+    tools: [processTool],
+    available: true,
+    currentWorkload: 0,
+  },
 });
 
-const aggregator = createAggregatorNode({ llm });
+const aggregator = createAggregatorNode({ model: llm });
 
 // Build workflow
 const workflow = new StateGraph({ channels: MultiAgentState })
