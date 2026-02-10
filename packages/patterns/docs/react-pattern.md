@@ -395,7 +395,7 @@ FORMAT:
 - End with clear recommendations`;
 
 const agent = createReActAgent({
-  llm,
+  model: llm,
   tools,
   systemPrompt,
 });
@@ -408,7 +408,7 @@ Enable detailed logging:
 ```typescript
 const agent = createReActAgent(
   {
-    llm,
+    model: llm,
     tools,
   },
   {
@@ -586,7 +586,8 @@ const tool = {
   name: 'api_call',
   description: 'Call external API',
   schema: z.object({ endpoint: z.string() }),
-  execute: async ({ endpoint }) => {
+  metadata: { category: 'api' },
+  invoke: async ({ endpoint }) => {
     try {
       const response = await fetch(endpoint);
       if (!response.ok) {
@@ -638,7 +639,8 @@ const tool = {
   schema: z.object({
     queries: z.array(z.string()),
   }),
-  execute: async ({ queries }) => {
+  metadata: { category: 'search' },
+  invoke: async ({ queries }) => {
     // Execute in parallel
     const results = await Promise.all(
       queries.map(q => searchAPI(q))
@@ -921,7 +923,8 @@ const robustTool = {
   name: 'api_call',
   description: 'Call external API',
   schema: z.object({ url: z.string() }),
-  execute: async ({ url }) => {
+  metadata: { category: 'api' },
+  invoke: async ({ url }) => {
     try {
       const response = await fetch(url, { timeout: 5000 });
 
@@ -985,7 +988,7 @@ async function runAgentSafely(query: string) {
 
 ```typescript
 const agent = createReActAgent({
-  llm,
+  model: llm,
   tools,
   stopCondition: (state) => {
     // Stop if we have a partial answer after many iterations
