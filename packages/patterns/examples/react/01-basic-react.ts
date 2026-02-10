@@ -32,7 +32,10 @@ const calculatorTool = {
     a: z.number().describe('First number'),
     b: z.number().describe('Second number'),
   }),
-  execute: async ({ operation, a, b }: { operation: string; a: number; b: number }) => {
+  metadata: {
+    category: 'utility',
+  },
+  invoke: async ({ operation, a, b }: { operation: string; a: number; b: number }) => {
     switch (operation) {
       case 'add':
         return { result: a + b };
@@ -54,7 +57,10 @@ const weatherTool = {
   schema: z.object({
     location: z.string().describe('City name or location'),
   }),
-  execute: async ({ location }: { location: string }) => {
+  metadata: {
+    category: 'data',
+  },
+  invoke: async ({ location }: { location: string }) => {
     // Simulated weather data
     const weatherData: Record<string, any> = {
       'new york': { temp: 72, condition: 'Sunny', humidity: 65 },
@@ -94,7 +100,7 @@ async function main() {
 
   // Create a ReAct agent
   const agent = createReActAgent({
-    llm,
+    model: llm,
     tools: toolRegistry,
     systemPrompt: 'You are a helpful assistant that uses tools to answer questions.',
     maxIterations: 5,

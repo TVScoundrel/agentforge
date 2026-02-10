@@ -19,7 +19,7 @@
  */
 
 import { ChatOpenAI } from '@langchain/openai';
-import { createMultiAgentSystem, registerWorkers } from '../../src/multi-agent/index.js';
+import { MultiAgentSystemBuilder } from '../../src/multi-agent/index.js';
 import { z } from 'zod';
 
 // Define worker tools
@@ -29,7 +29,10 @@ const mathTool = {
   schema: z.object({
     expression: z.string().describe('Mathematical expression to evaluate'),
   }),
-  execute: async ({ expression }: { expression: string }) => {
+  metadata: {
+    category: 'computation',
+  },
+  invoke: async ({ expression }: { expression: string }) => {
     console.log(`  [Math Worker] Calculating: ${expression}`);
     // Simple eval for demo (don't use in production!)
     const result = eval(expression);
@@ -43,7 +46,10 @@ const weatherTool = {
   schema: z.object({
     location: z.string().describe('City name'),
   }),
-  execute: async ({ location }: { location: string }) => {
+  metadata: {
+    category: 'data',
+  },
+  invoke: async ({ location }: { location: string }) => {
     console.log(`  [Weather Worker] Fetching weather for: ${location}`);
     // Simulated weather data
     const conditions = ['sunny', 'cloudy', 'rainy', 'partly cloudy'];
@@ -64,7 +70,10 @@ const translationTool = {
     text: z.string().describe('Text to translate'),
     targetLanguage: z.string().describe('Target language'),
   }),
-  execute: async ({ text, targetLanguage }: { text: string; targetLanguage: string }) => {
+  metadata: {
+    category: 'language',
+  },
+  invoke: async ({ text, targetLanguage }: { text: string; targetLanguage: string }) => {
     console.log(`  [Translation Worker] Translating to ${targetLanguage}: ${text}`);
     // Simulated translation
     return {
@@ -85,15 +94,14 @@ async function main() {
   });
 
   // Create a multi-agent system with round-robin routing
-  const system = createMultiAgentSystem({
+  const builder = new MultiAgentSystemBuilder({
     supervisor: {
-      llm,
-      routingStrategy: 'round-robin',
+      model: llm,
+      strategy: 'round-robin',
       systemPrompt: 'You are a supervisor coordinating specialized workers.',
     },
-    workers: [],
     aggregator: {
-      llm,
+      model: llm,
       systemPrompt: 'Combine results from multiple workers into a coherent response.',
     },
     maxIterations: 5,
@@ -101,7 +109,7 @@ async function main() {
   });
 
   // Register specialized workers
-  registerWorkers(system, [
+  builder.registerWorkers([
     {
       name: 'math_worker',
       description: 'Specialized in mathematical calculations and numerical analysis',
@@ -124,6 +132,9 @@ async function main() {
       systemPrompt: 'You are a translation expert. Translate text accurately.',
     },
   ]);
+
+  // Build the system
+  const system = builder.build();
 
   // Example 1: Simple task routing
   console.log('📝 Example 1: Simple Task Routing');

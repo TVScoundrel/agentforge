@@ -31,7 +31,10 @@ const calculatorTool = {
     a: z.number(),
     b: z.number(),
   }),
-  execute: async ({ operation, a, b }: { operation: string; a: number; b: number }) => {
+  metadata: {
+    category: 'utility',
+  },
+  invoke: async ({ operation, a, b }: { operation: string; a: number; b: number }) => {
     switch (operation) {
       case 'add':
         return { result: a + b };
@@ -55,7 +58,10 @@ const unitConverterTool = {
     from: z.string(),
     to: z.string(),
   }),
-  execute: async ({ value, from, to }: { value: number; from: string; to: string }) => {
+  metadata: {
+    category: 'utility',
+  },
+  invoke: async ({ value, from, to }: { value: number; from: string; to: string }) => {
     // Simple conversion examples
     const conversions: Record<string, Record<string, number>> = {
       'celsius-fahrenheit': { multiplier: 9 / 5, offset: 32 },
@@ -88,7 +94,7 @@ async function main() {
   // Create a Plan-Execute agent
   const agent = createPlanExecuteAgent({
     planner: {
-      llm,
+      model: llm,
       maxSteps: 5,
     },
     executor: {

@@ -1293,8 +1293,8 @@ interface ReActStateType {
 ```typescript
 interface Thought {
   content: string;
-  timestamp: string;
-  iteration: number;
+  timestamp?: number;
+  metadata?: Record<string, any>;
 }
 ```
 
@@ -1302,10 +1302,10 @@ interface Thought {
 
 ```typescript
 interface ToolCall {
-  tool: string;
+  id: string;
+  name: string;
   arguments: Record<string, any>;
-  timestamp: string;
-  iteration: number;
+  timestamp?: number;
 }
 ```
 
@@ -1313,12 +1313,11 @@ interface ToolCall {
 
 ```typescript
 interface ToolResult {
-  tool: string;
+  toolCallId: string;
   result: any;
-  success: boolean;
   error?: string;
-  timestamp: string;
-  iteration: number;
+  timestamp?: number;
+  isDuplicate?: boolean;  // Flag indicating this was a duplicate tool call
 }
 ```
 
@@ -1330,7 +1329,7 @@ interface ScratchpadEntry {
   thought?: string;
   action?: string;
   observation?: string;
-  timestamp: string;
+  timestamp?: number;
 }
 ```
 
