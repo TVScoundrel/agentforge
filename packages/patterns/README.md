@@ -156,6 +156,7 @@ const searchTool = {
   name: 'search',
   description: 'Search for information',
   schema: z.object({ query: z.string() }),
+  metadata: { category: 'search' },
   invoke: async ({ query }) => {
     // Search implementation
     return { results: [...] };
@@ -166,6 +167,7 @@ const analyzeTool = {
   name: 'analyze',
   description: 'Analyze data',
   schema: z.object({ data: z.any() }),
+  metadata: { category: 'utility' },
   invoke: async ({ data }) => {
     // Analysis implementation
     return { insights: [...] };
@@ -255,26 +257,16 @@ const builder = new MultiAgentSystemBuilder({
 // Register specialized workers
 builder.registerWorkers([
   {
-    id: 'tech_support',
-    name: 'Tech Support',
+    name: 'tech_support',
     description: 'Handles technical issues',
-    capabilities: {
-      skills: ['technical', 'troubleshooting', 'debugging'],
-      tools: ['diagnostic', 'troubleshoot'],
-      available: true,
-    },
+    capabilities: ['technical', 'troubleshooting', 'debugging'],
     model,
     tools: [diagnosticTool, troubleshootTool],
   },
   {
-    id: 'billing_support',
-    name: 'Billing Support',
+    name: 'billing_support',
     description: 'Handles billing inquiries',
-    capabilities: {
-      skills: ['billing', 'payments', 'refunds'],
-      tools: ['account_check', 'refund_process'],
-      available: true,
-    },
+    capabilities: ['billing', 'payments', 'refunds'],
     model,
     tools: [checkAccountTool, processRefundTool],
   },
@@ -354,25 +346,23 @@ import {
 ```typescript
 {
   planner: {
-    llm: BaseChatModel,           // LLM for planning
+    model: BaseChatModel,          // LLM for planning
     systemPrompt?: string,         // Custom planning prompt
-    maxSteps?: number,             // Max steps in plan (default: 10)
+    maxSteps?: number,             // Max steps in plan (default: 7)
     includeToolDescriptions?: boolean,
   },
   executor: {
     tools: Tool[],                 // Available tools
-    llm?: BaseChatModel,           // Optional LLM for sub-tasks
+    model?: BaseChatModel,         // Optional LLM for sub-tasks
     parallel?: boolean,            // Enable parallel execution
     stepTimeout?: number,          // Timeout per step (ms)
-    maxParallelSteps?: number,     // Max concurrent steps
   },
   replanner?: {
-    llm: BaseChatModel,            // LLM for replanning
+    model: BaseChatModel,          // LLM for replanning
     replanThreshold?: number,      // Confidence threshold (0-1)
     systemPrompt?: string,         // Custom replanning prompt
   },
   maxIterations?: number,          // Max planning iterations
-  returnIntermediateSteps?: boolean,
   verbose?: boolean,
 }
 ```
@@ -401,17 +391,19 @@ import {
 ```typescript
 {
   generator: {
-    llm: BaseChatModel,           // LLM for generation
+    model: BaseChatModel,          // LLM for generation
     systemPrompt?: string,         // Custom generation prompt
   },
   reflector: {
-    llm: BaseChatModel,            // LLM for reflection
+    model: BaseChatModel,          // LLM for reflection
     systemPrompt?: string,         // Custom reflection prompt
-    criteria?: string[],           // Reflection criteria
+  },
+  reviser: {
+    model: BaseChatModel,          // LLM for revision
+    systemPrompt?: string,         // Custom revision prompt
   },
   maxIterations?: number,          // Max reflection cycles (default: 3)
-  qualityThreshold?: number,       // Quality score threshold (0-1)
-  returnIntermediateSteps?: boolean,
+  qualityCriteria?: string[],      // Quality criteria for reflection
   verbose?: boolean,
 }
 ```
@@ -435,7 +427,8 @@ import {
 
 **Main API**:
 - `createMultiAgentSystem(config)` - Create a complete Multi-Agent system
-- `registerWorkers(system, workers)` - Register workers with the system
+- `MultiAgentSystemBuilder` - Builder for creating Multi-Agent systems with workers
+- `registerWorkers(system, workers)` - Update worker capabilities in state (Note: does not add worker nodes to compiled graphs; use builder or pass workers to createMultiAgentSystem)
 
 **Configuration**:
 ```typescript
@@ -462,13 +455,32 @@ import {
 - `'load-balanced'` - Route to least busy worker
 - Custom rule-based routing
 
-**Worker Configuration**:
+**Worker Configuration** (for createMultiAgentSystem):
 ```typescript
 {
-  name: string,                   // Unique worker identifier
-  description: string,            // Worker description
-  capabilities: string[],         // Worker capabilities/skills
-  tools: Tool[],                  // Available tools
+  id: string,                     // Unique worker identifier
+  capabilities: {                 // Worker capabilities
+    skills: string[],             // Worker skills
+    tools: string[],              // Tool names (not objects)
+    available: boolean,           // Availability status
+    currentWorkload?: number,     // Current workload
+  },
+  tools?: Tool[],                 // Actual tool implementations
+  model?: BaseChatModel,          // Worker-specific model
+  systemPrompt?: string,          // Worker-specific prompt
+  executeFn?: Function,           // Custom execution function
+  agent?: CompiledStateGraph,     // Pre-built agent
+}
+```
+
+**Worker Configuration** (for MultiAgentSystemBuilder.registerWorkers):
+```typescript
+{
+  name: string,                   // Worker name (becomes 'id')
+  description?: string,           // Worker description
+  capabilities: string[],         // Array of skill names
+  tools?: Tool[],                 // Available tools
+  model?: BaseChatModel,          // Worker-specific model
   systemPrompt?: string,          // Worker-specific prompt
 }
 ```
