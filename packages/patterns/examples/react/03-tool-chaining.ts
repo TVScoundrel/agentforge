@@ -31,7 +31,10 @@ const fetchUserDataTool = {
   schema: z.object({
     userId: z.string().describe('User ID'),
   }),
-  execute: async ({ userId }: { userId: string }) => {
+  metadata: {
+    category: 'data',
+  },
+  invoke: async ({ userId }: { userId: string }) => {
     // Simulated user database
     const users: Record<string, any> = {
       'user123': {
@@ -60,7 +63,10 @@ const fetchAccountDataTool = {
   schema: z.object({
     accountId: z.string().describe('Account ID'),
   }),
-  execute: async ({ accountId }: { accountId: string }) => {
+  metadata: {
+    category: 'data',
+  },
+  invoke: async ({ accountId }: { accountId: string }) => {
     // Simulated account database
     const accounts: Record<string, any> = {
       'acc456': {
@@ -91,7 +97,10 @@ const calculateAccountAgeTool = {
   schema: z.object({
     createdAt: z.string().describe('Account creation date (YYYY-MM-DD)'),
   }),
-  execute: async ({ createdAt }: { createdAt: string }) => {
+  metadata: {
+    category: 'utility',
+  },
+  invoke: async ({ createdAt }: { createdAt: string }) => {
     const created = new Date(createdAt);
     const now = new Date();
     const diffTime = Math.abs(now.getTime() - created.getTime());
@@ -127,7 +136,10 @@ const formatUserReportTool = {
       formatted: z.string(),
     }),
   }),
-  execute: async ({ userData, accountData, accountAge }: any) => {
+  metadata: {
+    category: 'utility',
+  },
+  invoke: async ({ userData, accountData, accountAge }: any) => {
     return {
       report: `
 ╔════════════════════════════════════════╗
@@ -163,7 +175,7 @@ async function main() {
 
   // Create a ReAct agent
   const agent = createReActAgent({
-    llm,
+    model: llm,
     tools: toolRegistry,
     systemPrompt: `You are a helpful assistant that generates user reports.
     Use the available tools in sequence to gather all necessary information.
@@ -186,7 +198,7 @@ async function main() {
   // Display the tool chain
   console.log('\n🔗 TOOL CHAIN:\n');
   result.actions?.forEach((action: any, idx: number) => {
-    console.log(`${idx + 1}. ${action.tool}`);
+    console.log(`${idx + 1}. ${action.name}`);
     console.log(`   Input: ${JSON.stringify(action.arguments)}`);
 
     if (result.observations && result.observations[idx]) {

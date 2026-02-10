@@ -39,7 +39,10 @@ const searchTool = {
   schema: z.object({
     query: z.string().describe('Search query'),
   }),
-  execute: async ({ query }: { query: string }) => {
+  metadata: {
+    category: 'data',
+  },
+  invoke: async ({ query }: { query: string }) => {
     // Simulated search results
     const results: Record<string, string> = {
       'quantum computing': 'Quantum computing uses quantum mechanics principles to process information...',

@@ -33,7 +33,10 @@ const flightSearchTool = {
     destination: z.string().describe('Destination city'),
     date: z.string().describe('Travel date (YYYY-MM-DD)'),
   }),
-  execute: async ({ origin, destination, date }: { origin: string; destination: string; date: string }) => {
+  metadata: {
+    category: 'travel',
+  },
+  invoke: async ({ origin, destination, date }: { origin: string; destination: string; date: string }) => {
     // Simulated flight data
     return {
       flights: [
@@ -53,7 +56,10 @@ const hotelSearchTool = {
     checkIn: z.string().describe('Check-in date (YYYY-MM-DD)'),
     checkOut: z.string().describe('Check-out date (YYYY-MM-DD)'),
   }),
-  execute: async ({ city, checkIn, checkOut }: { city: string; checkIn: string; checkOut: string }) => {
+  metadata: {
+    category: 'travel',
+  },
+  invoke: async ({ city, checkIn, checkOut }: { city: string; checkIn: string; checkOut: string }) => {
     // Simulated hotel data
     return {
       hotels: [
@@ -75,7 +81,10 @@ const budgetCalculatorTool = {
       cost: z.number(),
     })),
   }),
-  execute: async ({ items }: { items: Array<{ name: string; cost: number }> }) => {
+  metadata: {
+    category: 'utility',
+  },
+  invoke: async ({ items }: { items: Array<{ name: string; cost: number }> }) => {
     const total = items.reduce((sum, item) => sum + item.cost, 0);
     return {
       items,
@@ -93,7 +102,10 @@ const currencyConverterTool = {
     from: z.string().describe('Source currency (e.g., USD)'),
     to: z.string().describe('Target currency (e.g., EUR)'),
   }),
-  execute: async ({ amount, from, to }: { amount: number; from: string; to: string }) => {
+  metadata: {
+    category: 'utility',
+  },
+  invoke: async ({ amount, from, to }: { amount: number; from: string; to: string }) => {
     // Simulated exchange rates
     const rates: Record<string, number> = {
       'USD-EUR': 0.92,
@@ -132,9 +144,9 @@ async function main() {
 
   // Create a ReAct agent
   const agent = createReActAgent({
-    llm,
+    model: llm,
     tools: toolRegistry,
-    systemPrompt: `You are a helpful travel planning assistant. 
+    systemPrompt: `You are a helpful travel planning assistant.
     Use the available tools to help users plan their trips.
     Think step by step and use multiple tools as needed.`,
     maxIterations: 10,
@@ -165,7 +177,7 @@ async function main() {
   // Display actions taken
   console.log('\n🔧 ACTIONS TAKEN:\n');
   result.actions?.forEach((action: any, idx: number) => {
-    console.log(`Action ${idx + 1}: ${action.tool}`);
+    console.log(`Action ${idx + 1}: ${action.name}`);
     console.log(`  Arguments: ${JSON.stringify(action.arguments, null, 2)}\n`);
   });
 
