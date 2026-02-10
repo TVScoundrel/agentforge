@@ -438,7 +438,7 @@ Stream intermediate results:
 
 ```typescript
 const agent = createReActAgent({
-  llm,
+  model: llm,
   tools,
   returnIntermediateSteps: true,
 });
@@ -658,7 +658,8 @@ const tool = {
   name: 'expensive_operation',
   description: 'Perform expensive calculation',
   schema: z.object({ input: z.string() }),
-  execute: async ({ input }) => {
+  metadata: { category: 'utility' },
+  invoke: async ({ input }) => {
     if (cache.has(input)) {
       return cache.get(input);
     }
@@ -774,7 +775,7 @@ With `LOG_LEVEL=debug`, you'll see detailed execution flow:
 
 ```typescript
 const agent = createReActAgent({
-  llm,
+  model: llm,
   tools,
   returnIntermediateSteps: true,
 });
@@ -926,7 +927,11 @@ const robustTool = {
   metadata: { category: 'api' },
   invoke: async ({ url }) => {
     try {
-      const response = await fetch(url, { timeout: 5000 });
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 5000);
+
+      const response = await fetch(url, { signal: controller.signal });
+      clearTimeout(timeoutId);
 
       if (!response.ok) {
         return {
@@ -939,7 +944,7 @@ const robustTool = {
       return { success: true, data };
 
     } catch (error) {
-      if (error.name === 'TimeoutError') {
+      if (error.name === 'AbortError') {
         return { success: false, error: 'Request timeout' };
       }
       return { success: false, error: error.message };
@@ -1035,7 +1040,8 @@ const batchTool = {
   schema: z.object({
     ids: z.array(z.string()),
   }),
-  execute: async ({ ids }) => {
+  metadata: { category: 'database' },
+  invoke: async ({ ids }) => {
     // Single batch query instead of multiple calls
     const results = await db.findMany({ id: { in: ids } });
     return { results };
@@ -1050,7 +1056,8 @@ const parallelTool = {
     sources: z.array(z.string()),
     query: z.string(),
   }),
-  execute: async ({ sources, query }) => {
+  metadata: { category: 'search' },
+  invoke: async ({ sources, query }) => {
     const results = await Promise.all(
       sources.map(source => searchSource(source, query))
     );
@@ -1075,7 +1082,8 @@ const cachedTool = {
   name: 'cached_search',
   description: 'Search with caching',
   schema: z.object({ query: z.string() }),
-  execute: async ({ query }) => {
+  metadata: { category: 'search' },
+  invoke: async ({ query }) => {
     const cacheKey = `search:${query}`;
 
     if (cache.has(cacheKey)) {
@@ -1093,7 +1101,7 @@ const cachedTool = {
 
 ```typescript
 const agent = createReActAgent({
-  llm,
+  model: llm,
   tools,
   stopCondition: (state) => {
     // Stop early if we have high-quality answer
@@ -1660,7 +1668,7 @@ async function reactWithReflection(query: string) {
   // 2. Use Reflection to refine the answer
   const finalAnswer = reactResult.messages[reactResult.messages.length - 1];
   const reflectionResult = await reflectionAgent.invoke({
-    messages: [new HumanMessage(finalAnswer.content.toString())],
+    input: finalAnswer.content.toString(),
   });
 
   return reflectionResult;
@@ -1673,13 +1681,13 @@ Multiple ReAct agents working together:
 
 ```typescript
 const researchAgent = createReActAgent({
-  llm,
+  model: llm,
   tools: [searchTool, summarizeTool],
   systemPrompt: 'You are a research specialist.',
 });
 
 const analysisAgent = createReActAgent({
-  llm,
+  model: llm,
   tools: [calculateTool, visualizeTool],
   systemPrompt: 'You are a data analyst.',
 });
