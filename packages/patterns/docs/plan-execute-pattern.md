@@ -892,7 +892,7 @@ const agent = createPlanExecuteAgent({
 ```typescript
 const agent = createPlanExecuteAgent({
   planner: {
-    llm,
+    model: llm,
     maxSteps: 10,
     systemPrompt: `Identify independent steps for parallel execution.
       Mark steps that can run concurrently.`,
