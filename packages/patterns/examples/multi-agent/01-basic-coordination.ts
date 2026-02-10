@@ -20,18 +20,19 @@
 
 import { ChatOpenAI } from '@langchain/openai';
 import { MultiAgentSystemBuilder } from '../../src/multi-agent/index.js';
+import { ToolCategory } from '@agentforge/core';
 import { z } from 'zod';
 
 // Define worker tools
 const mathTool = {
-  name: 'calculate',
-  description: 'Perform mathematical calculations',
+  metadata: {
+    name: 'calculate',
+    description: 'Perform mathematical calculations',
+    category: ToolCategory.UTILITY,
+  },
   schema: z.object({
     expression: z.string().describe('Mathematical expression to evaluate'),
   }),
-  metadata: {
-    category: 'computation',
-  },
   invoke: async ({ expression }: { expression: string }) => {
     console.log(`  [Math Worker] Calculating: ${expression}`);
     // Simple eval for demo (don't use in production!)
@@ -41,14 +42,14 @@ const mathTool = {
 };
 
 const weatherTool = {
-  name: 'get_weather',
-  description: 'Get weather information for a location',
+  metadata: {
+    name: 'get-weather',
+    description: 'Get weather information for a location',
+    category: ToolCategory.API,
+  },
   schema: z.object({
     location: z.string().describe('City name'),
   }),
-  metadata: {
-    category: 'data',
-  },
   invoke: async ({ location }: { location: string }) => {
     console.log(`  [Weather Worker] Fetching weather for: ${location}`);
     // Simulated weather data

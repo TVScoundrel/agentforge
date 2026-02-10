@@ -33,40 +33,50 @@ import {
   createAggregatorNode,
   type MultiAgentStateType,
 } from '../../src/multi-agent/index.js';
+import { ToolCategory } from '@agentforge/core';
 import { z } from 'zod';
 
 // Define specialized tools
 const validatorTool = {
-  name: 'validate',
-  description: 'Validate input data',
+  metadata: {
+    name: 'validate',
+    description: 'Validate input data',
+    category: ToolCategory.UTILITY,
+  },
   schema: z.object({
     data: z.any().describe('Data to validate'),
   }),
-  execute: async ({ data }: { data: any }) => {
+  invoke: async ({ data }: { data: any }) => {
     console.log(`  [Validator] Validating data`);
     return { valid: true, data, issues: [] };
   },
 };
 
 const processorTool = {
-  name: 'process',
-  description: 'Process validated data',
+  metadata: {
+    name: 'process',
+    description: 'Process validated data',
+    category: ToolCategory.UTILITY,
+  },
   schema: z.object({
     data: z.any().describe('Data to process'),
   }),
-  execute: async ({ data }: { data: any }) => {
+  invoke: async ({ data }: { data: any }) => {
     console.log(`  [Processor] Processing data`);
     return { processed: true, data, transformations: ['normalized', 'cleaned'] };
   },
 };
 
 const enricherTool = {
-  name: 'enrich',
-  description: 'Enrich processed data',
+  metadata: {
+    name: 'enrich',
+    description: 'Enrich processed data',
+    category: ToolCategory.UTILITY,
+  },
   schema: z.object({
     data: z.any().describe('Data to enrich'),
   }),
-  execute: async ({ data }: { data: any }) => {
+  invoke: async ({ data }: { data: any }) => {
     console.log(`  [Enricher] Enriching data`);
     return { enriched: true, data, additions: ['metadata', 'context'] };
   },
@@ -75,49 +85,54 @@ const enricherTool = {
 async function main() {
   console.log('🔧 Custom Multi-Agent Workflow Example\n');
 
-  const llm = new ChatOpenAI({
+  const model = new ChatOpenAI({
     modelName: 'gpt-4',
     temperature: 0,
   });
 
   // Create individual nodes
   const supervisorNode = createSupervisorNode({
-    llm,
-    routingStrategy: {
-      type: 'rule-based',
-      rules: [
-        {
-          condition: (state) => !state.workerResults || state.workerResults.length === 0,
-          workerId: 'validator',
-        },
-        {
-          condition: (state) => state.workerResults?.length === 1,
-          workerId: 'processor',
-        },
-        {
-          condition: (state) => state.workerResults?.length === 2,
-          workerId: 'enricher',
-        },
-      ],
-      defaultWorkerId: 'validator',
+    model,
+    strategy: 'rule-based',
+    routingFn: (state) => {
+      const completedCount = state.completedTasks?.length || 0;
+      if (completedCount === 0) return 'validator';
+      if (completedCount === 1) return 'processor';
+      if (completedCount === 2) return 'enricher';
+      return 'validator';
     },
     systemPrompt: 'Route tasks through validation -> processing -> enrichment pipeline',
   });
 
   const validatorNode = createWorkerNode({
-    workerId: 'validator',
+    id: 'validator',
+    capabilities: {
+      skills: ['validation'],
+      tools: [validatorTool],
+      available: true,
+    },
     tools: [validatorTool],
     systemPrompt: 'Validate all input data for quality and completeness',
   });
 
   const processorNode = createWorkerNode({
-    workerId: 'processor',
+    id: 'processor',
+    capabilities: {
+      skills: ['processing'],
+      tools: [processorTool],
+      available: true,
+    },
     tools: [processorTool],
     systemPrompt: 'Process and transform validated data',
   });
 
   const enricherNode = createWorkerNode({
-    workerId: 'enricher',
+    id: 'enricher',
+    capabilities: {
+      skills: ['enrichment'],
+      tools: [enricherTool],
+      available: true,
+    },
     tools: [enricherTool],
     systemPrompt: 'Enrich processed data with additional context',
   });

@@ -100,28 +100,36 @@ npx tsx packages/patterns/examples/multi-agent/05-supervisor-with-askhuman.ts
 ```typescript
 import { MultiAgentSystemBuilder } from '@agentforge/patterns';
 
+const model = new ChatOpenAI({ model: 'gpt-4' });
+
 // Create the builder
 const builder = new MultiAgentSystemBuilder({
   supervisor: {
-    model: ChatOpenAI,
+    model,
     strategy: 'skill-based',
   },
   aggregator: {
-    model: ChatOpenAI,
+    model,
   },
 });
 
 // Register workers
 builder.registerWorkers([
   {
-    name: 'specialist1',
-    capabilities: ['skill1', 'skill2'],
-    tools: [tool1, tool2],
+    id: 'specialist1',
+    capabilities: {
+      skills: ['skill1', 'skill2'],
+      tools: [tool1, tool2],
+      available: true,
+    },
   },
   {
-    name: 'specialist2',
-    capabilities: ['skill3', 'skill4'],
-    tools: [tool3, tool4],
+    id: 'specialist2',
+    capabilities: {
+      skills: ['skill3', 'skill4'],
+      tools: [tool3, tool4],
+      available: true,
+    },
   },
 ]);
 

@@ -22,6 +22,7 @@
 
 import { ChatOpenAI } from '@langchain/openai';
 import { MultiAgentSystemBuilder } from '../../src/multi-agent/index.js';
+import { ToolCategory } from '@agentforge/core';
 import { z } from 'zod';
 
 // Data Collector Tools
@@ -148,15 +149,15 @@ const generateReportTool = {
 };
 
 const citeTool = {
-  name: 'cite',
-  description: 'Generate citations for sources',
+  metadata: {
+    name: 'cite',
+    description: 'Generate citations for sources',
+    category: ToolCategory.UTILITY,
+  },
   schema: z.object({
     sources: z.array(z.string()).describe('Sources to cite'),
     style: z.enum(['APA', 'MLA', 'Chicago']).describe('Citation style'),
   }),
-  metadata: {
-    category: 'utility',
-  },
   invoke: async ({ sources, style }: { sources: string[]; style: string }) => {
     console.log(`  [Writer] Generating ${style} citations`);
 

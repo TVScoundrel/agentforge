@@ -23,19 +23,20 @@
 
 import { ChatOpenAI } from '@langchain/openai';
 import { MultiAgentSystemBuilder } from '../../src/multi-agent/index.js';
+import { ToolCategory } from '@agentforge/core';
 import { z } from 'zod';
 
 // Technical Support Tools
 const diagnosticTool = {
-  name: 'run_diagnostic',
-  description: 'Run system diagnostics to identify technical issues',
+  metadata: {
+    name: 'run-diagnostic',
+    description: 'Run system diagnostics to identify technical issues',
+    category: ToolCategory.UTILITY,
+  },
   schema: z.object({
     system: z.string().describe('System to diagnose'),
     issueType: z.string().describe('Type of issue reported'),
   }),
-  metadata: {
-    category: 'utility',
-  },
   invoke: async ({ system, issueType }: { system: string; issueType: string }) => {
     console.log(`  [Tech Support] Running diagnostics on ${system} for ${issueType}`);
 
