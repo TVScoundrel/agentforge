@@ -144,7 +144,7 @@ const result = await system.invoke({ input: 'task description' });
 
 #### 1. LLM-Based Routing
 ```typescript
-routingStrategy: 'llm-based'
+strategy: 'llm-based'
 ```
 - Uses LLM to analyze task and select best worker
 - Most flexible and intelligent
@@ -152,7 +152,7 @@ routingStrategy: 'llm-based'
 
 #### 2. Skill-Based Routing
 ```typescript
-routingStrategy: 'skill-based'
+strategy: 'skill-based'
 ```
 - Matches task requirements to worker capabilities
 - Efficient and predictable
@@ -160,7 +160,7 @@ routingStrategy: 'skill-based'
 
 #### 3. Round-Robin Routing
 ```typescript
-routingStrategy: 'round-robin'
+strategy: 'round-robin'
 ```
 - Distributes tasks evenly across workers
 - Simple load balancing
@@ -168,11 +168,13 @@ routingStrategy: 'round-robin'
 
 #### 4. Rule-Based Routing
 ```typescript
-routingStrategy: {
-  type: 'rule-based',
-  rules: [
-    { condition: (state) => ..., workerId: 'worker1' },
-  ],
+strategy: 'rule-based',
+routingFn: async (state) => {
+  // Custom routing logic
+  if (state.input.includes('urgent')) {
+    return { targetAgent: 'priority_worker', reasoning: 'Urgent task' };
+  }
+  return { targetAgent: 'default_worker', reasoning: 'Standard routing' };
 }
 ```
 - Custom routing logic
@@ -181,7 +183,7 @@ routingStrategy: {
 
 #### 5. Load-Balanced Routing
 ```typescript
-routingStrategy: 'load-balanced'
+strategy: 'load-balanced'
 ```
 - Routes to least busy worker
 - Optimizes resource utilization
@@ -193,9 +195,9 @@ routingStrategy: 'load-balanced'
 ```typescript
 const system = createMultiAgentSystem({
   supervisor: {
-    model: ChatOpenAI,              // LLM for routing decisions
-    routingStrategy: 'skill-based', // Routing strategy
-    systemPrompt: string,          // Custom supervisor prompt
+    model: ChatOpenAI,        // LLM for routing decisions
+    strategy: 'skill-based',  // Routing strategy
+    systemPrompt: string,     // Custom supervisor prompt
   },
   workers: WorkerConfig[],        // Worker configurations
   aggregator: {
