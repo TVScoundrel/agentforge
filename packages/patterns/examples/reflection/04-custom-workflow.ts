@@ -40,19 +40,19 @@ async function main() {
 
   // Create individual nodes
   const generatorNode = createGeneratorNode({
-    llm,
+    model: llm,
     systemPrompt: 'You are a creative writer. Generate engaging content.',
     verbose: true,
   });
 
   const reflectorNode = createReflectorNode({
-    llm,
+    model: llm,
     systemPrompt: 'You are a critical reviewer. Provide detailed feedback.',
     verbose: true,
   });
 
   const reviserNode = createReviserNode({
-    llm,
+    model: llm,
     systemPrompt: 'You are an expert editor. Improve content based on feedback.',
     verbose: true,
   });

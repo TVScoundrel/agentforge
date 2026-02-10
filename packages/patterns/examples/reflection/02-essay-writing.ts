@@ -33,13 +33,13 @@ async function main() {
   // Create a reflection agent with essay-specific prompts
   const agent = createReflectionAgent({
     generator: {
-      llm,
-      systemPrompt: `You are an expert essay writer. Write well-structured, 
-      compelling essays with clear thesis statements, supporting arguments, 
+      model: llm,
+      systemPrompt: `You are an expert essay writer. Write well-structured,
+      compelling essays with clear thesis statements, supporting arguments,
       and strong conclusions. Use proper academic style and formatting.`,
     },
     reflector: {
-      llm,
+      model: llm,
       systemPrompt: `You are a strict academic reviewer. Evaluate essays based on:
       - Thesis clarity and strength
       - Argument structure and logic
@@ -47,13 +47,13 @@ async function main() {
       - Writing style and clarity
       - Grammar and mechanics
       - Overall coherence and flow
-      
+
       Provide specific, actionable feedback for improvement.`,
     },
     reviser: {
-      llm,
-      systemPrompt: `You are an expert essay editor. Revise essays to address 
-      all feedback while maintaining the author's voice and core arguments. 
+      model: llm,
+      systemPrompt: `You are an expert essay editor. Revise essays to address
+      all feedback while maintaining the author's voice and core arguments.
       Improve clarity, strengthen arguments, and enhance overall quality.`,
     },
     maxIterations: 4,

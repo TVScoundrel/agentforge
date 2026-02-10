@@ -33,8 +33,8 @@ async function main() {
   // Create a reflection agent with code-specific prompts
   const agent = createReflectionAgent({
     generator: {
-      llm,
-      systemPrompt: `You are an expert software engineer. Write clean, efficient, 
+      model: llm,
+      systemPrompt: `You are an expert software engineer. Write clean, efficient,
       well-documented code following best practices. Include:
       - Clear function/class names
       - Proper error handling
@@ -43,7 +43,7 @@ async function main() {
       - Example usage`,
     },
     reflector: {
-      llm,
+      model: llm,
       systemPrompt: `You are a senior code reviewer. Evaluate code based on:
       - Code quality and readability
       - Best practices and patterns
@@ -53,12 +53,12 @@ async function main() {
       - Documentation quality
       - Edge cases
       - Security considerations
-      
+
       Provide specific, actionable feedback for improvement.`,
     },
     reviser: {
-      llm,
-      systemPrompt: `You are an expert code refactorer. Improve code based on 
+      model: llm,
+      systemPrompt: `You are an expert code refactorer. Improve code based on
       review feedback while maintaining functionality. Focus on:
       - Fixing identified issues
       - Improving code quality

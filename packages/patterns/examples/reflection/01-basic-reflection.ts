@@ -32,15 +32,15 @@ async function main() {
   // Create a reflection agent
   const agent = createReflectionAgent({
     generator: {
-      llm,
+      model: llm,
       systemPrompt: 'You are an expert writer. Create clear, engaging, and informative content.',
     },
     reflector: {
-      llm,
+      model: llm,
       systemPrompt: 'You are a critical editor. Provide constructive feedback to improve writing quality.',
     },
     reviser: {
-      llm,
+      model: llm,
       systemPrompt: 'You are an expert editor. Improve content based on feedback while maintaining the core message.',
     },
     maxIterations: 3,
