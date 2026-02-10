@@ -60,7 +60,7 @@ replanner?: {
 
 ```typescript
 const agent = createPlanExecuteAgent({
-  planner: { llm, maxSteps: 5 },
+  planner: { model: llm, maxSteps: 5 },
   executor: {
     tools,
     parallel: false, // Sequential
@@ -73,14 +73,14 @@ const agent = createPlanExecuteAgent({
 ```typescript
 const agent = createPlanExecuteAgent({
   planner: {
-    llm,
+    model: llm,
     maxSteps: 10,
     systemPrompt: 'Identify independent steps for parallel execution',
   },
   executor: {
     tools,
     parallel: true,
-    maxParallelSteps: 5,
+    stepTimeout: 30000, // Timeout per step
   },
 });
 ```

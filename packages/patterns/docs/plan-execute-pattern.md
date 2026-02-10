@@ -598,22 +598,13 @@ const robustTool = {
 
 // Agent-level error handling
 const agent = createPlanExecuteAgent({
-  planner: { llm, maxSteps: 5 },
+  planner: { model: llm, maxSteps: 5 },
   executor: {
     tools: [robustTool],
-    onStepError: async (step, error) => {
-      // Log error
-      console.error(`Step failed: ${step.description}`, error);
-
-      // Decide whether to continue or abort
-      if (error.canRetry) {
-        return 'retry';
-      }
-      return 'abort';
-    },
+    stepTimeout: 30000, // Timeout per step
   },
   replanner: {
-    llm,
+    model: llm,
     // Replan on errors
     replanThreshold: 0.5,
   },
@@ -963,11 +954,10 @@ const agent = createPlanExecuteAgent({
 
 ```typescript
 const agent = createPlanExecuteAgent({
-  planner: { llm, maxSteps: 5 },
+  planner: { model: llm, maxSteps: 5 },
   executor: {
     tools,
     stepTimeout: 5000,      // 5s per step
-    totalTimeout: 30000,    // 30s total
   },
 });
 ```

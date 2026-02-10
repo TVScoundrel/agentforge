@@ -1164,7 +1164,8 @@ describe('ReAct Agent Integration', () => {
       name: 'failing_tool',
       description: 'A tool that fails',
       schema: z.object({ input: z.string() }),
-      execute: async () => {
+      metadata: { category: 'utility' },
+      invoke: async () => {
         throw new Error('Tool failed');
       },
     };
