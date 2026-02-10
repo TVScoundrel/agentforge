@@ -572,10 +572,12 @@ Handle errors at multiple levels:
 ```typescript
 // Tool-level error handling
 const robustTool = {
-  name: 'api_call',
-  description: 'Call external API',
+  metadata: {
+    name: 'api-call',
+    description: 'Call external API',
+    category: ToolCategory.API,
+  },
   schema: z.object({ endpoint: z.string() }),
-  metadata: { category: 'api' },
   invoke: async ({ endpoint }) => {
     try {
       const controller = new AbortController();
@@ -916,10 +918,12 @@ const llm = new ChatOpenAI({
 // Cache tool results
 const cache = new Map();
 const cachedTool = {
-  name: 'cached_search',
-  description: 'Search with caching',
+  metadata: {
+    name: 'cached-search',
+    description: 'Search with caching',
+    category: ToolCategory.WEB,
+  },
   schema: z.object({ query: z.string() }),
-  metadata: { category: 'search' },
   invoke: async ({ query }) => {
     if (cache.has(query)) {
       return cache.get(query);
@@ -936,7 +940,7 @@ const cachedTool = {
 ```typescript
 const agent = createPlanExecuteAgent({
   planner: {
-    llm,
+    model: llm,
     maxSteps: 7, // Limit plan size
     systemPrompt: `Create concise plans:
       - Combine related operations
@@ -1027,10 +1031,12 @@ describe('Plan-Execute Agent Integration', () => {
 
   it('should handle step failures with replanning', async () => {
     const failingTool = {
-      name: 'failing_tool',
-      description: 'A tool that fails',
+      metadata: {
+        name: 'failing-tool',
+        description: 'A tool that fails',
+        category: ToolCategory.UTILITY,
+      },
       schema: z.object({ input: z.string() }),
-      metadata: { category: 'utility' },
       invoke: async () => {
         throw new Error('Tool failed');
       },
@@ -1299,10 +1305,12 @@ Step 3: Transform data (tool: transform, deps: [2])`
 ```typescript
 // 1. Add error handling in tools
 const errorHandlingTool = {
-  name: 'safe_operation',
-  description: 'Operation with error handling',
+  metadata: {
+    name: 'safe-operation',
+    description: 'Operation with error handling',
+    category: ToolCategory.UTILITY,
+  },
   schema: z.object({ input: z.string() }),
-  metadata: { category: 'utility' },
   invoke: async (args) => {
     try {
       const result = await operation(args);
@@ -1410,10 +1418,12 @@ const validatePlan = (plan: Plan, tools: Tool[]) => {
 
 // 3. Improve tool descriptions
 const tool = {
-  name: 'search_api',
-  description: 'Search for information using external API. Use this when you need current information.',
+  metadata: {
+    name: 'search-api',
+    description: 'Search for information using external API. Use this when you need current information.',
+    category: ToolCategory.API,
+  },
   schema: z.object({ query: z.string() }),
-  metadata: { category: 'api' },
   invoke: async ({ query }) => {
     // Implementation
   }
@@ -1431,7 +1441,7 @@ const tool = {
 ```typescript
 // 1. Adjust replan threshold
 replanner: {
-  llm,
+  model: llm,
   replanThreshold: 0.5, // Lower = less replanning
 }
 
@@ -1440,7 +1450,7 @@ maxIterations: 3,
 
 // 3. Improve replanning logic
 replanner: {
-  llm,
+  model: llm,
   systemPrompt: `Only replan if:
     - Critical step failed
     - Results are completely unexpected

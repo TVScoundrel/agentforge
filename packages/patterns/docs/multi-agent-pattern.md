@@ -962,12 +962,12 @@ const supervisor = createSupervisorNode({
   strategy: 'rule-based',
   routingFn: async (state) => {
     if (state.iteration === 0) {
-      return { workerId: 'validator', reason: 'First iteration - validate input' };
+      return { targetAgent: 'validator', reasoning: 'First iteration - validate input' };
     }
     if (state.iteration === 1) {
-      return { workerId: 'processor', reason: 'Second iteration - process data' };
+      return { targetAgent: 'processor', reasoning: 'Second iteration - process data' };
     }
-    return { workerId: '__end__', reason: 'Complete' };
+    return { targetAgent: '__end__', reasoning: 'Complete' };
   },
 });
 
@@ -1132,12 +1132,12 @@ const system = createMultiAgentSystem({
     routingFn: async (state) => {
       // Custom logic
       if (state.input.length > 100) {
-        return { workerId: 'detailed_worker', reason: 'Long input requires detailed analysis' };
+        return { targetAgent: 'detailed_worker', reasoning: 'Long input requires detailed analysis' };
       }
       if (state.iteration > 5) {
-        return { workerId: 'fallback_worker', reason: 'Too many iterations, using fallback' };
+        return { targetAgent: 'fallback_worker', reasoning: 'Too many iterations, using fallback' };
       }
-      return { workerId: 'default_worker', reason: 'Standard routing' };
+      return { targetAgent: 'default_worker', reasoning: 'Standard routing' };
     },
   },
   // ...
@@ -1210,8 +1210,8 @@ const system = createMultiAgentSystem({
         .sort((a, b) => b.priority - a.priority);
 
       return {
-        workerId: availableWorkers[0].id,
-        reason: `Highest priority worker (priority: ${availableWorkers[0].priority})`
+        targetAgent: availableWorkers[0].id,
+        reasoning: `Highest priority worker (priority: ${availableWorkers[0].priority})`
       };
     },
   },
@@ -1286,8 +1286,8 @@ const system = createMultiAgentSystem({
       }
 
       return {
-        workerId: availableWorkers[0].id,
-        reason: `Healthiest worker (error rate: ${availableWorkers[0].errorRate})`
+        targetAgent: availableWorkers[0].id,
+        reasoning: `Healthiest worker (error rate: ${availableWorkers[0].errorRate})`
       };
     },
   },

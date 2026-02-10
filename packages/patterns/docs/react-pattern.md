@@ -484,13 +484,15 @@ Example:
 ```typescript
 // ✅ GOOD
 const searchTool = {
-  name: 'search_articles',
-  description: 'Search for academic articles by keyword. Returns title, abstract, and publication date.',
+  metadata: {
+    name: 'search-articles',
+    description: 'Search for academic articles by keyword. Returns title, abstract, and publication date.',
+    category: ToolCategory.WEB,
+  },
   schema: z.object({
     keyword: z.string().min(1).describe('Search keyword or phrase'),
     limit: z.number().min(1).max(10).default(5).describe('Maximum results'),
   }),
-  metadata: { category: 'search' },
   invoke: async ({ keyword, limit }) => {
     try {
       const results = await api.search(keyword, limit);
@@ -503,10 +505,12 @@ const searchTool = {
 
 // ❌ BAD
 const tool = {
-  name: 'search',
-  description: 'Search',
+  metadata: {
+    name: 'search',
+    description: 'Search',
+    category: ToolCategory.WEB,
+  },
   schema: z.object({ q: z.string() }),
-  metadata: { category: 'search' },
   invoke: async ({ q }) => {
     return await api.search(q); // No error handling
   },
@@ -585,10 +589,12 @@ stopCondition: (state) => hasGoodAnswer(state)
 **In tools:**
 ```typescript
 const tool = {
-  name: 'api_call',
-  description: 'Call external API',
+  metadata: {
+    name: 'api-call',
+    description: 'Call external API',
+    category: ToolCategory.API,
+  },
   schema: z.object({ endpoint: z.string() }),
-  metadata: { category: 'api' },
   invoke: async ({ endpoint }) => {
     try {
       const response = await fetch(endpoint);
@@ -636,12 +642,14 @@ try {
 ```typescript
 // Parallel tool execution when possible
 const tool = {
-  name: 'batch_search',
-  description: 'Search multiple sources',
+  metadata: {
+    name: 'batch-search',
+    description: 'Search multiple sources',
+    category: ToolCategory.WEB,
+  },
   schema: z.object({
     queries: z.array(z.string()),
   }),
-  metadata: { category: 'search' },
   invoke: async ({ queries }) => {
     // Execute in parallel
     const results = await Promise.all(
@@ -657,10 +665,12 @@ const tool = {
 const cache = new Map();
 
 const tool = {
-  name: 'expensive_operation',
-  description: 'Perform expensive calculation',
+  metadata: {
+    name: 'expensive-operation',
+    description: 'Perform expensive calculation',
+    category: ToolCategory.UTILITY,
+  },
   schema: z.object({ input: z.string() }),
-  metadata: { category: 'utility' },
   invoke: async ({ input }) => {
     if (cache.has(input)) {
       return cache.get(input);
@@ -923,10 +933,12 @@ For more debugging techniques, see the [Debugging Guide](../../../docs/DEBUGGING
 
 ```typescript
 const robustTool = {
-  name: 'api_call',
-  description: 'Call external API',
+  metadata: {
+    name: 'api-call',
+    description: 'Call external API',
+    category: ToolCategory.API,
+  },
   schema: z.object({ url: z.string() }),
-  metadata: { category: 'api' },
   invoke: async ({ url }) => {
     try {
       const controller = new AbortController();
@@ -1037,12 +1049,14 @@ const fastAgent = createReActAgent({
 ```typescript
 // Batch operations
 const batchTool = {
-  name: 'batch_lookup',
-  description: 'Look up multiple items at once',
+  metadata: {
+    name: 'batch-lookup',
+    description: 'Look up multiple items at once',
+    category: ToolCategory.DATABASE,
+  },
   schema: z.object({
     ids: z.array(z.string()),
   }),
-  metadata: { category: 'database' },
   invoke: async ({ ids }) => {
     // Single batch query instead of multiple calls
     const results = await db.findMany({ id: { in: ids } });
@@ -1052,13 +1066,15 @@ const batchTool = {
 
 // Parallel execution
 const parallelTool = {
-  name: 'multi_search',
-  description: 'Search multiple sources',
+  metadata: {
+    name: 'multi-search',
+    description: 'Search multiple sources',
+    category: ToolCategory.WEB,
+  },
   schema: z.object({
     sources: z.array(z.string()),
     query: z.string(),
   }),
-  metadata: { category: 'search' },
   invoke: async ({ sources, query }) => {
     const results = await Promise.all(
       sources.map(source => searchSource(source, query))
@@ -1081,10 +1097,12 @@ const llm = new ChatOpenAI({
 // Tool-level caching
 const cache = new Map();
 const cachedTool = {
-  name: 'cached_search',
-  description: 'Search with caching',
+  metadata: {
+    name: 'cached-search',
+    description: 'Search with caching',
+    category: ToolCategory.WEB,
+  },
   schema: z.object({ query: z.string() }),
-  metadata: { category: 'search' },
   invoke: async ({ query }) => {
     const cacheKey = `search:${query}`;
 
@@ -1177,10 +1195,12 @@ describe('ReAct Agent Integration', () => {
 
   it('should handle tool errors gracefully', async () => {
     const failingTool = {
-      name: 'failing_tool',
-      description: 'A tool that fails',
+      metadata: {
+        name: 'failing-tool',
+        description: 'A tool that fails',
+        category: ToolCategory.UTILITY,
+      },
       schema: z.object({ input: z.string() }),
-      metadata: { category: 'utility' },
       invoke: async () => {
         throw new Error('Tool failed');
       },
@@ -1506,10 +1526,12 @@ For comprehensive debugging techniques, see:
 ```typescript
 // 1. Add error handling in tools
 const tool = {
-  name: 'safe_operation',
-  description: 'Operation with error handling',
+  metadata: {
+    name: 'safe-operation',
+    description: 'Operation with error handling',
+    category: ToolCategory.UTILITY,
+  },
   schema: z.object({ /* ... */ }),
-  metadata: { category: 'utility' },
   invoke: async (args) => {
     try {
       const result = await operation(args);
@@ -1526,10 +1548,12 @@ const tool = {
 
 // 2. Validate inputs
 const validatingTool = {
-  name: 'validated_operation',
-  description: 'Operation with input validation',
+  metadata: {
+    name: 'validated-operation',
+    description: 'Operation with input validation',
+    category: ToolCategory.UTILITY,
+  },
   schema: z.object({ required_field: z.string() }),
-  metadata: { category: 'utility' },
   invoke: async (args) => {
     // Validate before executing
     if (!args.required_field) {
@@ -1541,10 +1565,12 @@ const validatingTool = {
 
 // 3. Add timeouts
 const timeoutTool = {
-  name: 'timeout_operation',
-  description: 'Operation with timeout',
+  metadata: {
+    name: 'timeout-operation',
+    description: 'Operation with timeout',
+    category: ToolCategory.UTILITY,
+  },
   schema: z.object({ /* ... */ }),
-  metadata: { category: 'utility' },
   invoke: async (args) => {
     const timeout = new Promise((_, reject) =>
       setTimeout(() => reject(new Error('Timeout')), 5000)
