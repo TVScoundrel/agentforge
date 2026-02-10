@@ -1495,44 +1495,62 @@ For comprehensive debugging techniques, see:
 **Solutions:**
 ```typescript
 // 1. Add error handling in tools
-execute: async (args) => {
-  try {
-    const result = await operation(args);
-    return { success: true, result };
-  } catch (error) {
-    return {
-      success: false,
-      error: error.message,
-      fallback: 'default value'
-    };
+const tool = {
+  name: 'safe_operation',
+  description: 'Operation with error handling',
+  schema: z.object({ /* ... */ }),
+  metadata: { category: 'utility' },
+  invoke: async (args) => {
+    try {
+      const result = await operation(args);
+      return { success: true, result };
+    } catch (error) {
+      return {
+        success: false,
+        error: error.message,
+        fallback: 'default value'
+      };
+    }
   }
-}
+};
 
 // 2. Validate inputs
-execute: async (args) => {
-  // Validate before executing
-  if (!args.required_field) {
-    return { success: false, error: 'Missing required field' };
+const validatingTool = {
+  name: 'validated_operation',
+  description: 'Operation with input validation',
+  schema: z.object({ required_field: z.string() }),
+  metadata: { category: 'utility' },
+  invoke: async (args) => {
+    // Validate before executing
+    if (!args.required_field) {
+      return { success: false, error: 'Missing required field' };
+    }
+    // ...
   }
-  // ...
-}
+};
 
 // 3. Add timeouts
-execute: async (args) => {
-  const timeout = new Promise((_, reject) =>
-    setTimeout(() => reject(new Error('Timeout')), 5000)
-  );
+const timeoutTool = {
+  name: 'timeout_operation',
+  description: 'Operation with timeout',
+  schema: z.object({ /* ... */ }),
+  metadata: { category: 'utility' },
+  invoke: async (args) => {
+    const timeout = new Promise((_, reject) =>
+      setTimeout(() => reject(new Error('Timeout')), 5000)
+    );
 
-  try {
-    const result = await Promise.race([
-      operation(args),
-      timeout
-    ]);
-    return { success: true, result };
-  } catch (error) {
-    return { success: false, error: error.message };
+    try {
+      const result = await Promise.race([
+        operation(args),
+        timeout
+      ]);
+      return { success: true, result };
+    } catch (error) {
+      return { success: false, error: error.message };
+    }
   }
-}
+};
 ```
 
 ### Memory issues
