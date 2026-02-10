@@ -21,7 +21,7 @@
  */
 
 import { ChatOpenAI } from '@langchain/openai';
-import { createMultiAgentSystem, registerWorkers } from '../../src/multi-agent/index.js';
+import { MultiAgentSystemBuilder } from '../../src/multi-agent/index.js';
 import { z } from 'zod';
 
 // Data Collector Tools
@@ -32,10 +32,13 @@ const searchTool = {
     query: z.string().describe('Search query'),
     sources: z.array(z.string()).optional().describe('Specific sources to search'),
   }),
-  execute: async ({ query, sources }: { query: string; sources?: string[] }) => {
+  metadata: {
+    category: 'data',
+  },
+  invoke: async ({ query, sources }: { query: string; sources?: string[] }) => {
     console.log(`  [Data Collector] Searching for: ${query}`);
     if (sources) console.log(`  [Data Collector] Sources: ${sources.join(', ')}`);
-    
+
     // Simulated search results
     return {
       query,
@@ -56,9 +59,12 @@ const fetchDataTool = {
     dataType: z.string().describe('Type of data to fetch'),
     parameters: z.record(z.any()).optional().describe('Additional parameters'),
   }),
-  execute: async ({ dataType, parameters }: { dataType: string; parameters?: Record<string, any> }) => {
+  metadata: {
+    category: 'data',
+  },
+  invoke: async ({ dataType, parameters }: { dataType: string; parameters?: Record<string, any> }) => {
     console.log(`  [Data Collector] Fetching ${dataType} data`);
-    
+
     // Simulated data
     return {
       dataType,
@@ -77,9 +83,12 @@ const analyzeTool = {
     data: z.any().describe('Data to analyze'),
     analysisType: z.enum(['statistical', 'qualitative', 'comparative']).describe('Type of analysis'),
   }),
-  execute: async ({ data, analysisType }: { data: any; analysisType: string }) => {
+  metadata: {
+    category: 'utility',
+  },
+  invoke: async ({ data, analysisType }: { data: any; analysisType: string }) => {
     console.log(`  [Analyst] Performing ${analysisType} analysis`);
-    
+
     // Simulated analysis
     return {
       analysisType,
@@ -100,9 +109,12 @@ const validateTool = {
   schema: z.object({
     data: z.any().describe('Data to validate'),
   }),
-  execute: async ({ data }: { data: any }) => {
+  metadata: {
+    category: 'utility',
+  },
+  invoke: async ({ data }: { data: any }) => {
     console.log(`  [Analyst] Validating data quality`);
-    
+
     return {
       isValid: true,
       quality: 'high',
@@ -120,9 +132,12 @@ const generateReportTool = {
     findings: z.array(z.string()).describe('Key findings to include'),
     format: z.enum(['summary', 'detailed', 'executive']).describe('Report format'),
   }),
-  execute: async ({ findings, format }: { findings: string[]; format: string }) => {
+  metadata: {
+    category: 'utility',
+  },
+  invoke: async ({ findings, format }: { findings: string[]; format: string }) => {
     console.log(`  [Writer] Generating ${format} report`);
-    
+
     return {
       format,
       sections: ['Introduction', 'Methodology', 'Findings', 'Conclusion'],
@@ -139,9 +154,12 @@ const citeTool = {
     sources: z.array(z.string()).describe('Sources to cite'),
     style: z.enum(['APA', 'MLA', 'Chicago']).describe('Citation style'),
   }),
-  execute: async ({ sources, style }: { sources: string[]; style: string }) => {
+  metadata: {
+    category: 'utility',
+  },
+  invoke: async ({ sources, style }: { sources: string[]; style: string }) => {
     console.log(`  [Writer] Generating ${style} citations`);
-    
+
     return {
       style,
       citations: sources.map((s, i) => `[${i + 1}] ${s} (${style} format)`),
@@ -157,20 +175,19 @@ async function main() {
     temperature: 0.3,
   });
 
-  // Create multi-agent system with skill-based routing
-  const system = createMultiAgentSystem({
+  // Create multi-agent system with skill-based routing using builder
+  const builder = new MultiAgentSystemBuilder({
     supervisor: {
-      llm,
-      routingStrategy: 'skill-based',
-      systemPrompt: `You are a research team supervisor. 
+      model: llm,
+      strategy: 'skill-based',
+      systemPrompt: `You are a research team supervisor.
         Route tasks to the most appropriate specialist:
         - Data Collector: for gathering information
         - Analyst: for analyzing data
         - Writer: for creating reports`,
     },
-    workers: [],
     aggregator: {
-      llm,
+      model: llm,
       systemPrompt: 'Synthesize research findings into a comprehensive response.',
     },
     maxIterations: 10,
@@ -178,7 +195,7 @@ async function main() {
   });
 
   // Register research team workers
-  registerWorkers(system, [
+  builder.registerWorkers([
     {
       name: 'data_collector',
       description: 'Gathers information and data from various sources',
@@ -201,6 +218,9 @@ async function main() {
       systemPrompt: 'You are a technical writer. Create clear, well-structured reports.',
     },
   ]);
+
+  // Build the system
+  const system = builder.build();
 
   // Research task
   const task = `Research the impact of artificial intelligence on healthcare.

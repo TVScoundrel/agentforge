@@ -20,7 +20,7 @@
 
 import { ChatOpenAI } from '@langchain/openai';
 import { createMultiAgentSystem, type MultiAgentStateType } from '../../src/multi-agent/index.js';
-import { createAskHumanTool } from '../../../tools/src/agent/ask-human/tool.js';
+import { createAskHumanTool } from '@agentforge/tools';
 
 async function main() {
   console.log('🤖 Tool-Enabled Supervisor Example\n');
@@ -45,12 +45,12 @@ async function main() {
     'Code review for pull request',
   ];
 
-  // Override the tool's execute function for demo purposes
-  askHumanTool.execute = async (input: any) => {
+  // Override the tool's invoke function for demo purposes
+  askHumanTool.invoke = async (input: any) => {
     console.log(`\n  [Supervisor → Human] ${input.question}`);
     const response = mockResponses[mockResponseIndex++] || 'I need general help';
     console.log(`  [Human → Supervisor] ${response}\n`);
-    
+
     // Return mock response in the expected format
     return {
       response,

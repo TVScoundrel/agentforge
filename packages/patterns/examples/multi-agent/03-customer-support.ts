@@ -22,7 +22,7 @@
  */
 
 import { ChatOpenAI } from '@langchain/openai';
-import { createMultiAgentSystem, registerWorkers } from '../../src/multi-agent/index.js';
+import { MultiAgentSystemBuilder } from '../../src/multi-agent/index.js';
 import { z } from 'zod';
 
 // Technical Support Tools
@@ -33,9 +33,12 @@ const diagnosticTool = {
     system: z.string().describe('System to diagnose'),
     issueType: z.string().describe('Type of issue reported'),
   }),
-  execute: async ({ system, issueType }: { system: string; issueType: string }) => {
+  metadata: {
+    category: 'utility',
+  },
+  invoke: async ({ system, issueType }: { system: string; issueType: string }) => {
     console.log(`  [Tech Support] Running diagnostics on ${system} for ${issueType}`);
-    
+
     return {
       system,
       issueType,
@@ -52,9 +55,12 @@ const troubleshootTool = {
   schema: z.object({
     problem: z.string().describe('Problem description'),
   }),
-  execute: async ({ problem }: { problem: string }) => {
+  metadata: {
+    category: 'utility',
+  },
+  invoke: async ({ problem }: { problem: string }) => {
     console.log(`  [Tech Support] Troubleshooting: ${problem}`);
-    
+
     return {
       problem,
       steps: [
@@ -75,9 +81,12 @@ const checkAccountTool = {
   schema: z.object({
     accountId: z.string().describe('Account ID'),
   }),
-  execute: async ({ accountId }: { accountId: string }) => {
+  metadata: {
+    category: 'data',
+  },
+  invoke: async ({ accountId }: { accountId: string }) => {
     console.log(`  [Billing Support] Checking account: ${accountId}`);
-    
+
     return {
       accountId,
       status: 'active',
@@ -96,9 +105,12 @@ const processRefundTool = {
     amount: z.number().describe('Refund amount'),
     reason: z.string().describe('Refund reason'),
   }),
-  execute: async ({ accountId, amount, reason }: { accountId: string; amount: number; reason: string }) => {
+  metadata: {
+    category: 'utility',
+  },
+  invoke: async ({ accountId, amount, reason }: { accountId: string; amount: number; reason: string }) => {
     console.log(`  [Billing Support] Processing refund of $${amount} for ${accountId}`);
-    
+
     return {
       accountId,
       amount,
@@ -119,9 +131,12 @@ const createTicketTool = {
     description: z.string().describe('Issue description'),
     priority: z.enum(['low', 'medium', 'high']).describe('Ticket priority'),
   }),
-  execute: async ({ subject, description, priority }: { subject: string; description: string; priority: string }) => {
+  metadata: {
+    category: 'utility',
+  },
+  invoke: async ({ subject, description, priority }: { subject: string; description: string; priority: string }) => {
     console.log(`  [General Support] Creating ${priority} priority ticket: ${subject}`);
-    
+
     return {
       ticketId: `TKT-${Date.now()}`,
       subject,
@@ -139,9 +154,12 @@ const faqSearchTool = {
   schema: z.object({
     query: z.string().describe('Search query'),
   }),
-  execute: async ({ query }: { query: string }) => {
+  metadata: {
+    category: 'data',
+  },
+  invoke: async ({ query }: { query: string }) => {
     console.log(`  [General Support] Searching FAQ for: ${query}`);
-    
+
     return {
       query,
       results: [
@@ -161,11 +179,11 @@ async function main() {
     temperature: 0.2,
   });
 
-  // Create multi-agent system with LLM-based routing
-  const system = createMultiAgentSystem({
+  // Create multi-agent system with LLM-based routing using builder
+  const builder = new MultiAgentSystemBuilder({
     supervisor: {
-      llm,
-      routingStrategy: 'llm-based',
+      model: llm,
+      strategy: 'llm-based',
       systemPrompt: `You are a customer support supervisor. Route customer inquiries to the appropriate specialist:
         - Technical Support: for technical issues, bugs, system problems
         - Billing Support: for billing, payments, refunds, account issues
@@ -173,9 +191,8 @@ async function main() {
 
         Analyze the customer's request and route to the most appropriate agent.`,
     },
-    workers: [],
     aggregator: {
-      llm,
+      model: llm,
       systemPrompt: 'Provide a helpful, empathetic customer support response.',
     },
     maxIterations: 5,
@@ -183,7 +200,7 @@ async function main() {
   });
 
   // Register support team workers
-  registerWorkers(system, [
+  builder.registerWorkers([
     {
       name: 'technical_support',
       description: 'Handles technical issues, bugs, and system problems',
@@ -206,6 +223,9 @@ async function main() {
       systemPrompt: 'You are a general support specialist. Provide helpful information and create tickets when needed.',
     },
   ]);
+
+  // Build the system
+  const system = builder.build();
 
   // Example 1: Technical issue
   console.log('📝 Example 1: Technical Issue');
