@@ -221,9 +221,11 @@ If a specific tool should never be cached, handle it in the tool itself:
 const timestampTool = {
   metadata: {
     name: 'get-timestamp',
-    description: 'Get current timestamp'
+    description: 'Get current timestamp',
+    category: ToolCategory.UTILITY,
   },
-  execute: async () => {
+  schema: z.object({}),
+  invoke: async () => {
     // This will be cached by deduplication, but returns current time
     // Consider disabling deduplication for the entire agent if needed
     return Date.now();
@@ -294,7 +296,15 @@ const agent = createReActAgent({
 
 // Option 2: Make tool arguments unique
 const tool = {
-  execute: async (args) => {
+  metadata: {
+    name: 'unique-action',
+    description: 'Perform action with unique arguments',
+    category: ToolCategory.UTILITY,
+  },
+  schema: z.object({
+    // Your tool arguments here
+  }),
+  invoke: async (args) => {
     // Add timestamp to make each call unique
     const uniqueArgs = { ...args, _timestamp: Date.now() };
     return performAction(uniqueArgs);
