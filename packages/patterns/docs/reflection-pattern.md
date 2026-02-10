@@ -434,7 +434,7 @@ if (result.status === 'failed') {
   // Handle failure
 }
 
-if (result.status === 'max_iterations') {
+if (result.status === 'failed') {
   console.warn('Max iterations reached without meeting criteria');
   // Decide whether to accept result or retry
 }

@@ -144,20 +144,23 @@ const result = await system.invoke({
 
 ### State Management
 
-The pattern uses `MultiAgentState` with 10 channels:
+The pattern uses `MultiAgentState` with the following channels:
 
 ```typescript
 {
-  input: string;                    // Original task
-  messages: BaseMessage[];          // Conversation history
-  workers: WorkerAgent[];           // Available workers
-  currentTask: TaskAssignment | null; // Current task assignment
-  workerResults: TaskResult[];      // Results from workers
-  aggregatedResult: any | null;     // Combined results
-  response: string;                 // Final response
-  status: 'routing' | 'executing' | 'aggregating' | 'completed';
-  iterations: number;               // Coordination iterations
-  metadata: Record<string, any>;    // Additional metadata
+  input: string;                           // Original user input/query
+  messages: AgentMessage[];                // Inter-agent messages
+  workers: Record<string, WorkerCapabilities>; // Available workers and their capabilities
+  currentAgent?: string;                   // Currently active agent ID
+  routingHistory: RoutingDecision[];       // History of routing decisions
+  activeAssignments: TaskAssignment[];     // Currently active task assignments
+  completedTasks: TaskResult[];            // Completed task results
+  handoffs: HandoffRequest[];              // Agent handoff requests
+  status: MultiAgentStatus;                // 'initializing' | 'routing' | 'executing' | 'coordinating' | 'aggregating' | 'completed' | 'failed'
+  iteration: number;                       // Current iteration count
+  maxIterations: number;                   // Maximum iterations allowed
+  response?: string;                       // Final aggregated response
+  error?: string;                          // Error message if execution failed
 }
 ```
 
@@ -181,8 +184,13 @@ Executes specialized tasks using provided tools.
 
 ```typescript
 const workerNode = createWorkerNode({
-  workerId: 'specialist',
-  tools: [tool1, tool2],
+  id: 'specialist',
+  capabilities: {
+    skills: ['analysis', 'processing'],
+    tools: [tool1, tool2],
+    available: true,
+    currentWorkload: 0,
+  },
   systemPrompt: 'Worker-specific instructions',
 });
 ```
@@ -205,13 +213,11 @@ const aggregatorNode = createAggregatorNode({
 Workers are specialized agents with specific capabilities:
 
 ```typescript
-interface WorkerAgent {
-  id: string;                    // Unique identifier
-  name: string;                  // Human-readable name
-  description: string;           // Worker description
-  capabilities: string[];        // Skills/capabilities
-  status: 'idle' | 'busy' | 'error';
-  currentLoad: number;           // Current workload (0-1)
+interface WorkerCapabilities {
+  skills: string[];              // List of agent skills
+  tools: string[];               // List of tool names available to agent
+  available: boolean;            // Whether agent is available
+  currentWorkload: number;       // Current number of active tasks
 }
 ```
 
@@ -221,12 +227,12 @@ Tasks are assigned to workers with metadata:
 
 ```typescript
 interface TaskAssignment {
-  taskId: string;
-  description: string;
-  assignedTo: string;            // Worker ID
-  priority: 'low' | 'medium' | 'high';
-  dependencies: string[];        // Task dependencies
-  metadata: Record<string, any>;
+  id: string;                    // Unique assignment identifier
+  workerId: string;              // Worker identifier assigned to task
+  task: string;                  // Description of the task
+  priority: number;              // Task priority (1-10, higher is more urgent)
+  assignedAt: number;            // Timestamp when task was assigned
+  deadline?: number;             // Optional task deadline timestamp
 }
 ```
 
@@ -236,13 +242,13 @@ Workers return structured results:
 
 ```typescript
 interface TaskResult {
-  taskId: string;
-  workerId: string;
-  status: 'completed' | 'failed' | 'pending';
-  result: any;
-  error?: string;
-  executionTime: number;
-  metadata: Record<string, any>;
+  assignmentId: string;          // Assignment identifier
+  workerId: string;              // Worker that completed the task
+  success: boolean;              // Whether the task succeeded
+  result: string;                // Task result or output
+  error?: string;                // Error message if task failed
+  completedAt: number;           // Timestamp when task was completed
+  metadata?: Record<string, any>; // Execution metadata
 }
 ```
 
