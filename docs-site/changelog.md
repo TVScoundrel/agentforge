@@ -7,6 +7,52 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.12.3] - 2026-02-11
+
+### Fixed
+
+#### @agentforge/cli
+- **Critical: 4 template regressions discovered in fresh scaffold validation** 🔴 CRITICAL
+  - **Problem**: Fresh projects created with `agentforge create` using v0.12.2 had 4 validation failures
+  - **Impact**: Users couldn't run `typecheck`, `test`, `build`, or `lint` commands without errors
+  - **Root Causes**:
+    1. **TypeScript type error**: `result.messages` typed as unknown in full template (index.ts line 70)
+    2. **Tool naming convention**: Tool name was `example_tool` (snake_case) but validation requires kebab-case
+    3. **Build script failure**: `tsup` command had no entry point configured, causing "No input files" error
+    4. **Lint failure**: ESLint v9 installed but no `eslint.config.js` file existed in scaffolded projects
+  - **Solution**:
+    - Added explicit type assertion for `result.messages`: `const messages = result.messages as Array<{ content: string }>;`
+    - Changed tool name from `example_tool` to `example-tool` (kebab-case) in tool definition and test
+    - Created `tsup.config.ts` with proper entry points for all 4 templates (full, minimal, api, cli)
+    - Created `eslint.config.js` with ESLint v9 flat config for all 4 templates
+    - Added `@eslint/js` and `typescript-eslint` dependencies to all template package.json files
+  - **Files Fixed** (15 total):
+    - `templates/full/src/index.ts` - type assertion
+    - `templates/full/src/tools/example.ts` - kebab-case naming
+    - `templates/full/tests/example.test.ts` - test expectation
+    - `templates/full/package.json` - ESLint dependencies
+    - `templates/full/tsup.config.ts` - NEW FILE
+    - `templates/full/eslint.config.js` - NEW FILE
+    - `templates/minimal/package.json` - ESLint dependencies
+    - `templates/minimal/tsup.config.ts` - NEW FILE
+    - `templates/minimal/eslint.config.js` - NEW FILE
+    - `templates/api/package.json` - ESLint dependencies
+    - `templates/api/tsup.config.ts` - NEW FILE
+    - `templates/api/eslint.config.js` - NEW FILE
+    - `templates/cli/package.json` - ESLint dependencies
+    - `templates/cli/tsup.config.ts` - NEW FILE
+    - `templates/cli/eslint.config.js` - NEW FILE
+  - **Templates Affected**: All 4 main templates (full, minimal, api, cli)
+  - **Verification**: All templates now pass `typecheck`, `test`, `build`, and `lint` commands successfully
+
+### Published
+- All packages published to npm registry at version 0.12.3:
+  - @agentforge/core@0.12.3
+  - @agentforge/patterns@0.12.3
+  - @agentforge/tools@0.12.3
+  - @agentforge/testing@0.12.3
+  - @agentforge/cli@0.12.3
+
 ## [0.12.2] - 2026-02-11
 
 ### Fixed
