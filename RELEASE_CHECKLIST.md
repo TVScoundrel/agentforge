@@ -63,11 +63,11 @@ This checklist ensures all steps are completed before tagging and publishing a n
 ### 7. Publish to npm
 - [ ] Verify npm login: `npm whoami`
 - [ ] Publish packages in order:
-  - [ ] `cd packages/core && npm publish --access public`
-  - [ ] `cd packages/patterns && npm publish --access public`
-  - [ ] `cd packages/tools && npm publish --access public`
-  - [ ] `cd packages/testing && npm publish --access public`
-  - [ ] `cd packages/cli && npm publish --access public`
+  - [ ] `cd packages/core && pnpm publish --access public --no-git-checks`
+  - [ ] `cd packages/patterns && pnpm publish --access public --no-git-checks`
+  - [ ] `cd packages/tools && pnpm publish --access public --no-git-checks`
+  - [ ] `cd packages/testing && pnpm publish --access public --no-git-checks`
+  - [ ] `cd packages/cli && pnpm publish --access public --no-git-checks`
 - [ ] Verify all packages are published:
   - [ ] `npm view @agentforge/core version`
   - [ ] `npm view @agentforge/patterns version`
@@ -115,4 +115,3 @@ CHANGELOG.md
   git tag -a vX.Y.Z -m "Release vX.Y.Z"
   git push --tags
   ```
-

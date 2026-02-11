@@ -11,7 +11,7 @@
 # 5. Commit: git add . && git commit -m "chore: Bump version to X.Y.Z"
 # 6. Tag: git tag -a vX.Y.Z -m "Release vX.Y.Z"
 # 7. Push: git push && git push --tags
-# 8. Publish: ./scripts/publish.sh
+# 8. Publish (uses pnpm publish): ./scripts/publish.sh
 #
 # AI Assistant: When asked to do a release, ALWAYS:
 # - Read RELEASE_CHECKLIST.md first
@@ -167,4 +167,3 @@ echo "  7. Push: git push && git push --tags"
 echo "  8. Publish to npm (see RELEASE_CHECKLIST.md)"
 echo ""
 print_step "See RELEASE_CHECKLIST.md for the complete release process"
-

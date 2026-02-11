@@ -1,7 +1,8 @@
 #!/bin/bash
 
 # AgentForge Publish Script
-# This script publishes all packages to npm in the correct order
+# This script publishes all packages to npm in the correct order.
+# Important: Use pnpm publish so workspace:* deps are rewritten to concrete versions.
 
 set -e  # Exit on error
 
@@ -46,6 +47,13 @@ else
     print_success "Already logged in as: $NPM_USER"
 fi
 
+# Check if pnpm is available
+if ! command -v pnpm > /dev/null 2>&1; then
+    print_error "pnpm is required for publishing workspace packages."
+    print_error "Install pnpm and retry. npm publish will leak workspace:* dependencies."
+    exit 1
+fi
+
 # Confirm before publishing
 echo ""
 print_warning "This will publish all @agentforge packages to npm registry."
@@ -76,19 +84,37 @@ for package in "${PACKAGES[@]}"; do
     if [ -d "$package" ]; then
         PACKAGE_NAME=$(node -e "console.log(require('./$package/package.json').name)")
         PACKAGE_VERSION=$(node -e "console.log(require('./$package/package.json').version)")
-        
+        PACKAGE_SHORT_NAME=$(basename "$package")
+
         print_step "Publishing $PACKAGE_NAME@$PACKAGE_VERSION..."
-        
+
+        # Convert workspace:* dependencies to concrete versions
+        # This is necessary because pnpm publish doesn't always convert them automatically
+        # See: https://github.com/pnpm/pnpm/issues/5094
+        print_step "Converting workspace dependencies..."
+        if node scripts/convert-workspace-deps.mjs "$PACKAGE_SHORT_NAME"; then
+            print_success "Workspace dependencies converted"
+        else
+            print_error "Failed to convert workspace dependencies"
+            exit 1
+        fi
+
         cd "$package"
-        
-        if npm publish --access public; then
+
+        if pnpm publish --access public --no-git-checks; then
             print_success "Published $PACKAGE_NAME@$PACKAGE_VERSION"
         else
             print_error "Failed to publish $PACKAGE_NAME"
             exit 1
         fi
-        
+
         cd - > /dev/null
+
+        # Restore workspace:* dependencies after publishing
+        # This keeps the local development setup intact
+        print_step "Restoring workspace dependencies..."
+        git checkout "$package/package.json"
+
         echo ""
     else
         print_warning "Package directory not found: $package"
@@ -122,4 +148,3 @@ print_step "Next steps:"
 echo "  - Verify packages on npm: https://www.npmjs.com/org/agentforge"
 echo "  - Test installation: npx @agentforge/cli@latest create test-project"
 echo "  - Create GitHub release: ./scripts/create-github-release.sh <version>"
-
