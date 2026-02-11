@@ -3,9 +3,9 @@ import { {{TOOL_NAME_CAMEL}}Tool } from '../index.js';
 
 describe('{{TOOL_NAME_PASCAL}} Tool', () => {
   it('should have correct metadata', () => {
-    expect({{TOOL_NAME_CAMEL}}Tool.name).toBe('{{TOOL_NAME}}');
-    expect({{TOOL_NAME_CAMEL}}Tool.description).toBe('{{TOOL_DESCRIPTION}}');
-    expect({{TOOL_NAME_CAMEL}}Tool.category).toBe('{{TOOL_CATEGORY}}');
+    expect({{TOOL_NAME_CAMEL}}Tool.metadata.name).toBe('{{TOOL_NAME}}');
+    expect({{TOOL_NAME_CAMEL}}Tool.metadata.description).toBe('{{TOOL_DESCRIPTION}}');
+    expect({{TOOL_NAME_CAMEL}}Tool.metadata.category).toBe('{{TOOL_CATEGORY}}');
   });
 
   it('should validate input schema', async () => {

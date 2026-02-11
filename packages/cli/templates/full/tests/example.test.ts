@@ -9,9 +9,9 @@ describe('Example Tool', () => {
   });
 
   it('should have correct metadata', () => {
-    expect(exampleTool.name).toBe('example-tool');
-    expect(exampleTool.description).toBeDefined();
-    expect(exampleTool.category).toBe('utility');
+    expect(exampleTool.metadata.name).toBe('example-tool');
+    expect(exampleTool.metadata.description).toBeDefined();
+    expect(exampleTool.metadata.category).toBe('utility');
   });
 });
 

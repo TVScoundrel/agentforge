@@ -109,8 +109,8 @@ import { ${name}Tool } from '../../src/tools/${name}.js';
 
 describe('${capitalize(name)} Tool', () => {
   it('should have correct metadata', () => {
-    expect(${name}Tool.name).toBe('${name}');
-    expect(${name}Tool.description).toBeDefined();
+    expect(${name}Tool.metadata.name).toBe('${name}');
+    expect(${name}Tool.metadata.description).toBeDefined();
   });
 
   it('should execute successfully', async () => {
