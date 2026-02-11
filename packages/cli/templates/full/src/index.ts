@@ -4,7 +4,7 @@ import { createReActAgent } from '@agentforge/patterns';
 import { createLogger } from '@agentforge/core';
 import { exampleTool } from './tools/example.js';
 
-const logger = createLogger({ level: 'info' });
+const logger = createLogger('{{PROJECT_NAME}}');
 
 /**
  * Validate required environment variables
@@ -67,7 +67,8 @@ async function main() {
 
   logger.info('✅ Agent completed');
   console.log('\nFinal response:');
-  console.log(result.messages[result.messages.length - 1].content);
+  const lastMessage = result.messages[result.messages.length - 1];
+  console.log(lastMessage?.content || 'No response');
 }
 
 // Run the main function

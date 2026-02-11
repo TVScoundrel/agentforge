@@ -55,7 +55,8 @@ async function main() {
   });
 
   console.log('\n✅ Agent response:');
-  console.log(result.messages[result.messages.length - 1].content);
+  const lastMessage = result.messages[result.messages.length - 1];
+  console.log(lastMessage?.content || 'No response');
 }
 
 // Run the main function

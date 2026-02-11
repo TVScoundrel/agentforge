@@ -33,7 +33,7 @@ function validateEnvironment(): void {
 // Validate environment before starting
 validateEnvironment();
 
-const logger = createLogger({ level: 'info' });
+const logger = createLogger('{{PROJECT_NAME}}');
 const app = express();
 const port = process.env.PORT || 3000;
 

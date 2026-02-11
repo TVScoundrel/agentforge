@@ -49,7 +49,8 @@ export async function chatCommand(options: ChatOptions) {
       messages.push({ role: 'user', content: message });
 
       const result = await agent.invoke({ messages });
-      const response = result.messages[result.messages.length - 1].content;
+      const lastMessage = result.messages[result.messages.length - 1];
+      const response = lastMessage?.content || 'No response';
 
       messages.push({ role: 'assistant', content: response });
 

@@ -1,13 +1,13 @@
 import { z } from 'zod';
-import { createTool } from '@agentforge/core';
+import { toolBuilder, ToolCategory } from '@agentforge/core';
 import { {{TOOL_NAME_PASCAL}}Schema } from './schemas.js';
 import type { {{TOOL_NAME_PASCAL}}Input, {{TOOL_NAME_PASCAL}}Output } from './types.js';
 
 /**
  * {{TOOL_DESCRIPTION}}
- * 
+ *
  * Category: {{TOOL_CATEGORY}}
- * 
+ *
  * @example
  * ```typescript
  * const result = await {{TOOL_NAME_CAMEL}}Tool.invoke({
@@ -16,10 +16,10 @@ import type { {{TOOL_NAME_PASCAL}}Input, {{TOOL_NAME_PASCAL}}Output } from './ty
  * console.log(result);
  * ```
  */
-export const {{TOOL_NAME_CAMEL}}Tool = createTool()
+export const {{TOOL_NAME_CAMEL}}Tool = toolBuilder()
   .name('{{TOOL_NAME}}')
   .description('{{TOOL_DESCRIPTION}}')
-  .category('{{TOOL_CATEGORY}}')
+  .category(ToolCategory.{{TOOL_CATEGORY_ENUM}})
   .schema({{TOOL_NAME_PASCAL}}Schema)
   .implement(async (input: {{TOOL_NAME_PASCAL}}Input): Promise<{{TOOL_NAME_PASCAL}}Output> => {
     try {

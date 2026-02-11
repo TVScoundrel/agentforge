@@ -79,16 +79,16 @@ function generateToolContent(
   description: string
 ): string {
   return `import { z } from 'zod';
-import { createTool } from '@agentforge/core';
+import { toolBuilder, ToolCategory } from '@agentforge/core';
 
 /**
  * ${description}
  * Category: ${category}
  */
-export const ${name}Tool = createTool()
+export const ${name}Tool = toolBuilder()
   .name('${name}')
   .description('${description}')
-  .category('${category}')
+  .category(ToolCategory.${category.toUpperCase().replace(/-/g, '_')})
   .schema(
     z.object({
       // Define your input schema here
@@ -185,6 +185,7 @@ async function createMultiFileTool(
     TOOL_NAME_CAMEL: answers.name.charAt(0).toLowerCase() + answers.name.slice(1),
     TOOL_DESCRIPTION: answers.description,
     TOOL_CATEGORY: answers.category,
+    TOOL_CATEGORY_ENUM: answers.category.toUpperCase().replace(/-/g, '_'),
   };
 
   await copyTemplate(templatePath, toolDir, replacements);

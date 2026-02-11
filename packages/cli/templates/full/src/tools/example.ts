@@ -1,13 +1,13 @@
 import { z } from 'zod';
-import { createTool } from '@agentforge/core';
+import { toolBuilder, ToolCategory } from '@agentforge/core';
 
 /**
  * Example tool that demonstrates the tool creation API
  */
-export const exampleTool = createTool()
+export const exampleTool = toolBuilder()
   .name('example_tool')
   .description('An example tool that greets a user by name')
-  .category('utility')
+  .category(ToolCategory.UTILITY)
   .schema(
     z.object({
       name: z.string().describe('The name of the person to greet'),

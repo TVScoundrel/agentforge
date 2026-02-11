@@ -4,7 +4,7 @@ import { createReActAgent } from '@agentforge/patterns';
 import { createLogger } from '@agentforge/core';
 
 const router = Router();
-const logger = createLogger({ level: 'info' });
+const logger = createLogger('agent-router');
 
 // Initialize the agent
 const model = new ChatOpenAI({
@@ -33,7 +33,8 @@ router.post('/chat', async (req, res) => {
       messages: [{ role: 'user', content: message }],
     });
 
-    const response = result.messages[result.messages.length - 1].content;
+    const lastMessage = result.messages[result.messages.length - 1];
+    const response = lastMessage?.content || 'No response';
 
     res.json({
       success: true,

@@ -40,7 +40,8 @@ export async function analyzeCommand(file: string, options: AnalyzeOptions) {
       ],
     });
 
-    const analysis = result.messages[result.messages.length - 1].content;
+    const lastMessage = result.messages[result.messages.length - 1];
+    const analysis = lastMessage?.content || 'No analysis available';
 
     spinner.succeed('Analysis complete');
 
