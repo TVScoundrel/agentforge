@@ -7,6 +7,34 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.12.4] - 2026-02-11
+
+### Fixed
+
+#### @agentforge/cli
+- **Critical: Tool metadata test failure in fresh scaffolds** 🔴 CRITICAL
+  - **Problem**: Fresh projects created with `agentforge create` using v0.12.3 had test failures
+  - **Impact**: `pnpm exec vitest run` failed with "exampleTool.name is undefined"
+  - **Root Cause**: Tool API changed - metadata is now under `tool.metadata` property, but template tests were still accessing `tool.name` directly
+  - **Solution**:
+    - Fixed test assertions to use `tool.metadata.name` instead of `tool.name`
+    - Fixed test assertions to use `tool.metadata.description` instead of `tool.description`
+    - Fixed test assertions to use `tool.metadata.category` instead of `tool.category`
+  - **Files Fixed** (3 total):
+    - `templates/full/tests/example.test.ts` - Updated metadata access
+    - `templates/tool-multi/__tests__/index.test.ts` - Updated metadata access
+    - `src/commands/tool/create.ts` - Updated test generator to use correct metadata access
+  - **Templates Affected**: full, tool-multi, and all future tools created with `agentforge tool:create`
+  - **Verification**: All 1076 tests passing, fresh scaffold tests now pass
+
+### Published
+- All packages published to npm registry at version 0.12.4:
+  - @agentforge/core@0.12.4
+  - @agentforge/patterns@0.12.4
+  - @agentforge/tools@0.12.4
+  - @agentforge/testing@0.12.4
+  - @agentforge/cli@0.12.4
+
 ## [0.12.3] - 2026-02-11
 
 ### Fixed
