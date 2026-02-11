@@ -7,6 +7,23 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.12.1] - 2026-02-11
+
+### Fixed
+
+#### Publishing
+- **Critical: workspace:* dependencies not converted to concrete versions** 🔴 CRITICAL
+  - **Problem**: Published packages on npm contained `workspace:*` dependencies instead of concrete version numbers (e.g., `"@agentforge/core": "workspace:*"` instead of `"@agentforge/core": "0.12.0"`)
+  - **Impact**: Users running `npx @agentforge/cli` got `ERR_PNPM_WORKSPACE_PKG_NOT_FOUND` error when pnpm tried to install packages
+  - **Root Cause**: `pnpm publish` was not automatically converting workspace protocols to concrete versions as expected
+  - **Solution**:
+    - Created `scripts/convert-workspace-deps.mjs` to manually convert `workspace:*` to concrete versions before publishing
+    - Updated `scripts/publish.sh` to run conversion before publishing and restore workspace protocols after
+    - Added `.npmrc` with `auto-install-peers=true` setting
+    - Added `@pnpm/exportable-manifest` and `@pnpm/read-project-manifest` as dev dependencies
+  - **Reference**: https://github.com/pnpm/pnpm/issues/5094
+  - **Verification**: Published packages now have concrete versions in dependencies (e.g., `"@agentforge/core": "0.12.1"`)
+
 ## [0.12.0] - 2026-02-09
 
 ### Added
