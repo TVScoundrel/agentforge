@@ -9,7 +9,7 @@ describe('Example Tool', () => {
   });
 
   it('should have correct metadata', () => {
-    expect(exampleTool.name).toBe('example_tool');
+    expect(exampleTool.name).toBe('example-tool');
     expect(exampleTool.description).toBeDefined();
     expect(exampleTool.category).toBe('utility');
   });

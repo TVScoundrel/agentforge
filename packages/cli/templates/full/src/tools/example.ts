@@ -5,7 +5,7 @@ import { toolBuilder, ToolCategory } from '@agentforge/core';
  * Example tool that demonstrates the tool creation API
  */
 export const exampleTool = toolBuilder()
-  .name('example_tool')
+  .name('example-tool')
   .description('An example tool that greets a user by name')
   .category(ToolCategory.UTILITY)
   .schema(
