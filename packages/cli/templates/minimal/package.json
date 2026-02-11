@@ -8,8 +8,8 @@
   "scripts": {
     "dev": "tsx watch src/index.ts",
     "build": "tsup",
-    "test": "vitest",
-    "test:watch": "vitest --watch",
+    "test": "vitest run --passWithNoTests",
+    "test:watch": "vitest --watch --passWithNoTests",
     "typecheck": "tsc --noEmit",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",

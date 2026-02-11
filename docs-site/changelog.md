@@ -7,6 +7,60 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.12.5] - 2026-02-11
+
+### Fixed
+
+#### @agentforge/cli
+- **Critical: Template validation issues across minimal, api, and cli templates** 🔴 CRITICAL
+  - **Problem**: Fresh projects created with `agentforge create` using v0.12.4 had multiple P1 and P2 validation failures in minimal, api, and cli templates (full template was 100% fixed)
+  - **Impact**: Users couldn't run `typecheck`, `build`, or `vitest run` commands without errors in 3 out of 4 templates
+  - **Root Causes**:
+    1. **P1: TypeScript type error (TS18046)**: `result.messages` typed as unknown in minimal/api/cli templates
+    2. **P1: API template DTS build failure (TS2742)**: Inferred router type not portable for declaration emit
+    3. **P1: Vitest run failures**: `vitest run` exited with code 1 when no test files exist
+    4. **P2: Package.json metadata mismatch**: `main` and `types` fields didn't match actual build output
+    5. **P2: Unresolved template placeholder**: `{{PROJECT_DESCRIPTION}}` remained literal when description was empty
+  - **Solutions**:
+    1. **Fixed `result.messages` typing** - Added explicit type assertion in 4 files:
+       - `templates/minimal/src/index.ts` - Added `as Array<{ content: string }>`
+       - `templates/api/src/routes/agent.ts` - Added `as Array<{ content: string }>`
+       - `templates/cli/src/commands/analyze.ts` - Added `as Array<{ content: string }>`
+       - `templates/cli/src/commands/chat.ts` - Added `as Array<{ content: string }>`
+    2. **Fixed API template DTS build** - Added explicit Router type annotations in 2 files:
+       - `templates/api/src/routes/agent.ts` - Changed to `const router: Router = Router();`
+       - `templates/api/src/routes/health.ts` - Changed to `const router: Router = Router();`
+    3. **Fixed vitest run failures** - Added `--passWithNoTests` flag in 3 package.json files:
+       - `templates/minimal/package.json` - Updated test scripts
+       - `templates/api/package.json` - Updated test scripts
+       - `templates/cli/package.json` - Updated test scripts
+    4. **Fixed package.json metadata** - Corrected main/types fields in 2 files:
+       - `templates/api/package.json` - Changed to `main: "dist/server.js"`, `types: "dist/server.d.ts"`
+       - `templates/cli/package.json` - Changed to `main: "dist/cli.js"`, `types: "dist/cli.d.ts"`
+    5. **Fixed template placeholder** - Fixed scaffolder variable replacement:
+       - `src/commands/create.ts` - Changed replacement key from `DESCRIPTION` to `PROJECT_DESCRIPTION`
+  - **Files Fixed** (9 total):
+    - 4 template source files (minimal, api, cli)
+    - 3 template package.json files (minimal, api, cli)
+    - 2 API route files (agent.ts, health.ts)
+    - 1 scaffolder file (create.ts)
+  - **Templates Affected**: minimal, api, cli (full template was already 100% fixed in v0.12.4)
+  - **Verification**: All 1076 tests passing, fresh scaffold validation passes all acceptance criteria:
+    - ✅ `pnpm typecheck` - PASS for all templates
+    - ✅ `pnpm lint` - PASS for all templates
+    - ✅ `pnpm test` - PASS for all templates
+    - ✅ `pnpm build` - PASS for all templates
+    - ✅ No unresolved template tokens
+    - ✅ `main`/`types` match emitted artifacts
+
+### Published
+- All packages published to npm registry at version 0.12.5:
+  - @agentforge/core@0.12.5
+  - @agentforge/patterns@0.12.5
+  - @agentforge/tools@0.12.5
+  - @agentforge/testing@0.12.5
+  - @agentforge/cli@0.12.5
+
 ## [0.12.4] - 2026-02-11
 
 ### Fixed

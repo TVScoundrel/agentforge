@@ -3,7 +3,7 @@ import { ChatOpenAI } from '@langchain/openai';
 import { createReActAgent } from '@agentforge/patterns';
 import { createLogger } from '@agentforge/core';
 
-const router = Router();
+const router: Router = Router();
 const logger = createLogger('agent-router');
 
 // Initialize the agent
@@ -33,7 +33,8 @@ router.post('/chat', async (req, res) => {
       messages: [{ role: 'user', content: message }],
     });
 
-    const lastMessage = result.messages[result.messages.length - 1];
+    const messages = result.messages as Array<{ content: string }>;
+    const lastMessage = messages[messages.length - 1];
     const response = lastMessage?.content || 'No response';
 
     res.json({

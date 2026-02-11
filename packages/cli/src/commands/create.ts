@@ -59,8 +59,8 @@ export async function createCommand(
     const templatePath = getTemplatePath(answers.template);
     await copyTemplate(templatePath, targetPath, {
       PROJECT_NAME: answers.projectName,
+      PROJECT_DESCRIPTION: answers.description || `AgentForge project created with ${answers.template} template`,
       AUTHOR: answers.author || '',
-      DESCRIPTION: answers.description || `AgentForge project created with ${answers.template} template`,
       PACKAGE_MANAGER: answers.packageManager,
     });
     logger.succeedSpinner('Template files copied');
