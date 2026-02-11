@@ -29,7 +29,7 @@ describe('tool:create command', () => {
     expect(fs.ensureDir).toHaveBeenCalledWith(expect.stringContaining('src/tools'));
     expect(fs.writeFile).toHaveBeenCalledWith(
       expect.stringContaining('webTool.ts'),
-      expect.stringContaining('createTool')
+      expect.stringContaining('toolBuilder')
     );
     expect(logger.logger.success).toHaveBeenCalled();
   });

@@ -7,6 +7,46 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.12.2] - 2026-02-11
+
+### Fixed
+
+#### @agentforge/cli
+- **Critical: TypeScript errors in all CLI templates** 🔴 CRITICAL
+  - **Problem**: All projects created with `agentforge create` had TypeScript compilation errors out of the box
+  - **Impact**: Users couldn't run newly created projects without manually fixing type errors
+  - **Root Causes**:
+    1. **Logger initialization bug** (3 files): `createLogger()` expects `(name: string, options?: LoggerOptions)` but templates called it with just an options object `{ level: 'info' }`
+    2. **Type assertion bug** (5 files): `result.messages` array access caused "of type 'unknown'" errors due to missing type guards
+    3. **Tool builder API bug** (3 files): Templates used `createTool()` with builder pattern (`.name().description()...`) but `createTool()` is a function taking 3 parameters. Builder pattern requires `toolBuilder()`
+  - **Solution**:
+    - Fixed logger calls: `createLogger({ level: 'info' })` → `createLogger('name')`
+    - Added safe array access: `result.messages[i].content` → `const msg = result.messages[i]; msg?.content || 'No response'`
+    - Fixed tool builder: `createTool()` → `toolBuilder()` and `category: 'utility'` → `category: ToolCategory.UTILITY`
+    - Updated tool generator in `commands/tool/create.ts` to use correct API
+    - Added `TOOL_CATEGORY_ENUM` placeholder replacement for multi-file tool template
+  - **Files Fixed** (9 total):
+    - `templates/full/src/index.ts` - logger + result.messages
+    - `templates/full/src/tools/example.ts` - tool builder
+    - `templates/minimal/src/index.ts` - result.messages
+    - `templates/api/src/server.ts` - logger
+    - `templates/api/src/routes/agent.ts` - logger + result.messages
+    - `templates/cli/src/commands/chat.ts` - result.messages
+    - `templates/cli/src/commands/analyze.ts` - result.messages
+    - `templates/tool-multi/index.ts` - tool builder
+    - `src/commands/tool/create.ts` - tool generator
+  - **Templates Affected**: All 5 templates (full, minimal, api, cli, tool-multi)
+  - **Total Bugs Fixed**: 12 bugs across 9 files
+  - **Verification**: All templates now pass TypeScript validation with zero errors
+
+### Published
+- All packages published to npm registry at version 0.12.2:
+  - @agentforge/core@0.12.2
+  - @agentforge/patterns@0.12.2
+  - @agentforge/tools@0.12.2
+  - @agentforge/testing@0.12.2
+  - @agentforge/cli@0.12.2
+
 ## [0.12.1] - 2026-02-11
 
 ### Fixed
