@@ -1,6 +1,6 @@
 # @agentforge/tools
 
-Standard tools library with 81 production-ready tools.
+Standard tools library with 88 production-ready tools.
 
 ## Installation
 
@@ -405,7 +405,7 @@ Confluence uses "storage format" (a subset of HTML) for page content. Common ele
 </ac:structured-macro>
 ```
 
-## Data Tools (18)
+## Data Tools (25)
 
 ### JSON Processing
 
@@ -598,6 +598,310 @@ console.log(groupResult.groupCount); // 2
 console.log(groupResult.totalItems); // 3
 ```
 
+### Neo4j Graph Database (7 tools)
+
+Production-ready Neo4j integration with support for knowledge graphs, GraphRAG, and vector search.
+
+#### Quick Start
+
+```bash
+# Install Neo4j driver (peer dependency)
+pnpm add neo4j-driver
+
+# Set environment variables
+NEO4J_URI=bolt://localhost:7687
+NEO4J_USER=neo4j
+NEO4J_PASSWORD=your-password
+
+# For embedding-enabled tools (optional)
+EMBEDDING_PROVIDER=openai  # Options: openai, cohere, huggingface, voyage, ollama
+OPENAI_API_KEY=sk-...      # Or appropriate key for your provider
+```
+
+#### Initialize Connection
+
+```typescript
+import { initializeNeo4jTools } from '@agentforge/tools';
+
+// Initialize from environment variables
+await initializeNeo4jTools();
+
+// Or with custom config
+import { neo4jPool } from '@agentforge/tools';
+await neo4jPool.initialize({
+  uri: 'bolt://localhost:7687',
+  username: 'neo4j',
+  password: 'your-password',
+  database: 'neo4j',
+});
+```
+
+#### 1. neo4jQuery - Execute Cypher Queries
+
+```typescript
+import { neo4jQuery } from '@agentforge/tools';
+
+// Create nodes and relationships
+const result = await neo4jQuery.execute({
+  cypher: `
+    CREATE (p:Person {name: $name, age: $age})
+    RETURN p
+  `,
+  parameters: { name: 'Alice', age: 30 }
+});
+
+console.log('Records:', result.data);
+console.log('Summary:', result.summary);
+```
+
+#### 2. neo4jGetSchema - Inspect Graph Schema
+
+```typescript
+import { neo4jGetSchema } from '@agentforge/tools';
+
+const schema = await neo4jGetSchema.execute({});
+
+console.log('Node labels:', schema.schema.nodeLabels);
+console.log('Relationship types:', schema.schema.relationshipTypes);
+console.log('Property keys:', schema.schema.propertyKeys);
+console.log('Indexes:', schema.schema.indexes);
+console.log('Constraints:', schema.schema.constraints);
+```
+
+#### 3. neo4jFindNodes - Find Nodes by Label/Properties
+
+```typescript
+import { neo4jFindNodes } from '@agentforge/tools';
+
+// Find all persons
+const persons = await neo4jFindNodes.execute({
+  label: 'Person',
+  limit: 10
+});
+
+// Find with property filters
+const adults = await neo4jFindNodes.execute({
+  label: 'Person',
+  properties: { age: 30 },
+  limit: 5
+});
+
+console.log(`Found ${adults.count} nodes`);
+adults.nodes.forEach(node => {
+  console.log(node.properties);
+});
+```
+
+#### 4. neo4jTraverse - Graph Traversal
+
+```typescript
+import { neo4jTraverse } from '@agentforge/tools';
+
+// Traverse from a starting node
+const result = await neo4jTraverse.execute({
+  startNodeId: 123,
+  relationshipType: 'KNOWS',  // Single relationship type (optional)
+  direction: 'outgoing',       // lowercase: 'outgoing', 'incoming', or 'both'
+  maxDepth: 2,
+  limit: 20
+});
+
+console.log(`Found ${result.count} paths`);
+result.paths.forEach(path => {
+  console.log('Start node:', path.start);
+  console.log('End node:', path.end);
+  console.log('Relationships:', path.relationships);
+  console.log('Depth:', path.depth);
+});
+```
+
+#### 5. neo4jVectorSearch - Semantic Search
+
+```typescript
+import { neo4jVectorSearch } from '@agentforge/tools';
+
+// Search with pre-computed embedding
+const embedding = [0.1, 0.2, 0.3, /* ... 1536 dimensions */];
+
+const results = await neo4jVectorSearch.execute({
+  indexName: 'document_embeddings',
+  queryVector: embedding,
+  limit: 5
+});
+
+console.log(`Found ${results.count} similar nodes`);
+results.results.forEach(item => {
+  console.log(`Score: ${item.score}`);
+  console.log('Node:', item.node.properties);
+});
+```
+
+#### 6. neo4jVectorSearchWithEmbedding - Semantic Search (Auto-Embedding)
+
+```typescript
+import { neo4jVectorSearchWithEmbedding } from '@agentforge/tools';
+
+// Search with plain text - embedding generated automatically!
+const results = await neo4jVectorSearchWithEmbedding.execute({
+  indexName: 'document_embeddings',
+  queryText: 'How do graph databases work?',
+  limit: 5
+});
+
+console.log('Query:', results.query.text);
+console.log('Embedding model:', results.embedding.model);
+console.log('Embedding dimensions:', results.embedding.dimensions);
+
+results.results.forEach(item => {
+  console.log(`${item.node.properties.title} (score: ${item.score})`);
+});
+```
+
+#### 7. neo4jCreateNodeWithEmbedding - Create Nodes with Auto-Embedding
+
+```typescript
+import { neo4jCreateNodeWithEmbedding } from '@agentforge/tools';
+
+// Create node with automatic embedding generation
+const result = await neo4jCreateNodeWithEmbedding.execute({
+  label: 'Document',
+  properties: {
+    title: 'Introduction to Neo4j',
+    content: 'Neo4j is a powerful graph database...',
+    category: 'database'
+  },
+  textProperty: 'content',        // Property to generate embedding from
+  embeddingProperty: 'embedding'  // Where to store the embedding
+});
+
+console.log('Node created:', result.nodeId);
+console.log('Embedding dimensions:', result.embedding.dimensions);
+console.log('Model used:', result.embedding.model);
+```
+
+#### Embedding Providers
+
+AgentForge supports **5 embedding providers** for maximum flexibility:
+
+| Provider | Best For | Dimensions | Cost | Setup |
+|----------|----------|------------|------|-------|
+| **OpenAI** | Production, quality | 1536-3072 | Low | `OPENAI_API_KEY` |
+| **Cohere** | Multilingual | 384-1024 | Medium | `COHERE_API_KEY` |
+| **HuggingFace** | Open-source | 384-1024 | Low-Free | `HUGGINGFACE_API_KEY` |
+| **Voyage** | Domain-specific | 1024-1536 | Medium | `VOYAGE_API_KEY` |
+| **Ollama** | Privacy, offline | 384-1024 | Free | Local (no key) |
+
+**Switch providers easily:**
+
+```bash
+# OpenAI (default)
+EMBEDDING_PROVIDER=openai
+OPENAI_API_KEY=sk-...
+
+# Cohere
+EMBEDDING_PROVIDER=cohere
+COHERE_API_KEY=...
+
+# HuggingFace
+EMBEDDING_PROVIDER=huggingface
+HUGGINGFACE_API_KEY=...
+
+# Voyage AI
+EMBEDDING_PROVIDER=voyage
+VOYAGE_API_KEY=...
+
+# Ollama (local, no API key!)
+EMBEDDING_PROVIDER=ollama
+OLLAMA_BASE_URL=http://localhost:11434  # Optional
+```
+
+**Ollama Setup (Privacy-Focused):**
+
+```bash
+# Install Ollama
+curl -fsSL https://ollama.ai/install.sh | sh
+
+# Pull an embedding model
+ollama pull nomic-embed-text
+
+# Start Ollama
+ollama serve
+
+# Use in AgentForge (no API key needed!)
+EMBEDDING_PROVIDER=ollama
+```
+
+#### GraphRAG Example
+
+Complete GraphRAG implementation with automatic embeddings:
+
+```typescript
+import {
+  neo4jQuery,
+  neo4jCreateNodeWithEmbedding,
+  neo4jVectorSearchWithEmbedding
+} from '@agentforge/tools';
+
+// 1. Create vector index (run once)
+await neo4jQuery.execute({
+  cypher: `
+    CREATE VECTOR INDEX document_embeddings IF NOT EXISTS
+    FOR (n:Document)
+    ON (n.embedding)
+    OPTIONS {
+      indexConfig: {
+        \`vector.dimensions\`: 1536,
+        \`vector.similarity_function\`: 'cosine'
+      }
+    }
+  `
+});
+
+// 2. Add documents with automatic embeddings
+const documents = [
+  {
+    title: 'Neo4j Guide',
+    content: 'Neo4j is a graph database that stores data as nodes and relationships.'
+  },
+  {
+    title: 'GraphRAG Overview',
+    content: 'GraphRAG combines graph databases with retrieval-augmented generation.'
+  },
+  {
+    title: 'Vector Search',
+    content: 'Vector search enables semantic similarity matching using embeddings.'
+  }
+];
+
+for (const doc of documents) {
+  await neo4jCreateNodeWithEmbedding.execute({
+    label: 'Document',
+    properties: doc,
+    textProperty: 'content',
+    embeddingProperty: 'embedding'
+  });
+}
+
+// 3. Query using semantic search
+const results = await neo4jVectorSearchWithEmbedding.execute({
+  indexName: 'document_embeddings',
+  queryText: 'What is GraphRAG?',
+  limit: 3
+});
+
+console.log(`Found ${results.count} relevant documents:`);
+results.results.forEach(item => {
+  console.log(`- ${item.node.properties.title} (score: ${item.score})`);
+});
+```
+
+**Key Benefits:**
+- ✅ No manual embedding generation
+- ✅ Provider-agnostic (switch with env vars)
+- ✅ Automatic dimension handling
+- ✅ Built-in retry logic
+- ✅ Production-ready error handling
+
 ## File Tools (18)
 
 ### File Operations
@@ -760,5 +1064,5 @@ const tools = [askHuman, ...otherTools];
 
 ## Complete Tool List
 
-See the [Tools README](https://github.com/TVScoundrel/agentforge/tree/main/packages/tools) for the complete list of all 70 tools with detailed documentation.
+See the [Tools README](https://github.com/TVScoundrel/agentforge/tree/main/packages/tools) for the complete list of all 88 tools with detailed documentation.
 

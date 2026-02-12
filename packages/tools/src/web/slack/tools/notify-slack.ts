@@ -13,7 +13,7 @@ import type { SlackClientConfig } from '../types.js';
 export function createNotifySlackTool(
   getSlackClient: () => { client: WebClient; config: SlackClientConfig },
   logger: Logger
-): Tool {
+) {
   return toolBuilder()
     .name('notify-slack')
     .description('Send a notification to a Slack channel with optional @mentions for urgent alerts')

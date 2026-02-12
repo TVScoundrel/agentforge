@@ -5,7 +5,7 @@
 import { toolBuilder, ToolCategory, type Tool, type Logger } from "@agentforge/core";
 import { z } from "zod";
 import axios from "axios";
-import type { ConfluenceAuth } from "./types";
+import type { ConfluenceAuth } from "../types.js";
 
 /**
  * Create the searchConfluence tool with the provided auth and logger
@@ -14,7 +14,7 @@ export function createSearchConfluenceTool(
   getAuth: () => ConfluenceAuth,
   getAuthHeader: () => string,
   logger: Logger
-): Tool {
+) {
   return toolBuilder()
     .name("search-confluence")
     .description("Search for pages in Confluence using keywords or CQL (Confluence Query Language). Returns matching pages with titles, IDs, and excerpts.")

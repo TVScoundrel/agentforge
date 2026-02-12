@@ -13,7 +13,7 @@ import type { SlackClientConfig } from '../types.js';
 export function createSendSlackMessageTool(
   getSlackClient: () => { client: WebClient; config: SlackClientConfig },
   logger: Logger
-): Tool {
+) {
   return toolBuilder()
     .name('send-slack-message')
     .description('Send a message to a Slack channel for team communication and notifications')

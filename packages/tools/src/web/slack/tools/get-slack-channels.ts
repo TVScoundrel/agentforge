@@ -13,7 +13,7 @@ import type { SlackClientConfig } from '../types.js';
 export function createGetSlackChannelsTool(
   getSlackClient: () => { client: WebClient; config: SlackClientConfig },
   logger: Logger
-): Tool {
+) {
   return toolBuilder()
     .name('get-slack-channels')
     .description('Get a list of available Slack channels to find the right channel for messaging')

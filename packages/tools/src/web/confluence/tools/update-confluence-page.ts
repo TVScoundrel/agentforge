@@ -5,7 +5,7 @@
 import { toolBuilder, ToolCategory, type Tool, type Logger } from "@agentforge/core";
 import { z } from "zod";
 import axios from "axios";
-import type { ConfluenceAuth } from "./types";
+import type { ConfluenceAuth } from "../types.js";
 
 /**
  * Create the updateConfluencePage tool with the provided auth and logger
@@ -14,7 +14,7 @@ export function createUpdateConfluencePageTool(
   getAuth: () => ConfluenceAuth,
   getAuthHeader: () => string,
   logger: Logger
-): Tool {
+) {
   return toolBuilder()
     .name("update-confluence-page")
     .description("Update an existing Confluence page's content. Requires page ID, new title, and new content.")

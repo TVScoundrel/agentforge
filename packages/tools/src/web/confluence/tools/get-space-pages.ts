@@ -5,7 +5,7 @@
 import { toolBuilder, ToolCategory, type Tool, type Logger } from "@agentforge/core";
 import { z } from "zod";
 import axios from "axios";
-import type { ConfluenceAuth } from "./types";
+import type { ConfluenceAuth } from "../types.js";
 
 /**
  * Create the getSpacePages tool with the provided auth and logger
@@ -14,7 +14,7 @@ export function createGetSpacePagesTool(
   getAuth: () => ConfluenceAuth,
   getAuthHeader: () => string,
   logger: Logger
-): Tool {
+) {
   return toolBuilder()
     .name("get-space-pages")
     .description("Get all pages from a specific Confluence space by space key. Useful for browsing content in a particular area.")

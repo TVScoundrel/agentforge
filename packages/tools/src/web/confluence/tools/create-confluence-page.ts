@@ -5,7 +5,7 @@
 import { toolBuilder, ToolCategory, type Tool, type Logger } from "@agentforge/core";
 import { z } from "zod";
 import axios from "axios";
-import type { ConfluenceAuth } from "./types";
+import type { ConfluenceAuth } from "../types.js";
 
 /**
  * Create the createConfluencePage tool with the provided auth and logger
@@ -14,7 +14,7 @@ export function createCreateConfluencePageTool(
   getAuth: () => ConfluenceAuth,
   getAuthHeader: () => string,
   logger: Logger
-): Tool {
+) {
   return toolBuilder()
     .name("create-confluence-page")
     .description("Create a new page in a Confluence space. Requires space key, page title, and content (in HTML storage format).")

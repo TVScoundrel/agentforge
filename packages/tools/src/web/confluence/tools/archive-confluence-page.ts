@@ -5,7 +5,7 @@
 import { toolBuilder, ToolCategory, type Tool, type Logger } from "@agentforge/core";
 import { z } from "zod";
 import axios from "axios";
-import type { ConfluenceAuth } from "./types";
+import type { ConfluenceAuth } from "../types.js";
 
 /**
  * Create the archiveConfluencePage tool with the provided auth and logger
@@ -14,7 +14,7 @@ export function createArchiveConfluencePageTool(
   getAuth: () => ConfluenceAuth,
   getAuthHeader: () => string,
   logger: Logger
-): Tool {
+) {
   return toolBuilder()
     .name("archive-confluence-page")
     .description("Archive a Confluence page by moving it to trash. The page can be restored by space admins. Note: UI may require a note explaining why the page was archived.")

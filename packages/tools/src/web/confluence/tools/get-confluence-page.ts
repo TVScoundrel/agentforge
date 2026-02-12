@@ -5,7 +5,7 @@
 import { toolBuilder, ToolCategory, type Tool, type Logger } from "@agentforge/core";
 import { z } from "zod";
 import axios from "axios";
-import type { ConfluenceAuth } from "./types";
+import type { ConfluenceAuth } from "../types.js";
 
 /**
  * Create the getConfluencePage tool with the provided auth and logger
@@ -14,7 +14,7 @@ export function createGetConfluencePageTool(
   getAuth: () => ConfluenceAuth,
   getAuthHeader: () => string,
   logger: Logger
-): Tool {
+) {
   return toolBuilder()
     .name("get-confluence-page")
     .description("Get the full content of a specific Confluence page by its ID. Returns the page title, content (in storage format), space, and metadata.")

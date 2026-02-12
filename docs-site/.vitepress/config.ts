@@ -119,6 +119,7 @@ export default defineConfig({
           items: [
             { text: 'Your First Agent', link: '/tutorials/first-agent' },
             { text: 'Building Custom Tools', link: '/tutorials/custom-tools' },
+            { text: 'Neo4j & GraphRAG', link: '/tutorials/neo4j-graphrag' },
             { text: 'Advanced Patterns', link: '/tutorials/advanced-patterns' },
             { text: 'Production Deployment', link: '/tutorials/production-deployment' },
             { text: 'Testing Strategies', link: '/tutorials/testing' }

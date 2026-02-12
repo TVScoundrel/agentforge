@@ -5,7 +5,7 @@
 import { toolBuilder, ToolCategory, type Tool, type Logger } from "@agentforge/core";
 import { z } from "zod";
 import axios from "axios";
-import type { ConfluenceAuth } from "./types";
+import type { ConfluenceAuth } from "../types.js";
 
 /**
  * Create the listConfluenceSpaces tool with the provided auth and logger
@@ -14,7 +14,7 @@ export function createListConfluenceSpacesTool(
   getAuth: () => ConfluenceAuth,
   getAuthHeader: () => string,
   logger: Logger
-): Tool {
+) {
   return toolBuilder()
     .name("list-confluence-spaces")
     .description("List all available Confluence spaces. Returns space names, keys, types, and descriptions to help identify where to search for information.")

@@ -13,7 +13,7 @@ import type { SlackClientConfig } from '../types.js';
 export function createGetSlackMessagesTool(
   getSlackClient: () => { client: WebClient; config: SlackClientConfig },
   logger: Logger
-): Tool {
+) {
   return toolBuilder()
     .name('get-slack-messages')
     .description('Retrieve message history from a Slack channel to read recent conversations')

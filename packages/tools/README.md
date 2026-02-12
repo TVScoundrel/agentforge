@@ -1,6 +1,6 @@
 # @agentforge/tools
 
-> Production-ready tools collection for AgentForge - 81 tools for web, data, file, utility, and agent operations
+> Production-ready tools collection for AgentForge - 88 tools for web, data, file, utility, and agent operations
 
 [![npm version](https://img.shields.io/npm/v/@agentforge/tools)](https://www.npmjs.com/package/@agentforge/tools)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.9-blue)](https://www.typescriptlang.org/)
@@ -8,7 +8,7 @@
 
 ## 🎉 Status: Production Ready & Published
 
-**81 production-ready tools** | **Full TypeScript support** | **Comprehensive documentation** | **LangChain compatible**
+**88 production-ready tools** | **Full TypeScript support** | **Comprehensive documentation** | **LangChain compatible**
 
 ## 📦 Installation
 
@@ -22,10 +22,10 @@ yarn add @agentforge/tools
 
 ## 🎯 Overview
 
-This package provides **81 ready-to-use tools** organized into 5 categories:
+This package provides **88 ready-to-use tools** organized into 5 categories:
 
 - **🌐 Web Tools** (22 tools) - HTTP requests, web search, web scraping, HTML parsing, URL manipulation, Slack integration, Confluence integration
-- **📊 Data Tools** (18 tools) - JSON, CSV, XML processing and data transformation
+- **📊 Data Tools** (25 tools) - JSON, CSV, XML processing, data transformation, and Neo4j graph database with embeddings
 - **📁 File Tools** (18 tools) - File operations, directory management, path utilities
 - **🔧 Utility Tools** (22 tools) - Date/time, strings, math, validation
 - **🤖 Agent Tools** (1 tool) - Human-in-the-loop and agent interaction
@@ -143,6 +143,15 @@ Tools for data processing and transformation.
 - **`arrayGroupBy`** - Group arrays by property
 - **`objectPick`** - Pick specific properties from objects
 - **`objectOmit`** - Omit specific properties from objects
+
+#### Neo4j Graph Database Tools
+- **`neo4jQuery`** - Execute Cypher queries against Neo4j
+- **`neo4jGetSchema`** - Get graph schema (labels, relationships, properties)
+- **`neo4jFindNodes`** - Find nodes by label and properties
+- **`neo4jTraverse`** - Traverse graph following relationships
+- **`neo4jVectorSearch`** - Semantic search using vector indexes (GraphRAG)
+- **`neo4jVectorSearchWithEmbedding`** - Semantic search with automatic embedding generation
+- **`neo4jCreateNodeWithEmbedding`** - Create nodes with automatic embeddings
 
 ### 📁 File Tools (18 tools)
 
@@ -489,6 +498,66 @@ const sorted = await arraySort.invoke({
 });
 
 console.log(sorted.sorted);
+```
+
+### Neo4j Graph Database Example
+
+```typescript
+import {
+  initializeNeo4jTools,
+  neo4jQuery,
+  neo4jGetSchema,
+  neo4jFindNodes,
+  neo4jTraverse,
+  neo4jVectorSearch,
+} from '@agentforge/tools';
+
+// Initialize connection (reads from environment variables)
+await initializeNeo4jTools();
+
+// Get graph schema
+const schema = await neo4jGetSchema.execute({});
+console.log('Node Labels:', schema.schema.nodeLabels);
+console.log('Relationships:', schema.schema.relationshipTypes);
+
+// Execute Cypher query
+const result = await neo4jQuery.execute({
+  cypher: 'MATCH (p:Person)-[:KNOWS]->(friend) WHERE p.name = $name RETURN friend',
+  parameters: { name: 'Alice' },
+});
+
+// Find nodes by label and properties
+const people = await neo4jFindNodes.execute({
+  label: 'Person',
+  properties: { city: 'New York' },
+  limit: 10,
+});
+
+// Traverse graph from a starting node
+const connections = await neo4jTraverse.execute({
+  startNodeId: 123,
+  relationshipType: 'KNOWS',
+  direction: 'outgoing',
+  maxDepth: 2,
+  limit: 50,
+});
+
+// Vector search for GraphRAG (requires vector index)
+// Note: queryVector must be a complete array of numbers matching your embedding dimensions
+const embeddingVector = new Array(1536).fill(0).map(() => Math.random()); // Example: 1536-dim vector
+const similar = await neo4jVectorSearch.execute({
+  indexName: 'document_embeddings',
+  queryVector: embeddingVector,
+  limit: 5,
+});
+```
+
+**Environment Variables:**
+```bash
+NEO4J_URI=bolt://localhost:7687
+NEO4J_USER=neo4j
+NEO4J_PASSWORD=your-password
+NEO4J_DATABASE=neo4j  # Optional, defaults to 'neo4j'
 ```
 
 ### File Operations Example

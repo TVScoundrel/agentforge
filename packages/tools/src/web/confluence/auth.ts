@@ -2,7 +2,7 @@
  * Authentication helpers for Confluence tools
  */
 
-import type { ConfluenceAuth } from "./types";
+import type { ConfluenceAuth } from "./types.js";
 
 /**
  * Create a function to get configured auth credentials
