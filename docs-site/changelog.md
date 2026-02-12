@@ -7,6 +7,54 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.12.6] - 2026-02-12
+
+### Added
+
+#### @agentforge/tools
+- **Neo4j Integration** - Complete graph database support with 7 specialized tools:
+  - `neo4jQuery` - Execute Cypher queries with parameterized query support
+  - `neo4jGetSchema` - Retrieve comprehensive graph schema (nodes, relationships, constraints, indexes)
+  - `neo4jFindNodes` - Find nodes by label and property filters
+  - `neo4jTraverse` - Graph traversal with relationship type filtering and depth control
+  - `neo4jVectorSearch` - Vector similarity search using existing embeddings
+  - `neo4jVectorSearchWithEmbedding` - Vector search with automatic text-to-embedding conversion
+  - `neo4jCreateNodeWithEmbedding` - Create nodes with automatic embedding generation
+- **Multi-Provider Embedding System** - Provider-agnostic embedding support:
+  - OpenAI (text-embedding-3-small, text-embedding-3-large, text-embedding-ada-002)
+  - Cohere (embed-english-v3.0, embed-multilingual-v3.0, embed-english-light-v3.0)
+  - HuggingFace (sentence-transformers/all-MiniLM-L6-v2, BAAI/bge-small-en-v1.5)
+  - Voyage AI (voyage-2, voyage-code-2, voyage-large-2)
+  - Ollama (nomic-embed-text, mxbai-embed-large, all-minilm)
+  - Configurable via environment variables with per-call model overrides
+- **Cypher Injection Protection** - Backtick escaping for safe identifier handling
+- **Comprehensive Documentation**:
+  - Complete Neo4j package documentation with setup guides and examples
+  - GraphRAG tutorial covering knowledge graph construction and retrieval
+  - API reference with all tool schemas and response formats
+- **Integration Tests** - Gated behind `RUN_INTEGRATION_TESTS=true` flag to prevent CI failures
+- **Structured Logging** - Full logging compliance using `@agentforge/core` logger
+
+### Fixed
+
+#### @agentforge/tools
+- **TypeScript Compilation Errors in Confluence Tools** - Fixed ESM import paths and return type annotations:
+  - Added `.js` extensions to relative imports (required by `moduleResolution: "node16"`)
+  - Removed explicit `: Tool` return type annotations to allow proper type inference
+  - Fixed 8 files: auth.ts and 7 tool files (archive, create, get, get-space-pages, list-spaces, search, update)
+- **TypeScript Compilation Errors in Slack Tools** - Fixed return type annotations:
+  - Removed explicit `: Tool` return type annotations to allow proper type inference
+  - Fixed 4 files: get-channels, get-messages, notify, send-message
+
+### Published
+- All packages published to npm registry at version 0.12.6:
+  - @agentforge/core@0.12.6
+  - @agentforge/patterns@0.12.6
+  - @agentforge/tools@0.12.6
+  - @agentforge/testing@0.12.6
+  - @agentforge/cli@0.12.6
+
+
 ## [0.12.5] - 2026-02-11
 
 ### Fixed
