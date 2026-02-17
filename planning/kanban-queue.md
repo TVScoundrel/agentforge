@@ -4,17 +4,22 @@
 
 ## Queue Status Summary
 
-- **Ready:** 0 stories
+- **Ready:** 1 story (ST-01003)
 - **In Progress:** 0 stories
-- **In Review:** 1 story (ST-01002)
+- **In Review:** 0 stories
 - **Blocked:** 0 stories
-- **Backlog:** 17 stories (waiting on dependencies)
+- **Backlog:** 16 stories (waiting on dependencies)
 
 ---
 
 ## Ready
 
-_No stories currently ready_
+### ST-01003: Implement Connection Pooling
+- **Epic:** EP-01 (Core Database Connection Management)
+- **Priority:** P0
+- **Estimate:** 3 hours
+- **Dependencies:** ST-01002 ✅ (merged)
+- **Checklist:** `planning/checklists/epic-01-story-tasks.md`
 
 ---
 
@@ -26,14 +31,7 @@ _No stories currently in progress_
 
 ## In Review
 
-### ST-01002: Implement Connection Manager
-- **Epic:** EP-01 (Core Database Connection Management)
-- **Priority:** P0
-- **Estimate:** 4 hours
-- **Dependencies:** ST-01001 ✅ (merged)
-- **Checklist:** `planning/checklists/epic-01-story-tasks.md`
-- **Branch:** `feat/st-01002-connection-manager`
-- **PR:** #26 (ready for review)
+_No stories currently in review_
 
 ---
 
@@ -44,13 +42,6 @@ _No stories currently blocked_
 ---
 
 ## Backlog
-
-### ST-01003: Implement Connection Pooling
-- **Epic:** EP-01
-- **Priority:** P0
-- **Estimate:** 3 hours
-- **Dependencies:** ST-01002 (in ready)
-- **Checklist:** `planning/checklists/epic-01-story-tasks.md`
 
 ### ST-01004: Implement Connection Lifecycle Management
 - **Epic:** EP-01
@@ -63,7 +54,7 @@ _No stories currently blocked_
 - **Epic:** EP-02
 - **Priority:** P0
 - **Estimate:** 4 hours
-- **Dependencies:** ST-01003
+- **Dependencies:** ST-01003 (ready)
 - **Checklist:** `planning/checklists/epic-02-story-tasks.md`
 
 ### ST-02002: Implement Type-Safe SELECT Tool
@@ -105,7 +96,7 @@ _No stories currently blocked_
 - **Epic:** EP-03
 - **Priority:** P1
 - **Estimate:** 5 hours
-- **Dependencies:** ST-01003
+- **Dependencies:** ST-01003 (ready)
 - **Checklist:** `planning/checklists/epic-03-story-tasks.md`
 
 ### ST-03002: Implement Schema Metadata Utilities
@@ -169,9 +160,9 @@ _No stories currently blocked_
 
 ## Notes
 
-- ✅ ST-01001 complete - foundation established
-- 🔍 ST-01002 in review - PR #26 ready for review
-- Next: ST-01003 (Connection Pooling) will be ready after ST-01002 merges
+- ✅ ST-01001 complete - foundation established (merged 2026-02-17)
+- ✅ ST-01002 complete - connection manager implemented (merged 2026-02-17)
+- 🚀 ST-01003 (Connection Pooling) ready to start
 - Epic 01 (Connection Management) must complete before Epic 02 (CRUD Operations)
 - Epic 03 (Schema) can run in parallel with Epic 02 after ST-01003
 - Epic 04 (Advanced Features) depends on Epic 02 completion

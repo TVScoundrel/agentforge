@@ -67,7 +67,8 @@
 - [x] Run full test suite before finalizing the PR and record results (1092 tests passed, 21 skipped)
 - [x] Run lint (`pnpm lint`) before finalizing the PR and record results (no errors in ST-01002 files)
 - [x] Mark PR ready for review (PR #26)
-- [ ] Wait for merge
+- [x] Wait for merge
+  **Merged:** PR #26 https://github.com/TVScoundrel/agentforge/pull/26 merged to main (commit c07f369) on 2026-02-17
 
 ---
 
