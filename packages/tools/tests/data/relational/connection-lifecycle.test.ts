@@ -362,7 +362,7 @@ describe('Connection Lifecycle Management', () => {
     });
 
     it.skipIf(!process.env.POSTGRES_CONNECTION_STRING)(
-      'should cancel scheduled reconnection when close() is called',
+      'should cancel scheduled reconnection when disconnect() is called',
       async () => {
         // Use the PostgreSQL connection string from env but with invalid database
         const baseConnString = process.env.POSTGRES_CONNECTION_STRING!;

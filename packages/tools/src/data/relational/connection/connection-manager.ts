@@ -302,6 +302,9 @@ export class ConnectionManager extends EventEmitter implements DatabaseConnectio
         state: this.state,
       });
 
+      // Clean up any partially created resources to prevent connection leaks
+      await this.cleanupCancelledConnection();
+
       // Attempt reconnection if configured and this initialize call is still current
       // This prevents scheduling reconnection after disconnect() has been called
       if (this.reconnectionConfig.enabled && currentGeneration === this.connectionGeneration) {

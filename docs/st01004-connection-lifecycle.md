@@ -161,27 +161,29 @@ await manager.connect();
 ### Event-Driven State Management
 
 ```typescript
+import { createLogger } from '@agentforge/core';
+
+const logger = createLogger('my-app:database');
 const manager = new ConnectionManager(config);
 
 // Track all state changes
 manager.on('connected', () => {
-  console.log('State: CONNECTED');
+  logger.info('Database connected');
   // Start processing queries
 });
 
 manager.on('disconnected', () => {
-  console.log('State: DISCONNECTED');
+  logger.info('Database disconnected');
   // Pause processing
 });
 
 manager.on('error', (error) => {
-  console.log('State: ERROR');
-  console.error('Error:', error.message);
+  logger.error('Database connection error', { error: error.message });
   // Handle error, maybe alert monitoring
 });
 
 manager.on('reconnecting', ({ attempt, delayMs }) => {
-  console.log(`Reconnecting in ${delayMs}ms (attempt ${attempt})`);
+  logger.info('Database reconnecting', { attempt, delayMs });
   // Update UI or logs
 });
 
