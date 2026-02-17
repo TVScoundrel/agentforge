@@ -4,11 +4,11 @@
 
 ## Queue Status Summary
 
-- **Ready:** 2 stories (ST-01004, ST-03001)
+- **Ready:** 4 stories (ST-01004, ST-02002, ST-02006, ST-03001)
 - **In Progress:** 0 stories
-- **In Review:** 1 story (ST-02001)
+- **In Review:** 0 stories
 - **Blocked:** 0 stories
-- **Backlog:** 13 stories (waiting on dependencies)
+- **Backlog:** 11 stories (waiting on dependencies)
 
 ---
 
@@ -20,6 +20,20 @@
 - **Estimate:** 2 hours
 - **Dependencies:** ST-01003 ✅ (merged 2026-02-17)
 - **Checklist:** `planning/checklists/epic-01-story-tasks.md`
+
+### ST-02002: Implement Type-Safe SELECT Tool
+- **Epic:** EP-02
+- **Priority:** P0
+- **Estimate:** 5 hours
+- **Dependencies:** ST-02001 ✅ (merged 2026-02-17)
+- **Checklist:** `planning/checklists/epic-02-story-tasks.md`
+
+### ST-02006: Implement SQL Sanitization and Security
+- **Epic:** EP-02
+- **Priority:** P0
+- **Estimate:** 3 hours
+- **Dependencies:** ST-02001 ✅ (merged 2026-02-17)
+- **Checklist:** `planning/checklists/epic-02-story-tasks.md`
 
 ### ST-03001: Implement Schema Introspection Tool
 - **Epic:** EP-03
@@ -38,14 +52,7 @@ _No stories currently in progress_
 
 ## In Review
 
-### ST-02001: Implement Raw SQL Query Execution Tool
-- **Epic:** EP-02
-- **Priority:** P0
-- **Estimate:** 4 hours
-- **Dependencies:** ST-01003 ✅ (merged 2026-02-17)
-- **Checklist:** `planning/checklists/epic-02-story-tasks.md`
-- **PR:** #28 https://github.com/TVScoundrel/agentforge/pull/28
-- **Status:** Ready for review (all quality gates passed)
+_No stories currently in review_
 
 ---
 
@@ -56,13 +63,6 @@ _No stories currently blocked_
 ---
 
 ## Backlog
-
-### ST-02002: Implement Type-Safe SELECT Tool
-- **Epic:** EP-02
-- **Priority:** P0
-- **Estimate:** 5 hours
-- **Dependencies:** ST-02001
-- **Checklist:** `planning/checklists/epic-02-story-tasks.md`
 
 ### ST-02003: Implement Type-Safe INSERT Tool
 - **Epic:** EP-02
@@ -83,13 +83,6 @@ _No stories currently blocked_
 - **Priority:** P0
 - **Estimate:** 3 hours
 - **Dependencies:** ST-02004
-- **Checklist:** `planning/checklists/epic-02-story-tasks.md`
-
-### ST-02006: Implement SQL Sanitization and Security
-- **Epic:** EP-02
-- **Priority:** P0
-- **Estimate:** 3 hours
-- **Dependencies:** ST-02001
 - **Checklist:** `planning/checklists/epic-02-story-tasks.md`
 
 ### ST-03002: Implement Schema Metadata Utilities
