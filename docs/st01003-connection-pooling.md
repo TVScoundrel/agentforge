@@ -164,6 +164,6 @@ All tests pass with conditional execution for SQLite tests when bindings are ava
 ## Notes
 
 - Connection reuse, timeout handling, and graceful shutdown are handled by the underlying drivers (pg.Pool, mysql2.Pool)
-- Pool exhaustion and retry logic are configured via pool options and handled by the drivers
+- Pool exhaustion behavior (e.g., queuing/waiting for available connections and enforcing timeouts) is controlled by pool options and handled by the drivers
 - SQLite doesn't support traditional pooling but validates pool config for consistency
 

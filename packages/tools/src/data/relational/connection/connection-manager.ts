@@ -113,14 +113,10 @@ export class ConnectionManager implements DatabaseConnection {
     const { drizzle } = await import('drizzle-orm/node-postgres');
     const { Pool } = await import('pg');
 
-    const baseConfig = typeof this.config.connection === 'string'
+    // Extract pool config and base config separately to avoid passing unknown 'pool' property to pg.Pool
+    const { pool: poolConfig, ...baseConfig } = typeof this.config.connection === 'string'
       ? { connectionString: this.config.connection }
       : this.config.connection;
-
-    // Apply pool configuration if provided
-    const poolConfig = typeof this.config.connection === 'object'
-      ? this.config.connection.pool
-      : undefined;
 
     // Validate pool configuration
     if (poolConfig) {

@@ -396,7 +396,7 @@ describe('ConnectionManager', () => {
         }
       });
 
-      it('should accept valid pool configuration', () => {
+      it('should accept valid pool configuration', async () => {
         const config: ConnectionConfig = {
           vendor: 'postgresql',
           connection: {
@@ -413,7 +413,10 @@ describe('ConnectionManager', () => {
           },
         };
 
-        expect(() => new ConnectionManager(config)).not.toThrow();
+        const manager = new ConnectionManager(config);
+        // Validation happens during initialize(), so we expect it to fail with connection error
+        // (not validation error) since we're using fake credentials
+        await expect(manager.initialize()).rejects.toThrow(/Failed to initialize postgresql connection/);
       });
     });
 
