@@ -3,10 +3,11 @@
 ## ST-02001: Implement Raw SQL Query Execution Tool
 
 **Branch:** `feat/st-02001-raw-sql-query-tool`
+**PR:** #28 https://github.com/TVScoundrel/agentforge/pull/28
 
 ### Checklist
-- [ ] Create branch `feat/st-02001-raw-sql-query-tool`
-- [ ] Create draft PR with story ID in title
+- [x] Create branch `feat/st-02001-raw-sql-query-tool`
+- [x] Create draft PR with story ID in title
 - [ ] Create `packages/tools/src/data/relational/query/types.ts` with query interfaces
 - [ ] Create `packages/tools/src/data/relational/query/query-executor.ts`
 - [ ] Implement `executeQuery()` function with parameterized query support
