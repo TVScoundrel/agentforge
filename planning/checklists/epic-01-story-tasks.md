@@ -109,6 +109,10 @@
 - [x] Updated tests based on review feedback (removed tests for deleted fields, added activeCount expectations)
 - [x] Updated documentation to reflect simplified PoolConfig interface
 - [x] Resolved all 8 review threads on GitHub (all marked as resolved)
+- [x] Addressed 4 additional review comments (commit 775b816):
+  1. Replaced try/catch test pattern with expect().rejects.toThrow() (3 tests)
+  2. Fixed emoji encoding issue in kanban-queue.md
+- [x] Resolved 4 additional review threads on GitHub (all marked as resolved)
 - [ ] Wait for merge
 
 ---
