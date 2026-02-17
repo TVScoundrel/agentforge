@@ -14,13 +14,6 @@
 
 ## Ready
 
-### ST-01001: Setup Drizzle ORM Dependencies and Project Structure
-- **Epic:** EP-01 (Core Database Connection Management)
-- **Priority:** P0
-- **Estimate:** 2 hours
-- **Dependencies:** None
-- **Checklist:** `planning/checklists/epic-01-story-tasks.md`
-
 ### ST-05001: Implement Comprehensive Unit Tests
 - **Epic:** EP-05 (Documentation, Examples, and Testing)
 - **Priority:** P0
@@ -33,7 +26,13 @@
 
 ## In Progress
 
-_No stories currently in progress_
+### ST-01001: Setup Drizzle ORM Dependencies and Project Structure
+- **Epic:** EP-01 (Core Database Connection Management)
+- **Priority:** P0
+- **Estimate:** 2 hours
+- **Dependencies:** None
+- **Checklist:** `planning/checklists/epic-01-story-tasks.md`
+- **Branch:** `feat/st-01001-setup-drizzle-dependencies`
 
 ---
 

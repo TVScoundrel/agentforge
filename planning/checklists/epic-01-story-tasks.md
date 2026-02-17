@@ -5,16 +5,16 @@
 **Branch:** `feat/st-01001-setup-drizzle-dependencies`
 
 ### Checklist
-- [ ] Create branch `feat/st-01001-setup-drizzle-dependencies`
+- [x] Create branch `feat/st-01001-setup-drizzle-dependencies`
 - [ ] Create draft PR with story ID in title
-- [ ] Install Drizzle ORM core package as dependency (`drizzle-orm`)
-- [ ] Install Drizzle Kit as dependency (`drizzle-kit`)
-- [ ] Add PostgreSQL driver as peer dependency (`pg` with `@types/pg`)
-- [ ] Add MySQL driver as peer dependency (`mysql2`)
-- [ ] Add SQLite driver as peer dependency (`better-sqlite3` with `@types/better-sqlite3`)
-- [ ] Install all database drivers as dev dependencies for testing
-- [ ] Add peer dependency metadata with version ranges in package.json
-- [ ] Add peerDependenciesMeta to mark drivers as optional
+- [x] Install Drizzle ORM core package as dependency (`drizzle-orm`)
+- [x] Install Drizzle Kit as dependency (`drizzle-kit`)
+- [x] Add PostgreSQL driver as peer dependency (`pg` with `@types/pg`)
+- [x] Add MySQL driver as peer dependency (`mysql2`)
+- [x] Add SQLite driver as peer dependency (`better-sqlite3` with `@types/better-sqlite3`)
+- [x] Install all database drivers as dev dependencies for testing
+- [x] Add peer dependency metadata with version ranges in package.json
+- [x] Add peerDependenciesMeta to mark drivers as optional
 - [ ] Create directory structure: `packages/tools/src/data/relational/`
 - [ ] Create subdirectories: `connection/`, `query/`, `schema/`, `tools/`, `utils/`
 - [ ] Create initial `index.ts` files for each subdirectory
