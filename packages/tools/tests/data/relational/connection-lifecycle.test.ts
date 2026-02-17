@@ -248,5 +248,200 @@ describe('Connection Lifecycle Management', () => {
       await manager.disconnect();
     });
   });
+
+  describe('Edge case lifecycle interactions', () => {
+    it('should allow connect() to be called again after entering ERROR state', async () => {
+      const config: ConnectionConfig = {
+        vendor: 'sqlite',
+        connection: '/invalid/path/database.db',
+      };
+
+      // Disable reconnection to force a terminal ERROR-like state
+      const reconnectionConfig = {
+        enabled: false,
+      };
+
+      const manager = new ConnectionManager(config, reconnectionConfig);
+
+      // First connect attempt fails and moves manager into ERROR state
+      await expect(manager.connect()).rejects.toThrow();
+      expect(manager.getState()).toBe(ConnectionState.ERROR);
+
+      // Calling connect() again in ERROR state should not throw synchronously
+      await expect(manager.connect()).rejects.toThrow();
+      expect(manager.getState()).toBe(ConnectionState.ERROR);
+    });
+
+    it.skipIf(!process.env.POSTGRES_CONNECTION_STRING)(
+      'should handle connect() calls while in RECONNECTING state',
+      async () => {
+        // Use a PostgreSQL config with invalid credentials to trigger reconnection
+        const config: ConnectionConfig = {
+          vendor: 'postgresql',
+          connection: {
+            host: 'localhost',
+            port: 5432,
+            database: 'nonexistent',
+            user: 'invalid',
+            password: 'invalid',
+          },
+        };
+
+        const reconnectionConfig = {
+          enabled: true,
+          maxAttempts: 2,
+          baseDelayMs: 10,
+          maxDelayMs: 50,
+        };
+
+        const manager = new ConnectionManager(config, reconnectionConfig);
+
+        let secondaryConnectPromise: Promise<unknown> | null = null;
+        const reconnectingHandler = vi.fn((info) => {
+          // We should be in RECONNECTING state when this event fires
+          expect(manager.getState()).toBe(ConnectionState.RECONNECTING);
+
+          // Call connect() again while a reconnection attempt is scheduled/active
+          if (!secondaryConnectPromise) {
+            secondaryConnectPromise = manager.connect();
+            expect(secondaryConnectPromise).toBeInstanceOf(Promise);
+          }
+
+          // Basic shape of the reconnect event payload
+          expect(info).toEqual(
+            expect.objectContaining({
+              attempt: expect.any(Number),
+              maxAttempts: reconnectionConfig.maxAttempts,
+              delayMs: expect.any(Number),
+            })
+          );
+        });
+
+        manager.on('reconnecting', reconnectingHandler);
+
+        await expect(manager.connect()).rejects.toThrow();
+
+        // We should have entered RECONNECTING at least once
+        expect(reconnectingHandler).toHaveBeenCalled();
+
+        if (secondaryConnectPromise) {
+          // The secondary connect() call should also settle cleanly
+          await expect(secondaryConnectPromise).rejects.toThrow();
+        }
+
+        // Clean up
+        await manager.disconnect();
+      }
+    );
+
+    it('should support disconnect() while connect() / reconnection is in progress', async () => {
+      const config: ConnectionConfig = {
+        vendor: 'sqlite',
+        connection: '/invalid/path/database.db',
+      };
+
+      const reconnectionConfig = {
+        enabled: true,
+        maxAttempts: 2,
+        baseDelayMs: 10,
+        maxDelayMs: 50,
+      };
+
+      const manager = new ConnectionManager(config, reconnectionConfig);
+
+      // Start connection attempt but do not await immediately
+      const connectPromise = manager.connect();
+
+      // While connect()/reconnection is in progress, request a disconnect
+      const disconnectPromise = manager.disconnect();
+
+      // connect() should eventually fail given the invalid configuration
+      await expect(connectPromise).rejects.toThrow();
+
+      // disconnect() should resolve cleanly and leave the manager disconnected
+      await expect(disconnectPromise).resolves.toBeUndefined();
+      expect(manager.getState()).toBe(ConnectionState.DISCONNECTED);
+    });
+
+    it.skipIf(!process.env.POSTGRES_CONNECTION_STRING)(
+      'should cancel scheduled reconnection when close() is called',
+      async () => {
+        // Use a PostgreSQL config with invalid credentials to trigger reconnection
+        const config: ConnectionConfig = {
+          vendor: 'postgresql',
+          connection: {
+            host: 'localhost',
+            port: 5432,
+            database: 'nonexistent',
+            user: 'invalid',
+            password: 'invalid',
+          },
+        };
+
+        const reconnectionConfig = {
+          enabled: true,
+          maxAttempts: 3,
+          baseDelayMs: 50,
+          maxDelayMs: 200,
+        };
+
+        const manager = new ConnectionManager(config, reconnectionConfig);
+
+        vi.useFakeTimers();
+        const reconnectingHandler = vi.fn();
+        manager.on('reconnecting', reconnectingHandler);
+
+        // Trigger initial connection attempt; ignore its rejection for test purposes
+        const connectPromise = manager.connect().catch(() => undefined);
+
+        // Run timers enough to schedule at least one reconnection
+        vi.runOnlyPendingTimers();
+
+        // We should have scheduled at least one reconnection attempt
+        expect(reconnectingHandler).toHaveBeenCalled();
+
+        // Now close the manager, which should cancel any further reconnection attempts
+        await manager.close();
+        expect(manager.getState()).toBe(ConnectionState.DISCONNECTED);
+
+        // Advance all remaining timers; no additional reconnecting events should fire
+        reconnectingHandler.mockClear();
+        vi.runAllTimers();
+        expect(reconnectingHandler).not.toHaveBeenCalled();
+
+        await connectPromise;
+        vi.useRealTimers();
+      }
+    );
+
+    it('should handle multiple concurrent connect() calls in ERROR state', async () => {
+      const config: ConnectionConfig = {
+        vendor: 'sqlite',
+        connection: '/invalid/path/database.db',
+      };
+
+      const reconnectionConfig = {
+        enabled: false,
+      };
+
+      const manager = new ConnectionManager(config, reconnectionConfig);
+
+      // Move to ERROR state
+      await expect(manager.connect()).rejects.toThrow();
+      expect(manager.getState()).toBe(ConnectionState.ERROR);
+
+      // Fire off multiple concurrent connect() calls while in ERROR
+      const p1 = manager.connect();
+      const p2 = manager.connect();
+
+      const results = await Promise.allSettled([p1, p2]);
+      for (const result of results) {
+        expect(result.status).toBe('rejected');
+      }
+
+      // State should remain ERROR after failed attempts
+      expect(manager.getState()).toBe(ConnectionState.ERROR);
+    });
+  });
 });
 
