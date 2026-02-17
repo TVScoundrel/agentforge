@@ -197,7 +197,7 @@ await manager.connect();
   - Concurrent `connect()` calls are serialized - subsequent callers await any in-flight connection attempt (manual or automatic reconnection)
   - `disconnect()` uses a generation token to cancel in-flight `initialize()` operations and waits for any in-flight connection attempt to complete
   - Reconnection attempts are scheduled sequentially with exponential backoff
-  - Event listeners are automatically cleaned up when `disconnect()` is called to prevent memory leaks
+  - Event listeners are not removed by `disconnect()`; call `dispose()` (or manually remove listeners) for full cleanup and to prevent memory leaks
 
 ## Testing
 

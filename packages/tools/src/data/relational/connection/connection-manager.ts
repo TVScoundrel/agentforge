@@ -625,7 +625,8 @@ export class ConnectionManager extends EventEmitter implements DatabaseConnectio
    *
    * This method is public to maintain compatibility with the DatabaseConnection interface
    * and existing code (e.g., relational-query.ts). For new code, prefer using disconnect()
-   * which provides full lifecycle management including event listener cleanup.
+   * for connection lifecycle management. Note that disconnect() does NOT clean up event
+   * listeners; call dispose() if you need full cleanup including listener removal.
    *
    * Note: This method cancels pending reconnection timers to prevent unexpected reconnection
    * attempts after close() is called.

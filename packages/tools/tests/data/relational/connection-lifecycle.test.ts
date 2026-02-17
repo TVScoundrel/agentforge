@@ -395,8 +395,8 @@ describe('Connection Lifecycle Management', () => {
         // We should have scheduled at least one reconnection attempt
         expect(reconnectingHandler).toHaveBeenCalled();
 
-        // Now close the manager, which should cancel any further reconnection attempts
-        await manager.close();
+        // Now disconnect the manager, which should cancel any further reconnection attempts
+        await manager.disconnect();
         expect(manager.getState()).toBe(ConnectionState.DISCONNECTED);
 
         // Advance all remaining timers; no additional reconnecting events should fire
@@ -436,6 +436,89 @@ describe('Connection Lifecycle Management', () => {
 
       // State should remain ERROR after failed attempts
       expect(manager.getState()).toBe(ConnectionState.ERROR);
+    });
+
+    it.skipIf(!process.env.POSTGRES_CONNECTION_STRING)(
+      'should properly dispose of ConnectionManager instance',
+      async () => {
+        const config: ConnectionConfig = {
+          vendor: 'postgresql',
+          connection: process.env.POSTGRES_CONNECTION_STRING!,
+        };
+
+        const manager = new ConnectionManager(config);
+
+        // Register event listeners
+        const connectedHandler = vi.fn();
+        const disconnectedHandler = vi.fn();
+        const errorHandler = vi.fn();
+
+        manager.on('connected', connectedHandler);
+        manager.on('disconnected', disconnectedHandler);
+        manager.on('error', errorHandler);
+
+        // Connect successfully
+        await manager.connect();
+        expect(manager.getState()).toBe(ConnectionState.CONNECTED);
+        expect(connectedHandler).toHaveBeenCalledTimes(1);
+
+        // Call dispose() which should disconnect and remove all listeners
+        await manager.dispose();
+
+        // Should be disconnected
+        expect(manager.getState()).toBe(ConnectionState.DISCONNECTED);
+        expect(disconnectedHandler).toHaveBeenCalledTimes(1);
+
+        // Verify all event listeners are removed by checking listenerCount
+        expect(manager.listenerCount('connected')).toBe(0);
+        expect(manager.listenerCount('disconnected')).toBe(0);
+        expect(manager.listenerCount('error')).toBe(0);
+        expect(manager.listenerCount('reconnecting')).toBe(0);
+      }
+    );
+
+    it.skipIf(!process.env.POSTGRES_CONNECTION_STRING)(
+      'should allow dispose() to be called multiple times safely',
+      async () => {
+        const config: ConnectionConfig = {
+          vendor: 'postgresql',
+          connection: process.env.POSTGRES_CONNECTION_STRING!,
+        };
+
+        const manager = new ConnectionManager(config);
+
+        // Connect and dispose
+        await manager.connect();
+        expect(manager.getState()).toBe(ConnectionState.CONNECTED);
+
+        await manager.dispose();
+        expect(manager.getState()).toBe(ConnectionState.DISCONNECTED);
+
+        // Calling dispose() again should not throw
+        await expect(manager.dispose()).resolves.toBeUndefined();
+        expect(manager.getState()).toBe(ConnectionState.DISCONNECTED);
+      }
+    );
+
+    it('should remove listeners when dispose() is called without prior connection', async () => {
+      const config: ConnectionConfig = {
+        vendor: 'sqlite',
+        connection: ':memory:',
+      };
+
+      const manager = new ConnectionManager(config);
+
+      // Register listeners without connecting
+      const errorHandler = vi.fn();
+      manager.on('error', errorHandler);
+
+      expect(manager.listenerCount('error')).toBe(1);
+
+      // Dispose should still remove listeners even if never connected
+      await manager.dispose();
+
+      expect(manager.listenerCount('error')).toBe(0);
+      expect(manager.getState()).toBe(ConnectionState.DISCONNECTED);
     });
   });
 });
