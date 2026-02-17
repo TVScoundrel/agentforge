@@ -4,35 +4,29 @@
 
 ## Queue Status Summary
 
-- **Ready:** 5 stories (dependency-free, ready to start)
+- **Ready:** 1 story (dependency-free, ready to start)
 - **In Progress:** 0 stories
 - **In Review:** 0 stories
 - **Blocked:** 0 stories
-- **Backlog:** 14 stories (waiting on dependencies)
+- **Done:** 1 story
+- **Backlog:** 17 stories (waiting on dependencies)
 
 ---
 
 ## Ready
 
-### ST-05001: Implement Comprehensive Unit Tests
-- **Epic:** EP-05 (Documentation, Examples, and Testing)
+### ST-01002: Implement Connection Manager
+- **Epic:** EP-01 (Core Database Connection Management)
 - **Priority:** P0
-- **Estimate:** 8 hours
-- **Dependencies:** ST-02006 (merged), ST-03002 (merged)
-- **Checklist:** `planning/checklists/epic-05-story-tasks.md`
-- **Note:** Can start test infrastructure in parallel with implementation
+- **Estimate:** 4 hours
+- **Dependencies:** ST-01001 ✅ (merged)
+- **Checklist:** `planning/checklists/epic-01-story-tasks.md`
 
 ---
 
 ## In Progress
 
-### ST-01001: Setup Drizzle ORM Dependencies and Project Structure
-- **Epic:** EP-01 (Core Database Connection Management)
-- **Priority:** P0
-- **Estimate:** 2 hours
-- **Dependencies:** None
-- **Checklist:** `planning/checklists/epic-01-story-tasks.md`
-- **Branch:** `feat/st-01001-setup-drizzle-dependencies`
+_No stories currently in progress_
 
 ---
 
@@ -48,20 +42,25 @@ _No stories currently blocked_
 
 ---
 
-## Backlog
+## Done
 
-### ST-01002: Implement Connection Manager
-- **Epic:** EP-01
+### ST-01001: Setup Drizzle ORM Dependencies and Project Structure ✅
+- **Epic:** EP-01 (Core Database Connection Management)
 - **Priority:** P0
-- **Estimate:** 4 hours
-- **Dependencies:** ST-01001
-- **Checklist:** `planning/checklists/epic-01-story-tasks.md`
+- **Estimate:** 2 hours | **Actual:** ~2 hours
+- **Completed:** 2026-02-17
+- **PR:** #25 (merged to main, commit 54c0e22)
+- **Branch:** `feat/st-01001-setup-drizzle-dependencies`
+
+---
+
+## Backlog
 
 ### ST-01003: Implement Connection Pooling
 - **Epic:** EP-01
 - **Priority:** P0
 - **Estimate:** 3 hours
-- **Dependencies:** ST-01002
+- **Dependencies:** ST-01002 (in ready)
 - **Checklist:** `planning/checklists/epic-01-story-tasks.md`
 
 ### ST-01004: Implement Connection Lifecycle Management
@@ -162,6 +161,14 @@ _No stories currently blocked_
 - **Dependencies:** ST-02006, ST-03001
 - **Checklist:** `planning/checklists/epic-05-story-tasks.md`
 
+### ST-05001: Implement Comprehensive Unit Tests
+- **Epic:** EP-05
+- **Priority:** P0
+- **Estimate:** 8 hours
+- **Dependencies:** ST-02006, ST-03002
+- **Checklist:** `planning/checklists/epic-05-story-tasks.md`
+- **Note:** Can start test infrastructure in parallel with implementation
+
 ### ST-05004: Create Advanced Integration Examples
 - **Epic:** EP-05
 - **Priority:** P2
@@ -173,8 +180,8 @@ _No stories currently blocked_
 
 ## Notes
 
-- Start with ST-01001 to establish the foundation
-- ST-05001 can begin in parallel once basic structure is in place
+- ✅ ST-01001 complete - foundation established
+- Next: ST-01002 (Connection Manager) is ready to start
 - Epic 01 (Connection Management) must complete before Epic 02 (CRUD Operations)
 - Epic 03 (Schema) can run in parallel with Epic 02 after ST-01003
 - Epic 04 (Advanced Features) depends on Epic 02 completion

@@ -36,8 +36,8 @@
 - [x] Run lint (`pnpm lint`) before finalizing the PR and record results
   **Result:** ✅ No new lint issues - Fixed 1 minor warning (unused eslint-disable). Pre-existing lint issues in other files not related to this story.
 - [x] Mark PR ready for review
-- [ ] Wait for merge
-  **Note:** Story execution complete. Waiting at review boundary per story-executor workflow.
+- [x] Wait for merge
+  **Note:** ✅ PR #25 merged to main (commit 54c0e22). Story ST-01001 complete!
 
 ---
 
