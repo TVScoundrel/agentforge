@@ -138,8 +138,10 @@ export async function executeQuery(
     const executionTime = Date.now() - startTime;
 
     // Format result based on database response
-    const rows = Array.isArray(result) ? result : (result as any).rows || [];
-    const rowCount = (result as any).rowCount || (result as any).affectedRows || rows.length;
+    const rows = Array.isArray(result) ? result : (result as unknown as { rows?: unknown[] }).rows || [];
+    const rowCount = (result as unknown as { rowCount?: number; affectedRows?: number }).rowCount ||
+                     (result as unknown as { rowCount?: number; affectedRows?: number }).affectedRows ||
+                     rows.length;
 
     logger.debug('Query executed successfully', {
       vendor: input.vendor,

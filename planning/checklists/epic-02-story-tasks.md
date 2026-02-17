@@ -21,10 +21,10 @@
 - [x] Add query timeout configuration
 - [x] Add query logging (optional, configurable)
 - [x] Export tool from `tools/index.ts`
-- [ ] Create unit tests for query executor
-- [ ] Create unit tests for relational-query tool
+- [x] Create unit tests for query executor
+- [x] Create unit tests for relational-query tool
 - [ ] Add or update story documentation at docs/st02001-raw-sql-query-tool.md (or document why not required)
-- [ ] Assess test impact; add/update automated tests when needed, or document why tests are not required
+- [x] Assess test impact; add/update automated tests when needed, or document why tests are not required
 - [ ] Run full test suite before finalizing the PR and record results
 - [ ] Run lint (`pnpm lint`) before finalizing the PR and record results
 - [ ] Mark PR ready for review
