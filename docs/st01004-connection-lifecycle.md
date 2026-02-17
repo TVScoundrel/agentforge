@@ -188,7 +188,10 @@ await manager.connect();
 - **State Transitions**: All state changes are logged and emit events
 - **Error Handling**: Errors during connection/disconnection are caught and handled gracefully
 - **Cleanup**: Reconnection timers are properly cleaned up on disconnect
-- **Thread Safety**: Reconnection attempts are serialized to prevent race conditions
+- **Concurrency Handling**:
+  - Concurrent `connect()` calls are serialized - subsequent callers await the in-flight connection attempt
+  - `disconnect()` uses a generation token to cancel in-flight `initialize()` operations
+  - Reconnection attempts are scheduled sequentially with exponential backoff
 
 ## Testing
 

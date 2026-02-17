@@ -19,6 +19,7 @@ export enum ConnectionState {
   DISCONNECTED = 'disconnected',
   CONNECTING = 'connecting',
   CONNECTED = 'connected',
+  RECONNECTING = 'reconnecting',
   ERROR = 'error',
 }
 
@@ -73,6 +74,8 @@ export class ConnectionManager extends EventEmitter implements DatabaseConnectio
   private reconnectionConfig: ReconnectionConfig;
   private reconnectionAttempts = 0;
   private reconnectionTimer: NodeJS.Timeout | null = null;
+  private connectPromise: Promise<void> | null = null; // Track in-flight connection attempts
+  private connectionGeneration = 0; // Cancellation token for disconnect
 
   /**
    * Create a new ConnectionManager instance
@@ -110,9 +113,12 @@ export class ConnectionManager extends EventEmitter implements DatabaseConnectio
       return;
     }
 
-    if (this.state === ConnectionState.CONNECTING) {
-      logger.debug('Connection already in progress', { vendor: this.vendor });
-      return;
+    // If a connection is already in progress, wait for it to complete
+    if (this.state === ConnectionState.CONNECTING && this.connectPromise) {
+      logger.debug('Connection already in progress, waiting for completion', {
+        vendor: this.vendor,
+      });
+      return this.connectPromise;
     }
 
     // If a reconnection has been scheduled, cancel it before starting a new connection attempt
@@ -124,7 +130,12 @@ export class ConnectionManager extends EventEmitter implements DatabaseConnectio
       this.reconnectionTimer = null;
     }
 
-    await this.initialize();
+    // Track the connection promise so concurrent callers can await it
+    this.connectPromise = this.initialize().finally(() => {
+      this.connectPromise = null;
+    });
+
+    return this.connectPromise;
   }
 
   /**
@@ -132,6 +143,9 @@ export class ConnectionManager extends EventEmitter implements DatabaseConnectio
    * Closes the connection and cancels any pending reconnection attempts
    */
   async disconnect(): Promise<void> {
+    // Increment generation to cancel any in-flight initialize() operations
+    this.connectionGeneration++;
+
     // Cancel any pending reconnection
     if (this.reconnectionTimer) {
       clearTimeout(this.reconnectionTimer);
@@ -172,6 +186,7 @@ export class ConnectionManager extends EventEmitter implements DatabaseConnectio
    */
   async initialize(): Promise<void> {
     const startTime = Date.now();
+    const currentGeneration = this.connectionGeneration;
 
     // Set state to connecting
     this.setState(ConnectionState.CONNECTING);
@@ -197,11 +212,31 @@ export class ConnectionManager extends EventEmitter implements DatabaseConnectio
           throw new Error(`Unsupported database vendor: ${this.vendor}`);
       }
 
+      // Check if disconnect() was called during initialization
+      if (currentGeneration !== this.connectionGeneration) {
+        logger.debug('Connection cancelled during initialization', {
+          vendor: this.vendor,
+          currentGeneration,
+          newGeneration: this.connectionGeneration,
+        });
+        return;
+      }
+
       // Validate connection after initialization
       logger.debug('Validating connection health', { vendor: this.vendor });
       const healthy = await this.isHealthy();
       if (!healthy) {
         throw new Error(`Failed to establish healthy connection to ${this.vendor} database`);
+      }
+
+      // Check again after async health check
+      if (currentGeneration !== this.connectionGeneration) {
+        logger.debug('Connection cancelled during health check', {
+          vendor: this.vendor,
+          currentGeneration,
+          newGeneration: this.connectionGeneration,
+        });
+        return;
       }
 
       // Set state to connected and emit event
@@ -219,13 +254,16 @@ export class ConnectionManager extends EventEmitter implements DatabaseConnectio
     } catch (error) {
       const errorMessage = `Failed to initialize ${this.vendor} connection`;
 
+      // Normalize error to Error object before emitting
+      const normalizedError = error instanceof Error ? error : new Error(String(error));
+
       // Set state to error and emit event
       this.setState(ConnectionState.ERROR);
-      this.emit('error', error);
+      this.emit('error', normalizedError);
 
       logger.error(errorMessage, {
         vendor: this.vendor,
-        error: error instanceof Error ? error.message : String(error),
+        error: normalizedError.message,
         duration: Date.now() - startTime,
         state: this.state,
       });
@@ -285,6 +323,9 @@ export class ConnectionManager extends EventEmitter implements DatabaseConnectio
     );
 
     this.reconnectionAttempts++;
+
+    // Set state to reconnecting
+    this.setState(ConnectionState.RECONNECTING);
 
     logger.info('Scheduling reconnection attempt', {
       vendor: this.vendor,

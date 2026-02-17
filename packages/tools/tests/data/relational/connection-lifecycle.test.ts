@@ -8,7 +8,7 @@
  * - Exponential backoff
  */
 
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+import { describe, it, expect, vi } from 'vitest';
 import { ConnectionManager, ConnectionState } from '../../../src/data/relational/connection/connection-manager.js';
 import type { ConnectionConfig } from '../../../src/data/relational/connection/types.js';
 
@@ -233,11 +233,8 @@ describe('Connection Lifecycle Management', () => {
 
       await expect(manager.connect()).rejects.toThrow();
 
-      // Wait for reconnection to be scheduled and attempted
-      // baseDelayMs is 50ms, so wait 200ms to be safe
-      await new Promise(resolve => setTimeout(resolve, 200));
-
-      // Should have emitted reconnecting event
+      // Should have emitted reconnecting event when reconnection was scheduled
+      // (emitted synchronously during scheduleReconnection())
       expect(reconnectingHandler).toHaveBeenCalled();
       expect(reconnectingHandler).toHaveBeenCalledWith(
         expect.objectContaining({
