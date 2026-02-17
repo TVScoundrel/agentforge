@@ -314,5 +314,167 @@ describe('ConnectionManager', () => {
       await expect(manager.initialize()).rejects.toThrow(/Failed to initialize sqlite connection/);
     });
   });
+
+  describe('Connection Pooling', () => {
+    describe('Pool Configuration Validation', () => {
+      it('should reject max connections less than 1', async () => {
+        const config: ConnectionConfig = {
+          vendor: 'postgresql',
+          connection: {
+            host: 'localhost',
+            port: 5432,
+            database: 'test',
+            user: 'testuser',
+            password: 'testpass',
+            pool: {
+              max: 0,
+            },
+          },
+        };
+
+        const manager = new ConnectionManager(config);
+        const initPromise = manager.initialize();
+
+        await expect(initPromise).rejects.toBeInstanceOf(Error);
+        await expect(initPromise).rejects.toMatchObject({
+          cause: expect.objectContaining({
+            message: 'Pool max connections must be >= 1',
+          }),
+        });
+      });
+
+      it('should reject negative acquire timeout', async () => {
+        const config: ConnectionConfig = {
+          vendor: 'postgresql',
+          connection: {
+            host: 'localhost',
+            port: 5432,
+            database: 'test',
+            user: 'testuser',
+            password: 'testpass',
+            pool: {
+              acquireTimeoutMillis: -1000,
+            },
+          },
+        };
+
+        const manager = new ConnectionManager(config);
+        const initPromise = manager.initialize();
+
+        await expect(initPromise).rejects.toBeInstanceOf(Error);
+        await expect(initPromise).rejects.toMatchObject({
+          cause: expect.objectContaining({
+            message: 'Pool acquire timeout must be >= 0',
+          }),
+        });
+      });
+
+      it('should reject negative idle timeout', async () => {
+        const config: ConnectionConfig = {
+          vendor: 'postgresql',
+          connection: {
+            host: 'localhost',
+            port: 5432,
+            database: 'test',
+            user: 'testuser',
+            password: 'testpass',
+            pool: {
+              idleTimeoutMillis: -5000,
+            },
+          },
+        };
+
+        const manager = new ConnectionManager(config);
+        try {
+          await manager.initialize();
+          expect.fail('Should have thrown an error');
+        } catch (error) {
+          expect(error).toBeInstanceOf(Error);
+          const err = error as Error;
+          expect(err.cause).toBeInstanceOf(Error);
+          expect((err.cause as Error).message).toBe('Pool idle timeout must be >= 0');
+        }
+      });
+
+      it('should accept valid pool configuration', async () => {
+        const config: ConnectionConfig = {
+          vendor: 'postgresql',
+          connection: {
+            host: 'localhost',
+            port: 5432,
+            database: 'test',
+            user: 'testuser',
+            password: 'testpass',
+            pool: {
+              max: 10,
+              acquireTimeoutMillis: 30000,
+              idleTimeoutMillis: 10000,
+            },
+          },
+        };
+
+        const manager = new ConnectionManager(config);
+        // Validation happens during initialize(), so we expect it to fail with connection error
+        // (not validation error) since we're using fake credentials
+        await expect(manager.initialize()).rejects.toThrow(/Failed to initialize postgresql connection/);
+      });
+    });
+
+    describe('Pool Metrics', () => {
+      it('should return zero metrics when not initialized', () => {
+        const config: ConnectionConfig = {
+          vendor: 'postgresql',
+          connection: 'postgresql://localhost:5432/test',
+        };
+
+        const manager = new ConnectionManager(config);
+        const metrics = manager.getPoolMetrics();
+
+        expect(metrics).toEqual({
+          totalCount: 0,
+          activeCount: 0,
+          idleCount: 0,
+          waitingCount: 0,
+        });
+      });
+
+      it.skipIf(!hasSQLiteBindings)('should return metrics for SQLite connection', async () => {
+        const config: ConnectionConfig = {
+          vendor: 'sqlite',
+          connection: ':memory:',
+        };
+
+        const manager = new ConnectionManager(config);
+        await manager.initialize();
+
+        const metrics = manager.getPoolMetrics();
+
+        expect(metrics.totalCount).toBe(1);
+        expect(metrics.activeCount).toBe(1);
+        expect(metrics.idleCount).toBe(0);
+        expect(metrics.waitingCount).toBe(0);
+
+        await manager.close();
+      });
+
+      it('should return neutral metrics for MySQL (no stable API)', () => {
+        const config: ConnectionConfig = {
+          vendor: 'mysql',
+          connection: 'mysql://localhost:3306/test',
+        };
+
+        const manager = new ConnectionManager(config);
+        const metrics = manager.getPoolMetrics();
+
+        // MySQL returns neutral metrics since there's no stable public API
+        expect(metrics).toEqual({
+          totalCount: 0,
+          activeCount: 0,
+          idleCount: 0,
+          waitingCount: 0,
+        });
+      });
+    });
+  });
 });
 

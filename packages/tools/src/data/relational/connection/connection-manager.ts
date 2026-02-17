@@ -4,12 +4,31 @@
  */
 
 import type { DatabaseConnection, DatabaseVendor } from '../types.js';
-import type { ConnectionConfig } from './types.js';
+import type { ConnectionConfig, PoolConfig } from './types.js';
 import { checkPeerDependency } from '../utils/peer-dependency-checker.js';
 import { sql } from 'drizzle-orm';
 import { createLogger } from '@agentforge/core';
 
 const logger = createLogger('agentforge:tools:data:relational:connection');
+
+/**
+ * Validate pool configuration
+ * @param poolConfig - Pool configuration to validate
+ * @throws {Error} If pool configuration is invalid
+ */
+function validatePoolConfig(poolConfig: PoolConfig): void {
+  if (poolConfig.max !== undefined && poolConfig.max < 1) {
+    throw new Error('Pool max connections must be >= 1');
+  }
+
+  if (poolConfig.acquireTimeoutMillis !== undefined && poolConfig.acquireTimeoutMillis < 0) {
+    throw new Error('Pool acquire timeout must be >= 0');
+  }
+
+  if (poolConfig.idleTimeoutMillis !== undefined && poolConfig.idleTimeoutMillis < 0) {
+    throw new Error('Pool idle timeout must be >= 0');
+  }
+}
 
 /**
  * Connection manager that handles database connections for PostgreSQL, MySQL, and SQLite
@@ -88,16 +107,39 @@ export class ConnectionManager implements DatabaseConnection {
   /**
    * Initialize PostgreSQL connection using Drizzle ORM with node-postgres
    *
-   * Note: This already uses pg.Pool for connection pooling. ST-01003 will add
-   * configuration options for pool size, timeouts, and other pool settings.
+   * Applies pool configuration options to pg.Pool for connection management.
    */
   private async initializePostgreSQL(): Promise<void> {
     const { drizzle } = await import('drizzle-orm/node-postgres');
     const { Pool } = await import('pg');
 
-    const connectionConfig = typeof this.config.connection === 'string'
+    // Extract pool config and base config separately to avoid passing unknown 'pool' property to pg.Pool
+    const { pool: poolConfig, ...baseConfig } = typeof this.config.connection === 'string'
       ? { connectionString: this.config.connection }
       : this.config.connection;
+
+    // Validate pool configuration
+    if (poolConfig) {
+      validatePoolConfig(poolConfig);
+    }
+
+    const connectionConfig = {
+      ...baseConfig,
+      // Map our PoolConfig to pg.Pool options
+      // Note: pg.Pool does not support a `min` option
+      ...(poolConfig?.max !== undefined && { max: poolConfig.max }),
+      ...(poolConfig?.idleTimeoutMillis !== undefined && { idleTimeoutMillis: poolConfig.idleTimeoutMillis }),
+      ...(poolConfig?.acquireTimeoutMillis !== undefined && { connectionTimeoutMillis: poolConfig.acquireTimeoutMillis }),
+    };
+
+    logger.debug('Creating PostgreSQL connection pool', {
+      vendor: this.vendor,
+      poolConfig: {
+        max: connectionConfig.max,
+        idleTimeoutMillis: connectionConfig.idleTimeoutMillis,
+        connectionTimeoutMillis: connectionConfig.connectionTimeoutMillis,
+      }
+    });
 
     this.client = new Pool(connectionConfig);
     this.db = drizzle({ client: this.client });
@@ -106,16 +148,47 @@ export class ConnectionManager implements DatabaseConnection {
   /**
    * Initialize MySQL connection using Drizzle ORM with mysql2
    *
-   * Note: This already uses mysql2's connection pooling. ST-01003 will add
-   * configuration options for pool size, timeouts, and other pool settings.
+   * Applies pool configuration options to mysql2.createPool for connection management.
    */
   private async initializeMySQL(): Promise<void> {
     const { drizzle } = await import('drizzle-orm/mysql2');
     const mysql = await import('mysql2/promise');
 
     // mysql2.createPool accepts both connection strings directly and config objects
-    // When a string is provided, pass it directly (not wrapped in an object)
-    const connectionConfig = this.config.connection;
+    // When a string is provided, we can't apply pool config (would need to parse URL)
+    let connectionConfig: any;
+
+    if (typeof this.config.connection === 'string') {
+      connectionConfig = this.config.connection;
+      logger.debug('Creating MySQL connection pool from connection string', {
+        vendor: this.vendor,
+      });
+    } else {
+      // Destructure to separate pool config from mysql2 config
+      const { pool: poolConfig, ...baseConfig } = this.config.connection;
+
+      // Validate pool configuration
+      if (poolConfig) {
+        validatePoolConfig(poolConfig);
+      }
+
+      connectionConfig = {
+        ...baseConfig,
+        // Map our PoolConfig to mysql2 pool options
+        ...(poolConfig?.max !== undefined && { connectionLimit: poolConfig.max }),
+        ...(poolConfig?.acquireTimeoutMillis !== undefined && { acquireTimeout: poolConfig.acquireTimeoutMillis }),
+        ...(poolConfig?.idleTimeoutMillis !== undefined && { idleTimeout: poolConfig.idleTimeoutMillis }),
+      };
+
+      logger.debug('Creating MySQL connection pool', {
+        vendor: this.vendor,
+        poolConfig: {
+          connectionLimit: connectionConfig.connectionLimit,
+          acquireTimeout: connectionConfig.acquireTimeout,
+          idleTimeout: connectionConfig.idleTimeout,
+        }
+      });
+    }
 
     // createPool is synchronous and returns a Pool instance directly
     this.client = mysql.createPool(connectionConfig);
@@ -124,6 +197,9 @@ export class ConnectionManager implements DatabaseConnection {
 
   /**
    * Initialize SQLite connection using Drizzle ORM with better-sqlite3
+   *
+   * Note: SQLite uses a single connection. Pool configuration is logged but not applied
+   * as SQLite handles concurrent access through its internal locking mechanism.
    */
   private async initializeSQLite(): Promise<void> {
     const { drizzle } = await import('drizzle-orm/better-sqlite3');
@@ -139,6 +215,20 @@ export class ConnectionManager implements DatabaseConnection {
     if (!url) {
       throw new Error('SQLite connection requires a url property');
     }
+
+    // Validate and log pool config if provided (for awareness, but SQLite doesn't use traditional pooling)
+    if (typeof this.config.connection === 'object' && this.config.connection.pool) {
+      validatePoolConfig(this.config.connection.pool);
+      logger.debug('SQLite pool configuration provided but not applied (SQLite uses single connection)', {
+        vendor: this.vendor,
+        poolConfig: this.config.connection.pool,
+      });
+    }
+
+    logger.debug('Creating SQLite connection', {
+      vendor: this.vendor,
+      url: url === ':memory:' ? ':memory:' : 'file',
+    });
 
     this.client = new Database(url);
     this.db = drizzle({ client: this.client });
@@ -172,6 +262,63 @@ export class ConnectionManager implements DatabaseConnection {
     // TODO (ST-02001): Implement proper parameter binding or accept Drizzle SQL objects
     // For now, execute raw SQL without parameter binding - INTERNAL USE ONLY
     return this.db.execute(sql.raw(sqlString));
+  }
+
+  /**
+   * Get connection pool metrics
+   *
+   * Returns information about the current state of the connection pool.
+   * For SQLite, returns basic connection status since it uses a single connection.
+   *
+   * @returns Pool metrics including total, active, idle, and waiting connections
+   */
+  getPoolMetrics(): {
+    totalCount: number;
+    activeCount: number;
+    idleCount: number;
+    waitingCount: number;
+  } {
+    if (!this.client) {
+      return { totalCount: 0, activeCount: 0, idleCount: 0, waitingCount: 0 };
+    }
+
+    if (this.vendor === 'postgresql') {
+      // pg.Pool provides these properties via public API
+      const totalCount = this.client.totalCount || 0;
+      const idleCount = this.client.idleCount || 0;
+      const waitingCount = this.client.waitingCount || 0;
+      const activeCount = Math.max(totalCount - idleCount, 0);
+
+      return {
+        totalCount,
+        activeCount,
+        idleCount,
+        waitingCount,
+      };
+    } else if (this.vendor === 'mysql') {
+      // mysql2 does not expose a stable public API for pool metrics.
+      // To avoid relying on private/internal fields (e.g. _allConnections),
+      // we return neutral metrics here and treat MySQL pool stats as unavailable.
+      return {
+        totalCount: 0,
+        activeCount: 0,
+        idleCount: 0,
+        waitingCount: 0,
+      };
+    } else {
+      // SQLite uses a single connection
+      const totalCount = this.client.open ? 1 : 0;
+      const idleCount = 0;
+      const waitingCount = 0;
+      const activeCount = this.client.open ? 1 : 0;
+
+      return {
+        totalCount,
+        activeCount,
+        idleCount,
+        waitingCount,
+      };
+    }
   }
 
   /**
