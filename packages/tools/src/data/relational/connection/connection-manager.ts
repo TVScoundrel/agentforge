@@ -219,6 +219,8 @@ export class ConnectionManager extends EventEmitter implements DatabaseConnectio
           currentGeneration,
           newGeneration: this.connectionGeneration,
         });
+        // Clean up resources before returning
+        await this.cleanupCancelledConnection();
         return;
       }
 
@@ -236,6 +238,8 @@ export class ConnectionManager extends EventEmitter implements DatabaseConnectio
           currentGeneration,
           newGeneration: this.connectionGeneration,
         });
+        // Clean up resources before returning
+        await this.cleanupCancelledConnection();
         return;
       }
 
@@ -629,6 +633,39 @@ export class ConnectionManager extends EventEmitter implements DatabaseConnectio
       // No client but not disconnected - set state
       this.setState(ConnectionState.DISCONNECTED);
       this.emit('disconnected');
+    }
+  }
+
+  /**
+   * Clean up resources when a connection is cancelled during initialization
+   * This prevents connection leaks when disconnect() is called while initialize() is in-flight
+   */
+  private async cleanupCancelledConnection(): Promise<void> {
+    if (!this.client) {
+      return;
+    }
+
+    logger.debug('Cleaning up cancelled connection', {
+      vendor: this.vendor,
+    });
+
+    try {
+      // Close the client connection
+      if (this.vendor === 'postgresql' || this.vendor === 'mysql') {
+        await this.client.end();
+      } else if (this.vendor === 'sqlite') {
+        this.client.close();
+      }
+    } catch (error) {
+      // Log but don't throw - we're cleaning up a cancelled connection
+      logger.debug('Error during cancelled connection cleanup', {
+        vendor: this.vendor,
+        error: error instanceof Error ? error.message : String(error),
+      });
+    } finally {
+      // Always clear the references
+      this.client = null;
+      this.db = null;
     }
   }
 
