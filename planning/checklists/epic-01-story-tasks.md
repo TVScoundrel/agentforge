@@ -117,6 +117,11 @@
   1. Converted 2 remaining try/catch test patterns to expect().rejects.toThrow()
   2. Replaced console.log with commented example output in documentation
 - [x] Resolved 2 additional review threads on GitHub (all marked as resolved)
+- [x] Addressed 3 more review comments (commit f2bf7ce):
+  1. Fixed PostgreSQL pool property leak (destructure to exclude pool)
+  2. Improved pool validation test to actually call initialize()
+  3. Fixed inaccurate retry logic documentation (changed to pool exhaustion behavior)
+- [x] Resolved 3 additional review threads on GitHub (all marked as resolved)
 - [ ] Wait for merge
 
 ---
