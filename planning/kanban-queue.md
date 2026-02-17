@@ -45,7 +45,7 @@
 - **Estimate:** 2 hours
 - **Dependencies:** ST-01003 ✅ (merged 2026-02-17)
 - **Checklist:** `planning/checklists/epic-01-story-tasks.md`
-- **PR:** #29 (to be created)
+- **PR:** #29 https://github.com/TVScoundrel/agentforge/pull/29
 - **Status:** In progress
 
 ---
