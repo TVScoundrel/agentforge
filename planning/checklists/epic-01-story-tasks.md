@@ -113,6 +113,10 @@
   1. Replaced try/catch test pattern with expect().rejects.toThrow() (3 tests)
   2. Fixed emoji encoding issue in kanban-queue.md
 - [x] Resolved 4 additional review threads on GitHub (all marked as resolved)
+- [x] Addressed 2 more review comments (commit e0fbb33):
+  1. Converted 2 remaining try/catch test patterns to expect().rejects.toThrow()
+  2. Replaced console.log with commented example output in documentation
+- [x] Resolved 2 additional review threads on GitHub (all marked as resolved)
 - [ ] Wait for merge
 
 ---
