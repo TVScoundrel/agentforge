@@ -31,10 +31,12 @@ export interface PostgreSQLConnectionConfig {
 
 /**
  * MySQL-specific connection configuration
+ *
+ * Note: mysql2.createPool accepts connection strings directly as a parameter,
+ * not as a property of the config object. Use the ConnectionConfig discriminated
+ * union type which allows either a config object OR a string.
  */
 export interface MySQLConnectionConfig {
-  /** Connection string (e.g., mysql://user:password@host:port/database) */
-  uri?: string;
   /** Host address */
   host?: string;
   /** Port number (default: 3306) */

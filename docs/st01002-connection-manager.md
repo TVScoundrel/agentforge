@@ -134,7 +134,8 @@ await sqliteManager.initialize();
 
 ### MySQL (`MySQLConnectionConfig`)
 
-- `connectionString`: Full connection string
+Note: For connection strings, pass them directly in the `connection` property of `ConnectionConfig`, not as a property of `MySQLConnectionConfig`.
+
 - `host`: Database host
 - `port`: Port number (default: 3306)
 - `database`: Database name

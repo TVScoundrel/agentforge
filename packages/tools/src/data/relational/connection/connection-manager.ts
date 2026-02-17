@@ -113,11 +113,9 @@ export class ConnectionManager implements DatabaseConnection {
     const { drizzle } = await import('drizzle-orm/mysql2');
     const mysql = await import('mysql2/promise');
 
-    // mysql2.createPool accepts both connection strings and config objects
-    // When a string is provided, it's treated as a URI
-    const connectionConfig = typeof this.config.connection === 'string'
-      ? { uri: this.config.connection }
-      : this.config.connection;
+    // mysql2.createPool accepts both connection strings directly and config objects
+    // When a string is provided, pass it directly (not wrapped in an object)
+    const connectionConfig = this.config.connection;
 
     // createPool is synchronous and returns a Pool instance directly
     this.client = mysql.createPool(connectionConfig);
