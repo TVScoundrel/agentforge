@@ -17,16 +17,8 @@ const logger = createLogger('agentforge:tools:data:relational:connection');
  * @throws {Error} If pool configuration is invalid
  */
 function validatePoolConfig(poolConfig: PoolConfig): void {
-  if (poolConfig.min !== undefined && poolConfig.min < 0) {
-    throw new Error('Pool min connections must be >= 0');
-  }
-
   if (poolConfig.max !== undefined && poolConfig.max < 1) {
     throw new Error('Pool max connections must be >= 1');
-  }
-
-  if (poolConfig.min !== undefined && poolConfig.max !== undefined && poolConfig.min > poolConfig.max) {
-    throw new Error(`Pool min connections (${poolConfig.min}) cannot exceed max connections (${poolConfig.max})`);
   }
 
   if (poolConfig.acquireTimeoutMillis !== undefined && poolConfig.acquireTimeoutMillis < 0) {
@@ -35,14 +27,6 @@ function validatePoolConfig(poolConfig: PoolConfig): void {
 
   if (poolConfig.idleTimeoutMillis !== undefined && poolConfig.idleTimeoutMillis < 0) {
     throw new Error('Pool idle timeout must be >= 0');
-  }
-
-  if (poolConfig.connectionRetryAttempts !== undefined && poolConfig.connectionRetryAttempts < 0) {
-    throw new Error('Connection retry attempts must be >= 0');
-  }
-
-  if (poolConfig.connectionRetryDelayMillis !== undefined && poolConfig.connectionRetryDelayMillis < 0) {
-    throw new Error('Connection retry delay must be >= 0');
   }
 }
 
@@ -146,7 +130,7 @@ export class ConnectionManager implements DatabaseConnection {
     const connectionConfig = {
       ...baseConfig,
       // Map our PoolConfig to pg.Pool options
-      ...(poolConfig?.min !== undefined && { min: poolConfig.min }),
+      // Note: pg.Pool does not support a `min` option
       ...(poolConfig?.max !== undefined && { max: poolConfig.max }),
       ...(poolConfig?.idleTimeoutMillis !== undefined && { idleTimeoutMillis: poolConfig.idleTimeoutMillis }),
       ...(poolConfig?.acquireTimeoutMillis !== undefined && { connectionTimeoutMillis: poolConfig.acquireTimeoutMillis }),
@@ -155,7 +139,6 @@ export class ConnectionManager implements DatabaseConnection {
     logger.debug('Creating PostgreSQL connection pool', {
       vendor: this.vendor,
       poolConfig: {
-        min: connectionConfig.min,
         max: connectionConfig.max,
         idleTimeoutMillis: connectionConfig.idleTimeoutMillis,
         connectionTimeoutMillis: connectionConfig.connectionTimeoutMillis,
@@ -185,8 +168,8 @@ export class ConnectionManager implements DatabaseConnection {
         vendor: this.vendor,
       });
     } else {
-      const baseConfig = this.config.connection;
-      const poolConfig = baseConfig.pool;
+      // Destructure to separate pool config from mysql2 config
+      const { pool: poolConfig, ...baseConfig } = this.config.connection;
 
       // Validate pool configuration
       if (poolConfig) {
@@ -195,13 +178,10 @@ export class ConnectionManager implements DatabaseConnection {
 
       connectionConfig = {
         ...baseConfig,
-        // Remove our pool property to avoid passing it to mysql2
-        pool: undefined,
         // Map our PoolConfig to mysql2 pool options
         ...(poolConfig?.max !== undefined && { connectionLimit: poolConfig.max }),
         ...(poolConfig?.acquireTimeoutMillis !== undefined && { acquireTimeout: poolConfig.acquireTimeoutMillis }),
         ...(poolConfig?.idleTimeoutMillis !== undefined && { idleTimeout: poolConfig.idleTimeoutMillis }),
-        ...(poolConfig?.maxLifetimeMillis !== undefined && { maxIdle: poolConfig.maxLifetimeMillis }),
       };
 
       logger.debug('Creating MySQL connection pool', {
@@ -210,7 +190,6 @@ export class ConnectionManager implements DatabaseConnection {
           connectionLimit: connectionConfig.connectionLimit,
           acquireTimeout: connectionConfig.acquireTimeout,
           idleTimeout: connectionConfig.idleTimeout,
-          maxIdle: connectionConfig.maxIdle,
         }
       });
     }
@@ -299,34 +278,49 @@ export class ConnectionManager implements DatabaseConnection {
    */
   getPoolMetrics(): {
     totalCount: number;
+    activeCount: number;
     idleCount: number;
     waitingCount: number;
   } {
     if (!this.client) {
-      return { totalCount: 0, idleCount: 0, waitingCount: 0 };
+      return { totalCount: 0, activeCount: 0, idleCount: 0, waitingCount: 0 };
     }
 
     if (this.vendor === 'postgresql') {
-      // pg.Pool provides these properties
+      // pg.Pool provides these properties via public API
+      const totalCount = this.client.totalCount || 0;
+      const idleCount = this.client.idleCount || 0;
+      const waitingCount = this.client.waitingCount || 0;
+      const activeCount = Math.max(totalCount - idleCount, 0);
+
       return {
-        totalCount: this.client.totalCount || 0,
-        idleCount: this.client.idleCount || 0,
-        waitingCount: this.client.waitingCount || 0,
+        totalCount,
+        activeCount,
+        idleCount,
+        waitingCount,
       };
     } else if (this.vendor === 'mysql') {
-      // mysql2.Pool provides pool statistics through _allConnections and _freeConnections
-      const pool = this.client.pool || this.client;
+      // mysql2 does not expose a stable public API for pool metrics.
+      // To avoid relying on private/internal fields (e.g. _allConnections),
+      // we return neutral metrics here and treat MySQL pool stats as unavailable.
       return {
-        totalCount: pool._allConnections?.length || 0,
-        idleCount: pool._freeConnections?.length || 0,
-        waitingCount: pool._connectionQueue?.length || 0,
+        totalCount: 0,
+        activeCount: 0,
+        idleCount: 0,
+        waitingCount: 0,
       };
     } else {
       // SQLite uses a single connection
+      const totalCount = this.client.open ? 1 : 0;
+      const idleCount = 0;
+      const waitingCount = 0;
+      const activeCount = this.client.open ? 1 : 0;
+
       return {
-        totalCount: this.client.open ? 1 : 0,
-        idleCount: 0,
-        waitingCount: 0,
+        totalCount,
+        activeCount,
+        idleCount,
+        waitingCount,
       };
     }
   }

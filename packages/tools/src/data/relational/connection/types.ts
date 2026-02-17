@@ -10,24 +10,17 @@ import type { DatabaseVendor } from '../types.js';
  *
  * These options control how the connection pool manages database connections.
  * Different vendors may support different subsets of these options.
+ *
+ * Note: Some options are vendor-specific and may be ignored by certain drivers.
+ * See vendor-specific documentation for supported options.
  */
 export interface PoolConfig {
-  /** Minimum number of connections to maintain in the pool (default: vendor-specific) */
-  min?: number;
   /** Maximum number of connections in the pool (default: vendor-specific) */
   max?: number;
   /** Maximum time (ms) to wait for a connection from the pool before timing out */
   acquireTimeoutMillis?: number;
   /** Time (ms) a connection can remain idle before being closed (default: vendor-specific) */
   idleTimeoutMillis?: number;
-  /** Interval (ms) for checking and removing idle connections (PostgreSQL only) */
-  evictionRunIntervalMillis?: number;
-  /** Maximum lifetime (ms) of a connection before it's retired (MySQL only) */
-  maxLifetimeMillis?: number;
-  /** Number of times to retry acquiring a connection on failure */
-  connectionRetryAttempts?: number;
-  /** Delay (ms) between connection retry attempts */
-  connectionRetryDelayMillis?: number;
 }
 
 /**
@@ -87,13 +80,19 @@ export interface MySQLConnectionConfig {
 /**
  * SQLite-specific connection configuration
  *
- * Note: SQLite uses a single connection with a queue-based approach for concurrent access.
- * Pool configuration options control the queue behavior and timeout settings.
+ * Note: SQLite typically uses a single connection with serialized access rather than a
+ * traditional multi-connection pool. The `pool` configuration is accepted for API
+ * consistency and future extensions, but it may not affect runtime behavior for SQLite.
  */
 export interface SQLiteConnectionConfig {
   /** Database file path or ':memory:' for in-memory database */
   url: string;
-  /** Connection pool configuration (controls queue behavior for SQLite) */
+  /**
+   * Connection pool configuration.
+   *
+   * For SQLite this is primarily for API compatibility with other vendors and may be
+   * ignored by the underlying driver.
+   */
   pool?: PoolConfig;
   /** Additional better-sqlite3-specific options */
   [key: string]: unknown;
