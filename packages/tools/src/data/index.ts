@@ -9,4 +9,5 @@ export * from './json/index.js';
 export * from './xml/index.js';
 export * from './transformer/index.js';
 export * from './neo4j/index.js';
+export * from './relational/index.js';
 

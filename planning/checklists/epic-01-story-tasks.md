@@ -6,7 +6,7 @@
 
 ### Checklist
 - [x] Create branch `feat/st-01001-setup-drizzle-dependencies`
-- [ ] Create draft PR with story ID in title
+- [x] Create draft PR with story ID in title (PR #25)
 - [x] Install Drizzle ORM core package as dependency (`drizzle-orm`)
 - [x] Install Drizzle Kit as dependency (`drizzle-kit`)
 - [x] Add PostgreSQL driver as peer dependency (`pg` with `@types/pg`)
@@ -15,15 +15,15 @@
 - [x] Install all database drivers as dev dependencies for testing
 - [x] Add peer dependency metadata with version ranges in package.json
 - [x] Add peerDependenciesMeta to mark drivers as optional
-- [ ] Create directory structure: `packages/tools/src/data/relational/`
-- [ ] Create subdirectories: `connection/`, `query/`, `schema/`, `tools/`, `utils/`
-- [ ] Create initial `index.ts` files for each subdirectory
-- [ ] Create main `packages/tools/src/data/relational/index.ts` with exports
-- [ ] Create `packages/tools/src/data/relational/types.ts` for shared types
-- [ ] Create `packages/tools/src/data/relational/utils/peer-dependency-checker.ts`
-- [ ] Implement runtime check for missing peer dependencies with helpful error messages
-- [ ] Update `packages/tools/src/data/index.ts` to export relational module
-- [ ] Update `packages/tools/README.md` with peer dependency installation instructions
+- [x] Create directory structure: `packages/tools/src/data/relational/`
+- [x] Create subdirectories: `connection/`, `query/`, `schema/`, `tools/`, `utils/`
+- [x] Create initial `index.ts` files for each subdirectory
+- [x] Create main `packages/tools/src/data/relational/index.ts` with exports
+- [x] Create `packages/tools/src/data/relational/types.ts` for shared types
+- [x] Create `packages/tools/src/data/relational/utils/peer-dependency-checker.ts`
+- [x] Implement runtime check for missing peer dependencies with helpful error messages
+- [x] Update `packages/tools/src/data/index.ts` to export relational module
+- [x] Update `packages/tools/README.md` with peer dependency installation instructions
 - [ ] Verify TypeScript can resolve Drizzle types
 - [ ] Run `pnpm install` to install dependencies
 - [ ] Run `pnpm build` to verify build succeeds

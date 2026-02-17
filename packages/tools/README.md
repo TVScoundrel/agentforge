@@ -20,6 +20,22 @@ pnpm add @agentforge/tools
 yarn add @agentforge/tools
 ```
 
+### Optional Peer Dependencies
+
+Some tools require additional peer dependencies. Install only what you need:
+
+**Relational Database Tools** (PostgreSQL, MySQL, SQLite):
+```bash
+# PostgreSQL
+pnpm add pg @types/pg
+
+# MySQL
+pnpm add mysql2
+
+# SQLite
+pnpm add better-sqlite3 @types/better-sqlite3
+```
+
 ## 🎯 Overview
 
 This package provides **88 ready-to-use tools** organized into 5 categories:
