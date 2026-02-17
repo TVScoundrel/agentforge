@@ -97,6 +97,17 @@
 - [x] Run full test suite before finalizing the PR and record results (1101 passed, 22 skipped)
 - [x] Run lint (`pnpm lint`) before finalizing the PR and record results (No new errors in ST-01003 files; all errors pre-existing)
 - [x] Mark PR ready for review (PR #27 https://github.com/TVScoundrel/agentforge/pull/27)
+- [x] Address review comments (8 Copilot comments addressed in commit db7f758):
+  1. Removed MySQL private field usage - return neutral metrics instead
+  2. Added activeCount to pool metrics return type
+  3. Fixed misleading SQLite comment about pool config
+  4. Removed unused PoolConfig fields (min, evictionRunIntervalMillis, maxLifetimeMillis, retry fields)
+  5. Simplified validation to only validate 3 remaining fields
+  6. Removed PostgreSQL min option (not supported by pg.Pool)
+  7. Fixed MySQL pool property leak using destructuring
+  8. Removed incorrect MySQL maxLifetimeMillis mapping
+- [x] Updated tests based on review feedback (removed tests for deleted fields, added activeCount expectations)
+- [x] Updated documentation to reflect simplified PoolConfig interface
 - [ ] Wait for merge
 
 ---
