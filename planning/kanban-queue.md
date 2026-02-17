@@ -14,18 +14,19 @@
 
 ## Ready
 
+_No stories currently ready_
+
+---
+
+## In Progress
+
 ### ST-01002: Implement Connection Manager
 - **Epic:** EP-01 (Core Database Connection Management)
 - **Priority:** P0
 - **Estimate:** 4 hours
 - **Dependencies:** ST-01001 ✅ (merged)
 - **Checklist:** `planning/checklists/epic-01-story-tasks.md`
-
----
-
-## In Progress
-
-_No stories currently in progress_
+- **Branch:** `feat/st-01002-connection-manager`
 
 ---
 

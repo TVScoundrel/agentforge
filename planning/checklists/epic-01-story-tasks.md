@@ -46,7 +46,7 @@
 **Branch:** `feat/st-01002-connection-manager`
 
 ### Checklist
-- [ ] Create branch `feat/st-01002-connection-manager`
+- [x] Create branch `feat/st-01002-connection-manager`
 - [ ] Create draft PR with story ID in title
 - [ ] Create `packages/tools/src/data/relational/connection/types.ts` with connection config interfaces
 - [ ] Define `DatabaseVendor` enum (PostgreSQL, MySQL, SQLite)
