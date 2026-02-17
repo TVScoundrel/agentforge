@@ -119,7 +119,8 @@ export class ConnectionManager implements DatabaseConnection {
       ? { uri: this.config.connection }
       : this.config.connection;
 
-    this.client = await mysql.createPool(connectionConfig);
+    // createPool is synchronous and returns a Pool instance directly
+    this.client = mysql.createPool(connectionConfig);
     this.db = drizzle({ client: this.client });
   }
 

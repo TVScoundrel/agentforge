@@ -18,7 +18,7 @@ This story implements the `ConnectionManager` class, which provides vendor-agnos
 1. **`packages/tools/src/data/relational/connection/types.ts`**
    - Connection configuration type definitions
    - Vendor-specific config interfaces (PostgreSQL, MySQL, SQLite)
-   - Environment variable name constants
+   - Discriminated union types for type-safe vendor selection
 
 2. **`packages/tools/src/data/relational/connection/connection-manager.ts`**
    - Main ConnectionManager class implementation
@@ -207,7 +207,7 @@ pnpm test run packages/tools/tests/data/relational/connection-manager.test.ts
 ## Next Steps
 
 This ConnectionManager will be used in future stories for:
-- Query execution (ST-01003)
-- Schema introspection (ST-01004)
-- Migration management (ST-01005)
+- Connection pooling configuration options (ST-01003)
+- Raw SQL query execution (ST-02001)
+- Schema introspection and migration management
 
