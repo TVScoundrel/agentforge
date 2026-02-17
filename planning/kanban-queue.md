@@ -6,7 +6,7 @@
 
 - **Ready:** 0 stories
 - **In Progress:** 0 stories
-- **In Review:** 1 story (ST-01003)
+- **In Review:** 0 stories
 - **Blocked:** 0 stories
 - **Backlog:** 16 stories (waiting on dependencies)
 
@@ -26,14 +26,7 @@ _No stories currently in progress_
 
 ## In Review
 
-### ST-01003: Implement Connection Pooling
-- **Epic:** EP-01 (Core Database Connection Management)
-- **Priority:** P0
-- **Estimate:** 3 hours
-- **Dependencies:** ST-01002 ✅ (merged)
-- **Checklist:** `planning/checklists/epic-01-story-tasks.md`
-- **PR:** #27 https://github.com/TVScoundrel/agentforge/pull/27
-- **Status:** Ready for review (all validation complete)
+_No stories currently in review_
 
 ---
 
@@ -164,7 +157,7 @@ _No stories currently blocked_
 
 - ✅ ST-01001 complete - foundation established (merged 2026-02-17)
 - ✅ ST-01002 complete - connection manager implemented (merged 2026-02-17)
-- 🚧 ST-01003 (Connection Pooling) in review - PR #27
+- ✅ ST-01003 complete - connection pooling implemented (merged 2026-02-17)
 - Epic 01 (Connection Management) must complete before Epic 02 (CRUD Operations)
 - Epic 03 (Schema) can run in parallel with Epic 02 after ST-01003
 - Epic 04 (Advanced Features) depends on Epic 02 completion

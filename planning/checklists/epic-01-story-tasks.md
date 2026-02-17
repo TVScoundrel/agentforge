@@ -122,7 +122,8 @@
   2. Improved pool validation test to actually call initialize()
   3. Fixed inaccurate retry logic documentation (changed to pool exhaustion behavior)
 - [x] Resolved 3 additional review threads on GitHub (all marked as resolved)
-- [ ] Wait for merge
+- [x] Wait for merge
+  **Merged:** PR #27 https://github.com/TVScoundrel/agentforge/pull/27 merged to main (commit c62a471) on 2026-02-17
 
 ---
 
