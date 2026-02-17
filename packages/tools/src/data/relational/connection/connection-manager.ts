@@ -143,6 +143,9 @@ export class ConnectionManager extends EventEmitter implements DatabaseConnectio
   /**
    * Disconnect from the database
    * Closes the connection and cancels any pending reconnection attempts
+   *
+   * Note: Event listeners are NOT removed by this method. If you need to dispose
+   * of the ConnectionManager instance entirely, call dispose() instead.
    */
   async disconnect(): Promise<void> {
     // Increment generation to cancel any in-flight initialize() operations
@@ -174,8 +177,15 @@ export class ConnectionManager extends EventEmitter implements DatabaseConnectio
 
     // Close the connection
     await this.close();
+  }
 
-    // Clean up all event listeners to avoid memory leaks when this manager is disposed
+  /**
+   * Dispose of the ConnectionManager instance
+   * Disconnects and removes all event listeners
+   * Call this when you're done with the ConnectionManager and won't reuse it
+   */
+  async dispose(): Promise<void> {
+    await this.disconnect();
     this.removeAllListeners();
   }
 
@@ -292,8 +302,9 @@ export class ConnectionManager extends EventEmitter implements DatabaseConnectio
         state: this.state,
       });
 
-      // Attempt reconnection if configured
-      if (this.reconnectionConfig.enabled) {
+      // Attempt reconnection if configured and this initialize call is still current
+      // This prevents scheduling reconnection after disconnect() has been called
+      if (this.reconnectionConfig.enabled && currentGeneration === this.connectionGeneration) {
         this.scheduleReconnection();
       }
 

@@ -275,16 +275,14 @@ describe('Connection Lifecycle Management', () => {
     it.skipIf(!process.env.POSTGRES_CONNECTION_STRING)(
       'should handle connect() calls while in RECONNECTING state',
       async () => {
-        // Use a PostgreSQL config with invalid credentials to trigger reconnection
+        // Use the PostgreSQL connection string from env but with invalid database
+        // to trigger reconnection without assuming localhost
+        const baseConnString = process.env.POSTGRES_CONNECTION_STRING!;
+        const invalidConnString = baseConnString.replace(/\/[^/]*$/, '/nonexistent_db_for_test');
+
         const config: ConnectionConfig = {
           vendor: 'postgresql',
-          connection: {
-            host: 'localhost',
-            port: 5432,
-            database: 'nonexistent',
-            user: 'invalid',
-            password: 'invalid',
-          },
+          connection: invalidConnString,
         };
 
         const reconnectionConfig = {
@@ -366,16 +364,13 @@ describe('Connection Lifecycle Management', () => {
     it.skipIf(!process.env.POSTGRES_CONNECTION_STRING)(
       'should cancel scheduled reconnection when close() is called',
       async () => {
-        // Use a PostgreSQL config with invalid credentials to trigger reconnection
+        // Use the PostgreSQL connection string from env but with invalid database
+        const baseConnString = process.env.POSTGRES_CONNECTION_STRING!;
+        const invalidConnString = baseConnString.replace(/\/[^/]*$/, '/nonexistent_db_for_test');
+
         const config: ConnectionConfig = {
           vendor: 'postgresql',
-          connection: {
-            host: 'localhost',
-            port: 5432,
-            database: 'nonexistent',
-            user: 'invalid',
-            password: 'invalid',
-          },
+          connection: invalidConnString,
         };
 
         const reconnectionConfig = {

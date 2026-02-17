@@ -115,16 +115,20 @@ const manager = new ConnectionManager({
 
 // Connect
 await manager.connect();
-console.log(manager.isConnected()); // true
+logger.info('Connection status', { connected: manager.isConnected() }); // true
 
 // Disconnect
 await manager.disconnect();
-console.log(manager.isConnected()); // false
+logger.info('Connection status', { connected: manager.isConnected() }); // false
 ```
 
 ### With Automatic Reconnection
 
 ```typescript
+import { createLogger } from '@agentforge/core';
+
+const logger = createLogger('my-app:database');
+
 const manager = new ConnectionManager(
   {
     vendor: 'postgresql',
@@ -140,15 +144,15 @@ const manager = new ConnectionManager(
 
 // Listen for reconnection events
 manager.on('reconnecting', ({ attempt, maxAttempts, delayMs }) => {
-  console.log(`Reconnection attempt ${attempt}/${maxAttempts} in ${delayMs}ms`);
+  logger.warn('Reconnection scheduled', { attempt, maxAttempts, delayMs });
 });
 
 manager.on('error', (error) => {
-  console.error('Connection error:', error.message);
+  logger.error('Connection error', { error: error.message });
 });
 
 manager.on('connected', () => {
-  console.log('Successfully connected!');
+  logger.info('Successfully connected');
 });
 
 await manager.connect();
