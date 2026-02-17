@@ -3,5 +3,12 @@
  * @module query
  */
 
-export {};
+export type {
+  QueryParams,
+  QueryOptions,
+  QueryInput,
+  QueryExecutionResult
+} from './types.js';
+
+export { executeQuery } from './query-executor.js';
 
