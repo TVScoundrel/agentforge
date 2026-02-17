@@ -333,15 +333,14 @@ describe('ConnectionManager', () => {
         };
 
         const manager = new ConnectionManager(config);
-        try {
-          await manager.initialize();
-          expect.fail('Should have thrown an error');
-        } catch (error) {
-          expect(error).toBeInstanceOf(Error);
-          const err = error as Error;
-          expect(err.cause).toBeInstanceOf(Error);
-          expect((err.cause as Error).message).toBe('Pool max connections must be >= 1');
-        }
+        const initPromise = manager.initialize();
+
+        await expect(initPromise).rejects.toBeInstanceOf(Error);
+        await expect(initPromise).rejects.toMatchObject({
+          cause: expect.objectContaining({
+            message: 'Pool max connections must be >= 1',
+          }),
+        });
       });
 
       it('should reject negative acquire timeout', async () => {

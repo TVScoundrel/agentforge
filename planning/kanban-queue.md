@@ -164,7 +164,7 @@ _No stories currently blocked_
 
 - ✅ ST-01001 complete - foundation established (merged 2026-02-17)
 - ✅ ST-01002 complete - connection manager implemented (merged 2026-02-17)
-- � ST-01003 (Connection Pooling) in review - PR #27
+- 🚧 ST-01003 (Connection Pooling) in review - PR #27
 - Epic 01 (Connection Management) must complete before Epic 02 (CRUD Operations)
 - Epic 03 (Schema) can run in parallel with Epic 02 after ST-01003
 - Epic 04 (Advanced Features) depends on Epic 02 completion
