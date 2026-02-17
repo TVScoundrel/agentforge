@@ -32,8 +32,8 @@ export {
   MissingPeerDependencyError,
 } from './utils/index.js';
 
-// Connection management (to be implemented in future stories)
-// export * from './connection/index.js';
+// Connection management
+export * from './connection/index.js';
 
 // Query operations (to be implemented in future stories)
 // export * from './query/index.js';

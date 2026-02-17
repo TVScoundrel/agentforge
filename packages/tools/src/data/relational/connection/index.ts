@@ -3,5 +3,12 @@
  * @module connection
  */
 
-export {};
+export { ConnectionManager } from './connection-manager.js';
+export type {
+  ConnectionConfig,
+  PostgreSQLConnectionConfig,
+  MySQLConnectionConfig,
+  SQLiteConnectionConfig,
+  VendorConnectionConfig,
+} from './types.js';
 
