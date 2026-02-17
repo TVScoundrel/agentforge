@@ -5,9 +5,8 @@
  * Tests peer dependency checking, configuration validation, and basic functionality.
  */
 
-import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
+import { describe, it, expect } from 'vitest';
 import { ConnectionManager } from '../../../src/data/relational/connection/connection-manager.js';
-import { MissingPeerDependencyError } from '../../../src/data/relational/utils/peer-dependency-checker.js';
 import type { ConnectionConfig } from '../../../src/data/relational/connection/types.js';
 
 describe('ConnectionManager', () => {
@@ -156,6 +155,7 @@ describe('ConnectionManager', () => {
     // Skip if the native module is not available
     const hasSQLiteBindings = (() => {
       try {
+        // eslint-disable-next-line @typescript-eslint/no-require-imports
         const Database = require('better-sqlite3');
         // Try to actually instantiate it with an in-memory database
         const db = new Database(':memory:');
@@ -214,6 +214,7 @@ describe('ConnectionManager', () => {
   describe('Connection Health', () => {
     const hasSQLiteBindings = (() => {
       try {
+        // eslint-disable-next-line @typescript-eslint/no-require-imports
         const Database = require('better-sqlite3');
         const db = new Database(':memory:');
         db.close();
@@ -267,6 +268,7 @@ describe('ConnectionManager', () => {
   describe('Connection Lifecycle', () => {
     const hasSQLiteBindings = (() => {
       try {
+        // eslint-disable-next-line @typescript-eslint/no-require-imports
         const Database = require('better-sqlite3');
         const db = new Database(':memory:');
         db.close();
@@ -313,6 +315,7 @@ describe('ConnectionManager', () => {
   describe('Error Handling', () => {
     const hasSQLiteBindings = (() => {
       try {
+        // eslint-disable-next-line @typescript-eslint/no-require-imports
         const Database = require('better-sqlite3');
         const db = new Database(':memory:');
         db.close();
