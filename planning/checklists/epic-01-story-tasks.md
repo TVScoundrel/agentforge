@@ -47,20 +47,20 @@
 
 ### Checklist
 - [x] Create branch `feat/st-01002-connection-manager`
-- [ ] Create draft PR with story ID in title
-- [ ] Create `packages/tools/src/data/relational/connection/types.ts` with connection config interfaces
-- [ ] Define `DatabaseVendor` enum (PostgreSQL, MySQL, SQLite)
-- [ ] Define `ConnectionConfig` interface with vendor-specific options
-- [ ] Create `packages/tools/src/data/relational/connection/connection-manager.ts`
-- [ ] Implement `ConnectionManager` class with vendor detection
-- [ ] Implement PostgreSQL connection initialization using Drizzle
-- [ ] Implement MySQL connection initialization using Drizzle
-- [ ] Implement SQLite connection initialization using Drizzle
-- [ ] Add environment variable support for connection strings
-- [ ] Implement connection validation on initialization
-- [ ] Add error handling for connection failures with clear messages
-- [ ] Add TypeScript types for all public methods
-- [ ] Export ConnectionManager from `connection/index.ts`
+- [x] Create draft PR with story ID in title (PR #26)
+- [x] Create `packages/tools/src/data/relational/connection/types.ts` with connection config interfaces
+- [x] Define `DatabaseVendor` enum (PostgreSQL, MySQL, SQLite) - already exists in types.ts
+- [x] Define `ConnectionConfig` interface with vendor-specific options
+- [x] Create `packages/tools/src/data/relational/connection/connection-manager.ts`
+- [x] Implement `ConnectionManager` class with vendor detection
+- [x] Implement PostgreSQL connection initialization using Drizzle
+- [x] Implement MySQL connection initialization using Drizzle
+- [x] Implement SQLite connection initialization using Drizzle
+- [x] Add environment variable support for connection strings
+- [x] Implement connection validation on initialization
+- [x] Add error handling for connection failures with clear messages
+- [x] Add TypeScript types for all public methods
+- [x] Export ConnectionManager from `connection/index.ts`
 - [ ] Create basic unit tests for ConnectionManager
 - [ ] Add or update story documentation at docs/st01002-connection-manager.md (or document why not required)
 - [ ] Assess test impact; add/update automated tests when needed, or document why tests are not required
