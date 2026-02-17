@@ -96,7 +96,7 @@
 - [x] Assess test impact; add/update automated tests when needed, or document why tests are not required (10 tests added)
 - [x] Run full test suite before finalizing the PR and record results (1101 passed, 22 skipped)
 - [x] Run lint (`pnpm lint`) before finalizing the PR and record results (No new errors in ST-01003 files; all errors pre-existing)
-- [ ] Mark PR ready for review
+- [x] Mark PR ready for review (PR #27 https://github.com/TVScoundrel/agentforge/pull/27)
 - [ ] Wait for merge
 
 ---
