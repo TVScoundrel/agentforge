@@ -9,6 +9,23 @@ import { describe, it, expect } from 'vitest';
 import { ConnectionManager } from '../../../src/data/relational/connection/connection-manager.js';
 import type { ConnectionConfig } from '../../../src/data/relational/connection/types.js';
 
+/**
+ * Check if better-sqlite3 native bindings are available
+ * This is used to conditionally skip tests that require SQLite
+ */
+const hasSQLiteBindings = (() => {
+  try {
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
+    const Database = require('better-sqlite3');
+    // Try to actually instantiate it with an in-memory database
+    const db = new Database(':memory:');
+    db.close();
+    return true;
+  } catch {
+    return false;
+  }
+})();
+
 describe('ConnectionManager', () => {
   describe('Constructor', () => {
     it('should create instance with valid PostgreSQL config', () => {
@@ -152,19 +169,7 @@ describe('ConnectionManager', () => {
 
   describe('Initialization', () => {
     // Note: These tests require better-sqlite3 native bindings to be built
-    // Skip if the native module is not available
-    const hasSQLiteBindings = (() => {
-      try {
-        // eslint-disable-next-line @typescript-eslint/no-require-imports
-        const Database = require('better-sqlite3');
-        // Try to actually instantiate it with an in-memory database
-        const db = new Database(':memory:');
-        db.close();
-        return true;
-      } catch {
-        return false;
-      }
-    })();
+    // Skip if the native module is not available (checked via hasSQLiteBindings at top of file)
 
     it.skipIf(!hasSQLiteBindings)('should initialize SQLite connection with in-memory database', async () => {
       const config: ConnectionConfig = {
@@ -212,18 +217,6 @@ describe('ConnectionManager', () => {
   });
 
   describe('Connection Health', () => {
-    const hasSQLiteBindings = (() => {
-      try {
-        // eslint-disable-next-line @typescript-eslint/no-require-imports
-        const Database = require('better-sqlite3');
-        const db = new Database(':memory:');
-        db.close();
-        return true;
-      } catch {
-        return false;
-      }
-    })();
-
     it('should return false for uninitialized connection', async () => {
       const config: ConnectionConfig = {
         vendor: 'sqlite',
@@ -266,18 +259,6 @@ describe('ConnectionManager', () => {
   });
 
   describe('Connection Lifecycle', () => {
-    const hasSQLiteBindings = (() => {
-      try {
-        // eslint-disable-next-line @typescript-eslint/no-require-imports
-        const Database = require('better-sqlite3');
-        const db = new Database(':memory:');
-        db.close();
-        return true;
-      } catch {
-        return false;
-      }
-    })();
-
     it.skipIf(!hasSQLiteBindings)('should close connection gracefully', async () => {
       const config: ConnectionConfig = {
         vendor: 'sqlite',
@@ -313,18 +294,6 @@ describe('ConnectionManager', () => {
   });
 
   describe('Error Handling', () => {
-    const hasSQLiteBindings = (() => {
-      try {
-        // eslint-disable-next-line @typescript-eslint/no-require-imports
-        const Database = require('better-sqlite3');
-        const db = new Database(':memory:');
-        db.close();
-        return true;
-      } catch {
-        return false;
-      }
-    })();
-
     it('should throw error when executing query on uninitialized connection', async () => {
       const config: ConnectionConfig = {
         vendor: 'sqlite',

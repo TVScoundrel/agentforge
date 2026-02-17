@@ -6,6 +6,7 @@
 import type { DatabaseConnection, DatabaseVendor } from '../types.js';
 import type { ConnectionConfig } from './types.js';
 import { checkPeerDependency } from '../utils/peer-dependency-checker.js';
+import { sql } from 'drizzle-orm';
 
 /**
  * Connection manager that handles database connections for PostgreSQL, MySQL, and SQLite
@@ -83,9 +84,7 @@ export class ConnectionManager implements DatabaseConnection {
     const { drizzle } = await import('drizzle-orm/mysql2');
     const mysql = await import('mysql2/promise');
 
-    const connectionConfig = typeof this.config.connection === 'string'
-      ? this.config.connection
-      : this.config.connection;
+    const connectionConfig = this.config.connection;
 
     this.client = await mysql.createPool(connectionConfig);
     this.db = drizzle({ client: this.client });
@@ -112,20 +111,24 @@ export class ConnectionManager implements DatabaseConnection {
 
   /**
    * Execute a raw SQL query
-   * @param sql - SQL query string
-   * @param params - Query parameters
+   *
+   * NOTE: The _params parameter is currently not used. This method executes raw SQL strings
+   * without parameter binding, which is unsafe for user-provided inputs. This will be
+   * enhanced in future stories (ST-02001: Raw SQL Query Execution Tool) to support
+   * proper parameterized queries or Drizzle SQL objects.
+   *
+   * @param sqlString - SQL query string
+   * @param _params - Query parameters (currently unused - will be implemented in ST-02001)
    * @returns Query result
    */
-  async execute(sql: string, params?: unknown[]): Promise<unknown> {
+  async execute(sqlString: string, _params?: unknown[]): Promise<unknown> {
     if (!this.db) {
       throw new Error('Database not initialized. Call initialize() first.');
     }
 
-    // Use Drizzle's sql`` operator for raw queries
-    const { sql: sqlOperator } = await import('drizzle-orm');
-    
-    // For now, execute raw SQL - this will be enhanced in future stories
-    return this.db.execute(sqlOperator.raw(sql));
+    // TODO (ST-02001): Implement proper parameter binding or accept Drizzle SQL objects
+    // For now, execute raw SQL without parameter binding
+    return this.db.execute(sql.raw(sqlString));
   }
 
   /**

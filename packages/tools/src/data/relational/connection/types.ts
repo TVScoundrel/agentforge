@@ -81,12 +81,3 @@ export interface ConnectionConfig {
   connection: VendorConnectionConfig | string;
 }
 
-/**
- * Environment variable names for database connections
- */
-export const ENV_VAR_NAMES = {
-  postgresql: 'DATABASE_URL',
-  mysql: 'DATABASE_URL',
-  sqlite: 'DATABASE_URL',
-} as const;
-
