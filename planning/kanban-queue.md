@@ -4,17 +4,36 @@
 
 ## Queue Status Summary
 
-- **Ready:** 0 stories
+- **Ready:** 3 stories (ST-01004, ST-02001, ST-03001)
 - **In Progress:** 0 stories
 - **In Review:** 0 stories
 - **Blocked:** 0 stories
-- **Backlog:** 16 stories (waiting on dependencies)
+- **Backlog:** 13 stories (waiting on dependencies)
 
 ---
 
 ## Ready
 
-_No stories currently ready_
+### ST-01004: Implement Connection Lifecycle Management
+- **Epic:** EP-01
+- **Priority:** P1
+- **Estimate:** 2 hours
+- **Dependencies:** ST-01003 ✅ (merged 2026-02-17)
+- **Checklist:** `planning/checklists/epic-01-story-tasks.md`
+
+### ST-02001: Implement Raw SQL Query Execution Tool
+- **Epic:** EP-02
+- **Priority:** P0
+- **Estimate:** 4 hours
+- **Dependencies:** ST-01003 ✅ (merged 2026-02-17)
+- **Checklist:** `planning/checklists/epic-02-story-tasks.md`
+
+### ST-03001: Implement Schema Introspection Tool
+- **Epic:** EP-03
+- **Priority:** P1
+- **Estimate:** 5 hours
+- **Dependencies:** ST-01003 ✅ (merged 2026-02-17)
+- **Checklist:** `planning/checklists/epic-03-story-tasks.md`
 
 ---
 
@@ -37,20 +56,6 @@ _No stories currently blocked_
 ---
 
 ## Backlog
-
-### ST-01004: Implement Connection Lifecycle Management
-- **Epic:** EP-01
-- **Priority:** P1
-- **Estimate:** 2 hours
-- **Dependencies:** ST-01003
-- **Checklist:** `planning/checklists/epic-01-story-tasks.md`
-
-### ST-02001: Implement Raw SQL Query Execution Tool
-- **Epic:** EP-02
-- **Priority:** P0
-- **Estimate:** 4 hours
-- **Dependencies:** ST-01003 (ready)
-- **Checklist:** `planning/checklists/epic-02-story-tasks.md`
 
 ### ST-02002: Implement Type-Safe SELECT Tool
 - **Epic:** EP-02
@@ -86,13 +91,6 @@ _No stories currently blocked_
 - **Estimate:** 3 hours
 - **Dependencies:** ST-02001
 - **Checklist:** `planning/checklists/epic-02-story-tasks.md`
-
-### ST-03001: Implement Schema Introspection Tool
-- **Epic:** EP-03
-- **Priority:** P1
-- **Estimate:** 5 hours
-- **Dependencies:** ST-01003 (ready)
-- **Checklist:** `planning/checklists/epic-03-story-tasks.md`
 
 ### ST-03002: Implement Schema Metadata Utilities
 - **Epic:** EP-03
