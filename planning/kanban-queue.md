@@ -8,7 +8,6 @@
 - **In Progress:** 0 stories
 - **In Review:** 0 stories
 - **Blocked:** 0 stories
-- **Done:** 1 story
 - **Backlog:** 17 stories (waiting on dependencies)
 
 ---
@@ -39,18 +38,6 @@ _No stories currently in review_
 ## Blocked
 
 _No stories currently blocked_
-
----
-
-## Done
-
-### ST-01001: Setup Drizzle ORM Dependencies and Project Structure ✅
-- **Epic:** EP-01 (Core Database Connection Management)
-- **Priority:** P0
-- **Estimate:** 2 hours | **Actual:** ~2 hours
-- **Completed:** 2026-02-17
-- **PR:** #25 (merged to main, commit 54c0e22)
-- **Branch:** `feat/st-01001-setup-drizzle-dependencies`
 
 ---
 
