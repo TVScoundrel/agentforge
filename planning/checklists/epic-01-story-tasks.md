@@ -4,7 +4,9 @@
 
 **Branch:** `feat/st-01001-setup-drizzle-dependencies`
 
-### Implementation Tasks
+### Checklist
+- [ ] Create branch `feat/st-01001-setup-drizzle-dependencies`
+- [ ] Create draft PR with story ID in title
 - [ ] Install Drizzle ORM core package as dependency (`drizzle-orm`)
 - [ ] Install Drizzle Kit as dependency (`drizzle-kit`)
 - [ ] Add PostgreSQL driver as peer dependency (`pg` with `@types/pg`)
@@ -26,18 +28,10 @@
 - [ ] Run `pnpm install` to install dependencies
 - [ ] Run `pnpm build` to verify build succeeds
 - [ ] Test peer dependency error messages by temporarily removing a driver
-
-### Quality Gates
-- [ ] Add or update story documentation at docs/st01001-setup-drizzle-dependencies.md (or document why not required).
-- [ ] Assess test impact; add/update automated tests when needed, or document why tests are not required.
-- [ ] Run full test suite before finalizing the PR and record results.
-- [ ] Run lint (`pnpm lint`) before finalizing the PR and record results.
-
-### PR Workflow
-- [ ] Create branch `feat/st-01001-setup-drizzle-dependencies`
-- [ ] Create draft PR with story ID in title
-- [ ] Implement tasks and commit incrementally
-- [ ] Update this checklist as tasks complete
+- [ ] Add or update story documentation at docs/st01001-setup-drizzle-dependencies.md (or document why not required)
+- [ ] Assess test impact; add/update automated tests when needed, or document why tests are not required
+- [ ] Run full test suite before finalizing the PR and record results
+- [ ] Run lint (`pnpm lint`) before finalizing the PR and record results
 - [ ] Mark PR ready for review
 - [ ] Wait for merge
 
@@ -47,7 +41,9 @@
 
 **Branch:** `feat/st-01002-connection-manager`
 
-### Implementation Tasks
+### Checklist
+- [ ] Create branch `feat/st-01002-connection-manager`
+- [ ] Create draft PR with story ID in title
 - [ ] Create `packages/tools/src/data/relational/connection/types.ts` with connection config interfaces
 - [ ] Define `DatabaseVendor` enum (PostgreSQL, MySQL, SQLite)
 - [ ] Define `ConnectionConfig` interface with vendor-specific options
@@ -62,18 +58,10 @@
 - [ ] Add TypeScript types for all public methods
 - [ ] Export ConnectionManager from `connection/index.ts`
 - [ ] Create basic unit tests for ConnectionManager
-
-### Quality Gates
-- [ ] Add or update story documentation at docs/st01002-connection-manager.md (or document why not required).
-- [ ] Assess test impact; add/update automated tests when needed, or document why tests are not required.
-- [ ] Run full test suite before finalizing the PR and record results.
-- [ ] Run lint (`pnpm lint`) before finalizing the PR and record results.
-
-### PR Workflow
-- [ ] Create branch `feat/st-01002-connection-manager`
-- [ ] Create draft PR with story ID in title
-- [ ] Implement tasks and commit incrementally
-- [ ] Update this checklist as tasks complete
+- [ ] Add or update story documentation at docs/st01002-connection-manager.md (or document why not required)
+- [ ] Assess test impact; add/update automated tests when needed, or document why tests are not required
+- [ ] Run full test suite before finalizing the PR and record results
+- [ ] Run lint (`pnpm lint`) before finalizing the PR and record results
 - [ ] Mark PR ready for review
 - [ ] Wait for merge
 
@@ -83,7 +71,9 @@
 
 **Branch:** `feat/st-01003-connection-pooling`
 
-### Implementation Tasks
+### Checklist
+- [ ] Create branch `feat/st-01003-connection-pooling`
+- [ ] Create draft PR with story ID in title
 - [ ] Create `packages/tools/src/data/relational/connection/connection-pool.ts`
 - [ ] Define `PoolConfig` interface (min, max connections, timeout, etc.)
 - [ ] Implement connection pool for PostgreSQL using pg.Pool
@@ -98,18 +88,10 @@
 - [ ] Implement graceful pool shutdown
 - [ ] Update ConnectionManager to use connection pooling
 - [ ] Create unit tests for connection pooling
-
-### Quality Gates
-- [ ] Add or update story documentation at docs/st01003-connection-pooling.md (or document why not required).
-- [ ] Assess test impact; add/update automated tests when needed, or document why tests are not required.
-- [ ] Run full test suite before finalizing the PR and record results.
-- [ ] Run lint (`pnpm lint`) before finalizing the PR and record results.
-
-### PR Workflow
-- [ ] Create branch `feat/st-01003-connection-pooling`
-- [ ] Create draft PR with story ID in title
-- [ ] Implement tasks and commit incrementally
-- [ ] Update this checklist as tasks complete
+- [ ] Add or update story documentation at docs/st01003-connection-pooling.md (or document why not required)
+- [ ] Assess test impact; add/update automated tests when needed, or document why tests are not required
+- [ ] Run full test suite before finalizing the PR and record results
+- [ ] Run lint (`pnpm lint`) before finalizing the PR and record results
 - [ ] Mark PR ready for review
 - [ ] Wait for merge
 
@@ -119,7 +101,9 @@
 
 **Branch:** `feat/st-01004-connection-lifecycle`
 
-### Implementation Tasks
+### Checklist
+- [ ] Create branch `feat/st-01004-connection-lifecycle`
+- [ ] Create draft PR with story ID in title
 - [ ] Add `connect()` method to ConnectionManager
 - [ ] Add `disconnect()` method to ConnectionManager
 - [ ] Add `isConnected()` method to ConnectionManager
@@ -134,18 +118,10 @@
 - [ ] Update existing code to use lifecycle methods
 - [ ] Create unit tests for lifecycle management
 - [ ] Create integration test for reconnection logic
-
-### Quality Gates
-- [ ] Add or update story documentation at docs/st01004-connection-lifecycle.md (or document why not required).
-- [ ] Assess test impact; add/update automated tests when needed, or document why tests are not required.
-- [ ] Run full test suite before finalizing the PR and record results.
-- [ ] Run lint (`pnpm lint`) before finalizing the PR and record results.
-
-### PR Workflow
-- [ ] Create branch `feat/st-01004-connection-lifecycle`
-- [ ] Create draft PR with story ID in title
-- [ ] Implement tasks and commit incrementally
-- [ ] Update this checklist as tasks complete
+- [ ] Add or update story documentation at docs/st01004-connection-lifecycle.md (or document why not required)
+- [ ] Assess test impact; add/update automated tests when needed, or document why tests are not required
+- [ ] Run full test suite before finalizing the PR and record results
+- [ ] Run lint (`pnpm lint`) before finalizing the PR and record results
 - [ ] Mark PR ready for review
 - [ ] Wait for merge
 

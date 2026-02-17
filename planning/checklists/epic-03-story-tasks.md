@@ -4,7 +4,9 @@
 
 **Branch:** `feat/st-03001-schema-introspection-tool`
 
-### Implementation Tasks
+### Checklist
+- [ ] Create branch `feat/st-03001-schema-introspection-tool`
+- [ ] Create draft PR with story ID in title
 - [ ] Create `packages/tools/src/data/relational/schema/types.ts` with schema interfaces
 - [ ] Define `TableSchema`, `ColumnSchema`, `IndexSchema` interfaces
 - [ ] Create `packages/tools/src/data/relational/schema/schema-inspector.ts`
@@ -24,18 +26,10 @@
 - [ ] Export tool from `tools/index.ts`
 - [ ] Create unit tests for schema inspector
 - [ ] Create integration tests with real databases
-
-### Quality Gates
-- [ ] Add or update story documentation at docs/st03001-schema-introspection-tool.md (or document why not required).
-- [ ] Assess test impact; add/update automated tests when needed, or document why tests are not required.
-- [ ] Run full test suite before finalizing the PR and record results.
-- [ ] Run lint (`pnpm lint`) before finalizing the PR and record results.
-
-### PR Workflow
-- [ ] Create branch `feat/st-03001-schema-introspection-tool`
-- [ ] Create draft PR with story ID in title
-- [ ] Implement tasks and commit incrementally
-- [ ] Update this checklist as tasks complete
+- [ ] Add or update story documentation at docs/st03001-schema-introspection-tool.md (or document why not required)
+- [ ] Assess test impact; add/update automated tests when needed, or document why tests are not required
+- [ ] Run full test suite before finalizing the PR and record results
+- [ ] Run lint (`pnpm lint`) before finalizing the PR and record results
 - [ ] Mark PR ready for review
 - [ ] Wait for merge
 
@@ -45,7 +39,9 @@
 
 **Branch:** `feat/st-03002-schema-metadata-utilities`
 
-### Implementation Tasks
+### Checklist
+- [ ] Create branch `feat/st-03002-schema-metadata-utilities`
+- [ ] Create draft PR with story ID in title
 - [ ] Create `packages/tools/src/data/relational/schema/schema-validator.ts`
 - [ ] Implement table existence validator
 - [ ] Implement column existence validator
@@ -62,18 +58,10 @@
 - [ ] Create unit tests for validators
 - [ ] Create unit tests for type mapper
 - [ ] Create unit tests for schema diff
-
-### Quality Gates
-- [ ] Add or update story documentation at docs/st03002-schema-metadata-utilities.md (or document why not required).
-- [ ] Assess test impact; add/update automated tests when needed, or document why tests are not required.
-- [ ] Run full test suite before finalizing the PR and record results.
-- [ ] Run lint (`pnpm lint`) before finalizing the PR and record results.
-
-### PR Workflow
-- [ ] Create branch `feat/st-03002-schema-metadata-utilities`
-- [ ] Create draft PR with story ID in title
-- [ ] Implement tasks and commit incrementally
-- [ ] Update this checklist as tasks complete
+- [ ] Add or update story documentation at docs/st03002-schema-metadata-utilities.md (or document why not required)
+- [ ] Assess test impact; add/update automated tests when needed, or document why tests are not required
+- [ ] Run full test suite before finalizing the PR and record results
+- [ ] Run lint (`pnpm lint`) before finalizing the PR and record results
 - [ ] Mark PR ready for review
 - [ ] Wait for merge
 

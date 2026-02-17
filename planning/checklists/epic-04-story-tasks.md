@@ -4,7 +4,9 @@
 
 **Branch:** `feat/st-04001-transaction-support`
 
-### Implementation Tasks
+### Checklist
+- [ ] Create branch `feat/st-04001-transaction-support`
+- [ ] Create draft PR with story ID in title
 - [ ] Create `packages/tools/src/data/relational/query/transaction.ts`
 - [ ] Define `Transaction` interface
 - [ ] Implement transaction wrapper for multiple operations
@@ -21,18 +23,10 @@
 - [ ] Create integration tests with real databases
 - [ ] Test rollback scenarios
 - [ ] Test nested transactions
-
-### Quality Gates
-- [ ] Add or update story documentation at docs/st04001-transaction-support.md (or document why not required).
-- [ ] Assess test impact; add/update automated tests when needed, or document why tests are not required.
-- [ ] Run full test suite before finalizing the PR and record results.
-- [ ] Run lint (`pnpm lint`) before finalizing the PR and record results.
-
-### PR Workflow
-- [ ] Create branch `feat/st-04001-transaction-support`
-- [ ] Create draft PR with story ID in title
-- [ ] Implement tasks and commit incrementally
-- [ ] Update this checklist as tasks complete
+- [ ] Add or update story documentation at docs/st04001-transaction-support.md (or document why not required)
+- [ ] Assess test impact; add/update automated tests when needed, or document why tests are not required
+- [ ] Run full test suite before finalizing the PR and record results
+- [ ] Run lint (`pnpm lint`) before finalizing the PR and record results
 - [ ] Mark PR ready for review
 - [ ] Wait for merge
 
@@ -42,7 +36,9 @@
 
 **Branch:** `feat/st-04002-batch-operations`
 
-### Implementation Tasks
+### Checklist
+- [ ] Create branch `feat/st-04002-batch-operations`
+- [ ] Create draft PR with story ID in title
 - [ ] Create `packages/tools/src/data/relational/query/batch-executor.ts`
 - [ ] Implement batch insert with configurable batch size
 - [ ] Implement batch update with configurable batch size
@@ -58,18 +54,10 @@
 - [ ] Document optimal batch sizes per database vendor
 - [ ] Create unit tests for batch operations
 - [ ] Create integration tests with large datasets
-
-### Quality Gates
-- [ ] Add or update story documentation at docs/st04002-batch-operations.md (or document why not required).
-- [ ] Assess test impact; add/update automated tests when needed, or document why tests are not required.
-- [ ] Run full test suite before finalizing the PR and record results.
-- [ ] Run lint (`pnpm lint`) before finalizing the PR and record results.
-
-### PR Workflow
-- [ ] Create branch `feat/st-04002-batch-operations`
-- [ ] Create draft PR with story ID in title
-- [ ] Implement tasks and commit incrementally
-- [ ] Update this checklist as tasks complete
+- [ ] Add or update story documentation at docs/st04002-batch-operations.md (or document why not required)
+- [ ] Assess test impact; add/update automated tests when needed, or document why tests are not required
+- [ ] Run full test suite before finalizing the PR and record results
+- [ ] Run lint (`pnpm lint`) before finalizing the PR and record results
 - [ ] Mark PR ready for review
 - [ ] Wait for merge
 
@@ -79,7 +67,9 @@
 
 **Branch:** `feat/st-04003-result-streaming`
 
-### Implementation Tasks
+### Checklist
+- [ ] Create branch `feat/st-04003-result-streaming`
+- [ ] Create draft PR with story ID in title
 - [ ] Create `packages/tools/src/data/relational/query/stream-executor.ts`
 - [ ] Implement streaming SELECT results for large datasets
 - [ ] Add configurable chunk size
@@ -95,18 +85,10 @@
 - [ ] Create unit tests for stream executor
 - [ ] Create integration tests with large result sets
 - [ ] Test backpressure scenarios
-
-### Quality Gates
-- [ ] Add or update story documentation at docs/st04003-result-streaming.md (or document why not required).
-- [ ] Assess test impact; add/update automated tests when needed, or document why tests are not required.
-- [ ] Run full test suite before finalizing the PR and record results.
-- [ ] Run lint (`pnpm lint`) before finalizing the PR and record results.
-
-### PR Workflow
-- [ ] Create branch `feat/st-04003-result-streaming`
-- [ ] Create draft PR with story ID in title
-- [ ] Implement tasks and commit incrementally
-- [ ] Update this checklist as tasks complete
+- [ ] Add or update story documentation at docs/st04003-result-streaming.md (or document why not required)
+- [ ] Assess test impact; add/update automated tests when needed, or document why tests are not required
+- [ ] Run full test suite before finalizing the PR and record results
+- [ ] Run lint (`pnpm lint`) before finalizing the PR and record results
 - [ ] Mark PR ready for review
 - [ ] Wait for merge
 

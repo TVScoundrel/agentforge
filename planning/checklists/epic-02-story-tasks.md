@@ -4,7 +4,9 @@
 
 **Branch:** `feat/st-02001-raw-sql-query-tool`
 
-### Implementation Tasks
+### Checklist
+- [ ] Create branch `feat/st-02001-raw-sql-query-tool`
+- [ ] Create draft PR with story ID in title
 - [ ] Create `packages/tools/src/data/relational/query/types.ts` with query interfaces
 - [ ] Create `packages/tools/src/data/relational/query/query-executor.ts`
 - [ ] Implement `executeQuery()` function with parameterized query support
@@ -20,18 +22,10 @@
 - [ ] Export tool from `tools/index.ts`
 - [ ] Create unit tests for query executor
 - [ ] Create unit tests for relational-query tool
-
-### Quality Gates
-- [ ] Add or update story documentation at docs/st02001-raw-sql-query-tool.md (or document why not required).
-- [ ] Assess test impact; add/update automated tests when needed, or document why tests are not required.
-- [ ] Run full test suite before finalizing the PR and record results.
-- [ ] Run lint (`pnpm lint`) before finalizing the PR and record results.
-
-### PR Workflow
-- [ ] Create branch `feat/st-02001-raw-sql-query-tool`
-- [ ] Create draft PR with story ID in title
-- [ ] Implement tasks and commit incrementally
-- [ ] Update this checklist as tasks complete
+- [ ] Add or update story documentation at docs/st02001-raw-sql-query-tool.md (or document why not required)
+- [ ] Assess test impact; add/update automated tests when needed, or document why tests are not required
+- [ ] Run full test suite before finalizing the PR and record results
+- [ ] Run lint (`pnpm lint`) before finalizing the PR and record results
 - [ ] Mark PR ready for review
 - [ ] Wait for merge
 
@@ -41,7 +35,9 @@
 
 **Branch:** `feat/st-02002-type-safe-select-tool`
 
-### Implementation Tasks
+### Checklist
+- [ ] Create branch `feat/st-02002-type-safe-select-tool`
+- [ ] Create draft PR with story ID in title
 - [ ] Create `packages/tools/src/data/relational/query/query-builder.ts`
 - [ ] Implement SELECT query builder using Drizzle
 - [ ] Add support for WHERE conditions (eq, ne, gt, lt, like, in, etc.)
@@ -57,18 +53,10 @@
 - [ ] Export tool from `tools/index.ts`
 - [ ] Create unit tests for query builder
 - [ ] Create unit tests for relational-select tool
-
-### Quality Gates
-- [ ] Add or update story documentation at docs/st02002-type-safe-select-tool.md (or document why not required).
-- [ ] Assess test impact; add/update automated tests when needed, or document why tests are not required.
-- [ ] Run full test suite before finalizing the PR and record results.
-- [ ] Run lint (`pnpm lint`) before finalizing the PR and record results.
-
-### PR Workflow
-- [ ] Create branch `feat/st-02002-type-safe-select-tool`
-- [ ] Create draft PR with story ID in title
-- [ ] Implement tasks and commit incrementally
-- [ ] Update this checklist as tasks complete
+- [ ] Add or update story documentation at docs/st02002-type-safe-select-tool.md (or document why not required)
+- [ ] Assess test impact; add/update automated tests when needed, or document why tests are not required
+- [ ] Run full test suite before finalizing the PR and record results
+- [ ] Run lint (`pnpm lint`) before finalizing the PR and record results
 - [ ] Mark PR ready for review
 - [ ] Wait for merge
 
@@ -78,7 +66,9 @@
 
 **Branch:** `feat/st-02003-type-safe-insert-tool`
 
-### Implementation Tasks
+### Checklist
+- [ ] Create branch `feat/st-02003-type-safe-insert-tool`
+- [ ] Create draft PR with story ID in title
 - [ ] Extend query builder with INSERT support
 - [ ] Add support for single row insert
 - [ ] Add support for multiple row insert (batch)
@@ -94,18 +84,10 @@
 - [ ] Export tool from `tools/index.ts`
 - [ ] Create unit tests for INSERT query builder
 - [ ] Create unit tests for relational-insert tool
-
-### Quality Gates
-- [ ] Add or update story documentation at docs/st02003-type-safe-insert-tool.md (or document why not required).
-- [ ] Assess test impact; add/update automated tests when needed, or document why tests are not required.
-- [ ] Run full test suite before finalizing the PR and record results.
-- [ ] Run lint (`pnpm lint`) before finalizing the PR and record results.
-
-### PR Workflow
-- [ ] Create branch `feat/st-02003-type-safe-insert-tool`
-- [ ] Create draft PR with story ID in title
-- [ ] Implement tasks and commit incrementally
-- [ ] Update this checklist as tasks complete
+- [ ] Add or update story documentation at docs/st02003-type-safe-insert-tool.md (or document why not required)
+- [ ] Assess test impact; add/update automated tests when needed, or document why tests are not required
+- [ ] Run full test suite before finalizing the PR and record results
+- [ ] Run lint (`pnpm lint`) before finalizing the PR and record results
 - [ ] Mark PR ready for review
 - [ ] Wait for merge
 
@@ -115,7 +97,9 @@
 
 **Branch:** `feat/st-02004-type-safe-update-tool`
 
-### Implementation Tasks
+### Checklist
+- [ ] Create branch `feat/st-02004-type-safe-update-tool`
+- [ ] Create draft PR with story ID in title
 - [ ] Extend query builder with UPDATE support
 - [ ] Add support for WHERE conditions (required for safety)
 - [ ] Add support for returning count of affected rows
@@ -130,18 +114,10 @@
 - [ ] Create unit tests for UPDATE query builder
 - [ ] Create unit tests for relational-update tool
 - [ ] Test full-table update prevention
-
-### Quality Gates
-- [ ] Add or update story documentation at docs/st02004-type-safe-update-tool.md (or document why not required).
-- [ ] Assess test impact; add/update automated tests when needed, or document why tests are not required.
-- [ ] Run full test suite before finalizing the PR and record results.
-- [ ] Run lint (`pnpm lint`) before finalizing the PR and record results.
-
-### PR Workflow
-- [ ] Create branch `feat/st-02004-type-safe-update-tool`
-- [ ] Create draft PR with story ID in title
-- [ ] Implement tasks and commit incrementally
-- [ ] Update this checklist as tasks complete
+- [ ] Add or update story documentation at docs/st02004-type-safe-update-tool.md (or document why not required)
+- [ ] Assess test impact; add/update automated tests when needed, or document why tests are not required
+- [ ] Run full test suite before finalizing the PR and record results
+- [ ] Run lint (`pnpm lint`) before finalizing the PR and record results
 - [ ] Mark PR ready for review
 - [ ] Wait for merge
 
@@ -151,7 +127,9 @@
 
 **Branch:** `feat/st-02005-type-safe-delete-tool`
 
-### Implementation Tasks
+### Checklist
+- [ ] Create branch `feat/st-02005-type-safe-delete-tool`
+- [ ] Create draft PR with story ID in title
 - [ ] Extend query builder with DELETE support
 - [ ] Add support for WHERE conditions (required for safety)
 - [ ] Add support for returning count of deleted rows
@@ -166,18 +144,10 @@
 - [ ] Create unit tests for DELETE query builder
 - [ ] Create unit tests for relational-delete tool
 - [ ] Test full-table delete prevention
-
-### Quality Gates
-- [ ] Add or update story documentation at docs/st02005-type-safe-delete-tool.md (or document why not required).
-- [ ] Assess test impact; add/update automated tests when needed, or document why tests are not required.
-- [ ] Run full test suite before finalizing the PR and record results.
-- [ ] Run lint (`pnpm lint`) before finalizing the PR and record results.
-
-### PR Workflow
-- [ ] Create branch `feat/st-02005-type-safe-delete-tool`
-- [ ] Create draft PR with story ID in title
-- [ ] Implement tasks and commit incrementally
-- [ ] Update this checklist as tasks complete
+- [ ] Add or update story documentation at docs/st02005-type-safe-delete-tool.md (or document why not required)
+- [ ] Assess test impact; add/update automated tests when needed, or document why tests are not required
+- [ ] Run full test suite before finalizing the PR and record results
+- [ ] Run lint (`pnpm lint`) before finalizing the PR and record results
 - [ ] Mark PR ready for review
 - [ ] Wait for merge
 
@@ -187,7 +157,9 @@
 
 **Branch:** `feat/st-02006-sql-sanitization-security`
 
-### Implementation Tasks
+### Checklist
+- [ ] Create branch `feat/st-02006-sql-sanitization-security`
+- [ ] Create draft PR with story ID in title
 - [ ] Create `packages/tools/src/data/relational/utils/sql-sanitizer.ts`
 - [ ] Implement input validation for SQL strings
 - [ ] Implement input escaping for special characters
@@ -201,18 +173,10 @@
 - [ ] Create unit tests for common injection patterns
 - [ ] Test against OWASP SQL injection examples
 - [ ] Add security audit checklist
-
-### Quality Gates
-- [ ] Add or update story documentation at docs/st02006-sql-sanitization-security.md (or document why not required).
-- [ ] Assess test impact; add/update automated tests when needed, or document why tests are not required.
-- [ ] Run full test suite before finalizing the PR and record results.
-- [ ] Run lint (`pnpm lint`) before finalizing the PR and record results.
-
-### PR Workflow
-- [ ] Create branch `feat/st-02006-sql-sanitization-security`
-- [ ] Create draft PR with story ID in title
-- [ ] Implement tasks and commit incrementally
-- [ ] Update this checklist as tasks complete
+- [ ] Add or update story documentation at docs/st02006-sql-sanitization-security.md (or document why not required)
+- [ ] Assess test impact; add/update automated tests when needed, or document why tests are not required
+- [ ] Run full test suite before finalizing the PR and record results
+- [ ] Run lint (`pnpm lint`) before finalizing the PR and record results
 - [ ] Mark PR ready for review
 - [ ] Wait for merge
 
