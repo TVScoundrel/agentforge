@@ -6,6 +6,7 @@
  */
 
 import { describe, it, expect } from 'vitest';
+import { sql } from 'drizzle-orm';
 import { ConnectionManager } from '../../../src/data/relational/connection/connection-manager.js';
 import type { ConnectionConfig } from '../../../src/data/relational/connection/types.js';
 
@@ -301,7 +302,7 @@ describe('ConnectionManager', () => {
       };
 
       const manager = new ConnectionManager(config);
-      await expect(manager.execute('SELECT 1')).rejects.toThrow('Database not initialized');
+      await expect(manager.execute(sql`SELECT 1`)).rejects.toThrow('Database not initialized');
     });
 
     it.skipIf(!hasSQLiteBindings)('should provide clear error messages for connection failures', async () => {

@@ -4,9 +4,9 @@
 
 ## Queue Status Summary
 
-- **Ready:** 3 stories (ST-01004, ST-02001, ST-03001)
+- **Ready:** 2 stories (ST-01004, ST-03001)
 - **In Progress:** 0 stories
-- **In Review:** 0 stories
+- **In Review:** 1 story (ST-02001)
 - **Blocked:** 0 stories
 - **Backlog:** 13 stories (waiting on dependencies)
 
@@ -20,13 +20,6 @@
 - **Estimate:** 2 hours
 - **Dependencies:** ST-01003 ✅ (merged 2026-02-17)
 - **Checklist:** `planning/checklists/epic-01-story-tasks.md`
-
-### ST-02001: Implement Raw SQL Query Execution Tool
-- **Epic:** EP-02
-- **Priority:** P0
-- **Estimate:** 4 hours
-- **Dependencies:** ST-01003 ✅ (merged 2026-02-17)
-- **Checklist:** `planning/checklists/epic-02-story-tasks.md`
 
 ### ST-03001: Implement Schema Introspection Tool
 - **Epic:** EP-03
@@ -45,7 +38,14 @@ _No stories currently in progress_
 
 ## In Review
 
-_No stories currently in review_
+### ST-02001: Implement Raw SQL Query Execution Tool
+- **Epic:** EP-02
+- **Priority:** P0
+- **Estimate:** 4 hours
+- **Dependencies:** ST-01003 ✅ (merged 2026-02-17)
+- **Checklist:** `planning/checklists/epic-02-story-tasks.md`
+- **PR:** #28 https://github.com/TVScoundrel/agentforge/pull/28
+- **Status:** Ready for review (all quality gates passed)
 
 ---
 

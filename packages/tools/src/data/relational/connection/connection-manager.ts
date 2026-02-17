@@ -6,7 +6,7 @@
 import type { DatabaseConnection, DatabaseVendor } from '../types.js';
 import type { ConnectionConfig, PoolConfig } from './types.js';
 import { checkPeerDependency } from '../utils/peer-dependency-checker.js';
-import { sql } from 'drizzle-orm';
+import { sql, type SQL } from 'drizzle-orm';
 import { createLogger } from '@agentforge/core';
 
 const logger = createLogger('agentforge:tools:data:relational:connection');
@@ -235,33 +235,33 @@ export class ConnectionManager implements DatabaseConnection {
   }
 
   /**
-   * Execute a raw SQL query
+   * Execute a SQL query
    *
-   * ⚠️ SECURITY WARNING: This method is for internal use only and should NOT be exposed
-   * to user input. It executes raw SQL strings without parameter binding, which creates
-   * SQL injection vulnerabilities.
+   * Executes a parameterized SQL query using Drizzle's SQL template objects.
+   * This method provides safe parameter binding to prevent SQL injection.
    *
-   * This method is currently used only for internal health checks (SELECT 1).
-   * ST-02001 will implement a proper public API with parameter binding or Drizzle SQL objects.
-   *
-   * @internal
-   * @param sqlString - SQL query string (must be a trusted constant, never user input)
-   * @param _params - Query parameters (currently unused - will be implemented in ST-02001)
+   * @param query - Drizzle SQL template object with parameter binding
    * @returns Query result
+   *
+   * @example
+   * ```typescript
+   * import { sql } from 'drizzle-orm';
+   *
+   * const result = await manager.execute(
+   *   sql`SELECT * FROM users WHERE id = ${userId}`
+   * );
+   * ```
    */
-  async execute(sqlString: string, _params?: unknown[]): Promise<unknown> {
+  async execute(query: SQL): Promise<unknown> {
     if (!this.db) {
       throw new Error('Database not initialized. Call initialize() first.');
     }
 
     logger.debug('Executing SQL query', {
-      vendor: this.vendor,
-      sqlPreview: sqlString.substring(0, 100)
+      vendor: this.vendor
     });
 
-    // TODO (ST-02001): Implement proper parameter binding or accept Drizzle SQL objects
-    // For now, execute raw SQL without parameter binding - INTERNAL USE ONLY
-    return this.db.execute(sql.raw(sqlString));
+    return this.db.execute(query);
   }
 
   /**
@@ -360,7 +360,7 @@ export class ConnectionManager implements DatabaseConnection {
 
     try {
       // Execute a simple query to check connection health
-      await this.execute('SELECT 1');
+      await this.execute(sql`SELECT 1`);
       logger.debug('Health check passed', { vendor: this.vendor });
       return true;
     } catch (error) {

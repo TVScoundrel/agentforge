@@ -3,31 +3,32 @@
 ## ST-02001: Implement Raw SQL Query Execution Tool
 
 **Branch:** `feat/st-02001-raw-sql-query-tool`
+**PR:** #28 https://github.com/TVScoundrel/agentforge/pull/28
 
 ### Checklist
-- [ ] Create branch `feat/st-02001-raw-sql-query-tool`
-- [ ] Create draft PR with story ID in title
-- [ ] Create `packages/tools/src/data/relational/query/types.ts` with query interfaces
-- [ ] Create `packages/tools/src/data/relational/query/query-executor.ts`
-- [ ] Implement `executeQuery()` function with parameterized query support
-- [ ] Add support for SELECT, INSERT, UPDATE, DELETE statements
-- [ ] Implement parameter binding for all database vendors
-- [ ] Add result formatting to JSON
-- [ ] Create `packages/tools/src/data/relational/tools/relational-query.ts`
-- [ ] Define Zod schema for tool input (sql, params, vendor)
-- [ ] Implement tool function using query executor
-- [ ] Add error handling with sanitized error messages
-- [ ] Add query timeout configuration
-- [ ] Add query logging (optional, configurable)
-- [ ] Export tool from `tools/index.ts`
-- [ ] Create unit tests for query executor
-- [ ] Create unit tests for relational-query tool
-- [ ] Add or update story documentation at docs/st02001-raw-sql-query-tool.md (or document why not required)
-- [ ] Assess test impact; add/update automated tests when needed, or document why tests are not required
-- [ ] Run full test suite before finalizing the PR and record results
-- [ ] Run lint (`pnpm lint`) before finalizing the PR and record results
-- [ ] Mark PR ready for review
-- [ ] Wait for merge
+- [x] Create branch `feat/st-02001-raw-sql-query-tool`
+- [x] Create draft PR with story ID in title
+- [x] Create `packages/tools/src/data/relational/query/types.ts` with query interfaces
+- [x] Create `packages/tools/src/data/relational/query/query-executor.ts`
+- [x] Implement `executeQuery()` function with parameterized query support
+- [x] Add support for SELECT, INSERT, UPDATE, DELETE statements
+- [x] Implement parameter binding for all database vendors
+- [x] Add result formatting to JSON
+- [x] Create `packages/tools/src/data/relational/tools/relational-query.ts`
+- [x] Define Zod schema for tool input (sql, params, vendor)
+- [x] Implement tool function using query executor
+- [x] Add error handling with sanitized error messages
+- [ ] Add query timeout configuration (deferred to future enhancement)
+- [x] Add query logging (optional, configurable)
+- [x] Export tool from `tools/index.ts`
+- [x] Create unit tests for query executor
+- [x] Create unit tests for relational-query tool
+- [x] Add or update story documentation at docs/st02001-raw-sql-query-tool.md (or document why not required)
+- [x] Assess test impact; add/update automated tests when needed, or document why tests are not required
+- [x] Run full test suite before finalizing the PR and record results (1108 passed, 32 skipped)
+- [x] Run lint (`pnpm lint`) before finalizing the PR and record results (ST-02001 files lint-clean)
+- [x] Mark PR ready for review
+- [ ] Wait for merge (PR #28: https://github.com/TVScoundrel/agentforge/pull/28)
 
 ---
 
