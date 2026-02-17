@@ -27,8 +27,8 @@
 - [x] Assess test impact; add/update automated tests when needed, or document why tests are not required
 - [x] Run full test suite before finalizing the PR and record results (1108 passed, 32 skipped)
 - [x] Run lint (`pnpm lint`) before finalizing the PR and record results (ST-02001 files lint-clean)
-- [ ] Mark PR ready for review
-- [ ] Wait for merge
+- [x] Mark PR ready for review
+- [ ] Wait for merge (PR #28: https://github.com/TVScoundrel/agentforge/pull/28)
 
 ---
 
