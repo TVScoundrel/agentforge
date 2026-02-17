@@ -36,11 +36,14 @@ function buildParameterizedQuery(sqlString: string, params?: QueryParams): SQL {
     // Match $1, $2, etc. placeholders (PostgreSQL style)
     // Also match ? placeholders (MySQL/SQLite style)
     const placeholderRegex = /\$(\d+)|\?/g;
-    let match;
+    let match: RegExpExecArray | null;
     let hasNumberedPlaceholders = false;
     let hasQuestionMarkPlaceholders = false;
+    let placeholderCount = 0;
 
     while ((match = placeholderRegex.exec(sqlString)) !== null) {
+      placeholderCount++;
+
       // Detect mixed placeholder styles
       if (match[1]) {
         hasNumberedPlaceholders = true;
@@ -77,6 +80,11 @@ function buildParameterizedQuery(sqlString: string, params?: QueryParams): SQL {
       currentPos = match.index + match[0].length;
     }
 
+    // Validate that placeholders were found if params were provided
+    if (placeholderCount === 0) {
+      throw new Error('Parameters provided but no placeholders ($n or ?) found in SQL query');
+    }
+
     // Add any remaining SQL text
     if (currentPos < sqlString.length) {
       sqlChunks.push(sql.raw(sqlString.substring(currentPos)));
@@ -87,12 +95,15 @@ function buildParameterizedQuery(sqlString: string, params?: QueryParams): SQL {
     // Named parameters: replace :name, :age, etc. with actual values
     const sqlChunks: SQL[] = [];
     let currentPos = 0;
+    let placeholderCount = 0;
 
     // Match :paramName placeholders, but avoid PostgreSQL casts like ::int
     const namedParamRegex = /(?<!:):(\w+)/g;
-    let match;
+    let match: RegExpExecArray | null;
 
     while ((match = namedParamRegex.exec(sqlString)) !== null) {
+      placeholderCount++;
+
       // Add the SQL text before the placeholder
       if (match.index > currentPos) {
         sqlChunks.push(sql.raw(sqlString.substring(currentPos, match.index)));
@@ -108,6 +119,11 @@ function buildParameterizedQuery(sqlString: string, params?: QueryParams): SQL {
 
       sqlChunks.push(sql`${paramValue}`);
       currentPos = match.index + match[0].length;
+    }
+
+    // Validate that placeholders were found if params were provided
+    if (placeholderCount === 0) {
+      throw new Error('Parameters provided but no placeholders (:name) found in SQL query');
     }
 
     // Add any remaining SQL text

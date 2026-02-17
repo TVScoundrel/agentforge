@@ -28,6 +28,11 @@ export interface DatabaseConfig {
 
 /**
  * Database connection interface
+ *
+ * NOTE: The execute() signature was changed from execute(sql: string, params?: unknown)
+ * to execute(query: SQL) in ST-02001 to align with Drizzle's type-safe SQL template design.
+ * This is a breaking change but provides better type safety and prevents SQL injection.
+ * Parameter binding is now handled by buildParameterizedQuery() before calling execute().
  */
 export interface DatabaseConnection {
   /** Execute a Drizzle SQL query */
