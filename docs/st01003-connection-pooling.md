@@ -91,10 +91,12 @@ await manager.initialize();
 
 // Get pool metrics
 const metrics = manager.getPoolMetrics();
-console.log(`Total connections: ${metrics.totalCount}`);
-console.log(`Active connections: ${metrics.activeCount}`);
-console.log(`Idle connections: ${metrics.idleCount}`);
-console.log(`Waiting requests: ${metrics.waitingCount}`);
+// metrics = {
+//   totalCount: 5,
+//   activeCount: 2,
+//   idleCount: 3,
+//   waitingCount: 0
+// }
 ```
 
 ### MySQL with Pool Configuration
