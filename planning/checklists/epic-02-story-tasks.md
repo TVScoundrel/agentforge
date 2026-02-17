@@ -8,11 +8,11 @@
 ### Checklist
 - [x] Create branch `feat/st-02001-raw-sql-query-tool`
 - [x] Create draft PR with story ID in title
-- [ ] Create `packages/tools/src/data/relational/query/types.ts` with query interfaces
-- [ ] Create `packages/tools/src/data/relational/query/query-executor.ts`
-- [ ] Implement `executeQuery()` function with parameterized query support
-- [ ] Add support for SELECT, INSERT, UPDATE, DELETE statements
-- [ ] Implement parameter binding for all database vendors
+- [x] Create `packages/tools/src/data/relational/query/types.ts` with query interfaces
+- [x] Create `packages/tools/src/data/relational/query/query-executor.ts`
+- [x] Implement `executeQuery()` function with parameterized query support
+- [x] Add support for SELECT, INSERT, UPDATE, DELETE statements
+- [x] Implement parameter binding for all database vendors
 - [ ] Add result formatting to JSON
 - [ ] Create `packages/tools/src/data/relational/tools/relational-query.ts`
 - [ ] Define Zod schema for tool input (sql, params, vendor)

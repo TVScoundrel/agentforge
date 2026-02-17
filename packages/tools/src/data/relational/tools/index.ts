@@ -3,5 +3,5 @@
  * @module tools
  */
 
-export {};
+export { relationalQuery } from './relational-query.js';
 

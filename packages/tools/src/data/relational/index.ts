@@ -35,12 +35,12 @@ export {
 // Connection management
 export * from './connection/index.js';
 
-// Query operations (to be implemented in future stories)
-// export * from './query/index.js';
+// Query operations
+export * from './query/index.js';
 
 // Schema introspection (to be implemented in future stories)
 // export * from './schema/index.js';
 
-// LangGraph tools (to be implemented in future stories)
-// export * from './tools/index.js';
+// LangGraph tools
+export * from './tools/index.js';
 
