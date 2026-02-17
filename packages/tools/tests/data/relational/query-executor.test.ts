@@ -98,6 +98,18 @@ describe('Query Executor', () => {
       });
     });
 
+    it.skipIf(!hasSQLiteBindings)('should execute SELECT with PostgreSQL-style $n positional parameters', async () => {
+      const result = await executeQuery(manager, {
+        sql: 'SELECT $1 as value',
+        params: [42],
+        vendor: 'sqlite'
+      });
+
+      expect(result.rows).toHaveLength(1);
+      expect(result.rows[0]).toEqual({ value: 42 });
+      expect(result.executionTime).toBeGreaterThan(0);
+    });
+
     it.skipIf(!hasSQLiteBindings)('should execute SELECT with named parameters', async () => {
       // Insert test data
       await executeQuery(manager, {

@@ -18,7 +18,7 @@
 - [x] Define Zod schema for tool input (sql, params, vendor)
 - [x] Implement tool function using query executor
 - [x] Add error handling with sanitized error messages
-- [x] Add query timeout configuration
+- [ ] Add query timeout configuration (deferred to future enhancement)
 - [x] Add query logging (optional, configurable)
 - [x] Export tool from `tools/index.ts`
 - [x] Create unit tests for query executor

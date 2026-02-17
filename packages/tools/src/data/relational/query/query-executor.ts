@@ -22,7 +22,20 @@ const logger = createLogger('agentforge:tools:data:relational:query');
  */
 function buildParameterizedQuery(sqlString: string, params?: QueryParams): SQL {
   if (!params) {
-    // No parameters - use sql.raw() for static queries
+    // No parameters provided - ensure the query does not contain placeholders
+    // Match:
+    // - $1, $2, ... (PostgreSQL-style positional placeholders)
+    // - ? (MySQL/SQLite-style positional placeholders)
+    // - :name (named placeholders)
+    const placeholderPattern = /(\$(\d+))|(\?)|(:[a-zA-Z_][a-zA-Z0-9_]*)/;
+
+    if (placeholderPattern.test(sqlString)) {
+      throw new Error(
+        'Missing parameters: SQL query contains placeholders but no params were provided',
+      );
+    }
+
+    // No placeholders - safe to treat as a static query
     return sql.raw(sqlString);
   }
 
