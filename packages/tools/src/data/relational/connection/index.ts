@@ -3,7 +3,7 @@
  * @module connection
  */
 
-export { ConnectionManager } from './connection-manager.js';
+export { ConnectionManager, ConnectionState } from './connection-manager.js';
 export type {
   ConnectionConfig,
   PostgreSQLConnectionConfig,
@@ -12,4 +12,5 @@ export type {
   VendorConnectionConfig,
   PoolConfig,
 } from './types.js';
+export type { ConnectionEvent, ReconnectionConfig } from './connection-manager.js';
 

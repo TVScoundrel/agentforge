@@ -8,8 +8,38 @@ import type { ConnectionConfig, PoolConfig } from './types.js';
 import { checkPeerDependency } from '../utils/peer-dependency-checker.js';
 import { sql, type SQL } from 'drizzle-orm';
 import { createLogger } from '@agentforge/core';
+import { EventEmitter } from 'events';
 
 const logger = createLogger('agentforge:tools:data:relational:connection');
+
+/**
+ * Connection state enum
+ */
+export enum ConnectionState {
+  DISCONNECTED = 'disconnected',
+  CONNECTING = 'connecting',
+  CONNECTED = 'connected',
+  ERROR = 'error',
+}
+
+/**
+ * Connection lifecycle events
+ */
+export type ConnectionEvent = 'connected' | 'disconnected' | 'error' | 'reconnecting';
+
+/**
+ * Reconnection configuration
+ */
+export interface ReconnectionConfig {
+  /** Enable automatic reconnection on connection loss */
+  enabled: boolean;
+  /** Maximum number of reconnection attempts (0 = infinite) */
+  maxAttempts: number;
+  /** Base delay in milliseconds for exponential backoff */
+  baseDelayMs: number;
+  /** Maximum delay in milliseconds between reconnection attempts */
+  maxDelayMs: number;
+}
 
 /**
  * Validate pool configuration
@@ -32,35 +62,111 @@ function validatePoolConfig(poolConfig: PoolConfig): void {
 
 /**
  * Connection manager that handles database connections for PostgreSQL, MySQL, and SQLite
- * using Drizzle ORM
+ * using Drizzle ORM with lifecycle management and automatic reconnection
  */
-export class ConnectionManager implements DatabaseConnection {
+export class ConnectionManager extends EventEmitter implements DatabaseConnection {
   private vendor: DatabaseVendor;
   private db: any; // Drizzle database instance
   private client: any; // Underlying database client (pg.Pool, mysql2.Pool, or better-sqlite3.Database)
   private config: ConnectionConfig;
+  private state: ConnectionState = ConnectionState.DISCONNECTED;
+  private reconnectionConfig: ReconnectionConfig;
+  private reconnectionAttempts = 0;
+  private reconnectionTimer: NodeJS.Timeout | null = null;
 
   /**
    * Create a new ConnectionManager instance
    * @param config - Connection configuration
+   * @param reconnectionConfig - Optional reconnection configuration
    */
-  constructor(config: ConnectionConfig) {
+  constructor(
+    config: ConnectionConfig,
+    reconnectionConfig?: Partial<ReconnectionConfig>
+  ) {
+    super();
     this.config = config;
     this.vendor = config.vendor;
-    
+
+    // Default reconnection configuration
+    this.reconnectionConfig = {
+      enabled: reconnectionConfig?.enabled ?? false,
+      maxAttempts: reconnectionConfig?.maxAttempts ?? 5,
+      baseDelayMs: reconnectionConfig?.baseDelayMs ?? 1000,
+      maxDelayMs: reconnectionConfig?.maxDelayMs ?? 30000,
+    };
+
     // Check for required peer dependency before attempting connection
     checkPeerDependency(this.vendor);
   }
 
   /**
-   * Initialize the database connection
+   * Connect to the database
+   * Initializes the connection and sets up automatic reconnection if configured
    * @throws {Error} If connection fails or configuration is invalid
    */
-  async initialize(): Promise<void> {
+  async connect(): Promise<void> {
+    if (this.state === ConnectionState.CONNECTED) {
+      logger.debug('Already connected', { vendor: this.vendor });
+      return;
+    }
+
+    if (this.state === ConnectionState.CONNECTING) {
+      logger.debug('Connection already in progress', { vendor: this.vendor });
+      return;
+    }
+
+    await this.initialize();
+  }
+
+  /**
+   * Disconnect from the database
+   * Closes the connection and cancels any pending reconnection attempts
+   */
+  async disconnect(): Promise<void> {
+    // Cancel any pending reconnection
+    if (this.reconnectionTimer) {
+      clearTimeout(this.reconnectionTimer);
+      this.reconnectionTimer = null;
+    }
+
+    // Reset reconnection attempts
+    this.reconnectionAttempts = 0;
+
+    // Close the connection
+    await this.close();
+  }
+
+  /**
+   * Check if the connection is currently connected
+   * @returns true if connected, false otherwise
+   */
+  isConnected(): boolean {
+    return this.state === ConnectionState.CONNECTED;
+  }
+
+  /**
+   * Get the current connection state
+   * @returns Current connection state
+   */
+  getState(): ConnectionState {
+    return this.state;
+  }
+
+  /**
+   * Initialize the database connection
+   * @throws {Error} If connection fails or configuration is invalid
+   * @private
+   */
+  private async initialize(): Promise<void> {
     const startTime = Date.now();
+
+    // Set state to connecting
+    this.setState(ConnectionState.CONNECTING);
+
     logger.info('Initializing database connection', {
       vendor: this.vendor,
-      connectionType: typeof this.config.connection
+      connectionType: typeof this.config.connection,
+      state: this.state,
     });
 
     try {
@@ -85,23 +191,122 @@ export class ConnectionManager implements DatabaseConnection {
         throw new Error(`Failed to establish healthy connection to ${this.vendor} database`);
       }
 
+      // Set state to connected and emit event
+      this.setState(ConnectionState.CONNECTED);
+      this.emit('connected');
+
+      // Reset reconnection attempts on successful connection
+      this.reconnectionAttempts = 0;
+
       logger.info('Database connection initialized successfully', {
         vendor: this.vendor,
-        duration: Date.now() - startTime
+        duration: Date.now() - startTime,
+        state: this.state,
       });
     } catch (error) {
       const errorMessage = `Failed to initialize ${this.vendor} connection`;
+
+      // Set state to error and emit event
+      this.setState(ConnectionState.ERROR);
+      this.emit('error', error);
+
       logger.error(errorMessage, {
         vendor: this.vendor,
         error: error instanceof Error ? error.message : String(error),
-        duration: Date.now() - startTime
+        duration: Date.now() - startTime,
+        state: this.state,
       });
+
+      // Attempt reconnection if configured
+      if (this.reconnectionConfig.enabled) {
+        this.scheduleReconnection();
+      }
 
       if (error instanceof Error) {
         throw new Error(errorMessage, { cause: error });
       }
       throw new Error(`${errorMessage}: ${String(error)}`);
     }
+  }
+
+  /**
+   * Set the connection state and log the change
+   * @param newState - New connection state
+   * @private
+   */
+  private setState(newState: ConnectionState): void {
+    const oldState = this.state;
+    this.state = newState;
+
+    if (oldState !== newState) {
+      logger.debug('Connection state changed', {
+        vendor: this.vendor,
+        oldState,
+        newState,
+      });
+    }
+  }
+
+  /**
+   * Schedule a reconnection attempt with exponential backoff
+   * @private
+   */
+  private scheduleReconnection(): void {
+    // Check if we've exceeded max attempts
+    if (
+      this.reconnectionConfig.maxAttempts > 0 &&
+      this.reconnectionAttempts >= this.reconnectionConfig.maxAttempts
+    ) {
+      logger.error('Max reconnection attempts reached', {
+        vendor: this.vendor,
+        attempts: this.reconnectionAttempts,
+        maxAttempts: this.reconnectionConfig.maxAttempts,
+      });
+      return;
+    }
+
+    // Calculate delay with exponential backoff
+    const delay = Math.min(
+      this.reconnectionConfig.baseDelayMs * Math.pow(2, this.reconnectionAttempts),
+      this.reconnectionConfig.maxDelayMs
+    );
+
+    this.reconnectionAttempts++;
+
+    logger.info('Scheduling reconnection attempt', {
+      vendor: this.vendor,
+      attempt: this.reconnectionAttempts,
+      maxAttempts: this.reconnectionConfig.maxAttempts,
+      delayMs: delay,
+    });
+
+    this.emit('reconnecting', {
+      attempt: this.reconnectionAttempts,
+      maxAttempts: this.reconnectionConfig.maxAttempts,
+      delayMs: delay,
+    });
+
+    // Schedule reconnection
+    this.reconnectionTimer = setTimeout(async () => {
+      this.reconnectionTimer = null;
+
+      try {
+        logger.info('Attempting reconnection', {
+          vendor: this.vendor,
+          attempt: this.reconnectionAttempts,
+        });
+
+        await this.initialize();
+      } catch (error) {
+        logger.error('Reconnection attempt failed', {
+          vendor: this.vendor,
+          attempt: this.reconnectionAttempts,
+          error: error instanceof Error ? error.message : String(error),
+        });
+
+        // The initialize() method will schedule another reconnection if needed
+      }
+    }, delay);
   }
 
   /**
@@ -323,10 +528,14 @@ export class ConnectionManager implements DatabaseConnection {
 
   /**
    * Close the database connection
+   * @private
    */
-  async close(): Promise<void> {
+  private async close(): Promise<void> {
     if (this.client) {
-      logger.info('Closing database connection', { vendor: this.vendor });
+      logger.info('Closing database connection', {
+        vendor: this.vendor,
+        state: this.state,
+      });
 
       try {
         if (this.vendor === 'postgresql' || this.vendor === 'mysql') {
@@ -334,17 +543,35 @@ export class ConnectionManager implements DatabaseConnection {
         } else if (this.vendor === 'sqlite') {
           this.client.close();
         }
-        logger.debug('Database connection closed successfully', { vendor: this.vendor });
+
+        // Set state to disconnected and emit event
+        this.setState(ConnectionState.DISCONNECTED);
+        this.emit('disconnected');
+
+        logger.debug('Database connection closed successfully', {
+          vendor: this.vendor,
+          state: this.state,
+        });
       } catch (error) {
         logger.error('Error closing database connection', {
           vendor: this.vendor,
-          error: error instanceof Error ? error.message : String(error)
+          error: error instanceof Error ? error.message : String(error),
+          state: this.state,
         });
+
+        // Set state to error even if close fails
+        this.setState(ConnectionState.ERROR);
+        this.emit('error', error);
+
         // Don't re-throw - we still want to clean up state
       } finally {
         this.client = null;
         this.db = null;
       }
+    } else if (this.state !== ConnectionState.DISCONNECTED) {
+      // No client but not disconnected - set state
+      this.setState(ConnectionState.DISCONNECTED);
+      this.emit('disconnected');
     }
   }
 
