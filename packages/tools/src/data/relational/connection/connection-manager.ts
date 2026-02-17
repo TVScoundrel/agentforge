@@ -4,12 +4,47 @@
  */
 
 import type { DatabaseConnection, DatabaseVendor } from '../types.js';
-import type { ConnectionConfig } from './types.js';
+import type { ConnectionConfig, PoolConfig } from './types.js';
 import { checkPeerDependency } from '../utils/peer-dependency-checker.js';
 import { sql } from 'drizzle-orm';
 import { createLogger } from '@agentforge/core';
 
 const logger = createLogger('agentforge:tools:data:relational:connection');
+
+/**
+ * Validate pool configuration
+ * @param poolConfig - Pool configuration to validate
+ * @throws {Error} If pool configuration is invalid
+ */
+function validatePoolConfig(poolConfig: PoolConfig): void {
+  if (poolConfig.min !== undefined && poolConfig.min < 0) {
+    throw new Error('Pool min connections must be >= 0');
+  }
+
+  if (poolConfig.max !== undefined && poolConfig.max < 1) {
+    throw new Error('Pool max connections must be >= 1');
+  }
+
+  if (poolConfig.min !== undefined && poolConfig.max !== undefined && poolConfig.min > poolConfig.max) {
+    throw new Error(`Pool min connections (${poolConfig.min}) cannot exceed max connections (${poolConfig.max})`);
+  }
+
+  if (poolConfig.acquireTimeoutMillis !== undefined && poolConfig.acquireTimeoutMillis < 0) {
+    throw new Error('Pool acquire timeout must be >= 0');
+  }
+
+  if (poolConfig.idleTimeoutMillis !== undefined && poolConfig.idleTimeoutMillis < 0) {
+    throw new Error('Pool idle timeout must be >= 0');
+  }
+
+  if (poolConfig.connectionRetryAttempts !== undefined && poolConfig.connectionRetryAttempts < 0) {
+    throw new Error('Connection retry attempts must be >= 0');
+  }
+
+  if (poolConfig.connectionRetryDelayMillis !== undefined && poolConfig.connectionRetryDelayMillis < 0) {
+    throw new Error('Connection retry delay must be >= 0');
+  }
+}
 
 /**
  * Connection manager that handles database connections for PostgreSQL, MySQL, and SQLite
@@ -103,6 +138,11 @@ export class ConnectionManager implements DatabaseConnection {
       ? this.config.connection.pool
       : undefined;
 
+    // Validate pool configuration
+    if (poolConfig) {
+      validatePoolConfig(poolConfig);
+    }
+
     const connectionConfig = {
       ...baseConfig,
       // Map our PoolConfig to pg.Pool options
@@ -147,6 +187,11 @@ export class ConnectionManager implements DatabaseConnection {
     } else {
       const baseConfig = this.config.connection;
       const poolConfig = baseConfig.pool;
+
+      // Validate pool configuration
+      if (poolConfig) {
+        validatePoolConfig(poolConfig);
+      }
 
       connectionConfig = {
         ...baseConfig,
@@ -196,8 +241,9 @@ export class ConnectionManager implements DatabaseConnection {
       throw new Error('SQLite connection requires a url property');
     }
 
-    // Log pool config if provided (for awareness, but SQLite doesn't use traditional pooling)
+    // Validate and log pool config if provided (for awareness, but SQLite doesn't use traditional pooling)
     if (typeof this.config.connection === 'object' && this.config.connection.pool) {
+      validatePoolConfig(this.config.connection.pool);
       logger.debug('SQLite pool configuration provided but not applied (SQLite uses single connection)', {
         vendor: this.vendor,
         poolConfig: this.config.connection.pool,

@@ -314,5 +314,261 @@ describe('ConnectionManager', () => {
       await expect(manager.initialize()).rejects.toThrow(/Failed to initialize sqlite connection/);
     });
   });
+
+  describe('Connection Pooling', () => {
+    describe('Pool Configuration Validation', () => {
+      it('should reject negative min connections', async () => {
+        const config: ConnectionConfig = {
+          vendor: 'postgresql',
+          connection: {
+            host: 'localhost',
+            port: 5432,
+            database: 'test',
+            user: 'testuser',
+            password: 'testpass',
+            pool: {
+              min: -1,
+              max: 10,
+            },
+          },
+        };
+
+        const manager = new ConnectionManager(config);
+        try {
+          await manager.initialize();
+          expect.fail('Should have thrown an error');
+        } catch (error) {
+          expect(error).toBeInstanceOf(Error);
+          const err = error as Error;
+          expect(err.message).toContain('Failed to initialize postgresql connection');
+          expect(err.cause).toBeInstanceOf(Error);
+          expect((err.cause as Error).message).toBe('Pool min connections must be >= 0');
+        }
+      });
+
+      it('should reject max connections less than 1', async () => {
+        const config: ConnectionConfig = {
+          vendor: 'postgresql',
+          connection: {
+            host: 'localhost',
+            port: 5432,
+            database: 'test',
+            user: 'testuser',
+            password: 'testpass',
+            pool: {
+              min: 0,
+              max: 0,
+            },
+          },
+        };
+
+        const manager = new ConnectionManager(config);
+        try {
+          await manager.initialize();
+          expect.fail('Should have thrown an error');
+        } catch (error) {
+          expect(error).toBeInstanceOf(Error);
+          const err = error as Error;
+          expect(err.cause).toBeInstanceOf(Error);
+          expect((err.cause as Error).message).toBe('Pool max connections must be >= 1');
+        }
+      });
+
+      it('should reject min greater than max', async () => {
+        const config: ConnectionConfig = {
+          vendor: 'postgresql',
+          connection: {
+            host: 'localhost',
+            port: 5432,
+            database: 'test',
+            user: 'testuser',
+            password: 'testpass',
+            pool: {
+              min: 10,
+              max: 5,
+            },
+          },
+        };
+
+        const manager = new ConnectionManager(config);
+        try {
+          await manager.initialize();
+          expect.fail('Should have thrown an error');
+        } catch (error) {
+          expect(error).toBeInstanceOf(Error);
+          const err = error as Error;
+          expect(err.cause).toBeInstanceOf(Error);
+          expect((err.cause as Error).message).toBe('Pool min connections (10) cannot exceed max connections (5)');
+        }
+      });
+
+      it('should reject negative acquire timeout', async () => {
+        const config: ConnectionConfig = {
+          vendor: 'postgresql',
+          connection: {
+            host: 'localhost',
+            port: 5432,
+            database: 'test',
+            user: 'testuser',
+            password: 'testpass',
+            pool: {
+              acquireTimeoutMillis: -1000,
+            },
+          },
+        };
+
+        const manager = new ConnectionManager(config);
+        try {
+          await manager.initialize();
+          expect.fail('Should have thrown an error');
+        } catch (error) {
+          expect(error).toBeInstanceOf(Error);
+          const err = error as Error;
+          expect(err.cause).toBeInstanceOf(Error);
+          expect((err.cause as Error).message).toBe('Pool acquire timeout must be >= 0');
+        }
+      });
+
+      it('should reject negative idle timeout', async () => {
+        const config: ConnectionConfig = {
+          vendor: 'postgresql',
+          connection: {
+            host: 'localhost',
+            port: 5432,
+            database: 'test',
+            user: 'testuser',
+            password: 'testpass',
+            pool: {
+              idleTimeoutMillis: -5000,
+            },
+          },
+        };
+
+        const manager = new ConnectionManager(config);
+        try {
+          await manager.initialize();
+          expect.fail('Should have thrown an error');
+        } catch (error) {
+          expect(error).toBeInstanceOf(Error);
+          const err = error as Error;
+          expect(err.cause).toBeInstanceOf(Error);
+          expect((err.cause as Error).message).toBe('Pool idle timeout must be >= 0');
+        }
+      });
+
+      it('should reject negative retry attempts', async () => {
+        const config: ConnectionConfig = {
+          vendor: 'postgresql',
+          connection: {
+            host: 'localhost',
+            port: 5432,
+            database: 'test',
+            user: 'testuser',
+            password: 'testpass',
+            pool: {
+              connectionRetryAttempts: -3,
+            },
+          },
+        };
+
+        const manager = new ConnectionManager(config);
+        try {
+          await manager.initialize();
+          expect.fail('Should have thrown an error');
+        } catch (error) {
+          expect(error).toBeInstanceOf(Error);
+          const err = error as Error;
+          expect(err.cause).toBeInstanceOf(Error);
+          expect((err.cause as Error).message).toBe('Connection retry attempts must be >= 0');
+        }
+      });
+
+      it('should reject negative retry delay', async () => {
+        const config: ConnectionConfig = {
+          vendor: 'postgresql',
+          connection: {
+            host: 'localhost',
+            port: 5432,
+            database: 'test',
+            user: 'testuser',
+            password: 'testpass',
+            pool: {
+              connectionRetryDelayMillis: -1000,
+            },
+          },
+        };
+
+        const manager = new ConnectionManager(config);
+        try {
+          await manager.initialize();
+          expect.fail('Should have thrown an error');
+        } catch (error) {
+          expect(error).toBeInstanceOf(Error);
+          const err = error as Error;
+          expect(err.cause).toBeInstanceOf(Error);
+          expect((err.cause as Error).message).toBe('Connection retry delay must be >= 0');
+        }
+      });
+
+      it('should accept valid pool configuration', () => {
+        const config: ConnectionConfig = {
+          vendor: 'postgresql',
+          connection: {
+            host: 'localhost',
+            port: 5432,
+            database: 'test',
+            user: 'testuser',
+            password: 'testpass',
+            pool: {
+              min: 2,
+              max: 10,
+              acquireTimeoutMillis: 30000,
+              idleTimeoutMillis: 10000,
+              connectionRetryAttempts: 3,
+              connectionRetryDelayMillis: 1000,
+            },
+          },
+        };
+
+        expect(() => new ConnectionManager(config)).not.toThrow();
+      });
+    });
+
+    describe('Pool Metrics', () => {
+      it('should return zero metrics when not initialized', () => {
+        const config: ConnectionConfig = {
+          vendor: 'postgresql',
+          connection: 'postgresql://localhost:5432/test',
+        };
+
+        const manager = new ConnectionManager(config);
+        const metrics = manager.getPoolMetrics();
+
+        expect(metrics).toEqual({
+          totalCount: 0,
+          idleCount: 0,
+          waitingCount: 0,
+        });
+      });
+
+      it.skipIf(!hasSQLiteBindings)('should return metrics for SQLite connection', async () => {
+        const config: ConnectionConfig = {
+          vendor: 'sqlite',
+          connection: ':memory:',
+        };
+
+        const manager = new ConnectionManager(config);
+        await manager.initialize();
+
+        const metrics = manager.getPoolMetrics();
+
+        expect(metrics.totalCount).toBe(1);
+        expect(metrics.idleCount).toBe(0);
+        expect(metrics.waitingCount).toBe(0);
+
+        await manager.close();
+      });
+    });
+  });
 });
 
