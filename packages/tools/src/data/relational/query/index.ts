@@ -5,7 +5,6 @@
 
 export type {
   QueryParams,
-  QueryOptions,
   QueryInput,
   QueryExecutionResult
 } from './types.js';

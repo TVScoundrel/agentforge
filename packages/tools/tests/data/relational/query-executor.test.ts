@@ -42,8 +42,11 @@ describe('Query Executor', () => {
       manager = new ConnectionManager(config);
       await manager.initialize();
 
-      // Create test table
-      await manager['db'].run('CREATE TABLE users (id INTEGER PRIMARY KEY, name TEXT, email TEXT)');
+      // Create test table using the public query execution API
+      await executeQuery(manager, {
+        sql: 'CREATE TABLE users (id INTEGER PRIMARY KEY, name TEXT, email TEXT)',
+        vendor: 'sqlite',
+      });
     });
 
     afterAll(async () => {

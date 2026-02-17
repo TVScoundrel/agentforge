@@ -73,14 +73,14 @@ Created comprehensive unit tests:
    - Conditional execution using `it.skipIf(!hasSQLiteBindings)`
 
 2. **Tool Tests** (`packages/tools/tests/data/relational/relational-query-tool.test.ts`)
-   - 13 tests covering metadata, schema validation, and invocation
+   - Tests covering metadata, schema validation, and invocation
    - Tests for positional and named parameters
-   - Tests for optional timeout and maxRows
    - Error handling tests
+   - Note: timeout and maxRows are planned features (not yet implemented)
 
 **Test Results:**
-- 32 tests passed, 19 skipped (SQLite binding checks)
-- All tests passing in full suite (1108 passed, 32 skipped)
+- All tests passing in full suite
+- Conditional tests skipped when SQLite bindings unavailable
 
 ## Quality Gates
 

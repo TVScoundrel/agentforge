@@ -57,7 +57,8 @@ describe('Relational Query Tool', () => {
     it('should validate required fields', () => {
       const result = relationalQuery.schema.safeParse({
         sql: 'SELECT 1',
-        vendor: 'sqlite'
+        vendor: 'sqlite',
+        connectionString: ':memory:'
       });
 
       expect(result.success).toBe(true);
@@ -66,7 +67,8 @@ describe('Relational Query Tool', () => {
     it('should reject invalid vendor', () => {
       const result = relationalQuery.schema.safeParse({
         sql: 'SELECT 1',
-        vendor: 'invalid'
+        vendor: 'invalid',
+        connectionString: ':memory:'
       });
 
       expect(result.success).toBe(false);
@@ -76,7 +78,8 @@ describe('Relational Query Tool', () => {
       const result = relationalQuery.schema.safeParse({
         sql: 'SELECT * FROM users WHERE id = ?',
         params: [42],
-        vendor: 'sqlite'
+        vendor: 'sqlite',
+        connectionString: ':memory:'
       });
 
       expect(result.success).toBe(true);
@@ -86,27 +89,8 @@ describe('Relational Query Tool', () => {
       const result = relationalQuery.schema.safeParse({
         sql: 'SELECT * FROM users WHERE name = :name',
         params: { name: 'John' },
-        vendor: 'postgresql'
-      });
-
-      expect(result.success).toBe(true);
-    });
-
-    it('should accept optional timeout', () => {
-      const result = relationalQuery.schema.safeParse({
-        sql: 'SELECT 1',
-        vendor: 'sqlite',
-        timeout: 5000
-      });
-
-      expect(result.success).toBe(true);
-    });
-
-    it('should accept optional maxRows', () => {
-      const result = relationalQuery.schema.safeParse({
-        sql: 'SELECT * FROM users',
-        vendor: 'sqlite',
-        maxRows: 100
+        vendor: 'postgresql',
+        connectionString: 'postgresql://localhost/test'
       });
 
       expect(result.success).toBe(true);

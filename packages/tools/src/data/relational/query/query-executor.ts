@@ -37,8 +37,20 @@ function buildParameterizedQuery(sqlString: string, params?: QueryParams): SQL {
     // Also match ? placeholders (MySQL/SQLite style)
     const placeholderRegex = /\$(\d+)|\?/g;
     let match;
+    let hasNumberedPlaceholders = false;
+    let hasQuestionMarkPlaceholders = false;
 
     while ((match = placeholderRegex.exec(sqlString)) !== null) {
+      // Detect mixed placeholder styles
+      if (match[1]) {
+        hasNumberedPlaceholders = true;
+      } else {
+        hasQuestionMarkPlaceholders = true;
+      }
+
+      if (hasNumberedPlaceholders && hasQuestionMarkPlaceholders) {
+        throw new Error('Mixed parameter styles ($n and ?) are not supported in the same query');
+      }
       // Add the SQL text before the placeholder
       if (match.index > currentPos) {
         sqlChunks.push(sql.raw(sqlString.substring(currentPos, match.index)));
@@ -76,8 +88,8 @@ function buildParameterizedQuery(sqlString: string, params?: QueryParams): SQL {
     const sqlChunks: SQL[] = [];
     let currentPos = 0;
 
-    // Match :paramName placeholders
-    const namedParamRegex = /:(\w+)/g;
+    // Match :paramName placeholders, but avoid PostgreSQL casts like ::int
+    const namedParamRegex = /(?<!:):(\w+)/g;
     let match;
 
     while ((match = namedParamRegex.exec(sqlString)) !== null) {
@@ -168,12 +180,10 @@ export async function executeQuery(
       executionTime
     });
 
-    // Sanitize error message to avoid leaking sensitive information
-    const sanitizedMessage = error instanceof Error 
-      ? `Query execution failed: ${error.message.replace(/\b\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}\b/g, '[IP]')}`
-      : 'Query execution failed with unknown error';
-
-    throw new Error(sanitizedMessage, { cause: error });
+    // Return a generic error message to avoid leaking sensitive information
+    // (query fragments, values, schema names, credentials, etc.)
+    // Full error details are logged server-side for debugging
+    throw new Error('Query execution failed. See server logs for details.', { cause: error });
   }
 }
 

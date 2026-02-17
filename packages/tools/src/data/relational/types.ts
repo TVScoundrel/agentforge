@@ -3,6 +3,8 @@
  * @module types
  */
 
+import type { SQL } from 'drizzle-orm';
+
 /**
  * Supported database vendors
  */
@@ -28,8 +30,8 @@ export interface DatabaseConfig {
  * Database connection interface
  */
 export interface DatabaseConnection {
-  /** Execute a raw SQL query */
-  execute(sql: string, params?: unknown[]): Promise<unknown>;
+  /** Execute a Drizzle SQL query */
+  execute(query: SQL): Promise<unknown>;
   /** Close the connection */
   close(): Promise<void>;
   /** Check if connection is healthy */

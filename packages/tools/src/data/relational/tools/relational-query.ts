@@ -19,7 +19,10 @@ const relationalQuerySchema = z.object({
     z.record(z.string(), z.unknown()).describe('Named parameters (e.g., { name: "John", age: 30 })'),
   ]).optional().describe('Query parameters for parameter binding (prevents SQL injection)'),
   vendor: z.enum(['postgresql', 'mysql', 'sqlite']).describe('Database vendor'),
-  connectionString: z.string().optional().describe('Database connection string (optional if using existing connection)'),
+  connectionString: z
+    .string()
+    .min(1, 'Database connection string is required')
+    .describe('Database connection string used to create a new connection'),
 });
 
 /**
@@ -93,6 +96,13 @@ export const relationalQuery = toolBuilder()
   .limitation('Connection string must be valid for the specified vendor')
   .limitation('Large result sets may impact performance')
   .implement(async (input) => {
+    // TODO (ST-02002 or later): Implement connection pooling/reuse to avoid creating
+    // a new ConnectionManager on every invocation. For agent workflows with multiple
+    // queries, this creates connection storms and significant overhead. Consider:
+    // - Shared connection registry keyed by connection string/config
+    // - Connection pool reuse similar to neo4jPool pattern
+    // - Lifecycle management for long-running agents
+
     // Create connection manager
     const manager = new ConnectionManager({
       vendor: input.vendor,
@@ -107,11 +117,7 @@ export const relationalQuery = toolBuilder()
       const result = await executeQuery(manager, {
         sql: input.sql,
         params: input.params,
-        vendor: input.vendor,
-        options: {
-          timeout: input.timeout,
-          maxRows: input.maxRows
-        }
+        vendor: input.vendor
       });
 
       // Return formatted result
