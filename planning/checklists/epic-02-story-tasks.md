@@ -23,10 +23,10 @@
 - [x] Export tool from `tools/index.ts`
 - [x] Create unit tests for query executor
 - [x] Create unit tests for relational-query tool
-- [ ] Add or update story documentation at docs/st02001-raw-sql-query-tool.md (or document why not required)
+- [x] Add or update story documentation at docs/st02001-raw-sql-query-tool.md (or document why not required)
 - [x] Assess test impact; add/update automated tests when needed, or document why tests are not required
-- [ ] Run full test suite before finalizing the PR and record results
-- [ ] Run lint (`pnpm lint`) before finalizing the PR and record results
+- [x] Run full test suite before finalizing the PR and record results (1108 passed, 32 skipped)
+- [x] Run lint (`pnpm lint`) before finalizing the PR and record results (ST-02001 files lint-clean)
 - [ ] Mark PR ready for review
 - [ ] Wait for merge
 
