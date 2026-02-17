@@ -13,14 +13,14 @@
 - [x] Implement `executeQuery()` function with parameterized query support
 - [x] Add support for SELECT, INSERT, UPDATE, DELETE statements
 - [x] Implement parameter binding for all database vendors
-- [ ] Add result formatting to JSON
-- [ ] Create `packages/tools/src/data/relational/tools/relational-query.ts`
-- [ ] Define Zod schema for tool input (sql, params, vendor)
-- [ ] Implement tool function using query executor
-- [ ] Add error handling with sanitized error messages
-- [ ] Add query timeout configuration
-- [ ] Add query logging (optional, configurable)
-- [ ] Export tool from `tools/index.ts`
+- [x] Add result formatting to JSON
+- [x] Create `packages/tools/src/data/relational/tools/relational-query.ts`
+- [x] Define Zod schema for tool input (sql, params, vendor)
+- [x] Implement tool function using query executor
+- [x] Add error handling with sanitized error messages
+- [x] Add query timeout configuration
+- [x] Add query logging (optional, configurable)
+- [x] Export tool from `tools/index.ts`
 - [ ] Create unit tests for query executor
 - [ ] Create unit tests for relational-query tool
 - [ ] Add or update story documentation at docs/st02001-raw-sql-query-tool.md (or document why not required)

@@ -64,43 +64,39 @@ export const relationalQuery = toolBuilder()
   .category(ToolCategory.DATABASE)
   .tags(['database', 'sql', 'query', 'postgresql', 'mysql', 'sqlite'])
   .schema(relationalQuerySchema)
-  .examples([
-    {
-      description: 'SELECT query with positional parameters',
-      input: {
-        sql: 'SELECT * FROM users WHERE id = $1',
-        params: [42],
-        vendor: 'postgresql' as DatabaseVendor,
-        connectionString: 'postgresql://user:pass@localhost:5432/mydb'
-      }
-    },
-    {
-      description: 'INSERT query with named parameters',
-      input: {
-        sql: 'INSERT INTO users (name, email) VALUES (:name, :email)',
-        params: { name: 'John Doe', email: 'john@example.com' },
-        vendor: 'postgresql' as DatabaseVendor,
-        connectionString: 'postgresql://user:pass@localhost:5432/mydb'
-      }
-    },
-    {
-      description: 'UPDATE query with timeout',
-      input: {
-        sql: 'UPDATE users SET status = ? WHERE id = ?',
-        params: ['active', 42],
-        vendor: 'mysql' as DatabaseVendor,
-        connectionString: 'mysql://user:pass@localhost:3306/mydb',
-        timeout: 5000
-      }
+  .example({
+    description: 'SELECT query with positional parameters',
+    input: {
+      sql: 'SELECT * FROM users WHERE id = $1',
+      params: [42],
+      vendor: 'postgresql' as DatabaseVendor,
+      connectionString: 'postgresql://user:pass@localhost:5432/mydb'
     }
-  ])
+  })
+  .example({
+    description: 'INSERT query with named parameters',
+    input: {
+      sql: 'INSERT INTO users (name, email) VALUES (:name, :email)',
+      params: { name: 'John Doe', email: 'john@example.com' },
+      vendor: 'postgresql' as DatabaseVendor,
+      connectionString: 'postgresql://user:pass@localhost:5432/mydb'
+    }
+  })
+  .example({
+    description: 'UPDATE query with timeout',
+    input: {
+      sql: 'UPDATE users SET status = ? WHERE id = ?',
+      params: ['active', 42],
+      vendor: 'mysql' as DatabaseVendor,
+      connectionString: 'mysql://user:pass@localhost:3306/mydb',
+      timeout: 5000
+    }
+  })
   .usageNotes('Always use parameter binding (params) instead of string concatenation to prevent SQL injection. Supports positional ($1, ?) and named (:name) parameters.')
-  .limitations([
-    'Requires database-specific driver as peer dependency (pg, mysql2, or better-sqlite3)',
-    'Connection string must be valid for the specified vendor',
-    'Query timeout is enforced but may vary by database vendor',
-    'Large result sets may impact performance - use maxRows to limit results'
-  ])
+  .limitation('Requires database-specific driver as peer dependency (pg, mysql2, or better-sqlite3)')
+  .limitation('Connection string must be valid for the specified vendor')
+  .limitation('Query timeout is enforced but may vary by database vendor')
+  .limitation('Large result sets may impact performance - use maxRows to limit results')
   .implement(async (input) => {
     // Create connection manager
     const manager = new ConnectionManager({
