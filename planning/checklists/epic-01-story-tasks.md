@@ -35,8 +35,9 @@
   **Result:** ✅ All tests passed - 1076 passed | 13 skipped (1089 total) - Duration: 10.61s
 - [x] Run lint (`pnpm lint`) before finalizing the PR and record results
   **Result:** ✅ No new lint issues - Fixed 1 minor warning (unused eslint-disable). Pre-existing lint issues in other files not related to this story.
-- [ ] Mark PR ready for review
+- [x] Mark PR ready for review
 - [ ] Wait for merge
+  **Note:** Story execution complete. Waiting at review boundary per story-executor workflow.
 
 ---
 
