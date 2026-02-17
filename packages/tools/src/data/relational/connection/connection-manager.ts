@@ -114,9 +114,11 @@ export class ConnectionManager extends EventEmitter implements DatabaseConnectio
     }
 
     // If a connection is already in progress, wait for it to complete
-    if (this.state === ConnectionState.CONNECTING && this.connectPromise) {
+    // This handles both manual connect() calls and automatic reconnection attempts
+    if (this.connectPromise) {
       logger.debug('Connection already in progress, waiting for completion', {
         vendor: this.vendor,
+        state: this.state,
       });
       return this.connectPromise;
     }
@@ -155,8 +157,26 @@ export class ConnectionManager extends EventEmitter implements DatabaseConnectio
     // Reset reconnection attempts
     this.reconnectionAttempts = 0;
 
+    // Wait for any in-flight connection attempt to complete before closing
+    // This prevents race conditions where initialize() completes after disconnect()
+    if (this.connectPromise) {
+      logger.debug('Waiting for in-flight connection attempt to complete before disconnect', {
+        vendor: this.vendor,
+      });
+      try {
+        await this.connectPromise;
+      } catch {
+        // Ignore errors from the connection attempt - we're disconnecting anyway
+      }
+      // Clear the promise reference
+      this.connectPromise = null;
+    }
+
     // Close the connection
     await this.close();
+
+    // Clean up all event listeners to avoid memory leaks when this manager is disposed
+    this.removeAllListeners();
   }
 
   /**
@@ -354,7 +374,12 @@ export class ConnectionManager extends EventEmitter implements DatabaseConnectio
           attempt: this.reconnectionAttempts,
         });
 
-        await this.initialize();
+        // Track the reconnection promise so concurrent connect() calls can await it
+        this.connectPromise = this.initialize().finally(() => {
+          this.connectPromise = null;
+        });
+
+        await this.connectPromise;
       } catch (error) {
         logger.error('Reconnection attempt failed', {
           vendor: this.vendor,
@@ -589,9 +614,21 @@ export class ConnectionManager extends EventEmitter implements DatabaseConnectio
    *
    * This method is public to maintain compatibility with the DatabaseConnection interface
    * and existing code (e.g., relational-query.ts). For new code, prefer using disconnect()
-   * which provides lifecycle management and cancels pending reconnection attempts.
+   * which provides full lifecycle management including event listener cleanup.
+   *
+   * Note: This method cancels pending reconnection timers to prevent unexpected reconnection
+   * attempts after close() is called.
    */
   async close(): Promise<void> {
+    // Cancel any pending reconnection to prevent unexpected reconnection after close
+    if (this.reconnectionTimer) {
+      logger.debug('Canceling pending reconnection timer during close', {
+        vendor: this.vendor,
+      });
+      clearTimeout(this.reconnectionTimer);
+      this.reconnectionTimer = null;
+    }
+
     if (this.client) {
       logger.info('Closing database connection', {
         vendor: this.vendor,
@@ -620,9 +657,12 @@ export class ConnectionManager extends EventEmitter implements DatabaseConnectio
           state: this.state,
         });
 
+        // Normalize error to Error object before emitting
+        const normalizedError = error instanceof Error ? error : new Error(String(error));
+
         // Set state to error even if close fails
         this.setState(ConnectionState.ERROR);
-        this.emit('error', error);
+        this.emit('error', normalizedError);
 
         // Don't re-throw - we still want to clean up state
       } finally {

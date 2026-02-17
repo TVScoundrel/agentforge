@@ -190,9 +190,10 @@ await manager.connect();
 - **Error Handling**: Errors during connection/disconnection are caught and handled gracefully
 - **Cleanup**: Reconnection timers are properly cleaned up on disconnect
 - **Concurrency Handling**:
-  - Concurrent `connect()` calls are serialized - subsequent callers await the in-flight connection attempt
-  - `disconnect()` uses a generation token to cancel in-flight `initialize()` operations
+  - Concurrent `connect()` calls are serialized - subsequent callers await any in-flight connection attempt (manual or automatic reconnection)
+  - `disconnect()` uses a generation token to cancel in-flight `initialize()` operations and waits for any in-flight connection attempt to complete
   - Reconnection attempts are scheduled sequentially with exponential backoff
+  - Event listeners are automatically cleaned up when `disconnect()` is called to prevent memory leaks
 
 ## Testing
 
