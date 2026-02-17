@@ -154,9 +154,8 @@ export async function executeQuery(
 
   logger.debug('Executing query', {
     vendor: input.vendor,
-    sqlPreview: input.sql.substring(0, 100),
     hasParams: !!input.params,
-    paramCount: input.params 
+    paramCount: input.params
       ? (Array.isArray(input.params) ? input.params.length : Object.keys(input.params).length)
       : 0
   });
@@ -189,12 +188,24 @@ export async function executeQuery(
     };
   } catch (error) {
     const executionTime = Date.now() - startTime;
-    
+
     logger.error('Query execution failed', {
       vendor: input.vendor,
       error: error instanceof Error ? error.message : String(error),
       executionTime
     });
+
+    // Let parameter validation errors propagate (they're safe and helpful for callers)
+    // Only sanitize database/driver errors that might leak sensitive information
+    if (error instanceof Error) {
+      const message = error.message;
+      // Known safe validation errors from buildParameterizedQuery
+      if (message.includes('Missing parameter') ||
+          message.includes('Parameters provided but no placeholders') ||
+          message.includes('Mixed placeholder styles')) {
+        throw error;
+      }
+    }
 
     // Return a generic error message to avoid leaking sensitive information
     // (query fragments, values, schema names, credentials, etc.)

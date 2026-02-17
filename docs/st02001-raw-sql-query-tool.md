@@ -94,6 +94,9 @@ Created comprehensive unit tests:
 
 ```typescript
 import { relationalQuery } from '@agentforge/tools';
+import { createLogger } from '@agentforge/core';
+
+const logger = createLogger('my-app:database');
 
 // Execute a SELECT query
 const result = await relationalQuery.invoke({
@@ -103,9 +106,15 @@ const result = await relationalQuery.invoke({
   connectionString: 'postgresql://user:pass@localhost:5432/mydb'
 });
 
-console.log(result.rows);        // Query results
-console.log(result.rowCount);    // Number of rows
-console.log(result.executionTime); // Execution time in ms
+logger.info('Query executed', {
+  rowCount: result.rowCount,
+  executionTime: result.executionTime
+});
+
+// Access query results
+// result.rows - Query results
+// result.rowCount - Number of rows
+// result.executionTime - Execution time in ms
 ```
 
 ## Dependencies

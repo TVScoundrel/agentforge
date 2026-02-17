@@ -33,7 +33,7 @@ export interface QueryExecutionResult {
   /** Query result rows */
   rows: unknown[];
   /** Number of rows affected (for INSERT/UPDATE/DELETE) */
-  rowCount?: number;
+  rowCount: number;
   /** Execution time in milliseconds */
   executionTime: number;
 }
