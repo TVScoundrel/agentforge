@@ -77,8 +77,8 @@
 **Branch:** `feat/st-01003-connection-pooling`
 
 ### Checklist
-- [ ] Create branch `feat/st-01003-connection-pooling`
-- [ ] Create draft PR with story ID in title
+- [x] Create branch `feat/st-01003-connection-pooling`
+- [ ] Create draft PR with story ID in title (will create after first commit)
 - [ ] Create `packages/tools/src/data/relational/connection/connection-pool.ts`
 - [ ] Define `PoolConfig` interface (min, max connections, timeout, etc.)
 - [ ] Implement connection pool for PostgreSQL using pg.Pool

@@ -88,16 +88,39 @@ export class ConnectionManager implements DatabaseConnection {
   /**
    * Initialize PostgreSQL connection using Drizzle ORM with node-postgres
    *
-   * Note: This already uses pg.Pool for connection pooling. ST-01003 will add
-   * configuration options for pool size, timeouts, and other pool settings.
+   * Applies pool configuration options to pg.Pool for connection management.
    */
   private async initializePostgreSQL(): Promise<void> {
     const { drizzle } = await import('drizzle-orm/node-postgres');
     const { Pool } = await import('pg');
 
-    const connectionConfig = typeof this.config.connection === 'string'
+    const baseConfig = typeof this.config.connection === 'string'
       ? { connectionString: this.config.connection }
       : this.config.connection;
+
+    // Apply pool configuration if provided
+    const poolConfig = typeof this.config.connection === 'object'
+      ? this.config.connection.pool
+      : undefined;
+
+    const connectionConfig = {
+      ...baseConfig,
+      // Map our PoolConfig to pg.Pool options
+      ...(poolConfig?.min !== undefined && { min: poolConfig.min }),
+      ...(poolConfig?.max !== undefined && { max: poolConfig.max }),
+      ...(poolConfig?.idleTimeoutMillis !== undefined && { idleTimeoutMillis: poolConfig.idleTimeoutMillis }),
+      ...(poolConfig?.acquireTimeoutMillis !== undefined && { connectionTimeoutMillis: poolConfig.acquireTimeoutMillis }),
+    };
+
+    logger.debug('Creating PostgreSQL connection pool', {
+      vendor: this.vendor,
+      poolConfig: {
+        min: connectionConfig.min,
+        max: connectionConfig.max,
+        idleTimeoutMillis: connectionConfig.idleTimeoutMillis,
+        connectionTimeoutMillis: connectionConfig.connectionTimeoutMillis,
+      }
+    });
 
     this.client = new Pool(connectionConfig);
     this.db = drizzle({ client: this.client });
@@ -106,16 +129,46 @@ export class ConnectionManager implements DatabaseConnection {
   /**
    * Initialize MySQL connection using Drizzle ORM with mysql2
    *
-   * Note: This already uses mysql2's connection pooling. ST-01003 will add
-   * configuration options for pool size, timeouts, and other pool settings.
+   * Applies pool configuration options to mysql2.createPool for connection management.
    */
   private async initializeMySQL(): Promise<void> {
     const { drizzle } = await import('drizzle-orm/mysql2');
     const mysql = await import('mysql2/promise');
 
     // mysql2.createPool accepts both connection strings directly and config objects
-    // When a string is provided, pass it directly (not wrapped in an object)
-    const connectionConfig = this.config.connection;
+    // When a string is provided, we can't apply pool config (would need to parse URL)
+    let connectionConfig: any;
+
+    if (typeof this.config.connection === 'string') {
+      connectionConfig = this.config.connection;
+      logger.debug('Creating MySQL connection pool from connection string', {
+        vendor: this.vendor,
+      });
+    } else {
+      const baseConfig = this.config.connection;
+      const poolConfig = baseConfig.pool;
+
+      connectionConfig = {
+        ...baseConfig,
+        // Remove our pool property to avoid passing it to mysql2
+        pool: undefined,
+        // Map our PoolConfig to mysql2 pool options
+        ...(poolConfig?.max !== undefined && { connectionLimit: poolConfig.max }),
+        ...(poolConfig?.acquireTimeoutMillis !== undefined && { acquireTimeout: poolConfig.acquireTimeoutMillis }),
+        ...(poolConfig?.idleTimeoutMillis !== undefined && { idleTimeout: poolConfig.idleTimeoutMillis }),
+        ...(poolConfig?.maxLifetimeMillis !== undefined && { maxIdle: poolConfig.maxLifetimeMillis }),
+      };
+
+      logger.debug('Creating MySQL connection pool', {
+        vendor: this.vendor,
+        poolConfig: {
+          connectionLimit: connectionConfig.connectionLimit,
+          acquireTimeout: connectionConfig.acquireTimeout,
+          idleTimeout: connectionConfig.idleTimeout,
+          maxIdle: connectionConfig.maxIdle,
+        }
+      });
+    }
 
     // createPool is synchronous and returns a Pool instance directly
     this.client = mysql.createPool(connectionConfig);
@@ -124,6 +177,9 @@ export class ConnectionManager implements DatabaseConnection {
 
   /**
    * Initialize SQLite connection using Drizzle ORM with better-sqlite3
+   *
+   * Note: SQLite uses a single connection. Pool configuration is logged but not applied
+   * as SQLite handles concurrent access through its internal locking mechanism.
    */
   private async initializeSQLite(): Promise<void> {
     const { drizzle } = await import('drizzle-orm/better-sqlite3');
@@ -139,6 +195,19 @@ export class ConnectionManager implements DatabaseConnection {
     if (!url) {
       throw new Error('SQLite connection requires a url property');
     }
+
+    // Log pool config if provided (for awareness, but SQLite doesn't use traditional pooling)
+    if (typeof this.config.connection === 'object' && this.config.connection.pool) {
+      logger.debug('SQLite pool configuration provided but not applied (SQLite uses single connection)', {
+        vendor: this.vendor,
+        poolConfig: this.config.connection.pool,
+      });
+    }
+
+    logger.debug('Creating SQLite connection', {
+      vendor: this.vendor,
+      url: url === ':memory:' ? ':memory:' : 'file',
+    });
 
     this.client = new Database(url);
     this.db = drizzle({ client: this.client });
@@ -172,6 +241,48 @@ export class ConnectionManager implements DatabaseConnection {
     // TODO (ST-02001): Implement proper parameter binding or accept Drizzle SQL objects
     // For now, execute raw SQL without parameter binding - INTERNAL USE ONLY
     return this.db.execute(sql.raw(sqlString));
+  }
+
+  /**
+   * Get connection pool metrics
+   *
+   * Returns information about the current state of the connection pool.
+   * For SQLite, returns basic connection status since it uses a single connection.
+   *
+   * @returns Pool metrics including total, active, idle, and waiting connections
+   */
+  getPoolMetrics(): {
+    totalCount: number;
+    idleCount: number;
+    waitingCount: number;
+  } {
+    if (!this.client) {
+      return { totalCount: 0, idleCount: 0, waitingCount: 0 };
+    }
+
+    if (this.vendor === 'postgresql') {
+      // pg.Pool provides these properties
+      return {
+        totalCount: this.client.totalCount || 0,
+        idleCount: this.client.idleCount || 0,
+        waitingCount: this.client.waitingCount || 0,
+      };
+    } else if (this.vendor === 'mysql') {
+      // mysql2.Pool provides pool statistics through _allConnections and _freeConnections
+      const pool = this.client.pool || this.client;
+      return {
+        totalCount: pool._allConnections?.length || 0,
+        idleCount: pool._freeConnections?.length || 0,
+        waitingCount: pool._connectionQueue?.length || 0,
+      };
+    } else {
+      // SQLite uses a single connection
+      return {
+        totalCount: this.client.open ? 1 : 0,
+        idleCount: 0,
+        waitingCount: 0,
+      };
+    }
   }
 
   /**

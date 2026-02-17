@@ -10,5 +10,6 @@ export type {
   MySQLConnectionConfig,
   SQLiteConnectionConfig,
   VendorConnectionConfig,
+  PoolConfig,
 } from './types.js';
 

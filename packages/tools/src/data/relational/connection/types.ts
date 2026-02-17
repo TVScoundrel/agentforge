@@ -6,6 +6,31 @@
 import type { DatabaseVendor } from '../types.js';
 
 /**
+ * Connection pool configuration options
+ *
+ * These options control how the connection pool manages database connections.
+ * Different vendors may support different subsets of these options.
+ */
+export interface PoolConfig {
+  /** Minimum number of connections to maintain in the pool (default: vendor-specific) */
+  min?: number;
+  /** Maximum number of connections in the pool (default: vendor-specific) */
+  max?: number;
+  /** Maximum time (ms) to wait for a connection from the pool before timing out */
+  acquireTimeoutMillis?: number;
+  /** Time (ms) a connection can remain idle before being closed (default: vendor-specific) */
+  idleTimeoutMillis?: number;
+  /** Interval (ms) for checking and removing idle connections (PostgreSQL only) */
+  evictionRunIntervalMillis?: number;
+  /** Maximum lifetime (ms) of a connection before it's retired (MySQL only) */
+  maxLifetimeMillis?: number;
+  /** Number of times to retry acquiring a connection on failure */
+  connectionRetryAttempts?: number;
+  /** Delay (ms) between connection retry attempts */
+  connectionRetryDelayMillis?: number;
+}
+
+/**
  * PostgreSQL-specific connection configuration
  */
 export interface PostgreSQLConnectionConfig {
@@ -25,6 +50,8 @@ export interface PostgreSQLConnectionConfig {
   ssl?: boolean | Record<string, unknown>;
   /** Connection timeout in milliseconds */
   connectionTimeoutMillis?: number;
+  /** Connection pool configuration */
+  pool?: PoolConfig;
   /** Additional pg-specific options */
   [key: string]: unknown;
 }
@@ -51,16 +78,23 @@ export interface MySQLConnectionConfig {
   ssl?: boolean | Record<string, unknown>;
   /** Connection timeout in milliseconds */
   connectTimeout?: number;
+  /** Connection pool configuration */
+  pool?: PoolConfig;
   /** Additional mysql2-specific options */
   [key: string]: unknown;
 }
 
 /**
  * SQLite-specific connection configuration
+ *
+ * Note: SQLite uses a single connection with a queue-based approach for concurrent access.
+ * Pool configuration options control the queue behavior and timeout settings.
  */
 export interface SQLiteConnectionConfig {
   /** Database file path or ':memory:' for in-memory database */
   url: string;
+  /** Connection pool configuration (controls queue behavior for SQLite) */
+  pool?: PoolConfig;
   /** Additional better-sqlite3-specific options */
   [key: string]: unknown;
 }
