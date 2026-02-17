@@ -45,12 +45,18 @@ function buildParameterizedQuery(sqlString: string, params?: QueryParams): SQL {
       }
 
       // Add the parameter value
-      const paramValue = match[1] 
+      const paramValue = match[1]
         ? params[parseInt(match[1], 10) - 1]  // $1 -> params[0]
         : params[paramIndex];                  // ? -> params[paramIndex]
 
+      // Validate that the parameter exists
+      if (paramValue === undefined) {
+        const paramRef = match[1] ? `$${match[1]}` : `? (position ${paramIndex + 1})`;
+        throw new Error(`Missing parameter: ${paramRef}`);
+      }
+
       sqlChunks.push(sql`${paramValue}`);
-      
+
       if (!match[1]) {
         // Only increment for ? placeholders
         paramIndex++;
@@ -131,9 +137,8 @@ export async function executeQuery(
     // Build parameterized query
     const parameterizedQuery = buildParameterizedQuery(input.sql, input.params);
 
-    // Execute query through ConnectionManager's db instance
-    // @ts-expect-error - Accessing private db property for query execution
-    const result = await manager['db'].execute(parameterizedQuery);
+    // Execute query through ConnectionManager's public execute method
+    const result = await manager.execute(parameterizedQuery);
 
     const executionTime = Date.now() - startTime;
 

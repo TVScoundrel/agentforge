@@ -95,6 +95,77 @@ describe('Query Executor', () => {
       });
     });
 
+    it.skipIf(!hasSQLiteBindings)('should execute SELECT with named parameters', async () => {
+      // Insert test data
+      await executeQuery(manager, {
+        sql: 'INSERT INTO users (name, email) VALUES (?, ?)',
+        params: ['Alice Smith', 'alice@example.com'],
+        vendor: 'sqlite'
+      });
+
+      const result = await executeQuery(manager, {
+        sql: 'SELECT * FROM users WHERE name = :name AND email = :email',
+        params: { name: 'Alice Smith', email: 'alice@example.com' },
+        vendor: 'sqlite'
+      });
+
+      expect(result.rows).toHaveLength(1);
+      expect(result.rows[0]).toMatchObject({
+        name: 'Alice Smith',
+        email: 'alice@example.com'
+      });
+    });
+
+    it.skipIf(!hasSQLiteBindings)('should execute INSERT with named parameters', async () => {
+      const result = await executeQuery(manager, {
+        sql: 'INSERT INTO users (name, email) VALUES (:name, :email)',
+        params: { name: 'Bob Johnson', email: 'bob@example.com' },
+        vendor: 'sqlite'
+      });
+
+      expect(result.rowCount).toBeGreaterThan(0);
+
+      // Verify the insert
+      const selectResult = await executeQuery(manager, {
+        sql: 'SELECT * FROM users WHERE email = :email',
+        params: { email: 'bob@example.com' },
+        vendor: 'sqlite'
+      });
+
+      expect(selectResult.rows).toHaveLength(1);
+      expect(selectResult.rows[0]).toMatchObject({
+        name: 'Bob Johnson',
+        email: 'bob@example.com'
+      });
+    });
+
+    it.skipIf(!hasSQLiteBindings)('should execute UPDATE/DELETE with named parameters', async () => {
+      // Insert test data
+      await executeQuery(manager, {
+        sql: 'INSERT INTO users (name, email) VALUES (:name, :email)',
+        params: { name: 'Charlie Brown', email: 'charlie@example.com' },
+        vendor: 'sqlite'
+      });
+
+      // Update with named parameters
+      const updateResult = await executeQuery(manager, {
+        sql: 'UPDATE users SET name = :newName WHERE email = :email',
+        params: { newName: 'Charlie Updated', email: 'charlie@example.com' },
+        vendor: 'sqlite'
+      });
+
+      expect(updateResult.rowCount).toBeGreaterThan(0);
+
+      // Delete with named parameters
+      const deleteResult = await executeQuery(manager, {
+        sql: 'DELETE FROM users WHERE email = :email',
+        params: { email: 'charlie@example.com' },
+        vendor: 'sqlite'
+      });
+
+      expect(deleteResult.rowCount).toBeGreaterThan(0);
+    });
+
     it.skipIf(!hasSQLiteBindings)('should execute UPDATE with positional parameters', async () => {
       // Insert a record
       await executeQuery(manager, {
@@ -139,15 +210,35 @@ describe('Query Executor', () => {
     });
 
     it.skipIf(!hasSQLiteBindings)('should sanitize error messages', async () => {
-      try {
-        await executeQuery(manager, {
-          sql: 'INVALID SQL SYNTAX',
-          vendor: 'sqlite'
-        });
-      } catch (error) {
-        expect(error).toBeInstanceOf(Error);
-        expect((error as Error).message).toContain('Query execution failed');
-      }
+      await expect(executeQuery(manager, {
+        sql: 'INVALID SQL SYNTAX',
+        vendor: 'sqlite'
+      })).rejects.toThrow(/Query execution failed/);
+    });
+
+
+    it.skipIf(!hasSQLiteBindings)('should reject when positional parameters are missing', async () => {
+      await expect(executeQuery(manager, {
+        sql: 'SELECT ? + ?',
+        params: [1],
+        vendor: 'sqlite'
+      })).rejects.toThrow(/Missing parameter/);
+    });
+
+    it.skipIf(!hasSQLiteBindings)('should reject when named parameters are missing', async () => {
+      await expect(executeQuery(manager, {
+        sql: 'SELECT * FROM users WHERE id = :id',
+        params: { other: 1 },
+        vendor: 'sqlite'
+      })).rejects.toThrow(/Missing parameter/);
+    });
+
+    it.skipIf(!hasSQLiteBindings)('should reject mixed parameter styles in a single query', async () => {
+      await expect(executeQuery(manager, {
+        sql: 'SELECT $1 + ?',
+        params: [1, 2],
+        vendor: 'sqlite'
+      })).rejects.toThrow();
     });
   });
 });

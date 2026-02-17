@@ -15,7 +15,6 @@ Implemented a LangGraph tool for executing raw SQL queries against relational da
 
 1. **Query Types** (`packages/tools/src/data/relational/query/types.ts`)
    - `QueryParams`: Supports positional (array) or named (object) parameters
-   - `QueryOptions`: Timeout and maxRows configuration
    - `QueryInput`: Complete query input interface
    - `QueryExecutionResult`: Standardized result format
 
@@ -121,12 +120,13 @@ console.log(result.executionTime); // Execution time in ms
 
 1. Requires database-specific driver as peer dependency
 2. Connection string must be valid for the specified vendor
-3. Query timeout enforcement varies by database vendor
-4. Large result sets may impact performance (use `maxRows` to limit)
+3. Large result sets may impact performance
 
 ## Future Enhancements
 
 - Transaction support (ST-02002)
+- Query timeout configuration
+- Result row limiting (maxRows parameter)
 - Batch query execution
 - Query result streaming for large datasets
 - Query plan analysis and optimization hints

@@ -15,16 +15,6 @@ import type { DatabaseVendor } from '../types.js';
 export type QueryParams = unknown[] | Record<string, unknown>;
 
 /**
- * Query execution options
- */
-export interface QueryOptions {
-  /** Query timeout in milliseconds (optional) */
-  timeout?: number;
-  /** Maximum number of rows to return (optional) */
-  maxRows?: number;
-}
-
-/**
  * Query execution input
  */
 export interface QueryInput {
@@ -34,8 +24,6 @@ export interface QueryInput {
   params?: QueryParams;
   /** Database vendor */
   vendor: DatabaseVendor;
-  /** Query execution options */
-  options?: QueryOptions;
 }
 
 /**

@@ -20,8 +20,6 @@ const relationalQuerySchema = z.object({
   ]).optional().describe('Query parameters for parameter binding (prevents SQL injection)'),
   vendor: z.enum(['postgresql', 'mysql', 'sqlite']).describe('Database vendor'),
   connectionString: z.string().optional().describe('Database connection string (optional if using existing connection)'),
-  timeout: z.number().optional().describe('Query timeout in milliseconds (optional)'),
-  maxRows: z.number().optional().describe('Maximum number of rows to return (optional)'),
 });
 
 /**
@@ -36,7 +34,6 @@ const relationalQuerySchema = z.object({
  * - Supports positional ($1, ?) and named (:name) parameters
  * - Result formatting to JSON
  * - Error handling with sanitized messages
- * - Query timeout configuration
  * 
  * @example
  * ```typescript
@@ -83,20 +80,18 @@ export const relationalQuery = toolBuilder()
     }
   })
   .example({
-    description: 'UPDATE query with timeout',
+    description: 'UPDATE query with positional parameters',
     input: {
       sql: 'UPDATE users SET status = ? WHERE id = ?',
       params: ['active', 42],
       vendor: 'mysql' as DatabaseVendor,
-      connectionString: 'mysql://user:pass@localhost:3306/mydb',
-      timeout: 5000
+      connectionString: 'mysql://user:pass@localhost:3306/mydb'
     }
   })
   .usageNotes('Always use parameter binding (params) instead of string concatenation to prevent SQL injection. Supports positional ($1, ?) and named (:name) parameters.')
   .limitation('Requires database-specific driver as peer dependency (pg, mysql2, or better-sqlite3)')
   .limitation('Connection string must be valid for the specified vendor')
-  .limitation('Query timeout is enforced but may vary by database vendor')
-  .limitation('Large result sets may impact performance - use maxRows to limit results')
+  .limitation('Large result sets may impact performance')
   .implement(async (input) => {
     // Create connection manager
     const manager = new ConnectionManager({
