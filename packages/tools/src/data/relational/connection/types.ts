@@ -73,11 +73,38 @@ export type VendorConnectionConfig =
 
 /**
  * Connection configuration for ConnectionManager
+ *
+ * Uses a discriminated union to ensure that the connection string format
+ * matches the selected database vendor at compile time.
  */
-export interface ConnectionConfig {
-  /** Database vendor */
-  vendor: DatabaseVendor;
-  /** Vendor-specific connection configuration */
-  connection: VendorConnectionConfig | string;
-}
+export type ConnectionConfig =
+  | {
+      /** PostgreSQL database vendor */
+      vendor: Extract<DatabaseVendor, 'postgresql'>;
+      /**
+       * PostgreSQL-specific connection configuration or connection string.
+       * When using a string, it should be a PostgreSQL URL
+       * (e.g., "postgresql://user:password@host:port/database").
+       */
+      connection: PostgreSQLConnectionConfig | string;
+    }
+  | {
+      /** MySQL database vendor */
+      vendor: Extract<DatabaseVendor, 'mysql'>;
+      /**
+       * MySQL-specific connection configuration or connection string.
+       * When using a string, it should be a MySQL URL
+       * (e.g., "mysql://user:password@host:port/database").
+       */
+      connection: MySQLConnectionConfig | string;
+    }
+  | {
+      /** SQLite database vendor */
+      vendor: Extract<DatabaseVendor, 'sqlite'>;
+      /**
+       * SQLite-specific connection configuration or location.
+       * Can be a file path, ':memory:' for in-memory database, or a config object.
+       */
+      connection: SQLiteConnectionConfig | string;
+    };
 
