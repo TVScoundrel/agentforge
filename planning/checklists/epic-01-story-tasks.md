@@ -108,6 +108,7 @@
   8. Removed incorrect MySQL maxLifetimeMillis mapping
 - [x] Updated tests based on review feedback (removed tests for deleted fields, added activeCount expectations)
 - [x] Updated documentation to reflect simplified PoolConfig interface
+- [x] Resolved all 8 review threads on GitHub (all marked as resolved)
 - [ ] Wait for merge
 
 ---
