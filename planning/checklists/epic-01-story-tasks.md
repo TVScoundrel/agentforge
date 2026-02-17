@@ -66,7 +66,7 @@
 - [x] Assess test impact; added comprehensive unit tests for ConnectionManager
 - [x] Run full test suite before finalizing the PR and record results (1092 tests passed, 21 skipped)
 - [x] Run lint (`pnpm lint`) before finalizing the PR and record results (no errors in ST-01002 files)
-- [ ] Mark PR ready for review
+- [x] Mark PR ready for review (PR #26)
 - [ ] Wait for merge
 
 ---
