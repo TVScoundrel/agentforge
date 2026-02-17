@@ -61,11 +61,11 @@
 - [x] Add error handling for connection failures with clear messages
 - [x] Add TypeScript types for all public methods
 - [x] Export ConnectionManager from `connection/index.ts`
-- [ ] Create basic unit tests for ConnectionManager
-- [ ] Add or update story documentation at docs/st01002-connection-manager.md (or document why not required)
-- [ ] Assess test impact; add/update automated tests when needed, or document why tests are not required
-- [ ] Run full test suite before finalizing the PR and record results
-- [ ] Run lint (`pnpm lint`) before finalizing the PR and record results
+- [x] Create basic unit tests for ConnectionManager (16 passing, 8 skipped)
+- [x] Add or update story documentation at docs/st01002-connection-manager.md
+- [x] Assess test impact; added comprehensive unit tests for ConnectionManager
+- [x] Run full test suite before finalizing the PR and record results (1092 tests passed, 21 skipped)
+- [x] Run lint (`pnpm lint`) before finalizing the PR and record results (no errors in ST-01002 files)
 - [ ] Mark PR ready for review
 - [ ] Wait for merge
 
