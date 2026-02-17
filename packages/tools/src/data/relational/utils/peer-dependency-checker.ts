@@ -51,7 +51,6 @@ export class MissingPeerDependencyError extends Error {
 function isPeerDependencyAvailable(packageName: string): boolean {
   try {
     // Try to resolve the package
-    // eslint-disable-next-line @typescript-eslint/no-require-imports
     require.resolve(packageName);
     return true;
   } catch {
