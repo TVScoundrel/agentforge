@@ -95,6 +95,7 @@ export const relationalQuery = toolBuilder()
   .limitation('Requires database-specific driver as peer dependency (pg, mysql2, or better-sqlite3)')
   .limitation('Connection string must be valid for the specified vendor')
   .limitation('Large result sets may impact performance')
+  .limitation('Placeholder characters ($n, ?, :name) inside SQL string literals are not supported. Use parameter binding for all dynamic values instead of embedding them in string literals')
   .implement(async (input) => {
     // TODO (ST-02002 or later): Implement connection pooling/reuse to avoid creating
     // a new ConnectionManager on every invocation. For agent workflows with multiple
