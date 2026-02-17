@@ -115,6 +115,15 @@ export class ConnectionManager extends EventEmitter implements DatabaseConnectio
       return;
     }
 
+    // If a reconnection has been scheduled, cancel it before starting a new connection attempt
+    if (this.reconnectionTimer) {
+      logger.debug('Clearing pending reconnection timer before manual connect', {
+        vendor: this.vendor,
+      });
+      clearTimeout(this.reconnectionTimer);
+      this.reconnectionTimer = null;
+    }
+
     await this.initialize();
   }
 
@@ -154,10 +163,14 @@ export class ConnectionManager extends EventEmitter implements DatabaseConnectio
 
   /**
    * Initialize the database connection
+   *
+   * This method is public to maintain compatibility with the DatabaseConnection interface
+   * and existing code (e.g., relational-query.ts). For new code, prefer using connect()
+   * which provides lifecycle management and automatic reconnection.
+   *
    * @throws {Error} If connection fails or configuration is invalid
-   * @private
    */
-  private async initialize(): Promise<void> {
+  async initialize(): Promise<void> {
     const startTime = Date.now();
 
     // Set state to connecting
@@ -528,9 +541,12 @@ export class ConnectionManager extends EventEmitter implements DatabaseConnectio
 
   /**
    * Close the database connection
-   * @private
+   *
+   * This method is public to maintain compatibility with the DatabaseConnection interface
+   * and existing code (e.g., relational-query.ts). For new code, prefer using disconnect()
+   * which provides lifecycle management and cancels pending reconnection attempts.
    */
-  private async close(): Promise<void> {
+  async close(): Promise<void> {
     if (this.client) {
       logger.info('Closing database connection', {
         vendor: this.vendor,

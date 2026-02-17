@@ -77,12 +77,7 @@ describe('Connection Lifecycle Management', () => {
 
       const manager = new ConnectionManager(config);
       
-      try {
-        await manager.connect();
-        expect.fail('Should have thrown an error');
-      } catch {
-        // Expected error
-      }
+      await expect(manager.connect()).rejects.toThrow();
 
       expect(manager.getState()).toBe(ConnectionState.ERROR);
       expect(manager.isConnected()).toBe(false);
@@ -133,12 +128,7 @@ describe('Connection Lifecycle Management', () => {
       const errorHandler = vi.fn();
       manager.on('error', errorHandler);
 
-      try {
-        await manager.connect();
-        expect.fail('Should have thrown an error');
-      } catch {
-        // Expected error
-      }
+      await expect(manager.connect()).rejects.toThrow();
 
       expect(errorHandler).toHaveBeenCalledTimes(1);
       expect(errorHandler).toHaveBeenCalledWith(expect.any(Error));
@@ -241,12 +231,7 @@ describe('Connection Lifecycle Management', () => {
       manager.on('reconnecting', reconnectingHandler);
       manager.on('error', errorHandler);
 
-      try {
-        await manager.connect();
-        expect.fail('Should have thrown an error');
-      } catch {
-        // Expected error - first connection attempt failed
-      }
+      await expect(manager.connect()).rejects.toThrow();
 
       // Wait for reconnection to be scheduled and attempted
       // baseDelayMs is 50ms, so wait 200ms to be safe
