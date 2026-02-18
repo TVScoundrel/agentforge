@@ -43,6 +43,13 @@
 - **Estimate:** 2 hours | **Actual:** ~8 hours (including 15 rounds of PR review feedback)
 - **Outcome:** Successfully implemented comprehensive connection lifecycle management with state tracking (DISCONNECTED, CONNECTING, CONNECTED, RECONNECTING, ERROR), automatic reconnection with exponential backoff, and event emissions for lifecycle changes. Implemented public API methods: connect(), disconnect(), isConnected(), getState(), dispose(). Added backward compatibility with initialize() and close() methods. Implemented robust concurrency handling via connectPromise tracking and connectionGeneration tokens. Created comprehensive cleanup mechanisms including cleanupCancelledConnection() for resource cleanup and dispose() for full cleanup including event listener removal. Implemented proper idempotency for connect() with re-initialization support. Created 21 passing unit tests (4 passed, 17 skipped when SQLite bindings unavailable). Addressed 15 rounds of Copilot review feedback covering: backward compatibility, reconnection timer cancellation, test patterns, concurrency handling, memory leaks, error normalization, documentation accuracy, connection leaks, exponential backoff formula, initialize() idempotency, comprehensive edge case tests, SQLite binding guards, planning documentation updates, version numbers, repository naming, PR description corruption, re-initialization event emission, and dispose() method documentation. All quality gates passed (1115 tests, lint clean).
 
+### ST-02002: Implement Type-Safe SELECT Tool
+- **Merged:** 2026-02-18
+- **PR:** https://github.com/TVScoundrel/agentforge/pull/30 (commit 5bd8acc)
+- **Epic:** EP-02 (Query Execution and CRUD Operations)
+- **Estimate:** 5 hours
+- **Outcome:** Successfully implemented `relational-select` with type-safe query construction and validation, including column selection, WHERE conditions, ORDER BY, LIMIT/OFFSET, and sanitized error handling. Added focused unit tests and documentation (`docs/st02002-type-safe-select-tool.md`), and completed quality gates before review.
+
 ---
 
 ## Archive Format
@@ -60,4 +67,3 @@ Example:
 - **PR:** https://github.com/TVScoundrel/agentforge/pull/123
 - **Outcome:** Successfully set up Drizzle ORM with PostgreSQL, MySQL, and SQLite support
 ```
-

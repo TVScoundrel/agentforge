@@ -4,11 +4,11 @@
 
 ## Queue Status Summary
 
-- **Ready:** 2 stories (ST-02006, ST-03001)
+- **Ready:** 4 stories (ST-02006, ST-03001, ST-02003, ST-04003)
 - **In Progress:** 0 stories
-- **In Review:** 1 story (ST-02002)
+- **In Review:** 0 stories
 - **Blocked:** 0 stories
-- **Backlog:** 11 stories (waiting on dependencies)
+- **Backlog:** 9 stories (waiting on dependencies)
 
 ---
 
@@ -28,6 +28,20 @@
 - **Dependencies:** ST-01003 ✅ (merged 2026-02-17)
 - **Checklist:** `planning/checklists/epic-03-story-tasks.md`
 
+### ST-02003: Implement Type-Safe INSERT Tool
+- **Epic:** EP-02
+- **Priority:** P0
+- **Estimate:** 4 hours
+- **Dependencies:** ST-02002 ✅ (merged 2026-02-18)
+- **Checklist:** `planning/checklists/epic-02-story-tasks.md`
+
+### ST-04003: Implement Result Streaming
+- **Epic:** EP-04
+- **Priority:** P2
+- **Estimate:** 5 hours
+- **Dependencies:** ST-02002 ✅ (merged 2026-02-18)
+- **Checklist:** `planning/checklists/epic-04-story-tasks.md`
+
 ---
 
 ## In Progress
@@ -38,14 +52,7 @@ _No stories currently in progress_
 
 ## In Review
 
-### ST-02002: Implement Type-Safe SELECT Tool
-- **Epic:** EP-02
-- **Priority:** P0
-- **Estimate:** 5 hours
-- **Dependencies:** ST-02001 ✅ (merged 2026-02-17)
-- **Checklist:** `planning/checklists/epic-02-story-tasks.md`
-- **Branch:** `feat/st-02002-type-safe-select-tool`
-- **Status:** In review
+_No stories currently in review_
 
 ---
 
@@ -56,13 +63,6 @@ _No stories currently blocked_
 ---
 
 ## Backlog
-
-### ST-02003: Implement Type-Safe INSERT Tool
-- **Epic:** EP-02
-- **Priority:** P0
-- **Estimate:** 4 hours
-- **Dependencies:** ST-02002
-- **Checklist:** `planning/checklists/epic-02-story-tasks.md`
 
 ### ST-02004: Implement Type-Safe UPDATE Tool
 - **Epic:** EP-02
@@ -97,13 +97,6 @@ _No stories currently blocked_
 - **Priority:** P2
 - **Estimate:** 4 hours
 - **Dependencies:** ST-02003
-- **Checklist:** `planning/checklists/epic-04-story-tasks.md`
-
-### ST-04003: Implement Result Streaming
-- **Epic:** EP-04
-- **Priority:** P2
-- **Estimate:** 5 hours
-- **Dependencies:** ST-02002
 - **Checklist:** `planning/checklists/epic-04-story-tasks.md`
 
 ### ST-05002: Implement Integration Tests
@@ -144,6 +137,7 @@ _No stories currently blocked_
 - ✅ ST-01003 complete - connection pooling implemented (merged 2026-02-17)
 - ✅ ST-01004 complete - connection lifecycle management implemented (merged 2026-02-18)
 - ✅ ST-02001 complete - raw SQL query execution implemented (merged 2026-02-17)
+- ✅ ST-02002 complete - type-safe SELECT tool implemented (merged 2026-02-18)
 - Epic 01 (Connection Management) is now complete - all 4 stories merged
 - Epic 03 (Schema) can run in parallel with Epic 02 after ST-01003
 - Epic 04 (Advanced Features) depends on Epic 02 completion
