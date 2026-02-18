@@ -68,9 +68,7 @@ export const StringLengthSchema = z.object({
 /**
  * Configuration for string utility tools
  */
-export interface StringUtilitiesConfig {
-  // Future: Add configuration options if needed
-}
+export type StringUtilitiesConfig = Record<string, never>;
 
 export type StringCaseConverterInput = z.infer<typeof StringCaseConverterSchema>;
 export type StringTrimInput = z.infer<typeof StringTrimSchema>;
@@ -79,4 +77,3 @@ export type StringSplitInput = z.infer<typeof StringSplitSchema>;
 export type StringJoinInput = z.infer<typeof StringJoinSchema>;
 export type StringSubstringInput = z.infer<typeof StringSubstringSchema>;
 export type StringLengthInput = z.infer<typeof StringLengthSchema>;
-

@@ -60,7 +60,4 @@ export const objectOmitSchema = z.object({
 /**
  * Transformer tools configuration
  */
-export interface TransformerToolsConfig {
-  // No specific configuration needed for transformer tools
-}
-
+export type TransformerToolsConfig = Record<string, never>;

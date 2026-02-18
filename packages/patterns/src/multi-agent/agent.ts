@@ -140,11 +140,11 @@ export function createMultiAgentSystem(config: MultiAgentSystemConfig): MultiAge
   // Note: Empty workers array is allowed - workers can be registered later with registerWorkers()
 
   // Create the graph
-  // @ts-ignore - LangGraph's complex generic types don't infer well with createStateAnnotation
+  // @ts-expect-error - LangGraph's complex generic types don't infer well with createStateAnnotation
   const workflow = new StateGraph(MultiAgentState);
 
   // Configure supervisor model with structured output
-  let supervisorConfig = { ...supervisor, maxIterations, verbose };
+  const supervisorConfig = { ...supervisor, maxIterations, verbose };
   if (supervisor.model) {
     let configuredModel = supervisor.model;
 
@@ -251,11 +251,11 @@ export function createMultiAgentSystem(config: MultiAgentSystemConfig): MultiAge
   };
 
   // Set entry point
-  // @ts-ignore - LangGraph's complex generic types don't infer well with createStateAnnotation
+  // @ts-expect-error - LangGraph's complex generic types don't infer well with createStateAnnotation
   workflow.setEntryPoint('supervisor');
 
   // Add edges from supervisor
-  // @ts-ignore - LangGraph's complex generic types don't infer well with createStateAnnotation
+  // @ts-expect-error - LangGraph's complex generic types don't infer well with createStateAnnotation
   workflow.addConditionalEdges('supervisor', supervisorRouter, [
     'aggregator',
     END,
@@ -264,12 +264,12 @@ export function createMultiAgentSystem(config: MultiAgentSystemConfig): MultiAge
 
   // Add edges from workers back to supervisor
   for (const workerId of workerIds) {
-    // @ts-ignore - LangGraph's complex generic types don't infer well with createStateAnnotation
+    // @ts-expect-error - LangGraph's complex generic types don't infer well with createStateAnnotation
     workflow.addConditionalEdges(workerId, workerRouter, ['supervisor']);
   }
 
   // Add edge from aggregator to end
-  // @ts-ignore - LangGraph's complex generic types don't infer well with createStateAnnotation
+  // @ts-expect-error - LangGraph's complex generic types don't infer well with createStateAnnotation
   workflow.addConditionalEdges('aggregator', aggregatorRouter, [END]);
 
   // Compile the graph with checkpointer if provided
@@ -524,4 +524,3 @@ export function createWorkersRegistry(workers: Array<{ id: string; capabilities:
   }
   return registry;
 }
-

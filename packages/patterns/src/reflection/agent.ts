@@ -127,7 +127,7 @@ export function createReflectionAgent(config: ReflectionAgentConfig) {
   };
 
   // Create the graph
-  // @ts-ignore - LangGraph's complex generic types don't infer well with createStateAnnotation
+  // @ts-expect-error - LangGraph's complex generic types don't infer well with createStateAnnotation
   const workflow = new StateGraph(ReflectionState)
     .addNode('generator', generatorNode)
     .addNode('reflector', reflectorNode)
@@ -168,4 +168,3 @@ export function createReflectionAgent(config: ReflectionAgentConfig) {
   // Compile with checkpointer if provided
   return workflow.compile(checkpointer ? { checkpointer } : undefined) as any;
 }
-

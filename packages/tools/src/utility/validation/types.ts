@@ -51,9 +51,7 @@ export const UuidValidatorSchema = z.object({
 /**
  * Configuration for validation tools
  */
-export interface ValidationConfig {
-  // Future: Add configuration options if needed
-}
+export type ValidationConfig = Record<string, never>;
 
 export type EmailValidatorInput = z.infer<typeof EmailValidatorSchema>;
 export type UrlValidatorSimpleInput = z.infer<typeof UrlValidatorSimpleSchema>;
@@ -61,4 +59,3 @@ export type PhoneValidatorInput = z.infer<typeof PhoneValidatorSchema>;
 export type CreditCardValidatorInput = z.infer<typeof CreditCardValidatorSchema>;
 export type IpValidatorInput = z.infer<typeof IpValidatorSchema>;
 export type UuidValidatorInput = z.infer<typeof UuidValidatorSchema>;
-
