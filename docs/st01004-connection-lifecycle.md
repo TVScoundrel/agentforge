@@ -67,7 +67,7 @@ interface ReconnectionConfig {
 
 **Exponential Backoff Formula:**
 ```
-delay = min(baseDelayMs * 2^attempts, maxDelayMs)
+delay = min(baseDelayMs * 2^(attempt - 1), maxDelayMs)
 ```
 
 **Example delays with defaults:**

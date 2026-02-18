@@ -218,6 +218,14 @@ export class ConnectionManager extends EventEmitter implements DatabaseConnectio
     const startTime = Date.now();
     const currentGeneration = this.connectionGeneration;
 
+    // Guard: if already connected, clean up existing resources first to prevent leaks
+    if (this.state === ConnectionState.CONNECTED && this.client) {
+      logger.debug('Already connected, cleaning up before re-initializing', {
+        vendor: this.vendor,
+      });
+      await this.cleanupCancelledConnection();
+    }
+
     // Set state to connecting
     this.setState(ConnectionState.CONNECTING);
 
