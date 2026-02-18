@@ -87,8 +87,8 @@
 - [ ] Create unit tests for relational-insert tool
 - [ ] Add or update story documentation at docs/st02003-type-safe-insert-tool.md (or document why not required)
 - [ ] Assess test impact; add/update automated tests when needed, or document why tests are not required
-- [ ] Run full test suite before finalizing the PR and record results
-- [ ] Run lint (`pnpm lint`) before finalizing the PR and record results
+- [x] Run full test suite before finalizing the PR and record results ✅ DONE (`pnpm test --run` -> 95 passed, 2 skipped files; 1171 passed, 78 skipped tests)
+- [x] Run lint (`pnpm lint`) before finalizing the PR and record results ✅ DONE (`pnpm lint` -> failed due pre-existing repo-wide lint errors outside ST-02006 scope; no new ST-02006 lint errors)
 - [ ] Mark PR ready for review
 - [ ] Wait for merge
 
@@ -168,14 +168,14 @@
 - [x] Add table name validation (alphanumeric, underscore only) ✅ DONE
 - [x] Add column name validation ✅ DONE
 - [x] Enforce parameterized query usage in all tools ✅ DONE (integrated into relational query execution path)
-- [ ] Create security documentation in docs/
-- [ ] Document SQL injection prevention best practices
+- [x] Create security documentation in docs/ ✅ DONE (`docs/sql-injection-prevention-best-practices.md`)
+- [x] Document SQL injection prevention best practices ✅ DONE
 - [x] Create unit tests for SQL sanitizer ✅ DONE
 - [x] Create unit tests for common injection patterns ✅ DONE
 - [x] Test against OWASP SQL injection examples ✅ DONE
-- [ ] Add security audit checklist
-- [ ] Add or update story documentation at docs/st02006-sql-sanitization-security.md (or document why not required)
-- [ ] Assess test impact; add/update automated tests when needed, or document why tests are not required
+- [x] Add security audit checklist ✅ DONE (included in security docs)
+- [x] Add or update story documentation at docs/st02006-sql-sanitization-security.md (or document why not required) ✅ DONE
+- [x] Assess test impact; add/update automated tests when needed, or document why tests are not required ✅ DONE (added sanitizer + relational query security tests)
 - [ ] Run full test suite before finalizing the PR and record results
 - [ ] Run lint (`pnpm lint`) before finalizing the PR and record results
 - [ ] Mark PR ready for review
