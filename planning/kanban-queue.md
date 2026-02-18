@@ -4,8 +4,8 @@
 
 ## Queue Status Summary
 
-- **Ready:** 3 stories (ST-02002, ST-02006, ST-03001)
-- **In Progress:** 0 stories
+- **Ready:** 2 stories (ST-02006, ST-03001)
+- **In Progress:** 1 story (ST-02002)
 - **In Review:** 0 stories
 - **Blocked:** 0 stories
 - **Backlog:** 11 stories (waiting on dependencies)
@@ -13,13 +13,6 @@
 ---
 
 ## Ready
-
-### ST-02002: Implement Type-Safe SELECT Tool
-- **Epic:** EP-02
-- **Priority:** P0
-- **Estimate:** 5 hours
-- **Dependencies:** ST-02001 ✅ (merged 2026-02-17)
-- **Checklist:** `planning/checklists/epic-02-story-tasks.md`
 
 ### ST-02006: Implement SQL Sanitization and Security
 - **Epic:** EP-02
@@ -39,7 +32,14 @@
 
 ## In Progress
 
-_No stories currently in progress_
+### ST-02002: Implement Type-Safe SELECT Tool
+- **Epic:** EP-02
+- **Priority:** P0
+- **Estimate:** 5 hours
+- **Dependencies:** ST-02001 ✅ (merged 2026-02-17)
+- **Checklist:** `planning/checklists/epic-02-story-tasks.md`
+- **Branch:** `feat/st-02002-type-safe-select-tool`
+- **Status:** In progress
 
 ---
 
