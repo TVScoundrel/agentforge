@@ -7,6 +7,7 @@ import { createLogger } from '@agentforge/core';
 import type { ConnectionManager } from '../../connection/connection-manager.js';
 import type { RelationalSelectInput, SelectResult } from './types.js';
 import { buildSelectQuery } from './query-builder.js';
+import { isSafeValidationError } from './error-utils.js';
 
 const logger = createLogger('agentforge:tools:data:relational:select');
 
@@ -63,18 +64,8 @@ export async function executeSelect(
     });
 
     // Let known-safe validation errors propagate so callers can fix bad inputs.
-    if (error instanceof Error) {
-      const message = error.message;
-      if (message.includes('must not be empty') ||
-          message.includes('contains invalid characters') ||
-          message.includes('requires an array value') ||
-          message.includes('requires a non-empty array value') ||
-          message.includes('null is only allowed with isNull/isNotNull operators') ||
-          message.includes('LIKE operator requires a string value') ||
-          message.includes('operator requires a string or number value') ||
-          message.includes('operator requires a scalar value')) {
-        throw error;
-      }
+    if (isSafeValidationError(error)) {
+      throw error;
     }
 
     // Sanitize database/driver failures while preserving root cause for diagnostics.

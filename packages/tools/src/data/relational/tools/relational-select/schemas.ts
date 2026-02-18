@@ -6,6 +6,11 @@
 import { z } from 'zod';
 
 /**
+ * Valid schema-qualified identifier pattern (e.g., "public.users")
+ */
+const VALID_QUALIFIED_IDENTIFIER_PATTERN = /^[a-zA-Z_][a-zA-Z0-9_]*(\.[a-zA-Z_][a-zA-Z0-9_]*)*$/;
+
+/**
  * WHERE condition operator types
  */
 export const whereOperatorSchema = z.enum([
@@ -134,7 +139,13 @@ export const orderBySchema = z.object({
  * Relational SELECT tool input schema
  */
 export const relationalSelectSchema = z.object({
-  table: z.string().min(1, 'Table name is required').describe('Table name to select from'),
+  table: z.string()
+    .min(1, 'Table name is required')
+    .regex(
+      VALID_QUALIFIED_IDENTIFIER_PATTERN,
+      'Table name contains invalid characters. Only alphanumeric characters, underscores, and dots (for schema qualification) are allowed.'
+    )
+    .describe('Table name to select from (schema-qualified names supported, e.g. public.users)'),
   columns: z.array(z.string().min(1, 'Column name must not be empty')).min(1, 'Columns array must not be empty').optional().describe('Columns to select (omit for SELECT *)'),
   where: z.array(whereConditionSchema).optional().describe('WHERE conditions (combined with AND)'),
   orderBy: z.array(orderBySchema).optional().describe('ORDER BY clauses'),

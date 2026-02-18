@@ -23,7 +23,7 @@ Implemented a type-safe SELECT tool using Drizzle ORM's query builder API. This 
 
 ### Query Building Approach
 
-Instead of creating a separate query-builder.ts wrapper, this implementation uses Drizzle's native `sql` template API directly:
+This implementation uses a modular `query-builder.ts` module that builds queries using Drizzle's native `sql` template API:
 
 - **`sql.raw()`** - For static SQL fragments (e.g., `SELECT`, `FROM`)
 - **`sql.join()`** - To concatenate SQL parts

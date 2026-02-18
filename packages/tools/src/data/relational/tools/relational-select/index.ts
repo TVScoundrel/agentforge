@@ -12,6 +12,7 @@ import { ConnectionManager } from '../../connection/connection-manager.js';
 import { relationalSelectSchema } from './schemas.js';
 import { executeSelect } from './executor.js';
 import type { RelationalSelectInput, SelectResponse } from './types.js';
+import { isSafeValidationError } from './error-utils.js';
 
 // Re-export types and schemas for external use
 export * from './types.js';
@@ -99,18 +100,8 @@ export const relationalSelect = toolBuilder()
       let errorMessage = 'Failed to execute SELECT query. Please verify your input and database connection.';
 
       // Propagate known-safe validation messages so callers can correct input.
-      if (error instanceof Error) {
-        const message = error.message;
-        if (message.includes('must not be empty') ||
-            message.includes('contains invalid characters') ||
-            message.includes('requires an array value') ||
-            message.includes('requires a non-empty array value') ||
-            message.includes('null is only allowed with isNull/isNotNull operators') ||
-            message.includes('LIKE operator requires a string value') ||
-            message.includes('operator requires a string or number value') ||
-            message.includes('operator requires a scalar value')) {
-          errorMessage = message;
-        }
+      if (isSafeValidationError(error)) {
+        errorMessage = error.message;
       }
 
       return {

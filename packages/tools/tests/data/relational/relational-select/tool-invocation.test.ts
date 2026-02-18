@@ -180,6 +180,20 @@ describe('Relational SELECT - Tool Invocation', () => {
     expect(allActive).toBe(true);
   });
 
+  it.skipIf(!hasSQLiteBindings)('should support schema-qualified table names', async () => {
+    const result = await relationalSelect.invoke({
+      table: 'main.test_users',
+      orderBy: [{ column: 'id', direction: 'asc' }],
+      vendor: 'sqlite',
+      connectionString: getDbPath()
+    });
+
+    expect(result.success).toBe(true);
+    expect(result.rows).toHaveLength(3);
+    const ids = (result.rows ?? []).map((row) => (row as Record<string, unknown>).id);
+    expect(ids).toEqual([1, 2, 3]);
+  });
+
   it('should reject empty table name', () => {
     const result = relationalSelect.schema.safeParse({
       table: '',

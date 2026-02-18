@@ -197,4 +197,24 @@ describe('Relational SELECT - Schema Validation', () => {
 
     expect(result.success).toBe(false);
   });
+
+  it('should accept schema-qualified table name', () => {
+    const result = relationalSelect.schema.safeParse({
+      table: 'public.users',
+      vendor: 'postgresql',
+      connectionString: 'postgresql://localhost/test'
+    });
+
+    expect(result.success).toBe(true);
+  });
+
+  it('should reject malformed schema-qualified table name', () => {
+    const result = relationalSelect.schema.safeParse({
+      table: 'public..users',
+      vendor: 'postgresql',
+      connectionString: 'postgresql://localhost/test'
+    });
+
+    expect(result.success).toBe(false);
+  });
 });
