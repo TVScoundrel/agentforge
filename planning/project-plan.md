@@ -72,7 +72,7 @@
 - Documentation site is deployed to GitHub Pages
 
 **Current Status:**
-- **Version:** 0.6.3 (all packages published to npm)
+- **Version:** 0.12.6 (all packages published to npm)
 - **Active Development:** Relational Database Access Tool (in progress)
 - **Published Packages:** All 5 framework packages live on npm
 - **Documentation:** Live at https://tvscoundrel.github.io/agentforge/
@@ -82,7 +82,7 @@
 ### Monorepo Structure
 
 ```
-deepagents/
+agentforge/
 ├── packages/              # AgentForge Framework (5 packages)
 │   ├── core/             # @agentforge/core - Foundation
 │   │   ├── src/
