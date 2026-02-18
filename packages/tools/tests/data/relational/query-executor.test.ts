@@ -231,6 +231,20 @@ describe('Query Executor', () => {
       })).rejects.toThrow(/Query execution failed/);
     });
 
+    it.skipIf(!hasSQLiteBindings)('should reject dangerous SQL operations', async () => {
+      await expect(executeQuery(manager, {
+        sql: 'DROP TABLE users',
+        vendor: 'sqlite'
+      })).rejects.toThrow(/dangerous SQL operation/);
+    });
+
+    it.skipIf(!hasSQLiteBindings)('should require parameters for INSERT statements', async () => {
+      await expect(executeQuery(manager, {
+        sql: "INSERT INTO users (name, email) VALUES ('Unsafe', 'unsafe@example.com')",
+        vendor: 'sqlite'
+      })).rejects.toThrow(/Parameters are required for INSERT\/UPDATE\/DELETE queries/);
+    });
+
 
     it.skipIf(!hasSQLiteBindings)('should reject when positional parameters are missing', async () => {
       await expect(executeQuery(manager, {
@@ -257,4 +271,3 @@ describe('Query Executor', () => {
     });
   });
 });
-

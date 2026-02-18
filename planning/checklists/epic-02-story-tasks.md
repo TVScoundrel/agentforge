@@ -161,18 +161,18 @@
 ### Checklist
 - [x] Create branch `feat/st-02006-sql-sanitization-security` ✅ DONE
 - [x] Create draft PR with story ID in title ✅ DONE (PR #31)
-- [ ] Create `packages/tools/src/data/relational/utils/sql-sanitizer.ts`
-- [ ] Implement input validation for SQL strings
-- [ ] Implement input escaping for special characters
-- [ ] Add dangerous SQL pattern detection (DROP, TRUNCATE, ALTER in user input)
-- [ ] Add table name validation (alphanumeric, underscore only)
-- [ ] Add column name validation
-- [ ] Enforce parameterized query usage in all tools
+- [x] Create `packages/tools/src/data/relational/utils/sql-sanitizer.ts` ✅ DONE
+- [x] Implement input validation for SQL strings ✅ DONE
+- [x] Implement input escaping for special characters ✅ DONE
+- [x] Add dangerous SQL pattern detection (DROP, TRUNCATE, ALTER in user input) ✅ DONE
+- [x] Add table name validation (alphanumeric, underscore only) ✅ DONE
+- [x] Add column name validation ✅ DONE
+- [x] Enforce parameterized query usage in all tools ✅ DONE (integrated into relational query execution path)
 - [ ] Create security documentation in docs/
 - [ ] Document SQL injection prevention best practices
-- [ ] Create unit tests for SQL sanitizer
-- [ ] Create unit tests for common injection patterns
-- [ ] Test against OWASP SQL injection examples
+- [x] Create unit tests for SQL sanitizer ✅ DONE
+- [x] Create unit tests for common injection patterns ✅ DONE
+- [x] Test against OWASP SQL injection examples ✅ DONE
 - [ ] Add security audit checklist
 - [ ] Add or update story documentation at docs/st02006-sql-sanitization-security.md (or document why not required)
 - [ ] Assess test impact; add/update automated tests when needed, or document why tests are not required

@@ -134,6 +134,27 @@ describe('Relational Query Tool', () => {
       expect(result.success).toBe(false);
       expect(result.error).toBeDefined();
     });
+
+    it.skipIf(!hasSQLiteBindings)('should block dangerous SQL operations', async () => {
+      const result = await relationalQuery.invoke({
+        sql: 'DROP TABLE users',
+        vendor: 'sqlite',
+        connectionString: ':memory:'
+      });
+
+      expect(result.success).toBe(false);
+      expect(result.error).toMatch(/dangerous SQL operation/);
+    });
+
+    it.skipIf(!hasSQLiteBindings)('should require parameters for INSERT statements', async () => {
+      const result = await relationalQuery.invoke({
+        sql: "INSERT INTO users (name, email) VALUES ('Unsafe', 'unsafe@example.com')",
+        vendor: 'sqlite',
+        connectionString: ':memory:'
+      });
+
+      expect(result.success).toBe(false);
+      expect(result.error).toMatch(/Parameters are required for INSERT\/UPDATE\/DELETE queries/);
+    });
   });
 });
-

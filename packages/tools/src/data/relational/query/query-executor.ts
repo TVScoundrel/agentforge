@@ -7,6 +7,7 @@ import { sql, type SQL } from 'drizzle-orm';
 import { createLogger } from '@agentforge/core';
 import type { ConnectionManager } from '../connection/connection-manager.js';
 import type { QueryInput, QueryExecutionResult, QueryParams } from './types.js';
+import { validateSqlString, enforceParameterizedQueryUsage } from '../utils/sql-sanitizer.js';
 
 const logger = createLogger('agentforge:tools:data:relational:query');
 
@@ -174,6 +175,10 @@ export async function executeQuery(
   });
 
   try {
+    // Security validation before query construction/execution
+    validateSqlString(input.sql);
+    enforceParameterizedQueryUsage(input.sql, input.params);
+
     // Build parameterized query
     const parameterizedQuery = buildParameterizedQuery(input.sql, input.params);
 
@@ -215,7 +220,11 @@ export async function executeQuery(
       // Known safe validation errors from buildParameterizedQuery
       if (message.includes('Missing parameter') ||
           message.includes('Parameters provided but no placeholders') ||
-          message.includes('Mixed placeholder styles')) {
+          message.includes('Mixed placeholder styles') ||
+          message.includes('SQL query must not be empty') ||
+          message.includes('SQL query contains null bytes') ||
+          message.includes('Detected dangerous SQL operation') ||
+          message.includes('Parameters are required for INSERT/UPDATE/DELETE queries')) {
         throw error;
       }
     }
@@ -226,4 +235,3 @@ export async function executeQuery(
     throw new Error('Query execution failed. See server logs for details.', { cause: error });
   }
 }
-
