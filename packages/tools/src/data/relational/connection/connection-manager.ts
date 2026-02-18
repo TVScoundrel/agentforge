@@ -303,24 +303,38 @@ export class ConnectionManager extends EventEmitter implements DatabaseConnectio
       // Normalize error to Error object before emitting
       const normalizedError = error instanceof Error ? error : new Error(String(error));
 
-      // Set state to error and emit event
-      this.setState(ConnectionState.ERROR);
-      this.emit('error', normalizedError);
+      // Check if this is a cancellation error (disconnect() was called during initialization)
+      const isCancellation = normalizedError.message.includes('Connection cancelled');
 
-      logger.error(errorMessage, {
-        vendor: this.vendor,
-        error: normalizedError.message,
-        duration: Date.now() - startTime,
-        state: this.state,
-      });
+      // Only set error state and emit error event if this is NOT a cancellation
+      // Cancellation errors already set state to DISCONNECTED before throwing
+      if (!isCancellation) {
+        // Set state to error and emit event
+        this.setState(ConnectionState.ERROR);
+        this.emit('error', normalizedError);
 
-      // Clean up any partially created resources to prevent connection leaks
-      await this.cleanupCancelledConnection();
+        logger.error(errorMessage, {
+          vendor: this.vendor,
+          error: normalizedError.message,
+          duration: Date.now() - startTime,
+          state: this.state,
+        });
 
-      // Attempt reconnection if configured and this initialize call is still current
-      // This prevents scheduling reconnection after disconnect() has been called
-      if (this.reconnectionConfig.enabled && currentGeneration === this.connectionGeneration) {
-        this.scheduleReconnection();
+        // Clean up any partially created resources to prevent connection leaks
+        await this.cleanupCancelledConnection();
+
+        // Attempt reconnection if configured and this initialize call is still current
+        // This prevents scheduling reconnection after disconnect() has been called
+        if (this.reconnectionConfig.enabled && currentGeneration === this.connectionGeneration) {
+          this.scheduleReconnection();
+        }
+      } else {
+        // For cancellation, just log debug info - state is already DISCONNECTED
+        logger.debug('Connection initialization cancelled', {
+          vendor: this.vendor,
+          duration: Date.now() - startTime,
+          state: this.state,
+        });
       }
 
       if (error instanceof Error) {

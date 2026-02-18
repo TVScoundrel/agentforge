@@ -106,7 +106,7 @@ type ConnectionEvent = 'connected' | 'disconnected' | 'error' | 'reconnecting';
 ### Basic Connection Lifecycle
 
 ```typescript
-import { ConnectionManager } from '@agentforge/tools/data/relational';
+import { ConnectionManager } from '@agentforge/tools';
 
 const manager = new ConnectionManager({
   vendor: 'postgresql',

@@ -35,7 +35,7 @@
 - **Agent Framework:** LangGraph (orchestration)
 - **LLM Integration:** LangChain
 - **Documentation:** VitePress (docs-site)
-- **Build System:** TypeScript compiler, pnpm workspaces
+- **Build System:** tsup (dual ESM/CJS) for builds, TypeScript compiler (`tsc --noEmit`) for typechecking, pnpm workspaces
 
 **Repository Structure:**
 - **Monorepo:** Contains both AgentForge framework and Playground (PTY AGI)
