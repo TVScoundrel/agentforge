@@ -2,7 +2,7 @@
 
 **Purpose:** Track completed and merged stories for the Relational Database Access Tool project.
 
-**Last Updated:** 2026-02-17
+**Last Updated:** 2026-02-18
 
 ---
 
@@ -35,6 +35,13 @@
 - **Epic:** EP-02 (Query Execution Tools)
 - **Estimate:** 4 hours | **Actual:** ~6 hours (including 6 rounds of PR review feedback)
 - **Outcome:** Successfully implemented raw SQL query execution tool with parameter binding for PostgreSQL, MySQL, and SQLite. Created query executor with support for positional ($1, ?) and named (:name) parameters using Drizzle's sql template tag for SQL injection prevention. Implemented relational-query LangGraph tool with comprehensive schema validation, examples, and error handling. Created 32 passing unit tests (19 conditionally skipped for driver availability). Addressed 37 Copilot review comments across 6 rounds, including: removing unimplemented timeout/maxRows features, updating ConnectionManager.execute() to accept SQL objects, adding positional/named parameter validation, fixing error testing patterns, adding comprehensive test coverage, fixing PostgreSQL type cast regex, detecting mixed placeholder styles, improving error sanitization, making rowCount required, replacing console.log with logger in docs, detecting placeholders when params omitted, adding test for $n positional placeholders, and updating checklist for deferred timeout feature. All quality gates passed (30 tests, lint clean).
+
+### ST-01004: Implement Connection Lifecycle Management
+- **Merged:** 2026-02-18
+- **PR:** https://github.com/TVScoundrel/agentforge/pull/29 (commit 51e9c76)
+- **Epic:** EP-01 (Core Database Connection Management)
+- **Estimate:** 2 hours | **Actual:** ~8 hours (including 15 rounds of PR review feedback)
+- **Outcome:** Successfully implemented comprehensive connection lifecycle management with state tracking (DISCONNECTED, CONNECTING, CONNECTED, RECONNECTING, ERROR), automatic reconnection with exponential backoff, and event emissions for lifecycle changes. Implemented public API methods: connect(), disconnect(), isConnected(), getState(), dispose(). Added backward compatibility with initialize() and close() methods. Implemented robust concurrency handling via connectPromise tracking and connectionGeneration tokens. Created comprehensive cleanup mechanisms including cleanupCancelledConnection() for resource cleanup and dispose() for full cleanup including event listener removal. Implemented proper idempotency for connect() with re-initialization support. Created 21 passing unit tests (4 passed, 17 skipped when SQLite bindings unavailable). Addressed 15 rounds of Copilot review feedback covering: backward compatibility, reconnection timer cancellation, test patterns, concurrency handling, memory leaks, error normalization, documentation accuracy, connection leaks, exponential backoff formula, initialize() idempotency, comprehensive edge case tests, SQLite binding guards, planning documentation updates, version numbers, repository naming, PR description corruption, re-initialization event emission, and dispose() method documentation. All quality gates passed (1115 tests, lint clean).
 
 ---
 

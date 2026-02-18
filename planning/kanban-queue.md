@@ -1,11 +1,11 @@
 # Kanban Queue: Relational Database Access Tool
 
-**Last Updated:** 2026-02-17
+**Last Updated:** 2026-02-18
 
 ## Queue Status Summary
 
 - **Ready:** 3 stories (ST-02002, ST-02006, ST-03001)
-- **In Progress:** 1 story (ST-01004)
+- **In Progress:** 0 stories
 - **In Review:** 0 stories
 - **Blocked:** 0 stories
 - **Backlog:** 11 stories (waiting on dependencies)
@@ -39,14 +39,7 @@
 
 ## In Progress
 
-### ST-01004: Implement Connection Lifecycle Management
-- **Epic:** EP-01
-- **Priority:** P1
-- **Estimate:** 2 hours
-- **Dependencies:** ST-01003 ✅ (merged 2026-02-17)
-- **Checklist:** `planning/checklists/epic-01-story-tasks.md`
-- **PR:** #29 https://github.com/TVScoundrel/agentforge/pull/29
-- **Status:** In progress
+_No stories currently in progress_
 
 ---
 
@@ -149,7 +142,9 @@ _No stories currently blocked_
 - ✅ ST-01001 complete - foundation established (merged 2026-02-17)
 - ✅ ST-01002 complete - connection manager implemented (merged 2026-02-17)
 - ✅ ST-01003 complete - connection pooling implemented (merged 2026-02-17)
-- Epic 01 (Connection Management) must complete before Epic 02 (CRUD Operations)
+- ✅ ST-01004 complete - connection lifecycle management implemented (merged 2026-02-18)
+- ✅ ST-02001 complete - raw SQL query execution implemented (merged 2026-02-17)
+- Epic 01 (Connection Management) is now complete - all 4 stories merged
 - Epic 03 (Schema) can run in parallel with Epic 02 after ST-01003
 - Epic 04 (Advanced Features) depends on Epic 02 completion
 - Epic 05 (Testing & Docs) runs throughout but has specific dependencies

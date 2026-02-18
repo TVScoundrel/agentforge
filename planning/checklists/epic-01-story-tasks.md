@@ -153,7 +153,8 @@
 - [x] Run full test suite before finalizing the PR and record results
 - [x] Run lint (`pnpm lint`) before finalizing the PR and record results
 - [x] Mark PR ready for review
-- [ ] Wait for merge
+- [x] Wait for merge
+  **Merged:** PR #29 https://github.com/TVScoundrel/agentforge/pull/29 merged to main (commit 51e9c76) on 2026-02-18
 
 ### Test Results
 - **Unit Tests (connection-manager.test.ts)**: 31 passed, 0 skipped ✅
