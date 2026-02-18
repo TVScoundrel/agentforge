@@ -4,22 +4,15 @@
 
 ## Queue Status Summary
 
-- **Ready:** 3 stories (ST-02002, ST-02006, ST-03001)
+- **Ready:** 2 stories (ST-02006, ST-03001)
 - **In Progress:** 0 stories
-- **In Review:** 0 stories
+- **In Review:** 1 story (ST-02002)
 - **Blocked:** 0 stories
 - **Backlog:** 11 stories (waiting on dependencies)
 
 ---
 
 ## Ready
-
-### ST-02002: Implement Type-Safe SELECT Tool
-- **Epic:** EP-02
-- **Priority:** P0
-- **Estimate:** 5 hours
-- **Dependencies:** ST-02001 ✅ (merged 2026-02-17)
-- **Checklist:** `planning/checklists/epic-02-story-tasks.md`
 
 ### ST-02006: Implement SQL Sanitization and Security
 - **Epic:** EP-02
@@ -45,7 +38,14 @@ _No stories currently in progress_
 
 ## In Review
 
-_No stories currently in review_
+### ST-02002: Implement Type-Safe SELECT Tool
+- **Epic:** EP-02
+- **Priority:** P0
+- **Estimate:** 5 hours
+- **Dependencies:** ST-02001 ✅ (merged 2026-02-17)
+- **Checklist:** `planning/checklists/epic-02-story-tasks.md`
+- **Branch:** `feat/st-02002-type-safe-select-tool`
+- **Status:** In review
 
 ---
 
@@ -148,4 +148,3 @@ _No stories currently blocked_
 - Epic 03 (Schema) can run in parallel with Epic 02 after ST-01003
 - Epic 04 (Advanced Features) depends on Epic 02 completion
 - Epic 05 (Testing & Docs) runs throughout but has specific dependencies
-
