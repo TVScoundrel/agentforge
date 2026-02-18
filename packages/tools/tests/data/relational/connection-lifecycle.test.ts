@@ -69,14 +69,14 @@ describe('Connection Lifecycle Management', () => {
       expect(manager.isConnected()).toBe(false);
     });
 
-    it('should transition to ERROR state on connection failure', async () => {
+    it.skipIf(!hasSQLiteBindings)('should transition to ERROR state on connection failure', async () => {
       const config: ConnectionConfig = {
         vendor: 'sqlite',
         connection: '/invalid/path/that/does/not/exist/database.db',
       };
 
       const manager = new ConnectionManager(config);
-      
+
       await expect(manager.connect()).rejects.toThrow();
 
       expect(manager.getState()).toBe(ConnectionState.ERROR);
@@ -118,7 +118,7 @@ describe('Connection Lifecycle Management', () => {
       expect(disconnectedHandler).toHaveBeenCalledTimes(1);
     });
 
-    it('should emit error event on connection failure', async () => {
+    it.skipIf(!hasSQLiteBindings)('should emit error event on connection failure', async () => {
       const config: ConnectionConfig = {
         vendor: 'sqlite',
         connection: '/invalid/path/that/does/not/exist/database.db',
@@ -250,7 +250,7 @@ describe('Connection Lifecycle Management', () => {
   });
 
   describe('Edge case lifecycle interactions', () => {
-    it('should allow connect() to be called again after entering ERROR state', async () => {
+    it.skipIf(!hasSQLiteBindings)('should allow connect() to be called again after entering ERROR state', async () => {
       const config: ConnectionConfig = {
         vendor: 'sqlite',
         connection: '/invalid/path/database.db',
@@ -332,7 +332,7 @@ describe('Connection Lifecycle Management', () => {
       }
     );
 
-    it('should support disconnect() while connect() / reconnection is in progress', async () => {
+    it.skipIf(!hasSQLiteBindings)('should support disconnect() while connect() / reconnection is in progress', async () => {
       const config: ConnectionConfig = {
         vendor: 'sqlite',
         connection: '/invalid/path/database.db',
@@ -409,7 +409,7 @@ describe('Connection Lifecycle Management', () => {
       }
     );
 
-    it('should handle multiple concurrent connect() calls in ERROR state', async () => {
+    it.skipIf(!hasSQLiteBindings)('should handle multiple concurrent connect() calls in ERROR state', async () => {
       const config: ConnectionConfig = {
         vendor: 'sqlite',
         connection: '/invalid/path/database.db',

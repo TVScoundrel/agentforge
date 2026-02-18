@@ -36,7 +36,7 @@ export enum ConnectionState {
 - Initializes the database connection
 - Idempotent - safe to call multiple times
 - Sets state to `CONNECTING` → `CONNECTED` on success
-- Sets state to `ERROR` and schedules reconnection on failure
+- On failure, sets state to `ERROR`; if automatic reconnection is enabled and a retry is scheduled, immediately transitions to `RECONNECTING`, otherwise remains in `ERROR`
 
 **`disconnect(): Promise<void>`**
 - Closes the database connection gracefully
