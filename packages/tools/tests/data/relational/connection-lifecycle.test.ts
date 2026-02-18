@@ -29,7 +29,7 @@ const hasSQLiteBindings = (() => {
 
 describe('Connection Lifecycle Management', () => {
   describe('Connection State Tracking', () => {
-    it('should start in DISCONNECTED state', () => {
+    it.skipIf(!hasSQLiteBindings)('should start in DISCONNECTED state', () => {
       const config: ConnectionConfig = {
         vendor: 'sqlite',
         connection: ':memory:',
