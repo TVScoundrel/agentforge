@@ -12,8 +12,5 @@ export {
 
 export {
   validateSqlString,
-  escapeSqlStringValue,
-  validateTableName,
-  validateColumnName,
   enforceParameterizedQueryUsage,
 } from './sql-sanitizer.js';

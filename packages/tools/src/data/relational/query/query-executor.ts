@@ -7,7 +7,11 @@ import { sql, type SQL } from 'drizzle-orm';
 import { createLogger } from '@agentforge/core';
 import type { ConnectionManager } from '../connection/connection-manager.js';
 import type { QueryInput, QueryExecutionResult, QueryParams } from './types.js';
-import { validateSqlString, enforceParameterizedQueryUsage } from '../utils/sql-sanitizer.js';
+import {
+  validateSqlString,
+  enforceParameterizedQueryUsage,
+  PLACEHOLDER_PATTERN,
+} from '../utils/sql-sanitizer.js';
 
 const logger = createLogger('agentforge:tools:data:relational:query');
 
@@ -23,14 +27,9 @@ const logger = createLogger('agentforge:tools:data:relational:query');
  */
 function buildParameterizedQuery(sqlString: string, params?: QueryParams): SQL {
   if (!params) {
-    // No parameters provided - ensure the query does not contain placeholders
-    // Match:
-    // - $1, $2, ... (PostgreSQL-style positional placeholders)
-    // - ? (MySQL/SQLite-style positional placeholders)
-    // - :name (named placeholders)
-    const placeholderPattern = /(\$(\d+))|(\?)|(:[a-zA-Z_][a-zA-Z0-9_]*)/;
-
-    if (placeholderPattern.test(sqlString)) {
+    // No parameters provided - ensure the query does not contain placeholders.
+    // Shared placeholder pattern avoids mismatches with pre-validation logic.
+    if (PLACEHOLDER_PATTERN.test(sqlString)) {
       throw new Error(
         'Missing parameters: SQL query contains placeholders but no params were provided',
       );
@@ -219,6 +218,7 @@ export async function executeQuery(
       const message = error.message;
       // Known safe validation errors from buildParameterizedQuery
       if (message.includes('Missing parameter') ||
+          message.includes('Missing parameters') ||
           message.includes('Parameters provided but no placeholders') ||
           message.includes('Mixed placeholder styles') ||
           message.includes('SQL query must not be empty') ||

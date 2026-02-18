@@ -6,6 +6,7 @@
  */
 
 import { describe, it, expect, beforeAll, afterAll } from 'vitest';
+import { sql } from 'drizzle-orm';
 import { ConnectionManager } from '../../../src/data/relational/connection/connection-manager.js';
 import { executeQuery } from '../../../src/data/relational/query/query-executor.js';
 import type { ConnectionConfig } from '../../../src/data/relational/connection/types.js';
@@ -42,11 +43,9 @@ describe('Query Executor', () => {
       manager = new ConnectionManager(config);
       await manager.initialize();
 
-      // Create test table using the public query execution API
-      await executeQuery(manager, {
-        sql: 'CREATE TABLE users (id INTEGER PRIMARY KEY, name TEXT, email TEXT)',
-        vendor: 'sqlite',
-      });
+      // Create fixture table directly via manager to keep setup independent from
+      // query-safety policy that blocks CREATE in agent-exposed query paths.
+      await manager.execute(sql.raw('CREATE TABLE users (id INTEGER PRIMARY KEY, name TEXT, email TEXT)'));
     });
 
     afterAll(async () => {

@@ -7,9 +7,6 @@
 import { describe, it, expect } from 'vitest';
 import {
   validateSqlString,
-  escapeSqlStringValue,
-  validateTableName,
-  validateColumnName,
   enforceParameterizedQueryUsage,
 } from '../../../src/data/relational/utils/sql-sanitizer.js';
 
@@ -38,37 +35,27 @@ describe('SQL Sanitizer', () => {
     it('should reject ALTER statements', () => {
       expect(() => validateSqlString('ALTER TABLE users ADD COLUMN role TEXT')).toThrow(/dangerous SQL operation/);
     });
-  });
 
-  describe('escapeSqlStringValue', () => {
-    it('should escape single quotes and backslashes', () => {
-      const escaped = escapeSqlStringValue("O'Reilly\\admin");
-      expect(escaped).toBe("O''Reilly\\\\admin");
+    it('should reject CREATE statements', () => {
+      expect(() => validateSqlString('CREATE TABLE users (id INTEGER)')).toThrow(/dangerous SQL operation/);
     });
 
-    it('should remove null bytes', () => {
-      const escaped = escapeSqlStringValue('safe\0value');
-      expect(escaped).toBe('safevalue');
-    });
-  });
-
-  describe('validateTableName', () => {
-    it('should accept valid table name', () => {
-      expect(() => validateTableName('users_2026')).not.toThrow();
+    it('should allow dangerous keywords inside comments', () => {
+      expect(() =>
+        validateSqlString('/* drop table users */ SELECT * FROM users WHERE id = ?'),
+      ).not.toThrow();
     });
 
-    it('should reject invalid table name', () => {
-      expect(() => validateTableName('users;DROP')).toThrow(/invalid characters/);
-    });
-  });
-
-  describe('validateColumnName', () => {
-    it('should accept valid column name', () => {
-      expect(() => validateColumnName('created_at')).not.toThrow();
+    it('should allow dangerous keywords inside string literals', () => {
+      expect(() =>
+        validateSqlString("SELECT 'how to drop table' AS tutorial FROM docs WHERE id = ?"),
+      ).not.toThrow();
     });
 
-    it('should reject invalid column name', () => {
-      expect(() => validateColumnName('email-address')).toThrow(/invalid characters/);
+    it('should allow dangerous keywords inside identifiers', () => {
+      expect(() =>
+        validateSqlString('SELECT drop_count FROM alter_log WHERE user_id = ?'),
+      ).not.toThrow();
     });
   });
 
@@ -80,6 +67,10 @@ describe('SQL Sanitizer', () => {
     it('should reject placeholders without params', () => {
       expect(() => enforceParameterizedQueryUsage('SELECT * FROM users WHERE id = ?', undefined))
         .toThrow(/Missing parameters/);
+    });
+
+    it('should not treat PostgreSQL casts as placeholders', () => {
+      expect(() => enforceParameterizedQueryUsage('SELECT 1::int')).not.toThrow();
     });
 
     it('should require params for INSERT', () => {
@@ -109,4 +100,3 @@ describe('SQL Sanitizer', () => {
     });
   });
 });
-

@@ -8,9 +8,10 @@
 ## Summary
 
 Implemented first-pass SQL sanitization and enforcement in relational query execution:
-- added SQL sanitizer utilities for query/identifier validation
-- blocked dangerous DDL operations (`DROP`, `TRUNCATE`, `ALTER`) in raw-query paths
+- added SQL sanitizer utilities for query validation
+- blocked dangerous DDL operations (`CREATE`, `DROP`, `TRUNCATE`, `ALTER`) in raw-query paths
 - enforced parameterized usage for mutation statements
+- aligned placeholder detection logic across validation and execution paths
 - added dedicated sanitizer unit tests and injection-pattern coverage
 
 ## Implemented Changes
@@ -19,10 +20,8 @@ Implemented first-pass SQL sanitization and enforcement in relational query exec
 
 - `packages/tools/src/data/relational/utils/sql-sanitizer.ts`
   - `validateSqlString(sqlString)`
-  - `escapeSqlStringValue(value)`
-  - `validateTableName(tableName)`
-  - `validateColumnName(columnName)`
   - `enforceParameterizedQueryUsage(sqlString, params)`
+  - strips comments/string literals before dangerous-keyword checks
 
 ### Integration
 
@@ -31,7 +30,7 @@ Implemented first-pass SQL sanitization and enforcement in relational query exec
   - allowed safe validation errors to propagate to callers
 
 - `packages/tools/src/data/relational/utils/index.ts`
-  - exported SQL sanitizer utilities
+  - exports only the primary SQL sanitizer entry points used by query execution
 
 ### Tests
 
