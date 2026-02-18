@@ -1,3 +1,4 @@
+/* eslint-env node */
 /**
  * Neo4j Tools Test Script
  * 
@@ -11,6 +12,8 @@ import {
   neo4jFindNodes,
   neo4jPool,
 } from '../dist/index.js';
+
+const { console, process } = globalThis;
 
 async function main() {
   console.log('🚀 Testing Neo4j Tools\n');
@@ -96,4 +99,3 @@ async function main() {
 }
 
 main();
-

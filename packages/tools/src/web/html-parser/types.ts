@@ -9,9 +9,7 @@ import { z } from 'zod';
 /**
  * HTML parser tools configuration
  */
-export interface HtmlParserToolsConfig {
-  // No specific config needed for HTML parser tools currently
-}
+export type HtmlParserToolsConfig = Record<string, never>;
 
 /**
  * HTML parser input schema
@@ -39,4 +37,3 @@ export const extractImagesSchema = z.object({
   html: z.string().describe('The HTML content to extract images from'),
   baseUrl: z.string().url().optional().describe('Optional base URL to resolve relative image URLs'),
 });
-

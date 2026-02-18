@@ -1,3 +1,4 @@
+/* eslint-env node */
 /**
  * Neo4j Embedding Tools Test
  * 
@@ -18,6 +19,8 @@ import {
   neo4jVectorSearchWithEmbedding,
   neo4jPool,
 } from '../dist/index.js';
+
+const { console, setTimeout } = globalThis;
 
 console.log('🚀 Testing Neo4j Embedding Tools\n');
 
@@ -161,4 +164,3 @@ try {
   console.log('\n👋 Disconnecting from Neo4j');
   await neo4jPool.close();
 }
-

@@ -40,12 +40,9 @@ export const StatisticsSchema = z.object({
 /**
  * Configuration for math operations tools
  */
-export interface MathOperationsConfig {
-  // Future: Add configuration options if needed
-}
+export type MathOperationsConfig = Record<string, never>;
 
 export type CalculatorInput = z.infer<typeof CalculatorSchema>;
 export type MathFunctionsInput = z.infer<typeof MathFunctionsSchema>;
 export type RandomNumberInput = z.infer<typeof RandomNumberSchema>;
 export type StatisticsInput = z.infer<typeof StatisticsSchema>;
-

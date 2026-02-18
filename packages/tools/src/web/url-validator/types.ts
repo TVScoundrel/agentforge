@@ -23,9 +23,7 @@ export interface UrlValidationResult {
 /**
  * URL validator tools configuration
  */
-export interface UrlValidatorToolsConfig {
-  // No specific config needed for URL validator tools currently
-}
+export type UrlValidatorToolsConfig = Record<string, never>;
 
 /**
  * URL validator input schema
@@ -52,4 +50,3 @@ export const urlBuilderSchema = z.object({
 export const urlQueryParserSchema = z.object({
   input: z.string().describe('URL or query string to parse (e.g., "?foo=bar&baz=qux" or full URL)'),
 });
-

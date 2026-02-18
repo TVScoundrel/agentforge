@@ -129,7 +129,7 @@ export function buildAgent(config: AgentBuilderConfig): CompiledStateGraph<any, 
   } = config;
 
   // Create the workflow
-  // @ts-ignore - LangGraph's complex generic types don't infer well with createStateAnnotation
+  // @ts-expect-error - LangGraph's complex generic types don't infer well with createStateAnnotation
   const workflow = new StateGraph(state);
 
   // Add all nodes
@@ -157,4 +157,3 @@ export function buildAgent(config: AgentBuilderConfig): CompiledStateGraph<any, 
   // Compile with checkpointer if provided
   return workflow.compile(checkpointer ? { checkpointer } : undefined) as any;
 }
-

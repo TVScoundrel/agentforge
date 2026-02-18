@@ -67,7 +67,4 @@ export const pathNormalizeSchema = z.object({
 /**
  * Path utilities configuration
  */
-export interface PathUtilitiesConfig {
-  // No specific configuration needed for path utilities
-}
-
+export type PathUtilitiesConfig = Record<string, never>;

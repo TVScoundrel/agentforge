@@ -52,13 +52,10 @@ export const DateComparisonSchema = z.object({
 /**
  * Configuration for date/time tools
  */
-export interface DateTimeConfig {
-  // Future: Add configuration options if needed
-}
+export type DateTimeConfig = Record<string, never>;
 
 export type CurrentDateTimeInput = z.infer<typeof CurrentDateTimeSchema>;
 export type DateFormatterInput = z.infer<typeof DateFormatterSchema>;
 export type DateArithmeticInput = z.infer<typeof DateArithmeticSchema>;
 export type DateDifferenceInput = z.infer<typeof DateDifferenceSchema>;
 export type DateComparisonInput = z.infer<typeof DateComparisonSchema>;
-
