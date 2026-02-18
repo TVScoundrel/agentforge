@@ -4,4 +4,5 @@
  */
 
 export { relationalQuery } from './relational-query.js';
+export { relationalSelect } from './relational-select.js';
 
