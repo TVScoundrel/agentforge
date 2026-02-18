@@ -13,12 +13,13 @@ Implemented a type-safe SELECT tool using Drizzle ORM's query builder API. This 
 
 ### Core Components
 
-1. **Relational SELECT Tool** (`packages/tools/src/data/relational/tools/relational-select.ts`)
-   - LangGraph tool built with `toolBuilder()` API
-   - Category: `ToolCategory.DATABASE`
-   - Uses Drizzle's `sql` template API for query construction
-   - Comprehensive Zod schema validation
-   - Automatic connection lifecycle management
+1. **Relational SELECT Tool Module** (`packages/tools/src/data/relational/tools/relational-select/`)
+   - `index.ts`: LangGraph tool built with `toolBuilder()` API
+   - `schemas.ts`: Comprehensive Zod schema validation
+   - `query-builder.ts`: SQL construction using Drizzle's `sql` template API
+   - `executor.ts`: Execution and sanitized error handling
+   - `identifier-utils.ts`: Identifier validation and vendor-aware quoting
+   - `types.ts`: Shared types for tool input/output
 
 ### Query Building Approach
 
@@ -140,27 +141,31 @@ if (result.success) {
 
 ## Testing
 
-Created comprehensive unit tests (`packages/tools/tests/data/relational/relational-select-tool.test.ts`):
+Created comprehensive tests under `packages/tools/tests/data/relational/relational-select/`:
+- `schema-validation.test.ts` - input/schema validation behavior
+- `tool-invocation.test.ts` - end-to-end tool invocation behavior
+- `index.test.ts` - aggregate/entrypoint tests
+- `test-utils.ts` - shared test helpers
 
-### Schema Validation Tests (8 passed)
-- ✅ Valid SELECT query acceptance
-- ✅ Columns array validation
-- ✅ WHERE conditions validation
-- ✅ ORDER BY clauses validation
-- ✅ LIMIT and OFFSET validation
-- ✅ Invalid vendor rejection
-- ✅ Negative limit rejection
-- ✅ Negative offset rejection
+### Schema Validation Coverage
+- Valid SELECT query acceptance
+- Columns array validation
+- WHERE conditions validation
+- ORDER BY clauses validation (including empty column rejection)
+- LIMIT and OFFSET validation
+- Invalid vendor rejection
+- Empty table/connection string rejection
+- Operator/value consistency checks (`isNull`, `isNotNull`, `in`, `notIn`)
 
-### Tool Invocation Tests (6 skipped - SQLite bindings not available)
+### Tool Invocation Coverage
 - Simple SELECT query
 - Non-existent table handling
-- Column selection
-- LIMIT application
-- OFFSET application
-- LIMIT + OFFSET combination
+- Column selection (including exclusion of non-selected columns)
+- LIMIT, OFFSET, and LIMIT + OFFSET combinations
+- ORDER BY behavior validation
+- WHERE filtering behavior validation
 
-**Test Strategy**: Tests use subqueries (e.g., `SELECT 1 as id UNION SELECT 2`) to avoid requiring pre-existing database tables, making them more portable.
+**Test Strategy**: Tests create a temporary SQLite database with test data for realistic integration testing.
 
 ## Dependencies
 
@@ -195,4 +200,3 @@ Created comprehensive unit tests (`packages/tools/tests/data/relational/relation
   error?: string;                   // Error message if success=false
 }
 ```
-

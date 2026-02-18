@@ -85,7 +85,7 @@ export const orderDirectionSchema = z.enum(['asc', 'desc']);
  * ORDER BY clause schema
  */
 export const orderBySchema = z.object({
-  column: z.string().describe('Column name to order by'),
+  column: z.string().min(1, 'Column name must not be empty').describe('Column name to order by'),
   direction: orderDirectionSchema.describe('Sort direction (ascending or descending)')
 });
 
@@ -102,4 +102,3 @@ export const relationalSelectSchema = z.object({
   vendor: z.enum(['postgresql', 'mysql', 'sqlite']).describe('Database vendor'),
   connectionString: z.string().min(1, 'Database connection string is required').describe('Database connection string')
 });
-

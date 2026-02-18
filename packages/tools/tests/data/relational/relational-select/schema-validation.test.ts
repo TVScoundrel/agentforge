@@ -175,5 +175,15 @@ describe('Relational SELECT - Schema Validation', () => {
 
     expect(result.success).toBe(false);
   });
-});
 
+  it('should reject empty ORDER BY column name', () => {
+    const result = relationalSelect.schema.safeParse({
+      table: 'users',
+      orderBy: [{ column: '', direction: 'asc' }],
+      vendor: 'postgresql',
+      connectionString: 'postgresql://localhost/test'
+    });
+
+    expect(result.success).toBe(false);
+  });
+});

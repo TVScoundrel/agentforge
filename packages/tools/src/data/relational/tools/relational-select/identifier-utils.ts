@@ -10,7 +10,7 @@ import type { DatabaseVendor } from '../../types.js';
 
 /**
  * Valid SQL identifier pattern
- * Allows alphanumeric characters, underscores, and dots (for schema-qualified names)
+ * Allows alphanumeric characters and underscores (no dots - use validateQualifiedIdentifier for schema-qualified names)
  * This prevents SQL injection through identifier names
  */
 const VALID_IDENTIFIER_PATTERN = /^[a-zA-Z_][a-zA-Z0-9_]*$/;

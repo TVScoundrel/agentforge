@@ -101,6 +101,8 @@ describe('Relational SELECT - Tool Invocation', () => {
       const firstRow = result.rows[0] as Record<string, unknown>;
       expect(firstRow).toHaveProperty('id');
       expect(firstRow).toHaveProperty('name');
+      expect(firstRow).not.toHaveProperty('email');
+      expect(firstRow).not.toHaveProperty('status');
     }
   });
 
@@ -141,6 +143,36 @@ describe('Relational SELECT - Tool Invocation', () => {
     expect(result.rows).toHaveLength(1); // Skip 1, take 1
   });
 
+  it.skipIf(!hasSQLiteBindings)('should apply ORDER BY on name ascending', async () => {
+    const result = await relationalSelect.invoke({
+      table: 'test_users',
+      orderBy: [{ column: 'name', direction: 'asc' }],
+      vendor: 'sqlite',
+      connectionString: dbPath
+    });
+
+    expect(result.success).toBe(true);
+    const names = (result.rows ?? []).map((row) => (row as Record<string, unknown>).name);
+    expect(names).toEqual(['Alice', 'Bob', 'Charlie']);
+  });
+
+  it.skipIf(!hasSQLiteBindings)('should filter rows using WHERE conditions', async () => {
+    const result = await relationalSelect.invoke({
+      table: 'test_users',
+      where: [{ column: 'status', operator: 'eq', value: 'active' }],
+      orderBy: [{ column: 'id', direction: 'asc' }],
+      vendor: 'sqlite',
+      connectionString: dbPath
+    });
+
+    expect(result.success).toBe(true);
+    expect(result.rows).toHaveLength(2);
+    const allActive = (result.rows ?? []).every(
+      (row) => (row as Record<string, unknown>).status === 'active'
+    );
+    expect(allActive).toBe(true);
+  });
+
   it('should reject empty table name', () => {
     const result = relationalSelect.schema.safeParse({
       table: '',
@@ -161,4 +193,3 @@ describe('Relational SELECT - Tool Invocation', () => {
     expect(result.success).toBe(false);
   });
 });
-
