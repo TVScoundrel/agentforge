@@ -37,29 +37,29 @@
 **Branch:** `feat/st-02002-type-safe-select-tool`
 
 ### Checklist
-- [ ] Create branch `feat/st-02002-type-safe-select-tool`
-- [ ] Create draft PR with story ID in title
-- [ ] Create `packages/tools/src/data/relational/query/query-builder.ts`
-- [ ] Implement SELECT query builder using Drizzle
-- [ ] Add support for WHERE conditions (eq, ne, gt, lt, like, in, etc.)
-- [ ] Add support for ORDER BY (asc, desc)
-- [ ] Add support for LIMIT and OFFSET
-- [ ] Add support for column selection (specific columns or all)
-- [ ] Create `packages/tools/src/data/relational/tools/relational-select.ts`
-- [ ] Define Zod schema for tool input (table, columns, where, orderBy, limit)
-- [ ] Implement tool function using query builder
-- [ ] Add type-safe result mapping
-- [ ] Add clear error messages for invalid queries
-- [ ] Handle empty result sets gracefully
-- [ ] Export tool from `tools/index.ts`
-- [ ] Create unit tests for query builder
-- [ ] Create unit tests for relational-select tool
-- [ ] Add or update story documentation at docs/st02002-type-safe-select-tool.md (or document why not required)
-- [ ] Assess test impact; add/update automated tests when needed, or document why tests are not required
-- [ ] Run full test suite before finalizing the PR and record results
-- [ ] Run lint (`pnpm lint`) before finalizing the PR and record results
-- [ ] Mark PR ready for review
-- [ ] Wait for merge
+- [x] Create branch `feat/st-02002-type-safe-select-tool` ✅ DONE
+- [x] Create draft PR with story ID in title ✅ DONE (PR #30)
+- [x] Create `packages/tools/src/data/relational/query/query-builder.ts` ✅ SKIPPED (implemented directly in tool using Drizzle sql template API)
+- [x] Implement SELECT query builder using Drizzle ✅ DONE (in relational-select.ts)
+- [x] Add support for WHERE conditions (eq, ne, gt, lt, like, in, etc.) ✅ DONE
+- [x] Add support for ORDER BY (asc, desc) ✅ DONE
+- [x] Add support for LIMIT and OFFSET ✅ DONE
+- [x] Add support for column selection (specific columns or all) ✅ DONE
+- [x] Create `packages/tools/src/data/relational/tools/relational-select.ts` ✅ DONE
+- [x] Define Zod schema for tool input (table, columns, where, orderBy, limit) ✅ DONE
+- [x] Implement tool function using query builder ✅ DONE
+- [x] Add type-safe result mapping ✅ DONE
+- [x] Add clear error messages for invalid queries ✅ DONE
+- [x] Handle empty result sets gracefully ✅ DONE
+- [x] Export tool from `tools/index.ts` ✅ DONE
+- [x] Create unit tests for query builder ✅ DONE (in relational-select-tool.test.ts)
+- [x] Create unit tests for relational-select tool ✅ DONE (8 passed, 6 skipped)
+- [x] Add or update story documentation at docs/st02002-type-safe-select-tool.md (or document why not required) ✅ DONE
+- [x] Assess test impact; add/update automated tests when needed, or document why tests are not required ✅ DONE
+- [x] Run full test suite before finalizing the PR and record results ✅ DONE (1118 passed, 62 skipped)
+- [x] Run lint (`pnpm lint`) before finalizing the PR and record results ✅ DONE (All issues in new code fixed)
+- [x] Mark PR ready for review ✅ DONE (PR #30: https://github.com/TVScoundrel/agentforge/pull/30)
+- [ ] Wait for merge ⏳ IN PROGRESS
 
 ---
 
