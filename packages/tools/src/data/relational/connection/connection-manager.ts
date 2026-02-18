@@ -220,9 +220,12 @@ export class ConnectionManager extends EventEmitter implements DatabaseConnectio
 
     // Guard: if already connected, clean up existing resources first to prevent leaks
     if (this.state === ConnectionState.CONNECTED && this.client) {
-      logger.debug('Already connected, cleaning up before re-initializing', {
+      logger.warn('Re-initializing an already connected manager; emitting disconnected before cleanup', {
         vendor: this.vendor,
       });
+      // Ensure listeners see a full lifecycle: connected -> disconnected -> connected
+      this.setState(ConnectionState.DISCONNECTED);
+      this.emit('disconnected');
       await this.cleanupCancelledConnection();
     }
 
