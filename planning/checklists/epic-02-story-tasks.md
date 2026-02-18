@@ -117,8 +117,9 @@
 - [ ] Test full-table update prevention
 - [ ] Add or update story documentation at docs/st02004-type-safe-update-tool.md (or document why not required)
 - [ ] Assess test impact; add/update automated tests when needed, or document why tests are not required
-- [ ] Run full test suite before finalizing the PR and record results
-- [ ] Run lint (`pnpm lint`) before finalizing the PR and record results
+- [x] Run full test suite before finalizing the PR and record results ✅ DONE (`pnpm test --run` -> 95 passed, 2 skipped files; 1171 passed, 78 skipped tests)
+- [x] Run lint (`pnpm lint`) before finalizing the PR and record results ✅ DONE (`pnpm lint` -> fails on pre-existing repo baseline: 88 errors, 121 warnings; ST-02006 files lint clean)
+- [x] Document lint baseline scope for reviewers and mark baseline remediation out-of-scope for ST-02006 ✅ DONE (updated story doc + PR body)
 - [ ] Mark PR ready for review
 - [ ] Wait for merge
 

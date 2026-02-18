@@ -55,6 +55,22 @@ Implemented first-pass SQL sanitization and enforcement in relational query exec
   - failed due pre-existing repository lint baseline (88 errors, 121 warnings) outside ST-02006 scope
   - ST-02006 changed files did not introduce lint errors
 
+## Review Scope Note (Lint Baseline)
+
+The `pnpm lint` failure is caused by existing repository baseline issues, not this story's implementation.
+
+- Baseline error categories:
+  - `no-undef` in example scripts (Node globals such as `console` and `process`)
+  - `@typescript-eslint/no-empty-object-type` in multiple shared `types.ts` files
+- ST-02006 touched files were linted directly and pass:
+  - `packages/tools/src/data/relational/utils/sql-sanitizer.ts`
+  - `packages/tools/src/data/relational/query/query-executor.ts`
+  - `packages/tools/tests/data/relational/sql-sanitizer.test.ts`
+  - `packages/tools/tests/data/relational/query-executor.test.ts`
+  - `packages/tools/tests/data/relational/relational-query-tool.test.ts`
+
+Baseline lint remediation should be handled in a dedicated, out-of-scope cleanup story to avoid mixing unrelated changes into this security-focused PR.
+
 ## Security Documentation
 
 - `docs/sql-injection-prevention-best-practices.md`
