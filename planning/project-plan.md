@@ -1,193 +1,280 @@
-# Project Plan: Vendor-Agnostic Relational Database Access Tool
+# Project Plan: AgentForge Framework
 
 ## Project Overview
 
-**Objective:** Create a vendor-agnostic relational database access tool for the AgentForge framework that abstracts away vendor-specific details while providing type-safe, agent-friendly database operations.
+**Objective:** Build and maintain AgentForge - a production-ready TypeScript framework for building autonomous AI agents with LangGraph and LangChain.
 
-**Target Users:** 
-- AgentForge developers building agents that need to interact with relational databases
-- AI agents requiring structured data access capabilities
-- Developers who want database flexibility without vendor lock-in
+**Target Users:**
+- Developers building AI agent applications
+- Teams needing production-ready agent patterns and tools
+- Organizations requiring type-safe, testable AI agent systems
+- Developers seeking to leverage LangGraph/LangChain with better DX
 
 **Desired Outcomes:**
-- Seamless database access across PostgreSQL, MySQL, SQLite, and other SQL databases
-- Type-safe query building and execution
-- Agent-friendly tools with clear schemas and error handling
-- Consistent API regardless of underlying database vendor
-- Easy integration with existing AgentForge patterns
+- Production-ready framework with comprehensive agent patterns (ReAct, Plan-Execute, Reflection, Multi-Agent)
+- 70+ built-in tools covering web, data, file, utility, and agent operations
+- Full TypeScript support with runtime validation
+- Comprehensive testing utilities and developer tooling
+- Clear documentation and examples for rapid adoption
+- Active npm packages with semantic versioning
 
 **Business Value:**
-- Reduces development time by providing ready-to-use database tools
-- Enables database portability and flexibility
-- Maintains AgentForge's production-ready quality standards
-- Expands the framework's data access capabilities beyond Neo4j
+- Accelerates AI agent development with ready-to-use patterns and tools
+- Reduces bugs through type safety and comprehensive testing
+- Enables rapid prototyping and production deployment
+- Provides a foundation for building complex multi-agent systems
+- Serves as a testing ground via the Playground (PTY AGI) project
 
 ## Technical Context
 
 **Technology Stack:**
-- **Primary Framework:** Drizzle ORM (vendor-agnostic, type-safe, lightweight)
-- **Fallback/Query Builder:** Knex.js (for advanced query building if needed)
-- **Language:** TypeScript
-- **Package Manager:** pnpm
+- **Language:** TypeScript 5.7+
+- **Package Manager:** pnpm (workspace support)
 - **Testing:** Vitest
-- **Supported Databases:** PostgreSQL, MySQL, SQLite (initial), with extensibility for others
+- **Validation:** Zod 3.x
+- **Agent Framework:** LangGraph (orchestration)
+- **LLM Integration:** LangChain
+- **Documentation:** VitePress (docs-site)
+- **Build System:** tsup (dual ESM/CJS) for builds, TypeScript compiler (`tsc --noEmit`) for typechecking, pnpm workspaces
 
-**Dependency Strategy:**
-- **Core Dependencies:** `drizzle-orm`, `drizzle-kit` (required)
-- **Peer Dependencies:** Database drivers (`pg`, `mysql2`, `better-sqlite3`) - users install only what they need
-- **Dev Dependencies:** All database drivers for testing purposes only
-- **Rationale:** Prevents bloating user installations - if you only use PostgreSQL, you don't need MySQL and SQLite drivers
+**Repository Structure:**
+- **Monorepo:** Contains both AgentForge framework and Playground (PTY AGI)
+- **Framework Packages:** 5 packages under `packages/`
+  - `@agentforge/core` - Foundation (tools, registry, middleware, streaming, resources)
+  - `@agentforge/patterns` - Agent patterns (ReAct, Plan-Execute, Reflection, Multi-Agent)
+  - `@agentforge/tools` - 70+ ready-to-use tools
+  - `@agentforge/testing` - Testing utilities, mocks, assertions
+  - `@agentforge/cli` - Developer productivity CLI
+- **Playground:** Real-world multi-agent system (PTY AGI) that uses AgentForge
+- **Documentation:** `docs-site/` (public), `docs/` (internal), package READMEs
 
-**Rationale for Drizzle ORM:**
-- Fully type-safe with TypeScript
-- Vendor-agnostic (supports PostgreSQL, MySQL, SQLite, and more)
-- Lightweight with minimal overhead
-- SQL-like syntax that's easy to understand
-- No magic - explicit and predictable
-- Active development and modern architecture (2025-2026)
-- Better performance than traditional ORMs like TypeORM
-- Supports peer dependencies pattern for database drivers
-
-**Integration Points:**
-- Fits into existing `packages/tools/src/data/` structure
-- Follows patterns established by Neo4j tools
-- Exports through `@agentforge/tools` package
-- Compatible with all AgentForge patterns (ReAct, Plan-Execute, etc.)
+**Philosophy:**
+- "We wrap, don't replace" - Built on top of LangGraph/LangChain
+- Type-safe wrappers and production-ready patterns
+- Comprehensive testing and developer experience
+- Clear separation between framework and applications using it
 
 ## Constraints and Assumptions
 
 **Constraints:**
-- Must maintain consistency with existing AgentForge tool patterns
-- Must provide comprehensive error handling for agent use
-- Must support connection pooling and resource management
-- Must be well-documented with examples
-- Must include comprehensive tests
+- Must maintain backward compatibility for published packages
+- Must follow semantic versioning for all releases
+- Must maintain comprehensive test coverage (>90%)
+- Must provide clear migration guides for breaking changes
+- Must keep documentation synchronized with code
+- Must support TypeScript 5.7+ and Node.js 18+
 
 **Assumptions:**
-- Users will provide database connection credentials via environment variables or configuration
-- Connection management will be handled at the application level
-- Schema migrations are out of scope (focus on query execution)
-- Initial release supports read and write operations, advanced features (transactions, migrations) in future iterations
+- Framework users have basic TypeScript and LangChain knowledge
+- Playground (PTY AGI) serves as both a real project and testing ground
+- Published packages are consumed via npm
+- Development happens in the monorepo with workspace dependencies
+- Documentation site is deployed to GitHub Pages
 
-**Timeline:**
-- Phase 1 (Core Foundation): 2-3 weeks
-- Phase 2 (Advanced Features): 1-2 weeks
-- Phase 3 (Documentation & Polish): 1 week
-- **Total Estimated Duration:** 4-6 weeks
+**Current Status:**
+- **Version:** 0.12.6 (all packages published to npm)
+- **Active Development:** Relational Database Access Tool (in progress)
+- **Published Packages:** All 5 framework packages live on npm
+- **Documentation:** Live at https://tvscoundrel.github.io/agentforge/
 
 ## Architecture
 
-### Component Structure
+### Monorepo Structure
 
 ```
-packages/tools/src/data/relational/
-├── connection/
-│   ├── connection-manager.ts    # Manages DB connections
-│   ├── connection-pool.ts       # Connection pooling
-│   └── types.ts                 # Connection config types
-├── query/
-│   ├── query-builder.ts         # Drizzle query builder wrapper
-│   ├── query-executor.ts        # Execute queries safely
-│   └── types.ts                 # Query types
-├── schema/
-│   ├── schema-inspector.ts      # Introspect DB schema
-│   └── types.ts                 # Schema types
-├── tools/
-│   ├── relational-query.ts      # Execute SQL queries
-│   ├── relational-select.ts     # Type-safe SELECT operations
-│   ├── relational-insert.ts     # Type-safe INSERT operations
-│   ├── relational-update.ts     # Type-safe UPDATE operations
-│   ├── relational-delete.ts     # Type-safe DELETE operations
-│   └── relational-get-schema.ts # Get database schema
-├── utils/
-│   ├── sql-sanitizer.ts         # Sanitize SQL inputs
-│   ├── result-formatter.ts      # Format query results
-│   ├── error-handler.ts         # Database error handling
-│   └── peer-dependency-checker.ts # Check for required peer deps
-├── index.ts                     # Main exports
-└── types.ts                     # Shared types
+agentforge/
+├── packages/              # AgentForge Framework (5 packages)
+│   ├── core/             # @agentforge/core - Foundation
+│   │   ├── src/
+│   │   │   ├── tools/           # Tool abstractions
+│   │   │   ├── registry/        # Tool registry
+│   │   │   ├── middleware/      # Middleware system
+│   │   │   ├── streaming/       # Streaming support
+│   │   │   └── resources/       # Resource management
+│   │   └── package.json
+│   ├── patterns/         # @agentforge/patterns - Agent patterns
+│   │   ├── src/
+│   │   │   ├── react/           # ReAct pattern
+│   │   │   ├── plan-execute/    # Plan-Execute pattern
+│   │   │   ├── reflection/      # Reflection pattern
+│   │   │   └── multi-agent/     # Multi-Agent pattern
+│   │   └── package.json
+│   ├── tools/            # @agentforge/tools - 70+ tools
+│   │   ├── src/
+│   │   │   ├── web/             # Web tools
+│   │   │   ├── data/            # Data tools (Neo4j, relational)
+│   │   │   ├── file/            # File tools
+│   │   │   ├── utility/         # Utility tools
+│   │   │   └── agent/           # Agent tools
+│   │   └── package.json
+│   ├── testing/          # @agentforge/testing - Testing utilities
+│   │   └── package.json
+│   └── cli/              # @agentforge/cli - Developer CLI
+│       └── package.json
+├── playground/           # PTY AGI POC - Multi-agent system
+│   ├── src/
+│   │   ├── api/              # Express server & SSE streaming
+│   │   ├── system/           # Supervisor & Aggregator
+│   │   ├── agents/           # Specialist agents
+│   │   ├── tools/            # Mock integrations
+│   │   └── config/           # LLM configuration
+│   └── package.json
+├── docs/                 # Internal technical documentation
+├── docs-site/            # VitePress documentation website
+├── examples/             # Example applications
+└── templates/            # Deployment templates
 ```
 
-### Peer Dependency Pattern
+### Framework Architecture
 
-Database drivers are configured as **peer dependencies** to prevent bloat:
+**Core Abstractions:**
+- **Tool System:** Base classes and interfaces for creating agent tools
+- **Registry:** Central tool registration and discovery
+- **Middleware:** Request/response pipeline for tools
+- **Streaming:** Real-time response streaming support
+- **Resources:** Lifecycle management for external resources
 
-- **User installs only what they need:**
-  ```bash
-  # PostgreSQL only
-  pnpm add pg @types/pg
+**Agent Patterns:**
+- **ReAct:** Reasoning and Acting pattern
+- **Plan-Execute:** Planning followed by execution
+- **Reflection:** Self-reflection and improvement
+- **Multi-Agent:** Orchestration of multiple agents
 
-  # MySQL only
-  pnpm add mysql2
+**Tool Categories:**
+- **Web Tools:** HTTP requests, web scraping, API calls
+- **Data Tools:** Neo4j, relational databases, data processing
+- **File Tools:** File system operations
+- **Utility Tools:** General-purpose utilities
+- **Agent Tools:** Inter-agent communication
 
-  # SQLite only
-  pnpm add better-sqlite3 @types/better-sqlite3
-  ```
+### Playground Architecture (PTY AGI)
 
-- **Runtime validation:** Connection manager checks for required driver and provides helpful error if missing
-- **Development:** All drivers installed as dev dependencies for testing
-- **Documentation:** Clear installation instructions in README
+**Purpose:** Real-world multi-agent system that uses AgentForge
 
-### Data Flow
+**Components:**
+- **Supervisor:** Routes requests to specialist agents
+- **Aggregator:** Combines results from multiple agents
+- **Specialist Agents:** HR, Security, Code, Legal agents
+- **API Server:** Express with SSE streaming
+- **Mock Tools:** GitHub, Slack, Zendesk integrations
 
-1. **Connection Initialization:** Application creates connection manager with config
-2. **Tool Registration:** Agent registers relational database tools
-3. **Query Execution:** Agent invokes tool → Query builder → Drizzle → Database
-4. **Result Formatting:** Raw results → Formatted output → Agent-friendly JSON
-5. **Error Handling:** Database errors → Sanitized messages → Agent context
+**Key Features:**
+- Parallel agent execution for independent tasks
+- Real-time streaming via Server-Sent Events
+- Human-in-the-loop via `askHuman` tool
+- Demonstrates AgentForge patterns in production scenario
 
 ## Scope
 
-### In Scope
+### Framework Scope (In Scope)
 
-**Phase 1: Core Foundation**
-- Connection management for PostgreSQL, MySQL, SQLite
-- Basic CRUD operations (SELECT, INSERT, UPDATE, DELETE)
-- Schema introspection
-- SQL query execution with parameterization
-- Error handling and sanitization
-- Basic connection pooling
+**Core Package (@agentforge/core):**
+- Tool abstractions and base classes
+- Tool registry and discovery
+- Middleware system for request/response pipeline
+- Streaming support for real-time responses
+- Resource lifecycle management
+- Error handling and validation
 
-**Phase 2: Advanced Features**
-- Transaction support
-- Batch operations
-- Query result streaming for large datasets
-- Advanced query building (joins, aggregations)
-- Connection health checks and retry logic
+**Patterns Package (@agentforge/patterns):**
+- ReAct pattern implementation
+- Plan-Execute pattern implementation
+- Reflection pattern implementation
+- Multi-Agent orchestration pattern
+- Pattern composition and customization
 
-**Phase 3: Documentation & Polish**
-- Comprehensive API documentation
-- Usage examples for each database vendor
-- Integration examples with AgentForge patterns
-- Performance optimization
-- Security best practices documentation
+**Tools Package (@agentforge/tools):**
+- 70+ ready-to-use tools across categories
+- Web tools (HTTP, scraping, APIs)
+- Data tools (Neo4j, relational databases)
+- File tools (file system operations)
+- Utility tools (general-purpose)
+- Agent tools (inter-agent communication)
+
+**Testing Package (@agentforge/testing):**
+- Testing utilities and helpers
+- Mock implementations
+- Assertions and matchers
+- Test fixtures and data generators
+
+**CLI Package (@agentforge/cli):**
+- Project scaffolding
+- Development server
+- Build and deployment tools
+- Code generation utilities
+
+**Documentation:**
+- User-facing documentation (docs-site)
+- Internal technical documentation (docs)
+- API reference
+- Tutorials and guides
+- Example applications
+
+### Playground Scope (In Scope)
+
+**PTY AGI Application:**
+- Multi-agent orchestration system
+- Specialist agents (HR, Security, Code, Legal)
+- Real-time streaming API
+- Mock tool integrations
+- Human-in-the-loop support
+- Serves as framework testing ground
 
 ### Out of Scope
 
-- Schema migrations (use dedicated migration tools)
-- ORM model definitions (focus on query execution)
-- Database administration tools
-- NoSQL database support (separate project)
-- GraphQL integration
-- Real-time subscriptions
+**Framework:**
+- LLM provider implementations (use LangChain)
+- Vector database implementations (beyond Neo4j)
+- Custom LLM fine-tuning
+- Agent hosting/deployment infrastructure
+- Commercial support or SLA
+
+**Playground:**
+- Production deployment to Paymentology infrastructure
+- Real integrations (GitHub, Slack, Zendesk)
+- Authentication and authorization
+- Multi-tenancy support
 
 ## Risks and Mitigation
 
 | Risk | Impact | Probability | Mitigation |
 |------|--------|-------------|------------|
-| Drizzle API changes | Medium | Low | Pin to stable version, monitor releases |
-| Database-specific quirks | Medium | Medium | Comprehensive testing per vendor |
-| Connection pool exhaustion | High | Low | Implement connection limits and monitoring |
-| SQL injection vulnerabilities | High | Low | Use parameterized queries exclusively |
-| Performance issues with large results | Medium | Medium | Implement streaming and pagination |
+| LangGraph/LangChain breaking changes | High | Medium | Pin versions, monitor releases, maintain compatibility layer |
+| TypeScript version incompatibilities | Medium | Low | Support TypeScript 5.7+, test across versions |
+| npm package publishing issues | Medium | Low | Automated release process, semantic versioning |
+| Documentation drift from code | Medium | Medium | Automated doc generation, regular reviews |
+| Test coverage gaps | High | Medium | Enforce coverage thresholds, comprehensive test suite |
+| Breaking changes in dependencies | Medium | Medium | Lock file management, dependency update strategy |
+| Playground diverging from framework | Low | Low | Use workspace dependencies, regular integration testing |
+| Community adoption challenges | Medium | High | Clear documentation, examples, active maintenance |
 
 ## Success Criteria
 
-- [ ] All CRUD operations work across PostgreSQL, MySQL, and SQLite
-- [ ] 100% test coverage for core functionality
-- [ ] Zero SQL injection vulnerabilities
-- [ ] Documentation covers all tools and examples
-- [ ] Performance benchmarks meet or exceed Neo4j tools
-- [ ] Successfully integrates with at least one AgentForge pattern example
-- [ ] Passes all linting and type-checking
+**Framework Quality:**
+- [ ] All 5 packages published to npm with semantic versioning
+- [ ] Test coverage >90% across all packages
+- [ ] Zero critical security vulnerabilities
+- [ ] All packages pass linting and type-checking
+- [ ] Documentation site live and up-to-date
+- [ ] All 4 agent patterns fully implemented and tested
+- [ ] 70+ tools available and documented
+
+**Developer Experience:**
+- [ ] CLI provides scaffolding and development tools
+- [ ] Clear examples for each pattern
+- [ ] API documentation complete and accurate
+- [ ] Migration guides for breaking changes
+- [ ] Active issue tracking and resolution
+
+**Playground Validation:**
+- [ ] PTY AGI successfully uses all framework packages
+- [ ] Real-time streaming works end-to-end
+- [ ] Multi-agent orchestration demonstrates framework capabilities
+- [ ] Serves as comprehensive integration test
+
+**Community & Adoption:**
+- [ ] Documentation site accessible and comprehensive
+- [ ] Example applications demonstrate real-world usage
+- [ ] Clear contribution guidelines
+- [ ] Regular releases with changelog
 

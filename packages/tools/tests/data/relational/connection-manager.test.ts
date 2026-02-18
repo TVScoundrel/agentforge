@@ -179,14 +179,14 @@ describe('ConnectionManager', () => {
       };
 
       const manager = new ConnectionManager(config);
-      await expect(manager.initialize()).resolves.not.toThrow();
+      await expect(manager.connect()).resolves.not.toThrow();
 
       // Verify connection is healthy
       const healthy = await manager.isHealthy();
       expect(healthy).toBe(true);
 
       // Clean up
-      await manager.close();
+      await manager.disconnect();
     });
 
     it.skipIf(!hasSQLiteBindings)('should initialize SQLite connection with config object', async () => {
@@ -198,12 +198,12 @@ describe('ConnectionManager', () => {
       };
 
       const manager = new ConnectionManager(config);
-      await expect(manager.initialize()).resolves.not.toThrow();
+      await expect(manager.connect()).resolves.not.toThrow();
 
       const healthy = await manager.isHealthy();
       expect(healthy).toBe(true);
 
-      await manager.close();
+      await manager.disconnect();
     });
 
     it.skipIf(!hasSQLiteBindings)('should throw error for SQLite config without url', async () => {
@@ -213,7 +213,7 @@ describe('ConnectionManager', () => {
       };
 
       const manager = new ConnectionManager(config);
-      await expect(manager.initialize()).rejects.toThrow('SQLite connection requires a url property');
+      await expect(manager.connect()).rejects.toThrow('SQLite connection requires a url property');
     });
   });
 
@@ -236,12 +236,12 @@ describe('ConnectionManager', () => {
       };
 
       const manager = new ConnectionManager(config);
-      await manager.initialize();
+      await manager.connect();
 
       const healthy = await manager.isHealthy();
       expect(healthy).toBe(true);
 
-      await manager.close();
+      await manager.disconnect();
     });
 
     it.skipIf(!hasSQLiteBindings)('should return false after connection is closed', async () => {
@@ -251,8 +251,8 @@ describe('ConnectionManager', () => {
       };
 
       const manager = new ConnectionManager(config);
-      await manager.initialize();
-      await manager.close();
+      await manager.connect();
+      await manager.disconnect();
 
       const healthy = await manager.isHealthy();
       expect(healthy).toBe(false);
@@ -267,30 +267,30 @@ describe('ConnectionManager', () => {
       };
 
       const manager = new ConnectionManager(config);
-      await manager.initialize();
-      await expect(manager.close()).resolves.not.toThrow();
+      await manager.connect();
+      await expect(manager.disconnect()).resolves.not.toThrow();
     });
 
-    it('should handle close on uninitialized connection', async () => {
+    it('should handle disconnect on uninitialized connection', async () => {
       const config: ConnectionConfig = {
         vendor: 'sqlite',
         connection: ':memory:',
       };
 
       const manager = new ConnectionManager(config);
-      await expect(manager.close()).resolves.not.toThrow();
+      await expect(manager.disconnect()).resolves.not.toThrow();
     });
 
-    it.skipIf(!hasSQLiteBindings)('should handle multiple close calls', async () => {
+    it.skipIf(!hasSQLiteBindings)('should handle multiple disconnect calls', async () => {
       const config: ConnectionConfig = {
         vendor: 'sqlite',
         connection: ':memory:',
       };
 
       const manager = new ConnectionManager(config);
-      await manager.initialize();
-      await manager.close();
-      await expect(manager.close()).resolves.not.toThrow();
+      await manager.connect();
+      await manager.disconnect();
+      await expect(manager.disconnect()).resolves.not.toThrow();
     });
   });
 
@@ -312,7 +312,7 @@ describe('ConnectionManager', () => {
       };
 
       const manager = new ConnectionManager(config);
-      await expect(manager.initialize()).rejects.toThrow(/Failed to initialize sqlite connection/);
+      await expect(manager.connect()).rejects.toThrow(/Failed to initialize sqlite connection/);
     });
   });
 
@@ -334,14 +334,7 @@ describe('ConnectionManager', () => {
         };
 
         const manager = new ConnectionManager(config);
-        const initPromise = manager.initialize();
-
-        await expect(initPromise).rejects.toBeInstanceOf(Error);
-        await expect(initPromise).rejects.toMatchObject({
-          cause: expect.objectContaining({
-            message: 'Pool max connections must be >= 1',
-          }),
-        });
+        await expect(manager.connect()).rejects.toThrow('Pool max connections must be >= 1');
       });
 
       it('should reject negative acquire timeout', async () => {
@@ -360,14 +353,7 @@ describe('ConnectionManager', () => {
         };
 
         const manager = new ConnectionManager(config);
-        const initPromise = manager.initialize();
-
-        await expect(initPromise).rejects.toBeInstanceOf(Error);
-        await expect(initPromise).rejects.toMatchObject({
-          cause: expect.objectContaining({
-            message: 'Pool acquire timeout must be >= 0',
-          }),
-        });
+        await expect(manager.connect()).rejects.toThrow('Pool acquire timeout must be >= 0');
       });
 
       it('should reject negative idle timeout', async () => {
@@ -386,15 +372,7 @@ describe('ConnectionManager', () => {
         };
 
         const manager = new ConnectionManager(config);
-        try {
-          await manager.initialize();
-          expect.fail('Should have thrown an error');
-        } catch (error) {
-          expect(error).toBeInstanceOf(Error);
-          const err = error as Error;
-          expect(err.cause).toBeInstanceOf(Error);
-          expect((err.cause as Error).message).toBe('Pool idle timeout must be >= 0');
-        }
+        await expect(manager.connect()).rejects.toThrow('Pool idle timeout must be >= 0');
       });
 
       it('should accept valid pool configuration', async () => {
@@ -415,9 +393,9 @@ describe('ConnectionManager', () => {
         };
 
         const manager = new ConnectionManager(config);
-        // Validation happens during initialize(), so we expect it to fail with connection error
+        // Validation happens during connect(), so we expect it to fail with connection error
         // (not validation error) since we're using fake credentials
-        await expect(manager.initialize()).rejects.toThrow(/Failed to initialize postgresql connection/);
+        await expect(manager.connect()).rejects.toThrow(/Failed to (initialize postgresql connection|establish healthy connection)/);
       });
     });
 
@@ -446,7 +424,7 @@ describe('ConnectionManager', () => {
         };
 
         const manager = new ConnectionManager(config);
-        await manager.initialize();
+        await manager.connect();
 
         const metrics = manager.getPoolMetrics();
 
@@ -455,7 +433,7 @@ describe('ConnectionManager', () => {
         expect(metrics.idleCount).toBe(0);
         expect(metrics.waitingCount).toBe(0);
 
-        await manager.close();
+        await manager.disconnect();
       });
 
       it('should return neutral metrics for MySQL (no stable API)', () => {
