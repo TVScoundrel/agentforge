@@ -9,9 +9,8 @@
 
 import { z } from 'zod';
 import { toolBuilder, ToolCategory, createLogger } from '@agentforge/core';
-import { eq, ne, gt, lt, gte, lte, like, inArray, notInArray, isNull, isNotNull, and, or, asc, desc, sql } from 'drizzle-orm';
+import { sql, type SQL } from 'drizzle-orm';
 import { ConnectionManager } from '../connection/connection-manager.js';
-import type { DatabaseVendor } from '../types.js';
 
 const logger = createLogger('agentforge:tools:data:relational:select');
 
@@ -110,7 +109,7 @@ async function executeSelect(
 
     // Add WHERE conditions
     if (input.where && input.where.length > 0) {
-      const whereConditions: sql.SQL[] = [];
+      const whereConditions: SQL[] = [];
 
       for (const condition of input.where) {
         const column = sql.raw(`"${condition.column}"`);
@@ -282,7 +281,7 @@ export const relationalSelect = toolBuilder()
   .implement(async (input: RelationalSelectInput) => {
     const manager = new ConnectionManager({
       vendor: input.vendor,
-      connectionString: input.connectionString
+      connection: input.connectionString
     });
 
     try {
