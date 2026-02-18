@@ -56,6 +56,7 @@ export const whereConditionSchema = z.object({
       path: ['value'],
       message: 'value is required for this operator',
     });
+    return;
   }
 
   // IN/NOT IN operators require a non-empty array
@@ -73,6 +74,46 @@ export const whereConditionSchema = z.object({
         message: `${op === 'in' ? 'IN' : 'NOT IN'} operator requires a non-empty array value`,
       });
     }
+    return;
+  }
+
+  // Operators other than IS NULL/IS NOT NULL should not use null values.
+  // Use explicit null operators to avoid generating invalid SQL like "column = NULL".
+  if (val.value === null) {
+    ctx.addIssue({
+      code: z.ZodIssueCode.custom,
+      path: ['value'],
+      message: 'null is only allowed with isNull/isNotNull operators',
+    });
+    return;
+  }
+
+  if (op === 'like' && typeof val.value !== 'string') {
+    ctx.addIssue({
+      code: z.ZodIssueCode.custom,
+      path: ['value'],
+      message: 'LIKE operator requires a string value',
+    });
+    return;
+  }
+
+  if ((op === 'gt' || op === 'lt' || op === 'gte' || op === 'lte') &&
+      typeof val.value !== 'string' &&
+      typeof val.value !== 'number') {
+    ctx.addIssue({
+      code: z.ZodIssueCode.custom,
+      path: ['value'],
+      message: `${op.toUpperCase()} operator requires a string or number value`,
+    });
+    return;
+  }
+
+  if ((op === 'eq' || op === 'ne') && Array.isArray(val.value)) {
+    ctx.addIssue({
+      code: z.ZodIssueCode.custom,
+      path: ['value'],
+      message: `${op.toUpperCase()} operator requires a scalar value`,
+    });
   }
 });
 

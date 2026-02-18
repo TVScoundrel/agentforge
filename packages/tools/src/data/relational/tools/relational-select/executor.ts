@@ -62,8 +62,22 @@ export async function executeSelect(
       executionTime
     });
 
-    // Provide sanitized error to callers to avoid leaking sensitive driver details
-    throw new Error('SELECT query failed. See logs for details.');
+    // Let known-safe validation errors propagate so callers can fix bad inputs.
+    if (error instanceof Error) {
+      const message = error.message;
+      if (message.includes('must not be empty') ||
+          message.includes('contains invalid characters') ||
+          message.includes('requires an array value') ||
+          message.includes('requires a non-empty array value') ||
+          message.includes('null is only allowed with isNull/isNotNull operators') ||
+          message.includes('LIKE operator requires a string value') ||
+          message.includes('operator requires a string or number value') ||
+          message.includes('operator requires a scalar value')) {
+        throw error;
+      }
+    }
+
+    // Sanitize database/driver failures while preserving root cause for diagnostics.
+    throw new Error('SELECT query failed. See logs for details.', { cause: error });
   }
 }
-

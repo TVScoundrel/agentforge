@@ -41,7 +41,14 @@ async function createTestDatabase(): Promise<string> {
 }
 
 describe('Relational SELECT - Tool Invocation', () => {
-  let dbPath: string;
+  let dbPath: string | undefined;
+
+  const getDbPath = (): string => {
+    if (!dbPath) {
+      throw new Error('SQLite test database path was not initialized');
+    }
+    return dbPath;
+  };
 
   beforeAll(async () => {
     if (hasSQLiteBindings) {
@@ -66,7 +73,7 @@ describe('Relational SELECT - Tool Invocation', () => {
     const result = await relationalSelect.invoke({
       table: 'test_users',
       vendor: 'sqlite',
-      connectionString: dbPath
+      connectionString: getDbPath()
     });
 
     expect(result.success).toBe(true);
@@ -78,7 +85,7 @@ describe('Relational SELECT - Tool Invocation', () => {
     const result = await relationalSelect.invoke({
       table: 'nonexistent_table',
       vendor: 'sqlite',
-      connectionString: dbPath
+      connectionString: getDbPath()
     });
 
     expect(result.success).toBe(false);
@@ -92,7 +99,7 @@ describe('Relational SELECT - Tool Invocation', () => {
       table: 'test_users',
       columns: ['id', 'name'],
       vendor: 'sqlite',
-      connectionString: dbPath
+      connectionString: getDbPath()
     });
 
     expect(result.success).toBe(true);
@@ -111,7 +118,7 @@ describe('Relational SELECT - Tool Invocation', () => {
       table: 'test_users',
       limit: 2,
       vendor: 'sqlite',
-      connectionString: dbPath
+      connectionString: getDbPath()
     });
 
     expect(result.success).toBe(true);
@@ -123,7 +130,7 @@ describe('Relational SELECT - Tool Invocation', () => {
       table: 'test_users',
       offset: 1,
       vendor: 'sqlite',
-      connectionString: dbPath
+      connectionString: getDbPath()
     });
 
     expect(result.success).toBe(true);
@@ -136,7 +143,7 @@ describe('Relational SELECT - Tool Invocation', () => {
       limit: 1,
       offset: 1,
       vendor: 'sqlite',
-      connectionString: dbPath
+      connectionString: getDbPath()
     });
 
     expect(result.success).toBe(true);
@@ -148,7 +155,7 @@ describe('Relational SELECT - Tool Invocation', () => {
       table: 'test_users',
       orderBy: [{ column: 'name', direction: 'asc' }],
       vendor: 'sqlite',
-      connectionString: dbPath
+      connectionString: getDbPath()
     });
 
     expect(result.success).toBe(true);
@@ -162,7 +169,7 @@ describe('Relational SELECT - Tool Invocation', () => {
       where: [{ column: 'status', operator: 'eq', value: 'active' }],
       orderBy: [{ column: 'id', direction: 'asc' }],
       vendor: 'sqlite',
-      connectionString: dbPath
+      connectionString: getDbPath()
     });
 
     expect(result.success).toBe(true);

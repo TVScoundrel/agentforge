@@ -7,7 +7,7 @@
  * @module tools/relational-select
  */
 
-import { createLogger, toolBuilder, ToolCategory } from '@agentforge/core';
+import { toolBuilder, ToolCategory } from '@agentforge/core';
 import { ConnectionManager } from '../../connection/connection-manager.js';
 import { relationalSelectSchema } from './schemas.js';
 import { executeSelect } from './executor.js';
@@ -16,8 +16,6 @@ import type { RelationalSelectInput, SelectResponse } from './types.js';
 // Re-export types and schemas for external use
 export * from './types.js';
 export * from './schemas.js';
-
-const logger = createLogger('agentforge:tools:data:relational:select');
 
 /**
  * Relational SELECT Tool
@@ -98,12 +96,6 @@ export const relationalSelect = toolBuilder()
         executionTime: result.executionTime
       };
     } catch (error) {
-      // Log detailed error but return a generic message to avoid leaking sensitive information
-      logger.error('Relational SELECT execution failed', {
-        vendor: input.vendor,
-        table: input.table,
-        error: error instanceof Error ? error.message : String(error),
-      });
       return {
         success: false,
         error: 'Failed to execute SELECT query. Please verify your input and database connection.',
