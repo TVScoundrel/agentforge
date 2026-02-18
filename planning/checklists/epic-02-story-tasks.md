@@ -87,8 +87,8 @@
 - [ ] Create unit tests for relational-insert tool
 - [ ] Add or update story documentation at docs/st02003-type-safe-insert-tool.md (or document why not required)
 - [ ] Assess test impact; add/update automated tests when needed, or document why tests are not required
-- [x] Run full test suite before finalizing the PR and record results ✅ DONE (`pnpm test --run` -> 95 passed, 2 skipped files; 1171 passed, 78 skipped tests)
-- [x] Run lint (`pnpm lint`) before finalizing the PR and record results ✅ DONE (`pnpm lint` -> failed due pre-existing repo-wide lint errors outside ST-02006 scope; no new ST-02006 lint errors)
+- [ ] Run full test suite before finalizing the PR and record results
+- [ ] Run lint (`pnpm lint`) before finalizing the PR and record results
 - [ ] Mark PR ready for review
 - [ ] Wait for merge
 
@@ -117,9 +117,8 @@
 - [ ] Test full-table update prevention
 - [ ] Add or update story documentation at docs/st02004-type-safe-update-tool.md (or document why not required)
 - [ ] Assess test impact; add/update automated tests when needed, or document why tests are not required
-- [x] Run full test suite before finalizing the PR and record results ✅ DONE (`pnpm test --run` -> 95 passed, 2 skipped files; 1171 passed, 78 skipped tests)
-- [x] Run lint (`pnpm lint`) before finalizing the PR and record results ✅ DONE (`pnpm lint` -> fails on pre-existing repo baseline: 88 errors, 121 warnings; ST-02006 files lint clean)
-- [x] Document lint baseline scope for reviewers and mark baseline remediation out-of-scope for ST-02006 ✅ DONE (updated story doc + PR body)
+- [ ] Run full test suite before finalizing the PR and record results
+- [ ] Run lint (`pnpm lint`) before finalizing the PR and record results
 - [ ] Mark PR ready for review
 - [ ] Wait for merge
 
@@ -177,8 +176,9 @@
 - [x] Add security audit checklist ✅ DONE (included in security docs)
 - [x] Add or update story documentation at docs/st02006-sql-sanitization-security.md (or document why not required) ✅ DONE
 - [x] Assess test impact; add/update automated tests when needed, or document why tests are not required ✅ DONE (added sanitizer + relational query security tests)
-- [ ] Run full test suite before finalizing the PR and record results
-- [ ] Run lint (`pnpm lint`) before finalizing the PR and record results
+- [x] Run full test suite before finalizing the PR and record results ✅ DONE (`pnpm test --run` -> 95 passed, 2 skipped files; 1171 passed, 78 skipped tests)
+- [x] Run lint (`pnpm lint`) before finalizing the PR and record results ✅ DONE (`pnpm lint` -> fails on pre-existing repo baseline: 88 errors, 121 warnings; ST-02006 files lint clean)
+- [x] Document lint baseline scope for reviewers and mark baseline remediation out-of-scope for ST-02006 ✅ DONE (updated story doc + PR body)
 - [ ] Mark PR ready for review
 - [ ] Wait for merge
 
