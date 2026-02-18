@@ -159,7 +159,7 @@
 **Branch:** `feat/st-02006-sql-sanitization-security`
 
 ### Checklist
-- [ ] Create branch `feat/st-02006-sql-sanitization-security`
+- [x] Create branch `feat/st-02006-sql-sanitization-security` ✅ DONE
 - [ ] Create draft PR with story ID in title
 - [ ] Create `packages/tools/src/data/relational/utils/sql-sanitizer.ts`
 - [ ] Implement input validation for SQL strings

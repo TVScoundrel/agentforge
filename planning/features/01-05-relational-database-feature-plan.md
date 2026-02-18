@@ -3,6 +3,7 @@
 **Epic Range:** EP-01 through EP-05  
 **Status:** In Progress  
 **Last Updated:** 2026-02-18
+**Active Story:** ST-02006 (In Progress)
 
 ---
 
@@ -217,4 +218,3 @@ Database drivers are configured as **peer dependencies** to prevent bloat:
 - **Execution Checklists:** `planning/checklists/epic-01-story-tasks.md` through `epic-05-story-tasks.md`
 - **Kanban Queue:** `planning/kanban-queue.md`
 - **Project Plan:** `planning/project-plan.md` (overall AgentForge Framework context)
-
