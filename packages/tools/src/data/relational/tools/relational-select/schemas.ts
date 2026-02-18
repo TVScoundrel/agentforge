@@ -94,7 +94,7 @@ export const orderBySchema = z.object({
  */
 export const relationalSelectSchema = z.object({
   table: z.string().min(1, 'Table name is required').describe('Table name to select from'),
-  columns: z.array(z.string().min(1, 'Column name must not be empty')).optional().describe('Columns to select (omit for SELECT *)'),
+  columns: z.array(z.string().min(1, 'Column name must not be empty')).min(1, 'Columns array must not be empty').optional().describe('Columns to select (omit for SELECT *)'),
   where: z.array(whereConditionSchema).optional().describe('WHERE conditions (combined with AND)'),
   orderBy: z.array(orderBySchema).optional().describe('ORDER BY clauses'),
   limit: z.number().int().positive().optional().describe('Maximum number of rows to return'),

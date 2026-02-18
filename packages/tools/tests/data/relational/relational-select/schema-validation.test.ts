@@ -29,6 +29,17 @@ describe('Relational SELECT - Schema Validation', () => {
     expect(result.success).toBe(true);
   });
 
+  it('should reject empty columns array', () => {
+    const result = relationalSelect.schema.safeParse({
+      table: 'users',
+      columns: [],
+      vendor: 'postgresql',
+      connectionString: 'postgresql://localhost/test'
+    });
+
+    expect(result.success).toBe(false);
+  });
+
   it('should accept WHERE conditions', () => {
     const result = relationalSelect.schema.safeParse({
       table: 'users',
