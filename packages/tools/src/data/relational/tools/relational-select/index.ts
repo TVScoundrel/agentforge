@@ -96,9 +96,26 @@ export const relationalSelect = toolBuilder()
         executionTime: result.executionTime
       };
     } catch (error) {
+      let errorMessage = 'Failed to execute SELECT query. Please verify your input and database connection.';
+
+      // Propagate known-safe validation messages so callers can correct input.
+      if (error instanceof Error) {
+        const message = error.message;
+        if (message.includes('must not be empty') ||
+            message.includes('contains invalid characters') ||
+            message.includes('requires an array value') ||
+            message.includes('requires a non-empty array value') ||
+            message.includes('null is only allowed with isNull/isNotNull operators') ||
+            message.includes('LIKE operator requires a string value') ||
+            message.includes('operator requires a string or number value') ||
+            message.includes('operator requires a scalar value')) {
+          errorMessage = message;
+        }
+      }
+
       return {
         success: false,
-        error: 'Failed to execute SELECT query. Please verify your input and database connection.',
+        error: errorMessage,
         rows: [],
         rowCount: 0
       };
