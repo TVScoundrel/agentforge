@@ -52,6 +52,13 @@ export enum ConnectionState {
 - Returns the current connection state
 - Useful for detailed state inspection
 
+**`dispose(): Promise<void>`**
+- Performs full cleanup of the ConnectionManager instance
+- Disconnects the connection if connected
+- Removes all event listeners to prevent memory leaks
+- Should be called when the ConnectionManager instance will no longer be used
+- Idempotent - safe to call multiple times
+
 ### 3. Automatic Reconnection
 
 Configurable automatic reconnection with exponential backoff:
