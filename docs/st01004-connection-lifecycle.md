@@ -115,11 +115,9 @@ const manager = new ConnectionManager({
 
 // Connect
 await manager.connect();
-logger.info('Connection status', { connected: manager.isConnected() }); // true
 
 // Disconnect
 await manager.disconnect();
-logger.info('Connection status', { connected: manager.isConnected() }); // false
 ```
 
 ### With Automatic Reconnection
@@ -203,7 +201,7 @@ await manager.connect();
 
 ## Testing
 
-- **Unit Tests**: 28 tests (22 from connection-manager, 6 from connection-lifecycle)
+- **Unit Tests**: Covered by connection-manager and connection-lifecycle test suites
 - **Coverage**: State tracking, event emissions, reconnection logic, error scenarios
 - **Integration**: Reconnection behavior tested with exponential backoff timing
 

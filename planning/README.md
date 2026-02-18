@@ -8,13 +8,15 @@ This project adds vendor-agnostic relational database access capabilities to the
 
 ### For Developers
 
-1. **Review the Project Plan:** Start with `planning/project-plan.md` to understand the architecture, scope, and technical decisions.
+1. **Review the Feature Plan:** Start with `planning/features/01-05-relational-database-feature-plan.md` to understand the detailed architecture, folder structure, peer dependency pattern, and technical decisions for this feature.
 
-2. **Understand the Epics:** Read `planning/epics-and-stories.md` to see all 5 epics and 19 stories.
+2. **Review the Project Plan:** Read `planning/project-plan.md` for overall AgentForge Framework context.
 
-3. **Check the Kanban Queue:** View `planning/kanban-queue.md` to see what's ready to work on.
+3. **Understand the Epics:** Read `planning/epics-and-stories.md` to see all 5 epics and 19 stories.
 
-4. **Start with ST-01001:** The first story is "Setup Drizzle ORM Dependencies and Project Structure" - this establishes the foundation.
+4. **Check the Kanban Queue:** View `planning/kanban-queue.md` to see what's ready to work on.
+
+5. **Start with ST-01001:** The first story is "Setup Drizzle ORM Dependencies and Project Structure" - this establishes the foundation.
 
 ### For Story Execution
 
@@ -32,9 +34,13 @@ Or to execute the next ready story:
 
 ## Planning Artifacts
 
+### Feature Architecture
+
+- **`features/01-05-relational-database-feature-plan.md`** - Detailed feature architecture, folder structure, peer dependency pattern, data flow, scope, risks, and success criteria for the Relational Database Access Tool (EP-01 through EP-05)
+
 ### Core Planning Files
 
-- **`project-plan.md`** - Comprehensive project overview, architecture, scope, and success criteria
+- **`project-plan.md`** - Overall AgentForge Framework project plan
 - **`epics-and-stories.md`** - All epics and stories with acceptance criteria
 - **`kanban-queue.md`** - Active delivery queue with Ready/In Progress/In Review/Blocked/Backlog lanes
 
@@ -138,10 +144,11 @@ See `planning/PEER_DEPENDENCIES.md` for detailed implementation strategy.
 
 ## Next Steps
 
-1. Review `planning/project-plan.md` for detailed architecture
-2. Review `planning/epics-and-stories.md` for all stories
-3. Execute ST-01001 using `@story-executor`
-4. Follow the Kanban workflow through completion
+1. Review `planning/features/01-05-relational-database-feature-plan.md` for detailed feature architecture
+2. Review `planning/project-plan.md` for overall AgentForge Framework context
+3. Review `planning/epics-and-stories.md` for all stories
+4. Execute ST-01001 using `@story-executor`
+5. Follow the Kanban workflow through completion
 
 ## Questions?
 

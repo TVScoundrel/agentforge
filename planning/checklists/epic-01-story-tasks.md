@@ -146,7 +146,7 @@
 - [x] Implement proper cleanup in error scenarios
 - [x] Add connection lifecycle logging
 - [x] Update existing code to use lifecycle methods (updated all tests)
-- [x] Create unit tests for lifecycle management (6 passed, 7 skipped)
+- [x] Create unit tests for lifecycle management (18 passed, 0 skipped)
 - [x] Create integration test for reconnection logic (deferred - covered by unit tests)
 - [x] Add or update story documentation at docs/st01004-connection-lifecycle.md
 - [x] Assess test impact; add/update automated tests when needed
