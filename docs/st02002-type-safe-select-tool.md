@@ -102,9 +102,9 @@ Multiple WHERE conditions are combined with AND logic.
 
 ### Security
 
-- **SQL Injection Prevention**: All values are bound using Drizzle's `sql` template tag
-- **Error Sanitization**: Error messages are sanitized to avoid leaking sensitive information
-- **Connection Safety**: Connections are automatically closed in finally block
+- **SQL Injection Prevention**: All values are bound using Drizzle's `sql` template tag. Identifiers (table names, column names) are validated against a strict pattern and quoted using vendor-appropriate quoting (double quotes for PostgreSQL/SQLite, backticks for MySQL)
+- **Error Sanitization**: Driver error messages are sanitized to a generic message for callers to avoid leaking sensitive information; detailed errors are logged server-side only
+- **Connection Safety**: Connections are managed via `connect()`/`disconnect()` lifecycle and automatically closed in finally block
 
 ## Usage Example
 

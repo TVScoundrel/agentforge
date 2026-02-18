@@ -82,8 +82,8 @@ export const relationalSelect = toolBuilder()
     });
 
     try {
-      // Initialize connection
-      await manager.initialize();
+      // Connect to database
+      await manager.connect();
 
       // Build and execute SELECT query
       const result = await executeSelect(manager, input);
@@ -96,16 +96,18 @@ export const relationalSelect = toolBuilder()
         executionTime: result.executionTime
       };
     } catch (error) {
-      // Return error with clear message
+      // Log detailed error but return a generic message to avoid leaking sensitive information
+      const logger = await import('@agentforge/core').then(m => m.createLogger('agentforge:tools:data:relational:select'));
+      logger.error('Relational SELECT execution failed', { error });
       return {
         success: false,
-        error: error instanceof Error ? error.message : 'Unknown error occurred',
+        error: 'Failed to execute SELECT query. Please verify your input and database connection.',
         rows: [],
         rowCount: 0
       };
     } finally {
-      // Always close connection
-      await manager.close();
+      // Always disconnect
+      await manager.disconnect();
     }
   })
   .build();

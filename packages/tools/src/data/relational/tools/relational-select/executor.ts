@@ -62,11 +62,8 @@ export async function executeSelect(
       executionTime
     });
 
-    // Provide clear error messages
-    if (error instanceof Error) {
-      throw error;
-    }
-    throw new Error(`SELECT query failed: ${String(error)}`);
+    // Provide sanitized error to callers to avoid leaking sensitive driver details
+    throw new Error('SELECT query failed. See logs for details.');
   }
 }
 

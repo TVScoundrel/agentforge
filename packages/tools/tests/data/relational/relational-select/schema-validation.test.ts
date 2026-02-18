@@ -100,5 +100,80 @@ describe('Relational SELECT - Schema Validation', () => {
 
     expect(result.success).toBe(false);
   });
+
+  it('should reject empty table name', () => {
+    const result = relationalSelect.schema.safeParse({
+      table: '',
+      vendor: 'postgresql',
+      connectionString: 'postgresql://localhost/test'
+    });
+
+    expect(result.success).toBe(false);
+  });
+
+  it('should reject empty connection string', () => {
+    const result = relationalSelect.schema.safeParse({
+      table: 'users',
+      vendor: 'postgresql',
+      connectionString: ''
+    });
+
+    expect(result.success).toBe(false);
+  });
+
+  it('should reject value for isNull operator', () => {
+    const result = relationalSelect.schema.safeParse({
+      table: 'users',
+      where: [{ column: 'name', operator: 'isNull', value: 'test' }],
+      vendor: 'postgresql',
+      connectionString: 'postgresql://localhost/test'
+    });
+
+    expect(result.success).toBe(false);
+  });
+
+  it('should reject missing value for eq operator', () => {
+    const result = relationalSelect.schema.safeParse({
+      table: 'users',
+      where: [{ column: 'name', operator: 'eq' }],
+      vendor: 'postgresql',
+      connectionString: 'postgresql://localhost/test'
+    });
+
+    expect(result.success).toBe(false);
+  });
+
+  it('should accept isNull without value', () => {
+    const result = relationalSelect.schema.safeParse({
+      table: 'users',
+      where: [{ column: 'name', operator: 'isNull' }],
+      vendor: 'postgresql',
+      connectionString: 'postgresql://localhost/test'
+    });
+
+    expect(result.success).toBe(true);
+  });
+
+  it('should reject non-array value for IN operator', () => {
+    const result = relationalSelect.schema.safeParse({
+      table: 'users',
+      where: [{ column: 'status', operator: 'in', value: 'active' }],
+      vendor: 'postgresql',
+      connectionString: 'postgresql://localhost/test'
+    });
+
+    expect(result.success).toBe(false);
+  });
+
+  it('should reject empty array for IN operator', () => {
+    const result = relationalSelect.schema.safeParse({
+      table: 'users',
+      where: [{ column: 'status', operator: 'in', value: [] }],
+      vendor: 'postgresql',
+      connectionString: 'postgresql://localhost/test'
+    });
+
+    expect(result.success).toBe(false);
+  });
 });
 
