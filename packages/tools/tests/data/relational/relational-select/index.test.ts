@@ -7,5 +7,5 @@
 
 // Import all test suites
 import './schema-validation.test.js';
+import './stream-executor.test.js';
 import './tool-invocation.test.js';
-

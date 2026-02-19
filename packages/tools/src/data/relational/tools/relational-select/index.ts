@@ -28,6 +28,7 @@ export * from './schemas.js';
  * - WHERE conditions with multiple operators
  * - ORDER BY with ascending/descending
  * - LIMIT and OFFSET for pagination
+ * - Optional chunked streaming mode for large result sets
  * - Result formatting to JSON
  * - Error handling with clear messages
  * 
@@ -76,6 +77,20 @@ export const relationalSelect = toolBuilder()
       connectionString: 'mysql://localhost/shop'
     }
   })
+  .example({
+    description: 'SELECT with streaming mode',
+    input: {
+      table: 'events',
+      orderBy: [{ column: 'id', direction: 'asc' }],
+      streaming: {
+        enabled: true,
+        chunkSize: 250,
+        sampleSize: 25
+      },
+      vendor: 'postgresql',
+      connectionString: 'postgresql://localhost/analytics'
+    }
+  })
   .implement(async (input: RelationalSelectInput): Promise<SelectResponse> => {
     const manager = new ConnectionManager({
       vendor: input.vendor,
@@ -94,7 +109,8 @@ export const relationalSelect = toolBuilder()
         success: true,
         rows: result.rows,
         rowCount: result.rowCount,
-        executionTime: result.executionTime
+        executionTime: result.executionTime,
+        streaming: result.streaming,
       };
     } catch (error) {
       let errorMessage = 'Failed to execute SELECT query. Please verify your input and database connection.';

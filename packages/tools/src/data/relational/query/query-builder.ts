@@ -399,3 +399,160 @@ export function buildUpdateQuery(input: UpdateQueryInput): BuiltUpdateQuery {
     usesOptimisticLock: !!input.optimisticLock,
   };
 }
+
+/**
+ * ORDER BY direction for SELECT queries.
+ */
+export type SelectOrderDirection = 'asc' | 'desc';
+
+/**
+ * ORDER BY clause for SELECT queries.
+ */
+export interface SelectOrderBy {
+  column: string;
+  direction: SelectOrderDirection;
+}
+
+/**
+ * WHERE condition for SELECT queries.
+ */
+export interface SelectWhereCondition {
+  column: string;
+  operator: UpdateWhereOperator;
+  value?: string | number | boolean | null | Array<string | number>;
+}
+
+/**
+ * Builder input for SELECT queries.
+ */
+export interface SelectQueryInput {
+  table: string;
+  columns?: string[];
+  where?: SelectWhereCondition[];
+  orderBy?: SelectOrderBy[];
+  limit?: number;
+  offset?: number;
+  vendor: DatabaseVendor;
+}
+
+function buildSelectWhereCondition(condition: SelectWhereCondition, vendor?: DatabaseVendor): SQL {
+  validateIdentifier(condition.column, 'WHERE column');
+  const column = sql.raw(quoteIdentifier(condition.column, vendor));
+
+  switch (condition.operator) {
+    case 'eq':
+      if (condition.value === undefined) {
+        throw new Error(`EQ operator requires a value for column ${condition.column}`);
+      }
+      if (condition.value === null) {
+        throw new Error('null is only allowed with isNull/isNotNull operators');
+      }
+      return sql`${column} = ${condition.value}`;
+    case 'ne':
+      if (condition.value === undefined) {
+        throw new Error(`NE operator requires a value for column ${condition.column}`);
+      }
+      if (condition.value === null) {
+        throw new Error('null is only allowed with isNull/isNotNull operators');
+      }
+      return sql`${column} != ${condition.value}`;
+    case 'gt':
+      if (typeof condition.value !== 'string' && typeof condition.value !== 'number') {
+        throw new Error(`GT operator requires a string or number value for column ${condition.column}`);
+      }
+      return sql`${column} > ${condition.value}`;
+    case 'lt':
+      if (typeof condition.value !== 'string' && typeof condition.value !== 'number') {
+        throw new Error(`LT operator requires a string or number value for column ${condition.column}`);
+      }
+      return sql`${column} < ${condition.value}`;
+    case 'gte':
+      if (typeof condition.value !== 'string' && typeof condition.value !== 'number') {
+        throw new Error(`GTE operator requires a string or number value for column ${condition.column}`);
+      }
+      return sql`${column} >= ${condition.value}`;
+    case 'lte':
+      if (typeof condition.value !== 'string' && typeof condition.value !== 'number') {
+        throw new Error(`LTE operator requires a string or number value for column ${condition.column}`);
+      }
+      return sql`${column} <= ${condition.value}`;
+    case 'like':
+      if (typeof condition.value !== 'string') {
+        throw new Error(`LIKE operator requires a string value for column ${condition.column}`);
+      }
+      return sql`${column} LIKE ${condition.value}`;
+    case 'in':
+      if (!Array.isArray(condition.value) || condition.value.length === 0) {
+        throw new Error(`IN operator requires a non-empty array value for column ${condition.column}`);
+      }
+      return sql`${column} IN (${sql.join(condition.value.map((v) => sql`${v}`), sql.raw(', '))})`;
+    case 'notIn':
+      if (!Array.isArray(condition.value) || condition.value.length === 0) {
+        throw new Error(`NOT IN operator requires a non-empty array value for column ${condition.column}`);
+      }
+      return sql`${column} NOT IN (${sql.join(condition.value.map((v) => sql`${v}`), sql.raw(', '))})`;
+    case 'isNull':
+      if (condition.value !== undefined) {
+        throw new Error(`IS NULL operator must not include value for column ${condition.column}`);
+      }
+      return sql`${column} IS NULL`;
+    case 'isNotNull':
+      if (condition.value !== undefined) {
+        throw new Error(`IS NOT NULL operator must not include value for column ${condition.column}`);
+      }
+      return sql`${column} IS NOT NULL`;
+  }
+}
+
+/**
+ * Build a safe parameterized SELECT query from structured input.
+ */
+export function buildSelectQuery(input: SelectQueryInput): SQL {
+  validateQualifiedIdentifier(input.table, 'Table name');
+
+  let query = sql.raw('SELECT ');
+
+  if (input.columns && input.columns.length > 0) {
+    input.columns.forEach((column) => validateIdentifier(column, 'SELECT column'));
+    query = sql.join(
+      [query, sql.raw(input.columns.map((column) => quoteIdentifier(column, input.vendor)).join(', '))],
+      sql.raw('')
+    );
+  } else {
+    query = sql.join([query, sql.raw('*')], sql.raw(''));
+  }
+
+  query = sql.join(
+    [query, sql.raw(` FROM ${quoteQualifiedIdentifier(input.table, input.vendor)}`)],
+    sql.raw('')
+  );
+
+  if (input.where && input.where.length > 0) {
+    const whereConditions = input.where.map((condition) => buildSelectWhereCondition(condition, input.vendor));
+    query = sql.join(
+      [query, sql.raw(' WHERE '), sql.join(whereConditions, sql.raw(' AND '))],
+      sql.raw('')
+    );
+  }
+
+  if (input.orderBy && input.orderBy.length > 0) {
+    const orderClauses = input.orderBy.map((order) => {
+      validateIdentifier(order.column, 'ORDER BY column');
+      return sql.raw(`${quoteIdentifier(order.column, input.vendor)} ${order.direction.toUpperCase()}`);
+    });
+    query = sql.join(
+      [query, sql.raw(' ORDER BY '), sql.join(orderClauses, sql.raw(', '))],
+      sql.raw('')
+    );
+  }
+
+  if (input.limit !== undefined) {
+    query = sql.join([query, sql` LIMIT ${input.limit}`], sql.raw(''));
+  }
+
+  if (input.offset !== undefined) {
+    query = sql.join([query, sql` OFFSET ${input.offset}`], sql.raw(''));
+  }
+
+  return query;
+}

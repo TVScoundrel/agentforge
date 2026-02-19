@@ -4,11 +4,16 @@
  */
 
 import type { z } from 'zod';
+import type {
+  StreamingBenchmarkResult,
+  StreamingMemoryUsage as QueryStreamingMemoryUsage,
+} from '../../query/index.js';
 import type { 
   whereOperatorSchema, 
   whereConditionSchema, 
   orderDirectionSchema, 
   orderBySchema, 
+  streamingOptionsSchema,
   relationalSelectSchema 
 } from './schemas.js';
 
@@ -33,6 +38,32 @@ export type OrderDirection = z.infer<typeof orderDirectionSchema>;
 export type OrderBy = z.infer<typeof orderBySchema>;
 
 /**
+ * Streaming options
+ */
+export type StreamingOptions = z.infer<typeof streamingOptionsSchema>;
+
+export type StreamingMemoryUsage = QueryStreamingMemoryUsage;
+
+/**
+ * Optional streaming benchmark metadata.
+ */
+export type StreamingBenchmarkMetadata = StreamingBenchmarkResult;
+
+/**
+ * Streaming execution metadata.
+ */
+export interface StreamingMetadata {
+  enabled: true;
+  chunkSize: number;
+  chunkCount: number;
+  sampledRowCount: number;
+  streamedRowCount: number;
+  cancelled: boolean;
+  memoryUsage: StreamingMemoryUsage;
+  benchmark?: StreamingBenchmarkMetadata;
+}
+
+/**
  * Relational SELECT tool input
  */
 export type RelationalSelectInput = z.infer<typeof relationalSelectSchema>;
@@ -44,6 +75,7 @@ export interface SelectResult {
   rows: unknown[];
   rowCount: number;
   executionTime: number;
+  streaming?: StreamingMetadata;
 }
 
 /**
@@ -54,6 +86,7 @@ export interface SelectSuccessResponse {
   rows: unknown[];
   rowCount: number;
   executionTime: number;
+  streaming?: StreamingMetadata;
 }
 
 /**
@@ -70,4 +103,3 @@ export interface SelectErrorResponse {
  * Tool response (success or error)
  */
 export type SelectResponse = SelectSuccessResponse | SelectErrorResponse;
-

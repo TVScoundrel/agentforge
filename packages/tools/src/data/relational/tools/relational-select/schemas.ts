@@ -132,6 +132,17 @@ export const orderBySchema = z.object({
 });
 
 /**
+ * Optional streaming configuration
+ */
+export const streamingOptionsSchema = z.object({
+  enabled: z.boolean().default(true).describe('Enable chunked streaming mode for large result sets'),
+  chunkSize: z.number().int().min(1).max(5000).optional().describe('Rows fetched per chunk (default: 100)'),
+  maxRows: z.number().int().positive().optional().describe('Optional cap on streamed rows'),
+  sampleSize: z.number().int().min(0).max(5000).optional().describe('Number of rows to include in the response payload'),
+  benchmark: z.boolean().optional().default(false).describe('Run memory benchmark comparing regular vs streaming execution (adds two extra query executions; use side-effect-free SELECT statements)')
+});
+
+/**
  * Relational SELECT tool input schema
  */
 export const relationalSelectSchema = z.object({
@@ -147,6 +158,7 @@ export const relationalSelectSchema = z.object({
   orderBy: z.array(orderBySchema).optional().describe('ORDER BY clauses'),
   limit: z.number().int().positive().optional().describe('Maximum number of rows to return'),
   offset: z.number().int().nonnegative().optional().describe('Number of rows to skip'),
+  streaming: streamingOptionsSchema.optional().describe('Optional streaming mode configuration'),
   vendor: z.enum(['postgresql', 'mysql', 'sqlite']).describe('Database vendor'),
   connectionString: z.string().min(1, 'Database connection string is required').describe('Database connection string')
 });
