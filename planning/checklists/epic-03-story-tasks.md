@@ -6,7 +6,7 @@
 
 ### Checklist
 - [x] Create branch `feat/st-03001-schema-introspection-tool` ✅ DONE
-- [ ] Create draft PR with story ID in title
+- [x] Create draft PR with story ID in title ✅ DONE (PR #33)
 - [ ] Create `packages/tools/src/data/relational/schema/types.ts` with schema interfaces
 - [ ] Define `TableSchema`, `ColumnSchema`, `IndexSchema` interfaces
 - [ ] Create `packages/tools/src/data/relational/schema/schema-inspector.ts`

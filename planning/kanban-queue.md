@@ -39,6 +39,7 @@
 - **Dependencies:** ST-01003 ✅ (merged 2026-02-17)
 - **Checklist:** `planning/checklists/epic-03-story-tasks.md`
 - **Branch:** `feat/st-03001-schema-introspection-tool`
+- **Status:** Draft PR #33 open
 
 ---
 
