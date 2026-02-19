@@ -168,7 +168,7 @@ export async function executeQuery(
 
   try {
     // Security validation before query construction/execution
-    validateSqlString(input.sql);
+    validateSqlString(input.sql, input.vendor);
     enforceParameterizedQueryUsage(input.sql, input.params, input.vendor);
 
     // Build parameterized query

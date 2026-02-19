@@ -69,6 +69,18 @@ describe('SQL Sanitizer', () => {
         validateSqlString('SELECT $$drop table users; create table x$$ AS note'),
       ).not.toThrow();
     });
+
+    it('should handle MySQL-style backslash-escaped quotes inside strings', () => {
+      expect(() =>
+        validateSqlString("SELECT 'It\\'s working' AS value", 'mysql'),
+      ).not.toThrow();
+    });
+
+    it('should ignore dangerous keywords inside MySQL-style escaped strings', () => {
+      expect(() =>
+        validateSqlString("SELECT 'escape \\\\' DROP TABLE users' AS value", 'mysql'),
+      ).not.toThrow();
+    });
   });
 
   describe('enforceParameterizedQueryUsage', () => {
@@ -96,6 +108,12 @@ describe('SQL Sanitizer', () => {
         .not.toThrow();
     });
 
+    it('should ignore placeholders inside MySQL-style escaped strings', () => {
+      expect(() =>
+        enforceParameterizedQueryUsage("SELECT 'test\\'?' as literal", undefined, 'mysql'),
+      ).not.toThrow();
+    });
+
     it('should not treat PostgreSQL casts as placeholders', () => {
       expect(() => enforceParameterizedQueryUsage('SELECT 1::int')).not.toThrow();
     });
@@ -110,6 +128,12 @@ describe('SQL Sanitizer', () => {
       expect(() =>
         enforceParameterizedQueryUsage("SELECT payload ?& array['owner', 'id'] FROM events", undefined, 'postgresql'),
       ).not.toThrow();
+    });
+
+    it('should require parameters for PostgreSQL question-mark placeholders', () => {
+      expect(() =>
+        enforceParameterizedQueryUsage('SELECT * FROM users WHERE id = ?', undefined, 'postgresql'),
+      ).toThrow(/Missing parameters/);
     });
 
     it('should still require parameters for PostgreSQL numbered placeholders', () => {

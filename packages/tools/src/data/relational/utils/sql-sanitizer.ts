@@ -13,7 +13,12 @@ const NAMED_PLACEHOLDER_PATTERN = /(?<!:):[a-zA-Z_][a-zA-Z0-9_]*/;
 const PARAMETER_REQUIRED_PATTERN = /^(insert|update|delete)\b/i;
 const MUTATION_PATTERN = /\b(insert|update|delete)\b/i;
 
-function stripSqlCommentsAndStrings(sqlString: string): string {
+interface SqlStripOptions {
+  backslashEscapes: boolean;
+}
+
+function stripSqlCommentsAndStrings(sqlString: string, options: SqlStripOptions): string {
+  const { backslashEscapes } = options;
   let result = '';
   let i = 0;
   const len = sqlString.length;
@@ -51,6 +56,11 @@ function stripSqlCommentsAndStrings(sqlString: string): string {
       result += "''";
       i += 1;
       while (i < len) {
+        if (backslashEscapes && sqlString[i] === '\\' && i + 1 < len) {
+          i += 2;
+          continue;
+        }
+
         if (sqlString[i] === '\'') {
           if (i + 1 < len && sqlString[i + 1] === '\'') {
             i += 2;
@@ -69,6 +79,11 @@ function stripSqlCommentsAndStrings(sqlString: string): string {
       result += '""';
       i += 1;
       while (i < len) {
+        if (backslashEscapes && sqlString[i] === '\\' && i + 1 < len) {
+          i += 2;
+          continue;
+        }
+
         if (sqlString[i] === '"') {
           if (i + 1 < len && sqlString[i + 1] === '"') {
             i += 2;
@@ -111,6 +126,42 @@ function stripSqlCommentsAndStrings(sqlString: string): string {
   return result;
 }
 
+function nextNonWhitespaceChar(sqlString: string, index: number): string | null {
+  for (let i = index; i < sqlString.length; i += 1) {
+    if (!/\s/.test(sqlString[i])) {
+      return sqlString[i];
+    }
+  }
+
+  return null;
+}
+
+function hasPostgresQuestionMarkPlaceholder(sqlString: string): boolean {
+  for (let i = 0; i < sqlString.length; i += 1) {
+    if (sqlString[i] !== '?') {
+      continue;
+    }
+
+    const immediateNext = i + 1 < sqlString.length ? sqlString[i + 1] : null;
+    if (immediateNext === '|' || immediateNext === '&') {
+      continue;
+    }
+
+    const nextToken = nextNonWhitespaceChar(sqlString, i + 1);
+    if (nextToken === null || nextToken === ',' || nextToken === ')' || nextToken === ';' || nextToken === ':') {
+      return true;
+    }
+
+    if (/[A-Za-z0-9_'"$]/.test(nextToken) || nextToken === '[') {
+      continue;
+    }
+
+    return true;
+  }
+
+  return false;
+}
+
 function hasSqlPlaceholders(sqlString: string, vendor?: DatabaseVendor): boolean {
   if (NUMBERED_PLACEHOLDER_PATTERN.test(sqlString)) {
     return true;
@@ -121,9 +172,9 @@ function hasSqlPlaceholders(sqlString: string, vendor?: DatabaseVendor): boolean
   }
 
   // PostgreSQL frequently uses ? / ?| / ?& as JSONB operators.
-  // Avoid treating these as bind placeholders for vendor-specific false positives.
+  // Disambiguate these operators from bind placeholders.
   if (vendor === 'postgresql') {
-    return false;
+    return hasPostgresQuestionMarkPlaceholder(sqlString);
   }
 
   return QUESTION_PLACEHOLDER_PATTERN.test(sqlString);
@@ -145,7 +196,7 @@ function hasParameters(params?: QueryParams): boolean {
  * Validate raw SQL string safety constraints.
  * Rejects empty input, null bytes, and dangerous DDL operations.
  */
-export function validateSqlString(sqlString: string): void {
+export function validateSqlString(sqlString: string, vendor?: DatabaseVendor): void {
   if (typeof sqlString !== 'string' || sqlString.trim().length === 0) {
     throw new Error('SQL query must not be empty');
   }
@@ -154,7 +205,9 @@ export function validateSqlString(sqlString: string): void {
     throw new Error('SQL query contains null bytes');
   }
 
-  const normalizedForSafetyCheck = stripSqlCommentsAndStrings(sqlString);
+  const normalizedForSafetyCheck = stripSqlCommentsAndStrings(sqlString, {
+    backslashEscapes: vendor === 'mysql',
+  });
   const statements = normalizedForSafetyCheck
     .split(';')
     .map((statement) => statement.trim())
@@ -173,7 +226,9 @@ export function enforceParameterizedQueryUsage(
   params?: QueryParams,
   vendor?: DatabaseVendor,
 ): void {
-  const normalizedForAnalysis = stripSqlCommentsAndStrings(sqlString);
+  const normalizedForAnalysis = stripSqlCommentsAndStrings(sqlString, {
+    backslashEscapes: vendor === 'mysql',
+  });
   const normalized = normalizedForAnalysis.trim().toLowerCase();
   const hasPlaceholders = hasSqlPlaceholders(normalizedForAnalysis, vendor);
   const hasParams = hasParameters(params);
