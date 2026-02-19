@@ -22,8 +22,8 @@ Implemented first-pass SQL sanitization and enforcement in relational query exec
 ### New Utility
 
 - `packages/tools/src/data/relational/utils/sql-sanitizer.ts`
-  - `validateSqlString(sqlString)`
-  - `enforceParameterizedQueryUsage(sqlString, params)`
+  - `validateSqlString(sqlString, vendor?)`
+  - `enforceParameterizedQueryUsage(sqlString, params?, vendor?)`
   - strips comments/string literals before dangerous-keyword checks
 
 ### Integration
@@ -50,10 +50,10 @@ Implemented first-pass SQL sanitization and enforcement in relational query exec
 ## Validation
 
 - `pnpm exec vitest run packages/tools/tests/data/relational/sql-sanitizer.test.ts packages/tools/tests/data/relational/query-executor.test.ts packages/tools/tests/data/relational/relational-query-tool.test.ts`
-  - 36 passed, 23 skipped
+  - 40 passed, 23 skipped
 - `pnpm test --run`
   - 96 passed, 1 skipped file
-  - 1180 passed, 80 skipped tests
+  - 1184 passed, 80 skipped tests
 - `pnpm lint`
   - passed with 0 lint errors (warnings-only output)
   - baseline lint errors were resolved in PR #32 (merged 2026-02-18)
