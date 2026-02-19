@@ -38,9 +38,8 @@ export * from './connection/index.js';
 // Query operations
 export * from './query/index.js';
 
-// Schema introspection (to be implemented in future stories)
-// export * from './schema/index.js';
+// Schema introspection
+export * from './schema/index.js';
 
 // LangGraph tools
 export * from './tools/index.js';
-

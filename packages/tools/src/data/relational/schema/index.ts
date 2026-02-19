@@ -3,5 +3,14 @@
  * @module schema
  */
 
-export {};
+export type {
+  ForeignKeySchema,
+  IndexSchema,
+  ColumnSchema,
+  TableSchema,
+  DatabaseSchema,
+  SchemaInspectOptions,
+  SchemaInspectorConfig,
+} from './types.js';
 
+export { SchemaInspector } from './schema-inspector.js';
