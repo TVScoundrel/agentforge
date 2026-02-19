@@ -120,7 +120,7 @@
 - [x] Run full test suite before finalizing the PR and record results (`pnpm test --run` -> 1234 passed, 121 skipped)
 - [x] Run lint (`pnpm lint`) before finalizing the PR and record results (0 errors; warnings-only baseline outside story scope)
 - [x] Mark PR ready for review (PR #35 marked ready on 2026-02-19)
-- [ ] Wait for merge
+- [x] Wait for merge ✅ DONE (merged 2026-02-19 via PR #35)
 
 ---
 

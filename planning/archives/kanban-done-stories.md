@@ -64,6 +64,13 @@
 - **Estimate:** 4 hours
 - **Outcome:** Implemented `relational-insert` with shared INSERT query-builder support, single and batch insert handling, configurable return modes (`none`, `id`, `row`), input validation, and sanitized constraint-violation errors. Added focused tests for schema validation, query builder behavior, and tool invocation plus story documentation.
 
+### ST-02004: Implement Type-Safe UPDATE Tool
+- **Merged:** 2026-02-19
+- **PR:** https://github.com/TVScoundrel/agentforge/pull/35 (commit ff93221)
+- **Epic:** EP-02 (Query Execution and CRUD Operations)
+- **Estimate:** 4 hours
+- **Outcome:** Implemented `relational-update` with shared UPDATE query-builder support, validated WHERE operators, full-table update safety guard, optional optimistic locking, affected-row count normalization, and constraint-aware error mapping. Added focused tests for schema validation, query builder logic, and tool invocation plus story documentation.
+
 ### ST-03001: Implement Schema Introspection Tool
 - **Merged:** 2026-02-19
 - **PR:** https://github.com/TVScoundrel/agentforge/pull/33 (commit d46a715)

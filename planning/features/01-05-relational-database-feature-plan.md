@@ -3,7 +3,7 @@
 **Epic Range:** EP-01 through EP-05  
 **Status:** In Progress  
 **Last Updated:** 2026-02-19
-**Active Story:** ST-02004 (In Review)
+**Active Story:** None (ST-02004 merged on 2026-02-19; next dependency-ready story: ST-02005)
 
 ---
 
