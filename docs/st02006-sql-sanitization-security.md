@@ -13,6 +13,8 @@ Implemented first-pass SQL sanitization and enforcement in relational query exec
 - enforced parameterized usage for mutation statements
 - centralized placeholder validation in sanitizer pre-checks to prevent executor false positives
 - added comment/CTE bypass protections for mutation detection and placeholder analysis
+- made placeholder checks vendor-aware to avoid PostgreSQL JSON-operator false positives
+- tightened dangerous-keyword detection to statement boundaries
 - added dedicated sanitizer unit tests and injection-pattern coverage
 
 ## Implemented Changes
@@ -48,10 +50,10 @@ Implemented first-pass SQL sanitization and enforcement in relational query exec
 ## Validation
 
 - `pnpm exec vitest run packages/tools/tests/data/relational/sql-sanitizer.test.ts packages/tools/tests/data/relational/query-executor.test.ts packages/tools/tests/data/relational/relational-query-tool.test.ts`
-  - 30 passed, 23 skipped
+  - 36 passed, 23 skipped
 - `pnpm test --run`
-  - 95 passed, 2 skipped files
-  - 1174 passed, 80 skipped tests
+  - 96 passed, 1 skipped file
+  - 1180 passed, 80 skipped tests
 - `pnpm lint`
   - passed with 0 lint errors (warnings-only output)
   - baseline lint errors were resolved in PR #32 (merged 2026-02-18)

@@ -57,6 +57,18 @@ describe('SQL Sanitizer', () => {
         validateSqlString('SELECT drop_count FROM alter_log WHERE user_id = ?'),
       ).not.toThrow();
     });
+
+    it('should allow dangerous keywords inside double-quoted identifiers', () => {
+      expect(() =>
+        validateSqlString('SELECT "drop" FROM "create"'),
+      ).not.toThrow();
+    });
+
+    it('should allow dangerous keywords inside PostgreSQL dollar-quoted strings', () => {
+      expect(() =>
+        validateSqlString('SELECT $$drop table users; create table x$$ AS note'),
+      ).not.toThrow();
+    });
   });
 
   describe('enforceParameterizedQueryUsage', () => {
@@ -79,8 +91,31 @@ describe('SQL Sanitizer', () => {
         .not.toThrow();
     });
 
+    it('should ignore placeholders inside PostgreSQL dollar-quoted strings', () => {
+      expect(() => enforceParameterizedQueryUsage('SELECT $$?$$ as literal', undefined))
+        .not.toThrow();
+    });
+
     it('should not treat PostgreSQL casts as placeholders', () => {
       expect(() => enforceParameterizedQueryUsage('SELECT 1::int')).not.toThrow();
+    });
+
+    it('should allow PostgreSQL JSON operators without params', () => {
+      expect(() =>
+        enforceParameterizedQueryUsage("SELECT payload ? 'owner' FROM events", undefined, 'postgresql'),
+      ).not.toThrow();
+      expect(() =>
+        enforceParameterizedQueryUsage("SELECT payload ?| array['owner', 'id'] FROM events", undefined, 'postgresql'),
+      ).not.toThrow();
+      expect(() =>
+        enforceParameterizedQueryUsage("SELECT payload ?& array['owner', 'id'] FROM events", undefined, 'postgresql'),
+      ).not.toThrow();
+    });
+
+    it('should still require parameters for PostgreSQL numbered placeholders', () => {
+      expect(() =>
+        enforceParameterizedQueryUsage('SELECT * FROM users WHERE id = $1', undefined, 'postgresql'),
+      ).toThrow(/Missing parameters/);
     });
 
     it('should require params for INSERT', () => {

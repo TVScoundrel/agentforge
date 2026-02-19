@@ -29,6 +29,22 @@ const hasSQLiteBindings = (() => {
 })();
 
 describe('Query Executor', () => {
+  describe('Vendor-specific validation', () => {
+    it('should allow PostgreSQL JSON operators without params', async () => {
+      const manager = {
+        execute: async () => [{ exists: true }],
+      } as unknown as ConnectionManager;
+
+      const result = await executeQuery(manager, {
+        sql: "SELECT payload ? 'owner' AS exists FROM events",
+        vendor: 'postgresql',
+      });
+
+      expect(result.rows).toHaveLength(1);
+      expect(result.rows[0]).toEqual({ exists: true });
+    });
+  });
+
   describe('SQLite Query Execution', () => {
     let manager: ConnectionManager;
 
@@ -286,7 +302,7 @@ describe('Query Executor', () => {
         sql: 'SELECT $1 + ?',
         params: [1, 2],
         vendor: 'sqlite'
-      })).rejects.toThrow();
+      })).rejects.toThrow(/Mixed parameter styles/);
     });
   });
 });

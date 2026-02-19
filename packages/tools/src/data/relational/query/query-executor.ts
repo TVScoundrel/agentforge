@@ -169,7 +169,7 @@ export async function executeQuery(
   try {
     // Security validation before query construction/execution
     validateSqlString(input.sql);
-    enforceParameterizedQueryUsage(input.sql, input.params);
+    enforceParameterizedQueryUsage(input.sql, input.params, input.vendor);
 
     // Build parameterized query
     const parameterizedQuery = buildParameterizedQuery(input.sql, input.params);
@@ -213,7 +213,7 @@ export async function executeQuery(
       if (message.includes('Missing parameter') ||
           message.includes('Missing parameters') ||
           message.includes('Parameters provided but no placeholders') ||
-          message.includes('Mixed placeholder styles') ||
+          message.includes('Mixed parameter styles') ||
           message.includes('SQL query must not be empty') ||
           message.includes('SQL query contains null bytes') ||
           message.includes('Detected dangerous SQL operation') ||
