@@ -125,6 +125,12 @@ describe('schema-validator > validateColumnsExist', () => {
     expect(result.valid).toBe(false);
     expect(result.errors).toHaveLength(2);
   });
+
+  it('should fail for empty table name', () => {
+    const result = validateColumnsExist(makeSchema(), '', ['id']);
+    expect(result.valid).toBe(false);
+    expect(result.errors[0]).toContain('non-empty string');
+  });
 });
 
 // ---------------------------------------------------------------------------
@@ -141,6 +147,12 @@ describe('schema-validator > validateColumnTypes', () => {
     const result = validateColumnTypes(makeSchema(), 'users', { name: 'varchar' });
     // 'varchar' doesn't match 'character varying(255)' since neither string is a substring of the other.
     expect(result.valid).toBe(false);
+  });
+
+  it('should fail for empty table name', () => {
+    const result = validateColumnTypes(makeSchema(), '', { id: 'integer' });
+    expect(result.valid).toBe(false);
+    expect(result.errors[0]).toContain('non-empty string');
   });
 
   it('should pass with substring type match', () => {

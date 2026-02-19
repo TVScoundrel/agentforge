@@ -149,7 +149,7 @@ export function diffSchemas(before: DatabaseSchema, after: DatabaseSchema): Sche
  * @returns Pretty-printed JSON string
  */
 export function exportSchemaToJson(schema: DatabaseSchema): string {
-  return JSON.stringify(schema, null, 2);
+  return JSON.stringify(schema, sortedReplacer, 2);
 }
 
 /**
@@ -210,6 +210,21 @@ export function importSchemaFromJson(json: string): DatabaseSchema {
 // ---------------------------------------------------------------------------
 // Internal helpers
 // ---------------------------------------------------------------------------
+
+/**
+ * JSON replacer that sorts object keys for deterministic output.
+ * Arrays are left in their original order.
+ */
+function sortedReplacer(_key: string, value: unknown): unknown {
+  if (value && typeof value === 'object' && !Array.isArray(value)) {
+    const sorted: Record<string, unknown> = {};
+    for (const k of Object.keys(value as Record<string, unknown>).sort()) {
+      sorted[k] = (value as Record<string, unknown>)[k];
+    }
+    return sorted;
+  }
+  return value;
+}
 
 function tableMap(tables: TableSchema[]): Map<string, TableSchema> {
   const map = new Map<string, TableSchema>();
@@ -275,7 +290,5 @@ function diffColumns(before: ColumnSchema[], after: ColumnSchema[]): ColumnDiff[
 
 function arraysEqual(a: string[], b: string[]): boolean {
   if (a.length !== b.length) return false;
-  const sortedA = [...a].sort();
-  const sortedB = [...b].sort();
-  return sortedA.every((v, i) => v === sortedB[i]);
+  return a.every((v, i) => v === b[i]);
 }

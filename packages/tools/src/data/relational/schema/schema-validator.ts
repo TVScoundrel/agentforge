@@ -70,6 +70,11 @@ export function validateColumnsExist(
 ): ValidationResult {
   const errors: string[] = [];
 
+  if (!tableName || typeof tableName !== 'string') {
+    errors.push('Table name must be a non-empty string');
+    return { valid: false, errors };
+  }
+
   const table = findTable(schema, tableName);
   if (!table) {
     errors.push(`Table "${tableName}" does not exist`);
@@ -98,8 +103,11 @@ export function validateColumnsExist(
 /**
  * Validate that columns in a table match expected types.
  *
- * Type matching is case-insensitive and supports partial matches so that
- * `varchar` matches `varchar(255)`, `character varying`, etc.
+ * Type matching is case-insensitive and uses substring containment:
+ * a match succeeds when either string contains the other.  For example
+ * `varchar` matches `varchar(255)` (the actual type contains the expected
+ * string), but `varchar` does **not** match `character varying` because
+ * neither is a substring of the other.
  *
  * @param schema - The introspected database schema
  * @param tableName - Table to validate against
@@ -112,6 +120,11 @@ export function validateColumnTypes(
   expectedTypes: Record<string, string>,
 ): ValidationResult {
   const errors: string[] = [];
+
+  if (!tableName || typeof tableName !== 'string') {
+    errors.push('Table name must be a non-empty string');
+    return { valid: false, errors };
+  }
 
   const table = findTable(schema, tableName);
   if (!table) {

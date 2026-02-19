@@ -41,7 +41,7 @@ All utilities are exported from `schema/index.ts` and available via the tools pa
 
 | Decision | Rationale |
 |----------|-----------|
-| Partial type matching for `validateColumnTypes` | DB types vary across vendors (`varchar(255)`, `character varying`), substring matching avoids false negatives |
+| Substring containment for `validateColumnTypes` | A match succeeds when either the actual or expected type contains the other (case-insensitive). `varchar` matches `varchar(255)` but **not** `character varying` — callers must use the canonical name reported by the DB |
 | `bigint` → `string` in PostgreSQL/MySQL | JavaScript `number` loses precision beyond 2^53; explicit notes are added |
 | `boolean` → `number` in SQLite | SQLite stores booleans as 0/1 integers |
 | Case-insensitive comparison everywhere | DB object names are case-insensitive in most databases |
@@ -56,7 +56,8 @@ All utilities are exported from `schema/index.ts` and available via the tools pa
 ```typescript
 import { SchemaInspector, validateTableExists, validateColumnsExist } from '@agentforge/tools';
 
-const schema = await SchemaInspector.inspect(manager, 'postgresql');
+const inspector = new SchemaInspector(manager, 'postgresql');
+const schema = await inspector.inspect();
 
 const tableResult = validateTableExists(schema, 'users');
 if (!tableResult.valid) {
@@ -87,7 +88,8 @@ const allTypes = getVendorTypeMap('mysql');
 import { diffSchemas, exportSchemaToJson, importSchemaFromJson } from '@agentforge/tools';
 
 const baseline = importSchemaFromJson(savedSnapshot);
-const current = await SchemaInspector.inspect(manager, 'postgresql');
+const inspector = new SchemaInspector(manager, 'postgresql');
+const current = await inspector.inspect();
 
 const diff = diffSchemas(baseline, current);
 if (!diff.identical) {

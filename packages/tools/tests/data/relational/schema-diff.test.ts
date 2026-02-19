@@ -182,6 +182,32 @@ describe('schema-diff > diffSchemas', () => {
     });
   });
 
+  it('should detect primary key column order change', () => {
+    const before = makeSchema({
+      tables: [
+        {
+          ...makeSchema().tables[0],
+          primaryKey: ['id', 'name'],
+        },
+      ],
+    });
+    const after = makeSchema({
+      tables: [
+        {
+          ...makeSchema().tables[0],
+          primaryKey: ['name', 'id'],
+        },
+      ],
+    });
+
+    const result = diffSchemas(before, after);
+    expect(result.identical).toBe(false);
+    expect(result.tables[0].primaryKeyChanged).toEqual({
+      before: ['id', 'name'],
+      after: ['name', 'id'],
+    });
+  });
+
   it('should handle case-insensitive table comparison', () => {
     const before = makeSchema();
     const after = makeSchema({
@@ -211,6 +237,18 @@ describe('schema-diff > JSON export/import', () => {
     const json1 = exportSchemaToJson(schema);
     const json2 = exportSchemaToJson(schema);
     expect(json1).toBe(json2);
+  });
+
+  it('should produce sorted object keys in exported JSON', () => {
+    const schema = makeSchema();
+    const json = exportSchemaToJson(schema);
+    const lines = json.split('\n');
+    // Top-level keys should appear in alphabetical order
+    const topKeys = lines
+      .filter((l) => l.match(/^  "/))
+      .map((l) => l.match(/"([^"]+)"/)![1]);
+    const sorted = [...topKeys].sort();
+    expect(topKeys).toEqual(sorted);
   });
 
   it('should throw on invalid JSON string', () => {
