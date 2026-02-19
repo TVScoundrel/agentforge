@@ -78,6 +78,13 @@
 - **Estimate:** 5 hours
 - **Outcome:** Implemented schema introspection for PostgreSQL, MySQL, and SQLite through a new `SchemaInspector` and `relational-get-schema` tool. Added extraction for tables, columns, primary keys, foreign keys, and indexes, plus configurable schema caching with invalidation and focused test/documentation coverage.
 
+### ST-03002: Implement Schema Metadata Utilities
+- **Merged:** 2026-02-19
+- **PR:** https://github.com/TVScoundrel/agentforge/pull/37 (commit 17d51c0)
+- **Epic:** EP-03 (Schema Introspection and Metadata)
+- **Estimate:** 3 hours
+- **Outcome:** Implemented schema metadata utilities: schema validator (table/column existence, column type validation with substring containment), type mapper (DB→TS type mapping for PostgreSQL, MySQL, SQLite with 90+ mappings), and schema diff (structured comparison, deterministic sorted JSON export/import). Created 72 unit tests across 3 test files. Addressed 13 Copilot review comments across 2 rounds. Epic EP-03 now fully complete.
+
 ### ST-04003: Implement Result Streaming
 - **Merged:** 2026-02-19
 - **PR:** https://github.com/TVScoundrel/agentforge/pull/36 (commit f8adbde)

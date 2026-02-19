@@ -4,11 +4,11 @@
 
 ## Queue Status Summary
 
-- **Ready:** 3 stories (ST-05003, ST-04002, ST-02005)
+- **Ready:** 4 stories (ST-05003, ST-04002, ST-02005, ST-05001)
 - **In Progress:** 0 stories
-- **In Review:** 1 story (ST-03002)
+- **In Review:** 0 stories
 - **Blocked:** 0 stories
-- **Backlog:** 4 stories (waiting on dependencies)
+- **Backlog:** 3 stories (waiting on dependencies)
 
 ---
 
@@ -35,6 +35,14 @@
 - **Dependencies:** ST-02004 ✅ (merged 2026-02-19)
 - **Checklist:** `planning/checklists/epic-02-story-tasks.md`
 
+### ST-05001: Implement Comprehensive Unit Tests
+- **Epic:** EP-05
+- **Priority:** P0
+- **Estimate:** 8 hours
+- **Dependencies:** ST-02006 ✅ (merged 2026-02-19), ST-03002 ✅ (merged 2026-02-19)
+- **Checklist:** `planning/checklists/epic-05-story-tasks.md`
+- **Note:** Can start test infrastructure in parallel with implementation
+
 ---
 
 ## In Progress
@@ -45,14 +53,7 @@ _No stories currently in progress_
 
 ## In Review
 
-### ST-03002: Implement Schema Metadata Utilities
-- **Epic:** EP-03
-- **Priority:** P2
-- **Estimate:** 3 hours
-- **Dependencies:** ST-03001 ✅ (merged 2026-02-19)
-- **Checklist:** `planning/checklists/epic-03-story-tasks.md`
-- **Branch:** `feat/st-03002-schema-metadata-utilities`
-- **PR:** [#37](https://github.com/TVScoundrel/agentforge/pull/37)
+_No stories currently in review_
 
 ---
 
@@ -77,14 +78,6 @@ _No stories currently blocked_
 - **Estimate:** 6 hours
 - **Dependencies:** ST-05001
 - **Checklist:** `planning/checklists/epic-05-story-tasks.md`
-
-### ST-05001: Implement Comprehensive Unit Tests
-- **Epic:** EP-05
-- **Priority:** P0
-- **Estimate:** 8 hours
-- **Dependencies:** ST-02006 ✅ (merged 2026-02-19), ST-03002
-- **Checklist:** `planning/checklists/epic-05-story-tasks.md`
-- **Note:** Can start test infrastructure in parallel with implementation
 
 ### ST-05004: Create Advanced Integration Examples
 - **Epic:** EP-05
