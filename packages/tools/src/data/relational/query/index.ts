@@ -11,6 +11,11 @@ export type {
 
 export { executeQuery } from './query-executor.js';
 export {
+  buildSelectQuery,
+  type SelectOrderDirection,
+  type SelectOrderBy,
+  type SelectWhereCondition,
+  type SelectQueryInput,
   buildInsertQuery,
   type InsertValue,
   type InsertRow,
@@ -28,3 +33,15 @@ export {
   type UpdateQueryInput,
   type BuiltUpdateQuery,
 } from './query-builder.js';
+
+export {
+  streamSelectChunks,
+  createSelectReadableStream,
+  executeStreamingSelect,
+  benchmarkStreamingSelectMemory,
+  type StreamingSelectOptions,
+  type StreamingSelectChunk,
+  type StreamingSelectResult,
+  type StreamingMemoryUsage,
+  type StreamingBenchmarkResult,
+} from './stream-executor.js';

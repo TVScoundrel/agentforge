@@ -31,9 +31,20 @@ async function createTestDatabase(): Promise<string> {
       email TEXT NOT NULL,
       status TEXT DEFAULT 'active'
     );
+    CREATE TABLE test_events (
+      id INTEGER PRIMARY KEY,
+      payload TEXT NOT NULL
+    );
     INSERT INTO test_users (id, name, email, status) VALUES (1, 'Alice', 'alice@example.com', 'active');
     INSERT INTO test_users (id, name, email, status) VALUES (2, 'Bob', 'bob@example.com', 'inactive');
     INSERT INTO test_users (id, name, email, status) VALUES (3, 'Charlie', 'charlie@example.com', 'active');
+    WITH RECURSIVE cnt(x) AS (
+      SELECT 1
+      UNION ALL
+      SELECT x + 1 FROM cnt WHERE x < 1000
+    )
+    INSERT INTO test_events (id, payload)
+    SELECT x, 'event-' || x FROM cnt;
   `);
   db.close();
 
@@ -192,6 +203,74 @@ describe('Relational SELECT - Tool Invocation', () => {
     expect(result.rows).toHaveLength(3);
     const ids = (result.rows ?? []).map((row) => (row as Record<string, unknown>).id);
     expect(ids).toEqual([1, 2, 3]);
+  });
+
+  it.skipIf(!hasSQLiteBindings)('should execute SELECT in streaming mode', async () => {
+    const result = await relationalSelect.invoke({
+      table: 'test_users',
+      orderBy: [{ column: 'id', direction: 'asc' }],
+      streaming: {
+        enabled: true,
+        chunkSize: 1,
+        sampleSize: 2
+      },
+      vendor: 'sqlite',
+      connectionString: getDbPath()
+    });
+
+    expect(result.success).toBe(true);
+    expect(result.rowCount).toBe(3);
+    if (result.success) {
+      expect(result.streaming?.enabled).toBe(true);
+      expect(result.streaming?.chunkCount).toBe(3);
+      expect(result.rows).toHaveLength(2);
+      expect(result.streaming?.sampledRowCount).toBe(2);
+      expect(result.streaming?.streamedRowCount).toBe(3);
+    }
+  });
+
+  it.skipIf(!hasSQLiteBindings)('should include streaming benchmark metadata when requested', async () => {
+    const result = await relationalSelect.invoke({
+      table: 'test_users',
+      streaming: {
+        enabled: true,
+        chunkSize: 2,
+        benchmark: true
+      },
+      vendor: 'sqlite',
+      connectionString: getDbPath()
+    });
+
+    expect(result.success).toBe(true);
+    if (result.success) {
+      expect(result.streaming?.benchmark).toBeDefined();
+      expect(result.streaming?.benchmark?.streamingExecutionTime).toBeGreaterThanOrEqual(0);
+      expect(result.streaming?.benchmark?.nonStreamingExecutionTime).toBeGreaterThanOrEqual(0);
+      expect(result.streaming?.benchmark?.memorySavedBytes).toBeGreaterThanOrEqual(0);
+    }
+  });
+
+  it.skipIf(!hasSQLiteBindings)('should stream large result sets in bounded chunks', async () => {
+    const result = await relationalSelect.invoke({
+      table: 'test_events',
+      orderBy: [{ column: 'id', direction: 'asc' }],
+      streaming: {
+        enabled: true,
+        chunkSize: 128,
+        sampleSize: 10,
+        maxRows: 1000
+      },
+      vendor: 'sqlite',
+      connectionString: getDbPath()
+    });
+
+    expect(result.success).toBe(true);
+    expect(result.rowCount).toBe(1000);
+    if (result.success) {
+      expect(result.rows).toHaveLength(10);
+      expect(result.streaming?.chunkCount).toBeGreaterThanOrEqual(8);
+      expect(result.streaming?.memoryUsage.peakHeapUsed).toBeGreaterThan(0);
+    }
   });
 
   it('should reject empty table name', () => {

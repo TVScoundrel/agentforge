@@ -217,4 +217,34 @@ describe('Relational SELECT - Schema Validation', () => {
 
     expect(result.success).toBe(false);
   });
+
+  it('should accept streaming configuration', () => {
+    const result = relationalSelect.schema.safeParse({
+      table: 'users',
+      streaming: {
+        enabled: true,
+        chunkSize: 250,
+        sampleSize: 25,
+        maxRows: 1000
+      },
+      vendor: 'postgresql',
+      connectionString: 'postgresql://localhost/test'
+    });
+
+    expect(result.success).toBe(true);
+  });
+
+  it('should reject invalid streaming chunk size', () => {
+    const result = relationalSelect.schema.safeParse({
+      table: 'users',
+      streaming: {
+        enabled: true,
+        chunkSize: 0
+      },
+      vendor: 'postgresql',
+      connectionString: 'postgresql://localhost/test'
+    });
+
+    expect(result.success).toBe(false);
+  });
 });

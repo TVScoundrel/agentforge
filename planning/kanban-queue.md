@@ -4,8 +4,8 @@
 
 ## Queue Status Summary
 
-- **Ready:** 5 stories (ST-04003, ST-03002, ST-05003, ST-04002, ST-02005)
-- **In Progress:** 0 stories
+- **Ready:** 4 stories (ST-03002, ST-05003, ST-04002, ST-02005)
+- **In Progress:** 1 story (ST-04003)
 - **In Review:** 0 stories
 - **Blocked:** 0 stories
 - **Backlog:** 4 stories (waiting on dependencies)
@@ -13,13 +13,6 @@
 ---
 
 ## Ready
-
-### ST-04003: Implement Result Streaming
-- **Epic:** EP-04
-- **Priority:** P2
-- **Estimate:** 5 hours
-- **Dependencies:** ST-02002 ✅ (merged 2026-02-18)
-- **Checklist:** `planning/checklists/epic-04-story-tasks.md`
 
 ### ST-03002: Implement Schema Metadata Utilities
 - **Epic:** EP-03
@@ -53,7 +46,13 @@
 
 ## In Progress
 
-_No stories currently in progress_
+### ST-04003: Implement Result Streaming
+- **Epic:** EP-04
+- **Priority:** P2
+- **Estimate:** 5 hours
+- **Dependencies:** ST-02002 ✅ (merged 2026-02-18)
+- **Checklist:** `planning/checklists/epic-04-story-tasks.md`
+- **Branch:** `feat/st-04003-result-streaming`
 
 ---
 

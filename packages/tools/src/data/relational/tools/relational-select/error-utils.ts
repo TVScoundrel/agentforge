@@ -9,10 +9,13 @@ const SAFE_VALIDATION_ERROR_PATTERNS = [
   'contains invalid characters',
   'requires an array value',
   'requires a non-empty array value',
+  'must be an integer between',
+  'must be a positive integer',
   'null is only allowed with isNull/isNotNull operators',
   'LIKE operator requires a string value',
   'operator requires a string or number value',
   'operator requires a scalar value',
+  'Stream cancelled by caller',
 ] as const;
 
 export function isSafeValidationError(error: unknown): error is Error {
@@ -24,4 +27,3 @@ export function isSafeValidationError(error: unknown): error is Error {
     error.message.includes(pattern)
   );
 }
-

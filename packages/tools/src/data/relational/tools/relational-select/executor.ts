@@ -5,11 +5,28 @@
 
 import { createLogger } from '@agentforge/core';
 import type { ConnectionManager } from '../../connection/connection-manager.js';
+import {
+  executeStreamingSelect,
+  benchmarkStreamingSelectMemory,
+  type SelectQueryInput,
+} from '../../query/index.js';
 import type { RelationalSelectInput, SelectResult } from './types.js';
 import { buildSelectQuery } from './query-builder.js';
 import { isSafeValidationError } from './error-utils.js';
 
 const logger = createLogger('agentforge:tools:data:relational:select');
+
+function toSelectQueryInput(input: RelationalSelectInput): SelectQueryInput {
+  return {
+    table: input.table,
+    columns: input.columns,
+    where: input.where,
+    orderBy: input.orderBy,
+    limit: input.limit,
+    offset: input.offset,
+    vendor: input.vendor,
+  };
+}
 
 /**
  * Execute a SELECT query using Drizzle query builder
@@ -25,10 +42,51 @@ export async function executeSelect(
     table: input.table,
     hasWhere: !!input.where,
     hasOrderBy: !!input.orderBy,
-    hasLimit: !!input.limit
+    hasLimit: !!input.limit,
+    streamingEnabled: !!input.streaming?.enabled,
   });
 
   try {
+    if (input.streaming?.enabled) {
+      const streamOptions = {
+        chunkSize: input.streaming.chunkSize,
+        maxRows: input.streaming.maxRows,
+        sampleSize: input.streaming.sampleSize,
+      };
+
+      const streamInput = toSelectQueryInput(input);
+      const streamResult = await executeStreamingSelect(manager, streamInput, streamOptions);
+
+      const benchmark = input.streaming.benchmark
+        ? await benchmarkStreamingSelectMemory(manager, streamInput, streamOptions)
+        : undefined;
+
+      logger.debug('Streaming SELECT query executed successfully', {
+        vendor: input.vendor,
+        table: input.table,
+        rowCount: streamResult.rowCount,
+        chunkCount: streamResult.chunkCount,
+        executionTime: streamResult.executionTime,
+        cancelled: streamResult.cancelled,
+      });
+
+      return {
+        rows: streamResult.rows,
+        rowCount: streamResult.rowCount,
+        executionTime: streamResult.executionTime,
+        streaming: {
+          enabled: true,
+          chunkSize: input.streaming.chunkSize ?? 100,
+          chunkCount: streamResult.chunkCount,
+          sampledRowCount: streamResult.rows.length,
+          streamedRowCount: streamResult.rowCount,
+          cancelled: streamResult.cancelled,
+          memoryUsage: streamResult.memoryUsage,
+          benchmark,
+        },
+      };
+    }
+
     // Build SELECT query
     const query = buildSelectQuery(input);
 
