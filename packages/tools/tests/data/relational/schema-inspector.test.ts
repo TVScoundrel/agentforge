@@ -142,7 +142,7 @@ describe('SchemaInspector', () => {
 
     await expect(
       inspector.inspect({ tables: ['invalid-table-name!'] }),
-    ).rejects.toThrow(/Invalid table filter/);
+    ).rejects.toThrow(/contains invalid characters/);
     expect(executeMock).toHaveBeenCalledTimes(0);
 
     const filtered = await inspector.inspect({ tables: ['public.orders'] });

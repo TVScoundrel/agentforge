@@ -4,12 +4,23 @@
  */
 
 import { z } from 'zod';
-import { toolBuilder, ToolCategory } from '@agentforge/core';
+import { createLogger, toolBuilder, ToolCategory } from '@agentforge/core';
+import { createHash } from 'node:crypto';
 import { ConnectionManager } from '../connection/connection-manager.js';
 import { SchemaInspector } from '../schema/schema-inspector.js';
 import type { DatabaseVendor } from '../types.js';
+import { isSafeGetSchemaValidationError } from './relational-get-schema-error-utils.js';
 
 const VALID_TABLE_FILTER_PATTERN = /^[a-zA-Z_][a-zA-Z0-9_]*(\.[a-zA-Z_][a-zA-Z0-9_]*)?$/;
+const logger = createLogger('agentforge:tools:data:relational:get-schema');
+
+function buildSchemaCacheKey(vendor: DatabaseVendor, connectionString: string, database?: string): string {
+  const databaseScope = database ?? 'default';
+  const connectionHash = createHash('sha256')
+    .update(connectionString)
+    .digest('hex');
+  return `${vendor}:${databaseScope}:${connectionHash}`;
+}
 
 /**
  * Zod schema for relational-get-schema input.
@@ -84,10 +95,11 @@ export const relationalGetSchema = toolBuilder()
       connection: input.connectionString,
     });
 
-    const cacheKeyBase = input.database
-      ? `${input.vendor}:${input.database}`
-      : input.vendor;
-    const cacheKey = `${cacheKeyBase}:${input.connectionString}`;
+    const cacheKey = buildSchemaCacheKey(
+      input.vendor,
+      input.connectionString,
+      input.database,
+    );
     const inspector = new SchemaInspector(manager, input.vendor, {
       cacheTtlMs: input.cacheTtlMs,
       cacheKey,
@@ -121,9 +133,21 @@ export const relationalGetSchema = toolBuilder()
         summary,
       };
     } catch (error) {
+      logger.error('Schema introspection failed', {
+        vendor: input.vendor,
+        hasTablesFilter: Array.isArray(input.tables),
+        tablesFilterCount: input.tables?.length ?? 0,
+        refreshCache: input.refreshCache ?? false,
+        error: error instanceof Error ? error.message : String(error),
+      });
+
+      const errorMessage = isSafeGetSchemaValidationError(error)
+        ? error.message
+        : 'Failed to inspect schema. See logs for details.';
+
       return {
         success: false,
-        error: error instanceof Error ? error.message : 'Failed to inspect schema',
+        error: errorMessage,
         schema: null,
       };
     } finally {

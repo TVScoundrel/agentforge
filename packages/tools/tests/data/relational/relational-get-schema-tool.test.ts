@@ -122,4 +122,20 @@ describe('Relational Get Schema Tool', () => {
     expect(result.schema.tables).toHaveLength(1);
     expect(result.schema.tables[0].name).toBe('posts');
   });
+
+  it.skipIf(!hasSQLiteBindings)('should expose safe validation errors from schema inspector', async () => {
+    const result = await relationalGetSchema.invoke({
+      vendor: 'sqlite',
+      connectionString: getDbPath(),
+      tables: [],
+      refreshCache: true,
+    });
+
+    expect(result.success).toBe(false);
+    if (result.success) {
+      return;
+    }
+
+    expect(result.error).toContain('must not be empty');
+  });
 });

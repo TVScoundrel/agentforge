@@ -260,7 +260,7 @@ function validateTableFilters(tables?: string[]): Set<string> | null {
     const trimmed = table.trim();
     if (!VALID_TABLE_FILTER_PATTERN.test(trimmed)) {
       throw new Error(
-        `Invalid table filter "${table}". Only alphanumeric, underscore, and optional schema qualification are allowed.`,
+        `Invalid table filter "${table}". Table filter contains invalid characters. Use alphanumeric, underscore, and optional schema qualification.`,
       );
     }
     normalized.add(normalizeFilterName(trimmed));
