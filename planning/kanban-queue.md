@@ -4,9 +4,9 @@
 
 ## Queue Status Summary
 
-- **Ready:** 5 stories (ST-04003, ST-03002, ST-05003, ST-02004, ST-04002)
+- **Ready:** 4 stories (ST-04003, ST-03002, ST-05003, ST-04002)
 - **In Progress:** 0 stories
-- **In Review:** 0 stories
+- **In Review:** 1 story (ST-02004)
 - **Blocked:** 0 stories
 - **Backlog:** 5 stories (waiting on dependencies)
 
@@ -35,13 +35,6 @@
 - **Dependencies:** ST-02006 ✅ (merged 2026-02-19), ST-03001 ✅ (merged 2026-02-19)
 - **Checklist:** `planning/checklists/epic-05-story-tasks.md`
 
-### ST-02004: Implement Type-Safe UPDATE Tool
-- **Epic:** EP-02
-- **Priority:** P0
-- **Estimate:** 4 hours
-- **Dependencies:** ST-02003 ✅ (merged 2026-02-19)
-- **Checklist:** `planning/checklists/epic-02-story-tasks.md`
-
 ### ST-04002: Implement Batch Operations
 - **Epic:** EP-04
 - **Priority:** P2
@@ -59,7 +52,14 @@ _No stories currently in progress_
 
 ## In Review
 
-_No stories currently in review_
+### ST-02004: Implement Type-Safe UPDATE Tool
+- **Epic:** EP-02
+- **Priority:** P0
+- **Estimate:** 4 hours
+- **Dependencies:** ST-02003 ✅ (merged 2026-02-19)
+- **Checklist:** `planning/checklists/epic-02-story-tasks.md`
+- **Branch:** `feat/st-02004-type-safe-update-tool`
+- **PR:** [#35](https://github.com/TVScoundrel/agentforge/pull/35)
 
 ---
 
