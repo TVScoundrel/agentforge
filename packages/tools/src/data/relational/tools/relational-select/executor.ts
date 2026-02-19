@@ -56,7 +56,6 @@ export async function executeSelect(
       };
 
       const streamInput = toSelectQueryInput(input);
-      const streamResult = await executeStreamingSelect(manager, streamInput, streamOptions);
 
       if (input.streaming.benchmark) {
         logger.warn('Streaming benchmark enabled; SELECT will execute up to three times (result + benchmark regular + benchmark streaming).', {
@@ -68,23 +67,27 @@ export async function executeSelect(
         });
       }
 
+      const streamResult = await executeStreamingSelect(manager, streamInput, streamOptions);
+
       const benchmark = input.streaming.benchmark
         ? await benchmarkStreamingSelectMemory(manager, streamInput, streamOptions)
         : undefined;
+
+      const executionTime = Date.now() - startTime;
 
       logger.debug('Streaming SELECT query executed successfully', {
         vendor: input.vendor,
         table: input.table,
         rowCount: streamResult.rowCount,
         chunkCount: streamResult.chunkCount,
-        executionTime: streamResult.executionTime,
+        executionTime,
         cancelled: streamResult.cancelled,
       });
 
       return {
         rows: streamResult.rows,
         rowCount: streamResult.rowCount,
-        executionTime: streamResult.executionTime,
+        executionTime,
         streaming: {
           enabled: true,
           chunkSize: input.streaming.chunkSize ?? DEFAULT_CHUNK_SIZE,
