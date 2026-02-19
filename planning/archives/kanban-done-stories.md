@@ -2,7 +2,7 @@
 
 **Purpose:** Track completed and merged stories for the Relational Database Access Tool project.
 
-**Last Updated:** 2026-02-18
+**Last Updated:** 2026-02-19
 
 ---
 
@@ -49,6 +49,13 @@
 - **Epic:** EP-02 (Query Execution and CRUD Operations)
 - **Estimate:** 5 hours
 - **Outcome:** Successfully implemented `relational-select` with type-safe query construction and validation, including column selection, WHERE conditions, ORDER BY, LIMIT/OFFSET, and sanitized error handling. Added focused unit tests and documentation (`docs/st02002-type-safe-select-tool.md`), and completed quality gates before review.
+
+### ST-02006: Implement SQL Sanitization and Security
+- **Merged:** 2026-02-19
+- **PR:** https://github.com/TVScoundrel/agentforge/pull/31 (commit d4a08f5)
+- **Epic:** EP-02 (Query Execution and CRUD Operations)
+- **Estimate:** 3 hours
+- **Outcome:** Implemented vendor-aware SQL sanitization and security enforcement in the relational query execution path. Added dangerous DDL blocking, parameterization enforcement, comment/string normalization, PostgreSQL JSON operator-safe placeholder handling, MySQL backslash-escape handling, and focused security test coverage plus supporting documentation.
 
 ---
 

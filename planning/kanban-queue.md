@@ -1,12 +1,12 @@
 # Kanban Queue: Relational Database Access Tool
 
-**Last Updated:** 2026-02-18
+**Last Updated:** 2026-02-19
 
 ## Queue Status Summary
 
 - **Ready:** 3 stories (ST-03001, ST-02003, ST-04003)
 - **In Progress:** 0 stories
-- **In Review:** 1 story (ST-02006)
+- **In Review:** 0 stories
 - **Blocked:** 0 stories
 - **Backlog:** 9 stories (waiting on dependencies)
 
@@ -45,14 +45,7 @@ _No stories currently in progress_
 
 ## In Review
 
-### ST-02006: Implement SQL Sanitization and Security
-- **Epic:** EP-02
-- **Priority:** P0
-- **Estimate:** 3 hours
-- **Dependencies:** ST-02001 ✅ (merged 2026-02-17)
-- **Checklist:** `planning/checklists/epic-02-story-tasks.md`
-- **Branch:** `feat/st-02006-sql-sanitization-security`
-- **Status:** Ready for review
+_No stories currently in review_
 
 ---
 
@@ -110,14 +103,14 @@ _No stories currently blocked_
 - **Epic:** EP-05
 - **Priority:** P1
 - **Estimate:** 6 hours
-- **Dependencies:** ST-02006, ST-03001
+- **Dependencies:** ST-02006 ✅ (merged 2026-02-19), ST-03001
 - **Checklist:** `planning/checklists/epic-05-story-tasks.md`
 
 ### ST-05001: Implement Comprehensive Unit Tests
 - **Epic:** EP-05
 - **Priority:** P0
 - **Estimate:** 8 hours
-- **Dependencies:** ST-02006, ST-03002
+- **Dependencies:** ST-02006 ✅ (merged 2026-02-19), ST-03002
 - **Checklist:** `planning/checklists/epic-05-story-tasks.md`
 - **Note:** Can start test infrastructure in parallel with implementation
 
@@ -138,6 +131,7 @@ _No stories currently blocked_
 - ✅ ST-01004 complete - connection lifecycle management implemented (merged 2026-02-18)
 - ✅ ST-02001 complete - raw SQL query execution implemented (merged 2026-02-17)
 - ✅ ST-02002 complete - type-safe SELECT tool implemented (merged 2026-02-18)
+- ✅ ST-02006 complete - SQL sanitization and security implemented (merged 2026-02-19)
 - Epic 01 (Connection Management) is now complete - all 4 stories merged
 - Epic 03 (Schema) can run in parallel with Epic 02 after ST-01003
 - Epic 04 (Advanced Features) depends on Epic 02 completion

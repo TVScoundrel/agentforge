@@ -176,11 +176,11 @@
 - [x] Add security audit checklist ✅ DONE (included in security docs)
 - [x] Add or update story documentation at docs/st02006-sql-sanitization-security.md (or document why not required) ✅ DONE
 - [x] Assess test impact; add/update automated tests when needed, or document why tests are not required ✅ DONE (added sanitizer + relational query security tests)
-- [x] Run full test suite before finalizing the PR and record results ✅ DONE (`pnpm test --run` -> 96 passed, 1 skipped file; 1180 passed, 80 skipped tests)
+- [x] Run full test suite before finalizing the PR and record results ✅ DONE (`pnpm test --run` -> 96 passed, 1 skipped file; 1184 passed, 80 skipped tests)
 - [x] Run lint (`pnpm lint`) before finalizing the PR and record results ✅ DONE (`pnpm lint` -> 0 errors; warnings-only output after PR #32 merged)
 - [x] Document lint baseline scope for reviewers and mark baseline remediation out-of-scope for ST-02006 ✅ DONE (PR #32 merged on 2026-02-18; PR #31 scope note updated)
 - [x] Mark PR ready for review ✅ DONE (PR #31 undrafted and ready)
-- [ ] Wait for merge
+- [x] Wait for merge ✅ DONE (PR #31 merged on 2026-02-19)
 
 ---
 
