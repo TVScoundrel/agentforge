@@ -90,7 +90,7 @@
 - [x] Run full test suite before finalizing the PR and record results (`pnpm test --run` -> 1212 passed, 105 skipped)
 - [x] Run lint (`pnpm lint`) before finalizing the PR and record results (`pnpm lint` -> 0 errors, warnings-only baseline output across workspace)
 - [x] Mark PR ready for review (PR #34: https://github.com/TVScoundrel/agentforge/pull/34)
-- [ ] Wait for merge
+- [x] Wait for merge ✅ DONE (merged 2026-02-19 via PR #34)
 
 ---
 

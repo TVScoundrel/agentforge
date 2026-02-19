@@ -57,6 +57,13 @@
 - **Estimate:** 3 hours
 - **Outcome:** Implemented vendor-aware SQL sanitization and security enforcement in the relational query execution path. Added dangerous DDL blocking, parameterization enforcement, comment/string normalization, PostgreSQL JSON operator-safe placeholder handling, MySQL backslash-escape handling, and focused security test coverage plus supporting documentation.
 
+### ST-02003: Implement Type-Safe INSERT Tool
+- **Merged:** 2026-02-19
+- **PR:** https://github.com/TVScoundrel/agentforge/pull/34 (commit e49a607)
+- **Epic:** EP-02 (Query Execution and CRUD Operations)
+- **Estimate:** 4 hours
+- **Outcome:** Implemented `relational-insert` with shared INSERT query-builder support, single and batch insert handling, configurable return modes (`none`, `id`, `row`), input validation, and sanitized constraint-violation errors. Added focused tests for schema validation, query builder behavior, and tool invocation plus story documentation.
+
 ### ST-03001: Implement Schema Introspection Tool
 - **Merged:** 2026-02-19
 - **PR:** https://github.com/TVScoundrel/agentforge/pull/33 (commit d46a715)
