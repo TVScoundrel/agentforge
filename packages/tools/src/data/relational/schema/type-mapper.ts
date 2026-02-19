@@ -249,7 +249,7 @@ export function mapColumnType(
 
   if (
     (normalised === 'bigint' || normalised === 'int8' || normalised === 'bigserial') &&
-    vendor === 'postgresql'
+    (vendor === 'postgresql' || vendor === 'mysql')
   ) {
     result.notes = 'Mapped to string to avoid JavaScript number precision loss for 64-bit integers';
   }

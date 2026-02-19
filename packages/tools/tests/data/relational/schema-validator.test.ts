@@ -137,17 +137,9 @@ describe('schema-validator > validateColumnTypes', () => {
     expect(result.valid).toBe(true);
   });
 
-  it('should pass with partial type match (varchar matches character varying)', () => {
+  it('should fail when expected type is not a substring of actual type (varchar vs character varying)', () => {
     const result = validateColumnTypes(makeSchema(), 'users', { name: 'varchar' });
-    // 'character varying(255)' contains 'varchar'? No, but 'varchar' != 'character varying'.
-    // The matcher checks includes in both directions.
-    // 'character varying(255)'.includes('varchar') → false
-    // 'varchar'.includes('character varying(255)') → false
-    // So this should fail. Let's use a real match.
-    // Actually let's check: the actual type is 'character varying(255)'.
-    // 'character varying(255)'.toLowerCase().includes('varchar') → false
-    // 'varchar'.includes('character varying(255)') → false
-    // So this should fail. Let me adjust the test.
+    // 'varchar' doesn't match 'character varying(255)' since neither string is a substring of the other.
     expect(result.valid).toBe(false);
   });
 
