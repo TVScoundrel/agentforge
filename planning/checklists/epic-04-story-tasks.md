@@ -27,7 +27,7 @@
 - [ ] Assess test impact; add/update automated tests when needed, or document why tests are not required
 - [x] Run full test suite before finalizing the PR and record results (`pnpm test --run` -> 1248 passed, 127 skipped)
 - [x] Run lint (`pnpm lint`) before finalizing the PR and record results (0 errors; warnings-only baseline outside story scope)
-- [ ] Mark PR ready for review
+- [x] Mark PR ready for review (PR #36 marked ready on 2026-02-19)
 - [ ] Wait for merge
 
 ---
