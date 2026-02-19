@@ -8,6 +8,7 @@ import type { QueryParams } from '../query/types.js';
 const DANGEROUS_SQL_PATTERN = /\b(drop|truncate|alter|create)\b/i;
 export const PLACEHOLDER_PATTERN = /(\$(\d+))|(\?)|((?<!:):[a-zA-Z_][a-zA-Z0-9_]*)/;
 const PARAMETER_REQUIRED_PATTERN = /^(insert|update|delete)\b/i;
+const MUTATION_PATTERN = /\b(insert|update|delete)\b/i;
 
 function stripSqlCommentsAndStrings(sqlString: string): string {
   return sqlString
@@ -52,15 +53,21 @@ export function validateSqlString(sqlString: string): void {
  * Enforce parameterized-query usage for mutation statements and placeholders.
  */
 export function enforceParameterizedQueryUsage(sqlString: string, params?: QueryParams): void {
-  const normalized = sqlString.trim().toLowerCase();
-  const hasPlaceholders = PLACEHOLDER_PATTERN.test(sqlString);
+  const normalizedForAnalysis = stripSqlCommentsAndStrings(sqlString);
+  const normalized = normalizedForAnalysis.trim().toLowerCase();
+  const hasPlaceholders = PLACEHOLDER_PATTERN.test(normalizedForAnalysis);
   const hasParams = hasParameters(params);
 
   if (hasPlaceholders && !hasParams) {
     throw new Error('Missing parameters: SQL query contains placeholders but no params were provided');
   }
 
-  if (PARAMETER_REQUIRED_PATTERN.test(normalized) && !hasParams) {
+  const startsWithWith = /^with\b/.test(normalized);
+  const parameterRequired = startsWithWith
+    ? MUTATION_PATTERN.test(normalized)
+    : PARAMETER_REQUIRED_PATTERN.test(normalized);
+
+  if (parameterRequired && !hasParams) {
     throw new Error(
       'Parameters are required for INSERT/UPDATE/DELETE queries. ' +
       'Use parameterized placeholders instead of embedding values directly.'

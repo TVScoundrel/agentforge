@@ -1,6 +1,6 @@
 # ST-02006: SQL Sanitization and Security
 
-**Status:** 🚧 In Progress  
+**Status:** 👀 In Review  
 **PR:** [#31](https://github.com/TVScoundrel/agentforge/pull/31)  
 **Epic:** 02 - Query Operations  
 **Priority:** P0
@@ -12,6 +12,7 @@ Implemented first-pass SQL sanitization and enforcement in relational query exec
 - blocked dangerous DDL operations (`CREATE`, `DROP`, `TRUNCATE`, `ALTER`) in raw-query paths
 - enforced parameterized usage for mutation statements
 - aligned placeholder detection logic across validation and execution paths
+- added comment/CTE bypass protections for mutation detection and placeholder analysis
 - added dedicated sanitizer unit tests and injection-pattern coverage
 
 ## Implemented Changes
@@ -46,10 +47,10 @@ Implemented first-pass SQL sanitization and enforcement in relational query exec
 ## Validation
 
 - `pnpm exec vitest run packages/tools/tests/data/relational/sql-sanitizer.test.ts packages/tools/tests/data/relational/query-executor.test.ts packages/tools/tests/data/relational/relational-query-tool.test.ts`
-  - 27 passed, 21 skipped
+  - 30 passed, 21 skipped
 - `pnpm test --run`
   - 95 passed, 2 skipped files
-  - 1171 passed, 78 skipped tests
+  - 1174 passed, 78 skipped tests
 - `pnpm lint`
   - passed with 0 lint errors (warnings-only output)
   - baseline lint errors were resolved in PR #32 (merged 2026-02-18)

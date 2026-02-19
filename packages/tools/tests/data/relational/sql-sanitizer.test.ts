@@ -69,6 +69,16 @@ describe('SQL Sanitizer', () => {
         .toThrow(/Missing parameters/);
     });
 
+    it('should ignore placeholders inside string literals', () => {
+      expect(() => enforceParameterizedQueryUsage("SELECT '?' as literal", undefined))
+        .not.toThrow();
+    });
+
+    it('should ignore placeholders inside comments', () => {
+      expect(() => enforceParameterizedQueryUsage('/* ? */ SELECT 1', undefined))
+        .not.toThrow();
+    });
+
     it('should not treat PostgreSQL casts as placeholders', () => {
       expect(() => enforceParameterizedQueryUsage('SELECT 1::int')).not.toThrow();
     });
@@ -81,6 +91,20 @@ describe('SQL Sanitizer', () => {
     it('should require params for UPDATE', () => {
       expect(() => enforceParameterizedQueryUsage('UPDATE users SET name = \'Bob\' WHERE id = 1'))
         .toThrow(/Parameters are required for INSERT\/UPDATE\/DELETE queries/);
+    });
+
+    it('should require params for INSERT with leading comments', () => {
+      expect(() =>
+        enforceParameterizedQueryUsage('/* guard */ INSERT INTO users (name) VALUES (\'Alice\')'),
+      ).toThrow(/Parameters are required for INSERT\/UPDATE\/DELETE queries/);
+    });
+
+    it('should require params for INSERT in CTE statement', () => {
+      expect(() =>
+        enforceParameterizedQueryUsage(
+          'WITH inserted AS (INSERT INTO users (name) VALUES (\'Alice\') RETURNING id) SELECT * FROM inserted',
+        ),
+      ).toThrow(/Parameters are required for INSERT\/UPDATE\/DELETE queries/);
     });
 
     it('should allow parameterized DELETE with params', () => {
