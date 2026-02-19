@@ -244,6 +244,26 @@ describe('Query Executor', () => {
       })).rejects.toThrow(/Parameters are required for INSERT\/UPDATE\/DELETE queries/);
     });
 
+    it.skipIf(!hasSQLiteBindings)('should allow placeholder characters inside string literals without params', async () => {
+      const result = await executeQuery(manager, {
+        sql: "SELECT '?' as literal",
+        vendor: 'sqlite'
+      });
+
+      expect(result.rows).toHaveLength(1);
+      expect(result.rows[0]).toEqual({ literal: '?' });
+    });
+
+    it.skipIf(!hasSQLiteBindings)('should allow placeholder characters inside comments without params', async () => {
+      const result = await executeQuery(manager, {
+        sql: '/* ? */ SELECT 1 as value',
+        vendor: 'sqlite'
+      });
+
+      expect(result.rows).toHaveLength(1);
+      expect(result.rows[0]).toEqual({ value: 1 });
+    });
+
 
     it.skipIf(!hasSQLiteBindings)('should reject when positional parameters are missing', async () => {
       await expect(executeQuery(manager, {

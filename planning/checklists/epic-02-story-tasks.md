@@ -163,10 +163,10 @@
 - [x] Create draft PR with story ID in title ✅ DONE (PR #31)
 - [x] Create `packages/tools/src/data/relational/utils/sql-sanitizer.ts` ✅ DONE
 - [x] Implement input validation for SQL strings ✅ DONE
-- [x] Implement input escaping for special characters ✅ DONE
-- [x] Add dangerous SQL pattern detection (DROP, TRUNCATE, ALTER in user input) ✅ DONE
-- [x] Add table name validation (alphanumeric, underscore only) ✅ DONE
-- [x] Add column name validation ✅ DONE
+- [ ] Implement input escaping for special characters ⏳ Deferred / out of scope for ST-02006 (current mitigation relies on parameterized queries; no dedicated escaping utility implemented in this story)
+- [x] Add dangerous SQL pattern detection (CREATE, DROP, TRUNCATE, ALTER in user input) ✅ DONE
+- [ ] Add table name validation (alphanumeric, underscore only) ⏳ Deferred / out of scope for ST-02006 (raw SQL path does not implement standalone identifier validators in this story)
+- [ ] Add column name validation ⏳ Deferred / out of scope for ST-02006 (raw SQL path does not implement standalone identifier validators in this story)
 - [x] Enforce parameterized query usage in all tools ✅ DONE (integrated into relational query execution path)
 - [x] Create security documentation in docs/ ✅ DONE (`docs/sql-injection-prevention-best-practices.md`)
 - [x] Document SQL injection prevention best practices ✅ DONE
@@ -176,7 +176,7 @@
 - [x] Add security audit checklist ✅ DONE (included in security docs)
 - [x] Add or update story documentation at docs/st02006-sql-sanitization-security.md (or document why not required) ✅ DONE
 - [x] Assess test impact; add/update automated tests when needed, or document why tests are not required ✅ DONE (added sanitizer + relational query security tests)
-- [x] Run full test suite before finalizing the PR and record results ✅ DONE (`pnpm test --run` -> 95 passed, 2 skipped files; 1171 passed, 78 skipped tests)
+- [x] Run full test suite before finalizing the PR and record results ✅ DONE (`pnpm test --run` -> 95 passed, 2 skipped files; 1174 passed, 80 skipped tests)
 - [x] Run lint (`pnpm lint`) before finalizing the PR and record results ✅ DONE (`pnpm lint` -> 0 errors; warnings-only output after PR #32 merged)
 - [x] Document lint baseline scope for reviewers and mark baseline remediation out-of-scope for ST-02006 ✅ DONE (PR #32 merged on 2026-02-18; PR #31 scope note updated)
 - [x] Mark PR ready for review ✅ DONE (PR #31 undrafted and ready)

@@ -10,7 +10,6 @@ import type { QueryInput, QueryExecutionResult, QueryParams } from './types.js';
 import {
   validateSqlString,
   enforceParameterizedQueryUsage,
-  PLACEHOLDER_PATTERN,
 } from '../utils/sql-sanitizer.js';
 
 const logger = createLogger('agentforge:tools:data:relational:query');
@@ -27,15 +26,9 @@ const logger = createLogger('agentforge:tools:data:relational:query');
  */
 function buildParameterizedQuery(sqlString: string, params?: QueryParams): SQL {
   if (!params) {
-    // No parameters provided - ensure the query does not contain placeholders.
-    // Shared placeholder pattern avoids mismatches with pre-validation logic.
-    if (PLACEHOLDER_PATTERN.test(sqlString)) {
-      throw new Error(
-        'Missing parameters: SQL query contains placeholders but no params were provided',
-      );
-    }
-
-    // No placeholders - safe to treat as a static query
+    // Placeholder validation happens in enforceParameterizedQueryUsage.
+    // Keep this path as a raw static query builder to avoid duplicate parsing
+    // and false positives for placeholder-like tokens inside comments/literals.
     return sql.raw(sqlString);
   }
 
