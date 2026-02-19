@@ -40,29 +40,29 @@
 **Branch:** `feat/st-03002-schema-metadata-utilities`
 
 ### Checklist
-- [ ] Create branch `feat/st-03002-schema-metadata-utilities`
-- [ ] Create draft PR with story ID in title
-- [ ] Create `packages/tools/src/data/relational/schema/schema-validator.ts`
-- [ ] Implement table existence validator
-- [ ] Implement column existence validator
-- [ ] Implement column type validator
-- [ ] Create type mapper for DB types to TypeScript types
-- [ ] Map PostgreSQL types to TypeScript
-- [ ] Map MySQL types to TypeScript
-- [ ] Map SQLite types to TypeScript
-- [ ] Create schema diff utility for testing
-- [ ] Implement schema comparison logic
-- [ ] Implement schema export to JSON format
-- [ ] Add schema import from JSON (for testing)
-- [ ] Export utilities from `schema/index.ts`
-- [ ] Create unit tests for validators
-- [ ] Create unit tests for type mapper
-- [ ] Create unit tests for schema diff
-- [ ] Add or update story documentation at docs/st03002-schema-metadata-utilities.md (or document why not required)
-- [ ] Assess test impact; add/update automated tests when needed, or document why tests are not required
-- [ ] Run full test suite before finalizing the PR and record results
-- [ ] Run lint (`pnpm lint`) before finalizing the PR and record results
-- [ ] Mark PR ready for review
+- [x] Create branch `feat/st-03002-schema-metadata-utilities`
+- [x] Create draft PR with story ID in title (PR #37)
+- [x] Create `packages/tools/src/data/relational/schema/schema-validator.ts`
+- [x] Implement table existence validator
+- [x] Implement column existence validator
+- [x] Implement column type validator
+- [x] Create type mapper for DB types to TypeScript types
+- [x] Map PostgreSQL types to TypeScript
+- [x] Map MySQL types to TypeScript
+- [x] Map SQLite types to TypeScript
+- [x] Create schema diff utility for testing
+- [x] Implement schema comparison logic
+- [x] Implement schema export to JSON format
+- [x] Add schema import from JSON (for testing)
+- [x] Export utilities from `schema/index.ts`
+- [x] Create unit tests for validators
+- [x] Create unit tests for type mapper
+- [x] Create unit tests for schema diff
+- [x] Add or update story documentation at docs/st03002-schema-metadata-utilities.md (or document why not required)
+- [x] Assess test impact; add/update automated tests when needed, or document why tests are not required (added 68 unit tests across 3 test files)
+- [x] Run full test suite before finalizing the PR and record results (`pnpm test --run` -> 1316 passed, 127 skipped)
+- [x] Run lint (`pnpm lint`) before finalizing the PR and record results (0 errors; 109 warnings-only baseline outside story scope)
+- [x] Mark PR ready for review (PR #37 marked ready on 2026-02-19)
 - [ ] Wait for merge
 
 ---

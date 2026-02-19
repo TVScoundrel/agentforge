@@ -4,22 +4,15 @@
 
 ## Queue Status Summary
 
-- **Ready:** 4 stories (ST-03002, ST-05003, ST-04002, ST-02005)
+- **Ready:** 3 stories (ST-05003, ST-04002, ST-02005)
 - **In Progress:** 0 stories
-- **In Review:** 0 stories
+- **In Review:** 1 story (ST-03002)
 - **Blocked:** 0 stories
 - **Backlog:** 4 stories (waiting on dependencies)
 
 ---
 
 ## Ready
-
-### ST-03002: Implement Schema Metadata Utilities
-- **Epic:** EP-03
-- **Priority:** P2
-- **Estimate:** 3 hours
-- **Dependencies:** ST-03001 ✅ (merged 2026-02-19)
-- **Checklist:** `planning/checklists/epic-03-story-tasks.md`
 
 ### ST-05003: Create Usage Examples and Documentation
 - **Epic:** EP-05
@@ -52,7 +45,14 @@ _No stories currently in progress_
 
 ## In Review
 
-_No stories currently in review_
+### ST-03002: Implement Schema Metadata Utilities
+- **Epic:** EP-03
+- **Priority:** P2
+- **Estimate:** 3 hours
+- **Dependencies:** ST-03001 ✅ (merged 2026-02-19)
+- **Checklist:** `planning/checklists/epic-03-story-tasks.md`
+- **Branch:** `feat/st-03002-schema-metadata-utilities`
+- **PR:** [#37](https://github.com/TVScoundrel/agentforge/pull/37)
 
 ---
 
