@@ -31,7 +31,7 @@
 - [x] Run full test suite before finalizing the PR and record results ✅ DONE (`pnpm test --run` -> 98 passed files, 1 skipped file; 1188 passed, 82 skipped tests)
 - [x] Run lint (`pnpm lint`) before finalizing the PR and record results ✅ DONE (`pnpm lint` -> 0 errors; warnings-only baseline output)
 - [x] Mark PR ready for review ✅ DONE (PR #33 undrafted)
-- [ ] Wait for merge
+- [x] Wait for merge ✅ DONE (PR #33 merged on 2026-02-19)
 
 ---
 

@@ -57,6 +57,13 @@
 - **Estimate:** 3 hours
 - **Outcome:** Implemented vendor-aware SQL sanitization and security enforcement in the relational query execution path. Added dangerous DDL blocking, parameterization enforcement, comment/string normalization, PostgreSQL JSON operator-safe placeholder handling, MySQL backslash-escape handling, and focused security test coverage plus supporting documentation.
 
+### ST-03001: Implement Schema Introspection Tool
+- **Merged:** 2026-02-19
+- **PR:** https://github.com/TVScoundrel/agentforge/pull/33 (commit d46a715)
+- **Epic:** EP-03 (Schema Introspection and Metadata)
+- **Estimate:** 5 hours
+- **Outcome:** Implemented schema introspection for PostgreSQL, MySQL, and SQLite through a new `SchemaInspector` and `relational-get-schema` tool. Added extraction for tables, columns, primary keys, foreign keys, and indexes, plus configurable schema caching with invalidation and focused test/documentation coverage.
+
 ---
 
 ## Archive Format
