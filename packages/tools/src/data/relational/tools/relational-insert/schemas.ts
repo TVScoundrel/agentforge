@@ -4,11 +4,7 @@
  */
 
 import { z } from 'zod';
-
-/**
- * Valid schema-qualified identifier pattern (e.g., "public.users")
- */
-const VALID_QUALIFIED_IDENTIFIER_PATTERN = /^[a-zA-Z_][a-zA-Z0-9_]*(\.[a-zA-Z_][a-zA-Z0-9_]*)*$/;
+import { VALID_QUALIFIED_IDENTIFIER_PATTERN } from '../../utils/identifier-utils.js';
 
 /**
  * Scalar values accepted for INSERT payloads.

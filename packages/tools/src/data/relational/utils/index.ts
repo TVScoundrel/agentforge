@@ -20,4 +20,5 @@ export {
   validateQualifiedIdentifier,
   quoteIdentifier,
   quoteQualifiedIdentifier,
+  VALID_QUALIFIED_IDENTIFIER_PATTERN,
 } from './identifier-utils.js';
