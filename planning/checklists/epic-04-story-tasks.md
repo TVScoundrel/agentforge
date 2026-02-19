@@ -6,7 +6,7 @@
 
 ### Checklist
 - [ ] Create branch `feat/st-04001-transaction-support`
-- [x] Create draft PR with story ID in title (PR #36)
+- [ ] Create draft PR with story ID in title
 - [ ] Create `packages/tools/src/data/relational/query/transaction.ts`
 - [ ] Define `Transaction` interface
 - [ ] Implement transaction wrapper for multiple operations
@@ -25,9 +25,9 @@
 - [ ] Test nested transactions
 - [ ] Add or update story documentation at docs/st04001-transaction-support.md (or document why not required)
 - [ ] Assess test impact; add/update automated tests when needed, or document why tests are not required
-- [x] Run full test suite before finalizing the PR and record results (`pnpm test --run` -> 1248 passed, 127 skipped)
-- [x] Run lint (`pnpm lint`) before finalizing the PR and record results (0 errors; warnings-only baseline outside story scope)
-- [x] Mark PR ready for review (PR #36 marked ready on 2026-02-19)
+- [ ] Run full test suite before finalizing the PR and record results
+- [ ] Run lint (`pnpm lint`) before finalizing the PR and record results
+- [ ] Mark PR ready for review
 - [ ] Wait for merge
 
 ---
@@ -87,9 +87,9 @@
 - [x] Test backpressure scenarios
 - [x] Add or update story documentation at docs/st04003-result-streaming.md (or document why not required)
 - [x] Assess test impact; add/update automated tests when needed, or document why tests are not required (added stream executor unit tests, schema coverage, and large-result integration coverage)
-- [ ] Run full test suite before finalizing the PR and record results
-- [ ] Run lint (`pnpm lint`) before finalizing the PR and record results
-- [ ] Mark PR ready for review
+- [x] Run full test suite before finalizing the PR and record results (`pnpm test --run` -> 1248 passed, 127 skipped)
+- [x] Run lint (`pnpm lint`) before finalizing the PR and record results (0 errors; warnings-only baseline outside story scope)
+- [x] Mark PR ready for review (PR #36 marked ready on 2026-02-19)
 - [ ] Wait for merge
 
 ---
