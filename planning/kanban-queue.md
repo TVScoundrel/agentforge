@@ -4,8 +4,8 @@
 
 ## Queue Status Summary
 
-- **Ready:** 3 stories (ST-03001, ST-02003, ST-04003)
-- **In Progress:** 0 stories
+- **Ready:** 2 stories (ST-02003, ST-04003)
+- **In Progress:** 1 story (ST-03001)
 - **In Review:** 0 stories
 - **Blocked:** 0 stories
 - **Backlog:** 9 stories (waiting on dependencies)
@@ -13,13 +13,6 @@
 ---
 
 ## Ready
-
-### ST-03001: Implement Schema Introspection Tool
-- **Epic:** EP-03
-- **Priority:** P1
-- **Estimate:** 5 hours
-- **Dependencies:** ST-01003 ✅ (merged 2026-02-17)
-- **Checklist:** `planning/checklists/epic-03-story-tasks.md`
 
 ### ST-02003: Implement Type-Safe INSERT Tool
 - **Epic:** EP-02
@@ -39,7 +32,13 @@
 
 ## In Progress
 
-_No stories currently in progress_
+### ST-03001: Implement Schema Introspection Tool
+- **Epic:** EP-03
+- **Priority:** P1
+- **Estimate:** 5 hours
+- **Dependencies:** ST-01003 ✅ (merged 2026-02-17)
+- **Checklist:** `planning/checklists/epic-03-story-tasks.md`
+- **Branch:** `feat/st-03001-schema-introspection-tool`
 
 ---
 
