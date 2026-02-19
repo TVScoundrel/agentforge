@@ -100,8 +100,9 @@ _No stories currently blocked_
 - ✅ ST-02004 complete - type-safe UPDATE tool implemented (merged 2026-02-19)
 - ✅ ST-02006 complete - SQL sanitization and security implemented (merged 2026-02-19)
 - ✅ ST-03001 complete - schema introspection tool implemented (merged 2026-02-19)
+- ✅ ST-03002 complete - schema metadata utilities implemented (merged 2026-02-19)
 - ✅ ST-04003 complete - result streaming implemented (merged 2026-02-19)
 - Epic 01 (Connection Management) is now complete - all 4 stories merged
-- Epic 03 (Schema) can run in parallel with Epic 02 after ST-01003
+- Epic 03 (Schema Introspection and Metadata) is now complete - all 2 stories merged
 - Epic 04 (Advanced Features) depends on Epic 02 completion
 - Epic 05 (Testing & Docs) runs throughout but has specific dependencies
