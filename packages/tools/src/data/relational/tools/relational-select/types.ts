@@ -4,6 +4,10 @@
  */
 
 import type { z } from 'zod';
+import type {
+  StreamingBenchmarkResult,
+  StreamingMemoryUsage as QueryStreamingMemoryUsage,
+} from '../../query/index.js';
 import type { 
   whereOperatorSchema, 
   whereConditionSchema, 
@@ -38,27 +42,12 @@ export type OrderBy = z.infer<typeof orderBySchema>;
  */
 export type StreamingOptions = z.infer<typeof streamingOptionsSchema>;
 
-/**
- * Streaming memory usage metadata.
- */
-export interface StreamingMemoryUsage {
-  startHeapUsed: number;
-  peakHeapUsed: number;
-  endHeapUsed: number;
-  deltaHeapUsed: number;
-}
+export type StreamingMemoryUsage = QueryStreamingMemoryUsage;
 
 /**
  * Optional streaming benchmark metadata.
  */
-export interface StreamingBenchmarkMetadata {
-  nonStreamingExecutionTime: number;
-  nonStreamingPeakHeapUsed: number;
-  streamingExecutionTime: number;
-  streamingPeakHeapUsed: number;
-  memorySavedBytes: number;
-  memorySavedPercent: number;
-}
+export type StreamingBenchmarkMetadata = StreamingBenchmarkResult;
 
 /**
  * Streaming execution metadata.

@@ -10,7 +10,7 @@ import { buildSelectQuery, type SelectQueryInput } from './query-builder.js';
 
 const logger = createLogger('agentforge:tools:data:relational:stream');
 
-const DEFAULT_CHUNK_SIZE = 100;
+export const DEFAULT_CHUNK_SIZE = 100;
 const MAX_CHUNK_SIZE = 5000;
 const DEFAULT_SAMPLE_SIZE = 50;
 
@@ -132,6 +132,11 @@ function resolveTotalRowsLimit(input: SelectQueryInput, options: StreamingSelect
 
 /**
  * Yield SELECT rows chunk-by-chunk using LIMIT/OFFSET pagination.
+ *
+ * NOTE:
+ * OFFSET-based pagination can degrade on very large offsets because many SQL
+ * engines must scan/skip intermediate rows. For very large datasets, prefer
+ * keyset/cursor pagination when available.
  */
 export async function* streamSelectChunks(
   manager: ConnectionManager,
@@ -293,12 +298,21 @@ export async function executeStreamingSelect(
 
 /**
  * Benchmark memory usage of regular SELECT execution vs streaming execution.
+ *
+ * NOTE:
+ * This benchmark intentionally executes the SELECT query twice (one regular,
+ * one streaming). Use only with side-effect-free queries.
  */
 export async function benchmarkStreamingSelectMemory(
   manager: ConnectionManager,
   input: SelectQueryInput,
   options: StreamingSelectOptions = {}
 ): Promise<StreamingBenchmarkResult> {
+  logger.warn('Running streaming benchmark will execute the SELECT query twice (regular + streaming).', {
+    table: input.table,
+    vendor: input.vendor,
+  });
+
   const nonStreamingStartHeapUsed = process.memoryUsage().heapUsed;
   const nonStreamingStartTime = Date.now();
 

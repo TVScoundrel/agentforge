@@ -1,6 +1,6 @@
 # ST-04003: Result Streaming for Relational SELECT
 
-**Status:** 🚧 Draft PR  
+**Status:** 👀 In Review  
 **PR:** [#36](https://github.com/TVScoundrel/agentforge/pull/36)  
 **Epic:** 04 - Advanced Features and Optimization
 
@@ -73,6 +73,15 @@ Use streaming mode when:
 - expected result set is large
 - you want chunked execution with bounded in-process memory growth
 - you want benchmark metadata to compare streaming vs non-streaming behavior
+
+## Operational Notes
+
+- Streaming currently uses LIMIT/OFFSET paging under the hood. This is portable, but large offsets can become slower on some databases.
+- Benchmark mode is intended for side-effect-free SELECT queries only.
+- Enabling `streaming.benchmark` executes the query up to three times overall:
+  - once for the returned streaming result
+  - once for regular (non-streaming) benchmark measurement
+  - once for streaming benchmark measurement
 
 ## Validation
 

@@ -139,7 +139,7 @@ export const streamingOptionsSchema = z.object({
   chunkSize: z.number().int().min(1).max(5000).optional().describe('Rows fetched per chunk (default: 100)'),
   maxRows: z.number().int().positive().optional().describe('Optional cap on streamed rows'),
   sampleSize: z.number().int().min(0).max(5000).optional().describe('Number of rows to include in the response payload'),
-  benchmark: z.boolean().optional().default(false).describe('Run memory benchmark comparing regular vs streaming execution')
+  benchmark: z.boolean().optional().default(false).describe('Run memory benchmark comparing regular vs streaming execution (adds two extra query executions; use side-effect-free SELECT statements)')
 });
 
 /**

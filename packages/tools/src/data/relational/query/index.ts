@@ -35,6 +35,7 @@ export {
 } from './query-builder.js';
 
 export {
+  DEFAULT_CHUNK_SIZE,
   streamSelectChunks,
   createSelectReadableStream,
   executeStreamingSelect,

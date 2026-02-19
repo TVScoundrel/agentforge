@@ -6,6 +6,7 @@
 import { createLogger } from '@agentforge/core';
 import type { ConnectionManager } from '../../connection/connection-manager.js';
 import {
+  DEFAULT_CHUNK_SIZE,
   executeStreamingSelect,
   benchmarkStreamingSelectMemory,
   type SelectQueryInput,
@@ -57,6 +58,16 @@ export async function executeSelect(
       const streamInput = toSelectQueryInput(input);
       const streamResult = await executeStreamingSelect(manager, streamInput, streamOptions);
 
+      if (input.streaming.benchmark) {
+        logger.warn('Streaming benchmark enabled; SELECT will execute up to three times (result + benchmark regular + benchmark streaming).', {
+          vendor: input.vendor,
+          table: input.table,
+          chunkSize: streamOptions.chunkSize ?? DEFAULT_CHUNK_SIZE,
+          maxRows: streamOptions.maxRows,
+          sampleSize: streamOptions.sampleSize,
+        });
+      }
+
       const benchmark = input.streaming.benchmark
         ? await benchmarkStreamingSelectMemory(manager, streamInput, streamOptions)
         : undefined;
@@ -76,7 +87,7 @@ export async function executeSelect(
         executionTime: streamResult.executionTime,
         streaming: {
           enabled: true,
-          chunkSize: input.streaming.chunkSize ?? 100,
+          chunkSize: input.streaming.chunkSize ?? DEFAULT_CHUNK_SIZE,
           chunkCount: streamResult.chunkCount,
           sampledRowCount: streamResult.rows.length,
           streamedRowCount: streamResult.rowCount,
