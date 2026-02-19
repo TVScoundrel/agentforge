@@ -35,7 +35,7 @@ describe('Relational INSERT - Query Builder', () => {
     };
 
     manager = new ConnectionManager(config);
-    await manager.initialize();
+    await manager.connect();
 
     await manager.execute(sql.raw(`
       CREATE TABLE test_users (
@@ -60,7 +60,7 @@ describe('Relational INSERT - Query Builder', () => {
       return;
     }
 
-    await manager.close();
+    await manager.disconnect();
   });
 
   it.skipIf(!hasSQLiteBindings)('should build and execute single-row INSERT query', async () => {

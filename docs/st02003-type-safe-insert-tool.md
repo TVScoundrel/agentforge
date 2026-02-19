@@ -78,7 +78,10 @@ Added tests under `packages/tools/tests/data/relational/relational-insert/`:
 ## Usage Example
 
 ```typescript
+import { createLogger } from '@agentforge/core';
 import { relationalInsert } from '@agentforge/tools';
+
+const logger = createLogger('my-app');
 
 const result = await relationalInsert.invoke({
   table: 'users',
@@ -89,9 +92,12 @@ const result = await relationalInsert.invoke({
 });
 
 if (result.success) {
-  console.log(result.rowCount, result.insertedIds);
+  logger.info('Insert completed', {
+    rowCount: result.rowCount,
+    insertedIds: result.insertedIds,
+  });
 } else {
-  console.error(result.error);
+  logger.error('Insert failed', { error: result.error });
 }
 ```
 

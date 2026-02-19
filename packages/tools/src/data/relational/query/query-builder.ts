@@ -10,7 +10,7 @@ import {
   quoteQualifiedIdentifier,
   validateIdentifier,
   validateQualifiedIdentifier,
-} from '../tools/relational-select/identifier-utils.js';
+} from '../utils/identifier-utils.js';
 
 /**
  * Supported scalar values for INSERT payloads.
