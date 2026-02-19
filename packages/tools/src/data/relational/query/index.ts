@@ -19,4 +19,12 @@ export {
   type InsertReturningOptions,
   type InsertQueryInput,
   type BuiltInsertQuery,
+  buildUpdateQuery,
+  type UpdateValue,
+  type UpdateData,
+  type UpdateWhereOperator,
+  type UpdateWhereCondition,
+  type UpdateOptimisticLock,
+  type UpdateQueryInput,
+  type BuiltUpdateQuery,
 } from './query-builder.js';

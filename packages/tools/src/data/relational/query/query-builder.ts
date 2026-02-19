@@ -197,3 +197,205 @@ export function buildInsertQuery(input: InsertQueryInput): BuiltInsertQuery {
     supportsReturning,
   };
 }
+
+/**
+ * Supported scalar values for UPDATE payloads.
+ */
+export type UpdateValue = InsertValue;
+
+/**
+ * UPDATE payload shape.
+ */
+export type UpdateData = Record<string, UpdateValue>;
+
+/**
+ * WHERE operator types for UPDATE conditions.
+ */
+export type UpdateWhereOperator =
+  | 'eq'
+  | 'ne'
+  | 'gt'
+  | 'lt'
+  | 'gte'
+  | 'lte'
+  | 'like'
+  | 'in'
+  | 'notIn'
+  | 'isNull'
+  | 'isNotNull';
+
+/**
+ * WHERE condition for UPDATE queries.
+ */
+export interface UpdateWhereCondition {
+  column: string;
+  operator: UpdateWhereOperator;
+  value?: string | number | boolean | null | Array<string | number>;
+}
+
+/**
+ * Optional optimistic lock condition appended to WHERE.
+ */
+export interface UpdateOptimisticLock {
+  column: string;
+  expectedValue: string | number;
+}
+
+/**
+ * Builder input for UPDATE queries.
+ */
+export interface UpdateQueryInput {
+  table: string;
+  data: UpdateData;
+  where?: UpdateWhereCondition[];
+  allowFullTableUpdate?: boolean;
+  optimisticLock?: UpdateOptimisticLock;
+  vendor: DatabaseVendor;
+}
+
+/**
+ * Built UPDATE query with normalized metadata used by execution layer.
+ */
+export interface BuiltUpdateQuery {
+  query: SQL;
+  whereApplied: boolean;
+  usesOptimisticLock: boolean;
+}
+
+function normalizeUpdateData(data: UpdateData): UpdateData {
+  if (!data || typeof data !== 'object' || Array.isArray(data)) {
+    throw new Error('Update data must be an object');
+  }
+
+  const keys = Object.keys(data);
+  if (keys.length === 0) {
+    throw new Error('Update data must not be empty');
+  }
+
+  keys.forEach((column) => {
+    validateIdentifier(column, 'Update column');
+
+    if (data[column] === undefined) {
+      throw new Error(`Update value for column "${column}" must not be undefined`);
+    }
+  });
+
+  return data;
+}
+
+function buildUpdateWhereCondition(condition: UpdateWhereCondition, vendor?: DatabaseVendor): SQL {
+  validateIdentifier(condition.column, 'WHERE column');
+  const column = sql.raw(quoteIdentifier(condition.column, vendor));
+
+  switch (condition.operator) {
+    case 'eq':
+      if (condition.value === undefined) {
+        throw new Error(`EQ operator requires a value for column ${condition.column}`);
+      }
+      if (condition.value === null) {
+        throw new Error('null is only allowed with isNull/isNotNull operators');
+      }
+      return sql`${column} = ${condition.value}`;
+    case 'ne':
+      if (condition.value === undefined) {
+        throw new Error(`NE operator requires a value for column ${condition.column}`);
+      }
+      if (condition.value === null) {
+        throw new Error('null is only allowed with isNull/isNotNull operators');
+      }
+      return sql`${column} != ${condition.value}`;
+    case 'gt':
+      if (typeof condition.value !== 'string' && typeof condition.value !== 'number') {
+        throw new Error(`GT operator requires a string or number value for column ${condition.column}`);
+      }
+      return sql`${column} > ${condition.value}`;
+    case 'lt':
+      if (typeof condition.value !== 'string' && typeof condition.value !== 'number') {
+        throw new Error(`LT operator requires a string or number value for column ${condition.column}`);
+      }
+      return sql`${column} < ${condition.value}`;
+    case 'gte':
+      if (typeof condition.value !== 'string' && typeof condition.value !== 'number') {
+        throw new Error(`GTE operator requires a string or number value for column ${condition.column}`);
+      }
+      return sql`${column} >= ${condition.value}`;
+    case 'lte':
+      if (typeof condition.value !== 'string' && typeof condition.value !== 'number') {
+        throw new Error(`LTE operator requires a string or number value for column ${condition.column}`);
+      }
+      return sql`${column} <= ${condition.value}`;
+    case 'like':
+      if (typeof condition.value !== 'string') {
+        throw new Error(`LIKE operator requires a string value for column ${condition.column}`);
+      }
+      return sql`${column} LIKE ${condition.value}`;
+    case 'in':
+      if (!Array.isArray(condition.value) || condition.value.length === 0) {
+        throw new Error(`IN operator requires a non-empty array value for column ${condition.column}`);
+      }
+      return sql`${column} IN (${sql.join(condition.value.map((v) => sql`${v}`), sql.raw(', '))})`;
+    case 'notIn':
+      if (!Array.isArray(condition.value) || condition.value.length === 0) {
+        throw new Error(`NOT IN operator requires a non-empty array value for column ${condition.column}`);
+      }
+      return sql`${column} NOT IN (${sql.join(condition.value.map((v) => sql`${v}`), sql.raw(', '))})`;
+    case 'isNull':
+      if (condition.value !== undefined) {
+        throw new Error(`IS NULL operator must not include value for column ${condition.column}`);
+      }
+      return sql`${column} IS NULL`;
+    case 'isNotNull':
+      if (condition.value !== undefined) {
+        throw new Error(`IS NOT NULL operator must not include value for column ${condition.column}`);
+      }
+      return sql`${column} IS NOT NULL`;
+  }
+}
+
+/**
+ * Build a safe parameterized UPDATE query from structured input.
+ */
+export function buildUpdateQuery(input: UpdateQueryInput): BuiltUpdateQuery {
+  validateQualifiedIdentifier(input.table, 'Table name');
+  const normalizedData = normalizeUpdateData(input.data);
+
+  const setClauses = Object.entries(normalizedData).map(([column, value]) => {
+    const quotedColumn = sql.raw(quoteIdentifier(column, input.vendor));
+    return sql`${quotedColumn} = ${value}`;
+  });
+
+  const whereConditions: SQL[] = (input.where ?? []).map((condition) =>
+    buildUpdateWhereCondition(condition, input.vendor)
+  );
+
+  if (input.optimisticLock) {
+    validateIdentifier(input.optimisticLock.column, 'Optimistic lock column');
+    if (input.optimisticLock.expectedValue === undefined || input.optimisticLock.expectedValue === null) {
+      throw new Error('Optimistic lock expectedValue must not be empty');
+    }
+    const lockColumn = sql.raw(quoteIdentifier(input.optimisticLock.column, input.vendor));
+    whereConditions.push(sql`${lockColumn} = ${input.optimisticLock.expectedValue}`);
+  }
+
+  if (whereConditions.length === 0 && !input.allowFullTableUpdate) {
+    throw new Error('WHERE conditions are required for UPDATE queries. Set allowFullTableUpdate=true to override.');
+  }
+
+  let query = sql.join(
+    [
+      sql.raw(`UPDATE ${quoteQualifiedIdentifier(input.table, input.vendor)} SET `),
+      sql.join(setClauses, sql.raw(', ')),
+    ],
+    sql.raw('')
+  );
+
+  if (whereConditions.length > 0) {
+    query = sql.join([query, sql.raw(' WHERE '), sql.join(whereConditions, sql.raw(' AND '))], sql.raw(''));
+  }
+
+  return {
+    query,
+    whereApplied: whereConditions.length > 0,
+    usesOptimisticLock: !!input.optimisticLock,
+  };
+}

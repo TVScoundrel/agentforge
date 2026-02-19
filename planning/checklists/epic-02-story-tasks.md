@@ -99,27 +99,27 @@
 **Branch:** `feat/st-02004-type-safe-update-tool`
 
 ### Checklist
-- [ ] Create branch `feat/st-02004-type-safe-update-tool`
-- [ ] Create draft PR with story ID in title
-- [ ] Extend query builder with UPDATE support
-- [ ] Add support for WHERE conditions (required for safety)
-- [ ] Add support for returning count of affected rows
-- [ ] Create `packages/tools/src/data/relational/tools/relational-update.ts`
-- [ ] Define Zod schema for tool input (table, data, where, allowFullTableUpdate)
-- [ ] Implement tool function using query builder
-- [ ] Add type validation for update data
-- [ ] Prevent accidental full-table updates (require explicit flag)
-- [ ] Add optimistic locking support (optional, version field)
-- [ ] Handle constraint violations
-- [ ] Export tool from `tools/index.ts`
-- [ ] Create unit tests for UPDATE query builder
-- [ ] Create unit tests for relational-update tool
-- [ ] Test full-table update prevention
-- [ ] Add or update story documentation at docs/st02004-type-safe-update-tool.md (or document why not required)
-- [ ] Assess test impact; add/update automated tests when needed, or document why tests are not required
-- [ ] Run full test suite before finalizing the PR and record results
-- [ ] Run lint (`pnpm lint`) before finalizing the PR and record results
-- [ ] Mark PR ready for review
+- [x] Create branch `feat/st-02004-type-safe-update-tool`
+- [x] Create draft PR with story ID in title (PR #35)
+- [x] Extend query builder with UPDATE support
+- [x] Add support for WHERE conditions (required for safety)
+- [x] Add support for returning count of affected rows
+- [x] Create relational-update tool module at `packages/tools/src/data/relational/tools/relational-update/`
+- [x] Define Zod schema for tool input (table, data, where, allowFullTableUpdate)
+- [x] Implement tool function using query builder
+- [x] Add type validation for update data
+- [x] Prevent accidental full-table updates (require explicit flag)
+- [x] Add optimistic locking support (optional, version field)
+- [x] Handle constraint violations
+- [x] Export tool from `tools/index.ts`
+- [x] Create unit tests for UPDATE query builder
+- [x] Create unit tests for relational-update tool
+- [x] Test full-table update prevention
+- [x] Add or update story documentation at docs/st02004-type-safe-update-tool.md (or document why not required)
+- [x] Assess test impact; add/update automated tests when needed, or document why tests are not required (added relational-update schema + query-builder + tool invocation tests)
+- [x] Run full test suite before finalizing the PR and record results (`pnpm test --run` -> 1234 passed, 121 skipped)
+- [x] Run lint (`pnpm lint`) before finalizing the PR and record results (0 errors; warnings-only baseline outside story scope)
+- [x] Mark PR ready for review (PR #35 marked ready on 2026-02-19)
 - [ ] Wait for merge
 
 ---
