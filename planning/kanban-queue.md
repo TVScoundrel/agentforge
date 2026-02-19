@@ -46,6 +46,7 @@
 - **Dependencies:** ST-03001 ✅ (merged 2026-02-19)
 - **Checklist:** `planning/checklists/epic-03-story-tasks.md`
 - **Branch:** `feat/st-03002-schema-metadata-utilities`
+- **PR:** [#37](https://github.com/TVScoundrel/agentforge/pull/37)
 
 ---
 
