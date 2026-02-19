@@ -6,6 +6,7 @@
  */
 
 import { describe, it, expect, beforeAll, afterAll } from 'vitest';
+import { sql } from 'drizzle-orm';
 import { ConnectionManager } from '../../../src/data/relational/connection/connection-manager.js';
 import { executeQuery } from '../../../src/data/relational/query/query-executor.js';
 import type { ConnectionConfig } from '../../../src/data/relational/connection/types.js';
@@ -28,6 +29,22 @@ const hasSQLiteBindings = (() => {
 })();
 
 describe('Query Executor', () => {
+  describe('Vendor-specific validation', () => {
+    it('should allow PostgreSQL JSON operators without params', async () => {
+      const manager = {
+        execute: async () => [{ exists: true }],
+      } as unknown as ConnectionManager;
+
+      const result = await executeQuery(manager, {
+        sql: "SELECT payload ? 'owner' AS exists FROM events",
+        vendor: 'postgresql',
+      });
+
+      expect(result.rows).toHaveLength(1);
+      expect(result.rows[0]).toEqual({ exists: true });
+    });
+  });
+
   describe('SQLite Query Execution', () => {
     let manager: ConnectionManager;
 
@@ -42,11 +59,9 @@ describe('Query Executor', () => {
       manager = new ConnectionManager(config);
       await manager.initialize();
 
-      // Create test table using the public query execution API
-      await executeQuery(manager, {
-        sql: 'CREATE TABLE users (id INTEGER PRIMARY KEY, name TEXT, email TEXT)',
-        vendor: 'sqlite',
-      });
+      // Create fixture table directly via manager to keep setup independent from
+      // query-safety policy that blocks CREATE in agent-exposed query paths.
+      await manager.execute(sql.raw('CREATE TABLE users (id INTEGER PRIMARY KEY, name TEXT, email TEXT)'));
     });
 
     afterAll(async () => {
@@ -231,6 +246,40 @@ describe('Query Executor', () => {
       })).rejects.toThrow(/Query execution failed/);
     });
 
+    it.skipIf(!hasSQLiteBindings)('should reject dangerous SQL operations', async () => {
+      await expect(executeQuery(manager, {
+        sql: 'DROP TABLE users',
+        vendor: 'sqlite'
+      })).rejects.toThrow(/dangerous SQL operation/);
+    });
+
+    it.skipIf(!hasSQLiteBindings)('should require parameters for INSERT statements', async () => {
+      await expect(executeQuery(manager, {
+        sql: "INSERT INTO users (name, email) VALUES ('Unsafe', 'unsafe@example.com')",
+        vendor: 'sqlite'
+      })).rejects.toThrow(/Parameters are required for INSERT\/UPDATE\/DELETE queries/);
+    });
+
+    it.skipIf(!hasSQLiteBindings)('should allow placeholder characters inside string literals without params', async () => {
+      const result = await executeQuery(manager, {
+        sql: "SELECT '?' as literal",
+        vendor: 'sqlite'
+      });
+
+      expect(result.rows).toHaveLength(1);
+      expect(result.rows[0]).toEqual({ literal: '?' });
+    });
+
+    it.skipIf(!hasSQLiteBindings)('should allow placeholder characters inside comments without params', async () => {
+      const result = await executeQuery(manager, {
+        sql: '/* ? */ SELECT 1 as value',
+        vendor: 'sqlite'
+      });
+
+      expect(result.rows).toHaveLength(1);
+      expect(result.rows[0]).toEqual({ value: 1 });
+    });
+
 
     it.skipIf(!hasSQLiteBindings)('should reject when positional parameters are missing', async () => {
       await expect(executeQuery(manager, {
@@ -253,8 +302,7 @@ describe('Query Executor', () => {
         sql: 'SELECT $1 + ?',
         params: [1, 2],
         vendor: 'sqlite'
-      })).rejects.toThrow();
+      })).rejects.toThrow(/Mixed parameter styles/);
     });
   });
 });
-

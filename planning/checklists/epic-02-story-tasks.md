@@ -159,26 +159,27 @@
 **Branch:** `feat/st-02006-sql-sanitization-security`
 
 ### Checklist
-- [ ] Create branch `feat/st-02006-sql-sanitization-security`
-- [ ] Create draft PR with story ID in title
-- [ ] Create `packages/tools/src/data/relational/utils/sql-sanitizer.ts`
-- [ ] Implement input validation for SQL strings
-- [ ] Implement input escaping for special characters
-- [ ] Add dangerous SQL pattern detection (DROP, TRUNCATE, ALTER in user input)
-- [ ] Add table name validation (alphanumeric, underscore only)
-- [ ] Add column name validation
-- [ ] Enforce parameterized query usage in all tools
-- [ ] Create security documentation in docs/
-- [ ] Document SQL injection prevention best practices
-- [ ] Create unit tests for SQL sanitizer
-- [ ] Create unit tests for common injection patterns
-- [ ] Test against OWASP SQL injection examples
-- [ ] Add security audit checklist
-- [ ] Add or update story documentation at docs/st02006-sql-sanitization-security.md (or document why not required)
-- [ ] Assess test impact; add/update automated tests when needed, or document why tests are not required
-- [ ] Run full test suite before finalizing the PR and record results
-- [ ] Run lint (`pnpm lint`) before finalizing the PR and record results
-- [ ] Mark PR ready for review
+- [x] Create branch `feat/st-02006-sql-sanitization-security` ✅ DONE
+- [x] Create draft PR with story ID in title ✅ DONE (PR #31)
+- [x] Create `packages/tools/src/data/relational/utils/sql-sanitizer.ts` ✅ DONE
+- [x] Implement input validation for SQL strings ✅ DONE
+- [ ] Implement input escaping for special characters ⏳ Deferred / out of scope for ST-02006 (current mitigation relies on parameterized queries; no dedicated escaping utility implemented in this story)
+- [x] Add dangerous SQL pattern detection (CREATE, DROP, TRUNCATE, ALTER in user input) ✅ DONE
+- [ ] Add table name validation (alphanumeric, underscore only) ⏳ Deferred / out of scope for ST-02006 (raw SQL path does not implement standalone identifier validators in this story)
+- [ ] Add column name validation ⏳ Deferred / out of scope for ST-02006 (raw SQL path does not implement standalone identifier validators in this story)
+- [x] Enforce parameterized query usage in all tools ✅ DONE (integrated into relational query execution path)
+- [x] Create security documentation in docs/ ✅ DONE (`docs/sql-injection-prevention-best-practices.md`)
+- [x] Document SQL injection prevention best practices ✅ DONE
+- [x] Create unit tests for SQL sanitizer ✅ DONE
+- [x] Create unit tests for common injection patterns ✅ DONE
+- [x] Test against OWASP SQL injection examples ✅ DONE
+- [x] Add security audit checklist ✅ DONE (included in security docs)
+- [x] Add or update story documentation at docs/st02006-sql-sanitization-security.md (or document why not required) ✅ DONE
+- [x] Assess test impact; add/update automated tests when needed, or document why tests are not required ✅ DONE (added sanitizer + relational query security tests)
+- [x] Run full test suite before finalizing the PR and record results ✅ DONE (`pnpm test --run` -> 96 passed, 1 skipped file; 1180 passed, 80 skipped tests)
+- [x] Run lint (`pnpm lint`) before finalizing the PR and record results ✅ DONE (`pnpm lint` -> 0 errors; warnings-only output after PR #32 merged)
+- [x] Document lint baseline scope for reviewers and mark baseline remediation out-of-scope for ST-02006 ✅ DONE (PR #32 merged on 2026-02-18; PR #31 scope note updated)
+- [x] Mark PR ready for review ✅ DONE (PR #31 undrafted and ready)
 - [ ] Wait for merge
 
 ---

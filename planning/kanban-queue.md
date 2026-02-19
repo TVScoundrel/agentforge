@@ -4,22 +4,15 @@
 
 ## Queue Status Summary
 
-- **Ready:** 4 stories (ST-02006, ST-03001, ST-02003, ST-04003)
+- **Ready:** 3 stories (ST-03001, ST-02003, ST-04003)
 - **In Progress:** 0 stories
-- **In Review:** 0 stories
+- **In Review:** 1 story (ST-02006)
 - **Blocked:** 0 stories
 - **Backlog:** 9 stories (waiting on dependencies)
 
 ---
 
 ## Ready
-
-### ST-02006: Implement SQL Sanitization and Security
-- **Epic:** EP-02
-- **Priority:** P0
-- **Estimate:** 3 hours
-- **Dependencies:** ST-02001 ✅ (merged 2026-02-17)
-- **Checklist:** `planning/checklists/epic-02-story-tasks.md`
 
 ### ST-03001: Implement Schema Introspection Tool
 - **Epic:** EP-03
@@ -52,7 +45,14 @@ _No stories currently in progress_
 
 ## In Review
 
-_No stories currently in review_
+### ST-02006: Implement SQL Sanitization and Security
+- **Epic:** EP-02
+- **Priority:** P0
+- **Estimate:** 3 hours
+- **Dependencies:** ST-02001 ✅ (merged 2026-02-17)
+- **Checklist:** `planning/checklists/epic-02-story-tasks.md`
+- **Branch:** `feat/st-02006-sql-sanitization-security`
+- **Status:** Ready for review
 
 ---
 

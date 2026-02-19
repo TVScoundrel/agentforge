@@ -7,6 +7,10 @@ import { sql, type SQL } from 'drizzle-orm';
 import { createLogger } from '@agentforge/core';
 import type { ConnectionManager } from '../connection/connection-manager.js';
 import type { QueryInput, QueryExecutionResult, QueryParams } from './types.js';
+import {
+  validateSqlString,
+  enforceParameterizedQueryUsage,
+} from '../utils/sql-sanitizer.js';
 
 const logger = createLogger('agentforge:tools:data:relational:query');
 
@@ -22,20 +26,9 @@ const logger = createLogger('agentforge:tools:data:relational:query');
  */
 function buildParameterizedQuery(sqlString: string, params?: QueryParams): SQL {
   if (!params) {
-    // No parameters provided - ensure the query does not contain placeholders
-    // Match:
-    // - $1, $2, ... (PostgreSQL-style positional placeholders)
-    // - ? (MySQL/SQLite-style positional placeholders)
-    // - :name (named placeholders)
-    const placeholderPattern = /(\$(\d+))|(\?)|(:[a-zA-Z_][a-zA-Z0-9_]*)/;
-
-    if (placeholderPattern.test(sqlString)) {
-      throw new Error(
-        'Missing parameters: SQL query contains placeholders but no params were provided',
-      );
-    }
-
-    // No placeholders - safe to treat as a static query
+    // Placeholder validation happens in enforceParameterizedQueryUsage.
+    // Keep this path as a raw static query builder to avoid duplicate parsing
+    // and false positives for placeholder-like tokens inside comments/literals.
     return sql.raw(sqlString);
   }
 
@@ -174,6 +167,10 @@ export async function executeQuery(
   });
 
   try {
+    // Security validation before query construction/execution
+    validateSqlString(input.sql, input.vendor);
+    enforceParameterizedQueryUsage(input.sql, input.params, input.vendor);
+
     // Build parameterized query
     const parameterizedQuery = buildParameterizedQuery(input.sql, input.params);
 
@@ -214,8 +211,13 @@ export async function executeQuery(
       const message = error.message;
       // Known safe validation errors from buildParameterizedQuery
       if (message.includes('Missing parameter') ||
+          message.includes('Missing parameters') ||
           message.includes('Parameters provided but no placeholders') ||
-          message.includes('Mixed placeholder styles')) {
+          message.includes('Mixed parameter styles') ||
+          message.includes('SQL query must not be empty') ||
+          message.includes('SQL query contains null bytes') ||
+          message.includes('Detected dangerous SQL operation') ||
+          message.includes('Parameters are required for INSERT/UPDATE/DELETE queries')) {
         throw error;
       }
     }
@@ -226,4 +228,3 @@ export async function executeQuery(
     throw new Error('Query execution failed. See server logs for details.', { cause: error });
   }
 }
-

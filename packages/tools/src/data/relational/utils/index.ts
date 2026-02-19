@@ -10,3 +10,7 @@ export {
   MissingPeerDependencyError,
 } from './peer-dependency-checker.js';
 
+export {
+  validateSqlString,
+  enforceParameterizedQueryUsage,
+} from './sql-sanitizer.js';
