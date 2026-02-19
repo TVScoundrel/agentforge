@@ -36,6 +36,8 @@ Implemented relational schema introspection for PostgreSQL, MySQL, and SQLite wi
     - optional `cacheTtlMs`
     - optional `refreshCache`
   - Returns schema payload and summary counts.
+- `packages/tools/src/data/relational/tools/relational-get-schema-error-utils.ts`
+  - Added safe-validation error classification helper for `relational-get-schema`.
 - `packages/tools/src/data/relational/tools/index.ts`
   - Exported `relationalGetSchema`.
 - `packages/tools/src/data/relational/index.ts`
@@ -47,12 +49,14 @@ Implemented relational schema introspection for PostgreSQL, MySQL, and SQLite wi
   - Added unit tests for schema mapping, cache behavior, invalid filter validation.
 - `packages/tools/tests/data/relational/relational-get-schema-tool.test.ts`
   - Added SQLite-backed integration tests for schema output and table filtering.
+- `packages/tools/tests/data/relational/relational-get-schema-error-utils.test.ts`
+  - Added unit tests for `isSafeGetSchemaValidationError` helper behavior.
 
 ## Validation
 
-- `pnpm exec vitest run packages/tools/tests/data/relational/schema-inspector.test.ts packages/tools/tests/data/relational/relational-get-schema-tool.test.ts`
-  - 2 passed files
-  - 4 passed, 2 skipped
+- `pnpm exec vitest run packages/tools/tests/data/relational/schema-inspector.test.ts packages/tools/tests/data/relational/relational-get-schema-tool.test.ts packages/tools/tests/data/relational/relational-get-schema-error-utils.test.ts`
+  - 3 passed files
+  - 6 passed, 3 skipped
 - `pnpm test --run`
   - 98 passed files, 1 skipped file
   - 1188 passed, 82 skipped tests

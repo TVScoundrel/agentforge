@@ -8,10 +8,9 @@ import { createLogger, toolBuilder, ToolCategory } from '@agentforge/core';
 import { createHash } from 'node:crypto';
 import { ConnectionManager } from '../connection/connection-manager.js';
 import { SchemaInspector } from '../schema/schema-inspector.js';
+import { VALID_TABLE_FILTER_PATTERN } from '../schema/validation.js';
 import type { DatabaseVendor } from '../types.js';
 import { isSafeGetSchemaValidationError } from './relational-get-schema-error-utils.js';
-
-const VALID_TABLE_FILTER_PATTERN = /^[a-zA-Z_][a-zA-Z0-9_]*(\.[a-zA-Z_][a-zA-Z0-9_]*)?$/;
 const logger = createLogger('agentforge:tools:data:relational:get-schema');
 
 function buildSchemaCacheKey(vendor: DatabaseVendor, connectionString: string, database?: string): string {

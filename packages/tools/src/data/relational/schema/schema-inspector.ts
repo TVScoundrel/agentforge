@@ -7,6 +7,7 @@ import { createLogger } from '@agentforge/core';
 import type { ConnectionManager } from '../connection/connection-manager.js';
 import { executeQuery } from '../query/query-executor.js';
 import type { DatabaseVendor } from '../types.js';
+import { VALID_TABLE_FILTER_PATTERN } from './validation.js';
 import type {
   ColumnSchema,
   DatabaseSchema,
@@ -20,7 +21,6 @@ import type {
 const logger = createLogger('agentforge:tools:data:relational:schema-inspector');
 
 const DEFAULT_CACHE_TTL_MS = 60_000;
-const VALID_TABLE_FILTER_PATTERN = /^[a-zA-Z_][a-zA-Z0-9_]*(\.[a-zA-Z_][a-zA-Z0-9_]*)?$/;
 
 interface QueryRow {
   [key: string]: unknown;
