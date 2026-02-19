@@ -40,7 +40,7 @@
 **Branch:** `feat/st-03002-schema-metadata-utilities`
 
 ### Checklist
-- [ ] Create branch `feat/st-03002-schema-metadata-utilities`
+- [x] Create branch `feat/st-03002-schema-metadata-utilities`
 - [ ] Create draft PR with story ID in title
 - [ ] Create `packages/tools/src/data/relational/schema/schema-validator.ts`
 - [ ] Implement table existence validator
