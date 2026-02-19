@@ -6,7 +6,7 @@
 
 ### Checklist
 - [ ] Create branch `feat/st-04001-transaction-support`
-- [ ] Create draft PR with story ID in title
+- [x] Create draft PR with story ID in title (PR #36)
 - [ ] Create `packages/tools/src/data/relational/query/transaction.ts`
 - [ ] Define `Transaction` interface
 - [ ] Implement transaction wrapper for multiple operations
@@ -25,8 +25,8 @@
 - [ ] Test nested transactions
 - [ ] Add or update story documentation at docs/st04001-transaction-support.md (or document why not required)
 - [ ] Assess test impact; add/update automated tests when needed, or document why tests are not required
-- [ ] Run full test suite before finalizing the PR and record results
-- [ ] Run lint (`pnpm lint`) before finalizing the PR and record results
+- [x] Run full test suite before finalizing the PR and record results (`pnpm test --run` -> 1248 passed, 127 skipped)
+- [x] Run lint (`pnpm lint`) before finalizing the PR and record results (0 errors; warnings-only baseline outside story scope)
 - [ ] Mark PR ready for review
 - [ ] Wait for merge
 
@@ -69,24 +69,24 @@
 
 ### Checklist
 - [x] Create branch `feat/st-04003-result-streaming`
-- [ ] Create draft PR with story ID in title
-- [ ] Create `packages/tools/src/data/relational/query/stream-executor.ts`
-- [ ] Implement streaming SELECT results for large datasets
-- [ ] Add configurable chunk size
-- [ ] Implement backpressure handling
-- [ ] Integrate with Node.js Readable streams
-- [ ] Add stream error handling
-- [ ] Add stream cancellation support
-- [ ] Create streaming version of SELECT tool (or add streaming option)
-- [ ] Add memory usage monitoring
-- [ ] Create memory usage benchmarks (streaming vs non-streaming)
-- [ ] Document when to use streaming vs regular queries
-- [ ] Create example usage in docs/
-- [ ] Create unit tests for stream executor
-- [ ] Create integration tests with large result sets
-- [ ] Test backpressure scenarios
-- [ ] Add or update story documentation at docs/st04003-result-streaming.md (or document why not required)
-- [ ] Assess test impact; add/update automated tests when needed, or document why tests are not required
+- [x] Create draft PR with story ID in title (PR #36)
+- [x] Create `packages/tools/src/data/relational/query/stream-executor.ts`
+- [x] Implement streaming SELECT results for large datasets
+- [x] Add configurable chunk size
+- [x] Implement backpressure handling
+- [x] Integrate with Node.js Readable streams
+- [x] Add stream error handling
+- [x] Add stream cancellation support
+- [x] Create streaming version of SELECT tool (or add streaming option)
+- [x] Add memory usage monitoring
+- [x] Create memory usage benchmarks (streaming vs non-streaming)
+- [x] Document when to use streaming vs regular queries
+- [x] Create example usage in docs/
+- [x] Create unit tests for stream executor
+- [x] Create integration tests with large result sets
+- [x] Test backpressure scenarios
+- [x] Add or update story documentation at docs/st04003-result-streaming.md (or document why not required)
+- [x] Assess test impact; add/update automated tests when needed, or document why tests are not required (added stream executor unit tests, schema coverage, and large-result integration coverage)
 - [ ] Run full test suite before finalizing the PR and record results
 - [ ] Run lint (`pnpm lint`) before finalizing the PR and record results
 - [ ] Mark PR ready for review

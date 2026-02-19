@@ -7,6 +7,7 @@ import type { ConnectionManager } from '../../../../src/data/relational/connecti
 import {
   streamSelectChunks,
   executeStreamingSelect,
+  benchmarkStreamingSelectMemory,
 } from '../../../../src/data/relational/query/stream-executor.js';
 import type { SelectQueryInput } from '../../../../src/data/relational/query/query-builder.js';
 
@@ -70,6 +71,33 @@ describe('stream-executor', () => {
     expect(result.cancelled).toBe(false);
   });
 
+  it('should await async onChunk callbacks sequentially (backpressure)', async () => {
+    const manager = new MockConnectionManager([
+      [{ id: 1 }, { id: 2 }],
+      [{ id: 3 }, { id: 4 }],
+      [],
+    ]);
+
+    const processedChunks: number[] = [];
+
+    const result = await executeStreamingSelect(
+      manager as unknown as ConnectionManager,
+      baseInput,
+      {
+        chunkSize: 2,
+        sampleSize: 4,
+        onChunk: async (chunk) => {
+          await new Promise((resolve) => setTimeout(resolve, 5));
+          processedChunks.push(chunk.chunkIndex);
+        },
+      }
+    );
+
+    expect(result.rowCount).toBe(4);
+    expect(result.chunkCount).toBe(2);
+    expect(processedChunks).toEqual([0, 1]);
+  });
+
   it('should stop streaming after abort signal', async () => {
     const manager = new MockConnectionManager([
       [{ id: 1 }, { id: 2 }],
@@ -95,5 +123,26 @@ describe('stream-executor', () => {
     expect(result.cancelled).toBe(true);
     expect(result.rowCount).toBe(2);
     expect(result.chunkCount).toBe(1);
+  });
+
+  it('should provide benchmark metadata for streaming vs non-streaming execution', async () => {
+    const manager = new MockConnectionManager([
+      [{ id: 1 }, { id: 2 }, { id: 3 }, { id: 4 }],
+      [{ id: 1 }, { id: 2 }],
+      [{ id: 3 }, { id: 4 }],
+      [],
+    ]);
+
+    const result = await benchmarkStreamingSelectMemory(
+      manager as unknown as ConnectionManager,
+      baseInput,
+      { chunkSize: 2 }
+    );
+
+    expect(result.nonStreamingExecutionTime).toBeGreaterThanOrEqual(0);
+    expect(result.streamingExecutionTime).toBeGreaterThanOrEqual(0);
+    expect(result.nonStreamingPeakHeapUsed).toBeGreaterThan(0);
+    expect(result.streamingPeakHeapUsed).toBeGreaterThan(0);
+    expect(result.memorySavedBytes).toBeGreaterThanOrEqual(0);
   });
 });
