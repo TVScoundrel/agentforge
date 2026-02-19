@@ -68,28 +68,28 @@
 **Branch:** `feat/st-02003-type-safe-insert-tool`
 
 ### Checklist
-- [ ] Create branch `feat/st-02003-type-safe-insert-tool`
-- [ ] Create draft PR with story ID in title
-- [ ] Extend query builder with INSERT support
-- [ ] Add support for single row insert
-- [ ] Add support for multiple row insert (batch)
-- [ ] Add support for returning inserted row IDs
-- [ ] Add support for returning full inserted rows (configurable)
-- [ ] Create `packages/tools/src/data/relational/tools/relational-insert.ts`
-- [ ] Define Zod schema for tool input (table, data, returning)
-- [ ] Implement tool function using query builder
-- [ ] Add type validation for input data
-- [ ] Add constraint violation error handling (unique, foreign key, etc.)
-- [ ] Add support for default values and auto-increment fields
-- [ ] Handle vendor-specific RETURNING clause differences
-- [ ] Export tool from `tools/index.ts`
-- [ ] Create unit tests for INSERT query builder
-- [ ] Create unit tests for relational-insert tool
-- [ ] Add or update story documentation at docs/st02003-type-safe-insert-tool.md (or document why not required)
-- [ ] Assess test impact; add/update automated tests when needed, or document why tests are not required
-- [ ] Run full test suite before finalizing the PR and record results
-- [ ] Run lint (`pnpm lint`) before finalizing the PR and record results
-- [ ] Mark PR ready for review
+- [x] Create branch `feat/st-02003-type-safe-insert-tool`
+- [x] Create draft PR with story ID in title (PR #34)
+- [x] Extend query builder with INSERT support
+- [x] Add support for single row insert
+- [x] Add support for multiple row insert (batch)
+- [x] Add support for returning inserted row IDs
+- [x] Add support for returning full inserted rows (configurable)
+- [x] Create relational-insert tool module at `packages/tools/src/data/relational/tools/relational-insert/`
+- [x] Define Zod schema for tool input (table, data, returning)
+- [x] Implement tool function using query builder
+- [x] Add type validation for input data
+- [x] Add constraint violation error handling (unique, foreign key, etc.)
+- [x] Add support for default values and auto-increment fields
+- [x] Handle vendor-specific RETURNING clause differences
+- [x] Export tool from `tools/index.ts`
+- [x] Create unit tests for INSERT query builder
+- [x] Create unit tests for relational-insert tool
+- [x] Add or update story documentation at docs/st02003-type-safe-insert-tool.md (or document why not required)
+- [x] Assess test impact; add/update automated tests when needed, or document why tests are not required (added relational-insert query-builder + schema + tool invocation tests)
+- [x] Run full test suite before finalizing the PR and record results (`pnpm test --run` -> 1212 passed, 105 skipped)
+- [x] Run lint (`pnpm lint`) before finalizing the PR and record results (`pnpm lint` -> 0 errors, warnings-only baseline output across workspace)
+- [x] Mark PR ready for review (PR #34: https://github.com/TVScoundrel/agentforge/pull/34)
 - [ ] Wait for merge
 
 ---

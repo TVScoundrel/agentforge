@@ -14,3 +14,11 @@ export {
   validateSqlString,
   enforceParameterizedQueryUsage,
 } from './sql-sanitizer.js';
+
+export {
+  validateIdentifier,
+  validateQualifiedIdentifier,
+  quoteIdentifier,
+  quoteQualifiedIdentifier,
+  VALID_QUALIFIED_IDENTIFIER_PATTERN,
+} from './identifier-utils.js';

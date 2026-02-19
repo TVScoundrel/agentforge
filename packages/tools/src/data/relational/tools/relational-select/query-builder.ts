@@ -6,7 +6,7 @@
 import { sql, type SQL } from 'drizzle-orm';
 import type { RelationalSelectInput, WhereCondition } from './types.js';
 import type { DatabaseVendor } from '../../types.js';
-import { validateIdentifier, validateQualifiedIdentifier, quoteIdentifier, quoteQualifiedIdentifier } from './identifier-utils.js';
+import { validateIdentifier, validateQualifiedIdentifier, quoteIdentifier, quoteQualifiedIdentifier } from '../../utils/identifier-utils.js';
 
 /**
  * Build a WHERE condition SQL fragment
@@ -101,4 +101,3 @@ export function buildSelectQuery(input: RelationalSelectInput): SQL {
 
   return query;
 }
-

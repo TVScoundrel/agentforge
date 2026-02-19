@@ -4,22 +4,15 @@
 
 ## Queue Status Summary
 
-- **Ready:** 4 stories (ST-02003, ST-04003, ST-03002, ST-05003)
+- **Ready:** 3 stories (ST-04003, ST-03002, ST-05003)
 - **In Progress:** 0 stories
-- **In Review:** 0 stories
+- **In Review:** 1 story (ST-02003)
 - **Blocked:** 0 stories
 - **Backlog:** 7 stories (waiting on dependencies)
 
 ---
 
 ## Ready
-
-### ST-02003: Implement Type-Safe INSERT Tool
-- **Epic:** EP-02
-- **Priority:** P0
-- **Estimate:** 4 hours
-- **Dependencies:** ST-02002 ✅ (merged 2026-02-18)
-- **Checklist:** `planning/checklists/epic-02-story-tasks.md`
 
 ### ST-04003: Implement Result Streaming
 - **Epic:** EP-04
@@ -52,7 +45,14 @@ _No stories currently in progress_
 
 ## In Review
 
-_No stories currently in review_
+### ST-02003: Implement Type-Safe INSERT Tool
+- **Epic:** EP-02
+- **Priority:** P0
+- **Estimate:** 4 hours
+- **Dependencies:** ST-02002 ✅ (merged 2026-02-18)
+- **Checklist:** `planning/checklists/epic-02-story-tasks.md`
+- **Branch:** `feat/st-02003-type-safe-insert-tool`
+- **PR:** #34 https://github.com/TVScoundrel/agentforge/pull/34
 
 ---
 
