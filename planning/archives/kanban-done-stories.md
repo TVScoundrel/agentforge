@@ -78,6 +78,13 @@
 - **Estimate:** 5 hours
 - **Outcome:** Implemented schema introspection for PostgreSQL, MySQL, and SQLite through a new `SchemaInspector` and `relational-get-schema` tool. Added extraction for tables, columns, primary keys, foreign keys, and indexes, plus configurable schema caching with invalidation and focused test/documentation coverage.
 
+### ST-04003: Implement Result Streaming
+- **Merged:** 2026-02-19
+- **PR:** https://github.com/TVScoundrel/agentforge/pull/36 (commit f8adbde)
+- **Epic:** EP-04 (Advanced Features and Optimization)
+- **Estimate:** 5 hours
+- **Outcome:** Implemented chunked result streaming for the `relational-select` tool enabling memory-efficient processing of large SELECT query results. Added streaming infrastructure with chunk iteration, Node.js Readable stream integration, backpressure handling, and memory benchmarking. Refactored SELECT query building into shared utilities. Extended the tool with optional streaming configuration including chunk size, sample size, max rows, and benchmark options. All quality gates passed (1248 tests, lint clean).
+
 ---
 
 ## Archive Format

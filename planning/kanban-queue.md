@@ -6,7 +6,7 @@
 
 - **Ready:** 4 stories (ST-03002, ST-05003, ST-04002, ST-02005)
 - **In Progress:** 0 stories
-- **In Review:** 1 story (ST-04003)
+- **In Review:** 0 stories
 - **Blocked:** 0 stories
 - **Backlog:** 4 stories (waiting on dependencies)
 
@@ -52,14 +52,7 @@ _No stories currently in progress_
 
 ## In Review
 
-### ST-04003: Implement Result Streaming
-- **Epic:** EP-04
-- **Priority:** P2
-- **Estimate:** 5 hours
-- **Dependencies:** ST-02002 ✅ (merged 2026-02-18)
-- **Checklist:** `planning/checklists/epic-04-story-tasks.md`
-- **Branch:** `feat/st-04003-result-streaming`
-- **PR:** [#36](https://github.com/TVScoundrel/agentforge/pull/36)
+_No stories currently in review_
 
 ---
 
@@ -114,6 +107,7 @@ _No stories currently blocked_
 - ✅ ST-02004 complete - type-safe UPDATE tool implemented (merged 2026-02-19)
 - ✅ ST-02006 complete - SQL sanitization and security implemented (merged 2026-02-19)
 - ✅ ST-03001 complete - schema introspection tool implemented (merged 2026-02-19)
+- ✅ ST-04003 complete - result streaming implemented (merged 2026-02-19)
 - Epic 01 (Connection Management) is now complete - all 4 stories merged
 - Epic 03 (Schema) can run in parallel with Epic 02 after ST-01003
 - Epic 04 (Advanced Features) depends on Epic 02 completion
