@@ -5,8 +5,8 @@
 ## Queue Status Summary
 
 - **Ready:** 2 stories (ST-02003, ST-04003)
-- **In Progress:** 1 story (ST-03001)
-- **In Review:** 0 stories
+- **In Progress:** 0 stories
+- **In Review:** 1 story (ST-03001)
 - **Blocked:** 0 stories
 - **Backlog:** 9 stories (waiting on dependencies)
 
@@ -32,6 +32,12 @@
 
 ## In Progress
 
+_No stories currently in progress_
+
+---
+
+## In Review
+
 ### ST-03001: Implement Schema Introspection Tool
 - **Epic:** EP-03
 - **Priority:** P1
@@ -39,13 +45,7 @@
 - **Dependencies:** ST-01003 ✅ (merged 2026-02-17)
 - **Checklist:** `planning/checklists/epic-03-story-tasks.md`
 - **Branch:** `feat/st-03001-schema-introspection-tool`
-- **Status:** Draft PR #33 open
-
----
-
-## In Review
-
-_No stories currently in review_
+- **Status:** Ready for review (PR #33)
 
 ---
 
