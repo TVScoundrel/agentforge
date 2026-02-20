@@ -130,7 +130,7 @@
 
 ### Checklist
 - [x] Create branch `feat/st-02005-type-safe-delete-tool`
-- [ ] Create draft PR with story ID in title
+- [x] Create draft PR with story ID in title (PR #38)
 - [x] Extend query builder with DELETE support
 - [x] Add support for WHERE conditions (required for safety)
 - [x] Add support for returning count of deleted rows
