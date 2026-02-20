@@ -85,6 +85,17 @@ export const deleteWhereConditionSchema = z.object({
       path: ['value'],
       message: 'LIKE operator requires a string value',
     });
+    return;
+  }
+
+  if ((op === 'gt' || op === 'lt' || op === 'gte' || op === 'lte') &&
+      typeof value.value !== 'string' &&
+      typeof value.value !== 'number') {
+    ctx.addIssue({
+      code: z.ZodIssueCode.custom,
+      path: ['value'],
+      message: `${op.toUpperCase()} operator requires a string or number value`,
+    });
   }
 });
 
