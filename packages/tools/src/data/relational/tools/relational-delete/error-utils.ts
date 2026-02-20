@@ -7,7 +7,10 @@ const SAFE_DELETE_VALIDATION_PATTERNS = [
   'contains invalid characters',
   'WHERE conditions are required for DELETE queries',
   'WHERE conditions are required unless allowFullTableDelete is true',
+  'value is required for this operator',
   'null is only allowed with isNull/isNotNull operators',
+  'operator requires a value',
+  'operator requires a string or number value',
   'operator requires a string value',
   'operator requires a non-empty array value',
   'must not include value',
@@ -15,7 +18,7 @@ const SAFE_DELETE_VALIDATION_PATTERNS = [
 
 const CONSTRAINT_VIOLATION_PATTERNS = [
   {
-    pattern: /(foreign key constraint|violates foreign key constraint|constraint failed)/i,
+    pattern: /(foreign key constraint|violates foreign key constraint|foreign key mismatch|a foreign key constraint fails)/i,
     message: 'Delete failed: foreign key constraint violation.',
   },
 ] as const;

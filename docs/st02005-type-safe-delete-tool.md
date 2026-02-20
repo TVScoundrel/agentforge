@@ -1,6 +1,6 @@
 # ST-02005: Type-Safe DELETE Tool
 
-**Status:** 🚧 Draft PR  
+**Status:** 👀 In Review  
 **Epic:** 02 - Query Execution and CRUD Operations
 
 ## Overview
