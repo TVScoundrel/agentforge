@@ -8,7 +8,7 @@
 - **In Progress:** 0 stories
 - **In Review:** 0 stories
 - **Blocked:** 0 stories
-- **Backlog:** 2 stories (waiting on dependencies)
+- **Backlog:** 7 stories (queued for prioritization and dependencies)
 
 ---
 
@@ -72,6 +72,46 @@ _No stories currently blocked_
 - **Dependencies:** ST-04001, ST-05003
 - **Checklist:** `planning/checklists/epic-05-story-tasks.md`
 
+### ST-06001: Implement Skill Discovery and Metadata Registry
+- **Epic:** EP-06
+- **Priority:** P0
+- **Estimate:** 5 hours
+- **Dependencies:** None (queued behind active EP-05 ready work)
+- **Checklist:** `planning/checklists/epic-06-story-tasks.md`
+- **Feature:** `planning/features/06-agent-skills-compatibility-feature-plan.md`
+
+### ST-06002: Implement Skill Matching and Activation Planning
+- **Epic:** EP-06
+- **Priority:** P0
+- **Estimate:** 6 hours
+- **Dependencies:** ST-06001
+- **Checklist:** `planning/checklists/epic-06-story-tasks.md`
+- **Feature:** `planning/features/06-agent-skills-compatibility-feature-plan.md`
+
+### ST-06003: Implement Progressive Skill Loading and Resource Resolution
+- **Epic:** EP-06
+- **Priority:** P1
+- **Estimate:** 7 hours
+- **Dependencies:** ST-06002
+- **Checklist:** `planning/checklists/epic-06-story-tasks.md`
+- **Feature:** `planning/features/06-agent-skills-compatibility-feature-plan.md`
+
+### ST-06004: Implement Skill Trust Policies and Execution Guardrails
+- **Epic:** EP-06
+- **Priority:** P1
+- **Estimate:** 6 hours
+- **Dependencies:** ST-06003
+- **Checklist:** `planning/checklists/epic-06-story-tasks.md`
+- **Feature:** `planning/features/06-agent-skills-compatibility-feature-plan.md`
+
+### ST-06005: Publish Agent Skills Integration Documentation and Conformance Suite
+- **Epic:** EP-06
+- **Priority:** P1
+- **Estimate:** 6 hours
+- **Dependencies:** ST-06003, ST-06004
+- **Checklist:** `planning/checklists/epic-06-story-tasks.md`
+- **Feature:** `planning/features/06-agent-skills-compatibility-feature-plan.md`
+
 ---
 
 ## Notes
@@ -94,3 +134,4 @@ _No stories currently blocked_
 - Epic 03 (Schema Introspection and Metadata) is now complete - all 2 stories merged
 - Epic 04 (Advanced Features) depends on Epic 02 completion
 - Epic 05 (Testing & Docs) runs throughout but has specific dependencies
+- New Epic 06 (Agent Skills Compatibility) is planned and queued in Backlog for sequencing after current ready work

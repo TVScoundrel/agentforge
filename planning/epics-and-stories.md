@@ -63,6 +63,19 @@
 
 ---
 
+### EP-06: Agent Skills Compatibility Layer
+**Capability:** Enable AgentForge agents to discover, select, and activate reusable skills compatible with the Agent Skills specification.
+
+**Outcomes:**
+- Developers can enable SKILL.md-driven capabilities without bespoke glue code per agent
+- Skill selection is deterministic, observable, and configurable
+- Skill loading follows progressive disclosure (metadata first, full instructions on activation)
+- Runtime guardrails enforce trust boundaries for skill resources and scripts
+
+**Stories:** ST-06001 through ST-06005
+
+---
+
 ## Stories
 
 ### Epic 01: Core Database Connection Management
@@ -402,15 +415,117 @@
 
 ---
 
+### Epic 06: Agent Skills Compatibility Layer
+
+#### Feature Context: Agent Skills Compatibility (from `planning/features/06-agent-skills-compatibility-feature-plan.md`)
+
+- Goal: add first-class Agent Skills support so AgentForge agents can discover and use reusable `SKILL.md` capabilities.
+- Scope:
+  - In: local skill discovery, metadata-based selection, progressive loading, trust policies, and conformance documentation/tests.
+  - Out: remote skill marketplaces, automatic download/install from third-party registries, and non-markdown skill formats.
+- Critical edge cases:
+  - malformed or missing skill metadata,
+  - conflicting skill names across roots,
+  - path traversal or unsafe script execution attempts.
+- Delivery controls:
+  - feature flag for rollout (`agentSkills.enabled`),
+  - structured selection/load telemetry,
+  - explicit rollback path to disable skill loading while preserving baseline agent behavior.
+
+#### ST-06001: Implement Skill Discovery and Metadata Registry
+**User story:** As a framework developer, I want AgentForge to discover skills from standard directories so that agents can be configured with reusable capabilities.
+
+**Priority:** P0 (Critical)
+**Estimate:** 5 hours
+**Dependencies:** None
+
+**Acceptance criteria:**
+- [ ] Skill discovery scans configurable roots (`.agents/skills`, `$HOME/.agents/skills`, plus runtime-configured paths)
+- [ ] A skill is recognized only when a directory contains a valid `SKILL.md`
+- [ ] Metadata parser extracts `name` and `description` (and optional fields) from frontmatter/content
+- [ ] Invalid skills are skipped with actionable structured warnings (without aborting runtime startup)
+- [ ] Registry API returns discovered skills with canonical ID, source path, and metadata summary
+- [ ] Unit tests cover root scanning, metadata parsing, duplicate IDs, and invalid skill handling
+
+---
+
+#### ST-06002: Implement Skill Matching and Activation Planning
+**User story:** As an agent runtime, I want to select relevant skills for a task so that only useful capabilities are activated.
+
+**Priority:** P0 (Critical)
+**Estimate:** 6 hours
+**Dependencies:** ST-06001
+
+**Acceptance criteria:**
+- [ ] Matching logic ranks skills from user task/context using metadata descriptions and optional tags
+- [ ] Deterministic tie-break behavior and configurable `maxSelectedSkills` are implemented
+- [ ] Planner output includes selected skill IDs and selection rationale before activation
+- [ ] No-match path is explicit and continues baseline execution safely
+- [ ] Selection decisions emit structured observability events for debugging/auditing
+- [ ] Unit tests cover ranking quality, deterministic selection, and no-skill scenarios
+
+---
+
+#### ST-06003: Implement Progressive Skill Loading and Resource Resolution
+**User story:** As an agent runtime, I want full skill instructions loaded only when needed so that context stays efficient and safe.
+
+**Priority:** P1 (High)
+**Estimate:** 7 hours
+**Dependencies:** ST-06002
+
+**Acceptance criteria:**
+- [ ] Runtime loads full `SKILL.md` content only for selected skills at activation time
+- [ ] Relative references (`scripts/`, `references/`, `assets/`) are resolved from the skill root
+- [ ] Progressive disclosure policy is enforced (load only referenced resources needed for the active task)
+- [ ] Missing referenced files return actionable errors without crashing unrelated agent flow
+- [ ] Token/context budget controls cap loaded skill content per run
+- [ ] Integration tests validate end-to-end loading against fixture skill packs
+
+---
+
+#### ST-06004: Implement Skill Trust Policies and Execution Guardrails
+**User story:** As a platform owner, I want explicit trust controls for skills so that agents cannot execute unsafe skill resources.
+
+**Priority:** P1 (High)
+**Estimate:** 6 hours
+**Dependencies:** ST-06003
+
+**Acceptance criteria:**
+- [ ] Trust policy levels (`workspace`, `trusted`, `untrusted`) are configurable per skill root
+- [ ] Script execution from untrusted roots is denied by default unless explicitly allowed
+- [ ] Path traversal and out-of-root file access are blocked for all skill resource resolution
+- [ ] Guardrail decisions are logged with policy reason codes
+- [ ] Security tests validate traversal blocking and script execution policy enforcement
+- [ ] Operational docs define secure defaults and escalation workflow for trusted skills
+
+---
+
+#### ST-06005: Publish Agent Skills Integration Documentation and Conformance Suite
+**User story:** As a developer, I want clear docs and conformance checks so that I can enable Agent Skills confidently in production.
+
+**Priority:** P1 (High)
+**Estimate:** 6 hours
+**Dependencies:** ST-06003, ST-06004
+
+**Acceptance criteria:**
+- [ ] Developer guide documents how to enable and configure Agent Skills in AgentForge
+- [ ] Authoring guide maps Agent Skills specification expectations to AgentForge behavior
+- [ ] End-to-end demo shows an agent using at least two skills from different roots
+- [ ] Conformance test suite covers discovery, selection, progressive loading, and trust policies
+- [ ] CI job runs conformance suite and fails on regressions
+- [ ] Rollout checklist includes feature-flag enablement, observability checks, and rollback procedure
+
+---
+
 ## Story Summary
 
-**Total Stories:** 19
+**Total Stories:** 24
 **By Priority:**
-- P0 (Critical): 10 stories
-- P1 (High): 6 stories
+- P0 (Critical): 12 stories
+- P1 (High): 9 stories
 - P2 (Medium): 3 stories
 
-**Total Estimated Effort:** ~80 hours (10 working days)
+**Total Estimated Effort:** ~110 hours (14 working days)
 
 **Dependency Chain:**
 1. Phase 1 (Foundation): ST-01001 → ST-01002 → ST-01003 → ST-01004
@@ -418,4 +533,4 @@
 3. Phase 3 (Schema): ST-03001 → ST-03002
 4. Phase 4 (Advanced): ST-04001, ST-04002, ST-04003 (can be parallel)
 5. Phase 5 (Quality): ST-05001 → ST-05002 → ST-05003 → ST-05004
-
+6. Phase 6 (Agent Skills): ST-06001 → ST-06002 → ST-06003 → ST-06004 → ST-06005
