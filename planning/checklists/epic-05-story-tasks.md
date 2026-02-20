@@ -30,8 +30,9 @@
 - [x] Assess test impact; add/update automated tests when needed, or document why tests are not required
 - [x] Run full test suite before finalizing the PR and record results
 - [x] Run lint (`pnpm lint`) before finalizing the PR and record results
-- [ ] Mark PR ready for review
-- [ ] Wait for merge
+- [x] Mark PR ready for review
+- [x] Wait for merge
+  - Merged PR: https://github.com/TVScoundrel/agentforge/pull/41 (2026-02-20)
 
 ---
 

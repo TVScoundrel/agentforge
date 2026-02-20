@@ -4,11 +4,11 @@
 
 ## Queue Status Summary
 
-- **Ready:** 1 story (ST-05003)
+- **Ready:** 2 stories (ST-05003, ST-05002)
 - **In Progress:** 0 stories
-- **In Review:** 1 story (ST-05001)
+- **In Review:** 0 stories
 - **Blocked:** 0 stories
-- **Backlog:** 7 stories (queued for prioritization and dependencies)
+- **Backlog:** 6 stories (queued for prioritization and dependencies)
 
 ---
 
@@ -21,6 +21,13 @@
 - **Dependencies:** ST-02006 ✅ (merged 2026-02-19), ST-03001 ✅ (merged 2026-02-19)
 - **Checklist:** `planning/checklists/epic-05-story-tasks.md`
 
+### ST-05002: Implement Integration Tests
+- **Epic:** EP-05
+- **Priority:** P1
+- **Estimate:** 6 hours
+- **Dependencies:** ST-05001 ✅ (merged 2026-02-20)
+- **Checklist:** `planning/checklists/epic-05-story-tasks.md`
+
 ---
 
 ## In Progress
@@ -31,16 +38,7 @@ _No stories currently in progress_
 
 ## In Review
 
-### ST-05001: Implement Comprehensive Unit Tests
-- **Epic:** EP-05
-- **Priority:** P0
-- **Estimate:** 8 hours
-- **Dependencies:** ST-02006 ✅ (merged 2026-02-19), ST-03002 ✅ (merged 2026-02-19)
-- **Checklist:** `planning/checklists/epic-05-story-tasks.md`
-- **Branch:** `feat/st-05001-comprehensive-unit-tests`
-- **PR:** [#41](https://github.com/TVScoundrel/agentforge/pull/41)
-- **Coverage:** 90.36% statements, 88.27% branches, 90.76% functions
-- **Tests:** 1859 passed, 159 skipped (23 new test files, 194 new tests)
+_No stories currently in review_
 
 ---
 
@@ -51,13 +49,6 @@ _No stories currently blocked_
 ---
 
 ## Backlog
-
-### ST-05002: Implement Integration Tests
-- **Epic:** EP-05
-- **Priority:** P1
-- **Estimate:** 6 hours
-- **Dependencies:** ST-05001
-- **Checklist:** `planning/checklists/epic-05-story-tasks.md`
 
 ### ST-05004: Create Advanced Integration Examples
 - **Epic:** EP-05
@@ -125,6 +116,7 @@ _No stories currently blocked_
 - ✅ ST-04001 complete - transaction support implemented (merged 2026-02-20)
 - ✅ ST-04002 complete - batch operations implemented (merged 2026-02-20)
 - ✅ ST-04003 complete - result streaming implemented (merged 2026-02-19)
+- ✅ ST-05001 complete - comprehensive unit tests implemented (merged 2026-02-20)
 - Epic 01 (Connection Management) is now complete - all 4 stories merged
 - Epic 02 (Query Execution and CRUD Operations) is now complete - all 6 stories merged
 - Epic 03 (Schema Introspection and Metadata) is now complete - all 2 stories merged

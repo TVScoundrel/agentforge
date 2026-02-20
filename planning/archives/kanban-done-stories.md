@@ -113,6 +113,13 @@
 - **Estimate:** 4 hours
 - **Outcome:** Implemented batch operations for INSERT, UPDATE, and DELETE with configurable batch sizes, progress reporting callbacks, partial-success error handling, retry logic for failed batches, and performance benchmarks. Extended existing CRUD tools to support batch mode. Added batch executor unit tests, schema validation tests, and tool invocation scenarios. Epic EP-04 now fully complete (all 3 stories merged).
 
+### ST-05001: Implement Comprehensive Unit Tests
+- **Merged:** 2026-02-20
+- **PR:** https://github.com/TVScoundrel/agentforge/pull/41 (commit 091f66a)
+- **Epic:** EP-05 (Documentation, Examples, and Testing)
+- **Estimate:** 8 hours
+- **Outcome:** Created 23 new test files covering connection manager, query builder, query executor, transactions, all CRUD tool executors/schemas/error-utils, schema validation, identifier utils, and peer dependency checker. Achieved 90.36% statement coverage, 88.27% branch coverage, 90.76% function coverage. 1859 tests passed (159 skipped — integration tests needing real DB deferred to ST-05002).
+
 ---
 
 ## Archive Format
