@@ -129,27 +129,27 @@
 **Branch:** `feat/st-02005-type-safe-delete-tool`
 
 ### Checklist
-- [ ] Create branch `feat/st-02005-type-safe-delete-tool`
-- [ ] Create draft PR with story ID in title
-- [ ] Extend query builder with DELETE support
-- [ ] Add support for WHERE conditions (required for safety)
-- [ ] Add support for returning count of deleted rows
-- [ ] Create `packages/tools/src/data/relational/tools/relational-delete.ts`
-- [ ] Define Zod schema for tool input (table, where, allowFullTableDelete)
-- [ ] Implement tool function using query builder
-- [ ] Prevent accidental full-table deletes (require explicit flag)
-- [ ] Add cascade delete handling
-- [ ] Add soft delete support (optional, deletedAt field)
-- [ ] Handle foreign key constraint violations
-- [ ] Export tool from `tools/index.ts`
-- [ ] Create unit tests for DELETE query builder
-- [ ] Create unit tests for relational-delete tool
-- [ ] Test full-table delete prevention
-- [ ] Add or update story documentation at docs/st02005-type-safe-delete-tool.md (or document why not required)
-- [ ] Assess test impact; add/update automated tests when needed, or document why tests are not required
-- [ ] Run full test suite before finalizing the PR and record results
-- [ ] Run lint (`pnpm lint`) before finalizing the PR and record results
-- [ ] Mark PR ready for review
+- [x] Create branch `feat/st-02005-type-safe-delete-tool`
+- [x] Create draft PR with story ID in title (PR #38)
+- [x] Extend query builder with DELETE support
+- [x] Add support for WHERE conditions (required for safety)
+- [x] Add support for returning count of deleted rows
+- [x] Create relational-delete tool module at `packages/tools/src/data/relational/tools/relational-delete/`
+- [x] Define Zod schema for tool input (table, where, allowFullTableDelete)
+- [x] Implement tool function using query builder
+- [x] Prevent accidental full-table deletes (require explicit flag)
+- [x] Add cascade delete handling
+- [x] Add soft delete support (optional, deletedAt field)
+- [x] Handle foreign key constraint violations
+- [x] Export tool from `tools/index.ts`
+- [x] Create unit tests for DELETE query builder
+- [x] Create unit tests for relational-delete tool
+- [x] Test full-table delete prevention
+- [x] Add or update story documentation at docs/st02005-type-safe-delete-tool.md (or document why not required)
+- [x] Assess test impact; add/update automated tests when needed, or document why tests are not required (added relational-delete schema + query-builder + tool invocation tests)
+- [x] Run full test suite before finalizing the PR and record results (`pnpm test --run` -> 112 passed, 4 skipped files; 1334 passed, 143 skipped tests)
+- [x] Run lint (`pnpm lint`) before finalizing the PR and record results (`pnpm lint` -> 0 errors; warnings-only baseline across workspace)
+- [x] Mark PR ready for review (PR #38 marked ready on 2026-02-20)
 - [ ] Wait for merge
 
 ---

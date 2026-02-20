@@ -245,7 +245,7 @@ describe('schema-diff > JSON export/import', () => {
     const lines = json.split('\n');
     // Top-level keys should appear in alphabetical order
     const topKeys = lines
-      .filter((l) => l.match(/^  "/))
+      .filter((l) => l.match(/^ {2}"/))
       .map((l) => l.match(/"([^"]+)"/)![1]);
     const sorted = [...topKeys].sort();
     expect(topKeys).toEqual(sorted);

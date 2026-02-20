@@ -262,6 +262,44 @@ export interface BuiltUpdateQuery {
   usesOptimisticLock: boolean;
 }
 
+/**
+ * WHERE condition for DELETE queries.
+ */
+export interface DeleteWhereCondition {
+  column: string;
+  operator: UpdateWhereOperator;
+  value?: string | number | boolean | null | Array<string | number>;
+}
+
+/**
+ * Soft-delete configuration.
+ */
+export interface DeleteSoftDeleteOptions {
+  column?: string;
+  value?: string | number;
+}
+
+/**
+ * Builder input for DELETE queries.
+ */
+export interface DeleteQueryInput {
+  table: string;
+  where?: DeleteWhereCondition[];
+  allowFullTableDelete?: boolean;
+  softDelete?: DeleteSoftDeleteOptions;
+  vendor: DatabaseVendor;
+}
+
+/**
+ * Built DELETE query with normalized metadata used by execution layer.
+ */
+export interface BuiltDeleteQuery {
+  query: SQL;
+  whereApplied: boolean;
+  usesSoftDelete: boolean;
+  softDeleteColumn?: string;
+}
+
 function normalizeUpdateData(data: UpdateData): UpdateData {
   if (!data || typeof data !== 'object' || Array.isArray(data)) {
     throw new Error('Update data must be an object');
@@ -397,6 +435,50 @@ export function buildUpdateQuery(input: UpdateQueryInput): BuiltUpdateQuery {
     query,
     whereApplied: whereConditions.length > 0,
     usesOptimisticLock: !!input.optimisticLock,
+  };
+}
+
+/**
+ * Build a safe parameterized DELETE query from structured input.
+ */
+export function buildDeleteQuery(input: DeleteQueryInput): BuiltDeleteQuery {
+  validateQualifiedIdentifier(input.table, 'Table name');
+
+  const whereConditions: SQL[] = (input.where ?? []).map((condition) =>
+    buildUpdateWhereCondition(condition, input.vendor)
+  );
+
+  if (whereConditions.length === 0 && !input.allowFullTableDelete) {
+    throw new Error('WHERE conditions are required for DELETE queries. Set allowFullTableDelete=true to override.');
+  }
+
+  const softDeleteColumn = input.softDelete?.column ?? 'deleted_at';
+  const softDeleteValue = input.softDelete?.value ?? new Date().toISOString();
+
+  let query: SQL;
+  if (input.softDelete) {
+    validateIdentifier(softDeleteColumn, 'Soft delete column');
+    const quotedColumn = sql.raw(quoteIdentifier(softDeleteColumn, input.vendor));
+    query = sql.join(
+      [
+        sql.raw(`UPDATE ${quoteQualifiedIdentifier(input.table, input.vendor)} SET `),
+        sql`${quotedColumn} = ${softDeleteValue}`,
+      ],
+      sql.raw('')
+    );
+  } else {
+    query = sql.raw(`DELETE FROM ${quoteQualifiedIdentifier(input.table, input.vendor)}`);
+  }
+
+  if (whereConditions.length > 0) {
+    query = sql.join([query, sql.raw(' WHERE '), sql.join(whereConditions, sql.raw(' AND '))], sql.raw(''));
+  }
+
+  return {
+    query,
+    whereApplied: whereConditions.length > 0,
+    usesSoftDelete: !!input.softDelete,
+    softDeleteColumn: input.softDelete ? softDeleteColumn : undefined,
   };
 }
 
