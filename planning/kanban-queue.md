@@ -4,8 +4,8 @@
 
 ## Queue Status Summary
 
-- **Ready:** 4 stories (ST-05003, ST-04002, ST-02005, ST-05001)
-- **In Progress:** 0 stories
+- **Ready:** 3 stories (ST-05003, ST-04002, ST-05001)
+- **In Progress:** 1 story (ST-02005)
 - **In Review:** 0 stories
 - **Blocked:** 0 stories
 - **Backlog:** 3 stories (waiting on dependencies)
@@ -28,13 +28,6 @@
 - **Dependencies:** ST-02003 ✅ (merged 2026-02-19)
 - **Checklist:** `planning/checklists/epic-04-story-tasks.md`
 
-### ST-02005: Implement Type-Safe DELETE Tool
-- **Epic:** EP-02
-- **Priority:** P0
-- **Estimate:** 3 hours
-- **Dependencies:** ST-02004 ✅ (merged 2026-02-19)
-- **Checklist:** `planning/checklists/epic-02-story-tasks.md`
-
 ### ST-05001: Implement Comprehensive Unit Tests
 - **Epic:** EP-05
 - **Priority:** P0
@@ -47,7 +40,13 @@
 
 ## In Progress
 
-_No stories currently in progress_
+### ST-02005: Implement Type-Safe DELETE Tool
+- **Epic:** EP-02
+- **Priority:** P0
+- **Estimate:** 3 hours
+- **Dependencies:** ST-02004 ✅ (merged 2026-02-19)
+- **Checklist:** `planning/checklists/epic-02-story-tasks.md`
+- **Branch:** `feat/st-02005-type-safe-delete-tool`
 
 ---
 

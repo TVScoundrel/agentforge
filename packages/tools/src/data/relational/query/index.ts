@@ -32,6 +32,11 @@ export {
   type UpdateOptimisticLock,
   type UpdateQueryInput,
   type BuiltUpdateQuery,
+  buildDeleteQuery,
+  type DeleteWhereCondition,
+  type DeleteSoftDeleteOptions,
+  type DeleteQueryInput,
+  type BuiltDeleteQuery,
 } from './query-builder.js';
 
 export {
