@@ -54,6 +54,8 @@ export async function executeSelect(
   });
 
   try {
+    const executor = context?.transaction ?? manager;
+
     if (input.streaming?.enabled) {
       const streamOptions = {
         chunkSize: input.streaming.chunkSize,
@@ -73,10 +75,10 @@ export async function executeSelect(
         });
       }
 
-      const streamResult = await executeStreamingSelect(manager, streamInput, streamOptions);
+      const streamResult = await executeStreamingSelect(executor, streamInput, streamOptions);
 
       const benchmark = input.streaming.benchmark
-        ? await benchmarkStreamingSelectMemory(manager, streamInput, streamOptions)
+        ? await benchmarkStreamingSelectMemory(executor, streamInput, streamOptions)
         : undefined;
 
       const executionTime = Date.now() - startTime;
@@ -111,7 +113,6 @@ export async function executeSelect(
     const query = buildSelectQuery(input);
 
     // Execute query
-    const executor = context?.transaction ?? manager;
     const result = await executor.execute(query);
 
     const executionTime = Date.now() - startTime;

@@ -5,8 +5,8 @@
 
 import { Readable } from 'node:stream';
 import { createLogger } from '@agentforge/core';
-import type { ConnectionManager } from '../connection/connection-manager.js';
 import { buildSelectQuery, type SelectQueryInput } from './query-builder.js';
+import type { SqlExecutor } from './types.js';
 
 const logger = createLogger('agentforge:tools:data:relational:stream');
 
@@ -139,7 +139,7 @@ function resolveTotalRowsLimit(input: SelectQueryInput, options: StreamingSelect
  * keyset/cursor pagination when available.
  */
 export async function* streamSelectChunks(
-  manager: ConnectionManager,
+  executor: SqlExecutor,
   input: SelectQueryInput,
   options: StreamingSelectOptions = {}
 ): AsyncGenerator<StreamingSelectChunk> {
@@ -169,7 +169,7 @@ export async function* streamSelectChunks(
       offset: pageOffset,
     });
 
-    const result = await manager.execute(query);
+    const result = await executor.execute(query);
     const rows = extractRows(result);
 
     if (rows.length === 0) {
@@ -195,11 +195,11 @@ export async function* streamSelectChunks(
  * Create a Node.js Readable stream that emits SELECT chunks in object mode.
  */
 export function createSelectReadableStream(
-  manager: ConnectionManager,
+  executor: SqlExecutor,
   input: SelectQueryInput,
   options: StreamingSelectOptions = {}
 ): Readable {
-  return Readable.from(streamSelectChunks(manager, input, options), {
+  return Readable.from(streamSelectChunks(executor, input, options), {
     objectMode: true,
     highWaterMark: 1,
   });
@@ -209,7 +209,7 @@ export function createSelectReadableStream(
  * Execute a SELECT query in streaming mode while tracking memory usage.
  */
 export async function executeStreamingSelect(
-  manager: ConnectionManager,
+  executor: SqlExecutor,
   input: SelectQueryInput,
   options: StreamingSelectOptions = {}
 ): Promise<StreamingSelectResult> {
@@ -231,7 +231,7 @@ export async function executeStreamingSelect(
   const startHeapUsed = process.memoryUsage().heapUsed;
   let peakHeapUsed = startHeapUsed;
 
-  const stream = createSelectReadableStream(manager, input, options);
+  const stream = createSelectReadableStream(executor, input, options);
   const abortHandler = () => {
     stream.destroy(new Error('Stream cancelled by caller.'));
   };
@@ -304,7 +304,7 @@ export async function executeStreamingSelect(
  * one streaming). Use only with side-effect-free queries.
  */
 export async function benchmarkStreamingSelectMemory(
-  manager: ConnectionManager,
+  executor: SqlExecutor,
   input: SelectQueryInput,
   options: StreamingSelectOptions = {}
 ): Promise<StreamingBenchmarkResult> {
@@ -316,13 +316,13 @@ export async function benchmarkStreamingSelectMemory(
   const nonStreamingStartHeapUsed = process.memoryUsage().heapUsed;
   const nonStreamingStartTime = Date.now();
 
-  const nonStreamingResult = await manager.execute(buildSelectQuery(input));
+  const nonStreamingResult = await executor.execute(buildSelectQuery(input));
   const nonStreamingRows = extractRows(nonStreamingResult);
 
   const nonStreamingExecutionTime = Date.now() - nonStreamingStartTime;
   const nonStreamingPeakHeapUsed = Math.max(nonStreamingStartHeapUsed, process.memoryUsage().heapUsed);
 
-  const streamingResult = await executeStreamingSelect(manager, input, {
+  const streamingResult = await executeStreamingSelect(executor, input, {
     ...options,
     collectAllRows: false,
     sampleSize: 0,

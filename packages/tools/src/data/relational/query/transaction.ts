@@ -29,6 +29,8 @@ interface ResolvedTransactionOptions {
   timeoutMs?: number;
 }
 
+const SAVEPOINT_NAME_PATTERN = /^[A-Za-z_][A-Za-z0-9_]*$/;
+
 export interface TransactionContext extends SqlExecutor {
   id: string;
   vendor: DatabaseVendor;
@@ -69,22 +71,35 @@ function resolveOptions(options?: TransactionOptions): ResolvedTransactionOption
   };
 }
 
-function withTimeout<T>(operation: Promise<T>, timeoutMs?: number): Promise<T> {
+function withTimeout<T>(
+  operation: Promise<T>,
+  timeoutMs?: number,
+  onTimeout?: () => void
+): Promise<T> {
   if (!timeoutMs) {
     return operation;
   }
 
   return new Promise<T>((resolve, reject) => {
+    let timedOut = false;
     const timer = setTimeout(() => {
+      timedOut = true;
+      onTimeout?.();
       reject(new Error(`Transaction timed out after ${timeoutMs}ms`));
     }, timeoutMs);
 
     operation
       .then((result) => {
+        if (timedOut) {
+          return;
+        }
         clearTimeout(timer);
         resolve(result);
       })
       .catch((error) => {
+        if (timedOut) {
+          return;
+        }
         clearTimeout(timer);
         reject(error);
       });
@@ -97,6 +112,7 @@ class ManagedTransaction implements TransactionContext {
   private readonly options: ResolvedTransactionOptions;
   private readonly executeQuery: (query: SQL) => Promise<unknown>;
   private completed = false;
+  private cancelledReason: string | null = null;
   private savepointCounter = 0;
 
   constructor(args: {
@@ -116,6 +132,10 @@ class ManagedTransaction implements TransactionContext {
   }
 
   async execute(query: SQL): Promise<unknown> {
+    if (this.cancelledReason) {
+      throw new Error(this.cancelledReason);
+    }
+
     if (!this.isActive()) {
       throw new Error('Transaction is no longer active');
     }
@@ -124,8 +144,22 @@ class ManagedTransaction implements TransactionContext {
   }
 
   async begin(): Promise<void> {
+    if (this.vendor === 'mysql') {
+      // MySQL requires isolation level to be set before BEGIN
+      // for it to reliably apply to the current transaction.
+      await this.applyIsolationLevel();
+      await this.executeQuery(sql.raw('BEGIN'));
+      return;
+    }
+
     await this.executeQuery(sql.raw('BEGIN'));
     await this.applyIsolationLevel();
+  }
+
+  cancel(reason: string): void {
+    if (!this.cancelledReason) {
+      this.cancelledReason = reason;
+    }
   }
 
   async commit(): Promise<void> {
@@ -151,7 +185,7 @@ class ManagedTransaction implements TransactionContext {
       throw new Error('Transaction is no longer active');
     }
 
-    const savepointName = name ?? `sp_${++this.savepointCounter}`;
+    const savepointName = this.normalizeSavepointName(name ?? `sp_${++this.savepointCounter}`);
     await this.executeQuery(sql.raw(`SAVEPOINT ${savepointName}`));
     return savepointName;
   }
@@ -161,7 +195,8 @@ class ManagedTransaction implements TransactionContext {
       throw new Error('Transaction is no longer active');
     }
 
-    await this.executeQuery(sql.raw(`ROLLBACK TO SAVEPOINT ${name}`));
+    const savepointName = this.normalizeSavepointName(name);
+    await this.executeQuery(sql.raw(`ROLLBACK TO SAVEPOINT ${savepointName}`));
   }
 
   async releaseSavepoint(name: string): Promise<void> {
@@ -169,7 +204,8 @@ class ManagedTransaction implements TransactionContext {
       throw new Error('Transaction is no longer active');
     }
 
-    await this.executeQuery(sql.raw(`RELEASE SAVEPOINT ${name}`));
+    const savepointName = this.normalizeSavepointName(name);
+    await this.executeQuery(sql.raw(`RELEASE SAVEPOINT ${savepointName}`));
   }
 
   async withSavepoint<T>(
@@ -215,6 +251,16 @@ class ManagedTransaction implements TransactionContext {
 
     await this.executeQuery(sql.raw(`SET TRANSACTION ISOLATION LEVEL ${isolationSql}`));
   }
+
+  private normalizeSavepointName(name: string): string {
+    if (!SAVEPOINT_NAME_PATTERN.test(name)) {
+      throw new Error(
+        'Invalid savepoint name. Use only letters, numbers, and underscores, and start with a letter or underscore.'
+      );
+    }
+
+    return name;
+  }
 }
 
 /**
@@ -250,7 +296,15 @@ export async function withTransaction<T>(
     await transaction.begin();
 
     try {
-      const result = await withTimeout(operation(transaction), resolvedOptions.timeoutMs);
+      const result = await withTimeout(
+        operation(transaction),
+        resolvedOptions.timeoutMs,
+        () => {
+          if (resolvedOptions.timeoutMs) {
+            transaction.cancel(`Transaction timed out after ${resolvedOptions.timeoutMs}ms`);
+          }
+        }
+      );
 
       if (transaction.isActive()) {
         await transaction.commit();
