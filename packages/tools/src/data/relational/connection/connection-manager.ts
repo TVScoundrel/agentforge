@@ -612,7 +612,7 @@ export class ConnectionManager extends EventEmitter implements DatabaseConnectio
     callback: (execute: (query: SQL) => Promise<unknown>) => Promise<T>
   ): Promise<T> {
     if (!this.client || !this.db) {
-      throw new Error('Database not initialized. Call initialize() first.');
+      throw new Error('Database not initialized. Call connect() first.');
     }
 
     if (this.vendor === 'sqlite') {

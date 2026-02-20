@@ -5,8 +5,7 @@ This document shows how to use the relational transaction helper for multi-step 
 ## Basic Transaction
 
 ```ts
-import { ConnectionManager } from '@agentforge/tools/data/relational/connection';
-import { withTransaction } from '@agentforge/tools/data/relational/query';
+import { ConnectionManager, withTransaction } from '@agentforge/tools';
 import { sql } from 'drizzle-orm';
 
 const manager = new ConnectionManager({

@@ -114,6 +114,8 @@ class ManagedTransaction implements TransactionContext {
   private completed = false;
   private cancelledReason: string | null = null;
   private savepointCounter = 0;
+  private sqliteReadUncommittedOriginal: 0 | 1 | null = null;
+  private shouldRestoreSqliteReadUncommitted = false;
 
   constructor(args: {
     id: string;
@@ -168,6 +170,7 @@ class ManagedTransaction implements TransactionContext {
     }
 
     await this.executeQuery(sql.raw('COMMIT'));
+    await this.restoreSqliteIsolationIfNeeded();
     this.completed = true;
   }
 
@@ -177,6 +180,7 @@ class ManagedTransaction implements TransactionContext {
     }
 
     await this.executeQuery(sql.raw('ROLLBACK'));
+    await this.restoreSqliteIsolationIfNeeded();
     this.completed = true;
   }
 
@@ -238,7 +242,9 @@ class ManagedTransaction implements TransactionContext {
 
     if (this.vendor === 'sqlite') {
       if (this.options.isolationLevel === 'read uncommitted') {
+        this.sqliteReadUncommittedOriginal = await this.getSqliteReadUncommittedState();
         await this.executeQuery(sql.raw('PRAGMA read_uncommitted = 1'));
+        this.shouldRestoreSqliteReadUncommitted = true;
       } else {
         // SQLite defaults to SERIALIZABLE-like behavior for transactions.
         logger.debug('Ignoring SQLite isolation level override', {
@@ -260,6 +266,45 @@ class ManagedTransaction implements TransactionContext {
     }
 
     return name;
+  }
+
+  private async restoreSqliteIsolationIfNeeded(): Promise<void> {
+    if (!this.shouldRestoreSqliteReadUncommitted) {
+      return;
+    }
+
+    try {
+      const targetValue = this.sqliteReadUncommittedOriginal ?? 0;
+      await this.executeQuery(sql.raw(`PRAGMA read_uncommitted = ${targetValue}`));
+    } catch (error) {
+      logger.warn('Failed to restore SQLite read_uncommitted pragma', {
+        transactionId: this.id,
+        error: error instanceof Error ? error.message : String(error),
+      });
+    } finally {
+      this.shouldRestoreSqliteReadUncommitted = false;
+    }
+  }
+
+  private async getSqliteReadUncommittedState(): Promise<0 | 1 | null> {
+    try {
+      const result = await this.executeQuery(sql.raw('PRAGMA read_uncommitted'));
+      const rows = Array.isArray(result)
+        ? result
+        : ((result as { rows?: unknown[] }).rows ?? []);
+
+      const first = rows[0];
+      if (first && typeof first === 'object') {
+        const value = (first as Record<string, unknown>).read_uncommitted;
+        if (typeof value === 'number') {
+          return value === 1 ? 1 : 0;
+        }
+      }
+    } catch {
+      // If introspection fails, we'll restore to default (0) in finalize path.
+    }
+
+    return null;
   }
 }
 
