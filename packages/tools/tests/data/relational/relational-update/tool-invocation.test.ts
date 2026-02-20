@@ -135,6 +135,69 @@ describe('Relational UPDATE - Tool Invocation', () => {
     expect(stale.rowCount).toBe(0);
   });
 
+  it.skipIf(!hasSQLiteBindings)('should execute batch update operations with configurable batch size', async () => {
+    const result = await relationalUpdate.invoke({
+      table: 'users',
+      operations: [
+        {
+          data: { status: 'paused' },
+          where: [{ column: 'email', operator: 'eq', value: 'alice@example.com' }],
+        },
+        {
+          data: { status: 'paused' },
+          where: [{ column: 'email', operator: 'eq', value: 'bob@example.com' }],
+        },
+      ],
+      batch: {
+        batchSize: 1,
+      },
+      vendor: 'sqlite',
+      connectionString: getDbPath(),
+    });
+
+    expect(result.success).toBe(true);
+    expect(result.rowCount).toBe(2);
+    if (result.success) {
+      expect(result.batch?.enabled).toBe(true);
+      expect(result.batch?.batchSize).toBe(1);
+      expect(result.batch?.totalItems).toBe(2);
+      expect(result.batch?.failedItems).toBe(0);
+    }
+  });
+
+  it.skipIf(!hasSQLiteBindings)('should report partial success for batch updates when continueOnError is enabled', async () => {
+    const result = await relationalUpdate.invoke({
+      table: 'users',
+      operations: [
+        {
+          data: { version: 2, status: 'active' },
+          where: [{ column: 'email', operator: 'eq', value: 'carol@example.com' }],
+          optimisticLock: { column: 'version', expectedValue: 1 },
+        },
+        {
+          data: { version: 3, status: 'inactive' },
+          where: [{ column: 'email', operator: 'eq', value: 'carol@example.com' }],
+          optimisticLock: { column: 'version', expectedValue: 1 },
+        },
+      ],
+      batch: {
+        batchSize: 1,
+        continueOnError: true,
+      },
+      vendor: 'sqlite',
+      connectionString: getDbPath(),
+    });
+
+    expect(result.success).toBe(true);
+    expect(result.rowCount).toBe(1);
+    if (result.success) {
+      expect(result.batch?.partialSuccess).toBe(true);
+      expect(result.batch?.failedItems).toBe(1);
+      expect(result.batch?.successfulItems).toBe(1);
+      expect(result.batch?.failures.length).toBeGreaterThanOrEqual(1);
+    }
+  });
+
   it.skipIf(!hasSQLiteBindings)('should return clear error for unique constraint violations', async () => {
     const result = await relationalUpdate.invoke({
       table: 'users',

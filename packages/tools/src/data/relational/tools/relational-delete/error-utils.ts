@@ -53,5 +53,6 @@ export function isSafeDeleteError(error: unknown): error is Error {
     return false;
   }
 
-  return isSafeDeleteValidationError(error) || error.message.startsWith('Delete failed:');
+  return SAFE_DELETE_VALIDATION_PATTERNS.some((pattern) => error.message.includes(pattern))
+    || error.message.startsWith('Delete failed:');
 }

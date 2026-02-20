@@ -53,6 +53,40 @@ describe('Relational INSERT - Schema Validation', () => {
     expect(result.success).toBe(false);
   });
 
+  it('should accept batch options for array inserts', () => {
+    const result = relationalInsert.schema.safeParse({
+      table: 'users',
+      data: [
+        { name: 'Alice', email: 'alice@example.com' },
+        { name: 'Bob', email: 'bob@example.com' },
+      ],
+      batch: {
+        batchSize: 250,
+        continueOnError: true,
+        maxRetries: 1,
+        retryDelayMs: 25,
+      },
+      vendor: 'sqlite',
+      connectionString: 'data.db',
+    });
+
+    expect(result.success).toBe(true);
+  });
+
+  it('should reject invalid batch size', () => {
+    const result = relationalInsert.schema.safeParse({
+      table: 'users',
+      data: [{ name: 'Alice', email: 'alice@example.com' }],
+      batch: {
+        batchSize: 0,
+      },
+      vendor: 'sqlite',
+      connectionString: 'data.db',
+    });
+
+    expect(result.success).toBe(false);
+  });
+
   it('should reject empty table name', () => {
     const result = relationalInsert.schema.safeParse({
       table: '',

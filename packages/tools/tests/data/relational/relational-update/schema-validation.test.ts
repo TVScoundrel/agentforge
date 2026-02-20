@@ -65,6 +65,58 @@ describe('Relational UPDATE - Schema Validation', () => {
     expect(result.success).toBe(false);
   });
 
+  it('should accept valid batch update operations', () => {
+    const result = relationalUpdate.schema.safeParse({
+      table: 'users',
+      operations: [
+        {
+          data: { status: 'inactive' },
+          where: [{ column: 'id', operator: 'eq', value: 1 }],
+        },
+        {
+          data: { status: 'inactive' },
+          where: [{ column: 'id', operator: 'eq', value: 2 }],
+        },
+      ],
+      batch: {
+        batchSize: 50,
+        continueOnError: true,
+      },
+      vendor: 'sqlite',
+      connectionString: ':memory:',
+    });
+
+    expect(result.success).toBe(true);
+  });
+
+  it('should reject mixed single and batch update payloads', () => {
+    const result = relationalUpdate.schema.safeParse({
+      table: 'users',
+      data: { status: 'inactive' },
+      operations: [
+        {
+          data: { status: 'active' },
+          where: [{ column: 'id', operator: 'eq', value: 1 }],
+        },
+      ],
+      vendor: 'sqlite',
+      connectionString: ':memory:',
+    });
+
+    expect(result.success).toBe(false);
+  });
+
+  it('should reject missing data when operations are not provided', () => {
+    const result = relationalUpdate.schema.safeParse({
+      table: 'users',
+      where: [{ column: 'id', operator: 'eq', value: 1 }],
+      vendor: 'sqlite',
+      connectionString: ':memory:',
+    });
+
+    expect(result.success).toBe(false);
+  });
+
   it('should reject non-array value for IN operator', () => {
     const result = relationalUpdate.schema.safeParse({
       table: 'users',

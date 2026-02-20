@@ -9,8 +9,10 @@ import type {
   insertRowSchema,
   insertReturningModeSchema,
   insertReturningSchema,
+  insertBatchOptionsSchema,
   relationalInsertSchema,
 } from './schemas.js';
+import type { BatchBenchmarkResult, BatchFailureDetail } from '../../query/batch-executor.js';
 
 /**
  * Supported INSERT value type.
@@ -30,12 +32,34 @@ export type InsertReturningMode = z.infer<typeof insertReturningModeSchema>;
 /**
  * RETURNING configuration.
  */
-export type InsertReturning = z.infer<typeof insertReturningSchema>;
+export type InsertReturning = z.input<typeof insertReturningSchema>;
+
+/**
+ * Batch execution configuration for INSERT.
+ */
+export type InsertBatchOptions = z.input<typeof insertBatchOptionsSchema>;
+
+/**
+ * Batch metadata returned by INSERT execution when batch mode is active.
+ */
+export interface InsertBatchMetadata {
+  enabled: boolean;
+  batchSize: number;
+  totalItems: number;
+  processedItems: number;
+  successfulItems: number;
+  failedItems: number;
+  totalBatches: number;
+  retries: number;
+  partialSuccess: boolean;
+  failures: BatchFailureDetail[];
+  benchmark?: BatchBenchmarkResult;
+}
 
 /**
  * Relational INSERT tool input.
  */
-export type RelationalInsertInput = z.infer<typeof relationalInsertSchema>;
+export type RelationalInsertInput = z.input<typeof relationalInsertSchema>;
 
 /**
  * INSERT execution result.
@@ -45,6 +69,7 @@ export interface InsertResult {
   insertedIds: Array<number | string>;
   rows: unknown[];
   executionTime: number;
+  batch?: InsertBatchMetadata;
 }
 
 /**
@@ -56,6 +81,7 @@ export interface InsertSuccessResponse {
   insertedIds: Array<number | string>;
   rows: unknown[];
   executionTime: number;
+  batch?: InsertBatchMetadata;
 }
 
 /**

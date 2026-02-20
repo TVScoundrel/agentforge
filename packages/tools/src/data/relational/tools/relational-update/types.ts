@@ -10,8 +10,11 @@ import type {
   updateWhereOperatorSchema,
   updateWhereConditionSchema,
   updateOptimisticLockSchema,
+  updateBatchOperationSchema,
+  updateBatchOptionsSchema,
   relationalUpdateSchema,
 } from './schemas.js';
+import type { BatchBenchmarkResult, BatchFailureDetail } from '../../query/batch-executor.js';
 
 /**
  * Supported UPDATE value type.
@@ -39,9 +42,36 @@ export type UpdateWhereCondition = z.infer<typeof updateWhereConditionSchema>;
 export type UpdateOptimisticLock = z.infer<typeof updateOptimisticLockSchema>;
 
 /**
+ * One batch UPDATE operation payload.
+ */
+export type UpdateBatchOperation = z.input<typeof updateBatchOperationSchema>;
+
+/**
+ * Batch execution options for UPDATE.
+ */
+export type UpdateBatchOptions = z.input<typeof updateBatchOptionsSchema>;
+
+/**
+ * Batch metadata returned by UPDATE execution when batch mode is active.
+ */
+export interface UpdateBatchMetadata {
+  enabled: boolean;
+  batchSize: number;
+  totalItems: number;
+  processedItems: number;
+  successfulItems: number;
+  failedItems: number;
+  totalBatches: number;
+  retries: number;
+  partialSuccess: boolean;
+  failures: BatchFailureDetail[];
+  benchmark?: BatchBenchmarkResult;
+}
+
+/**
  * Relational UPDATE tool input.
  */
-export type RelationalUpdateInput = z.infer<typeof relationalUpdateSchema>;
+export type RelationalUpdateInput = z.input<typeof relationalUpdateSchema>;
 
 /**
  * UPDATE execution result.
@@ -49,6 +79,7 @@ export type RelationalUpdateInput = z.infer<typeof relationalUpdateSchema>;
 export interface UpdateResult {
   rowCount: number;
   executionTime: number;
+  batch?: UpdateBatchMetadata;
 }
 
 /**
@@ -58,6 +89,7 @@ export interface UpdateSuccessResponse {
   success: true;
   rowCount: number;
   executionTime: number;
+  batch?: UpdateBatchMetadata;
 }
 
 /**

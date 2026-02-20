@@ -40,7 +40,7 @@ export type OrderBy = z.infer<typeof orderBySchema>;
 /**
  * Streaming options
  */
-export type StreamingOptions = z.infer<typeof streamingOptionsSchema>;
+export type StreamingOptions = z.input<typeof streamingOptionsSchema>;
 
 export type StreamingMemoryUsage = QueryStreamingMemoryUsage;
 
@@ -66,7 +66,7 @@ export interface StreamingMetadata {
 /**
  * Relational SELECT tool input
  */
-export type RelationalSelectInput = z.infer<typeof relationalSelectSchema>;
+export type RelationalSelectInput = z.input<typeof relationalSelectSchema>;
 
 /**
  * SELECT query execution result

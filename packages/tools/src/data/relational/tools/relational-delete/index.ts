@@ -20,7 +20,7 @@ export * from './schemas.js';
 export const relationalDelete = toolBuilder()
   .name('relational-delete')
   .displayName('Relational DELETE')
-  .description('Execute type-safe DELETE queries with WHERE conditions and full-table delete protection')
+  .description('Execute type-safe DELETE queries with single and batched operation support')
   .category(ToolCategory.DATABASE)
   .tags(['database', 'sql', 'delete', 'postgresql', 'mysql', 'sqlite'])
   .schema(relationalDeleteSchema)
@@ -43,6 +43,28 @@ export const relationalDelete = toolBuilder()
       connectionString: 'data.db',
     },
   })
+  .example({
+    description: 'Batch delete operations',
+    input: {
+      table: 'users',
+      operations: [
+        {
+          where: [{ column: 'status', operator: 'eq', value: 'inactive' }],
+          softDelete: { column: 'deleted_at' },
+        },
+        {
+          where: [{ column: 'status', operator: 'eq', value: 'pending_delete' }],
+          softDelete: { column: 'deleted_at' },
+        },
+      ],
+      batch: {
+        batchSize: 100,
+        continueOnError: true,
+      },
+      vendor: 'postgresql',
+      connectionString: 'postgresql://localhost/mydb',
+    },
+  })
   .implement(async (input: RelationalDeleteInput): Promise<DeleteResponse> => {
     const manager = new ConnectionManager({
       vendor: input.vendor,
@@ -59,6 +81,7 @@ export const relationalDelete = toolBuilder()
         rowCount: result.rowCount,
         executionTime: result.executionTime,
         softDeleted: result.softDeleted,
+        batch: result.batch,
       };
     } catch (error) {
       let errorMessage = 'Failed to execute DELETE query. Please verify your input and database connection.';
