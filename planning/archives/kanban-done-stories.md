@@ -2,7 +2,7 @@
 
 **Purpose:** Track completed and merged stories for the Relational Database Access Tool project.
 
-**Last Updated:** 2026-02-19
+**Last Updated:** 2026-02-20
 
 ---
 
@@ -91,6 +91,13 @@
 - **Epic:** EP-04 (Advanced Features and Optimization)
 - **Estimate:** 5 hours
 - **Outcome:** Implemented chunked result streaming for the `relational-select` tool enabling memory-efficient processing of large SELECT query results. Added streaming infrastructure with chunk iteration, Node.js Readable stream integration, backpressure handling, and memory benchmarking. Refactored SELECT query building into shared utilities. Extended the tool with optional streaming configuration including chunk size, sample size, max rows, and benchmark options. All quality gates passed (1248 tests, lint clean).
+
+### ST-02005: Implement Type-Safe DELETE Tool
+- **Merged:** 2026-02-20
+- **PR:** https://github.com/TVScoundrel/agentforge/pull/38 (commit 020eaa2)
+- **Epic:** EP-02 (Query Execution and CRUD Operations)
+- **Estimate:** 3 hours
+- **Outcome:** Implemented `relational-delete` with shared DELETE query-builder support, required WHERE safety guard, optional soft-delete mode, affected-row count normalization, and refined error classification for safe validation feedback plus targeted foreign-key constraint messaging. Added focused tests for schema validation, query builder, tool invocation, and error utility behavior; completed full-suite and lint validation before merge.
 
 ---
 

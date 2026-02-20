@@ -150,7 +150,7 @@
 - [x] Run full test suite before finalizing the PR and record results (`pnpm test --run` -> 112 passed, 4 skipped files; 1334 passed, 143 skipped tests)
 - [x] Run lint (`pnpm lint`) before finalizing the PR and record results (`pnpm lint` -> 0 errors; warnings-only baseline across workspace)
 - [x] Mark PR ready for review (PR #38 marked ready on 2026-02-20)
-- [ ] Wait for merge
+- [x] Wait for merge ✅ DONE (merged 2026-02-20 via PR #38)
 
 ---
 
@@ -186,8 +186,8 @@
 
 ## Epic 02 Completion Criteria
 
-- [ ] All 6 stories merged
-- [ ] All CRUD operations work across all supported databases
-- [ ] SQL injection prevention verified
-- [ ] All tests passing
-- [ ] Security documentation complete
+- [x] All 6 stories merged
+- [x] All CRUD operations work across all supported databases
+- [x] SQL injection prevention verified
+- [x] All tests passing
+- [x] Security documentation complete

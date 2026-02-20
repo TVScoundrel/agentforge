@@ -1,9 +1,9 @@
 # Feature Plan: Vendor-Agnostic Relational Database Access Tool
 
 **Epic Range:** EP-01 through EP-05  
-**Status:** In Review  
+**Status:** In Progress  
 **Last Updated:** 2026-02-20
-**Active Story:** ST-02005 (In Review)
+**Active Story:** None (ST-02005 merged; next story selection pending)
 
 ---
 
