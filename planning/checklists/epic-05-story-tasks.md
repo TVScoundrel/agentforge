@@ -41,8 +41,8 @@
 **Branch:** `feat/st-05002-integration-tests`
 
 ### Checklist
-- [ ] Create branch `feat/st-05002-integration-tests`
-- [ ] Create draft PR with story ID in title
+- [x] Create branch `feat/st-05002-integration-tests`
+- [x] Create draft PR with story ID in title (PR #42)
 - [ ] Set up testcontainers for PostgreSQL (or Docker Compose)
 - [ ] Set up testcontainers for MySQL (or Docker Compose)
 - [ ] Set up in-memory SQLite for testing

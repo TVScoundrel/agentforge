@@ -4,8 +4,8 @@
 
 ## Queue Status Summary
 
-- **Ready:** 2 stories (ST-05003, ST-05002)
-- **In Progress:** 0 stories
+- **Ready:** 1 story (ST-05003)
+- **In Progress:** 1 story (ST-05002)
 - **In Review:** 0 stories
 - **Blocked:** 0 stories
 - **Backlog:** 6 stories (queued for prioritization and dependencies)
@@ -21,18 +21,18 @@
 - **Dependencies:** ST-02006 ✅ (merged 2026-02-19), ST-03001 ✅ (merged 2026-02-19)
 - **Checklist:** `planning/checklists/epic-05-story-tasks.md`
 
+---
+
+## In Progress
+
 ### ST-05002: Implement Integration Tests
 - **Epic:** EP-05
 - **Priority:** P1
 - **Estimate:** 6 hours
 - **Dependencies:** ST-05001 ✅ (merged 2026-02-20)
 - **Checklist:** `planning/checklists/epic-05-story-tasks.md`
-
----
-
-## In Progress
-
-_No stories currently in progress_
+- **Branch:** `feat/st-05002-integration-tests`
+- **PR:** [#42](https://github.com/TVScoundrel/agentforge/pull/42)
 
 ---
 
