@@ -5,7 +5,7 @@
 **Branch:** `feat/st-04001-transaction-support`
 
 ### Checklist
-- [ ] Create branch `feat/st-04001-transaction-support`
+- [x] Create branch `feat/st-04001-transaction-support`
 - [ ] Create draft PR with story ID in title
 - [ ] Create `packages/tools/src/data/relational/query/transaction.ts`
 - [ ] Define `Transaction` interface
