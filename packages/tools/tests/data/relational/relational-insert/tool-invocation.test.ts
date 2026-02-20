@@ -103,6 +103,63 @@ describe('Relational INSERT - Tool Invocation', () => {
     expect(result.insertedIds).toEqual([]);
   });
 
+  it.skipIf(!hasSQLiteBindings)('should process configurable batch chunks for large datasets', async () => {
+    const bulkRows = Array.from({ length: 120 }, (_, index) => ({
+      account_id: 1,
+      name: `Bulk-${index + 1}`,
+      email: `bulk-${index + 1}@example.com`,
+    }));
+
+    const result = await relationalInsert.invoke({
+      table: 'users',
+      data: bulkRows,
+      batch: {
+        batchSize: 25,
+        benchmark: true,
+      },
+      vendor: 'sqlite',
+      connectionString: getDbPath(),
+    });
+
+    expect(result.success).toBe(true);
+    expect(result.rowCount).toBe(120);
+    if (result.success) {
+      expect(result.batch?.enabled).toBe(true);
+      expect(result.batch?.batchSize).toBe(25);
+      expect(result.batch?.totalItems).toBe(120);
+      expect(result.batch?.totalBatches).toBe(5);
+      expect(result.batch?.failedItems).toBe(0);
+      expect(result.batch?.partialSuccess).toBe(false);
+      expect(result.batch?.benchmark).toBeDefined();
+    }
+  });
+
+  it.skipIf(!hasSQLiteBindings)('should report partial success for batch inserts when continueOnError is enabled', async () => {
+    const result = await relationalInsert.invoke({
+      table: 'users',
+      data: [
+        { account_id: 1, name: 'BatchPartial-1', email: 'batch-partial-1@example.com' },
+        { account_id: 1, name: 'BatchPartial-dup', email: 'batch-partial-1@example.com' },
+        { account_id: 1, name: 'BatchPartial-2', email: 'batch-partial-2@example.com' },
+      ],
+      batch: {
+        batchSize: 1,
+        continueOnError: true,
+      },
+      vendor: 'sqlite',
+      connectionString: getDbPath(),
+    });
+
+    expect(result.success).toBe(true);
+    expect(result.rowCount).toBe(2);
+    if (result.success) {
+      expect(result.batch?.partialSuccess).toBe(true);
+      expect(result.batch?.failedItems).toBe(1);
+      expect(result.batch?.successfulItems).toBe(2);
+      expect(result.batch?.failures.length).toBeGreaterThanOrEqual(1);
+    }
+  });
+
   it.skipIf(!hasSQLiteBindings)('should return full inserted rows when returning.mode is row', async () => {
     const result = await relationalInsert.invoke({
       table: 'users',

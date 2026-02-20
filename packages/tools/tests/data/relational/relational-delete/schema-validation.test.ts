@@ -50,6 +50,45 @@ describe('Relational DELETE - Schema Validation', () => {
     expect(result.success).toBe(true);
   });
 
+  it('should accept valid batch delete operations', () => {
+    const result = relationalDelete.schema.safeParse({
+      table: 'users',
+      operations: [
+        {
+          where: [{ column: 'id', operator: 'eq', value: 1 }],
+        },
+        {
+          where: [{ column: 'id', operator: 'eq', value: 2 }],
+          softDelete: { column: 'deleted_at' },
+        },
+      ],
+      batch: {
+        batchSize: 25,
+        continueOnError: true,
+      },
+      vendor: 'sqlite',
+      connectionString: ':memory:',
+    });
+
+    expect(result.success).toBe(true);
+  });
+
+  it('should reject mixed single and batch delete payloads', () => {
+    const result = relationalDelete.schema.safeParse({
+      table: 'users',
+      where: [{ column: 'id', operator: 'eq', value: 1 }],
+      operations: [
+        {
+          where: [{ column: 'id', operator: 'eq', value: 2 }],
+        },
+      ],
+      vendor: 'sqlite',
+      connectionString: ':memory:',
+    });
+
+    expect(result.success).toBe(false);
+  });
+
   it('should reject malformed table name', () => {
     const result = relationalDelete.schema.safeParse({
       table: 'users; DROP TABLE users',
