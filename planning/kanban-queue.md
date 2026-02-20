@@ -5,8 +5,8 @@
 ## Queue Status Summary
 
 - **Ready:** 3 stories (ST-05003, ST-04002, ST-05001)
-- **In Progress:** 1 story (ST-04001)
-- **In Review:** 0 stories
+- **In Progress:** 0 stories
+- **In Review:** 1 story (ST-04001)
 - **Blocked:** 0 stories
 - **Backlog:** 2 stories (waiting on dependencies)
 
@@ -40,6 +40,12 @@
 
 ## In Progress
 
+_No stories currently in progress_
+
+---
+
+## In Review
+
 ### ST-04001: Implement Transaction Support
 - **Epic:** EP-04
 - **Priority:** P1
@@ -47,12 +53,6 @@
 - **Dependencies:** ST-02005 ✅ (merged 2026-02-20)
 - **Checklist:** `planning/checklists/epic-04-story-tasks.md`
 - **Branch:** `feat/st-04001-transaction-support`
-
----
-
-## In Review
-
-_No stories currently in review_
 
 ---
 
