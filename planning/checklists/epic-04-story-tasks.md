@@ -23,8 +23,8 @@
 - [x] Create integration tests with real databases (`packages/tools/tests/data/relational/transaction.test.ts` with SQLite path)
 - [x] Test rollback scenarios
 - [x] Test nested transactions
-- [ ] Add or update story documentation at docs/st04001-transaction-support.md (or document why not required)
-- [ ] Assess test impact; add/update automated tests when needed, or document why tests are not required
+- [x] Add or update story documentation at docs/st04001-transaction-support.md (or document why not required)
+- [x] Assess test impact; add/update automated tests when needed, or document why tests are not required (added transaction integration coverage and retained CRUD regression coverage)
 - [ ] Run full test suite before finalizing the PR and record results
 - [ ] Run lint (`pnpm lint`) before finalizing the PR and record results
 - [ ] Mark PR ready for review
