@@ -60,7 +60,8 @@
 - [x] Run full test suite before finalizing the PR and record results (`pnpm test --run` -> 1363 passed, 159 skipped)
 - [x] Run lint (`pnpm lint`) before finalizing the PR and record results (`pnpm lint` -> 0 errors; warnings-only baseline across workspace)
 - [x] Mark PR ready for review (PR #40 marked ready on 2026-02-20)
-- [ ] Wait for merge
+- [x] Wait for merge
+  - Merged PR: https://github.com/TVScoundrel/agentforge/pull/40 (2026-02-20)
 
 ---
 
@@ -98,7 +99,7 @@
 
 ## Epic 04 Completion Criteria
 
-- [ ] All 3 stories merged
+- [x] All 3 stories merged
 - [ ] Transaction support works across all databases
 - [ ] Batch operations improve performance
 - [ ] Result streaming reduces memory usage

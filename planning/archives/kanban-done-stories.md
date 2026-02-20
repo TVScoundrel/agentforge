@@ -106,6 +106,13 @@
 - **Estimate:** 6 hours
 - **Outcome:** Implemented transaction support for relational tooling with commit/rollback flow, nested savepoints, isolation-level and timeout controls, transaction context plumbing into tools, transaction logging, and focused transaction unit/integration coverage plus story documentation.
 
+### ST-04002: Implement Batch Operations
+- **Merged:** 2026-02-20
+- **PR:** https://github.com/TVScoundrel/agentforge/pull/40 (commit 3e655c0)
+- **Epic:** EP-04 (Advanced Features and Optimization)
+- **Estimate:** 4 hours
+- **Outcome:** Implemented batch operations for INSERT, UPDATE, and DELETE with configurable batch sizes, progress reporting callbacks, partial-success error handling, retry logic for failed batches, and performance benchmarks. Extended existing CRUD tools to support batch mode. Added batch executor unit tests, schema validation tests, and tool invocation scenarios. Epic EP-04 now fully complete (all 3 stories merged).
+
 ---
 
 ## Archive Format

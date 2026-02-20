@@ -6,7 +6,7 @@
 
 - **Ready:** 2 stories (ST-05003, ST-05001)
 - **In Progress:** 0 stories
-- **In Review:** 1 story (ST-04002)
+- **In Review:** 0 stories
 - **Blocked:** 0 stories
 - **Backlog:** 7 stories (queued for prioritization and dependencies)
 
@@ -20,13 +20,6 @@
 - **Estimate:** 6 hours
 - **Dependencies:** ST-02006 ✅ (merged 2026-02-19), ST-03001 ✅ (merged 2026-02-19)
 - **Checklist:** `planning/checklists/epic-05-story-tasks.md`
-
-### ST-04002: Implement Batch Operations
-- **Epic:** EP-04
-- **Priority:** P2
-- **Estimate:** 4 hours
-- **Dependencies:** ST-02003 ✅ (merged 2026-02-19)
-- **Checklist:** `planning/checklists/epic-04-story-tasks.md`
 
 ### ST-05001: Implement Comprehensive Unit Tests
 - **Epic:** EP-05
@@ -46,13 +39,7 @@ _No stories currently in progress_
 
 ## In Review
 
-### ST-04002: Implement Batch Operations
-- **Epic:** EP-04
-- **Priority:** P2
-- **Estimate:** 4 hours
-- **Dependencies:** ST-02003 ✅ (merged 2026-02-19)
-- **Checklist:** `planning/checklists/epic-04-story-tasks.md`
-- **PR:** https://github.com/TVScoundrel/agentforge/pull/40
+_No stories currently in review_
 
 ---
 
@@ -75,7 +62,7 @@ _No stories currently blocked_
 - **Epic:** EP-05
 - **Priority:** P2
 - **Estimate:** 4 hours
-- **Dependencies:** ST-04001, ST-05003
+- **Dependencies:** ST-04001 ✅ (merged 2026-02-20), ST-05003
 - **Checklist:** `planning/checklists/epic-05-story-tasks.md`
 
 ### ST-06001: Implement Skill Discovery and Metadata Registry
@@ -135,9 +122,11 @@ _No stories currently blocked_
 - ✅ ST-03001 complete - schema introspection tool implemented (merged 2026-02-19)
 - ✅ ST-03002 complete - schema metadata utilities implemented (merged 2026-02-19)
 - ✅ ST-04001 complete - transaction support implemented (merged 2026-02-20)
+- ✅ ST-04002 complete - batch operations implemented (merged 2026-02-20)
 - ✅ ST-04003 complete - result streaming implemented (merged 2026-02-19)
 - Epic 01 (Connection Management) is now complete - all 4 stories merged
+- Epic 02 (Query Execution and CRUD Operations) is now complete - all 6 stories merged
 - Epic 03 (Schema Introspection and Metadata) is now complete - all 2 stories merged
-- Epic 04 (Advanced Features) depends on Epic 02 completion
+- Epic 04 (Advanced Features and Optimization) is now complete - all 3 stories merged
 - Epic 05 (Testing & Docs) runs throughout but has specific dependencies
 - New Epic 06 (Agent Skills Compatibility) is planned and queued in Backlog for sequencing after current ready work
