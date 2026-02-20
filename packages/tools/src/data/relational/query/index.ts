@@ -6,7 +6,8 @@
 export type {
   QueryParams,
   QueryInput,
-  QueryExecutionResult
+  QueryExecutionResult,
+  SqlExecutor,
 } from './types.js';
 
 export { executeQuery } from './query-executor.js';
@@ -51,3 +52,10 @@ export {
   type StreamingMemoryUsage,
   type StreamingBenchmarkResult,
 } from './stream-executor.js';
+
+export {
+  withTransaction,
+  type TransactionOptions,
+  type TransactionIsolationLevel,
+  type TransactionContext,
+} from './transaction.js';

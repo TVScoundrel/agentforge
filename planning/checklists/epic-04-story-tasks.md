@@ -5,29 +5,29 @@
 **Branch:** `feat/st-04001-transaction-support`
 
 ### Checklist
-- [ ] Create branch `feat/st-04001-transaction-support`
-- [ ] Create draft PR with story ID in title
-- [ ] Create `packages/tools/src/data/relational/query/transaction.ts`
-- [ ] Define `Transaction` interface
-- [ ] Implement transaction wrapper for multiple operations
-- [ ] Add automatic rollback on error
-- [ ] Add commit on success
-- [ ] Implement nested transaction support using savepoints
-- [ ] Add transaction isolation level configuration (READ COMMITTED, SERIALIZABLE, etc.)
-- [ ] Add timeout handling for long transactions
-- [ ] Create transaction context for passing to tools
-- [ ] Update existing tools to support transaction context (optional parameter)
-- [ ] Add transaction logging
-- [ ] Create example usage in docs/
-- [ ] Create unit tests for transaction logic
-- [ ] Create integration tests with real databases
-- [ ] Test rollback scenarios
-- [ ] Test nested transactions
-- [ ] Add or update story documentation at docs/st04001-transaction-support.md (or document why not required)
-- [ ] Assess test impact; add/update automated tests when needed, or document why tests are not required
-- [ ] Run full test suite before finalizing the PR and record results
-- [ ] Run lint (`pnpm lint`) before finalizing the PR and record results
-- [ ] Mark PR ready for review
+- [x] Create branch `feat/st-04001-transaction-support`
+- [x] Create draft PR with story ID in title (PR #39)
+- [x] Create `packages/tools/src/data/relational/query/transaction.ts`
+- [x] Define `Transaction` interface
+- [x] Implement transaction wrapper for multiple operations
+- [x] Add automatic rollback on error
+- [x] Add commit on success
+- [x] Implement nested transaction support using savepoints
+- [x] Add transaction isolation level configuration (READ COMMITTED, SERIALIZABLE, etc.)
+- [x] Add timeout handling for long transactions
+- [x] Create transaction context for passing to tools
+- [x] Update existing tools to support transaction context (optional parameter)
+- [x] Add transaction logging
+- [x] Create example usage in docs/ (`docs/relational-transaction-examples.md`)
+- [x] Create unit tests for transaction logic (`packages/tools/tests/data/relational/transaction.test.ts`)
+- [x] Create integration tests with real databases (`packages/tools/tests/data/relational/transaction.test.ts` with SQLite path)
+- [x] Test rollback scenarios
+- [x] Test nested transactions
+- [x] Add or update story documentation at docs/st04001-transaction-support.md (or document why not required)
+- [x] Assess test impact; add/update automated tests when needed, or document why tests are not required (added transaction integration coverage and retained CRUD regression coverage)
+- [x] Run full test suite before finalizing the PR and record results (`pnpm test --run` -> 113 passed, 5 skipped files; 1342 passed, 147 skipped tests)
+- [x] Run lint (`pnpm lint`) before finalizing the PR and record results (`pnpm lint` -> 0 errors; warnings-only baseline across workspace)
+- [x] Mark PR ready for review (PR #39 marked ready on 2026-02-20)
 - [ ] Wait for merge
 
 ---

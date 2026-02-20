@@ -6,10 +6,15 @@
 import { createLogger } from '@agentforge/core';
 import { buildDeleteQuery } from '../../query/query-builder.js';
 import type { ConnectionManager } from '../../connection/connection-manager.js';
+import type { TransactionContext } from '../../query/transaction.js';
 import type { RelationalDeleteInput, DeleteResult } from './types.js';
 import { getDeleteConstraintViolationMessage, isSafeDeleteValidationError } from './error-utils.js';
 
 const logger = createLogger('agentforge:tools:data:relational:delete');
+
+export interface DeleteExecutionContext {
+  transaction?: TransactionContext;
+}
 
 function toNumber(value: unknown): number | undefined {
   return typeof value === 'number' && Number.isFinite(value) ? value : undefined;
@@ -43,7 +48,8 @@ function normalizeAffectedRows(result: unknown): number {
  */
 export async function executeDelete(
   manager: ConnectionManager,
-  input: RelationalDeleteInput
+  input: RelationalDeleteInput,
+  context?: DeleteExecutionContext
 ): Promise<DeleteResult> {
   const startTime = Date.now();
 
@@ -65,7 +71,8 @@ export async function executeDelete(
       vendor: input.vendor,
     });
 
-    const rawResult = await manager.execute(built.query);
+    const executor = context?.transaction ?? manager;
+    const rawResult = await executor.execute(built.query);
     const rowCount = normalizeAffectedRows(rawResult);
     const executionTime = Date.now() - startTime;
 

@@ -6,6 +6,7 @@
 import { sql, type SQL } from 'drizzle-orm';
 import { createLogger } from '@agentforge/core';
 import type { ConnectionManager } from '../connection/connection-manager.js';
+import type { TransactionContext } from './transaction.js';
 import type { QueryInput, QueryExecutionResult, QueryParams } from './types.js';
 import {
   validateSqlString,
@@ -13,6 +14,10 @@ import {
 } from '../utils/sql-sanitizer.js';
 
 const logger = createLogger('agentforge:tools:data:relational:query');
+
+export interface QueryExecutionContext {
+  transaction?: TransactionContext;
+}
 
 /**
  * Build a parameterized SQL query using Drizzle's sql template
@@ -154,7 +159,8 @@ function buildParameterizedQuery(sqlString: string, params?: QueryParams): SQL {
  */
 export async function executeQuery(
   manager: ConnectionManager,
-  input: QueryInput
+  input: QueryInput,
+  context?: QueryExecutionContext
 ): Promise<QueryExecutionResult> {
   const startTime = Date.now();
 
@@ -175,7 +181,8 @@ export async function executeQuery(
     const parameterizedQuery = buildParameterizedQuery(input.sql, input.params);
 
     // Execute query through ConnectionManager's public execute method
-    const result = await manager.execute(parameterizedQuery);
+    const executor = context?.transaction ?? manager;
+    const result = await executor.execute(parameterizedQuery);
 
     const executionTime = Date.now() - startTime;
 
