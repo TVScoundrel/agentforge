@@ -6,7 +6,7 @@
 
 - **Ready:** 3 stories (ST-05003, ST-04002, ST-05001)
 - **In Progress:** 0 stories
-- **In Review:** 1 story (ST-04001)
+- **In Review:** 0 stories
 - **Blocked:** 0 stories
 - **Backlog:** 2 stories (waiting on dependencies)
 
@@ -46,13 +46,7 @@ _No stories currently in progress_
 
 ## In Review
 
-### ST-04001: Implement Transaction Support
-- **Epic:** EP-04
-- **Priority:** P1
-- **Estimate:** 6 hours
-- **Dependencies:** ST-02005 ✅ (merged 2026-02-20)
-- **Checklist:** `planning/checklists/epic-04-story-tasks.md`
-- **Branch:** `feat/st-04001-transaction-support`
+_No stories currently in review_
 
 ---
 
@@ -94,6 +88,7 @@ _No stories currently blocked_
 - ✅ ST-02006 complete - SQL sanitization and security implemented (merged 2026-02-19)
 - ✅ ST-03001 complete - schema introspection tool implemented (merged 2026-02-19)
 - ✅ ST-03002 complete - schema metadata utilities implemented (merged 2026-02-19)
+- ✅ ST-04001 complete - transaction support implemented (merged 2026-02-20)
 - ✅ ST-04003 complete - result streaming implemented (merged 2026-02-19)
 - Epic 01 (Connection Management) is now complete - all 4 stories merged
 - Epic 03 (Schema Introspection and Metadata) is now complete - all 2 stories merged

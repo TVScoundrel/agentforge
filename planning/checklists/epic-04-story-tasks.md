@@ -28,7 +28,8 @@
 - [x] Run full test suite before finalizing the PR and record results (`pnpm test --run` -> 113 passed, 5 skipped files; 1342 passed, 147 skipped tests)
 - [x] Run lint (`pnpm lint`) before finalizing the PR and record results (`pnpm lint` -> 0 errors; warnings-only baseline across workspace)
 - [x] Mark PR ready for review (PR #39 marked ready on 2026-02-20)
-- [ ] Wait for merge
+- [x] Wait for merge
+  - Merged PR: https://github.com/TVScoundrel/agentforge/pull/39 (2026-02-20)
 
 ---
 

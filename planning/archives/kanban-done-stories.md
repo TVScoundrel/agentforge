@@ -99,6 +99,13 @@
 - **Estimate:** 3 hours
 - **Outcome:** Implemented `relational-delete` with shared DELETE query-builder support, required WHERE safety guard, optional soft-delete mode, affected-row count normalization, and refined error classification for safe validation feedback plus targeted foreign-key constraint messaging. Added focused tests for schema validation, query builder, tool invocation, and error utility behavior; completed full-suite and lint validation before merge.
 
+### ST-04001: Implement Transaction Support
+- **Merged:** 2026-02-20
+- **PR:** https://github.com/TVScoundrel/agentforge/pull/39
+- **Epic:** EP-04 (Advanced Features and Optimization)
+- **Estimate:** 6 hours
+- **Outcome:** Implemented transaction support for relational tooling with commit/rollback flow, nested savepoints, isolation-level and timeout controls, transaction context plumbing into tools, transaction logging, and focused transaction unit/integration coverage plus story documentation.
+
 ---
 
 ## Archive Format
