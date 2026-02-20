@@ -5,8 +5,8 @@
 **Branch:** `feat/st-05001-comprehensive-unit-tests`
 
 ### Checklist
-- [ ] Create branch `feat/st-05001-comprehensive-unit-tests`
-- [ ] Create draft PR with story ID in title
+- [x] Create branch `feat/st-05001-comprehensive-unit-tests`
+- [x] Create draft PR with story ID in title (PR #41)
 - [ ] Create test directory structure: `packages/tools/tests/data/relational/`
 - [ ] Create subdirectories: `connection/`, `query/`, `schema/`, `tools/`, `utils/`
 - [ ] Set up test fixtures and mocks

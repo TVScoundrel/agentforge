@@ -4,8 +4,8 @@
 
 ## Queue Status Summary
 
-- **Ready:** 2 stories (ST-05003, ST-05001)
-- **In Progress:** 0 stories
+- **Ready:** 1 story (ST-05003)
+- **In Progress:** 1 story (ST-05001)
 - **In Review:** 0 stories
 - **Blocked:** 0 stories
 - **Backlog:** 7 stories (queued for prioritization and dependencies)
@@ -21,19 +21,18 @@
 - **Dependencies:** ST-02006 ✅ (merged 2026-02-19), ST-03001 ✅ (merged 2026-02-19)
 - **Checklist:** `planning/checklists/epic-05-story-tasks.md`
 
+---
+
+## In Progress
+
 ### ST-05001: Implement Comprehensive Unit Tests
 - **Epic:** EP-05
 - **Priority:** P0
 - **Estimate:** 8 hours
 - **Dependencies:** ST-02006 ✅ (merged 2026-02-19), ST-03002 ✅ (merged 2026-02-19)
 - **Checklist:** `planning/checklists/epic-05-story-tasks.md`
-- **Note:** Can start test infrastructure in parallel with implementation
-
----
-
-## In Progress
-
-_No stories currently in progress_
+- **Branch:** `feat/st-05001-comprehensive-unit-tests`
+- **PR:** [#41](https://github.com/TVScoundrel/agentforge/pull/41)
 
 ---
 
