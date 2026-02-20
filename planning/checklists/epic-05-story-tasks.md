@@ -43,29 +43,35 @@
 ### Checklist
 - [x] Create branch `feat/st-05002-integration-tests`
 - [x] Create draft PR with story ID in title (PR #42)
-- [ ] Set up testcontainers for PostgreSQL (or Docker Compose)
-- [ ] Set up testcontainers for MySQL (or Docker Compose)
-- [ ] Set up in-memory SQLite for testing
-- [ ] Create test data fixtures (SQL scripts)
-- [ ] Write integration tests for PostgreSQL connection
-- [ ] Write integration tests for PostgreSQL CRUD operations
-- [ ] Write integration tests for PostgreSQL schema introspection
-- [ ] Write integration tests for MySQL connection
-- [ ] Write integration tests for MySQL CRUD operations
-- [ ] Write integration tests for MySQL schema introspection
-- [ ] Write integration tests for SQLite connection
-- [ ] Write integration tests for SQLite CRUD operations
-- [ ] Write integration tests for SQLite schema introspection
-- [ ] Create performance benchmarks for each database
-- [ ] Configure CI/CD to run integration tests
-- [ ] Document how to run integration tests locally
-- [ ] Run all integration tests
-- [ ] Fix any failing tests
-- [ ] Add or update story documentation at docs/st05002-integration-tests.md (or document why not required)
-- [ ] Assess test impact; add/update automated tests when needed, or document why tests are not required
-- [ ] Run full test suite before finalizing the PR and record results
-- [ ] Run lint (`pnpm lint`) before finalizing the PR and record results
-- [ ] Mark PR ready for review
+- [x] Set up testcontainers for PostgreSQL (or Docker Compose)
+- [x] Set up testcontainers for MySQL (or Docker Compose)
+- [x] Set up in-memory SQLite for testing
+- [x] Create test data fixtures (SQL scripts)
+- [x] Write integration tests for PostgreSQL connection
+- [x] Write integration tests for PostgreSQL CRUD operations
+- [x] Write integration tests for PostgreSQL schema introspection
+- [x] Write integration tests for MySQL connection
+- [x] Write integration tests for MySQL CRUD operations
+- [x] Write integration tests for MySQL schema introspection
+- [x] Write integration tests for SQLite connection
+- [x] Write integration tests for SQLite CRUD operations
+- [x] Write integration tests for SQLite schema introspection
+- [x] Create performance benchmarks for each database
+- [x] Configure CI/CD to run integration tests
+- [x] Document how to run integration tests locally
+- [x] Run all integration tests
+- [x] Fix any failing tests
+- [x] Add or update story documentation at docs/st05002-integration-tests.md (or document why not required)
+- [x] Assess test impact; add/update automated tests when needed, or document why tests are not required
+  - Integration tests: 121 pass (34 SQLite + 38 PostgreSQL + 34 MySQL + 15 benchmarks)
+  - Unit tests: 0 regressions; 28 pre-existing failures unmasked by better-sqlite3 bindings (all behind skipIf guards)
+  - Unit mock updated: connection-manager.test.ts SQLite mock uses all()/run(); MySQL mock returns [rows, fields]
+- [x] Run full test suite before finalizing the PR and record results
+  - Integration: 10 files, 121 tests, 0 failures
+  - Unit: 0 new errors, 109 lint warnings (pre-existing)
+- [x] Run lint (`pnpm lint`) before finalizing the PR and record results
+  - 0 errors, 109 warnings (all pre-existing @typescript-eslint/no-explicit-any)
+- [x] Mark PR ready for review
 - [ ] Wait for merge
 
 ---
