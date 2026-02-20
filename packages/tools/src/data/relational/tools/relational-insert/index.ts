@@ -48,6 +48,11 @@ export const relationalInsert = toolBuilder()
         { name: 'Bob', email: 'bob@example.com' },
         { name: 'Carol', email: 'carol@example.com' },
       ],
+      batch: {
+        batchSize: 250,
+        continueOnError: true,
+        maxRetries: 1,
+      },
       vendor: 'sqlite',
       connectionString: 'data.db',
     },
@@ -69,6 +74,7 @@ export const relationalInsert = toolBuilder()
         insertedIds: result.insertedIds,
         rows: result.rows,
         executionTime: result.executionTime,
+        batch: result.batch,
       };
     } catch (error) {
       let errorMessage = 'Failed to execute INSERT query. Please verify your input and database connection.';

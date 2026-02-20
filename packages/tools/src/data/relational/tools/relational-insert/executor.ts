@@ -5,9 +5,19 @@
 
 import { createLogger } from '@agentforge/core';
 import { buildInsertQuery } from '../../query/query-builder.js';
+import {
+  benchmarkBatchExecution,
+  executeBatchedTask,
+} from '../../query/batch-executor.js';
 import type { ConnectionManager } from '../../connection/connection-manager.js';
 import type { TransactionContext } from '../../query/transaction.js';
-import type { InsertResult, RelationalInsertInput } from './types.js';
+import type {
+  InsertRow,
+  InsertBatchMetadata,
+  InsertBatchOptions,
+  InsertResult,
+  RelationalInsertInput,
+} from './types.js';
 import { getConstraintViolationMessage, isSafeInsertValidationError } from './error-utils.js';
 
 const logger = createLogger('agentforge:tools:data:relational:insert');
@@ -112,6 +122,137 @@ function deriveInsertedIds(options: {
   return [];
 }
 
+function resolveBatchOptions(batch: InsertBatchOptions | undefined): Required<InsertBatchOptions> | undefined {
+  if (!batch || batch.enabled === false) {
+    return undefined;
+  }
+
+  return {
+    enabled: batch.enabled ?? true,
+    batchSize: batch.batchSize ?? 100,
+    continueOnError: batch.continueOnError ?? true,
+    maxRetries: batch.maxRetries ?? 0,
+    retryDelayMs: batch.retryDelayMs ?? 0,
+    benchmark: batch.benchmark ?? false,
+  };
+}
+
+async function executeInsertOnce(
+  manager: ConnectionManager,
+  input: RelationalInsertInput,
+  context?: InsertExecutionContext
+): Promise<InsertResult> {
+  const built = buildInsertQuery({
+    table: input.table,
+    data: input.data,
+    returning: input.returning,
+    vendor: input.vendor,
+  });
+
+  const executor = context?.transaction ?? manager;
+  const rawResult = await executor.execute(built.query);
+  const normalized = normalizeExecutionResult(rawResult);
+
+  const rowCount = normalized.rowCount > 0 ? normalized.rowCount : built.rows.length;
+  const rows = built.returningMode === 'row' ? normalized.rows : [];
+  const insertedIds = built.returningMode === 'id'
+    ? deriveInsertedIds({
+      idColumn: built.idColumn,
+      inputRows: built.rows,
+      returnedRows: normalized.rows,
+      rowCount,
+      insertId: normalized.insertId,
+      lastInsertRowid: normalized.lastInsertRowid,
+    })
+    : [];
+
+  return {
+    rowCount,
+    rows,
+    insertedIds,
+    executionTime: 0,
+  };
+}
+
+async function executeInsertInBatchMode(
+  manager: ConnectionManager,
+  input: RelationalInsertInput & { data: InsertRow[] },
+  context: InsertExecutionContext | undefined,
+  options: Required<InsertBatchOptions>
+): Promise<InsertResult> {
+  const batchResult = await executeBatchedTask<InsertRow, InsertResult>(
+    {
+      operation: 'insert',
+      items: input.data,
+      executeBatch: async (rows) =>
+        executeInsertOnce(manager, {
+          ...input,
+          data: rows,
+          batch: undefined,
+        }, context),
+      getBatchSuccessCount: (result, rows) => Math.min(result.rowCount, rows.length),
+    },
+    {
+      batchSize: options.batchSize,
+      continueOnError: options.continueOnError,
+      maxRetries: options.maxRetries,
+      retryDelayMs: options.retryDelayMs,
+      onProgress: (progress) => {
+        logger.debug('INSERT batch progress', {
+          vendor: input.vendor,
+          table: input.table,
+          ...progress,
+        });
+      },
+    }
+  );
+
+  const rowCount = batchResult.results.reduce((total, result) => total + result.rowCount, 0);
+  const rows = batchResult.results.flatMap((result) => result.rows);
+  const insertedIds = batchResult.results.flatMap((result) => result.insertedIds);
+
+  let benchmark: InsertBatchMetadata['benchmark'];
+  if (options.benchmark) {
+    logger.warn('INSERT batch benchmark enabled. Synthetic benchmark callbacks are side-effect free and do not execute SQL.', {
+      vendor: input.vendor,
+      table: input.table,
+      totalRows: input.data.length,
+      batchSize: options.batchSize,
+    });
+
+    benchmark = await benchmarkBatchExecution({
+      items: input.data,
+      batchSize: options.batchSize,
+      runIndividual: async () => {
+        // Synthetic benchmark callback for timing-only comparison.
+      },
+      runBatch: async () => {
+        // Synthetic benchmark callback for timing-only comparison.
+      },
+    });
+  }
+
+  return {
+    rowCount,
+    rows,
+    insertedIds,
+    executionTime: batchResult.executionTime,
+    batch: {
+      enabled: true,
+      batchSize: options.batchSize,
+      totalItems: batchResult.totalItems,
+      processedItems: batchResult.processedItems,
+      successfulItems: batchResult.successfulItems,
+      failedItems: batchResult.failedItems,
+      totalBatches: batchResult.totalBatches,
+      retries: batchResult.retries,
+      partialSuccess: batchResult.partialSuccess,
+      failures: batchResult.failures,
+      benchmark,
+    },
+  };
+}
+
 /**
  * Execute an INSERT query using the shared query builder.
  */
@@ -126,48 +267,37 @@ export async function executeInsert(
     vendor: input.vendor,
     table: input.table,
     isBatch: Array.isArray(input.data),
+    batchModeEnabled: !!input.batch?.enabled,
     returningMode: input.returning?.mode ?? 'none',
   });
 
   try {
-    const built = buildInsertQuery({
-      table: input.table,
-      data: input.data,
-      returning: input.returning,
-      vendor: input.vendor,
-    });
+    const batchOptions = resolveBatchOptions(input.batch);
 
-    const executor = context?.transaction ?? manager;
-    const rawResult = await executor.execute(built.query);
-    const normalized = normalizeExecutionResult(rawResult);
+    const result = Array.isArray(input.data) && batchOptions
+      ? await executeInsertInBatchMode(
+        manager,
+        input as RelationalInsertInput & { data: InsertRow[] },
+        context,
+        batchOptions
+      )
+      : await executeInsertOnce(manager, input, context);
+
     const executionTime = Date.now() - startTime;
-
-    const rowCount = normalized.rowCount > 0 ? normalized.rowCount : built.rows.length;
-    const rows = built.returningMode === 'row' ? normalized.rows : [];
-    const insertedIds = built.returningMode === 'id'
-      ? deriveInsertedIds({
-        idColumn: built.idColumn,
-        inputRows: built.rows,
-        returnedRows: normalized.rows,
-        rowCount,
-        insertId: normalized.insertId,
-        lastInsertRowid: normalized.lastInsertRowid,
-      })
-      : [];
 
     logger.debug('INSERT query executed successfully', {
       vendor: input.vendor,
       table: input.table,
-      rowCount,
-      returnedRows: rows.length,
-      returnedIds: insertedIds.length,
+      rowCount: result.rowCount,
+      returnedRows: result.rows.length,
+      returnedIds: result.insertedIds.length,
       executionTime,
+      batchMode: !!result.batch,
+      partialSuccess: result.batch?.partialSuccess ?? false,
     });
 
     return {
-      rowCount,
-      rows,
-      insertedIds,
+      ...result,
       executionTime,
     };
   } catch (error) {

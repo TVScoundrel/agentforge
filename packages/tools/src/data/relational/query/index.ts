@@ -41,6 +41,19 @@ export {
 } from './query-builder.js';
 
 export {
+  DEFAULT_BATCH_SIZE,
+  MAX_BATCH_SIZE,
+  executeBatchedTask,
+  benchmarkBatchExecution,
+  type BatchProgressUpdate,
+  type BatchFailureDetail,
+  type BatchExecutionOptions,
+  type BatchExecutionTask,
+  type BatchExecutionResult,
+  type BatchBenchmarkResult,
+} from './batch-executor.js';
+
+export {
   DEFAULT_CHUNK_SIZE,
   streamSelectChunks,
   createSelectReadableStream,

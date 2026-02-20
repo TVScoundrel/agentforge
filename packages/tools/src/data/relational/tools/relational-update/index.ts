@@ -26,7 +26,7 @@ export * from './schemas.js';
 export const relationalUpdate = toolBuilder()
   .name('relational-update')
   .displayName('Relational UPDATE')
-  .description('Execute type-safe UPDATE queries with WHERE conditions and full-table update protection')
+  .description('Execute type-safe UPDATE queries with single and batched operation support')
   .category(ToolCategory.DATABASE)
   .tags(['database', 'sql', 'update', 'postgresql', 'mysql', 'sqlite'])
   .schema(relationalUpdateSchema)
@@ -51,6 +51,28 @@ export const relationalUpdate = toolBuilder()
       connectionString: 'data.db',
     },
   })
+  .example({
+    description: 'Batch update operations',
+    input: {
+      table: 'users',
+      operations: [
+        {
+          data: { status: 'inactive' },
+          where: [{ column: 'id', operator: 'eq', value: 1 }],
+        },
+        {
+          data: { status: 'inactive' },
+          where: [{ column: 'id', operator: 'eq', value: 2 }],
+        },
+      ],
+      batch: {
+        batchSize: 100,
+        continueOnError: true,
+      },
+      vendor: 'postgresql',
+      connectionString: 'postgresql://localhost/mydb',
+    },
+  })
   .implement(async (input: RelationalUpdateInput): Promise<UpdateResponse> => {
     const manager = new ConnectionManager({
       vendor: input.vendor,
@@ -66,6 +88,7 @@ export const relationalUpdate = toolBuilder()
         success: true,
         rowCount: result.rowCount,
         executionTime: result.executionTime,
+        batch: result.batch,
       };
     } catch (error) {
       let errorMessage = 'Failed to execute UPDATE query. Please verify your input and database connection.';

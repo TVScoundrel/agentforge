@@ -104,6 +104,38 @@ export const deleteSoftDeleteSchema = z.object({
   value: z.union([z.string(), z.number()]).optional().describe('Optional explicit value for the soft-delete column (defaults to ISO timestamp)'),
 }).describe('Enable soft delete by updating a column instead of physically deleting rows');
 
+/**
+ * One DELETE operation item for batch mode.
+ */
+export const deleteBatchOperationSchema = z.object({
+  where: z.array(deleteWhereConditionSchema).optional().describe('WHERE conditions (combined with AND)'),
+  allowFullTableDelete: z.boolean().default(false).describe('Explicitly allow DELETE without WHERE conditions for this operation'),
+  cascade: z.boolean().default(false).describe('Enable cascade-aware error messaging for this operation'),
+  softDelete: deleteSoftDeleteSchema.optional().describe('Use soft-delete semantics instead of hard DELETE for this operation'),
+}).superRefine((value, ctx) => {
+  const hasWhere = (value.where?.length ?? 0) > 0;
+
+  if (!value.allowFullTableDelete && !hasWhere) {
+    ctx.addIssue({
+      code: z.ZodIssueCode.custom,
+      path: ['where'],
+      message: 'WHERE conditions are required unless allowFullTableDelete is true',
+    });
+  }
+});
+
+/**
+ * Batch execution options for DELETE operations.
+ */
+export const deleteBatchOptionsSchema = z.object({
+  enabled: z.boolean().optional().default(true).describe('Enable batched processing for operations[] payloads'),
+  batchSize: z.number().int().positive().max(5000).optional().default(100).describe('Operations per batch chunk'),
+  continueOnError: z.boolean().optional().default(true).describe('Continue processing remaining chunks when one chunk fails'),
+  maxRetries: z.number().int().min(0).max(5).optional().default(0).describe('Retry attempts per failed chunk'),
+  retryDelayMs: z.number().int().min(0).max(60000).optional().default(0).describe('Delay between retry attempts in milliseconds'),
+  benchmark: z.boolean().optional().default(false).describe('Run synthetic benchmark metadata comparing individual vs batched execution callbacks'),
+});
+
 export const relationalDeleteSchema = z.object({
   table: z.string()
     .min(1, 'Table name is required')
@@ -116,9 +148,49 @@ export const relationalDeleteSchema = z.object({
   allowFullTableDelete: z.boolean().default(false).describe('Explicitly allow DELETE without WHERE conditions'),
   cascade: z.boolean().default(false).describe('Enable cascade-aware error messaging for foreign key constraints'),
   softDelete: deleteSoftDeleteSchema.optional().describe('Use soft-delete semantics instead of hard DELETE'),
+  operations: z.array(deleteBatchOperationSchema).min(1, 'operations must contain at least one batch item').optional().describe('Batch delete operation list'),
+  batch: deleteBatchOptionsSchema.optional().describe('Optional batch execution controls for operations payloads'),
   vendor: z.enum(['postgresql', 'mysql', 'sqlite']).describe('Database vendor'),
   connectionString: z.string().min(1, 'Database connection string is required').describe('Database connection string'),
 }).superRefine((value, ctx) => {
+  const hasOperations = (value.operations?.length ?? 0) > 0;
+
+  if (hasOperations && (value.where?.length ?? 0) > 0) {
+    ctx.addIssue({
+      code: z.ZodIssueCode.custom,
+      path: ['where'],
+      message: 'where cannot be provided when operations[] is used',
+    });
+  }
+
+  if (hasOperations && value.allowFullTableDelete) {
+    ctx.addIssue({
+      code: z.ZodIssueCode.custom,
+      path: ['allowFullTableDelete'],
+      message: 'allowFullTableDelete cannot be provided when operations[] is used',
+    });
+  }
+
+  if (hasOperations && value.cascade) {
+    ctx.addIssue({
+      code: z.ZodIssueCode.custom,
+      path: ['cascade'],
+      message: 'cascade cannot be provided when operations[] is used',
+    });
+  }
+
+  if (hasOperations && value.softDelete) {
+    ctx.addIssue({
+      code: z.ZodIssueCode.custom,
+      path: ['softDelete'],
+      message: 'softDelete cannot be provided when operations[] is used',
+    });
+  }
+
+  if (hasOperations) {
+    return;
+  }
+
   const hasWhere = (value.where?.length ?? 0) > 0;
 
   if (!value.allowFullTableDelete && !hasWhere) {

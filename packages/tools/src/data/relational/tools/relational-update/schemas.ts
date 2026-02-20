@@ -142,6 +142,39 @@ export const updateOptimisticLockSchema = z.object({
 }).describe('Optional optimistic lock condition');
 
 /**
+ * One UPDATE operation item for batch mode.
+ */
+export const updateBatchOperationSchema = z.object({
+  data: updateDataSchema.describe('Columns and values to update'),
+  where: z.array(updateWhereConditionSchema).optional().describe('WHERE conditions (combined with AND)'),
+  allowFullTableUpdate: z.boolean().default(false).describe('Explicitly allow UPDATE without WHERE conditions for this operation'),
+  optimisticLock: updateOptimisticLockSchema.optional().describe('Optional optimistic locking condition for this operation'),
+}).superRefine((value, ctx) => {
+  const hasWhere = (value.where?.length ?? 0) > 0;
+  const hasOptimisticLock = !!value.optimisticLock;
+
+  if (!value.allowFullTableUpdate && !hasWhere && !hasOptimisticLock) {
+    ctx.addIssue({
+      code: z.ZodIssueCode.custom,
+      path: ['where'],
+      message: 'WHERE conditions are required unless allowFullTableUpdate is true',
+    });
+  }
+});
+
+/**
+ * Batch execution options for UPDATE operations.
+ */
+export const updateBatchOptionsSchema = z.object({
+  enabled: z.boolean().optional().default(true).describe('Enable batched processing for operations[] payloads'),
+  batchSize: z.number().int().positive().max(5000).optional().default(100).describe('Operations per batch chunk'),
+  continueOnError: z.boolean().optional().default(true).describe('Continue processing remaining chunks when one chunk fails'),
+  maxRetries: z.number().int().min(0).max(5).optional().default(0).describe('Retry attempts per failed chunk'),
+  retryDelayMs: z.number().int().min(0).max(60000).optional().default(0).describe('Delay between retry attempts in milliseconds'),
+  benchmark: z.boolean().optional().default(false).describe('Run synthetic benchmark metadata comparing individual vs batched execution callbacks'),
+});
+
+/**
  * Relational UPDATE tool input schema.
  */
 export const relationalUpdateSchema = z.object({
@@ -152,13 +185,61 @@ export const relationalUpdateSchema = z.object({
       'Table name contains invalid characters. Only alphanumeric characters, underscores, and dots (for schema qualification) are allowed.'
     )
     .describe('Table name to update (schema-qualified names supported, e.g. public.users)'),
-  data: updateDataSchema.describe('Columns and values to update'),
+  data: updateDataSchema.optional().describe('Columns and values to update'),
   where: z.array(updateWhereConditionSchema).optional().describe('WHERE conditions (combined with AND)'),
   allowFullTableUpdate: z.boolean().default(false).describe('Explicitly allow UPDATE without WHERE conditions'),
   optimisticLock: updateOptimisticLockSchema.optional().describe('Optional optimistic locking condition'),
+  operations: z.array(updateBatchOperationSchema).min(1, 'operations must contain at least one batch item').optional().describe('Batch update operation list'),
+  batch: updateBatchOptionsSchema.optional().describe('Optional batch execution controls for operations payloads'),
   vendor: z.enum(['postgresql', 'mysql', 'sqlite']).describe('Database vendor'),
   connectionString: z.string().min(1, 'Database connection string is required').describe('Database connection string'),
 }).superRefine((value, ctx) => {
+  const hasOperations = (value.operations?.length ?? 0) > 0;
+
+  if (hasOperations && value.data) {
+    ctx.addIssue({
+      code: z.ZodIssueCode.custom,
+      path: ['data'],
+      message: 'data cannot be provided when operations[] is used',
+    });
+  }
+
+  if (!hasOperations && !value.data) {
+    ctx.addIssue({
+      code: z.ZodIssueCode.custom,
+      path: ['data'],
+      message: 'data is required when operations[] is not provided',
+    });
+  }
+
+  if (hasOperations && (value.where?.length ?? 0) > 0) {
+    ctx.addIssue({
+      code: z.ZodIssueCode.custom,
+      path: ['where'],
+      message: 'where cannot be provided when operations[] is used',
+    });
+  }
+
+  if (hasOperations && value.optimisticLock) {
+    ctx.addIssue({
+      code: z.ZodIssueCode.custom,
+      path: ['optimisticLock'],
+      message: 'optimisticLock cannot be provided when operations[] is used',
+    });
+  }
+
+  if (hasOperations && value.allowFullTableUpdate) {
+    ctx.addIssue({
+      code: z.ZodIssueCode.custom,
+      path: ['allowFullTableUpdate'],
+      message: 'allowFullTableUpdate cannot be provided when operations[] is used',
+    });
+  }
+
+  if (hasOperations) {
+    return;
+  }
+
   const hasWhere = (value.where?.length ?? 0) > 0;
   const hasOptimisticLock = !!value.optimisticLock;
 
