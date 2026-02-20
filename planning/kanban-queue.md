@@ -1,12 +1,12 @@
 # Kanban Queue: Relational Database Access Tool
 
-**Last Updated:** 2026-02-19
+**Last Updated:** 2026-02-20
 
 ## Queue Status Summary
 
 - **Ready:** 3 stories (ST-05003, ST-04002, ST-05001)
-- **In Progress:** 1 story (ST-02005)
-- **In Review:** 0 stories
+- **In Progress:** 0 stories
+- **In Review:** 1 story (ST-02005)
 - **Blocked:** 0 stories
 - **Backlog:** 3 stories (waiting on dependencies)
 
@@ -40,6 +40,12 @@
 
 ## In Progress
 
+_No stories currently in progress_
+
+---
+
+## In Review
+
 ### ST-02005: Implement Type-Safe DELETE Tool
 - **Epic:** EP-02
 - **Priority:** P0
@@ -47,12 +53,6 @@
 - **Dependencies:** ST-02004 ✅ (merged 2026-02-19)
 - **Checklist:** `planning/checklists/epic-02-story-tasks.md`
 - **Branch:** `feat/st-02005-type-safe-delete-tool`
-
----
-
-## In Review
-
-_No stories currently in review_
 
 ---
 

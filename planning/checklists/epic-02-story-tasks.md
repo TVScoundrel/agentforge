@@ -147,9 +147,9 @@
 - [x] Test full-table delete prevention
 - [x] Add or update story documentation at docs/st02005-type-safe-delete-tool.md (or document why not required)
 - [x] Assess test impact; add/update automated tests when needed, or document why tests are not required (added relational-delete schema + query-builder + tool invocation tests)
-- [ ] Run full test suite before finalizing the PR and record results
-- [ ] Run lint (`pnpm lint`) before finalizing the PR and record results
-- [ ] Mark PR ready for review
+- [x] Run full test suite before finalizing the PR and record results (`pnpm test --run` -> 112 passed, 4 skipped files; 1334 passed, 143 skipped tests)
+- [x] Run lint (`pnpm lint`) before finalizing the PR and record results (`pnpm lint` -> 0 errors; warnings-only baseline across workspace)
+- [x] Mark PR ready for review (PR #38 marked ready on 2026-02-20)
 - [ ] Wait for merge
 
 ---
