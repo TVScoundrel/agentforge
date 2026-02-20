@@ -5,6 +5,7 @@
 
 import { createLogger } from '@agentforge/core';
 import type { ConnectionManager } from '../../connection/connection-manager.js';
+import type { TransactionContext } from '../../query/transaction.js';
 import {
   DEFAULT_CHUNK_SIZE,
   executeStreamingSelect,
@@ -16,6 +17,10 @@ import { buildSelectQuery } from './query-builder.js';
 import { isSafeValidationError } from './error-utils.js';
 
 const logger = createLogger('agentforge:tools:data:relational:select');
+
+export interface SelectExecutionContext {
+  transaction?: TransactionContext;
+}
 
 function toSelectQueryInput(input: RelationalSelectInput): SelectQueryInput {
   return {
@@ -34,7 +39,8 @@ function toSelectQueryInput(input: RelationalSelectInput): SelectQueryInput {
  */
 export async function executeSelect(
   manager: ConnectionManager,
-  input: RelationalSelectInput
+  input: RelationalSelectInput,
+  context?: SelectExecutionContext
 ): Promise<SelectResult> {
   const startTime = Date.now();
 
@@ -105,7 +111,8 @@ export async function executeSelect(
     const query = buildSelectQuery(input);
 
     // Execute query
-    const result = await manager.execute(query);
+    const executor = context?.transaction ?? manager;
+    const result = await executor.execute(query);
 
     const executionTime = Date.now() - startTime;
 

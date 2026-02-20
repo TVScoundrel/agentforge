@@ -206,6 +206,13 @@ export class ConnectionManager extends EventEmitter implements DatabaseConnectio
   }
 
   /**
+   * Get the configured database vendor.
+   */
+  getVendor(): DatabaseVendor {
+    return this.vendor;
+  }
+
+  /**
    * Initialize the database connection
    *
    * This method is public to maintain compatibility with the DatabaseConnection interface
@@ -596,6 +603,48 @@ export class ConnectionManager extends EventEmitter implements DatabaseConnectio
   }
 
   /**
+   * Execute a callback with a single dedicated database connection/session.
+   *
+   * This is required for multi-statement transactions so all statements run on
+   * the same underlying connection.
+   */
+  async executeInConnection<T>(
+    callback: (execute: (query: SQL) => Promise<unknown>) => Promise<T>
+  ): Promise<T> {
+    if (!this.client || !this.db) {
+      throw new Error('Database not initialized. Call initialize() first.');
+    }
+
+    if (this.vendor === 'sqlite') {
+      return callback(async (query) => this.db.execute(query));
+    }
+
+    if (this.vendor === 'postgresql') {
+      const poolClient = await this.client.connect();
+      try {
+        const { drizzle } = await import('drizzle-orm/node-postgres');
+        const sessionDb = drizzle({ client: poolClient });
+        return await callback(async (query) => sessionDb.execute(query));
+      } finally {
+        poolClient.release();
+      }
+    }
+
+    if (this.vendor === 'mysql') {
+      const mysqlConnection = await this.client.getConnection();
+      try {
+        const { drizzle } = await import('drizzle-orm/mysql2');
+        const sessionDb = drizzle({ client: mysqlConnection });
+        return await callback(async (query) => sessionDb.execute(query));
+      } finally {
+        mysqlConnection.release();
+      }
+    }
+
+    throw new Error(`Unsupported database vendor: ${this.vendor}`);
+  }
+
+  /**
    * Get connection pool metrics
    *
    * Returns information about the current state of the connection pool.
@@ -794,4 +843,3 @@ export class ConnectionManager extends EventEmitter implements DatabaseConnectio
     }
   }
 }
-

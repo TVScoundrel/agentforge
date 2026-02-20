@@ -4,6 +4,7 @@
  */
 
 import type { DatabaseVendor } from '../types.js';
+import type { SQL } from 'drizzle-orm';
 
 /**
  * Query parameters for parameterized SQL execution
@@ -38,3 +39,10 @@ export interface QueryExecutionResult {
   executionTime: number;
 }
 
+/**
+ * Minimal SQL executor abstraction.
+ * Used by ConnectionManager and transaction contexts.
+ */
+export interface SqlExecutor {
+  execute(query: SQL): Promise<unknown>;
+}

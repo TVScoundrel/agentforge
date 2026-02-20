@@ -6,6 +6,7 @@
 import { createLogger } from '@agentforge/core';
 import { buildInsertQuery } from '../../query/query-builder.js';
 import type { ConnectionManager } from '../../connection/connection-manager.js';
+import type { TransactionContext } from '../../query/transaction.js';
 import type { InsertResult, RelationalInsertInput } from './types.js';
 import { getConstraintViolationMessage, isSafeInsertValidationError } from './error-utils.js';
 
@@ -16,6 +17,10 @@ interface NormalizedExecutionResult {
   rowCount: number;
   insertId?: number;
   lastInsertRowid?: number;
+}
+
+export interface InsertExecutionContext {
+  transaction?: TransactionContext;
 }
 
 function toNumber(value: unknown): number | undefined {
@@ -112,7 +117,8 @@ function deriveInsertedIds(options: {
  */
 export async function executeInsert(
   manager: ConnectionManager,
-  input: RelationalInsertInput
+  input: RelationalInsertInput,
+  context?: InsertExecutionContext
 ): Promise<InsertResult> {
   const startTime = Date.now();
 
@@ -131,7 +137,8 @@ export async function executeInsert(
       vendor: input.vendor,
     });
 
-    const rawResult = await manager.execute(built.query);
+    const executor = context?.transaction ?? manager;
+    const rawResult = await executor.execute(built.query);
     const normalized = normalizeExecutionResult(rawResult);
     const executionTime = Date.now() - startTime;
 
