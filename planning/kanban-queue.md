@@ -4,9 +4,9 @@
 
 ## Queue Status Summary
 
-- **Ready:** 3 stories (ST-05003, ST-04002, ST-05001)
+- **Ready:** 2 stories (ST-05003, ST-05001)
 - **In Progress:** 0 stories
-- **In Review:** 0 stories
+- **In Review:** 1 story (ST-04002)
 - **Blocked:** 0 stories
 - **Backlog:** 7 stories (queued for prioritization and dependencies)
 
@@ -46,7 +46,13 @@ _No stories currently in progress_
 
 ## In Review
 
-_No stories currently in review_
+### ST-04002: Implement Batch Operations
+- **Epic:** EP-04
+- **Priority:** P2
+- **Estimate:** 4 hours
+- **Dependencies:** ST-02003 ✅ (merged 2026-02-19)
+- **Checklist:** `planning/checklists/epic-04-story-tasks.md`
+- **PR:** https://github.com/TVScoundrel/agentforge/pull/40
 
 ---
 

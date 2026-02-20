@@ -3,7 +3,7 @@
 **Epic Range:** EP-01 through EP-05  
 **Status:** In Progress  
 **Last Updated:** 2026-02-20
-**Active Story:** ST-04002 (Ready)
+**Active Story:** ST-04002 (In Review)
 
 ---
 
