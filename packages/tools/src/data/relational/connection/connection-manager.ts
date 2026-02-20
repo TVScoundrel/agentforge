@@ -599,6 +599,32 @@ export class ConnectionManager extends EventEmitter implements DatabaseConnectio
       vendor: this.vendor
     });
 
+    // drizzle-orm's better-sqlite3 adapter does not expose an .execute() method.
+    // It uses .all() for SELECT (returns row arrays) and .run() for DML/DDL
+    // (returns { changes, lastInsertRowid }). Try .all() first and fall back
+    // to .run() when better-sqlite3 indicates the statement returns no data.
+    if (this.vendor === 'sqlite') {
+      try {
+        return this.db.all(query);
+      } catch (error: unknown) {
+        if (error instanceof Error && error.message.includes('does not return data')) {
+          return this.db.run(query);
+        }
+        throw error;
+      }
+    }
+
+    // drizzle-orm's mysql2 adapter returns [rows, fields] from execute().
+    // Normalize by extracting just the rows array so callers can treat the
+    // result identically to PostgreSQL (which returns rows directly).
+    if (this.vendor === 'mysql') {
+      const raw = await this.db.execute(query);
+      if (Array.isArray(raw) && raw.length === 2 && Array.isArray(raw[0])) {
+        return raw[0];
+      }
+      return raw;
+    }
+
     return this.db.execute(query);
   }
 
@@ -616,7 +642,16 @@ export class ConnectionManager extends EventEmitter implements DatabaseConnectio
     }
 
     if (this.vendor === 'sqlite') {
-      return callback(async (query) => this.db.execute(query));
+      return callback(async (query) => {
+        try {
+          return this.db.all(query);
+        } catch (error: unknown) {
+          if (error instanceof Error && error.message.includes('does not return data')) {
+            return this.db.run(query);
+          }
+          throw error;
+        }
+      });
     }
 
     if (this.vendor === 'postgresql') {
@@ -635,7 +670,13 @@ export class ConnectionManager extends EventEmitter implements DatabaseConnectio
       try {
         const { drizzle } = await import('drizzle-orm/mysql2');
         const sessionDb = drizzle({ client: mysqlConnection });
-        return await callback(async (query) => sessionDb.execute(query));
+        return await callback(async (query) => {
+          const raw = await sessionDb.execute(query);
+          if (Array.isArray(raw) && raw.length === 2 && Array.isArray(raw[0])) {
+            return raw[0];
+          }
+          return raw;
+        });
       } finally {
         mysqlConnection.release();
       }

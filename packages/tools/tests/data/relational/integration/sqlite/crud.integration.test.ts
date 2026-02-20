@@ -52,10 +52,10 @@ describe.skipIf(!hasSQLiteBindings)('SQLite CRUD Integration', () => {
         vendor: 'sqlite',
       });
 
-      expect(result.data).toHaveLength(3);
-      expect(result.data[0]).toMatchObject({ name: 'Alice', email: 'alice@example.com' });
-      expect(result.data[1]).toMatchObject({ name: 'Bob' });
-      expect(result.data[2]).toMatchObject({ name: 'Carol' });
+      expect(result.rows).toHaveLength(3);
+      expect(result.rows[0]).toMatchObject({ name: 'Alice', email: 'alice@example.com' });
+      expect(result.rows[1]).toMatchObject({ name: 'Bob' });
+      expect(result.rows[2]).toMatchObject({ name: 'Carol' });
     });
 
     it('should select with WHERE clause using positional params', async () => {
@@ -65,8 +65,8 @@ describe.skipIf(!hasSQLiteBindings)('SQLite CRUD Integration', () => {
         vendor: 'sqlite',
       });
 
-      expect(result.data).toHaveLength(2);
-      const names = result.data.map((r: any) => r.name);
+      expect(result.rows).toHaveLength(2);
+      const names = result.rows.map((r: any) => r.name);
       expect(names).toContain('Alice');
       expect(names).toContain('Carol');
     });
@@ -78,9 +78,9 @@ describe.skipIf(!hasSQLiteBindings)('SQLite CRUD Integration', () => {
         vendor: 'sqlite',
       });
 
-      expect(result.data).toHaveLength(2);
-      expect((result.data[0] as any).name).toBe('Carol');
-      expect((result.data[1] as any).name).toBe('Alice');
+      expect(result.rows).toHaveLength(2);
+      expect((result.rows[0] as any).name).toBe('Carol');
+      expect((result.rows[1] as any).name).toBe('Alice');
     });
 
     it('should select with JOIN', async () => {
@@ -93,8 +93,8 @@ describe.skipIf(!hasSQLiteBindings)('SQLite CRUD Integration', () => {
         vendor: 'sqlite',
       });
 
-      expect(result.data).toHaveLength(3);
-      expect(result.data[0]).toMatchObject({
+      expect(result.rows).toHaveLength(3);
+      expect(result.rows[0]).toMatchObject({
         name: 'Alice',
         product_name: 'Widget A',
         quantity: 2,
@@ -108,7 +108,7 @@ describe.skipIf(!hasSQLiteBindings)('SQLite CRUD Integration', () => {
         vendor: 'sqlite',
       });
 
-      expect(result.data).toHaveLength(0);
+      expect(result.rows).toHaveLength(0);
     });
   });
 
@@ -127,8 +127,8 @@ describe.skipIf(!hasSQLiteBindings)('SQLite CRUD Integration', () => {
         vendor: 'sqlite',
       });
 
-      expect(verify.data).toHaveLength(1);
-      expect(verify.data[0]).toMatchObject({
+      expect(verify.rows).toHaveLength(1);
+      expect(verify.rows[0]).toMatchObject({
         name: 'Dave',
         email: 'dave@example.com',
         age: 40,
@@ -160,7 +160,7 @@ describe.skipIf(!hasSQLiteBindings)('SQLite CRUD Integration', () => {
       });
 
       // 3 seed + 5 new = 8
-      expect((result.data[0] as any).count).toBe(8);
+      expect((result.rows[0] as any).count).toBe(8);
     });
   });
 
@@ -178,7 +178,7 @@ describe.skipIf(!hasSQLiteBindings)('SQLite CRUD Integration', () => {
         vendor: 'sqlite',
       });
 
-      expect((result.data[0] as any).age).toBe(31);
+      expect((result.rows[0] as any).age).toBe(31);
     });
 
     it('should update multiple rows', async () => {
@@ -194,7 +194,7 @@ describe.skipIf(!hasSQLiteBindings)('SQLite CRUD Integration', () => {
         vendor: 'sqlite',
       });
 
-      for (const row of result.data) {
+      for (const row of result.rows) {
         expect((row as any).stock).toBe(0);
       }
     });
@@ -212,7 +212,7 @@ describe.skipIf(!hasSQLiteBindings)('SQLite CRUD Integration', () => {
         vendor: 'sqlite',
       });
 
-      expect(result.data).toHaveLength(0);
+      expect(result.rows).toHaveLength(0);
     });
   });
 
@@ -230,7 +230,7 @@ describe.skipIf(!hasSQLiteBindings)('SQLite CRUD Integration', () => {
         vendor: 'sqlite',
       });
 
-      expect(result.data).toHaveLength(0);
+      expect(result.rows).toHaveLength(0);
     });
 
     it('should delete with complex WHERE', async () => {
@@ -246,7 +246,7 @@ describe.skipIf(!hasSQLiteBindings)('SQLite CRUD Integration', () => {
         vendor: 'sqlite',
       });
 
-      expect(result.data).toHaveLength(0);
+      expect(result.rows).toHaveLength(0);
     });
 
     it('should respect foreign key constraints when PRAGMA is on', async () => {
@@ -280,7 +280,7 @@ describe.skipIf(!hasSQLiteBindings)('SQLite CRUD Integration', () => {
         vendor: 'sqlite',
       });
 
-      expect((result.data[0] as any).user_count).toBe(3);
+      expect((result.rows[0] as any).user_count).toBe(3);
     });
 
     it('should execute SUM', async () => {
@@ -290,7 +290,7 @@ describe.skipIf(!hasSQLiteBindings)('SQLite CRUD Integration', () => {
       });
 
       // 19.98 + 49.99 + 59.97 = 129.94
-      const total = Number((result.data[0] as any).order_total);
+      const total = Number((result.rows[0] as any).order_total);
       expect(total).toBeCloseTo(129.94, 1);
     });
 
@@ -300,9 +300,9 @@ describe.skipIf(!hasSQLiteBindings)('SQLite CRUD Integration', () => {
         vendor: 'sqlite',
       });
 
-      expect(result.data).toHaveLength(2);
-      expect(result.data[0]).toMatchObject({ category: 'gadgets', count: 1 });
-      expect(result.data[1]).toMatchObject({ category: 'widgets', count: 2 });
+      expect(result.rows).toHaveLength(2);
+      expect(result.rows[0]).toMatchObject({ category: 'gadgets', count: 1 });
+      expect(result.rows[1]).toMatchObject({ category: 'widgets', count: 2 });
     });
   });
 });

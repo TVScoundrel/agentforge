@@ -50,8 +50,8 @@ describe('PostgreSQL CRUD Integration', () => {
         vendor: 'postgresql',
       });
 
-      expect(result.data).toHaveLength(3);
-      expect(result.data[0]).toMatchObject({ name: 'Alice', email: 'alice@example.com' });
+      expect(result.rows).toHaveLength(3);
+      expect(result.rows[0]).toMatchObject({ name: 'Alice', email: 'alice@example.com' });
     });
 
     it('should select with positional parameters ($1)', async () => {
@@ -61,8 +61,8 @@ describe('PostgreSQL CRUD Integration', () => {
         vendor: 'postgresql',
       });
 
-      expect(result.data).toHaveLength(2);
-      const names = result.data.map((r: any) => r.name);
+      expect(result.rows).toHaveLength(2);
+      const names = result.rows.map((r: any) => r.name);
       expect(names).toContain('Alice');
       expect(names).toContain('Carol');
     });
@@ -74,8 +74,8 @@ describe('PostgreSQL CRUD Integration', () => {
         vendor: 'postgresql',
       });
 
-      expect(result.data).toHaveLength(1);
-      expect(result.data[0]).toMatchObject({ name: 'Bob', age: 25 });
+      expect(result.rows).toHaveLength(1);
+      expect(result.rows[0]).toMatchObject({ name: 'Bob', age: 25 });
     });
 
     it('should select with ORDER BY and LIMIT', async () => {
@@ -85,8 +85,8 @@ describe('PostgreSQL CRUD Integration', () => {
         vendor: 'postgresql',
       });
 
-      expect(result.data).toHaveLength(2);
-      expect((result.data[0] as any).name).toBe('Carol');
+      expect(result.rows).toHaveLength(2);
+      expect((result.rows[0] as any).name).toBe('Carol');
     });
 
     it('should select with JOIN', async () => {
@@ -99,8 +99,8 @@ describe('PostgreSQL CRUD Integration', () => {
         vendor: 'postgresql',
       });
 
-      expect(result.data).toHaveLength(3);
-      expect(result.data[0]).toMatchObject({
+      expect(result.rows).toHaveLength(3);
+      expect(result.rows[0]).toMatchObject({
         name: 'Alice',
         product_name: 'Widget A',
         quantity: 2,
@@ -114,7 +114,7 @@ describe('PostgreSQL CRUD Integration', () => {
         vendor: 'postgresql',
       });
 
-      expect(result.data).toHaveLength(0);
+      expect(result.rows).toHaveLength(0);
     });
 
     it('should handle type casting', async () => {
@@ -124,8 +124,8 @@ describe('PostgreSQL CRUD Integration', () => {
         vendor: 'postgresql',
       });
 
-      expect(result.data).toHaveLength(1);
-      expect((result.data[0] as any).val).toBe(42);
+      expect(result.rows).toHaveLength(1);
+      expect((result.rows[0] as any).val).toBe(42);
     });
   });
 
@@ -143,8 +143,8 @@ describe('PostgreSQL CRUD Integration', () => {
         vendor: 'postgresql',
       });
 
-      expect(verify.data).toHaveLength(1);
-      expect(verify.data[0]).toMatchObject({
+      expect(verify.rows).toHaveLength(1);
+      expect(verify.rows[0]).toMatchObject({
         name: 'Dave',
         email: 'dave@example.com',
         age: 40,
@@ -158,9 +158,9 @@ describe('PostgreSQL CRUD Integration', () => {
         vendor: 'postgresql',
       });
 
-      expect(result.data).toHaveLength(1);
-      expect((result.data[0] as any).name).toBe('Eve');
-      expect((result.data[0] as any).id).toBeDefined();
+      expect(result.rows).toHaveLength(1);
+      expect((result.rows[0] as any).name).toBe('Eve');
+      expect((result.rows[0] as any).id).toBeDefined();
     });
 
     it('should reject duplicate unique values', async () => {
@@ -188,7 +188,7 @@ describe('PostgreSQL CRUD Integration', () => {
         vendor: 'postgresql',
       });
 
-      expect((result.data[0] as any).age).toBe(31);
+      expect((result.rows[0] as any).age).toBe(31);
     });
 
     it('should update multiple rows', async () => {
@@ -204,7 +204,7 @@ describe('PostgreSQL CRUD Integration', () => {
         vendor: 'postgresql',
       });
 
-      for (const row of result.data) {
+      for (const row of result.rows) {
         expect((row as any).stock).toBe(0);
       }
     });
@@ -224,7 +224,7 @@ describe('PostgreSQL CRUD Integration', () => {
         vendor: 'postgresql',
       });
 
-      expect(result.data).toHaveLength(0);
+      expect(result.rows).toHaveLength(0);
     });
 
     it('should enforce foreign key constraints', async () => {
@@ -245,7 +245,7 @@ describe('PostgreSQL CRUD Integration', () => {
         vendor: 'postgresql',
       });
 
-      expect((result.data[0] as any).user_count).toBe(3);
+      expect((result.rows[0] as any).user_count).toBe(3);
     });
 
     it('should execute SUM', async () => {
@@ -254,7 +254,7 @@ describe('PostgreSQL CRUD Integration', () => {
         vendor: 'postgresql',
       });
 
-      const total = Number((result.data[0] as any).order_total);
+      const total = Number((result.rows[0] as any).order_total);
       expect(total).toBeCloseTo(129.94, 1);
     });
 
@@ -264,9 +264,9 @@ describe('PostgreSQL CRUD Integration', () => {
         vendor: 'postgresql',
       });
 
-      expect(result.data).toHaveLength(2);
-      expect(result.data[0]).toMatchObject({ category: 'gadgets', count: 1 });
-      expect(result.data[1]).toMatchObject({ category: 'widgets', count: 2 });
+      expect(result.rows).toHaveLength(2);
+      expect(result.rows[0]).toMatchObject({ category: 'gadgets', count: 1 });
+      expect(result.rows[1]).toMatchObject({ category: 'widgets', count: 2 });
     });
   });
 
@@ -278,8 +278,8 @@ describe('PostgreSQL CRUD Integration', () => {
         vendor: 'postgresql',
       });
 
-      expect(result.data).toHaveLength(2);
-      for (const row of result.data) {
+      expect(result.rows).toHaveLength(2);
+      for (const row of result.rows) {
         expect((row as any).active).toBe(true);
       }
     });
@@ -297,8 +297,8 @@ describe('PostgreSQL CRUD Integration', () => {
         vendor: 'postgresql',
       });
 
-      const id1 = (r1.data[0] as any).id;
-      const id2 = (r2.data[0] as any).id;
+      const id1 = (r1.rows[0] as any).id;
+      const id2 = (r2.rows[0] as any).id;
       expect(id2).toBeGreaterThan(id1);
     });
   });

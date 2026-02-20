@@ -125,7 +125,7 @@ ORDER BY ns.nspname, tbl.relname, idx.relname, ord.ordinality
 const MYSQL_TABLES_QUERY = `
 SELECT
   table_schema AS schema_name,
-  table_name
+  table_name AS table_name
 FROM information_schema.tables
 WHERE table_type = 'BASE TABLE'
   AND table_schema = DATABASE()
@@ -135,11 +135,11 @@ ORDER BY table_name
 const MYSQL_COLUMNS_QUERY = `
 SELECT
   table_schema AS schema_name,
-  table_name,
-  column_name,
+  table_name AS table_name,
+  column_name AS column_name,
   column_type AS data_type,
-  is_nullable,
-  column_default
+  is_nullable AS is_nullable,
+  column_default AS column_default
 FROM information_schema.columns
 WHERE table_schema = DATABASE()
 ORDER BY table_name, ordinal_position
@@ -148,8 +148,8 @@ ORDER BY table_name, ordinal_position
 const MYSQL_PRIMARY_KEYS_QUERY = `
 SELECT
   table_schema AS schema_name,
-  table_name,
-  column_name,
+  table_name AS table_name,
+  column_name AS column_name,
   ordinal_position AS key_position
 FROM information_schema.key_column_usage
 WHERE table_schema = DATABASE()
@@ -160,12 +160,12 @@ ORDER BY table_name, ordinal_position
 const MYSQL_FOREIGN_KEYS_QUERY = `
 SELECT
   table_schema AS schema_name,
-  table_name,
-  constraint_name,
-  column_name,
+  table_name AS table_name,
+  constraint_name AS constraint_name,
+  column_name AS column_name,
   referenced_table_schema AS referenced_schema_name,
-  referenced_table_name,
-  referenced_column_name
+  referenced_table_name AS referenced_table_name,
+  referenced_column_name AS referenced_column_name
 FROM information_schema.key_column_usage
 WHERE table_schema = DATABASE()
   AND referenced_table_name IS NOT NULL
@@ -175,11 +175,11 @@ ORDER BY table_name, constraint_name, ordinal_position
 const MYSQL_INDEXES_QUERY = `
 SELECT
   table_schema AS schema_name,
-  table_name,
-  index_name,
-  non_unique,
-  column_name,
-  seq_in_index
+  table_name AS table_name,
+  index_name AS index_name,
+  non_unique AS non_unique,
+  column_name AS column_name,
+  seq_in_index AS seq_in_index
 FROM information_schema.statistics
 WHERE table_schema = DATABASE()
   AND index_name <> 'PRIMARY'

@@ -56,8 +56,8 @@ describe('MySQL CRUD Integration', () => {
         vendor: 'mysql',
       });
 
-      expect(result.data).toHaveLength(3);
-      expect(result.data[0]).toMatchObject({ name: 'Alice', email: 'alice@example.com' });
+      expect(result.rows).toHaveLength(3);
+      expect(result.rows[0]).toMatchObject({ name: 'Alice', email: 'alice@example.com' });
     });
 
     it('should select with positional parameters (?)', async () => {
@@ -67,8 +67,8 @@ describe('MySQL CRUD Integration', () => {
         vendor: 'mysql',
       });
 
-      expect(result.data).toHaveLength(2);
-      const names = result.data.map((r: any) => r.name);
+      expect(result.rows).toHaveLength(2);
+      const names = result.rows.map((r: any) => r.name);
       expect(names).toContain('Alice');
       expect(names).toContain('Carol');
     });
@@ -80,8 +80,8 @@ describe('MySQL CRUD Integration', () => {
         vendor: 'mysql',
       });
 
-      expect(result.data).toHaveLength(1);
-      expect(result.data[0]).toMatchObject({ name: 'Bob', age: 25 });
+      expect(result.rows).toHaveLength(1);
+      expect(result.rows[0]).toMatchObject({ name: 'Bob', age: 25 });
     });
 
     it('should select with ORDER BY and LIMIT', async () => {
@@ -91,8 +91,8 @@ describe('MySQL CRUD Integration', () => {
         vendor: 'mysql',
       });
 
-      expect(result.data).toHaveLength(2);
-      expect((result.data[0] as any).name).toBe('Carol');
+      expect(result.rows).toHaveLength(2);
+      expect((result.rows[0] as any).name).toBe('Carol');
     });
 
     it('should select with JOIN', async () => {
@@ -105,8 +105,8 @@ describe('MySQL CRUD Integration', () => {
         vendor: 'mysql',
       });
 
-      expect(result.data).toHaveLength(3);
-      expect(result.data[0]).toMatchObject({
+      expect(result.rows).toHaveLength(3);
+      expect(result.rows[0]).toMatchObject({
         name: 'Alice',
         product_name: 'Widget A',
         quantity: 2,
@@ -120,7 +120,7 @@ describe('MySQL CRUD Integration', () => {
         vendor: 'mysql',
       });
 
-      expect(result.data).toHaveLength(0);
+      expect(result.rows).toHaveLength(0);
     });
   });
 
@@ -138,8 +138,8 @@ describe('MySQL CRUD Integration', () => {
         vendor: 'mysql',
       });
 
-      expect(verify.data).toHaveLength(1);
-      expect(verify.data[0]).toMatchObject({
+      expect(verify.rows).toHaveLength(1);
+      expect(verify.rows[0]).toMatchObject({
         name: 'Dave',
         email: 'dave@example.com',
         age: 40,
@@ -175,8 +175,8 @@ describe('MySQL CRUD Integration', () => {
         vendor: 'mysql',
       });
 
-      expect(result.data).toHaveLength(2);
-      expect((result.data[1] as any).id).toBeGreaterThan((result.data[0] as any).id);
+      expect(result.rows).toHaveLength(2);
+      expect((result.rows[1] as any).id).toBeGreaterThan((result.rows[0] as any).id);
     });
   });
 
@@ -194,7 +194,7 @@ describe('MySQL CRUD Integration', () => {
         vendor: 'mysql',
       });
 
-      expect((result.data[0] as any).age).toBe(31);
+      expect((result.rows[0] as any).age).toBe(31);
     });
 
     it('should update multiple rows', async () => {
@@ -210,7 +210,7 @@ describe('MySQL CRUD Integration', () => {
         vendor: 'mysql',
       });
 
-      for (const row of result.data) {
+      for (const row of result.rows) {
         expect((row as any).stock).toBe(0);
       }
     });
@@ -230,7 +230,7 @@ describe('MySQL CRUD Integration', () => {
         vendor: 'mysql',
       });
 
-      expect(result.data).toHaveLength(0);
+      expect(result.rows).toHaveLength(0);
     });
 
     it('should enforce foreign key constraints', async () => {
@@ -252,7 +252,7 @@ describe('MySQL CRUD Integration', () => {
       });
 
       // MySQL returns COUNT as a number
-      expect(Number((result.data[0] as any).user_count)).toBe(3);
+      expect(Number((result.rows[0] as any).user_count)).toBe(3);
     });
 
     it('should execute SUM', async () => {
@@ -261,7 +261,7 @@ describe('MySQL CRUD Integration', () => {
         vendor: 'mysql',
       });
 
-      const total = Number((result.data[0] as any).order_total);
+      const total = Number((result.rows[0] as any).order_total);
       expect(total).toBeCloseTo(129.94, 1);
     });
 
@@ -271,9 +271,9 @@ describe('MySQL CRUD Integration', () => {
         vendor: 'mysql',
       });
 
-      expect(result.data).toHaveLength(2);
-      expect((result.data[0] as any).category).toBe('gadgets');
-      expect(Number((result.data[0] as any).count)).toBe(1);
+      expect(result.rows).toHaveLength(2);
+      expect((result.rows[0] as any).category).toBe('gadgets');
+      expect(Number((result.rows[0] as any).count)).toBe(1);
     });
   });
 
@@ -285,8 +285,8 @@ describe('MySQL CRUD Integration', () => {
         vendor: 'mysql',
       });
 
-      expect(result.data).toHaveLength(2);
-      for (const row of result.data) {
+      expect(result.rows).toHaveLength(2);
+      for (const row of result.rows) {
         expect(Number((row as any).active)).toBe(1);
       }
     });
@@ -297,7 +297,7 @@ describe('MySQL CRUD Integration', () => {
         vendor: 'mysql',
       });
 
-      const maxId = Number((result.data[0] as any).max_id);
+      const maxId = Number((result.rows[0] as any).max_id);
       expect(maxId).toBeGreaterThanOrEqual(3);
     });
   });

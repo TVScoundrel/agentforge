@@ -9,6 +9,7 @@
  */
 
 import { describe, it, expect, beforeAll, afterAll } from 'vitest';
+import { sql } from 'drizzle-orm';
 import { ConnectionManager } from '../../../../../src/data/relational/connection/connection-manager.js';
 import { executeQuery } from '../../../../../src/data/relational/query/query-executor.js';
 import type { ConnectionConfig } from '../../../../../src/data/relational/connection/types.js';
@@ -142,8 +143,9 @@ describe('Performance Benchmarks', () => {
               ? 'CREATE TABLE IF NOT EXISTS bench_insert (id INTEGER PRIMARY KEY AUTO_INCREMENT, val VARCHAR(255), num INTEGER)'
               : 'CREATE TABLE IF NOT EXISTS bench_insert (id INTEGER PRIMARY KEY AUTOINCREMENT, val VARCHAR(255), num INTEGER)';
 
-        await executeQuery(v.manager, { sql: 'DROP TABLE IF EXISTS bench_insert', vendor: vendorName });
-        await executeQuery(v.manager, { sql: createSql, vendor: vendorName });
+        // DDL goes straight through manager.execute() to bypass the SQL sanitiser
+        await v.manager.execute(sql.raw('DROP TABLE IF EXISTS bench_insert'));
+        await v.manager.execute(sql.raw(createSql));
 
         const { durationMs } = await measureTime(async () => {
           for (let i = 0; i < ROW_COUNT; i++) {
@@ -167,7 +169,7 @@ describe('Performance Benchmarks', () => {
           sql: 'SELECT COUNT(*) as cnt FROM bench_insert',
           vendor: vendorName,
         });
-        expect(Number((result.data[0] as any).cnt)).toBe(ROW_COUNT);
+        expect(Number((result.rows[0] as any).cnt)).toBe(ROW_COUNT);
 
         // Generous bound: 30s for 100 sequential inserts
         expect(durationMs).toBeLessThan(30_000);
@@ -192,10 +194,10 @@ describe('Performance Benchmarks', () => {
           vendor: vendorName,
           operation: 'SELECT all rows',
           durationMs: Math.round(durationMs),
-          rowCount: result.data.length,
+          rowCount: result.rows.length,
         });
 
-        expect(result.data.length).toBeGreaterThanOrEqual(100);
+        expect(result.rows.length).toBeGreaterThanOrEqual(100);
         expect(durationMs).toBeLessThan(5_000);
       });
 
@@ -217,10 +219,10 @@ describe('Performance Benchmarks', () => {
           vendor: vendorName,
           operation: 'SELECT with WHERE',
           durationMs: Math.round(durationMs),
-          rowCount: result.data.length,
+          rowCount: result.rows.length,
         });
 
-        expect(result.data.length).toBe(50);
+        expect(result.rows.length).toBe(50);
         expect(durationMs).toBeLessThan(5_000);
       });
     }
@@ -261,10 +263,9 @@ describe('Performance Benchmarks', () => {
         if (!v) return;
 
         const { durationMs } = await measureTime(async () => {
-          await executeQuery(v.manager, {
-            sql: 'DELETE FROM bench_insert',
-            vendor: vendorName,
-          });
+          // DELETE with no WHERE needs to bypass the SQL sanitiser which
+          // requires parameters for DML statements.
+          await v.manager.execute(sql.raw('DELETE FROM bench_insert'));
         });
 
         benchmarkResults.push({
@@ -279,7 +280,7 @@ describe('Performance Benchmarks', () => {
           sql: 'SELECT COUNT(*) as cnt FROM bench_insert',
           vendor: vendorName,
         });
-        expect(Number((result.data[0] as any).cnt)).toBe(0);
+        expect(Number((result.rows[0] as any).cnt)).toBe(0);
 
         expect(durationMs).toBeLessThan(5_000);
       });

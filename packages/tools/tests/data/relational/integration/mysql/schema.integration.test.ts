@@ -48,7 +48,7 @@ describe('MySQL Schema Introspection Integration', () => {
 
   describe('Table Discovery', () => {
     it('should discover all tables', async () => {
-      const inspector = new SchemaInspector(manager, { vendor: 'mysql' });
+      const inspector = new SchemaInspector(manager, 'mysql');
       const schema = await inspector.inspect();
 
       const tableNames = schema.tables.map((t: any) => t.name).sort();
@@ -58,11 +58,8 @@ describe('MySQL Schema Introspection Integration', () => {
     });
 
     it('should filter tables by pattern', async () => {
-      const inspector = new SchemaInspector(manager, {
-        vendor: 'mysql',
-        tableFilter: 'user%',
-      });
-      const schema = await inspector.inspect();
+      const inspector = new SchemaInspector(manager, 'mysql');
+      const schema = await inspector.inspect({ tables: ['users'] });
 
       expect(schema.tables).toHaveLength(1);
       expect(schema.tables[0].name).toBe('users');
@@ -71,11 +68,8 @@ describe('MySQL Schema Introspection Integration', () => {
 
   describe('Column Discovery', () => {
     it('should discover columns for users table', async () => {
-      const inspector = new SchemaInspector(manager, {
-        vendor: 'mysql',
-        tableFilter: 'users',
-      });
-      const schema = await inspector.inspect();
+      const inspector = new SchemaInspector(manager, 'mysql');
+      const schema = await inspector.inspect({ tables: ['users'] });
 
       const users = schema.tables.find((t: any) => t.name === 'users');
       expect(users).toBeDefined();
@@ -89,11 +83,8 @@ describe('MySQL Schema Introspection Integration', () => {
     });
 
     it('should report column types', async () => {
-      const inspector = new SchemaInspector(manager, {
-        vendor: 'mysql',
-        tableFilter: 'products',
-      });
-      const schema = await inspector.inspect();
+      const inspector = new SchemaInspector(manager, 'mysql');
+      const schema = await inspector.inspect({ tables: ['products'] });
 
       const products = schema.tables.find((t: any) => t.name === 'products');
       const priceCol = products!.columns.find((c: any) => c.name === 'price');
@@ -102,45 +93,34 @@ describe('MySQL Schema Introspection Integration', () => {
     });
 
     it('should report nullable columns', async () => {
-      const inspector = new SchemaInspector(manager, {
-        vendor: 'mysql',
-        tableFilter: 'users',
-      });
-      const schema = await inspector.inspect();
+      const inspector = new SchemaInspector(manager, 'mysql');
+      const schema = await inspector.inspect({ tables: ['users'] });
 
       const users = schema.tables.find((t: any) => t.name === 'users');
       const ageCol = users!.columns.find((c: any) => c.name === 'age');
-      expect(ageCol!.nullable).toBe(true);
+      expect(ageCol!.isNullable).toBe(true);
 
       const nameCol = users!.columns.find((c: any) => c.name === 'name');
-      expect(nameCol!.nullable).toBe(false);
+      expect(nameCol!.isNullable).toBe(false);
     });
   });
 
   describe('Primary Keys', () => {
     it('should detect primary keys', async () => {
-      const inspector = new SchemaInspector(manager, {
-        vendor: 'mysql',
-        tableFilter: 'users',
-      });
-      const schema = await inspector.inspect();
+      const inspector = new SchemaInspector(manager, 'mysql');
+      const schema = await inspector.inspect({ tables: ['users'] });
 
       const users = schema.tables.find((t: any) => t.name === 'users');
-      expect(users!.primaryKeys).toBeDefined();
-      expect(users!.primaryKeys!.length).toBeGreaterThanOrEqual(1);
-
-      const pkColumns = users!.primaryKeys!.flatMap((pk: any) => pk.columns || [pk.column]);
-      expect(pkColumns).toContain('id');
+      expect(users!.primaryKey).toBeDefined();
+      expect(users!.primaryKey!.length).toBeGreaterThanOrEqual(1);
+      expect(users!.primaryKey).toContain('id');
     });
   });
 
   describe('Foreign Keys', () => {
     it('should detect foreign keys in orders table', async () => {
-      const inspector = new SchemaInspector(manager, {
-        vendor: 'mysql',
-        tableFilter: 'orders',
-      });
-      const schema = await inspector.inspect();
+      const inspector = new SchemaInspector(manager, 'mysql');
+      const schema = await inspector.inspect({ tables: ['orders'] });
 
       const orders = schema.tables.find((t: any) => t.name === 'orders');
       expect(orders!.foreignKeys).toBeDefined();
@@ -154,11 +134,8 @@ describe('MySQL Schema Introspection Integration', () => {
 
   describe('Indexes', () => {
     it('should detect unique constraint index on email', async () => {
-      const inspector = new SchemaInspector(manager, {
-        vendor: 'mysql',
-        tableFilter: 'users',
-      });
-      const schema = await inspector.inspect();
+      const inspector = new SchemaInspector(manager, 'mysql');
+      const schema = await inspector.inspect({ tables: ['users'] });
 
       const users = schema.tables.find((t: any) => t.name === 'users');
       if (users!.indexes && users!.indexes.length > 0) {
@@ -166,7 +143,7 @@ describe('MySQL Schema Introspection Integration', () => {
           (idx: any) => idx.columns?.includes('email') || idx.column === 'email',
         );
         if (emailIndex) {
-          expect(emailIndex.unique).toBe(true);
+          expect(emailIndex.isUnique).toBe(true);
         }
       }
     });

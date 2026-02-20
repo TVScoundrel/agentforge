@@ -50,19 +50,16 @@ describe.skipIf(!hasSQLiteBindings)('SQLite Schema Introspection Integration', (
 
   describe('Table Discovery', () => {
     it('should discover all tables', async () => {
-      const inspector = new SchemaInspector(manager, { vendor: 'sqlite' });
+      const inspector = new SchemaInspector(manager, 'sqlite');
       const schema = await inspector.inspect();
 
       const tableNames = schema.tables.map((t: any) => t.name).sort();
       expect(tableNames).toEqual(['orders', 'products', 'users']);
     });
 
-    it('should filter tables by pattern', async () => {
-      const inspector = new SchemaInspector(manager, {
-        vendor: 'sqlite',
-        tableFilter: 'user%',
-      });
-      const schema = await inspector.inspect();
+    it('should filter tables by name', async () => {
+      const inspector = new SchemaInspector(manager, 'sqlite');
+      const schema = await inspector.inspect({ tables: ['users'] });
 
       expect(schema.tables).toHaveLength(1);
       expect(schema.tables[0].name).toBe('users');
@@ -71,11 +68,8 @@ describe.skipIf(!hasSQLiteBindings)('SQLite Schema Introspection Integration', (
 
   describe('Column Discovery', () => {
     it('should discover columns for users table', async () => {
-      const inspector = new SchemaInspector(manager, {
-        vendor: 'sqlite',
-        tableFilter: 'users',
-      });
-      const schema = await inspector.inspect();
+      const inspector = new SchemaInspector(manager, 'sqlite');
+      const schema = await inspector.inspect({ tables: ['users'] });
 
       const users = schema.tables.find((t: any) => t.name === 'users');
       expect(users).toBeDefined();
@@ -90,11 +84,8 @@ describe.skipIf(!hasSQLiteBindings)('SQLite Schema Introspection Integration', (
     });
 
     it('should report column types', async () => {
-      const inspector = new SchemaInspector(manager, {
-        vendor: 'sqlite',
-        tableFilter: 'products',
-      });
-      const schema = await inspector.inspect();
+      const inspector = new SchemaInspector(manager, 'sqlite');
+      const schema = await inspector.inspect({ tables: ['products'] });
 
       const products = schema.tables.find((t: any) => t.name === 'products');
       expect(products).toBeDefined();
@@ -106,78 +97,62 @@ describe.skipIf(!hasSQLiteBindings)('SQLite Schema Introspection Integration', (
     });
 
     it('should report nullable columns', async () => {
-      const inspector = new SchemaInspector(manager, {
-        vendor: 'sqlite',
-        tableFilter: 'users',
-      });
-      const schema = await inspector.inspect();
+      const inspector = new SchemaInspector(manager, 'sqlite');
+      const schema = await inspector.inspect({ tables: ['users'] });
 
       const users = schema.tables.find((t: any) => t.name === 'users');
       const ageCol = users!.columns.find((c: any) => c.name === 'age');
       expect(ageCol).toBeDefined();
       // age is nullable (no NOT NULL constraint)
-      expect(ageCol!.nullable).toBe(true);
+      expect(ageCol!.isNullable).toBe(true);
 
       const nameCol = users!.columns.find((c: any) => c.name === 'name');
       expect(nameCol).toBeDefined();
-      expect(nameCol!.nullable).toBe(false);
+      expect(nameCol!.isNullable).toBe(false);
     });
   });
 
   describe('Primary Keys', () => {
     it('should detect primary keys', async () => {
-      const inspector = new SchemaInspector(manager, {
-        vendor: 'sqlite',
-        tableFilter: 'users',
-      });
-      const schema = await inspector.inspect();
+      const inspector = new SchemaInspector(manager, 'sqlite');
+      const schema = await inspector.inspect({ tables: ['users'] });
 
       const users = schema.tables.find((t: any) => t.name === 'users');
       expect(users).toBeDefined();
-
-      // Check that an id column is marked as primary key
-      if (users!.primaryKeys && users!.primaryKeys.length > 0) {
-        const pkColumns = users!.primaryKeys.flatMap((pk: any) => pk.columns || [pk.column]);
-        expect(pkColumns).toContain('id');
-      } else {
-        // Some SchemaInspector implementations embed PK info in columns
-        const idCol = users!.columns.find((c: any) => c.name === 'id');
-        expect(idCol).toBeDefined();
-      }
+      expect(users!.primaryKey).toContain('id');
     });
   });
 
   describe('Foreign Keys', () => {
     it('should detect foreign keys in orders table', async () => {
-      const inspector = new SchemaInspector(manager, {
-        vendor: 'sqlite',
-        tableFilter: 'orders',
-      });
-      const schema = await inspector.inspect();
+      const inspector = new SchemaInspector(manager, 'sqlite');
+      const schema = await inspector.inspect({ tables: ['orders'] });
 
       const orders = schema.tables.find((t: any) => t.name === 'orders');
       expect(orders).toBeDefined();
+      expect(orders!.foreignKeys.length).toBeGreaterThan(0);
 
-      if (orders!.foreignKeys && orders!.foreignKeys.length > 0) {
-        const fkTables = orders!.foreignKeys.map((fk: any) => fk.referencedTable);
-        expect(fkTables).toContain('users');
-        expect(fkTables).toContain('products');
-      }
+      const fkTables = orders!.foreignKeys.map((fk: any) => fk.referencedTable);
+      expect(fkTables).toContain('users');
+      expect(fkTables).toContain('products');
     });
   });
 
   describe('Caching', () => {
     it('should cache schema results', async () => {
-      const inspector = new SchemaInspector(manager, {
-        vendor: 'sqlite',
+      const inspector = new SchemaInspector(manager, 'sqlite', {
         cacheTtlMs: 5000,
+        cacheKey: 'sqlite-cache-test',
       });
 
       const schema1 = await inspector.inspect();
       const schema2 = await inspector.inspect();
 
-      // Should return from cache - same reference
+      // Should return from cache - deep equal
       expect(schema1).toEqual(schema2);
+
+      // Clean up cache
+      SchemaInspector.clearCache('sqlite-cache-test');
     });
   });
 });

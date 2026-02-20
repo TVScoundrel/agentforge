@@ -4,9 +4,14 @@
  * Provides setup/teardown functions that create tables and seed data
  * through the ConnectionManager, ensuring all tests start from a known state.
  *
+ * DDL operations (CREATE, DROP) go directly through manager.execute()
+ * because the query-executor's SQL sanitiser intentionally rejects them.
+ * Seed INSERT/SELECT statements also use manager.execute() for simplicity.
+ *
  * @module integration/setup/test-helpers
  */
 
+import { sql } from 'drizzle-orm';
 import { ConnectionManager } from '../../../../../src/data/relational/connection/connection-manager.js';
 import { executeQuery } from '../../../../../src/data/relational/query/query-executor.js';
 import type { ConnectionConfig } from '../../../../../src/data/relational/connection/types.js';
@@ -33,7 +38,8 @@ export function createTestConnectionManager(
 
 /**
  * Set up the test schema: drop any existing tables, create tables, seed data.
- * Operates through executeQuery to exercise the real code path.
+ * DDL operations bypass the query-executor to avoid its SQL sanitiser
+ * (which intentionally rejects CREATE/DROP).
  */
 export async function setupTestSchema(
   manager: ConnectionManager,
@@ -42,16 +48,16 @@ export async function setupTestSchema(
   // Drop existing tables first (reverse FK order)
   const drops = getDropTableStatements();
   for (const ddl of drops) {
-    await executeQuery(manager, { sql: ddl, vendor });
+    await manager.execute(sql.raw(ddl));
   }
 
   // Create tables
   const creates = getCreateTableStatements(vendor);
   for (const ddl of creates) {
-    await executeQuery(manager, { sql: ddl, vendor });
+    await manager.execute(sql.raw(ddl));
   }
 
-  // Seed data
+  // Seed data — use executeQuery for proper parameter binding
   const seeds = getSeedStatements(vendor);
   for (const seed of seeds) {
     await executeQuery(manager, { sql: seed.sql, params: seed.params, vendor });
@@ -68,7 +74,7 @@ export async function teardownTestSchema(
   const drops = getDropTableStatements();
   for (const ddl of drops) {
     try {
-      await executeQuery(manager, { sql: ddl, vendor: _vendor });
+      await manager.execute(sql.raw(ddl));
     } catch {
       // Ignore drop errors during teardown
     }
