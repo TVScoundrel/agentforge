@@ -7,29 +7,29 @@
 ### Checklist
 - [x] Create branch `feat/st-05001-comprehensive-unit-tests`
 - [x] Create draft PR with story ID in title (PR #41)
-- [ ] Create test directory structure: `packages/tools/tests/data/relational/`
-- [ ] Create subdirectories: `connection/`, `query/`, `schema/`, `tools/`, `utils/`
-- [ ] Set up test fixtures and mocks
-- [ ] Create mock database connections for testing
-- [ ] Write unit tests for ConnectionManager
-- [ ] Write unit tests for connection pooling
-- [ ] Write unit tests for connection lifecycle
-- [ ] Write unit tests for query executor
-- [ ] Write unit tests for query builder (SELECT, INSERT, UPDATE, DELETE)
-- [ ] Write unit tests for all CRUD tools
-- [ ] Write unit tests for schema inspector
-- [ ] Write unit tests for schema validators
-- [ ] Write unit tests for SQL sanitizer
-- [ ] Write unit tests for result formatter
-- [ ] Write unit tests for error handler
-- [ ] Configure test coverage reporting
-- [ ] Ensure test coverage > 90%
-- [ ] Run all tests with `pnpm test`
-- [ ] Fix any failing tests
-- [ ] Add or update story documentation at docs/st05001-comprehensive-unit-tests.md (or document why not required)
-- [ ] Assess test impact; add/update automated tests when needed, or document why tests are not required
-- [ ] Run full test suite before finalizing the PR and record results
-- [ ] Run lint (`pnpm lint`) before finalizing the PR and record results
+- [x] Create test directory structure: `packages/tools/tests/data/relational/`
+- [x] Create subdirectories: `connection/`, `query/`, `schema/`, `tools/`, `utils/`
+- [x] Set up test fixtures and mocks
+- [x] Create mock database connections for testing
+- [x] Write unit tests for ConnectionManager
+- [x] Write unit tests for connection pooling
+- [x] Write unit tests for connection lifecycle
+- [x] Write unit tests for query executor
+- [x] Write unit tests for query builder (SELECT, INSERT, UPDATE, DELETE)
+- [x] Write unit tests for all CRUD tools
+- [x] Write unit tests for schema inspector
+- [x] Write unit tests for schema validators
+- [x] Write unit tests for SQL sanitizer
+- [x] Write unit tests for result formatter
+- [x] Write unit tests for error handler
+- [x] Configure test coverage reporting
+- [x] Ensure test coverage > 90%
+- [x] Run all tests with `pnpm test`
+- [x] Fix any failing tests
+- [x] Add or update story documentation at docs/st05001-comprehensive-unit-tests.md (or document why not required)
+- [x] Assess test impact; add/update automated tests when needed, or document why tests are not required
+- [x] Run full test suite before finalizing the PR and record results
+- [x] Run lint (`pnpm lint`) before finalizing the PR and record results
 - [ ] Mark PR ready for review
 - [ ] Wait for merge
 
