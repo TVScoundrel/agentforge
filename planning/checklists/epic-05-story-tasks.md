@@ -158,12 +158,61 @@
 
 ---
 
+## ST-05005: Document Relational Database Tools in Public Docs Site
+
+**Branch:** `docs/st-05005-docs-site-database-tools`
+
+### Checklist
+- [ ] Create branch `docs/st-05005-docs-site-database-tools`
+- [ ] Create draft PR with story ID in title
+- [ ] Create guide page `docs-site/guide/concepts/database.md` — Database Tools deep dive
+  - ConnectionManager setup and configuration (PostgreSQL, MySQL, SQLite)
+  - Connection pooling overview and configuration
+  - CRUD tools: relationalSelect, relationalInsert, relationalUpdate, relationalDelete
+  - Raw SQL queries: relationalQuery
+  - Schema introspection: relationalGetSchema
+  - Transactions with withTransaction
+  - Batch operations (insert, update, delete)
+  - Result streaming for large datasets
+  - Security: SQL sanitization, parameterized queries, dangerous keyword blocking
+- [ ] Create tutorial page `docs-site/tutorials/database-agent.md` — Building a Database-Powered Agent
+  - Prerequisites and installation (peer dependencies)
+  - Step 1: Set up a connection
+  - Step 2: Discover the schema
+  - Step 3: Run queries with CRUD tools
+  - Step 4: Wire tools into a ReAct agent
+  - Step 5: Add error handling and retry logic
+  - Complete working example
+- [ ] Update API reference `docs-site/api/tools.md` — Add Relational Database Tools section
+  - relationalQuery — raw SQL execution with parameter binding
+  - relationalSelect — type-safe SELECT with filters, ordering, pagination
+  - relationalInsert — single and batch insert with returning modes
+  - relationalUpdate — conditional update with optimistic locking
+  - relationalDelete — safe delete with WHERE requirement and soft-delete
+  - relationalGetSchema — schema introspection with caching
+  - ConnectionManager — connection lifecycle, pooling, events
+  - withTransaction — transaction helper with isolation levels
+- [ ] Update VitePress sidebar config `docs-site/.vitepress/config.ts`
+  - Add `Database Tools` entry under Core Concepts
+  - Add `Database Agent` entry under Tutorials
+- [ ] Verify all code examples match actual tool APIs (response shapes, field names, parameter names)
+- [ ] Add cross-references to internal example docs and related guides
+- [ ] Build docs site (`pnpm docs:build` or equivalent) and verify no errors
+- [ ] Add or update story documentation at docs/st05005-docs-site-database-tools.md (or document why not required)
+- [ ] Assess test impact; add/update automated tests when needed, or document why tests are not required
+- [ ] Run full test suite before finalizing the PR and record results
+- [ ] Run lint (`pnpm lint`) before finalizing the PR and record results
+- [ ] Mark PR ready for review
+- [ ] Wait for merge
+
+---
+
 ## Epic 05 Completion Criteria
 
-- [x] All 4 stories merged
+- [ ] All 5 stories merged
 - [x] Test coverage > 90%
 - [x] All integration tests passing
-- [x] Comprehensive documentation complete
+- [ ] Comprehensive documentation complete (including public docs site)
 - [x] All examples tested and working
 - [x] Ready for production use
 

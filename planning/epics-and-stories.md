@@ -59,7 +59,7 @@
 - All tools are thoroughly tested
 - Integration examples demonstrate real-world usage
 
-**Stories:** ST-05001 through ST-05004
+**Stories:** ST-05001 through ST-05005
 
 ---
 
@@ -412,6 +412,24 @@
 - [ ] Example building a multi-agent system with shared database
 - [ ] Example with error handling and retry logic
 - [ ] Performance optimization guide
+
+---
+
+#### ST-05005: Document Relational Database Tools in Public Docs Site
+**User story:** As a developer visiting the AgentForge documentation site, I want comprehensive documentation for the relational database tools so that I can learn how to connect to databases, run queries, and build data-powered agents.
+
+**Priority:** P1 (High)
+**Estimate:** 5 hours
+**Dependencies:** ST-05003 (merged), ST-05004 (merged)
+
+**Acceptance criteria:**
+- [ ] Guide page at `guide/concepts/database.md` covering ConnectionManager, CRUD tools, schema introspection, transactions, batch operations, streaming, and security
+- [ ] Tutorial page at `tutorials/database-agent.md` with step-by-step walkthrough of building a database-powered agent
+- [ ] API reference section added to `api/tools.md` documenting all relational tools (relationalQuery, relationalSelect, relationalInsert, relationalUpdate, relationalDelete, relationalGetSchema) and ConnectionManager
+- [ ] VitePress sidebar updated with new page entries in `config.ts`
+- [ ] All code examples are syntactically correct and consistent with actual tool APIs
+- [ ] Cross-references link to internal examples (from ST-05003/ST-05004) and related guides
+- [ ] Documentation site builds without errors
 
 ---
 
