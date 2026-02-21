@@ -146,6 +146,8 @@ const result = await explorerAgent.invoke({
 Validate data against the schema before inserting:
 
 ```typescript
+import { relationalGetSchema, relationalInsert } from '@agentforge/tools';
+
 async function validatedInsert(table: string, data: Record<string, unknown>) {
   // Step 1: Get the schema
   const schema = await relationalGetSchema.invoke({

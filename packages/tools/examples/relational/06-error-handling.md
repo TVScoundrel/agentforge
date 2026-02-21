@@ -83,7 +83,7 @@ manager.on('reconnectionFailed', (error) => {
 The security layer validates all SQL before execution. These errors are immediate and non-retryable:
 
 ```typescript
-import { relationalQuery } from '@agentforge/tools';
+import { relationalQuery, relationalUpdate } from '@agentforge/tools';
 
 // ❌ DROP TABLE is blocked by default
 const result = await relationalQuery.invoke({
