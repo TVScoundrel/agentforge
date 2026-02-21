@@ -134,6 +134,13 @@
 - **Estimate:** 6 hours
 - **Outcome:** Created comprehensive documentation suite for the relational database module: README with overview/quick-start/architecture, vendor-specific examples (PostgreSQL, MySQL, SQLite), ReAct agent integration example, error handling guide, 4 API reference docs (ConnectionManager, Tools, Query Builder, Schema Inspector), security best practices guide, and JSDoc comments for 42 previously undocumented exports across 18 source files. Addressed 34 Copilot review comments across 3 rounds covering error patterns, import paths, response shapes, relative links, and logging standards compliance.
 
+### ST-05004: Create Advanced Integration Examples
+- **Merged:** 2026-02-21
+- **PR:** https://github.com/TVScoundrel/agentforge/pull/44
+- **Epic:** EP-05 (Documentation, Examples, and Testing)
+- **Estimate:** 4 hours
+- **Outcome:** Created 9 advanced integration example guides plus README covering transactions, batch insert/update, result streaming, multi-agent shared database, error handling, connection pooling, schema introspection, and performance optimization. Addressed 30 Copilot review comments across 3 rounds covering API shapes (tool return patterns, batch fields, schema response), field naming (isNullable/isPrimaryKey, pool metric suffixes), caching parameters (cacheTtlMs/refreshCache), connection events, isolation level formatting, and SQLite connection format. Epic EP-05 now fully complete (all 4 stories merged).
+
 ---
 
 ## Archive Format

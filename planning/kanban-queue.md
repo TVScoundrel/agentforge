@@ -6,7 +6,7 @@
 
 - **Ready:** 1 story
 - **In Progress:** 0 stories
-- **In Review:** 1 story (ST-05004)
+- **In Review:** 0 stories
 - **Blocked:** 0 stories
 - **Backlog:** 5 stories (queued for prioritization and dependencies)
 
@@ -32,13 +32,7 @@ _No stories currently in progress_
 
 ## In Review
 
-### ST-05004: Create Advanced Integration Examples
-- **Epic:** EP-05
-- **Priority:** P2
-- **Estimate:** 4 hours
-- **Dependencies:** ST-04001 ✅ (merged 2026-02-20), ST-05003 ✅ (merged 2026-02-21)
-- **Checklist:** `planning/checklists/epic-05-story-tasks.md`
-- **PR:** [#44](https://github.com/TVScoundrel/agentforge/pull/44)
+_No stories currently in review_
 
 ---
 
@@ -104,9 +98,10 @@ _No stories currently blocked_
 - ✅ ST-05001 complete - comprehensive unit tests implemented (merged 2026-02-20)
 - ✅ ST-05002 complete - integration tests implemented (merged 2026-02-21)
 - ✅ ST-05003 complete - usage examples and documentation (merged 2026-02-21)
+- ✅ ST-05004 complete - advanced integration examples (merged 2026-02-21)
 - Epic 01 (Connection Management) is now complete - all 4 stories merged
 - Epic 02 (Query Execution and CRUD Operations) is now complete - all 6 stories merged
 - Epic 03 (Schema Introspection and Metadata) is now complete - all 2 stories merged
 - Epic 04 (Advanced Features and Optimization) is now complete - all 3 stories merged
-- Epic 05 (Testing & Docs) runs throughout but has specific dependencies
+- Epic 05 (Documentation, Examples, and Testing) is now complete - all 4 stories merged
 - New Epic 06 (Agent Skills Compatibility) is planned and queued in Backlog for sequencing after current ready work
