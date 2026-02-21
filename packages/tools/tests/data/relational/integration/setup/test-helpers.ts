@@ -6,7 +6,7 @@
  *
  * DDL operations (CREATE, DROP) go directly through manager.execute()
  * because the query-executor's SQL sanitiser intentionally rejects them.
- * Seed INSERT/SELECT statements also use manager.execute() for simplicity.
+ * Seed INSERT statements use executeQuery() to exercise the full query path.
  *
  * @module integration/setup/test-helpers
  */

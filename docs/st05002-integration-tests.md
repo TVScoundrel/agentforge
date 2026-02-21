@@ -88,7 +88,8 @@ indexes, nullable flags, table filtering, caching.
 ### Performance Benchmarks
 
 Sequential INSERT (100 rows), SELECT all, SELECT with WHERE, UPDATE all,
-DELETE all — measured across all three vendors with `console.table` summary.
+DELETE all — measured across all three vendors and logged via the project
+logger (`agentforge:tools:tests:integration:benchmarks`).
 
 ## Source Fixes Discovered
 

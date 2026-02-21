@@ -5,7 +5,7 @@
  * Requires compiled better-sqlite3 native bindings.
  */
 
-import { describe, it, expect, beforeAll, afterAll, afterEach } from 'vitest';
+import { describe, it, expect, afterEach } from 'vitest';
 import { ConnectionManager, ConnectionState } from '../../../../../src/data/relational/connection/connection-manager.js';
 import type { ConnectionConfig } from '../../../../../src/data/relational/connection/types.js';
 

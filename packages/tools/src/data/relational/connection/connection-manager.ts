@@ -573,6 +573,21 @@ export class ConnectionManager extends EventEmitter implements DatabaseConnectio
   }
 
   /**
+   * Determine whether an error thrown by better-sqlite3's `.all()` indicates
+   * the statement does not return data (i.e. it is DML/DDL, not a SELECT).
+   *
+   * Checks the error's constructor name first (`SqliteError`) for stability
+   * across better-sqlite3 versions, then falls back to a message substring
+   * match as a safety net.
+   */
+  private isSqliteNonQueryError(error: unknown): boolean {
+    if (!(error instanceof Error)) return false;
+    const isSqliteError = error.constructor?.name === 'SqliteError' || error.name === 'SqliteError';
+    const hasNonQueryMessage = error.message.includes('does not return data');
+    return isSqliteError || hasNonQueryMessage;
+  }
+
+  /**
    * Execute a SQL query
    *
    * Executes a parameterized SQL query using Drizzle's SQL template objects.
@@ -602,12 +617,13 @@ export class ConnectionManager extends EventEmitter implements DatabaseConnectio
     // drizzle-orm's better-sqlite3 adapter does not expose an .execute() method.
     // It uses .all() for SELECT (returns row arrays) and .run() for DML/DDL
     // (returns { changes, lastInsertRowid }). Try .all() first and fall back
-    // to .run() when better-sqlite3 indicates the statement returns no data.
+    // to .run() when better-sqlite3 throws a SqliteError indicating the
+    // statement does not return data.
     if (this.vendor === 'sqlite') {
       try {
         return this.db.all(query);
       } catch (error: unknown) {
-        if (error instanceof Error && error.message.includes('does not return data')) {
+        if (this.isSqliteNonQueryError(error)) {
           // .run() returns { changes, lastInsertRowid }. Normalize by mapping
           // `changes` to `affectedRows` so executeQuery() can derive rowCount
           // consistently across vendors.
@@ -653,7 +669,7 @@ export class ConnectionManager extends EventEmitter implements DatabaseConnectio
         try {
           return this.db.all(query);
         } catch (error: unknown) {
-          if (error instanceof Error && error.message.includes('does not return data')) {
+          if (this.isSqliteNonQueryError(error)) {
             // Normalize .run() result — see execute() for details.
             const runResult = this.db.run(query) as { changes?: number; lastInsertRowid?: number };
             return { ...runResult, affectedRows: runResult.changes ?? 0 };

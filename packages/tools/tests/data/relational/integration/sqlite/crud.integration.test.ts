@@ -114,7 +114,7 @@ describe.skipIf(!hasSQLiteBindings)('SQLite CRUD Integration', () => {
 
   describe('INSERT Operations', () => {
     it('should insert a single row', async () => {
-      const result = await executeQuery(manager, {
+      await executeQuery(manager, {
         sql: 'INSERT INTO users (name, email, age, active) VALUES (?, ?, ?, ?)',
         params: ['Dave', 'dave@example.com', 40, 1],
         vendor: 'sqlite',
