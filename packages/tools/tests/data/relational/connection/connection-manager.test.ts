@@ -59,7 +59,8 @@ vi.mock('mysql2/promise', () => ({
 }));
 
 // Mock drizzle-orm/mysql2
-const mockMysqlExecute = vi.fn().mockResolvedValue([{ '?column?': 1 }]);
+// mysql2 drizzle adapter returns [rows, fields] tuple from execute()
+const mockMysqlExecute = vi.fn().mockResolvedValue([[{ '?column?': 1 }], []]);
 const mockMysqlDrizzle = vi.fn().mockReturnValue({
   execute: mockMysqlExecute,
 });
@@ -79,9 +80,12 @@ vi.mock('better-sqlite3', () => ({
 }));
 
 // Mock drizzle-orm/better-sqlite3
-const mockSqliteExecute = vi.fn().mockReturnValue([{ '?column?': 1 }]);
+// The real better-sqlite3 drizzle adapter exposes .all() and .run(), NOT .execute().
+const mockSqliteAll = vi.fn().mockReturnValue([{ '?column?': 1 }]);
+const mockSqliteRun = vi.fn().mockReturnValue({ changes: 0, lastInsertRowid: 0 });
 const mockSqliteDrizzle = vi.fn().mockReturnValue({
-  execute: mockSqliteExecute,
+  all: mockSqliteAll,
+  run: mockSqliteRun,
 });
 vi.mock('drizzle-orm/better-sqlite3', () => ({
   drizzle: mockSqliteDrizzle,
@@ -94,8 +98,9 @@ describe('ConnectionManager', () => {
     vi.clearAllMocks();
     // Reset mock return values after clearAllMocks clears implementations
     mockPgExecute.mockResolvedValue([{ '?column?': 1 }]);
-    mockMysqlExecute.mockResolvedValue([{ '?column?': 1 }]);
-    mockSqliteExecute.mockReturnValue([{ '?column?': 1 }]);
+    mockMysqlExecute.mockResolvedValue([[{ '?column?': 1 }], []]);
+    mockSqliteAll.mockReturnValue([{ '?column?': 1 }]);
+    mockSqliteRun.mockReturnValue({ changes: 0, lastInsertRowid: 0 });
     mockPoolEnd.mockResolvedValue(undefined);
     mockPoolConnect.mockResolvedValue({ release: vi.fn() });
     mockMysqlPoolEnd.mockResolvedValue(undefined);
@@ -105,7 +110,7 @@ describe('ConnectionManager', () => {
     // Reset drizzle factories
     mockPgDrizzle.mockReturnValue({ execute: mockPgExecute });
     mockMysqlDrizzle.mockReturnValue({ execute: mockMysqlExecute });
-    mockSqliteDrizzle.mockReturnValue({ execute: mockSqliteExecute });
+    mockSqliteDrizzle.mockReturnValue({ all: mockSqliteAll, run: mockSqliteRun });
 
     // Reset pool/driver constructors
     mockPool.mockImplementation(() => ({

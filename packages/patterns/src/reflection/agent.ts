@@ -127,7 +127,6 @@ export function createReflectionAgent(config: ReflectionAgentConfig) {
   };
 
   // Create the graph
-  // @ts-expect-error - LangGraph's complex generic types don't infer well with createStateAnnotation
   const workflow = new StateGraph(ReflectionState)
     .addNode('generator', generatorNode)
     .addNode('reflector', reflectorNode)

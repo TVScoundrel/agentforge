@@ -573,6 +573,20 @@ export class ConnectionManager extends EventEmitter implements DatabaseConnectio
   }
 
   /**
+   * Determine whether an error thrown by better-sqlite3's `.all()` indicates
+   * the statement does not return data (i.e. it is DML/DDL, not a SELECT).
+   *
+   * Requires both a `SqliteError` type check AND the expected message to avoid
+   * false positives from unrelated errors that happen to contain similar text.
+   */
+  private isSqliteNonQueryError(error: unknown): boolean {
+    if (!(error instanceof Error)) return false;
+    const isSqliteError = error.constructor?.name === 'SqliteError' || error.name === 'SqliteError';
+    const hasNonQueryMessage = error.message.includes('does not return data');
+    return isSqliteError && hasNonQueryMessage;
+  }
+
+  /**
    * Execute a SQL query
    *
    * Executes a parameterized SQL query using Drizzle's SQL template objects.
@@ -599,6 +613,40 @@ export class ConnectionManager extends EventEmitter implements DatabaseConnectio
       vendor: this.vendor
     });
 
+    // drizzle-orm's better-sqlite3 adapter does not expose an .execute() method.
+    // It uses .all() for SELECT (returns row arrays) and .run() for DML/DDL
+    // (returns { changes, lastInsertRowid }). Try .all() first and fall back
+    // to .run() when better-sqlite3 throws a SqliteError indicating the
+    // statement does not return data.
+    if (this.vendor === 'sqlite') {
+      try {
+        return this.db.all(query);
+      } catch (error: unknown) {
+        if (this.isSqliteNonQueryError(error)) {
+          // .run() returns { changes, lastInsertRowid }. Normalize by mapping
+          // `changes` to `affectedRows` so executeQuery() can derive rowCount
+          // consistently across vendors.
+          const runResult = this.db.run(query) as { changes?: number; lastInsertRowid?: number };
+          return { ...runResult, affectedRows: runResult.changes ?? 0 };
+        }
+        throw error;
+      }
+    }
+
+    // drizzle-orm's mysql2 adapter returns [rows, fields] from execute().
+    // Normalize by extracting just the rows array so callers can treat the
+    // result identically to PostgreSQL (which returns rows directly).
+    if (this.vendor === 'mysql') {
+      const raw = await this.db.execute(query);
+      // mysql2 returns [rows, fields] for SELECTs and [ResultSetHeader, fields]
+      // for INSERT/UPDATE/DELETE. Unwrap the first element in both cases so
+      // callers get a consistent shape matching PostgreSQL / SQLite.
+      if (Array.isArray(raw) && raw.length === 2) {
+        return raw[0];
+      }
+      return raw;
+    }
+
     return this.db.execute(query);
   }
 
@@ -616,7 +664,18 @@ export class ConnectionManager extends EventEmitter implements DatabaseConnectio
     }
 
     if (this.vendor === 'sqlite') {
-      return callback(async (query) => this.db.execute(query));
+      return callback(async (query) => {
+        try {
+          return this.db.all(query);
+        } catch (error: unknown) {
+          if (this.isSqliteNonQueryError(error)) {
+            // Normalize .run() result — see execute() for details.
+            const runResult = this.db.run(query) as { changes?: number; lastInsertRowid?: number };
+            return { ...runResult, affectedRows: runResult.changes ?? 0 };
+          }
+          throw error;
+        }
+      });
     }
 
     if (this.vendor === 'postgresql') {
@@ -635,7 +694,15 @@ export class ConnectionManager extends EventEmitter implements DatabaseConnectio
       try {
         const { drizzle } = await import('drizzle-orm/mysql2');
         const sessionDb = drizzle({ client: mysqlConnection });
-        return await callback(async (query) => sessionDb.execute(query));
+        return await callback(async (query) => {
+          const raw = await sessionDb.execute(query);
+          // mysql2 returns [rows, fields] for SELECTs and [ResultSetHeader, fields]
+          // for INSERT/UPDATE/DELETE. Unwrap the first element in both cases.
+          if (Array.isArray(raw) && raw.length === 2) {
+            return raw[0];
+          }
+          return raw;
+        });
       } finally {
         mysqlConnection.release();
       }

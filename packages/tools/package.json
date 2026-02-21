@@ -45,9 +45,9 @@
   },
   "peerDependencies": {
     "@langchain/langgraph": "^1.1.2",
-    "pg": "^8.0.0",
+    "better-sqlite3": "^9.0.0 || ^10.0.0 || ^11.0.0 || ^12.0.0",
     "mysql2": "^3.0.0",
-    "better-sqlite3": "^9.0.0 || ^10.0.0 || ^11.0.0 || ^12.0.0"
+    "pg": "^8.0.0"
   },
   "peerDependenciesMeta": {
     "@langchain/langgraph": {
@@ -66,6 +66,8 @@
   "devDependencies": {
     "@eslint/js": "^9.17.0",
     "@langchain/langgraph": "^1.1.2",
+    "@testcontainers/mysql": "^11.12.0",
+    "@testcontainers/postgresql": "^11.12.0",
     "@types/better-sqlite3": "^7.6.13",
     "@types/node": "^22.10.2",
     "@types/pg": "^8.16.0",
@@ -75,6 +77,7 @@
     "mysql2": "^3.17.2",
     "pg": "^8.18.0",
     "prettier": "^3.4.2",
+    "testcontainers": "^11.12.0",
     "tsup": "^8.3.5",
     "typescript": "^5.7.2",
     "typescript-eslint": "^8.19.1",

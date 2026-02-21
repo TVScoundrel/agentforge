@@ -129,7 +129,6 @@ export function buildAgent(config: AgentBuilderConfig): CompiledStateGraph<any, 
   } = config;
 
   // Create the workflow
-  // @ts-expect-error - LangGraph's complex generic types don't infer well with createStateAnnotation
   const workflow = new StateGraph(state);
 
   // Add all nodes

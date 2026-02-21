@@ -27,6 +27,8 @@
     "dev": "pnpm -r dev",
     "test": "vitest",
     "test:coverage": "vitest --coverage",
+    "test:integration": "vitest --config vitest.integration.config.ts",
+    "test:integration:coverage": "vitest --config vitest.integration.config.ts --coverage",
     "test:ui": "vitest --ui",
     "lint": "pnpm -r lint",
     "lint:fix": "pnpm -r lint:fix",

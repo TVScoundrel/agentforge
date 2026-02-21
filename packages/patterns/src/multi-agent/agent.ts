@@ -140,7 +140,6 @@ export function createMultiAgentSystem(config: MultiAgentSystemConfig): MultiAge
   // Note: Empty workers array is allowed - workers can be registered later with registerWorkers()
 
   // Create the graph
-  // @ts-expect-error - LangGraph's complex generic types don't infer well with createStateAnnotation
   const workflow = new StateGraph(MultiAgentState);
 
   // Configure supervisor model with structured output
@@ -251,11 +250,11 @@ export function createMultiAgentSystem(config: MultiAgentSystemConfig): MultiAge
   };
 
   // Set entry point
-  // @ts-expect-error - LangGraph's complex generic types don't infer well with createStateAnnotation
+  // @ts-expect-error - LangGraph StateGraph generic mismatch with string node names
   workflow.setEntryPoint('supervisor');
 
   // Add edges from supervisor
-  // @ts-expect-error - LangGraph's complex generic types don't infer well with createStateAnnotation
+  // @ts-expect-error - LangGraph StateGraph generic mismatch with string node names
   workflow.addConditionalEdges('supervisor', supervisorRouter, [
     'aggregator',
     END,
@@ -264,12 +263,12 @@ export function createMultiAgentSystem(config: MultiAgentSystemConfig): MultiAge
 
   // Add edges from workers back to supervisor
   for (const workerId of workerIds) {
-    // @ts-expect-error - LangGraph's complex generic types don't infer well with createStateAnnotation
+    // @ts-expect-error - LangGraph StateGraph generic mismatch with dynamic node names
     workflow.addConditionalEdges(workerId, workerRouter, ['supervisor']);
   }
 
   // Add edge from aggregator to end
-  // @ts-expect-error - LangGraph's complex generic types don't infer well with createStateAnnotation
+  // @ts-expect-error - LangGraph StateGraph generic mismatch with string node names
   workflow.addConditionalEdges('aggregator', aggregatorRouter, [END]);
 
   // Compile the graph with checkpointer if provided

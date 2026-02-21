@@ -1,0 +1,68 @@
+# Integration Tests (requires Docker for testcontainers)
+name: Integration Tests
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'packages/tools/src/data/relational/**'
+      - 'packages/tools/tests/data/relational/integration/**'
+      - 'vitest.integration.config.ts'
+      - '.github/workflows/integration-tests.yml'
+  pull_request:
+    branches: [main]
+    paths:
+      - 'packages/tools/src/data/relational/**'
+      - 'packages/tools/tests/data/relational/integration/**'
+      - 'vitest.integration.config.ts'
+      - '.github/workflows/integration-tests.yml'
+  workflow_dispatch:
+
+concurrency:
+  group: integration-tests-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  integration-tests:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build packages
+        run: pnpm -r build
+
+      - name: Run integration tests
+        if: github.event_name != 'pull_request'
+        run: pnpm test:integration
+        env:
+          # Testcontainers auto-detects Docker on GitHub Actions runners
+          TESTCONTAINERS_RYUK_DISABLED: 'true'
+
+      - name: Run integration tests with coverage
+        if: github.event_name == 'pull_request'
+        run: pnpm test:integration:coverage
+        env:
+          TESTCONTAINERS_RYUK_DISABLED: 'true'
+
+      - name: Upload coverage report
+        if: github.event_name == 'pull_request'
+        uses: actions/upload-artifact@v4
+        with:
+          name: integration-coverage
+          path: coverage/
+          retention-days: 7
