@@ -10,6 +10,7 @@
 
 import { describe, it, expect, beforeAll, afterAll } from 'vitest';
 import { sql } from 'drizzle-orm';
+import { createLogger } from '@agentforge/core';
 import { ConnectionManager } from '../../../../../src/data/relational/connection/connection-manager.js';
 import { executeQuery } from '../../../../../src/data/relational/query/query-executor.js';
 import type { ConnectionConfig } from '../../../../../src/data/relational/connection/types.js';
@@ -25,6 +26,8 @@ import {
   type MySQLContainerInfo,
 } from '../setup/containers.js';
 import { setupTestSchema, measureTime } from '../setup/test-helpers.js';
+
+const logger = createLogger('agentforge:tools:tests:integration:benchmarks');
 
 const hasSQLiteBindings = (() => {
   try {
@@ -120,8 +123,7 @@ describe('Performance Benchmarks', () => {
 
   afterAll(async () => {
     // Log benchmark summary
-    console.log('\n=== Performance Benchmark Results ===');
-    console.table(benchmarkResults);
+    logger.info('Performance Benchmark Results', { results: benchmarkResults });
 
     // Clean up
     for (const v of vendors) {
