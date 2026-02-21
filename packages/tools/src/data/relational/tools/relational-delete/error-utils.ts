@@ -23,6 +23,13 @@ const CONSTRAINT_VIOLATION_PATTERNS = [
   },
 ] as const;
 
+/**
+ * Check whether an error is a safe DELETE input validation error
+ * that can be exposed to the caller without leaking database internals.
+ *
+ * @param error - The caught error
+ * @returns `true` if the error message matches a known validation pattern
+ */
 export function isSafeDeleteValidationError(error: unknown): error is Error {
   if (!(error instanceof Error)) {
     return false;
@@ -31,6 +38,13 @@ export function isSafeDeleteValidationError(error: unknown): error is Error {
   return SAFE_DELETE_VALIDATION_PATTERNS.some((pattern) => error.message.includes(pattern));
 }
 
+/**
+ * Extract a user-safe constraint violation message from a DELETE error.
+ *
+ * @param error - The caught error
+ * @param cascade - Whether cascade mode was requested
+ * @returns A sanitized message string, or `null` if no constraint pattern matched
+ */
 export function getDeleteConstraintViolationMessage(error: unknown, cascade: boolean): string | null {
   if (!(error instanceof Error)) {
     return null;
@@ -48,6 +62,13 @@ export function getDeleteConstraintViolationMessage(error: unknown, cascade: boo
   return null;
 }
 
+/**
+ * Check whether a DELETE error is safe to expose to the caller.
+ * Matches both validation errors and constraint violation patterns.
+ *
+ * @param error - The caught error
+ * @returns `true` if the error is safe to surface
+ */
 export function isSafeDeleteError(error: unknown): error is Error {
   if (!(error instanceof Error)) {
     return false;

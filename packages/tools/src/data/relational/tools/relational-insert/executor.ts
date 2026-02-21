@@ -29,6 +29,11 @@ interface NormalizedExecutionResult {
   lastInsertRowid?: number;
 }
 
+/**
+ * Execution context for INSERT operations.
+ *
+ * @property transaction - Optional active transaction to execute within
+ */
 export interface InsertExecutionContext {
   transaction?: TransactionContext;
 }

@@ -7,7 +7,9 @@ import { createLogger } from '@agentforge/core';
 
 const logger = createLogger('agentforge:tools:data:relational:batch');
 
+/** Default number of items processed per batch chunk. */
 export const DEFAULT_BATCH_SIZE = 100;
+/** Maximum allowed batch size to prevent memory exhaustion. */
 export const MAX_BATCH_SIZE = 5000;
 const MAX_RETRY_ATTEMPTS = 5;
 const MAX_RETRY_DELAY_MS = 60_000;

@@ -34,6 +34,13 @@ const CONSTRAINT_VIOLATION_PATTERNS = [
   },
 ] as const;
 
+/**
+ * Check whether an error is a safe UPDATE input validation error
+ * that can be exposed to the caller without leaking database internals.
+ *
+ * @param error - The caught error
+ * @returns `true` if the error message matches a known validation pattern
+ */
 export function isSafeUpdateValidationError(error: unknown): error is Error {
   if (!(error instanceof Error)) {
     return false;
@@ -42,6 +49,12 @@ export function isSafeUpdateValidationError(error: unknown): error is Error {
   return SAFE_UPDATE_VALIDATION_PATTERNS.some((pattern) => error.message.includes(pattern));
 }
 
+/**
+ * Extract a user-safe constraint violation message from an UPDATE error.
+ *
+ * @param error - The caught error
+ * @returns A sanitized message string, or `null` if no constraint pattern matched
+ */
 export function getUpdateConstraintViolationMessage(error: unknown): string | null {
   if (!(error instanceof Error)) {
     return null;
@@ -56,6 +69,13 @@ export function getUpdateConstraintViolationMessage(error: unknown): string | nu
   return null;
 }
 
+/**
+ * Check whether an UPDATE error is safe to expose to the caller.
+ * Matches both validation errors and constraint violation patterns.
+ *
+ * @param error - The caught error
+ * @returns `true` if the error is safe to surface
+ */
 export function isSafeUpdateError(error: unknown): error is Error {
   if (!(error instanceof Error)) {
     return false;

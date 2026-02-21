@@ -14,12 +14,22 @@ import type {
 } from './schemas.js';
 import type { BatchBenchmarkResult, BatchFailureDetail } from '../../query/batch-executor.js';
 
+/** Comparison operators supported in DELETE WHERE conditions. */
 export type DeleteWhereOperator = z.infer<typeof deleteWhereOperatorSchema>;
+
+/** A single WHERE condition for filtering rows in a DELETE operation. */
 export type DeleteWhereCondition = z.infer<typeof deleteWhereConditionSchema>;
+
+/** Configuration for soft-delete mode (UPDATE instead of physical DELETE). */
 export type DeleteSoftDeleteOptions = z.infer<typeof deleteSoftDeleteSchema>;
+
+/** A single operation within a batched DELETE request. */
 export type DeleteBatchOperation = z.input<typeof deleteBatchOperationSchema>;
+
+/** Options controlling batch DELETE execution behaviour. */
 export type DeleteBatchOptions = z.input<typeof deleteBatchOptionsSchema>;
 
+/** Metadata returned after a batched DELETE operation completes. */
 export interface DeleteBatchMetadata {
   enabled: boolean;
   batchSize: number;
@@ -34,8 +44,10 @@ export interface DeleteBatchMetadata {
   benchmark?: BatchBenchmarkResult;
 }
 
+/** Validated input for the relational-delete tool. */
 export type RelationalDeleteInput = z.input<typeof relationalDeleteSchema>;
 
+/** Internal result from a single or batched DELETE execution. */
 export interface DeleteResult {
   rowCount: number;
   executionTime: number;
@@ -43,6 +55,7 @@ export interface DeleteResult {
   batch?: DeleteBatchMetadata;
 }
 
+/** Successful DELETE response returned to the caller. */
 export interface DeleteSuccessResponse {
   success: true;
   rowCount: number;
@@ -51,6 +64,7 @@ export interface DeleteSuccessResponse {
   batch?: DeleteBatchMetadata;
 }
 
+/** Error DELETE response returned when the operation fails. */
 export interface DeleteErrorResponse {
   success: false;
   error: string;
@@ -58,4 +72,5 @@ export interface DeleteErrorResponse {
   softDeleted: false;
 }
 
+/** Union type representing either a successful or failed DELETE response. */
 export type DeleteResponse = DeleteSuccessResponse | DeleteErrorResponse;

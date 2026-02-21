@@ -10,6 +10,7 @@ import type { SqlExecutor } from './types.js';
 
 const logger = createLogger('agentforge:tools:data:relational:stream');
 
+/** Default number of rows fetched per streaming chunk. */
 export const DEFAULT_CHUNK_SIZE = 100;
 const MAX_CHUNK_SIZE = 5000;
 const DEFAULT_SAMPLE_SIZE = 50;

@@ -15,6 +15,11 @@ import {
 
 const logger = createLogger('agentforge:tools:data:relational:query');
 
+/**
+ * Execution context for raw SQL queries.
+ *
+ * @property transaction - Optional active transaction to execute within
+ */
 export interface QueryExecutionContext {
   transaction?: TransactionContext;
 }

@@ -42,6 +42,7 @@ export type OrderBy = z.infer<typeof orderBySchema>;
  */
 export type StreamingOptions = z.input<typeof streamingOptionsSchema>;
 
+/** Re-export of streaming memory usage type from the query layer. */
 export type StreamingMemoryUsage = QueryStreamingMemoryUsage;
 
 /**

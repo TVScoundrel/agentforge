@@ -18,6 +18,11 @@ import { isSafeValidationError } from './error-utils.js';
 
 const logger = createLogger('agentforge:tools:data:relational:select');
 
+/**
+ * Execution context for SELECT operations.
+ *
+ * @property transaction - Optional active transaction to execute within
+ */
 export interface SelectExecutionContext {
   transaction?: TransactionContext;
 }
