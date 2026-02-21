@@ -181,7 +181,7 @@ async function validatedInsert(table: string, data: Record<string, unknown>) {
   return await relationalInsert.invoke({
     table,
     data,
-    returning: ['id'],
+    returning: { mode: 'id', idColumn: 'id' },
     vendor: 'postgresql',
     connectionString: DB_URL,
   });

@@ -11,8 +11,7 @@ This guide demonstrates how to use transactions for multi-step database operatio
 Use `withTransaction` to wrap multiple operations in an atomic unit. If anything throws, the entire transaction rolls back automatically:
 
 ```typescript
-import { ConnectionManager } from '@agentforge/tools';
-import { withTransaction } from '@agentforge/tools/data/relational/query/transaction';
+import { ConnectionManager, withTransaction } from '@agentforge/tools';
 import { sql } from 'drizzle-orm';
 
 const manager = new ConnectionManager({
@@ -98,7 +97,7 @@ const balance = await withTransaction(
 Prevent long-running transactions from holding locks indefinitely:
 
 ```typescript
-import { withTransaction } from '@agentforge/tools/data/relational/query/transaction';
+import { withTransaction } from '@agentforge/tools';
 
 try {
   await withTransaction(

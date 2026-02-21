@@ -130,8 +130,7 @@ For more control, use the streaming APIs directly from the `stream-executor` mod
 Iterate over chunks with `for await...of`:
 
 ```typescript
-import { ConnectionManager } from '@agentforge/tools';
-import { streamSelectChunks } from '@agentforge/tools/data/relational/query/stream-executor';
+import { ConnectionManager, streamSelectChunks } from '@agentforge/tools';
 import { sql } from 'drizzle-orm';
 
 const manager = new ConnectionManager({
@@ -177,7 +176,7 @@ for await (const chunk of streamSelectChunks(
 Pipe to other Node.js streams for ETL pipelines:
 
 ```typescript
-import { createSelectReadableStream } from '@agentforge/tools/data/relational/query/stream-executor';
+import { createSelectReadableStream } from '@agentforge/tools';
 import { Transform } from 'node:stream';
 import { pipeline } from 'node:stream/promises';
 

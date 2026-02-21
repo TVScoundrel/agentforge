@@ -15,22 +15,24 @@ Without pooling:  open → query → close → open → query → close → ...
 With pooling:     borrow → query → return → borrow → query → return → ...
 ```
 
-Connection pools are created automatically when you call `createConnectionManager`. You only need to configure them when the defaults aren't optimal for your workload.
+Connection pools are created automatically when you instantiate a `ConnectionManager`. You only need to configure them when the defaults aren't optimal for your workload.
 
 ---
 
 ## Basic Pool Configuration
 
 ```typescript
-import { createConnectionManager } from '@agentforge/tools';
+import { ConnectionManager } from '@agentforge/tools';
 
-const manager = createConnectionManager({
+const manager = new ConnectionManager({
   vendor: 'postgresql',
-  connectionString: 'postgresql://app:secret@localhost:5432/mydb',
-  pool: {
-    max: 20,                      // Maximum connections in the pool
-    acquireTimeoutMillis: 30000,  // How long to wait for a free connection
-    idleTimeoutMillis: 10000,     // Close idle connections after this duration
+  connection: {
+    connectionString: 'postgresql://app:secret@localhost:5432/mydb',
+    pool: {
+      max: 20,                      // Maximum connections in the pool
+      acquireTimeoutMillis: 30000,  // How long to wait for a free connection
+      idleTimeoutMillis: 10000,     // Close idle connections after this duration
+    },
   },
 });
 ```
@@ -56,13 +58,15 @@ Each vendor has different defaults optimized for its connection model:
 ### Read-Heavy (Analytics, Reporting)
 
 ```typescript
-const manager = createConnectionManager({
+const manager = new ConnectionManager({
   vendor: 'postgresql',
-  connectionString: DB_URL,
-  pool: {
-    max: 30,                      // More connections for concurrent reads
-    acquireTimeoutMillis: 10000,  // Fail fast if pool is exhausted
-    idleTimeoutMillis: 30000,     // Keep connections warm longer
+  connection: {
+    connectionString: DB_URL,
+    pool: {
+      max: 30,                      // More connections for concurrent reads
+      acquireTimeoutMillis: 10000,  // Fail fast if pool is exhausted
+      idleTimeoutMillis: 30000,     // Keep connections warm longer
+    },
   },
 });
 ```
@@ -70,13 +74,15 @@ const manager = createConnectionManager({
 ### Write-Heavy (Data Ingestion, ETL)
 
 ```typescript
-const manager = createConnectionManager({
+const manager = new ConnectionManager({
   vendor: 'postgresql',
-  connectionString: DB_URL,
-  pool: {
-    max: 10,                      // Fewer connections — writes need locks
-    acquireTimeoutMillis: 60000,  // Wait longer for lock-heavy operations
-    idleTimeoutMillis: 5000,      // Release idle connections quickly
+  connection: {
+    connectionString: DB_URL,
+    pool: {
+      max: 10,                      // Fewer connections — writes need locks
+      acquireTimeoutMillis: 60000,  // Wait longer for lock-heavy operations
+      idleTimeoutMillis: 5000,      // Release idle connections quickly
+    },
   },
 });
 ```
@@ -89,22 +95,19 @@ When multiple agents share a database, divide the pool budget across agents:
 // Total budget: max_connections = 50 (PostgreSQL default: 100)
 // Reserve 50% of max_connections for application pool
 
-const analystPool = createConnectionManager({
+const analystPool = new ConnectionManager({
   vendor: 'postgresql',
-  connectionString: DB_URL,
-  pool: { max: 10 },  // Read-only agent — moderate pool
+  connection: { connectionString: DB_URL, pool: { max: 10 } },  // Read-only agent
 });
 
-const writerPool = createConnectionManager({
+const writerPool = new ConnectionManager({
   vendor: 'postgresql',
-  connectionString: DB_URL,
-  pool: { max: 5 },   // Write agent — smaller pool (writes hold locks)
+  connection: { connectionString: DB_URL, pool: { max: 5 } },   // Write agent
 });
 
-const reviewerPool = createConnectionManager({
+const reviewerPool = new ConnectionManager({
   vendor: 'postgresql',
-  connectionString: DB_URL,
-  pool: { max: 5 },   // Review agent — read + light writes
+  connection: { connectionString: DB_URL, pool: { max: 5 } },   // Review agent
 });
 // Total: 20 connections — leaves room for admin tools, migrations, etc.
 ```
@@ -185,21 +188,25 @@ process.on('SIGTERM', async () => {
 Reconnection and pooling work together. When a connection drops, the pool replaces it:
 
 ```typescript
-const manager = createConnectionManager({
-  vendor: 'postgresql',
-  connectionString: DB_URL,
-  pool: {
-    max: 10,
-    acquireTimeoutMillis: 30000,
-    idleTimeoutMillis: 10000,
+const manager = new ConnectionManager(
+  {
+    vendor: 'postgresql',
+    connection: {
+      connectionString: DB_URL,
+      pool: {
+        max: 10,
+        acquireTimeoutMillis: 30000,
+        idleTimeoutMillis: 10000,
+      },
+    },
   },
-  reconnection: {
+  {
     enabled: true,
     maxAttempts: 5,
     baseDelayMs: 1000,
     maxDelayMs: 30000,
   },
-});
+);
 
 // When a connection fails:
 // 1. Pool removes the dead connection

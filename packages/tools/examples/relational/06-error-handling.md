@@ -25,18 +25,20 @@ This guide covers every layer of error handling in the relational database tools
 The connection manager supports automatic reconnection with exponential backoff:
 
 ```typescript
-import { createConnectionManager } from '@agentforge/tools';
+import { ConnectionManager } from '@agentforge/tools';
 
-const manager = createConnectionManager({
-  vendor: 'postgresql',
-  connectionString: 'postgresql://app:secret@localhost:5432/mydb',
-  reconnection: {
+const manager = new ConnectionManager(
+  {
+    vendor: 'postgresql',
+    connection: 'postgresql://app:secret@localhost:5432/mydb',
+  },
+  {
     enabled: true,
     maxAttempts: 5,          // Try up to 5 times
     baseDelayMs: 1000,       // Start with 1s delay
     maxDelayMs: 30000,       // Cap at 30s
   },
-});
+);
 ```
 
 The delay between retries follows exponential backoff:
@@ -135,7 +137,7 @@ async function createUser(email: string, name: string) {
     return await relationalInsert.invoke({
       table: 'users',
       data: { email, name },
-      returning: ['id', 'email'],
+      returning: { mode: 'row' },
       vendor: 'postgresql',
       connectionString: DB_URL,
     });
