@@ -18,6 +18,13 @@ const SAFE_VALIDATION_ERROR_PATTERNS = [
   'Stream cancelled by caller',
 ] as const;
 
+/**
+ * Check whether an error is a safe SELECT input validation error
+ * that can be exposed to the caller without leaking database internals.
+ *
+ * @param error - The caught error
+ * @returns `true` if the error message matches a known validation pattern
+ */
 export function isSafeValidationError(error: unknown): error is Error {
   if (!(error instanceof Error)) {
     return false;

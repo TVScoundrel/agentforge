@@ -22,6 +22,11 @@ import { getDeleteConstraintViolationMessage, isSafeDeleteValidationError } from
 
 const logger = createLogger('agentforge:tools:data:relational:delete');
 
+/**
+ * Execution context for DELETE operations.
+ *
+ * @property transaction - Optional active transaction to execute within
+ */
 export interface DeleteExecutionContext {
   transaction?: TransactionContext;
 }

@@ -316,10 +316,24 @@ function sortColumnsByPosition(columnsByPosition: Array<{ position: number; colu
     .map((entry) => entry.column);
 }
 
+/**
+ * Inspects database schemas across PostgreSQL, MySQL, and SQLite.
+ *
+ * Retrieves table, column, index, and foreign key metadata with built-in
+ * caching support. Use {@link SchemaInspector.clearCache} to invalidate
+ * cached schemas.
+ */
 export class SchemaInspector {
   private readonly cacheTtlMs: number;
   private readonly cacheKey?: string;
 
+  /**
+   * Create a new SchemaInspector.
+   *
+   * @param manager - ConnectionManager instance for database access
+   * @param vendor - Database vendor ('postgresql' | 'mysql' | 'sqlite')
+   * @param config - Optional configuration for cache TTL and cache key
+   */
   constructor(
     private readonly manager: ConnectionManager,
     private readonly vendor: DatabaseVendor,
@@ -329,6 +343,11 @@ export class SchemaInspector {
     this.cacheKey = config?.cacheKey;
   }
 
+  /**
+   * Clear cached schema data.
+   *
+   * @param cacheKey - Specific cache key to clear. If omitted, clears all cached schemas.
+   */
   static clearCache(cacheKey?: string): void {
     if (cacheKey) {
       schemaCache.delete(cacheKey);
@@ -338,10 +357,19 @@ export class SchemaInspector {
     schemaCache.clear();
   }
 
+  /** Invalidate this inspector's cached schema, if any. */
   invalidateCache(): void {
     SchemaInspector.clearCache(this.cacheKey);
   }
 
+  /**
+   * Inspect the database schema and return structured metadata.
+   *
+   * Results are cached when a `cacheKey` was provided at construction time.
+   *
+   * @param options - Optional table filters and cache bypass flag
+   * @returns Structured schema with tables, columns, indexes, and foreign keys
+   */
   async inspect(options?: SchemaInspectOptions): Promise<DatabaseSchema> {
     const tableFilters = validateTableFilters(options?.tables);
     const bypassCache = options?.bypassCache ?? false;

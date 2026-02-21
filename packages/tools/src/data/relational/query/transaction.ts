@@ -13,12 +13,26 @@ const logger = createLogger('agentforge:tools:data:relational:transaction');
 
 let transactionSequence = 0;
 
+/**
+ * SQL transaction isolation level.
+ *
+ * Determines the visibility of changes made by concurrent transactions.
+ * Supported by PostgreSQL and MySQL. SQLite supports `'read uncommitted'`
+ * via `PRAGMA read_uncommitted = 1`; other levels are silently ignored
+ * (SQLite uses serializable semantics by default).
+ */
 export type TransactionIsolationLevel =
   | 'read uncommitted'
   | 'read committed'
   | 'repeatable read'
   | 'serializable';
 
+/**
+ * Options for configuring a database transaction.
+ *
+ * @property isolationLevel - SQL isolation level for the transaction
+ * @property timeoutMs - Maximum duration in milliseconds before the transaction is rolled back
+ */
 export interface TransactionOptions {
   isolationLevel?: TransactionIsolationLevel;
   timeoutMs?: number;
@@ -31,15 +45,32 @@ interface ResolvedTransactionOptions {
 
 const SAVEPOINT_NAME_PATTERN = /^[A-Za-z_][A-Za-z0-9_]*$/;
 
+/**
+ * Active transaction handle with savepoint support.
+ *
+ * Extends {@link SqlExecutor} so queries can be executed within the transaction.
+ * The transaction is automatically rolled back if an error occurs and is not
+ * explicitly committed.
+ *
+ * @property id - Unique identifier for this transaction
+ * @property vendor - Database vendor this transaction belongs to
+ */
 export interface TransactionContext extends SqlExecutor {
   id: string;
   vendor: DatabaseVendor;
+  /** Whether the transaction is still active (not committed or rolled back). */
   isActive(): boolean;
+  /** Commit all changes made within this transaction. */
   commit(): Promise<void>;
+  /** Roll back all changes made within this transaction. */
   rollback(): Promise<void>;
+  /** Create a savepoint within this transaction. Returns the savepoint name. */
   createSavepoint(name?: string): Promise<string>;
+  /** Roll back to a previously created savepoint. */
   rollbackToSavepoint(name: string): Promise<void>;
+  /** Release a savepoint, making its changes permanent within the transaction. */
   releaseSavepoint(name: string): Promise<void>;
+  /** Execute an operation within a nested savepoint, with automatic rollback on failure. */
   withSavepoint<T>(operation: (transaction: TransactionContext) => Promise<T>, name?: string): Promise<T>;
 }
 

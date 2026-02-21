@@ -82,32 +82,38 @@
 **Branch:** `docs/st-05003-usage-examples-documentation`
 
 ### Checklist
-- [ ] Create branch `docs/st-05003-usage-examples-documentation`
-- [ ] Create draft PR with story ID in title
-- [ ] Create `packages/tools/src/data/relational/README.md`
-- [ ] Write overview and feature list
-- [ ] Write quick start guide
-- [ ] Write installation instructions
-- [ ] Create example: PostgreSQL connection and basic queries
-- [ ] Create example: MySQL connection and basic queries
-- [ ] Create example: SQLite connection and basic queries
-- [ ] Create example: Using with AgentForge ReAct pattern
-- [ ] Create example: Error handling best practices
-- [ ] Write API documentation for ConnectionManager
-- [ ] Write API documentation for all tools
-- [ ] Write API documentation for query builder
-- [ ] Write API documentation for schema inspector
-- [ ] Create security best practices document
-- [ ] Document SQL injection prevention
-- [ ] Document connection pooling best practices
-- [ ] Add JSDoc comments to all public APIs
-- [ ] Generate TypeDoc documentation (if applicable)
-- [ ] Review and proofread all documentation
-- [ ] Add or update story documentation at docs/st05003-usage-examples-documentation.md (or document why not required)
-- [ ] Assess test impact; add/update automated tests when needed, or document why tests are not required
-- [ ] Run full test suite before finalizing the PR and record results
-- [ ] Run lint (`pnpm lint`) before finalizing the PR and record results
-- [ ] Mark PR ready for review
+- [x] Create branch `docs/st-05003-usage-examples-documentation`
+- [x] Create draft PR with story ID in title (PR #43)
+- [x] Create `packages/tools/src/data/relational/README.md`
+- [x] Write overview and feature list
+- [x] Write quick start guide
+- [x] Write installation instructions
+- [x] Create example: PostgreSQL connection and basic queries
+- [x] Create example: MySQL connection and basic queries
+- [x] Create example: SQLite connection and basic queries
+- [x] Create example: Using with AgentForge ReAct pattern
+- [x] Create example: Error handling best practices
+- [x] Write API documentation for ConnectionManager
+- [x] Write API documentation for all tools
+- [x] Write API documentation for query builder
+- [x] Write API documentation for schema inspector
+- [x] Create security best practices document
+- [x] Document SQL injection prevention
+- [x] Document connection pooling best practices
+- [x] Add JSDoc comments to all public APIs
+  - 42 previously undocumented exports now have JSDoc across 18 source files
+- [x] Generate TypeDoc documentation (if applicable)
+  - Not applicable: project does not use TypeDoc; API reference created as Markdown docs instead
+- [x] Review and proofread all documentation
+- [x] Add or update story documentation at docs/st05003-usage-examples-documentation.md (or document why not required)
+- [x] Assess test impact; add/update automated tests when needed, or document why tests are not required
+  - Documentation-only story: no functional code changed. JSDoc additions verified via build + lint.
+- [x] Run full test suite before finalizing the PR and record results
+  - 134 test files passed, 18 pre-existing failures (SQLite CRUD integration — same as main)
+  - 1990 tests passed, 57 failed (pre-existing), 92 skipped
+- [x] Run lint (`pnpm lint`) before finalizing the PR and record results
+  - 0 errors, 109 warnings (all pre-existing @typescript-eslint/no-explicit-any)
+- [x] Mark PR ready for review
 - [ ] Wait for merge
 
 ---

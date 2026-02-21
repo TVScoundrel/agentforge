@@ -22,6 +22,11 @@ import { getUpdateConstraintViolationMessage, isSafeUpdateValidationError } from
 
 const logger = createLogger('agentforge:tools:data:relational:update');
 
+/**
+ * Execution context for UPDATE operations.
+ *
+ * @property transaction - Optional active transaction to execute within
+ */
 export interface UpdateExecutionContext {
   transaction?: TransactionContext;
 }

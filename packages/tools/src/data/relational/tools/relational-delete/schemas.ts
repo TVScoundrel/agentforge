@@ -6,6 +6,7 @@
 import { z } from 'zod';
 import { VALID_QUALIFIED_IDENTIFIER_PATTERN } from '../../utils/identifier-utils.js';
 
+/** Allowed comparison operators for DELETE WHERE conditions. */
 export const deleteWhereOperatorSchema = z.enum([
   'eq',
   'ne',
@@ -20,6 +21,7 @@ export const deleteWhereOperatorSchema = z.enum([
   'isNotNull',
 ]);
 
+/** Schema for a single WHERE condition in DELETE operations. */
 export const deleteWhereConditionSchema = z.object({
   column: z.string().min(1, 'Column name must not be empty').describe('Column name to filter on'),
   operator: deleteWhereOperatorSchema.describe('Comparison operator'),
@@ -99,6 +101,7 @@ export const deleteWhereConditionSchema = z.object({
   }
 });
 
+/** Soft-delete configuration schema. Updates a column instead of physically deleting rows. */
 export const deleteSoftDeleteSchema = z.object({
   column: z.string().min(1, 'Soft delete column must not be empty').default('deleted_at').describe('Column to write deletion timestamp/value into'),
   value: z.union([z.string(), z.number()]).optional().describe('Optional explicit value for the soft-delete column (defaults to ISO timestamp)'),
@@ -136,6 +139,7 @@ export const deleteBatchOptionsSchema = z.object({
   benchmark: z.boolean().optional().default(false).describe('Run synthetic benchmark metadata comparing individual vs batched execution callbacks'),
 });
 
+/** Complete input schema for the relational-delete tool. */
 export const relationalDeleteSchema = z.object({
   table: z.string()
     .min(1, 'Table name is required')

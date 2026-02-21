@@ -4,9 +4,9 @@
 
 ## Queue Status Summary
 
-- **Ready:** 1 story (ST-05003)
+- **Ready:** 0 stories
 - **In Progress:** 0 stories
-- **In Review:** 0 stories
+- **In Review:** 1 story (ST-05003)
 - **Blocked:** 0 stories
 - **Backlog:** 7 stories (queued for prioritization and dependencies)
 
@@ -14,12 +14,7 @@
 
 ## Ready
 
-### ST-05003: Create Usage Examples and Documentation
-- **Epic:** EP-05
-- **Priority:** P1
-- **Estimate:** 6 hours
-- **Dependencies:** ST-02006 ✅ (merged 2026-02-19), ST-03001 ✅ (merged 2026-02-19)
-- **Checklist:** `planning/checklists/epic-05-story-tasks.md`
+_No stories currently ready_
 
 ---
 
@@ -31,7 +26,13 @@ _No stories currently in progress_
 
 ## In Review
 
-_No stories currently in review_
+### ST-05003: Create Usage Examples and Documentation
+- **Epic:** EP-05
+- **Priority:** P1
+- **Estimate:** 6 hours
+- **Dependencies:** ST-02006 ✅ (merged 2026-02-19), ST-03001 ✅ (merged 2026-02-19)
+- **Checklist:** `planning/checklists/epic-05-story-tasks.md`
+- **PR:** https://github.com/TVScoundrel/agentforge/pull/43
 
 ---
 

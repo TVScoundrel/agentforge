@@ -17,6 +17,12 @@ import { isSafeDeleteError } from './error-utils.js';
 export * from './types.js';
 export * from './schemas.js';
 
+/**
+ * LangGraph tool for type-safe DELETE queries with single and batched operation support.
+ *
+ * Supports WHERE conditions, full-table-delete protection, soft-delete mode,
+ * batch operations with retry logic, and optional cascade hints.
+ */
 export const relationalDelete = toolBuilder()
   .name('relational-delete')
   .displayName('Relational DELETE')
