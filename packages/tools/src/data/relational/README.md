@@ -201,6 +201,7 @@ const manager = new ConnectionManager(
 );
 
 manager.on('reconnecting', ({ attempt, maxAttempts, delayMs }) => {
+  // Production code should use createLogger() — console.log is for brevity only
   console.log(`Reconnecting (${attempt}/${maxAttempts}) in ${delayMs}ms`);
 });
 ```

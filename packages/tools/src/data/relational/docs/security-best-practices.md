@@ -112,20 +112,26 @@ await relationalQuery.invoke({
 Table and column names are quoted to prevent injection through identifiers:
 
 ```typescript
-import { quoteIdentifier, quoteQualifiedIdentifier, validateIdentifier } from '@agentforge/tools';
+// Identifier utilities are not re-exported from the package root.
+// Import directly from the utils module:
+import {
+  quoteIdentifier,
+  quoteQualifiedIdentifier,
+  validateIdentifier,
+} from '@agentforge/tools/data/relational/utils';
 
 // Validates and quotes identifiers
 quoteIdentifier('users');              // "users" (PostgreSQL/SQLite) or `users` (MySQL)
 quoteQualifiedIdentifier('public.users'); // "public"."users"
 
-// Rejects invalid identifiers
-validateIdentifier('users; DROP TABLE --'); // throws Error
+// Rejects invalid identifiers — context describes what is being validated
+validateIdentifier('users; DROP TABLE --', 'table name'); // throws Error
 ```
 
 The type-safe tools (`relationalSelect`, `relationalInsert`, etc.) validate all table and column names against a safe pattern before building queries:
 
 ```
-/^[A-Za-z_][A-Za-z0-9_]*(\.[A-Za-z_][A-Za-z0-9_]*)?$/
+/^[A-Za-z_][A-Za-z0-9_]*(\.[A-Za-z_][A-Za-z0-9_]*)*$/
 ```
 
 ---

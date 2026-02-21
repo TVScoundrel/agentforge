@@ -2,6 +2,8 @@
 
 This guide covers common error scenarios and recommended handling strategies for the relational database tools.
 
+> **Note:** Examples use `console.log`/`console.error` for brevity. Production code should use the framework logger — see [Logging Standards](../../../../../docs/LOGGING_STANDARDS.md).
+
 ## Connection Errors
 
 ### Missing Peer Dependency
