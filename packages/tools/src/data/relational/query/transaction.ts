@@ -17,7 +17,9 @@ let transactionSequence = 0;
  * SQL transaction isolation level.
  *
  * Determines the visibility of changes made by concurrent transactions.
- * Supported by PostgreSQL and MySQL; SQLite always uses 'serializable'.
+ * Supported by PostgreSQL and MySQL. SQLite supports `'read uncommitted'`
+ * via `PRAGMA read_uncommitted = 1`; other levels are silently ignored
+ * (SQLite uses serializable semantics by default).
  */
 export type TransactionIsolationLevel =
   | 'read uncommitted'

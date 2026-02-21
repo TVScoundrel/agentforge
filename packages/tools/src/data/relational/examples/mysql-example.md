@@ -111,7 +111,7 @@ const result = await relationalInsert.invoke({
   vendor: 'mysql',
   connectionString: 'mysql://user:pass@localhost:3306/mydb',
 });
-console.log(`Inserted product with ID: ${result.insertedIds}`);
+console.log(`Inserted product with ID: ${result.insertedIds[0]}`);
 
 // Batch insert with error handling
 const batchResult = await relationalInsert.invoke({

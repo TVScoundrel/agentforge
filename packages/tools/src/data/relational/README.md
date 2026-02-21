@@ -5,7 +5,7 @@ Vendor-agnostic relational database tools for **PostgreSQL**, **MySQL**, and **S
 ## Features
 
 - **Vendor-agnostic** — Write once, run against PostgreSQL, MySQL, or SQLite
-- **Type-safe CRUD** — SELECT, INSERT, UPDATE, DELETE tools with Zod-validated inputs
+- **Type-safe CRUD** — SELECT, INSERT, UPDATE, DELETE tools with Zod input schemas for validation/tooling (callers or LangChain/LangGraph integrations apply runtime validation)
 - **Raw SQL** — Execute arbitrary parameterized queries with automatic SQL injection prevention
 - **Schema introspection** — Discover tables, columns, primary keys, foreign keys, and indexes at runtime
 - **Connection pooling** — Built-in pool management with configurable limits and timeouts

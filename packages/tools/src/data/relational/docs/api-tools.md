@@ -28,8 +28,8 @@ Execute raw SQL queries with parameter binding.
 
 | Field | Type | Required | Description |
 |---|---|---|---|
-| `sql` | `string` | Yes | SQL query string |
-| `params` | `unknown[] \| Record<string, unknown>` | No | Positional (`[$1, $2]`) or named (`{ name: 'Alice' }`) parameters |
+| `sql` | `string` | Yes | SQL query string (use placeholders like `$1`, `?`, or `:name`) |
+| `params` | `unknown[] \| Record<string, unknown>` | No | Values for positional (e.g. `[42, 'active']` for `$1`, `$2`) or named (e.g. `{ name: 'Alice' }` for `:name`) placeholders in the SQL string |
 | `vendor` | `'postgresql' \| 'mysql' \| 'sqlite'` | Yes | Database vendor |
 | `connectionString` | `string` | Yes | Database connection string |
 
@@ -38,7 +38,8 @@ Execute raw SQL queries with parameter binding.
 - Validates SQL: blocks DDL (`CREATE`, `DROP`, `TRUNCATE`, `ALTER`)
 - Enforces parameterized queries for mutation statements (`INSERT`, `UPDATE`, `DELETE`)
 - Supports `$1`, `?`, and `:name` placeholder styles
-- Returns `{ data, metadata: { rowCount, executionTime } }`
+- Returns `{ success, rows, rowCount, executionTime }` on success
+- Returns `{ success: false, error, rows: [], rowCount: 0 }` on failure
 
 ---
 
@@ -91,7 +92,21 @@ Type-safe SELECT queries.
   rows: Record<string, unknown>[];
   rowCount: number;
   executionTime: number;
-  streaming?: { totalChunks: number; };
+  streaming?: {
+    enabled: true;
+    chunkSize: number;
+    chunkCount: number;
+    sampledRowCount: number;
+    streamedRowCount: number;
+    cancelled: boolean;
+    memoryUsage: {
+      startHeapUsed: number;
+      peakHeapUsed: number;
+      endHeapUsed: number;
+      deltaHeapUsed: number;
+    };
+    benchmark?: StreamingBenchmarkMetadata;
+  };
 }
 ```
 
@@ -238,11 +253,22 @@ Introspect database schema metadata.
 ### Response
 
 ```typescript
-{
-  success: boolean;
-  vendor: string;
-  tables: TableSchema[];
-}
+type RelationalGetSchemaResponse =
+  | {
+      success: true;
+      schema: DatabaseSchema;  // Full database schema with tables, columns, indexes, foreign keys
+      summary: {
+        tableCount: number;
+        columnCount: number;
+        foreignKeyCount: number;
+        indexCount: number;
+      };
+    }
+  | {
+      success: false;
+      error: string;
+      schema: null;
+    };
 ```
 
 ### TableSchema

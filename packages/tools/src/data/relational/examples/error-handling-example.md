@@ -72,50 +72,56 @@ await manager.connect();
 
 ### SQL Validation Errors
 
-The query executor validates SQL before execution:
+The query executor validates SQL before execution. Validation failures are returned in the response rather than thrown:
 
 ```typescript
 import { relationalQuery } from '@agentforge/tools';
 
 // Dangerous DDL is blocked
-try {
-  await relationalQuery.invoke({
-    sql: 'DROP TABLE users',
-    vendor: 'postgresql',
-    connectionString: 'postgresql://...',
-  });
-} catch (error) {
-  // Error: Dangerous SQL operations (CREATE, DROP, TRUNCATE, ALTER) are not allowed
+const ddlResult = await relationalQuery.invoke({
+  sql: 'DROP TABLE users',
+  vendor: 'postgresql',
+  connectionString: 'postgresql://...',
+});
+
+if (!ddlResult.success) {
+  console.error(ddlResult.error);
+  // "Dangerous SQL operations (CREATE, DROP, TRUNCATE, ALTER) are not allowed"
 }
 
 // Missing parameters for mutation queries
-try {
-  await relationalQuery.invoke({
-    sql: 'DELETE FROM users',  // No WHERE clause and no params
-    vendor: 'postgresql',
-    connectionString: 'postgresql://...',
-  });
-} catch (error) {
-  // Error: Mutation query requires parameter binding
+const mutationResult = await relationalQuery.invoke({
+  sql: 'DELETE FROM users',  // No WHERE clause and no params
+  vendor: 'postgresql',
+  connectionString: 'postgresql://...',
+});
+
+if (!mutationResult.success) {
+  console.error(mutationResult.error);
+  // "Mutation query requires parameter binding"
 }
 ```
 
 ### Input Validation Errors
 
-The type-safe tools use Zod schemas that provide clear validation messages:
+The type-safe tools provide Zod input schemas for validation and tooling. When used through LangChain/LangGraph integrations, inputs are validated at runtime automatically. For direct `.invoke()` calls, validation failures are surfaced in the result object:
 
 ```typescript
 import { relationalSelect } from '@agentforge/tools';
 
-try {
-  await relationalSelect.invoke({
-    table: '',  // Empty table name
-    vendor: 'postgresql',
-    connectionString: 'postgresql://...',
-  });
-} catch (error) {
-  // Zod validation error with field-level details
-  console.error(error.message);
+const result = await relationalSelect.invoke({
+  table: '',  // Empty table name
+  vendor: 'postgresql',
+  connectionString: 'postgresql://...',
+});
+
+if (!result.success) {
+  // Validation error with field-level details
+  console.error('Validation failed:', result.error);
+  // Handle the error or return early
+} else {
+  // Safe to use result.rows here
+  console.log('Query result:', result.rows);
 }
 ```
 

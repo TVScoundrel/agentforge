@@ -157,7 +157,7 @@ Supported syntax:
 
 ## 6. Input Validation
 
-All tool inputs are validated with Zod schemas before execution:
+All tools define Zod schemas for their inputs, which serve as the source of truth for validation and tooling. When tools are used through LangChain/LangGraph integrations (e.g., `StructuredTool` conversion), inputs are validated at runtime automatically. For direct `.invoke()` calls, callers should validate inputs explicitly or check the `success` flag in the response:
 
 - **Table names** — Must match the identifier pattern (alphanumeric + underscore + optional schema qualification)
 - **Column names** — Same pattern validation

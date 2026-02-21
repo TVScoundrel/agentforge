@@ -102,7 +102,7 @@ const result = await relationalInsert.invoke({
   vendor: 'sqlite',
   connectionString: './data/notes.db',
 });
-console.log(`Created note #${result.insertedIds}`);
+console.log(`Created note #${result.insertedIds[0]}`);
 
 // Batch insert
 const batchResult = await relationalInsert.invoke({

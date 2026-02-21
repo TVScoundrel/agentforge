@@ -116,7 +116,7 @@ const result = await relationalInsert.invoke({
   vendor: 'postgresql',
   connectionString: 'postgresql://user:pass@localhost:5432/mydb',
 });
-console.log(`Inserted user with ID: ${result.insertedIds}`);
+console.log(`Inserted user with ID: ${result.insertedIds[0]}`);
 
 // Batch insert
 const batchResult = await relationalInsert.invoke({
