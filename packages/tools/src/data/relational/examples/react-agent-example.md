@@ -2,7 +2,7 @@
 
 This example shows how to wire the relational database tools into an AgentForge ReAct agent so the LLM can autonomously query, insert, update, and introspect a database.
 
-> **Note:** Examples use `console.log` for brevity. Production code should use the framework logger — see [Logging Standards](../../../../../docs/LOGGING_STANDARDS.md).
+> **Note:** Examples use `console.log` for brevity. Production code should use the framework logger — see [Logging Standards](../../../../../../docs/LOGGING_STANDARDS.md).
 
 ## Setup
 

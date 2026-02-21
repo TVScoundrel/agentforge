@@ -87,27 +87,34 @@ Type-safe SELECT queries.
 ### Response
 
 ```typescript
-{
-  success: boolean;
-  rows: Record<string, unknown>[];
-  rowCount: number;
-  executionTime: number;
-  streaming?: {
-    enabled: true;
-    chunkSize: number;
-    chunkCount: number;
-    sampledRowCount: number;
-    streamedRowCount: number;
-    cancelled: boolean;
-    memoryUsage: {
-      startHeapUsed: number;
-      peakHeapUsed: number;
-      endHeapUsed: number;
-      deltaHeapUsed: number;
+type RelationalSelectResponse =
+  | {
+      success: true;
+      rows: Record<string, unknown>[];
+      rowCount: number;
+      executionTime: number;
+      streaming?: {
+        enabled: true;
+        chunkSize: number;
+        chunkCount: number;
+        sampledRowCount: number;
+        streamedRowCount: number;
+        cancelled: boolean;
+        memoryUsage: {
+          startHeapUsed: number;
+          peakHeapUsed: number;
+          endHeapUsed: number;
+          deltaHeapUsed: number;
+        };
+        benchmark?: StreamingBenchmarkMetadata;
+      };
+    }
+  | {
+      success: false;
+      error: string;
+      rows: [];
+      rowCount: 0;
     };
-    benchmark?: StreamingBenchmarkMetadata;
-  };
-}
 ```
 
 ---
@@ -157,14 +164,22 @@ Type-safe INSERT queries with single-row and batch support.
 ### Response
 
 ```typescript
-{
-  success: boolean;
-  rowCount: number;
-  insertedIds?: unknown[];
-  rows?: Record<string, unknown>[];
-  executionTime: number;
-  batch?: { totalBatches: number; failures: BatchFailureDetail[] };
-}
+type RelationalInsertResponse =
+  | {
+      success: true;
+      rowCount: number;
+      insertedIds?: unknown[];
+      rows?: Record<string, unknown>[];
+      executionTime: number;
+      batch?: { totalBatches: number; failures: BatchFailureDetail[] };
+    }
+  | {
+      success: false;
+      error: string;
+      rowCount: 0;
+      insertedIds: [];
+      rows: [];
+    };
 ```
 
 ---

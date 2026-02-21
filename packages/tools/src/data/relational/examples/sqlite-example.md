@@ -1,6 +1,6 @@
 # SQLite — Usage Examples
 
-> **Note:** Examples use `console.log` for brevity. Production code should use the framework logger — see [Logging Standards](../../../../../docs/LOGGING_STANDARDS.md).
+> **Note:** Examples use `console.log` for brevity. Production code should use the framework logger — see [Logging Standards](../../../../../../docs/LOGGING_STANDARDS.md).
 
 ## Connect and Query
 
@@ -62,11 +62,12 @@ await manager2.connect();
 import { relationalQuery } from '@agentforge/tools';
 
 // SQLite uses ? placeholders
+// Note: Use a file-backed DB path — :memory: creates a new empty DB per invocation
 const result = await relationalQuery.invoke({
   sql: 'SELECT * FROM users WHERE name LIKE ?',
   params: ['%alice%'],
   vendor: 'sqlite',
-  connectionString: ':memory:',
+  connectionString: './data/app.db',
 });
 console.log(result);
 ```

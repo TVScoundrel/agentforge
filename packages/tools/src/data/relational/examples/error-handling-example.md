@@ -2,7 +2,7 @@
 
 This guide covers common error scenarios and recommended handling strategies for the relational database tools.
 
-> **Note:** Examples use `console.log`/`console.error` for brevity. Production code should use the framework logger — see [Logging Standards](../../../../../docs/LOGGING_STANDARDS.md).
+> **Note:** Examples use `console.log`/`console.error` for brevity. Production code should use the framework logger — see [Logging Standards](../../../../../../docs/LOGGING_STANDARDS.md).
 
 ## Connection Errors
 
@@ -21,7 +21,9 @@ try {
 } catch (error) {
   if (error instanceof MissingPeerDependencyError) {
     console.error(error.message);
-    // "Missing peer dependency: pg. Install it with: pnpm add pg @types/pg"
+    // Example output (simplified):
+    // Missing peer dependency for vendor "postgresql" (package "pg").
+    // Install the required driver, for example: pnpm add pg @types/pg
   }
 }
 ```
@@ -88,7 +90,7 @@ const ddlResult = await relationalQuery.invoke({
 
 if (!ddlResult.success) {
   console.error(ddlResult.error);
-  // "Dangerous SQL operations (CREATE, DROP, TRUNCATE, ALTER) are not allowed"
+  // "Detected dangerous SQL operation. CREATE, DROP, TRUNCATE, and ALTER are not allowed."
 }
 
 // Missing parameters for mutation queries
@@ -100,27 +102,30 @@ const mutationResult = await relationalQuery.invoke({
 
 if (!mutationResult.success) {
   console.error(mutationResult.error);
-  // "Mutation query requires parameter binding"
+  // "Parameters are required for INSERT/UPDATE/DELETE queries. Use parameterized placeholders instead of embedding values directly."
 }
 ```
 
 ### Input Validation Errors
 
-The type-safe tools provide Zod input schemas for validation and tooling. When used through LangChain/LangGraph integrations, inputs are validated at runtime automatically. For direct `.invoke()` calls, validation failures are surfaced in the result object:
+The type-safe tools expose Zod input schemas for validation and tooling. When used through LangChain/LangGraph integrations, those integrations typically run Zod validation automatically at runtime. For **direct** `.invoke()` calls, you should validate inputs yourself (e.g. with `relationalSelect.schema.parse(input)`), and then handle any additional runtime validations via the tool's `{ success: false }` result:
 
 ```typescript
 import { relationalSelect } from '@agentforge/tools';
 
-const result = await relationalSelect.invoke({
-  table: '',  // Empty table name
+// 1. Validate input explicitly with the Zod schema
+const input = relationalSelect.schema.parse({
+  table: '',  // Empty table name — Zod will throw a ZodError
   vendor: 'postgresql',
   connectionString: 'postgresql://...',
 });
 
+// 2. Invoke the tool with validated input
+const result = await relationalSelect.invoke(input);
+
 if (!result.success) {
-  // Validation error with field-level details
-  console.error('Validation failed:', result.error);
-  // Handle the error or return early
+  // Runtime validation or execution error
+  console.error('Tool error:', result.error);
 } else {
   // Safe to use result.rows here
   console.log('Query result:', result.rows);

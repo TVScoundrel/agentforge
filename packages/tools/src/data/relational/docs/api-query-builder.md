@@ -189,7 +189,7 @@ Generic batched executor that chunks items and processes them with retries and p
 | Option | Type | Default | Description |
 |---|---|---|---|
 | `batchSize` | `number` | `100` | Items per chunk |
-| `continueOnError` | `boolean` | `false` | Continue on chunk failure |
+| `continueOnError` | `boolean` | `true` | Continue on chunk failure |
 | `maxRetries` | `number` | `0` | Retry attempts (max: 5) |
 | `retryDelayMs` | `number` | `0` | Retry delay (ms) |
 | `onProgress` | `(progress) => void` | — | Progress callback |

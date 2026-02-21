@@ -68,13 +68,14 @@ const bad2 = `SELECT * FROM users WHERE name = '${userName}'`;
 The query executor blocks dangerous DDL statements to prevent accidental or malicious schema modifications:
 
 ```typescript
-// BLOCKED — throws an error
-await relationalQuery.invoke({
+// BLOCKED — returns { success: false }
+const result = await relationalQuery.invoke({
   sql: 'DROP TABLE users',
   vendor: 'postgresql',
   connectionString: '...',
 });
-// Error: Dangerous SQL operations (CREATE, DROP, TRUNCATE, ALTER) are not allowed
+// result.success === false
+// result.error === "Detected dangerous SQL operation. CREATE, DROP, TRUNCATE, and ALTER are not allowed."
 ```
 
 Blocked operations: `CREATE`, `DROP`, `TRUNCATE`, `ALTER`.
@@ -89,12 +90,13 @@ Mutation queries (`INSERT`, `UPDATE`, `DELETE`) are rejected if they contain no 
 
 ```typescript
 // REJECTED — mutation without params
-await relationalQuery.invoke({
+const result = await relationalQuery.invoke({
   sql: 'DELETE FROM users WHERE id = 42',
   vendor: 'postgresql',
   connectionString: '...',
 });
-// Error: Mutation query requires parameter binding
+// result.success === false
+// result.error === "Parameters are required for INSERT/UPDATE/DELETE queries. Use parameterized placeholders instead of embedding values directly."
 
 // FIX — use parameters
 await relationalQuery.invoke({

@@ -224,4 +224,4 @@ manager.on('reconnecting', ({ attempt, maxAttempts, delayMs }) => {
 
 ## License
 
-MIT — see [LICENSE](../../../../LICENSE) for details.
+MIT — see [LICENSE](../../../../../LICENSE) for details.
