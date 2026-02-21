@@ -1,14 +1,14 @@
 # Kanban Queue: Relational Database Access Tool
 
-**Last Updated:** 2026-02-20
+**Last Updated:** 2026-02-21
 
 ## Queue Status Summary
 
 - **Ready:** 1 story (ST-05003)
 - **In Progress:** 0 stories
-- **In Review:** 1 story (ST-05002)
+- **In Review:** 0 stories
 - **Blocked:** 0 stories
-- **Backlog:** 6 stories (queued for prioritization and dependencies)
+- **Backlog:** 7 stories (queued for prioritization and dependencies)
 
 ---
 
@@ -31,14 +31,7 @@ _No stories currently in progress_
 
 ## In Review
 
-### ST-05002: Implement Integration Tests
-- **Epic:** EP-05
-- **Priority:** P1
-- **Estimate:** 6 hours
-- **Dependencies:** ST-05001 ✅ (merged 2026-02-20)
-- **Checklist:** `planning/checklists/epic-05-story-tasks.md`
-- **Branch:** `feat/st-05002-integration-tests`
-- **PR:** [#42](https://github.com/TVScoundrel/agentforge/pull/42)
+_No stories currently in review_
 
 ---
 
@@ -57,7 +50,7 @@ _No stories currently blocked_
 - **Dependencies:** ST-04001 ✅ (merged 2026-02-20), ST-05003
 - **Checklist:** `planning/checklists/epic-05-story-tasks.md`
 
-### ST-06001: Implement Skill Discovery and Metadata Registry
+### ST-06001: Implement Skill Discovery and Metadata Parsing
 - **Epic:** EP-06
 - **Priority:** P0
 - **Estimate:** 5 hours
@@ -117,6 +110,7 @@ _No stories currently blocked_
 - ✅ ST-04002 complete - batch operations implemented (merged 2026-02-20)
 - ✅ ST-04003 complete - result streaming implemented (merged 2026-02-19)
 - ✅ ST-05001 complete - comprehensive unit tests implemented (merged 2026-02-20)
+- ✅ ST-05002 complete - integration tests implemented (merged 2026-02-21)
 - Epic 01 (Connection Management) is now complete - all 4 stories merged
 - Epic 02 (Query Execution and CRUD Operations) is now complete - all 6 stories merged
 - Epic 03 (Schema Introspection and Metadata) is now complete - all 2 stories merged

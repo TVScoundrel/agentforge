@@ -120,6 +120,13 @@
 - **Estimate:** 8 hours
 - **Outcome:** Created 23 new test files covering connection manager, query builder, query executor, transactions, all CRUD tool executors/schemas/error-utils, schema validation, identifier utils, and peer dependency checker. Achieved 90.36% statement coverage, 88.27% branch coverage, 90.76% function coverage. 1859 tests passed (159 skipped — integration tests needing real DB deferred to ST-05002).
 
+### ST-05002: Implement Integration Tests
+- **Merged:** 2026-02-21
+- **PR:** https://github.com/TVScoundrel/agentforge/pull/42
+- **Epic:** EP-05 (Documentation, Examples, and Testing)
+- **Estimate:** 6 hours
+- **Outcome:** Created 121 integration tests using testcontainers (PostgreSQL, MySQL) and in-memory SQLite. Added 15 test files covering connection lifecycle, CRUD operations, transactions, batch operations, schema introspection, streaming, error handling, concurrent access, and performance benchmarks. Created CI workflow (`.github/workflows/integration-tests.yml`) with Docker-based test execution. Discovered and fixed 4 production bugs: MySQL tuple normalization, SQLite `.run()` result normalization, SQLite non-query error detection, and connection pool validation.
+
 ---
 
 ## Archive Format
