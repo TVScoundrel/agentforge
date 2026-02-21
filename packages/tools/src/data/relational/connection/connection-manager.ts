@@ -576,15 +576,14 @@ export class ConnectionManager extends EventEmitter implements DatabaseConnectio
    * Determine whether an error thrown by better-sqlite3's `.all()` indicates
    * the statement does not return data (i.e. it is DML/DDL, not a SELECT).
    *
-   * Checks the error's constructor name first (`SqliteError`) for stability
-   * across better-sqlite3 versions, then falls back to a message substring
-   * match as a safety net.
+   * Requires both a `SqliteError` type check AND the expected message to avoid
+   * false positives from unrelated errors that happen to contain similar text.
    */
   private isSqliteNonQueryError(error: unknown): boolean {
     if (!(error instanceof Error)) return false;
     const isSqliteError = error.constructor?.name === 'SqliteError' || error.name === 'SqliteError';
     const hasNonQueryMessage = error.message.includes('does not return data');
-    return isSqliteError || hasNonQueryMessage;
+    return isSqliteError && hasNonQueryMessage;
   }
 
   /**
