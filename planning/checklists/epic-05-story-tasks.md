@@ -152,7 +152,7 @@
   - 958 tests passed, 19 failed (pre-existing), 50 skipped
 - [x] Run lint (`pnpm lint`) before finalizing the PR and record results
   - 0 errors, 109 warnings (all pre-existing @typescript-eslint/no-explicit-any)
-- [ ] Mark PR ready for review
+- [x] Mark PR ready for review
 - [ ] Wait for merge
 
 ---
