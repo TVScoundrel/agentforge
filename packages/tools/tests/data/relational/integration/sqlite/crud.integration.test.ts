@@ -8,7 +8,7 @@ import { describe, it, expect, beforeAll, afterAll, beforeEach } from 'vitest';
 import { ConnectionManager } from '../../../../../src/data/relational/connection/connection-manager.js';
 import { executeQuery } from '../../../../../src/data/relational/query/query-executor.js';
 import type { ConnectionConfig } from '../../../../../src/data/relational/connection/types.js';
-import { setupTestSchema, teardownTestSchema } from '../setup/test-helpers.js';
+import { setupTestSchema } from '../setup/test-helpers.js';
 
 const hasSQLiteBindings = (() => {
   try {

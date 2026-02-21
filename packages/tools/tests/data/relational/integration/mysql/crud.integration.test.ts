@@ -13,7 +13,7 @@ import {
   stopMySQLContainer,
   type MySQLContainerInfo,
 } from '../setup/containers.js';
-import { setupTestSchema, teardownTestSchema } from '../setup/test-helpers.js';
+import { setupTestSchema } from '../setup/test-helpers.js';
 
 let mysqlContainer: MySQLContainerInfo;
 let manager: ConnectionManager;

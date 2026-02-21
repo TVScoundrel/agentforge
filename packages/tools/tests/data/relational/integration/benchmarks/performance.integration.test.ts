@@ -178,6 +178,27 @@ describe('Performance Benchmarks', () => {
   });
 
   describe('SELECT Performance', () => {
+    // Seed bench_insert independently so this section is not coupled to INSERT
+    beforeAll(async () => {
+      for (const v of vendors) {
+        const createSql =
+          v.vendor === 'postgresql'
+            ? 'CREATE TABLE IF NOT EXISTS bench_insert (id SERIAL PRIMARY KEY, val VARCHAR(255), num INTEGER)'
+            : v.vendor === 'mysql'
+              ? 'CREATE TABLE IF NOT EXISTS bench_insert (id INTEGER PRIMARY KEY AUTO_INCREMENT, val VARCHAR(255), num INTEGER)'
+              : 'CREATE TABLE IF NOT EXISTS bench_insert (id INTEGER PRIMARY KEY AUTOINCREMENT, val VARCHAR(255), num INTEGER)';
+        await v.manager.execute(sql.raw('DROP TABLE IF EXISTS bench_insert'));
+        await v.manager.execute(sql.raw(createSql));
+        for (let i = 0; i < 100; i++) {
+          await executeQuery(v.manager, {
+            sql: `INSERT INTO bench_insert (val, num) VALUES (${v.placeholder(2)})`,
+            params: [`value_${i}`, i],
+            vendor: v.vendor,
+          });
+        }
+      }
+    }, 120_000);
+
     for (const vendorName of ['postgresql', 'mysql', 'sqlite'] as const) {
       it(`should select all rows from bench_insert — ${vendorName}`, async () => {
         const v = vendors.find((x) => x.vendor === vendorName);
@@ -229,6 +250,27 @@ describe('Performance Benchmarks', () => {
   });
 
   describe('UPDATE Performance', () => {
+    // Seed bench_insert independently so this section is not coupled to INSERT
+    beforeAll(async () => {
+      for (const v of vendors) {
+        const createSql =
+          v.vendor === 'postgresql'
+            ? 'CREATE TABLE IF NOT EXISTS bench_insert (id SERIAL PRIMARY KEY, val VARCHAR(255), num INTEGER)'
+            : v.vendor === 'mysql'
+              ? 'CREATE TABLE IF NOT EXISTS bench_insert (id INTEGER PRIMARY KEY AUTO_INCREMENT, val VARCHAR(255), num INTEGER)'
+              : 'CREATE TABLE IF NOT EXISTS bench_insert (id INTEGER PRIMARY KEY AUTOINCREMENT, val VARCHAR(255), num INTEGER)';
+        await v.manager.execute(sql.raw('DROP TABLE IF EXISTS bench_insert'));
+        await v.manager.execute(sql.raw(createSql));
+        for (let i = 0; i < 100; i++) {
+          await executeQuery(v.manager, {
+            sql: `INSERT INTO bench_insert (val, num) VALUES (${v.placeholder(2)})`,
+            params: [`value_${i}`, i],
+            vendor: v.vendor,
+          });
+        }
+      }
+    }, 120_000);
+
     for (const vendorName of ['postgresql', 'mysql', 'sqlite'] as const) {
       it(`should update all rows — ${vendorName}`, async () => {
         const v = vendors.find((x) => x.vendor === vendorName);
@@ -257,6 +299,27 @@ describe('Performance Benchmarks', () => {
   });
 
   describe('DELETE Performance', () => {
+    // Seed bench_insert independently so this section is not coupled to INSERT
+    beforeAll(async () => {
+      for (const v of vendors) {
+        const createSql =
+          v.vendor === 'postgresql'
+            ? 'CREATE TABLE IF NOT EXISTS bench_insert (id SERIAL PRIMARY KEY, val VARCHAR(255), num INTEGER)'
+            : v.vendor === 'mysql'
+              ? 'CREATE TABLE IF NOT EXISTS bench_insert (id INTEGER PRIMARY KEY AUTO_INCREMENT, val VARCHAR(255), num INTEGER)'
+              : 'CREATE TABLE IF NOT EXISTS bench_insert (id INTEGER PRIMARY KEY AUTOINCREMENT, val VARCHAR(255), num INTEGER)';
+        await v.manager.execute(sql.raw('DROP TABLE IF EXISTS bench_insert'));
+        await v.manager.execute(sql.raw(createSql));
+        for (let i = 0; i < 100; i++) {
+          await executeQuery(v.manager, {
+            sql: `INSERT INTO bench_insert (val, num) VALUES (${v.placeholder(2)})`,
+            params: [`value_${i}`, i],
+            vendor: v.vendor,
+          });
+        }
+      }
+    }, 120_000);
+
     for (const vendorName of ['postgresql', 'mysql', 'sqlite'] as const) {
       it(`should delete all rows — ${vendorName}`, async () => {
         const v = vendors.find((x) => x.vendor === vendorName);

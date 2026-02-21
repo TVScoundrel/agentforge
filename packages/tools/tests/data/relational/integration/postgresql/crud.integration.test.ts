@@ -13,7 +13,7 @@ import {
   stopPostgreSQLContainer,
   type PostgreSQLContainerInfo,
 } from '../setup/containers.js';
-import { setupTestSchema, teardownTestSchema } from '../setup/test-helpers.js';
+import { setupTestSchema } from '../setup/test-helpers.js';
 
 let pgContainer: PostgreSQLContainerInfo;
 let manager: ConnectionManager;

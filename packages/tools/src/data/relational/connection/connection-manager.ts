@@ -619,7 +619,10 @@ export class ConnectionManager extends EventEmitter implements DatabaseConnectio
     // result identically to PostgreSQL (which returns rows directly).
     if (this.vendor === 'mysql') {
       const raw = await this.db.execute(query);
-      if (Array.isArray(raw) && raw.length === 2 && Array.isArray(raw[0])) {
+      // mysql2 returns [rows, fields] for SELECTs and [ResultSetHeader, fields]
+      // for INSERT/UPDATE/DELETE. Unwrap the first element in both cases so
+      // callers get a consistent shape matching PostgreSQL / SQLite.
+      if (Array.isArray(raw) && raw.length === 2) {
         return raw[0];
       }
       return raw;
@@ -672,7 +675,9 @@ export class ConnectionManager extends EventEmitter implements DatabaseConnectio
         const sessionDb = drizzle({ client: mysqlConnection });
         return await callback(async (query) => {
           const raw = await sessionDb.execute(query);
-          if (Array.isArray(raw) && raw.length === 2 && Array.isArray(raw[0])) {
+          // mysql2 returns [rows, fields] for SELECTs and [ResultSetHeader, fields]
+          // for INSERT/UPDATE/DELETE. Unwrap the first element in both cases.
+          if (Array.isArray(raw) && raw.length === 2) {
             return raw[0];
           }
           return raw;

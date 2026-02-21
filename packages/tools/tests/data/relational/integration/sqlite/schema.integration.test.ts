@@ -6,7 +6,6 @@
 
 import { describe, it, expect, beforeAll, afterAll } from 'vitest';
 import { ConnectionManager } from '../../../../../src/data/relational/connection/connection-manager.js';
-import { executeQuery } from '../../../../../src/data/relational/query/query-executor.js';
 import type { ConnectionConfig } from '../../../../../src/data/relational/connection/types.js';
 import { setupTestSchema } from '../setup/test-helpers.js';
 

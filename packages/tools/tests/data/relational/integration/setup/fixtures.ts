@@ -63,8 +63,6 @@ export function getCreateTableStatements(vendor: DatabaseVendor): string[] {
  * Returns arrays of parameterized insert SQL + params per vendor.
  */
 export function getSeedStatements(vendor: DatabaseVendor): Array<{ sql: string; params: unknown[] }> {
-  const placeholder = vendor === 'postgresql' ? '$' : '?';
-
   function ph(n: number): string {
     if (vendor === 'postgresql') {
       return Array.from({ length: n }, (_, i) => `$${i + 1}`).join(', ');
