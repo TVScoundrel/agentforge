@@ -4,17 +4,30 @@
 
 ## Queue Status Summary
 
-- **Ready:** 0 stories
+- **Ready:** 2 stories
 - **In Progress:** 0 stories
-- **In Review:** 1 story (ST-05003)
+- **In Review:** 0 stories
 - **Blocked:** 0 stories
-- **Backlog:** 7 stories (queued for prioritization and dependencies)
+- **Backlog:** 5 stories (queued for prioritization and dependencies)
 
 ---
 
 ## Ready
 
-_No stories currently ready_
+### ST-05004: Create Advanced Integration Examples
+- **Epic:** EP-05
+- **Priority:** P2
+- **Estimate:** 4 hours
+- **Dependencies:** ST-04001 ✅ (merged 2026-02-20), ST-05003 ✅ (merged 2026-02-21)
+- **Checklist:** `planning/checklists/epic-05-story-tasks.md`
+
+### ST-06001: Implement Skill Discovery and Metadata Parsing
+- **Epic:** EP-06
+- **Priority:** P0
+- **Estimate:** 5 hours
+- **Dependencies:** None
+- **Checklist:** `planning/checklists/epic-06-story-tasks.md`
+- **Feature:** `planning/features/06-agent-skills-compatibility-feature-plan.md`
 
 ---
 
@@ -26,13 +39,7 @@ _No stories currently in progress_
 
 ## In Review
 
-### ST-05003: Create Usage Examples and Documentation
-- **Epic:** EP-05
-- **Priority:** P1
-- **Estimate:** 6 hours
-- **Dependencies:** ST-02006 ✅ (merged 2026-02-19), ST-03001 ✅ (merged 2026-02-19)
-- **Checklist:** `planning/checklists/epic-05-story-tasks.md`
-- **PR:** https://github.com/TVScoundrel/agentforge/pull/43
+_No stories currently in review_
 
 ---
 
@@ -43,21 +50,6 @@ _No stories currently blocked_
 ---
 
 ## Backlog
-
-### ST-05004: Create Advanced Integration Examples
-- **Epic:** EP-05
-- **Priority:** P2
-- **Estimate:** 4 hours
-- **Dependencies:** ST-04001 ✅ (merged 2026-02-20), ST-05003
-- **Checklist:** `planning/checklists/epic-05-story-tasks.md`
-
-### ST-06001: Implement Skill Discovery and Metadata Parsing
-- **Epic:** EP-06
-- **Priority:** P0
-- **Estimate:** 5 hours
-- **Dependencies:** None (queued behind active EP-05 ready work)
-- **Checklist:** `planning/checklists/epic-06-story-tasks.md`
-- **Feature:** `planning/features/06-agent-skills-compatibility-feature-plan.md`
 
 ### ST-06002: Implement Skill Matching and Activation Planning
 - **Epic:** EP-06
@@ -112,6 +104,7 @@ _No stories currently blocked_
 - ✅ ST-04003 complete - result streaming implemented (merged 2026-02-19)
 - ✅ ST-05001 complete - comprehensive unit tests implemented (merged 2026-02-20)
 - ✅ ST-05002 complete - integration tests implemented (merged 2026-02-21)
+- ✅ ST-05003 complete - usage examples and documentation (merged 2026-02-21)
 - Epic 01 (Connection Management) is now complete - all 4 stories merged
 - Epic 02 (Query Execution and CRUD Operations) is now complete - all 6 stories merged
 - Epic 03 (Schema Introspection and Metadata) is now complete - all 2 stories merged

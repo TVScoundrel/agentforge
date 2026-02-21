@@ -114,7 +114,8 @@
 - [x] Run lint (`pnpm lint`) before finalizing the PR and record results
   - 0 errors, 109 warnings (all pre-existing @typescript-eslint/no-explicit-any)
 - [x] Mark PR ready for review
-- [ ] Wait for merge
+- [x] Wait for merge
+  - Merged PR: https://github.com/TVScoundrel/agentforge/pull/43 (2026-02-21)
 
 ---
 

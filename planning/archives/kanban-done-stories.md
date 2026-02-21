@@ -2,7 +2,7 @@
 
 **Purpose:** Track completed and merged stories for the Relational Database Access Tool project.
 
-**Last Updated:** 2026-02-20
+**Last Updated:** 2026-02-21
 
 ---
 
@@ -126,6 +126,13 @@
 - **Epic:** EP-05 (Documentation, Examples, and Testing)
 - **Estimate:** 6 hours
 - **Outcome:** Created 121 integration tests using testcontainers (PostgreSQL, MySQL) and in-memory SQLite. Added 15 test files covering connection lifecycle, CRUD operations, transactions, batch operations, schema introspection, streaming, error handling, concurrent access, and performance benchmarks. Created CI workflow (`.github/workflows/integration-tests.yml`) with Docker-based test execution. Discovered and fixed 4 production bugs: MySQL tuple normalization, SQLite `.run()` result normalization, SQLite non-query error detection, and connection pool validation.
+
+### ST-05003: Create Usage Examples and Documentation
+- **Merged:** 2026-02-21
+- **PR:** https://github.com/TVScoundrel/agentforge/pull/43
+- **Epic:** EP-05 (Documentation, Examples, and Testing)
+- **Estimate:** 6 hours
+- **Outcome:** Created comprehensive documentation suite for the relational database module: README with overview/quick-start/architecture, vendor-specific examples (PostgreSQL, MySQL, SQLite), ReAct agent integration example, error handling guide, 4 API reference docs (ConnectionManager, Tools, Query Builder, Schema Inspector), security best practices guide, and JSDoc comments for 42 previously undocumented exports across 18 source files. Addressed 34 Copilot review comments across 3 rounds covering error patterns, import paths, response shapes, relative links, and logging standards compliance.
 
 ---
 
