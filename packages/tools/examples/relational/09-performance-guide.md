@@ -10,12 +10,12 @@ This guide consolidates performance tuning recommendations for all relational da
 
 | Scenario | Recommendation | Example |
 |---|---|---|
-| Insert > 100 rows | Use batch insert | `batch: { size: 200 }` |
-| Update > 50 rows | Use batch update | `batch: { size: 100 }` |
+| Insert > 100 rows | Use batch insert | `batch: { batchSize: 200 }` |
+| Update > 50 rows | Use batch update | `batch: { batchSize: 100 }` |
 | Query > 10K rows | Use streaming | `streaming: { enabled: true }` |
 | Concurrent agents | Tune pool size | `pool: { max: 10 }` |
 | Multi-step writes | Use transactions | `withTransaction(...)` |
-| Schema discovery | Use caching | `cacheKey: 'my-schema'` |
+| Schema discovery | Use caching | `cacheTtlMs: 300000` |
 
 ---
 
@@ -48,7 +48,7 @@ for (const batchSize of [50, 100, 200, 500, 1000]) {
   await relationalInsert.invoke({
     table: 'products',
     data: testData,
-    batch: { size: batchSize },
+    batch: { batchSize },
     vendor: 'postgresql',
     connectionString: DB_URL,
   });
@@ -116,19 +116,19 @@ Choose the right isolation level based on your consistency requirements:
 
 | Level | Dirty Read | Non-Repeatable Read | Phantom Read | Performance |
 |---|---|---|---|---|
-| `read-uncommitted` | Possible | Possible | Possible | Fastest |
-| `read-committed` | No | Possible | Possible | Fast |
-| `repeatable-read` | No | No | Possible | Moderate |
+| `read uncommitted` | Possible | Possible | Possible | Fastest |
+| `read committed` | No | Possible | Possible | Fast |
+| `repeatable read` | No | No | Possible | Moderate |
 | `serializable` | No | No | No | Slowest |
 
 ### Recommendations by Use Case
 
 | Use Case | Level | Why |
 |---|---|---|
-| Analytics / reporting | `read-committed` | Consistency not critical; speed matters |
+| Analytics / reporting | `read committed` | Consistency not critical; speed matters |
 | Financial transfers | `serializable` | Must prevent all anomalies |
-| Inventory updates | `repeatable-read` | Prevent lost updates |
-| Bulk data import | `read-committed` | Speed matters; single writer |
+| Inventory updates | `repeatable read` | Prevent lost updates |
+| Bulk data import | `read committed` | Speed matters; single writer |
 | Multi-agent writes | `serializable` or optimistic locking | Prevent conflicts |
 
 ```typescript
@@ -148,7 +148,7 @@ await withTransaction(manager, async (tx) => {
   const count = await tx.execute('SELECT COUNT(*) FROM orders WHERE date > $1', [startDate]);
   return { revenue: revenue[0].sum, count: count[0].count };
 }, {
-  isolationLevel: 'read-committed',
+  isolationLevel: 'read committed',
 });
 ```
 
@@ -244,11 +244,11 @@ Schema queries hit `information_schema`, which can be slow on large databases:
 | 100 | ~200ms | ~0ms |
 | 1,000 | ~2s | ~0ms |
 
-Always use `cacheKey` in production:
+Always use `cacheTtlMs` in production:
 
 ```typescript
 const schema = await relationalGetSchema.invoke({
-  cacheKey: 'my-app-schema',    // Cache for the session
+  cacheTtlMs: 300000,           // Cache for 5 minutes
   tables: ['users', 'orders'],  // Only inspect tables you need
   vendor: 'postgresql',
   connectionString: DB_URL,
@@ -265,7 +265,7 @@ const schema = await relationalGetSchema.invoke({
 - [ ] **Column selection** — only fetch columns you need
 - [ ] **WHERE filters** — filter in database, not in application
 - [ ] **Pagination** — use LIMIT/OFFSET for bounded result sets
-- [ ] **Schema cache** — use `cacheKey` for introspection
+- [ ] **Schema cache** — use `cacheTtlMs` for introspection
 - [ ] **Transaction isolation** — use the lowest safe level
 - [ ] **Indexes** — ensure WHERE/ORDER BY columns are indexed
-- [ ] **Graceful shutdown** — `manager.destroy()` on exit
+- [ ] **Graceful shutdown** — `manager.disconnect()` on exit

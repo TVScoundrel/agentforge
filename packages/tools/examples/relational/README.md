@@ -48,7 +48,7 @@ All examples support three database vendors:
 |---|---|
 | PostgreSQL | `postgresql://user:pass@host:5432/dbname` |
 | MySQL | `mysql://user:pass@host:3306/dbname` |
-| SQLite | `sqlite:///path/to/database.db` |
+| SQLite | `path/to/database.db` (or `:memory:`) |
 
 Vendor-specific differences are called out inline where behavior varies.
 

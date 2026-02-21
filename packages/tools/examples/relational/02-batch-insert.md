@@ -159,21 +159,21 @@ console.log(`Execution time: ${result.executionTime}ms`);
 Set `continueOnError: false` to abort immediately when a batch fails:
 
 ```typescript
-try {
-  const result = await relationalInsert.invoke({
-    table: 'accounts',
-    data: accounts,
-    batch: {
-      enabled: true,
-      batchSize: 100,
-      continueOnError: false, // Stop immediately on failure
-    },
-    vendor: 'postgresql',
-    connectionString: 'postgresql://...',
-  });
-} catch (error) {
-  // The tool returns { success: false } when a batch fails with continueOnError: false
-  console.error('Batch insert aborted:', error);
+const result = await relationalInsert.invoke({
+  table: 'accounts',
+  data: accounts,
+  batch: {
+    enabled: true,
+    batchSize: 100,
+    continueOnError: false, // Stop immediately on failure
+  },
+  vendor: 'postgresql',
+  connectionString: 'postgresql://...',
+});
+
+if (!result.success) {
+  // Tool returns { success: false, error } when a batch fails
+  console.error('Batch insert aborted:', result.error);
 }
 ```
 

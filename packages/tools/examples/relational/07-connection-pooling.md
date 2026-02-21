@@ -123,19 +123,19 @@ const metrics = manager.getPoolMetrics();
 
 console.log(metrics);
 // {
-//   total: 20,       // Pool max size
-//   active: 8,       // Connections currently in use
-//   idle: 4,         // Connections waiting to be used
-//   waiting: 0,      // Requests waiting for a connection
+//   totalCount: 20,       // Pool max size
+//   activeCount: 8,       // Connections currently in use
+//   idleCount: 4,         // Connections waiting to be used
+//   waitingCount: 0,      // Requests waiting for a connection
 // }
 
 // Alert when pool is saturated
-if (metrics.waiting > 0) {
-  console.log(`⚠ Pool saturated: ${metrics.waiting} requests waiting`);
+if (metrics.waitingCount > 0) {
+  console.log(`⚠ Pool saturated: ${metrics.waitingCount} requests waiting`);
 }
 
 // Alert when utilization is consistently high
-const utilization = metrics.active / metrics.total;
+const utilization = metrics.activeCount / metrics.totalCount;
 if (utilization > 0.8) {
   console.log(`⚠ Pool utilization at ${(utilization * 100).toFixed(0)}% — consider increasing max`);
 }
@@ -156,7 +156,7 @@ if (utilization > 0.8) {
      ▼                                                    │
 ┌─────────┐                                               │
 │ Closed  │◀──────────────────────────────────────────────┘
-│         │  (idle too long, or pool.destroy())
+│         │  (idle too long, or pool.disconnect())
 └─────────┘
 ```
 
@@ -168,14 +168,14 @@ Always destroy the connection manager when your application exits:
 // Clean shutdown — wait for active queries to finish
 process.on('SIGTERM', async () => {
   console.log('Shutting down...');
-  await manager.destroy();       // Closes all pool connections
+  await manager.disconnect();       // Closes all pool connections
   process.exit(0);
 });
 
 // Or with a timeout
 process.on('SIGTERM', async () => {
   const timeout = setTimeout(() => process.exit(1), 10000);
-  await manager.destroy();
+  await manager.disconnect();
   clearTimeout(timeout);
   process.exit(0);
 });
@@ -252,6 +252,6 @@ If running 2 application instances:
 1. **Don't over-provision** — More connections ≠ more throughput. Too many connections cause context switching overhead in the database.
 2. **Monitor pool metrics** — Track `waiting` count as a saturation indicator.
 3. **Use separate pools for separate concerns** — Read-only dashboards, write-heavy ETL, and real-time agents should each have their own pool.
-4. **Close pools on exit** — Call `manager.destroy()` to avoid connection leaks.
+4. **Close pools on exit** — Call `manager.disconnect()` to avoid connection leaks.
 5. **Set `acquireTimeoutMillis`** — Fail fast rather than hanging indefinitely when the pool is exhausted.
 6. **Match pool size to database limits** — Check `max_connections` and leave headroom for admin tools.

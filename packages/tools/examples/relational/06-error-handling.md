@@ -58,20 +58,16 @@ manager.on('connected', () => {
   console.log('Database connected');
 });
 
-manager.on('disconnected', (error) => {
-  console.log('Connection lost:', error.message);
+manager.on('disconnected', () => {
+  console.log('Connection lost: disconnected from database');
 });
 
-manager.on('reconnecting', (attempt) => {
-  console.log(`Reconnection attempt ${attempt}...`);
+manager.on('reconnecting', ({ attempt, maxAttempts, delayMs }) => {
+  console.log(`Reconnection attempt ${attempt}/${maxAttempts} (delay: ${delayMs}ms)...`);
 });
 
-manager.on('reconnected', () => {
-  console.log('Successfully reconnected');
-});
-
-manager.on('reconnectionFailed', (error) => {
-  console.log('All reconnection attempts exhausted:', error.message);
+manager.on('error', (error) => {
+  console.log('Connection error:', error.message);
   // Alert operations team, switch to degraded mode, etc.
 });
 ```
@@ -91,7 +87,8 @@ const result = await relationalQuery.invoke({
   vendor: 'postgresql',
   connectionString: DB_URL,
 });
-// → Error: SQL validation failed: Forbidden keyword "DROP" detected
+console.log(result.success); // false
+console.log(result.error);   // "Detected dangerous SQL operation"
 
 // ❌ Missing WHERE clause on UPDATE is blocked by default
 const result2 = await relationalUpdate.invoke({
@@ -101,25 +98,28 @@ const result2 = await relationalUpdate.invoke({
   vendor: 'postgresql',
   connectionString: DB_URL,
 });
-// → Error: Full-table updates require explicit allowFullTableUpdate: true
+console.log(result2.success); // false
+console.log(result2.error);   // "WHERE conditions are required unless allowFullTableUpdate is true"
 ```
 
 ### Handling Validation Errors
 
+Tools return `{ success: false, error }` instead of throwing:
+
 ```typescript
-try {
-  const result = await relationalQuery.invoke({
-    sql: userProvidedSQL,
-    vendor: 'postgresql',
-    connectionString: DB_URL,
-  });
-} catch (error) {
-  if (error.message.includes('SQL validation failed')) {
+const result = await relationalQuery.invoke({
+  sql: userProvidedSQL,
+  vendor: 'postgresql',
+  connectionString: DB_URL,
+});
+
+if (!result.success) {
+  if (result.error?.includes('dangerous SQL')) {
     // Non-retryable — the SQL itself is problematic
-    console.log('Invalid SQL:', error.message);
+    console.log('Invalid SQL:', result.error);
     return { success: false, reason: 'query_rejected' };
   }
-  throw error; // Re-throw unexpected errors
+  console.log('Query failed:', result.error);
 }
 ```
 
@@ -133,32 +133,33 @@ Database constraint violations require application-level handling, not retries:
 import { relationalInsert } from '@agentforge/tools';
 
 async function createUser(email: string, name: string) {
-  try {
-    return await relationalInsert.invoke({
-      table: 'users',
-      data: { email, name },
-      returning: { mode: 'row' },
-      vendor: 'postgresql',
-      connectionString: DB_URL,
-    });
-  } catch (error) {
-    // PostgreSQL unique violation code
-    if (error.code === '23505') {
+  const result = await relationalInsert.invoke({
+    table: 'users',
+    data: { email, name },
+    returning: { mode: 'row' },
+    vendor: 'postgresql',
+    connectionString: DB_URL,
+  });
+
+  if (!result.success) {
+    // The tool sanitizes database errors. Check the error string for clues:
+    if (result.error?.includes('unique') || result.error?.includes('duplicate')) {
       console.log('Duplicate email — user already exists');
       return { success: false, reason: 'duplicate', field: 'email' };
     }
-    // PostgreSQL foreign key violation
-    if (error.code === '23503') {
+    if (result.error?.includes('foreign key')) {
       console.log('Referenced record does not exist');
       return { success: false, reason: 'invalid_reference' };
     }
-    // PostgreSQL not-null violation
-    if (error.code === '23502') {
-      console.log('Required field missing:', error.column);
-      return { success: false, reason: 'missing_field', field: error.column };
+    if (result.error?.includes('not-null') || result.error?.includes('NOT NULL')) {
+      console.log('Required field missing');
+      return { success: false, reason: 'missing_field' };
     }
-    throw error;
+    console.log('Insert failed:', result.error);
+    return result;
   }
+
+  return result;
 }
 ```
 
@@ -218,14 +219,21 @@ async function withRetry<T>(
   throw lastError!;
 }
 
-// Usage
+// Usage — tools return { success: false } instead of throwing,
+// so wrap with a check that throws to trigger retries:
 const users = await withRetry(
-  () => relationalSelect.invoke({
-    table: 'users',
-    columns: ['id', 'email'],
-    vendor: 'postgresql',
-    connectionString: DB_URL,
-  }),
+  async () => {
+    const result = await relationalSelect.invoke({
+      table: 'users',
+      columns: ['id', 'email'],
+      vendor: 'postgresql',
+      connectionString: DB_URL,
+    });
+    if (!result.success) {
+      throw new Error(result.error ?? 'Query failed');
+    }
+    return result;
+  },
   { maxRetries: 3, baseDelayMs: 1000 },
 );
 ```
@@ -257,7 +265,7 @@ const result = await relationalInsert.invoke({
     { name: 'Widget A', price: 20 },  // Duplicate — fails
     { name: 'Widget C', price: 30 },  // Never attempted
   ],
-  batch: { size: 1 },
+  batch: { batchSize: 1 },
   vendor: 'postgresql',
   connectionString: DB_URL,
 });
@@ -271,19 +279,21 @@ const result = await relationalInsert.invoke({
   table: 'products',
   data: largeDataset,
   batch: {
-    size: 100,
+    batchSize: 100,
     continueOnError: true,  // Process all batches even if some fail
   },
   vendor: 'postgresql',
   connectionString: DB_URL,
 });
 
-console.log(`Inserted: ${result.successCount}`);
-console.log(`Failed: ${result.failureCount}`);
+if (result.batch) {
+  console.log(`Inserted: ${result.batch.successfulItems}`);
+  console.log(`Failed: ${result.batch.failedItems}`);
 
-// Inspect individual batch errors
-for (const batchError of result.errors ?? []) {
-  console.log(`Batch ${batchError.batchIndex}: ${batchError.message}`);
+  // Inspect individual batch errors
+  for (const failure of result.batch.failures ?? []) {
+    console.log(`Batch ${failure.batchIndex}: ${failure.error}`);
+  }
 }
 ```
 
