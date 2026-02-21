@@ -608,7 +608,11 @@ export class ConnectionManager extends EventEmitter implements DatabaseConnectio
         return this.db.all(query);
       } catch (error: unknown) {
         if (error instanceof Error && error.message.includes('does not return data')) {
-          return this.db.run(query);
+          // .run() returns { changes, lastInsertRowid }. Normalize by mapping
+          // `changes` to `affectedRows` so executeQuery() can derive rowCount
+          // consistently across vendors.
+          const runResult = this.db.run(query) as { changes?: number; lastInsertRowid?: number };
+          return { ...runResult, affectedRows: runResult.changes ?? 0 };
         }
         throw error;
       }
@@ -650,7 +654,9 @@ export class ConnectionManager extends EventEmitter implements DatabaseConnectio
           return this.db.all(query);
         } catch (error: unknown) {
           if (error instanceof Error && error.message.includes('does not return data')) {
-            return this.db.run(query);
+            // Normalize .run() result — see execute() for details.
+            const runResult = this.db.run(query) as { changes?: number; lastInsertRowid?: number };
+            return { ...runResult, affectedRows: runResult.changes ?? 0 };
           }
           throw error;
         }

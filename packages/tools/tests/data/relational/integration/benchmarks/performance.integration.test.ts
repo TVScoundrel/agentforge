@@ -48,6 +48,12 @@ interface VendorSetup {
 }
 
 const vendors: VendorSetup[] = [];
+
+// PostgreSQL and MySQL are always available (testcontainers); SQLite depends on
+// compiled better-sqlite3 bindings. Use this with `it.skipIf()` so unavailable
+// vendors are explicitly skipped rather than silently passing.
+const shouldSkipVendor = (vendor: string) => vendor === 'sqlite' && !hasSQLiteBindings;
+
 const benchmarkResults: Array<{
   vendor: string;
   operation: string;
@@ -131,9 +137,8 @@ describe('Performance Benchmarks', () => {
     const ROW_COUNT = 100;
 
     for (const vendorName of ['postgresql', 'mysql', 'sqlite'] as const) {
-      it(`should insert ${ROW_COUNT} rows individually — ${vendorName}`, async () => {
-        const v = vendors.find((x) => x.vendor === vendorName);
-        if (!v) return; // vendor not available
+      it.skipIf(shouldSkipVendor(vendorName))(`should insert ${ROW_COUNT} rows individually — ${vendorName}`, async () => {
+        const v = vendors.find((x) => x.vendor === vendorName)!;
 
         // Create a temporary table
         const createSql =
@@ -200,9 +205,8 @@ describe('Performance Benchmarks', () => {
     }, 120_000);
 
     for (const vendorName of ['postgresql', 'mysql', 'sqlite'] as const) {
-      it(`should select all rows from bench_insert — ${vendorName}`, async () => {
-        const v = vendors.find((x) => x.vendor === vendorName);
-        if (!v) return;
+      it.skipIf(shouldSkipVendor(vendorName))(`should select all rows from bench_insert — ${vendorName}`, async () => {
+        const v = vendors.find((x) => x.vendor === vendorName)!;
 
         const { result, durationMs } = await measureTime(async () => {
           return executeQuery(v.manager, {
@@ -222,9 +226,8 @@ describe('Performance Benchmarks', () => {
         expect(durationMs).toBeLessThan(5_000);
       });
 
-      it(`should select with filtering — ${vendorName}`, async () => {
-        const v = vendors.find((x) => x.vendor === vendorName);
-        if (!v) return;
+      it.skipIf(shouldSkipVendor(vendorName))(`should select with filtering — ${vendorName}`, async () => {
+        const v = vendors.find((x) => x.vendor === vendorName)!;
 
         const p = vendorName === 'postgresql' ? '$1' : '?';
 
@@ -272,9 +275,8 @@ describe('Performance Benchmarks', () => {
     }, 120_000);
 
     for (const vendorName of ['postgresql', 'mysql', 'sqlite'] as const) {
-      it(`should update all rows — ${vendorName}`, async () => {
-        const v = vendors.find((x) => x.vendor === vendorName);
-        if (!v) return;
+      it.skipIf(shouldSkipVendor(vendorName))(`should update all rows — ${vendorName}`, async () => {
+        const v = vendors.find((x) => x.vendor === vendorName)!;
 
         const p = vendorName === 'postgresql' ? '$1' : '?';
 
@@ -321,9 +323,8 @@ describe('Performance Benchmarks', () => {
     }, 120_000);
 
     for (const vendorName of ['postgresql', 'mysql', 'sqlite'] as const) {
-      it(`should delete all rows — ${vendorName}`, async () => {
-        const v = vendors.find((x) => x.vendor === vendorName);
-        if (!v) return;
+      it.skipIf(shouldSkipVendor(vendorName))(`should delete all rows — ${vendorName}`, async () => {
+        const v = vendors.find((x) => x.vendor === vendorName)!;
 
         const { durationMs } = await measureTime(async () => {
           // DELETE with no WHERE needs to bypass the SQL sanitiser which
