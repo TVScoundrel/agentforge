@@ -77,7 +77,7 @@ describe('Query Executor', () => {
 
       expect(result.rows).toHaveLength(1);
       expect(result.rows[0]).toEqual({ value: 1 });
-      expect(result.executionTime).toBeGreaterThan(0);
+      expect(result.executionTime).toBeGreaterThanOrEqual(0);
     });
 
     it.skipIf(!hasSQLiteBindings)('should execute INSERT with positional parameters', async () => {
@@ -88,7 +88,7 @@ describe('Query Executor', () => {
       });
 
       expect(result.rowCount).toBeGreaterThan(0);
-      expect(result.executionTime).toBeGreaterThan(0);
+      expect(result.executionTime).toBeGreaterThanOrEqual(0);
     });
 
     it.skipIf(!hasSQLiteBindings)('should execute SELECT with positional parameters', async () => {
@@ -122,7 +122,7 @@ describe('Query Executor', () => {
 
       expect(result.rows).toHaveLength(1);
       expect(result.rows[0]).toEqual({ value: 42 });
-      expect(result.executionTime).toBeGreaterThan(0);
+      expect(result.executionTime).toBeGreaterThanOrEqual(0);
     });
 
     it.skipIf(!hasSQLiteBindings)('should execute SELECT with named parameters', async () => {

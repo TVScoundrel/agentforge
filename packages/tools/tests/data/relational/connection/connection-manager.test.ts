@@ -70,8 +70,10 @@ vi.mock('drizzle-orm/mysql2', () => ({
 
 // Mock better-sqlite3
 const mockSqliteClose = vi.fn();
+const mockSqlitePragma = vi.fn();
 const mockSqliteDb = {
   close: mockSqliteClose,
+  pragma: mockSqlitePragma,
   open: true,
 };
 const mockDatabase = vi.fn().mockReturnValue(mockSqliteDb);
@@ -126,6 +128,7 @@ describe('ConnectionManager', () => {
     });
     mockDatabase.mockReturnValue({
       close: mockSqliteClose,
+      pragma: mockSqlitePragma,
       open: true,
     });
   });

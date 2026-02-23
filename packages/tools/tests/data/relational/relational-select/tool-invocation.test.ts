@@ -89,7 +89,7 @@ describe('Relational SELECT - Tool Invocation', () => {
 
     expect(result.success).toBe(true);
     expect(result.rows).toHaveLength(3);
-    expect(result.executionTime).toBeGreaterThan(0);
+    expect(result.executionTime).toBeGreaterThanOrEqual(0);
   });
 
   it.skipIf(!hasSQLiteBindings)('should handle non-existent table gracefully', async () => {

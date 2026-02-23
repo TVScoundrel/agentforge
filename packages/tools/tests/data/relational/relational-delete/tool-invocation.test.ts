@@ -184,6 +184,12 @@ describe('Relational DELETE - Tool Invocation', () => {
   });
 
   it.skipIf(!hasSQLiteBindings)('should report partial success for batch deletes when continueOnError is enabled', async () => {
+    // Re-seed sessions for Alice so FK enforcement applies
+    const seeded = await relationalInsertForDeleteSeed(getDbPath(), [
+      { user_id: 1, token: 'fk-guard-session-partial' },
+    ]);
+    expect(seeded).toBe(true);
+
     const result = await relationalDelete.invoke({
       table: 'users',
       operations: [
@@ -215,6 +221,12 @@ describe('Relational DELETE - Tool Invocation', () => {
   });
 
   it.skipIf(!hasSQLiteBindings)('should return clear foreign key message and cascade guidance', async () => {
+    // Re-seed sessions for Alice so FK enforcement applies
+    const seeded = await relationalInsertForDeleteSeed(getDbPath(), [
+      { user_id: 1, token: 'fk-guard-session-cascade' },
+    ]);
+    expect(seeded).toBe(true);
+
     const result = await relationalDelete.invoke({
       table: 'users',
       where: [{ column: 'email', operator: 'eq', value: 'alice@example.com' }],

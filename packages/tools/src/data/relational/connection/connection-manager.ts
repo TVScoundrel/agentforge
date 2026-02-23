@@ -62,6 +62,18 @@ function validatePoolConfig(poolConfig: PoolConfig): void {
 }
 
 /**
+ * Validation error patterns that should be re-thrown directly from initialize()
+ * without wrapping in a generic "Failed to initialize ... connection" message.
+ */
+const SAFE_INITIALIZATION_PATTERNS = [
+  'Pool max connections must be',
+  'Pool acquire timeout must be',
+  'Pool idle timeout must be',
+  'connection requires a url property',
+  'Unsupported database vendor',
+] as const;
+
+/**
  * Connection manager that handles database connections for PostgreSQL, MySQL, and SQLite
  * using Drizzle ORM with lifecycle management and automatic reconnection
  */
@@ -313,15 +325,30 @@ export class ConnectionManager extends EventEmitter implements DatabaseConnectio
       // Normalize error to Error object before emitting
       const normalizedError = error instanceof Error ? error : new Error(String(error));
 
+      // Known validation errors (pool config, missing URL, unsupported vendor)
+      // should surface their original message so callers can fix their input.
+      const isValidationError = SAFE_INITIALIZATION_PATTERNS.some(
+        (pattern) => normalizedError.message.includes(pattern)
+      );
+      if (isValidationError) {
+        this.setState(ConnectionState.ERROR);
+        throw normalizedError;
+      }
+
       // Check if this is a cancellation error (disconnect() was called during initialization)
       const isCancellation = normalizedError.message.includes('Connection cancelled');
 
       // Only set error state and emit error event if this is NOT a cancellation
       // Cancellation errors already set state to DISCONNECTED before throwing
       if (!isCancellation) {
-        // Set state to error and emit event
+        // Set state to error and emit event.
+        // Guard: only emit 'error' when there are listeners to avoid the
+        // unhandled-error throw that Node.js EventEmitter enforces, which
+        // would surface the raw driver error instead of our wrapped message.
         this.setState(ConnectionState.ERROR);
-        this.emit('error', normalizedError);
+        if (this.listenerCount('error') > 0) {
+          this.emit('error', normalizedError);
+        }
 
         logger.error(errorMessage, {
           vendor: this.vendor,
@@ -569,21 +596,33 @@ export class ConnectionManager extends EventEmitter implements DatabaseConnectio
     });
 
     this.client = new Database(url);
+
+    // Enable foreign key enforcement for every connection. SQLite disables
+    // foreign keys by default and the PRAGMA is per-connection, so we must
+    // set it immediately after opening.
+    this.client.pragma('foreign_keys = ON');
+
     this.db = drizzle({ client: this.client });
   }
 
   /**
-   * Determine whether an error thrown by better-sqlite3's `.all()` indicates
-   * the statement does not return data (i.e. it is DML/DDL, not a SELECT).
+   * Determine whether an error thrown by drizzle-orm's better-sqlite3 adapter
+   * `.all()` indicates the statement does not return data (i.e. it is DML/DDL,
+   * not a SELECT).
    *
-   * Requires both a `SqliteError` type check AND the expected message to avoid
-   * false positives from unrelated errors that happen to contain similar text.
+   * The adapter may surface this as either a native `SqliteError` or a
+   * `TypeError` depending on the drizzle-orm / better-sqlite3 version, so we
+   * accept both types while still requiring the distinctive message substring
+   * to avoid false positives from unrelated errors.
    */
   private isSqliteNonQueryError(error: unknown): boolean {
     if (!(error instanceof Error)) return false;
-    const isSqliteError = error.constructor?.name === 'SqliteError' || error.name === 'SqliteError';
+    const isSqliteOrTypeError =
+      error.constructor?.name === 'SqliteError' ||
+      error.name === 'SqliteError' ||
+      error instanceof TypeError;
     const hasNonQueryMessage = error.message.includes('does not return data');
-    return isSqliteError && hasNonQueryMessage;
+    return isSqliteOrTypeError && hasNonQueryMessage;
   }
 
   /**

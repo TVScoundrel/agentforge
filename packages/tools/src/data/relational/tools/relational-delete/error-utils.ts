@@ -50,8 +50,17 @@ export function getDeleteConstraintViolationMessage(error: unknown, cascade: boo
     return null;
   }
 
+  // Check both the error message and the cause message, because drizzle-orm
+  // wraps driver-level errors (e.g. SqliteError) in a DrizzleError whose
+  // message is generic ("Failed to run the query ...") while the original
+  // constraint violation sits on error.cause.
+  const messages = [error.message];
+  if (error.cause instanceof Error) {
+    messages.push(error.cause.message);
+  }
+
   for (const entry of CONSTRAINT_VIOLATION_PATTERNS) {
-    if (entry.pattern.test(error.message)) {
+    if (messages.some((msg) => entry.pattern.test(msg))) {
       if (cascade) {
         return `${entry.message} Verify database-level ON DELETE CASCADE is configured for related foreign keys.`;
       }

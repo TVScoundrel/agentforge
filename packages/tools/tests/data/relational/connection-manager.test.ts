@@ -313,6 +313,12 @@ describe('ConnectionManager', () => {
 
       const manager = new ConnectionManager(config);
       await expect(manager.connect()).rejects.toThrow(/Failed to initialize sqlite connection/);
+      // Verify the original driver error is preserved as a cause
+      try {
+        await manager.connect();
+      } catch (e: unknown) {
+        expect((e as Error).cause).toBeDefined();
+      }
     });
   });
 

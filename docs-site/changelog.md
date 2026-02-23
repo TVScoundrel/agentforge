@@ -7,6 +7,65 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.13.0] - 2026-02-23
+
+### Added
+
+#### @agentforge/tools — Vendor-Agnostic Relational Database Tools
+- **6 New Database Tools** — Full CRUD and schema introspection for PostgreSQL, MySQL, and SQLite:
+  - `relationalQuery` — Execute raw SQL with parameterized binding (positional and named parameters)
+  - `relationalSelect` — Type-safe SELECT with WHERE conditions, ORDER BY, LIMIT/OFFSET, and result streaming
+  - `relationalInsert` — Single and batch insert with configurable returning modes (`none`, `id`, `row`)
+  - `relationalUpdate` — Conditional updates with optimistic locking, WHERE requirement, and batch operations
+  - `relationalDelete` — Safe deletion with WHERE requirement, soft-delete support, and cascade-aware errors
+  - `relationalGetSchema` — Schema introspection with caching (tables, columns, primary keys, foreign keys, indexes)
+- **ConnectionManager** — Vendor-agnostic connection lifecycle management:
+  - Connection pooling with configurable max connections, acquire timeout, and idle timeout
+  - Automatic reconnection with exponential backoff
+  - State tracking (disconnected, connecting, connected, reconnecting, error)
+  - Pool metrics (totalCount, activeCount, idleCount, waitingCount) and health checks
+  - Event emitters for connection state changes
+  - Graceful shutdown with `disconnect()` and `dispose()`
+- **Transaction Support** — ACID transactions via `withTransaction()`:
+  - Configurable isolation levels (read uncommitted, read committed, repeatable read, serializable)
+  - Transaction timeout with auto-rollback
+  - Nested savepoints with `createSavepoint()`, `rollbackToSavepoint()`, `withSavepoint()`
+- **Batch Operations** — Efficient bulk processing for insert, update, and delete:
+  - Configurable batch size (1–5000 items per chunk)
+  - Continue-on-error with partial success reporting
+  - Retry support with configurable delay
+  - Vendor-optimized recommended batch sizes
+- **Result Streaming** — Memory-bounded query results for large datasets:
+  - Configurable chunk size and max rows
+  - Sample-based response payloads for agent consumption
+  - Benchmark mode for performance profiling
+- **SQL Security** — 5-layer protection against injection and accidental data loss:
+  - Parameterized query enforcement
+  - DDL blocking (CREATE, DROP, TRUNCATE, ALTER rejected by default)
+  - WHERE requirement for UPDATE and DELETE (explicit opt-in for full-table operations)
+  - Identifier validation (qualified for table names, strict for column names)
+  - Error message sanitization (no connection strings or internal details)
+- **Schema Metadata Utilities** — Schema validation and type mapping helpers
+- **Peer Dependency Architecture** — Database drivers (`pg`, `mysql2`, `better-sqlite3`) are optional peer dependencies with helpful `MissingPeerDependencyError` messages
+
+#### @agentforge/tools — Testing
+- **Comprehensive Unit Tests** — 400+ unit tests covering all CRUD operations, connection management, schema introspection, SQL sanitization, batch operations, and streaming
+- **SQLite Integration Tests** — End-to-end CRUD and transaction tests using in-memory SQLite
+
+#### Documentation Site
+- **Database Tools Guide** — New concept page at `guide/concepts/database` covering ConnectionManager setup, all 6 CRUD tools, transactions, batch operations, streaming, security, and vendor differences
+- **Database Agent Tutorial** — New step-by-step tutorial at `tutorials/database-agent` building a database-powered ReAct agent from scratch
+- **API Reference** — Full parameter tables and response shapes for all 6 relational tools, ConnectionManager class, and `withTransaction` helper added to the tools API reference page
+- **9 Advanced Integration Examples** — Transactions, batch insert/update, result streaming, multi-agent shared database, error handling, connection pooling, schema introspection, and performance optimization
+
+### Published
+- All packages published to npm registry at version 0.13.0:
+  - @agentforge/core@0.13.0
+  - @agentforge/patterns@0.13.0
+  - @agentforge/tools@0.13.0
+  - @agentforge/testing@0.13.0
+  - @agentforge/cli@0.13.0
+
 ## [0.12.6] - 2026-02-12
 
 ### Added

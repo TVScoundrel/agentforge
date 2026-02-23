@@ -155,6 +155,42 @@ async function executeInsertOnce(
   });
 
   const executor = context?.transaction ?? manager;
+
+  // When the query builder returns SQL[] (heterogeneous SQLite rows),
+  // execute each statement individually and aggregate results.
+  if (Array.isArray(built.query)) {
+    let totalRowCount = 0;
+    const allRows: Record<string, unknown>[] = [];
+    const allIds: Array<string | number> = [];
+
+    for (const singleQuery of built.query) {
+      const rawResult = await executor.execute(singleQuery);
+      const normalized = normalizeExecutionResult(rawResult);
+      totalRowCount += normalized.rowCount > 0 ? normalized.rowCount : 1;
+      if (built.returningMode === 'row') {
+        allRows.push(...normalized.rows);
+      }
+      if (built.returningMode === 'id') {
+        const ids = deriveInsertedIds({
+          idColumn: built.idColumn,
+          inputRows: [built.rows[allIds.length]],
+          returnedRows: normalized.rows,
+          rowCount: 1,
+          insertId: normalized.insertId,
+          lastInsertRowid: normalized.lastInsertRowid,
+        });
+        allIds.push(...ids);
+      }
+    }
+
+    return {
+      rowCount: totalRowCount,
+      rows: allRows,
+      insertedIds: allIds,
+      executionTime: 0,
+    };
+  }
+
   const rawResult = await executor.execute(built.query);
   const normalized = normalizeExecutionResult(rawResult);
 

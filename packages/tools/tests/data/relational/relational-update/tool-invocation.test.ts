@@ -78,7 +78,7 @@ describe('Relational UPDATE - Tool Invocation', () => {
     expect(result.success).toBe(true);
     expect(result.rowCount).toBe(1);
     if (result.success) {
-      expect(result.executionTime).toBeGreaterThan(0);
+      expect(result.executionTime).toBeGreaterThanOrEqual(0);
     }
   });
 

@@ -54,7 +54,7 @@ export interface InsertQueryInput {
  * Built INSERT query with normalized metadata used by execution layer.
  */
 export interface BuiltInsertQuery {
-  query: SQL;
+  query: SQL | SQL[];
   rows: InsertRow[];
   returningMode: InsertReturningMode;
   idColumn: string;
@@ -116,12 +116,70 @@ function buildValuesTuple(columns: string[], row: InsertRow): SQL {
   );
 }
 
+/**
+ * Check whether the given rows all share the same set of keys.
+ */
+function rowsHaveHomogeneousColumns(rows: InsertRow[]): boolean {
+  if (rows.length <= 1) return true;
+  const firstKeys = Object.keys(rows[0]).sort().join(',');
+  return rows.every((row) => Object.keys(row).sort().join(',') === firstKeys);
+}
+
+/**
+ * Build a single-row INSERT statement using only the columns present in that row.
+ * This avoids the DEFAULT keyword which SQLite does not support in VALUES tuples.
+ */
+function buildSingleRowInsert(
+  table: string,
+  row: InsertRow,
+  vendor: DatabaseVendor
+): SQL {
+  const columns = Object.keys(row);
+
+  if (columns.length === 0) {
+    // No explicit columns — use DEFAULT VALUES syntax
+    const quotedTable = quoteQualifiedIdentifier(table, vendor);
+    return sql.raw(`INSERT INTO ${quotedTable} DEFAULT VALUES`);
+  }
+
+  columns.forEach((column) => validateIdentifier(column, 'Insert column'));
+  const quotedTable = quoteQualifiedIdentifier(table, vendor);
+  const quotedColumns = columns.map((column) => quoteIdentifier(column, vendor)).join(', ');
+
+  const valueFragments = columns.map((column) => {
+    const value = row[column];
+    if (value === undefined) {
+      throw new Error(`Insert value for column "${column}" must not be undefined`);
+    }
+    return sql`${value}`;
+  });
+
+  return sql.join(
+    [
+      sql.raw(`INSERT INTO ${quotedTable} (${quotedColumns}) VALUES (`),
+      sql.join(valueFragments, sql.raw(', ')),
+      sql.raw(')'),
+    ],
+    sql.raw('')
+  );
+}
+
 function buildInsertValuesQuery(
   table: string,
   columns: string[],
   rows: InsertRow[],
   vendor: DatabaseVendor
-): SQL {
+): SQL | SQL[] {
+  // SQLite does not support the DEFAULT keyword inside VALUES tuples.
+  // When rows have heterogeneous column sets, return separate per-row
+  // INSERT statements so each row only lists its own columns and the
+  // omitted columns pick up their schema defaults.
+  // We return SQL[] so the caller can execute each statement individually
+  // (better-sqlite3 prepared statements do not support multi-statement SQL).
+  if (vendor === 'sqlite' && !rowsHaveHomogeneousColumns(rows)) {
+    return rows.map((row) => buildSingleRowInsert(table, row, vendor));
+  }
+
   const quotedTable = quoteQualifiedIdentifier(table, vendor);
   const quotedColumns = columns.map((column) => quoteIdentifier(column, vendor)).join(', ');
 
@@ -174,9 +232,37 @@ export function buildInsertQuery(input: InsertQueryInput): BuiltInsertQuery {
 
   columns.forEach((column) => validateIdentifier(column, 'Insert column'));
 
-  let query = columns.length > 0
+  const valuesResult = columns.length > 0
     ? buildInsertValuesQuery(input.table, columns, rows, input.vendor)
     : buildInsertDefaultValuesQuery(input.table, rows.length, input.vendor);
+
+  // When the values builder returns SQL[] (heterogeneous SQLite rows),
+  // each element is an independent complete INSERT statement.
+  // Append RETURNING clause to each and return as SQL[].
+  if (Array.isArray(valuesResult)) {
+    let queries: SQL[] = valuesResult;
+
+    if (returningMode !== 'none' && supportsReturning) {
+      const returningClause =
+        returningMode === 'id'
+          ? sql.raw(` RETURNING ${quoteIdentifier(idColumn, input.vendor)}`)
+          : sql.raw(' RETURNING *');
+
+      queries = queries.map((q) =>
+        sql.join([q, returningClause], sql.raw(''))
+      );
+    }
+
+    return {
+      query: queries,
+      rows,
+      returningMode,
+      idColumn,
+      supportsReturning,
+    };
+  }
+
+  let query: SQL = valuesResult;
 
   if (returningMode !== 'none' && supportsReturning) {
     if (returningMode === 'id') {
@@ -630,6 +716,11 @@ export function buildSelectQuery(input: SelectQueryInput): SQL {
 
   if (input.limit !== undefined) {
     query = sql.join([query, sql` LIMIT ${input.limit}`], sql.raw(''));
+  } else if (input.offset !== undefined && input.vendor === 'sqlite') {
+    // SQLite requires LIMIT before OFFSET. When the caller specifies an
+    // offset without a limit, inject LIMIT -1 (unlimited) so the OFFSET
+    // clause is syntactically valid.
+    query = sql.join([query, sql` LIMIT -1`], sql.raw(''));
   }
 
   if (input.offset !== undefined) {

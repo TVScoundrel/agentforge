@@ -96,7 +96,14 @@ describe('Relational INSERT - Query Builder', () => {
       vendor: 'sqlite',
     });
 
-    await manager.execute(built.query);
+    // Heterogeneous columns on SQLite returns SQL[] (one per row)
+    if (Array.isArray(built.query)) {
+      for (const q of built.query) {
+        await manager.execute(q);
+      }
+    } else {
+      await manager.execute(built.query);
+    }
 
     const rows = extractRows(await manager.execute(sql.raw(`
       SELECT email, status
