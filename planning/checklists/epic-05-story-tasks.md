@@ -163,9 +163,9 @@
 **Branch:** `docs/st-05005-docs-site-database-tools`
 
 ### Checklist
-- [ ] Create branch `docs/st-05005-docs-site-database-tools`
-- [ ] Create draft PR with story ID in title
-- [ ] Create guide page `docs-site/guide/concepts/database.md` — Database Tools deep dive
+- [x] Create branch `docs/st-05005-docs-site-database-tools`
+- [x] Create draft PR with story ID in title — PR #45
+- [x] Create guide page `docs-site/guide/concepts/database.md` — Database Tools deep dive
   - ConnectionManager setup and configuration (PostgreSQL, MySQL, SQLite)
   - Connection pooling overview and configuration
   - CRUD tools: relationalSelect, relationalInsert, relationalUpdate, relationalDelete
@@ -175,7 +175,7 @@
   - Batch operations (insert, update, delete)
   - Result streaming for large datasets
   - Security: SQL sanitization, parameterized queries, dangerous keyword blocking
-- [ ] Create tutorial page `docs-site/tutorials/database-agent.md` — Building a Database-Powered Agent
+- [x] Create tutorial page `docs-site/tutorials/database-agent.md` — Building a Database-Powered Agent
   - Prerequisites and installation (peer dependencies)
   - Step 1: Set up a connection
   - Step 2: Discover the schema
@@ -183,7 +183,7 @@
   - Step 4: Wire tools into a ReAct agent
   - Step 5: Add error handling and retry logic
   - Complete working example
-- [ ] Update API reference `docs-site/api/tools.md` — Add Relational Database Tools section
+- [x] Update API reference `docs-site/api/tools.md` — Add Relational Database Tools section
   - relationalQuery — raw SQL execution with parameter binding
   - relationalSelect — type-safe SELECT with filters, ordering, pagination
   - relationalInsert — single and batch insert with returning modes
@@ -192,17 +192,21 @@
   - relationalGetSchema — schema introspection with caching
   - ConnectionManager — connection lifecycle, pooling, events
   - withTransaction — transaction helper with isolation levels
-- [ ] Update VitePress sidebar config `docs-site/.vitepress/config.ts`
+- [x] Update VitePress sidebar config `docs-site/.vitepress/config.ts`
   - Add `Database Tools` entry under Core Concepts
   - Add `Database Agent` entry under Tutorials
-- [ ] Verify all code examples match actual tool APIs (response shapes, field names, parameter names)
-- [ ] Add cross-references to internal example docs and related guides
-- [ ] Build docs site (`pnpm docs:build` or equivalent) and verify no errors
-- [ ] Add or update story documentation at docs/st05005-docs-site-database-tools.md (or document why not required)
-- [ ] Assess test impact; add/update automated tests when needed, or document why tests are not required
-- [ ] Run full test suite before finalizing the PR and record results
-- [ ] Run lint (`pnpm lint`) before finalizing the PR and record results
-- [ ] Mark PR ready for review
+- [x] Verify all code examples match actual tool APIs (response shapes, field names, parameter names)
+- [x] Add cross-references to internal example docs and related guides
+- [x] Build docs site (`pnpm docs:build` or equivalent) and verify no errors — builds in 8.57s, no errors
+- [x] Add or update story documentation at docs/st05005-docs-site-database-tools.md (or document why not required)
+  - Not required: this story IS documentation — the deliverables are the 3 docs-site pages themselves
+- [x] Assess test impact; add/update automated tests when needed, or document why tests are not required
+  - No automated tests needed: docs-only story with no code changes; verified via `vitepress build`
+- [x] Run full test suite before finalizing the PR and record results
+  - 1411 passed, 36 failed (pre-existing SQLite integration failures — main has 57 failures), 58 skipped
+- [x] Run lint (`pnpm lint`) before finalizing the PR and record results
+  - 0 errors, 109 warnings (all pre-existing `@typescript-eslint/no-explicit-any`)
+- [x] Mark PR ready for review
 - [ ] Wait for merge
 
 ---

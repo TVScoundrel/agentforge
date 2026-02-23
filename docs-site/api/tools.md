@@ -405,7 +405,7 @@ Confluence uses "storage format" (a subset of HTML) for page content. Common ele
 </ac:structured-macro>
 ```
 
-## Data Tools (25)
+## Data Tools (31)
 
 ### JSON Processing
 
@@ -901,6 +901,341 @@ results.results.forEach(item => {
 - ✅ Automatic dimension handling
 - ✅ Built-in retry logic
 - ✅ Production-ready error handling
+
+### Relational Database Tools (6)
+
+Vendor-agnostic tools for PostgreSQL, MySQL, and SQLite. See the [Database Tools Guide](/guide/concepts/database) for concepts and the [Database Agent Tutorial](/tutorials/database-agent) for a walkthrough.
+
+**Installation:**
+```bash
+pnpm add @agentforge/tools pg        # PostgreSQL
+pnpm add @agentforge/tools mysql2    # MySQL
+pnpm add @agentforge/tools better-sqlite3  # SQLite
+```
+
+::: info Return Pattern
+All relational tools return `{ success: true, ... }` on success or `{ success: false, error: string }` on failure. They do **not throw** for database or query errors.
+
+**Exception:** If the required vendor driver (`pg`, `mysql2`, or `better-sqlite3`) is not installed, the tool will throw a `MissingPeerDependencyError` synchronously. Ensure peer dependencies are installed to avoid this.
+:::
+
+#### relationalQuery
+
+Execute raw SQL with parameterized binding:
+
+```typescript
+import { relationalQuery } from '@agentforge/tools';
+
+const result = await relationalQuery.invoke({
+  sql: 'SELECT id, email FROM users WHERE status = $1 LIMIT 10',
+  params: ['active'],
+  vendor: 'postgresql',
+  connectionString: 'postgresql://user:pass@localhost:5432/mydb',
+});
+
+// Success: { success: true, rows: [...], rowCount: 10, executionTime: 12 }
+// Error:   { success: false, error: '...', rows: [], rowCount: 0 }
+```
+
+| Parameter | Type | Required | Description |
+|---|---|---|---|
+| `sql` | `string` | Yes | SQL query with placeholders (`$1` for PG, `?` for MySQL/SQLite) |
+| `params` | `unknown[] \| Record<string, unknown>` | No | Positional or named parameters |
+| `vendor` | `'postgresql' \| 'mysql' \| 'sqlite'` | Yes | Database vendor |
+| `connectionString` | `string` | Yes | Database connection string |
+
+#### relationalSelect
+
+Type-safe SELECT without writing SQL:
+
+```typescript
+import { relationalSelect } from '@agentforge/tools';
+
+const result = await relationalSelect.invoke({
+  table: 'orders',
+  columns: ['id', 'total', 'status'],
+  where: [
+    { column: 'status', operator: 'eq', value: 'pending' },
+    { column: 'total', operator: 'gt', value: 100 },
+  ],
+  orderBy: [{ column: 'total', direction: 'desc' }],
+  limit: 10,
+  offset: 0,
+  vendor: 'postgresql',
+  connectionString: DB_URL,
+});
+
+// Success: { success: true, rows: [...], rowCount: 10, executionTime: 8 }
+```
+
+| Parameter | Type | Required | Description |
+|---|---|---|---|
+| `table` | `string` | Yes | Table name (e.g. `users` or `public.users`) |
+| `columns` | `string[]` | No | Column filter (omit for `SELECT *`) |
+| `where` | `WhereCondition[]` | No | WHERE conditions (combined with AND) |
+| `orderBy` | `OrderBy[]` | No | ORDER BY clauses |
+| `limit` | `number` | No | Max rows to return |
+| `offset` | `number` | No | Rows to skip |
+| `streaming` | `StreamingOptions` | No | Chunked streaming mode |
+| `vendor` | `string` | Yes | Database vendor |
+| `connectionString` | `string` | Yes | Connection string |
+
+**WhereCondition:**
+```typescript
+{ column: string, operator: Operator, value?: ScalarValue }
+```
+Operators: `eq`, `ne`, `gt`, `lt`, `gte`, `lte`, `like`, `in`, `notIn`, `isNull`, `isNotNull`
+
+**StreamingOptions:**
+| Field | Type | Default | Description |
+|---|---|---|---|
+| `enabled` | `boolean` | `true` | Enable chunked streaming |
+| `chunkSize` | `number` | `100` | Rows per chunk (1–5000) |
+| `maxRows` | `number` | — | Cap on total streamed rows |
+| `sampleSize` | `number` | `50` | Rows included in response payload (0–5000) |
+| `benchmark` | `boolean` | `false` | Memory benchmark mode |
+
+#### relationalInsert
+
+Insert single rows or batch arrays:
+
+```typescript
+import { relationalInsert } from '@agentforge/tools';
+
+// Single row with RETURNING
+const result = await relationalInsert.invoke({
+  table: 'users',
+  data: { email: 'alice@example.com', name: 'Alice' },
+  returning: { mode: 'id', idColumn: 'id' },
+  vendor: 'postgresql',
+  connectionString: DB_URL,
+});
+// { success: true, rowCount: 1, insertedIds: [42], rows: [], executionTime: 5 }
+
+// Batch insert
+const batch = await relationalInsert.invoke({
+  table: 'events',
+  data: events, // Array of records
+  batch: { batchSize: 200, continueOnError: true },
+  vendor: 'postgresql',
+  connectionString: DB_URL,
+});
+// { success: true, rowCount: 1000, batch: { successfulItems: 1000, ... } }
+```
+
+| Parameter | Type | Required | Description |
+|---|---|---|---|
+| `table` | `string` | Yes | Table name |
+| `data` | `Record \| Record[]` | Yes | Row(s) to insert |
+| `returning` | `{ mode, idColumn? }` | No | Return mode: `'none'` (default), `'id'`, `'row'` |
+| `batch` | `BatchOptions` | No | Batch execution controls |
+| `vendor` | `string` | Yes | Database vendor |
+| `connectionString` | `string` | Yes | Connection string |
+
+**BatchOptions** (shared by Insert, Update, Delete):
+| Field | Type | Default | Description |
+|---|---|---|---|
+| `enabled` | `boolean` | `true` | Enable batched processing |
+| `batchSize` | `number` | `100` | Items per chunk (1–5000) |
+| `continueOnError` | `boolean` | `true` | Continue on chunk failure |
+| `maxRetries` | `number` | `0` | Retries per failed chunk (0–5) |
+| `retryDelayMs` | `number` | `0` | Delay between retries in ms (0–60000) |
+| `benchmark` | `boolean` | `false` | Synthetic benchmark mode |
+
+#### relationalUpdate
+
+Conditional updates with safety guards:
+
+```typescript
+import { relationalUpdate } from '@agentforge/tools';
+
+// Single update
+const result = await relationalUpdate.invoke({
+  table: 'users',
+  data: { status: 'verified' },
+  where: [{ column: 'id', operator: 'eq', value: 42 }],
+  vendor: 'postgresql',
+  connectionString: DB_URL,
+});
+// { success: true, rowCount: 1, executionTime: 3 }
+
+// Batch update (multiple independent operations)
+const batch = await relationalUpdate.invoke({
+  table: 'products',
+  operations: [
+    { data: { price: 9.99 }, where: [{ column: 'id', operator: 'eq', value: 1 }] },
+    { data: { price: 19.99 }, where: [{ column: 'id', operator: 'eq', value: 2 }] },
+  ],
+  batch: { batchSize: 50 },
+  vendor: 'postgresql',
+  connectionString: DB_URL,
+});
+```
+
+| Parameter | Type | Required | Description |
+|---|---|---|---|
+| `table` | `string` | Yes | Table name |
+| `data` | `Record` | Conditional | Column-value pairs (single mode) |
+| `where` | `WhereCondition[]` | Conditional | Required unless `allowFullTableUpdate: true` |
+| `allowFullTableUpdate` | `boolean` | No | Explicit opt-in for no-WHERE update |
+| `optimisticLock` | `{ column, expectedValue }` | No | Optimistic locking condition |
+| `operations` | `UpdateOperation[]` | Conditional | Batch mode (mutually exclusive with `data`) |
+| `batch` | `BatchOptions` | No | Batch execution controls |
+
+#### relationalDelete
+
+Safe deletion with WHERE requirement:
+
+```typescript
+import { relationalDelete } from '@agentforge/tools';
+
+// Hard delete
+const result = await relationalDelete.invoke({
+  table: 'sessions',
+  where: [{ column: 'expires_at', operator: 'lt', value: '2026-01-01' }],
+  vendor: 'postgresql',
+  connectionString: DB_URL,
+});
+// { success: true, rowCount: 150, softDeleted: false, executionTime: 12 }
+
+// Soft delete
+const soft = await relationalDelete.invoke({
+  table: 'users',
+  where: [{ column: 'id', operator: 'eq', value: 42 }],
+  softDelete: { column: 'deleted_at' },
+  vendor: 'postgresql',
+  connectionString: DB_URL,
+});
+// { success: true, rowCount: 1, softDeleted: true }
+```
+
+| Parameter | Type | Required | Description |
+|---|---|---|---|
+| `table` | `string` | Yes | Table name |
+| `where` | `WhereCondition[]` | Conditional | Required unless `allowFullTableDelete: true` |
+| `allowFullTableDelete` | `boolean` | No | Explicit opt-in for full-table delete |
+| `cascade` | `boolean` | No | Cascade-aware error messaging |
+| `softDelete` | `{ column?, value? }` | No | Soft-delete mode (`column` defaults to `'deleted_at'`) |
+| `operations` | `DeleteOperation[]` | Conditional | Batch delete operations |
+| `batch` | `BatchOptions` | No | Batch execution controls |
+
+#### relationalGetSchema
+
+Introspect tables, columns, keys, and indexes:
+
+```typescript
+import { relationalGetSchema } from '@agentforge/tools';
+
+const result = await relationalGetSchema.invoke({
+  vendor: 'postgresql',
+  connectionString: DB_URL,
+  tables: ['users', 'orders'],
+  cacheTtlMs: 300000,
+});
+
+// Success response:
+// {
+//   success: true,
+//   schema: {
+//     vendor: 'postgresql',
+//     tables: [
+//       {
+//         name: 'users',
+//         schema: 'public',
+//         columns: [
+//           { name: 'id', type: 'integer', isNullable: false, isPrimaryKey: true, defaultValue: null },
+//           { name: 'email', type: 'varchar(255)', isNullable: false, isPrimaryKey: false, defaultValue: null },
+//         ],
+//         primaryKey: ['id'],
+//         foreignKeys: [],
+//         indexes: [{ name: 'users_pkey', columns: ['id'], isUnique: true }],
+//       },
+//     ],
+//     generatedAt: '2026-02-21T...',
+//   },
+//   summary: { tableCount: 2, columnCount: 8, foreignKeyCount: 1, indexCount: 3 },
+// }
+```
+
+| Parameter | Type | Required | Description |
+|---|---|---|---|
+| `vendor` | `string` | Yes | Database vendor |
+| `connectionString` | `string` | Yes | Connection string |
+| `database` | `string` | No | Database name for cache scoping |
+| `tables` | `string[]` | No | Filter to specific tables |
+| `cacheTtlMs` | `number` | No | Cache TTL in ms (0 disables) |
+| `refreshCache` | `boolean` | No | Force cache invalidation |
+
+#### ConnectionManager
+
+The `ConnectionManager` class handles connection lifecycle, pooling, and reconnection.
+
+```typescript
+import { ConnectionManager } from '@agentforge/tools';
+
+const manager = new ConnectionManager(
+  {
+    vendor: 'postgresql',
+    connection: {
+      connectionString: 'postgresql://user:pass@localhost:5432/mydb',
+      pool: { max: 20, acquireTimeoutMillis: 5000, idleTimeoutMillis: 30000 },
+    },
+  },
+  { enabled: true, maxAttempts: 5, baseDelayMs: 1000, maxDelayMs: 30000 },
+);
+```
+
+**Methods:**
+| Method | Returns | Description |
+|---|---|---|
+| `connect()` | `Promise<void>` | Connect to the database (idempotent) |
+| `disconnect()` | `Promise<void>` | Close connection and cancel reconnection |
+| `dispose()` | `Promise<void>` | Disconnect and remove all event listeners |
+| `isConnected()` | `boolean` | Check connection status |
+| `getState()` | `ConnectionState` | Get current state (`'disconnected'`, `'connecting'`, `'connected'`, `'reconnecting'`, `'error'`) |
+| `getVendor()` | `DatabaseVendor` | Get configured vendor |
+| `getPoolMetrics()` | `PoolMetrics` | Pool stats: `totalCount`, `activeCount`, `idleCount`, `waitingCount` |
+| `isHealthy()` | `Promise<boolean>` | Health check (`SELECT 1`) |
+
+**Events:**
+| Event | Payload | Description |
+|---|---|---|
+| `'connected'` | — | Connection established |
+| `'disconnected'` | — | Connection closed |
+| `'error'` | `Error` | Connection error |
+| `'reconnecting'` | `{ attempt, maxAttempts, delayMs }` | Reconnection attempt scheduled |
+
+#### withTransaction
+
+ACID transactions with isolation levels and timeout:
+
+```typescript
+import { withTransaction, ConnectionManager } from '@agentforge/tools';
+import { sql } from 'drizzle-orm';
+
+const result = await withTransaction(manager, async (tx) => {
+  await tx.execute(sql`UPDATE accounts SET balance = balance - 100 WHERE id = 1`);
+  await tx.execute(sql`UPDATE accounts SET balance = balance + 100 WHERE id = 2`);
+  return { transferred: true };
+}, {
+  isolationLevel: 'serializable',
+  timeoutMs: 5000,
+});
+```
+
+::: tip drizzle-orm Dependency
+The `sql` tagged template comes from `drizzle-orm`. Add it as a direct dependency:
+```bash
+pnpm add drizzle-orm
+```
+:::
+
+| Option | Type | Description |
+|---|---|---|
+| `isolationLevel` | `'read uncommitted' \| 'read committed' \| 'repeatable read' \| 'serializable'` | Transaction isolation level |
+| `timeoutMs` | `number` | Max transaction duration before auto-rollback |
+
+The `TransactionContext` (`tx`) provides: `execute()`, `isActive()`, `commit()`, `rollback()`, `createSavepoint()`, `rollbackToSavepoint()`, `releaseSavepoint()`, `withSavepoint()`.
 
 ## File Tools (18)
 

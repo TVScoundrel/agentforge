@@ -4,22 +4,15 @@
 
 ## Queue Status Summary
 
-- **Ready:** 2 stories
+- **Ready:** 1 story
 - **In Progress:** 0 stories
-- **In Review:** 0 stories
+- **In Review:** 1 story
 - **Blocked:** 0 stories
 - **Backlog:** 5 stories (queued for prioritization and dependencies)
 
 ---
 
 ## Ready
-
-### ST-05005: Document Relational Database Tools in Public Docs Site
-- **Epic:** EP-05
-- **Priority:** P1
-- **Estimate:** 5 hours
-- **Dependencies:** ST-05003 ✅ (merged 2026-02-21), ST-05004 ✅ (merged 2026-02-21)
-- **Checklist:** `planning/checklists/epic-05-story-tasks.md`
 
 ### ST-06001: Implement Skill Discovery and Metadata Parsing
 - **Epic:** EP-06
@@ -39,7 +32,13 @@ _No stories currently in progress_
 
 ## In Review
 
-_No stories currently in review_
+### ST-05005: Document Relational Database Tools in Public Docs Site
+- **Epic:** EP-05
+- **Priority:** P1
+- **Estimate:** 5 hours
+- **Dependencies:** ST-05003 ✅ (merged 2026-02-21), ST-05004 ✅ (merged 2026-02-21)
+- **Checklist:** `planning/checklists/epic-05-story-tasks.md`
+- **PR:** #45
 
 ---
 
