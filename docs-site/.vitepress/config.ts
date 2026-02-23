@@ -59,7 +59,8 @@ export default defineConfig({
             { text: 'Agent Patterns', link: '/guide/concepts/patterns' },
             { text: 'Middleware', link: '/guide/concepts/middleware' },
             { text: 'State Management', link: '/guide/concepts/state' },
-            { text: 'Memory & Persistence', link: '/guide/concepts/memory' }
+            { text: 'Memory & Persistence', link: '/guide/concepts/memory' },
+            { text: 'Database Tools', link: '/guide/concepts/database' }
           ]
         },
         {
@@ -122,6 +123,7 @@ export default defineConfig({
             { text: 'Neo4j & GraphRAG', link: '/tutorials/neo4j-graphrag' },
             { text: 'Advanced Patterns', link: '/tutorials/advanced-patterns' },
             { text: 'Production Deployment', link: '/tutorials/production-deployment' },
+            { text: 'Database Agent', link: '/tutorials/database-agent' },
             { text: 'Testing Strategies', link: '/tutorials/testing' }
           ]
         }
