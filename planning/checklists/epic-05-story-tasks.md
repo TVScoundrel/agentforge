@@ -206,7 +206,7 @@
   - 1411 passed, 36 failed (pre-existing SQLite integration failures — main has 57 failures), 58 skipped
 - [x] Run lint (`pnpm lint`) before finalizing the PR and record results
   - 0 errors, 109 warnings (all pre-existing `@typescript-eslint/no-explicit-any`)
-- [ ] Mark PR ready for review
+- [x] Mark PR ready for review
 - [ ] Wait for merge
 
 ---
