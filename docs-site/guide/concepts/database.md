@@ -145,7 +145,9 @@ process.on('SIGTERM', async () => {
 All six relational tools follow the same pattern: pass the `vendor` and `connectionString` to each `.invoke()` call, and the tool manages connection internals.
 
 ::: info Tool Return Pattern
-Every tool returns `{ success: true, ... }` on success or `{ success: false, error: string }` on failure. **Tools never throw** — always check `result.success`.
+Every tool returns `{ success: true, ... }` on success or `{ success: false, error: string }` on failure — always check `result.success`.
+
+**Exception:** If the required vendor driver (`pg`, `mysql2`, or `better-sqlite3`) is not installed, tools will throw a `MissingPeerDependencyError` synchronously. Install [peer dependencies](/guide/concepts/database#installation) to avoid this.
 :::
 
 ### relationalQuery — Raw SQL
@@ -298,6 +300,7 @@ Wrap multi-step operations in ACID transactions using `withTransaction`:
 
 ```typescript
 import { withTransaction, ConnectionManager } from '@agentforge/tools';
+import { sql } from 'drizzle-orm';
 
 const manager = new ConnectionManager({
   vendor: 'postgresql',
@@ -315,6 +318,10 @@ const transferResult = await withTransaction(manager, async (tx) => {
 });
 // Auto-commits on success, auto-rolls back on error
 ```
+
+::: tip
+The `sql` tagged template is re-exported from `drizzle-orm` — add it as a direct dependency (`pnpm add drizzle-orm`).
+:::
 
 ### Isolation Levels
 
@@ -412,7 +419,7 @@ The tools enforce multiple layers of security automatically:
 
 3. **WHERE requirement** — `UPDATE` and `DELETE` operations require a `WHERE` clause unless explicitly opted out, preventing accidental full-table modifications.
 
-4. **Identifier validation** — All table and column names are validated against `^[a-zA-Z_][a-zA-Z0-9_]*$` to prevent injection through identifiers.
+4. **Identifier validation** — Column names are validated against `^[a-zA-Z_][a-zA-Z0-9_]*$`. Table names use a qualified identifier pattern (`^[a-zA-Z_][a-zA-Z0-9_]*(\.[a-zA-Z_][a-zA-Z0-9_]*)*$`) that allows schema qualification (e.g. `public.users`).
 
 5. **Parameter enforcement** — `INSERT`, `UPDATE`, and `DELETE` queries in raw SQL mode must use parameterized placeholders.
 

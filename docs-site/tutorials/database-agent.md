@@ -247,7 +247,9 @@ The agent will:
 
 ## Step 6: Add Error Handling
 
-Tools return `{ success: false, error }` instead of throwing. Wrap operations for robustness:
+Tools return `{ success: false, error }` instead of throwing in most cases. The one exception is `MissingPeerDependencyError`, which is thrown synchronously if the required database driver (`pg`, `mysql2`, or `better-sqlite3`) is not installed — ensure your peer dependencies are in place to avoid this.
+
+For all other errors, wrap operations and inspect `result.success`:
 
 ```typescript
 import { relationalInsert } from '@agentforge/tools';
@@ -329,7 +331,10 @@ import {
 
 const DB_URL = process.env.DATABASE_URL!;
 
-// Set up connection with pooling and reconnection
+// Optional: create a ConnectionManager for health checks and pool monitoring.
+// Note: each relational tool creates its own internal connection per invocation
+// using the vendor/connectionString you pass. This manager does NOT share its
+// connection with the tools — it is only useful for metrics and health probes.
 const manager = new ConnectionManager(
   {
     vendor: 'postgresql',

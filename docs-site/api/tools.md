@@ -914,7 +914,9 @@ pnpm add @agentforge/tools better-sqlite3  # SQLite
 ```
 
 ::: info Return Pattern
-All relational tools return `{ success: true, ... }` on success or `{ success: false, error: string }` on failure. They **never throw**.
+All relational tools return `{ success: true, ... }` on success or `{ success: false, error: string }` on failure. They do **not throw** for database or query errors.
+
+**Exception:** If the required vendor driver (`pg`, `mysql2`, or `better-sqlite3`) is not installed, the tool will throw a `MissingPeerDependencyError` synchronously. Ensure peer dependencies are installed to avoid this.
 :::
 
 #### relationalQuery
@@ -1209,6 +1211,7 @@ ACID transactions with isolation levels and timeout:
 
 ```typescript
 import { withTransaction, ConnectionManager } from '@agentforge/tools';
+import { sql } from 'drizzle-orm';
 
 const result = await withTransaction(manager, async (tx) => {
   await tx.execute(sql`UPDATE accounts SET balance = balance - 100 WHERE id = 1`);
@@ -1219,6 +1222,13 @@ const result = await withTransaction(manager, async (tx) => {
   timeoutMs: 5000,
 });
 ```
+
+::: tip drizzle-orm Dependency
+The `sql` tagged template comes from `drizzle-orm`. Add it as a direct dependency:
+```bash
+pnpm add drizzle-orm
+```
+:::
 
 | Option | Type | Description |
 |---|---|---|
