@@ -207,16 +207,17 @@
 - [x] Run lint (`pnpm lint`) before finalizing the PR and record results
   - 0 errors, 109 warnings (all pre-existing `@typescript-eslint/no-explicit-any`)
 - [x] Mark PR ready for review
-- [ ] Wait for merge
+- [x] Wait for merge
+  - Merged PR: https://github.com/TVScoundrel/agentforge/pull/45 (2026-02-23)
 
 ---
 
 ## Epic 05 Completion Criteria
 
-- [ ] All 5 stories merged
+- [x] All 5 stories merged
 - [x] Test coverage > 90%
 - [x] All integration tests passing
-- [ ] Comprehensive documentation complete (including public docs site)
+- [x] Comprehensive documentation complete (including public docs site)
 - [x] All examples tested and working
 - [x] Ready for production use
 

@@ -2,7 +2,7 @@
 
 **Purpose:** Track completed and merged stories for the Relational Database Access Tool project.
 
-**Last Updated:** 2026-02-21
+**Last Updated:** 2026-02-23
 
 ---
 
@@ -140,6 +140,13 @@
 - **Epic:** EP-05 (Documentation, Examples, and Testing)
 - **Estimate:** 4 hours
 - **Outcome:** Created 9 advanced integration example guides plus README covering transactions, batch insert/update, result streaming, multi-agent shared database, error handling, connection pooling, schema introspection, and performance optimization. Addressed 30 Copilot review comments across 3 rounds covering API shapes (tool return patterns, batch fields, schema response), field naming (isNullable/isPrimaryKey, pool metric suffixes), caching parameters (cacheTtlMs/refreshCache), connection events, isolation level formatting, and SQLite connection format. Epic EP-05 now fully complete (all 4 stories merged).
+
+### ST-05005: Document Relational Database Tools in Public Docs Site
+- **Merged:** 2026-02-23
+- **PR:** https://github.com/TVScoundrel/agentforge/pull/45
+- **Epic:** EP-05 (Documentation, Examples, and Testing)
+- **Estimate:** 5 hours
+- **Outcome:** Created 3 public-facing VitePress documentation pages: concept guide (`guide/concepts/database.md`) covering ConnectionManager, CRUD tools, transactions, batch operations, streaming, security, and vendor differences; step-by-step tutorial (`tutorials/database-agent.md`) building a database-powered ReAct agent; and API reference section in `api/tools.md` with full parameter tables and response shapes for all 6 relational tools plus ConnectionManager and withTransaction. Updated VitePress sidebar config with new entries. Addressed 7 review comments covering misleading ConnectionManager usage, MissingPeerDependencyError throw behavior, missing `sql` import from drizzle-orm, and identifier validation regex accuracy. Epic EP-05 now fully complete — all 5 stories merged.
 
 ---
 
