@@ -30,10 +30,10 @@ cd skill-agent
 pnpm install
 ```
 
-Install the LLM provider:
+Install the LLM provider and tools:
 
 ```bash
-pnpm add @agentforge/core @agentforge/patterns @langchain/openai
+pnpm add @agentforge/core @agentforge/patterns @agentforge/tools @langchain/openai
 ```
 
 Create `.env`:
@@ -239,8 +239,12 @@ The `toActivationTools()` method returns two tools pre-wired to the registry:
 - **`read-skill-resource`** — reads a resource file from a skill's directory
 
 ```typescript
-// 3. Get activation tools
+// 3. Get activation tools + file tools that skills reference
+import { createFileReaderTool, createFileSearchTool } from '@agentforge/tools';
+
 const [activateSkill, readSkillResource] = skillRegistry.toActivationTools();
+const fileReader = createFileReaderTool();
+const fileSearch = createFileSearchTool();
 
 // 4. Create the LLM
 const llm = new ChatOpenAI({
@@ -248,10 +252,10 @@ const llm = new ChatOpenAI({
   temperature: 0,
 });
 
-// 5. Build the agent with skill tools
+// 5. Build the agent with skill tools + file tools
 const agent = createReActAgent({
   model: llm,
-  tools: [activateSkill, readSkillResource],
+  tools: [activateSkill, readSkillResource, fileReader, fileSearch],
   systemPrompt: `You are a coding assistant with access to specialized skills.
 
 ${skillPrompt}
@@ -368,6 +372,7 @@ Here's the full `src/index.ts` putting it all together:
 ```typescript
 import { SkillRegistry, SkillRegistryEvent } from '@agentforge/core';
 import { createReActAgent } from '@agentforge/patterns';
+import { createFileReaderTool, createFileSearchTool } from '@agentforge/tools';
 import { ChatOpenAI } from '@langchain/openai';
 import path from 'path';
 import { fileURLToPath } from 'url';
@@ -400,13 +405,15 @@ skillRegistry.on(SkillRegistryEvent.SKILL_RESOURCE_LOADED, (data) => {
 // 3. Generate prompt and tools
 const skillPrompt = skillRegistry.generatePrompt();
 const [activateSkill, readSkillResource] = skillRegistry.toActivationTools();
+const fileReader = createFileReaderTool();
+const fileSearch = createFileSearchTool();
 
 // 4. Create agent
 const llm = new ChatOpenAI({ modelName: 'gpt-4o', temperature: 0 });
 
 const agent = createReActAgent({
   model: llm,
-  tools: [activateSkill, readSkillResource],
+  tools: [activateSkill, readSkillResource, fileReader, fileSearch],
   systemPrompt: `You are a coding assistant with access to specialized skills.
 
 ${skillPrompt}

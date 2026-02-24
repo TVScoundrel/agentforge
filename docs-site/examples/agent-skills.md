@@ -362,9 +362,9 @@ import { createReActAgent } from '@agentforge/patterns';
 import { ChatOpenAI } from '@langchain/openai';
 import { z } from 'zod';
 
-// Custom tool
+// Custom local file-reading tool (distinct from the built-in `file-reader` tool)
 const readFileTool = toolBuilder()
-  .name('file-reader')
+  .name('local-file-reader')
   .description('Read the contents of a file')
   .category(ToolCategory.FILE_SYSTEM)
   .schema(z.object({
