@@ -4,9 +4,9 @@
 
 ## Queue Status Summary
 
-- **Ready:** 1 story
+- **Ready:** 0 stories
 - **In Progress:** 0 stories
-- **In Review:** 0 stories
+- **In Review:** 1 story
 - **Blocked:** 0 stories
 - **Backlog:** 1 story (queued for prioritization and dependencies)
 
@@ -14,13 +14,7 @@
 
 ## Ready
 
-### ST-06004: Implement Skill Trust Policies and Execution Guardrails
-- **Epic:** EP-06
-- **Priority:** P1
-- **Estimate:** 6 hours
-- **Dependencies:** ST-06003 (merged)
-- **Checklist:** `planning/checklists/epic-06-story-tasks.md`
-- **Feature:** `planning/features/06-agent-skills-compatibility-feature-plan.md`
+_No stories currently ready_
 
 ---
 
@@ -32,7 +26,15 @@ _No stories currently in progress_
 
 ## In Review
 
-_No stories currently in review_
+### ST-06004: Implement Skill Trust Policies and Execution Guardrails
+- **Epic:** EP-06
+- **Priority:** P1
+- **Estimate:** 6 hours
+- **Dependencies:** ST-06003 (merged)
+- **Branch:** `feat/st-06004-skill-trust-policies-and-guardrails`
+- **PR:** #49 (draft)
+- **Checklist:** `planning/checklists/epic-06-story-tasks.md`
+- **Feature:** `planning/features/06-agent-skills-compatibility-feature-plan.md`
 
 ---
 
