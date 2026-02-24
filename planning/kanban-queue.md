@@ -14,7 +14,7 @@
 
 ## Ready
 
-### ST-06001: Implement Skill Discovery and Metadata Parsing
+### ST-06001: Implement SkillRegistry with Folder-Config Auto-Discovery
 - **Epic:** EP-06
 - **Priority:** P0
 - **Estimate:** 5 hours
@@ -44,17 +44,17 @@ _No stories currently blocked_
 
 ## Backlog
 
-### ST-06002: Implement Skill Matching and Activation Planning
+### ST-06002: Implement SkillRegistry.generatePrompt() and System Prompt Integration
 - **Epic:** EP-06
 - **Priority:** P0
-- **Estimate:** 6 hours
+- **Estimate:** 5 hours
 - **Dependencies:** ST-06001
 - **Checklist:** `planning/checklists/epic-06-story-tasks.md`
 - **Feature:** `planning/features/06-agent-skills-compatibility-feature-plan.md`
 
-### ST-06003: Implement Progressive Skill Loading and Resource Resolution
+### ST-06003: Implement Skill Activation and Resource Tools
 - **Epic:** EP-06
-- **Priority:** P1
+- **Priority:** P0
 - **Estimate:** 7 hours
 - **Dependencies:** ST-06002
 - **Checklist:** `planning/checklists/epic-06-story-tasks.md`

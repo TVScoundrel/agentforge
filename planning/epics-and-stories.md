@@ -437,67 +437,81 @@
 
 #### Feature Context: Agent Skills Compatibility (from `planning/features/06-agent-skills-compatibility-feature-plan.md`)
 
-- Goal: add first-class Agent Skills support so AgentForge agents can discover and use reusable `SKILL.md` capabilities.
+- Goal: add first-class Agent Skills support (https://agentskills.io) so AgentForge agents can discover and use reusable `SKILL.md` capabilities via tool calls.
+- Central construct: **`SkillRegistry`** — mirrors `ToolRegistry` but uses folder-based auto-discovery instead of programmatic registration. Configured with `skillRoots: string[]`, it scans folders at init, parses `SKILL.md` frontmatter, and exposes `generatePrompt()` → `<available_skills>` XML.
+- Integration approach: **tool-based** — agents activate skills on demand via `activate-skill` and `read-skill-resource` tools backed by the SkillRegistry. The LLM decides when to activate; no framework-level AI matching.
 - Scope:
-  - In: local skill discovery, metadata-based selection, progressive loading, trust policies, and conformance documentation/tests.
-  - Out: remote skill marketplaces, automatic download/install from third-party registries, and non-markdown skill formats.
+  - In: `SkillRegistry` with folder-config auto-discovery, frontmatter parsing per spec, `skillRegistry.generatePrompt()` for system prompt injection, activation/resource tools, trust policies, conformance tests.
+  - Out: remote skill marketplaces, automatic download/install from third-party registries, programmatic skill registration, non-markdown skill formats, framework-level AI matching/ranking.
+- Progressive disclosure (per spec): metadata at startup (~100 tokens/skill) → full SKILL.md on activation (< 5000 tokens) → referenced resources on demand.
 - Critical edge cases:
-  - malformed or missing skill metadata,
+  - malformed or missing frontmatter fields,
   - conflicting skill names across roots,
-  - path traversal or unsafe script execution attempts.
+  - path traversal or unsafe script execution attempts,
+  - skill name not matching parent directory name.
 - Delivery controls:
   - feature flag for rollout (`agentSkills.enabled`),
-  - structured selection/load telemetry,
+  - structured activation/load telemetry,
   - explicit rollback path to disable skill loading while preserving baseline agent behavior.
 
-#### ST-06001: Implement Skill Discovery and Metadata Registry
-**User story:** As a framework developer, I want AgentForge to discover skills from standard directories so that agents can be configured with reusable capabilities.
+#### ST-06001: Implement SkillRegistry with Folder-Config Auto-Discovery
+**User story:** As a framework developer, I want a `SkillRegistry` class that auto-discovers skills from configured folder paths so that skill metadata is available at startup without programmatic registration.
 
 **Priority:** P0 (Critical)
 **Estimate:** 5 hours
 **Dependencies:** None
 
 **Acceptance criteria:**
-- [ ] Skill discovery scans configurable roots (`.agents/skills`, `$HOME/.agents/skills`, plus runtime-configured paths)
-- [ ] A skill is recognized only when a directory contains a valid `SKILL.md`
-- [ ] Metadata parser extracts `name` and `description` (and optional fields) from frontmatter/content
+- [ ] `SkillRegistry` class accepts `skillRoots: string[]` configuration (`.agentskills/`, `$HOME/.agentskills/`, plus runtime-configured paths)
+- [ ] Registry auto-scans configured roots at init — a skill is recognized when a directory contains a valid `SKILL.md`
+- [ ] Frontmatter parser extracts all spec fields: `name` (required), `description` (required), `license`, `compatibility`, `metadata`, `allowed-tools`
+- [ ] Parser validates `name` field constraints per spec (1-64 chars, lowercase alphanumeric + hyphens, must match parent directory name)
+- [ ] Parser validates `description` field (1-1024 chars, non-empty)
 - [ ] Invalid skills are skipped with actionable structured warnings (without aborting runtime startup)
-- [ ] Registry API returns discovered skills with canonical ID, source path, and metadata summary
-- [ ] Unit tests cover root scanning, metadata parsing, duplicate IDs, and invalid skill handling
+- [ ] Duplicate skill names across roots are handled with deterministic precedence and warnings
+- [ ] Query API: `.get(name)`, `.getAll()`, `.has(name)`, `.size()` — parallel to ToolRegistry
+- [ ] Events: `skill:discovered`, `skill:warning` emitted during scan for observability
+- [ ] Unit tests cover root scanning, frontmatter parsing, name validation, duplicate handling, and malformed skill recovery
 
 ---
 
-#### ST-06002: Implement Skill Matching and Activation Planning
-**User story:** As an agent runtime, I want to select relevant skills for a task so that only useful capabilities are activated.
+#### ST-06002: Implement SkillRegistry.generatePrompt() and System Prompt Integration
+**User story:** As an agent developer, I want `skillRegistry.generatePrompt()` to produce `<available_skills>` XML so I can include it in system prompts the same way I use `toolRegistry.generatePrompt()` for tools.
 
 **Priority:** P0 (Critical)
-**Estimate:** 6 hours
+**Estimate:** 5 hours
 **Dependencies:** ST-06001
 
 **Acceptance criteria:**
-- [ ] Matching logic ranks skills from user task/context using metadata descriptions and optional tags
-- [ ] Deterministic tie-break behavior and configurable `maxSelectedSkills` are implemented
-- [ ] Planner output includes selected skill IDs and selection rationale before activation
-- [ ] No-match path is explicit and continues baseline execution safely
-- [ ] Selection decisions emit structured observability events for debugging/auditing
-- [ ] Unit tests cover ranking quality, deterministic selection, and no-skill scenarios
+- [ ] `SkillRegistry.generatePrompt()` returns `<available_skills>` XML block (name + description per skill)
+- [ ] `generatePrompt({ skills?: string[] })` accepts optional subset filter — only named skills appear in XML, enabling focused agents with different skill sets
+- [ ] XML generation follows the format recommended by the Agent Skills integration guide
+- [ ] Prompt output integrates naturally with AgentForge's existing prompt construction (composable with `toolRegistry.generatePrompt()`)
+- [ ] `agentSkills.enabled` feature flag (default: off) gates prompt generation (returns empty string when disabled)
+- [ ] Configurable `maxDiscoveredSkills` cap limits prompt token usage
+- [ ] Agents without skills enabled continue to operate with unmodified system prompts
+- [ ] Unit tests validate XML generation, subset filtering, feature flag gating, prompt composition, and token budget limits
 
 ---
 
-#### ST-06003: Implement Progressive Skill Loading and Resource Resolution
-**User story:** As an agent runtime, I want full skill instructions loaded only when needed so that context stays efficient and safe.
+#### ST-06003: Implement Skill Activation and Resource Tools
+**User story:** As an agent at runtime, I want to activate a skill by name and optionally load its referenced resources so that I can follow skill instructions to complete user tasks.
 
-**Priority:** P1 (High)
+**Priority:** P0 (Critical)
 **Estimate:** 7 hours
 **Dependencies:** ST-06002
 
 **Acceptance criteria:**
-- [ ] Runtime loads full `SKILL.md` content only for selected skills at activation time
-- [ ] Relative references (`scripts/`, `references/`, `assets/`) are resolved from the skill root
-- [ ] Progressive disclosure policy is enforced (load only referenced resources needed for the active task)
-- [ ] Missing referenced files return actionable errors without crashing unrelated agent flow
-- [ ] Token/context budget controls cap loaded skill content per run
-- [ ] Integration tests validate end-to-end loading against fixture skill packs
+- [ ] `activate-skill` tool built with AgentForge tool builder API: takes skill name, resolves via SkillRegistry, returns full SKILL.md body content
+- [ ] `read-skill-resource` tool built with AgentForge tool builder API: takes skill name + relative path, resolves via SkillRegistry, returns file content
+- [ ] `SkillRegistry.toActivationTools()` convenience method returns both tools pre-wired to the registry instance
+- [ ] Resource paths are resolved relative to the skill root directory (per spec: `scripts/`, `references/`, `assets/`)
+- [ ] Path traversal is blocked — resource resolution must stay within the skill root
+- [ ] Activating a non-existent or invalid skill returns a clear error message
+- [ ] Reading a missing resource file returns an actionable error without crashing the agent
+- [ ] Both tools emit structured logs for activation events and resource loads (events: `skill:activated`, `skill:resource-loaded`)
+- [ ] Tools are registered in a `SKILLS` tool category and can be added to any agent pattern
+- [ ] Integration tests validate end-to-end activation against fixture skill packs (valid + missing + traversal attempts)
 
 ---
 
@@ -510,16 +524,17 @@
 
 **Acceptance criteria:**
 - [ ] Trust policy levels (`workspace`, `trusted`, `untrusted`) are configurable per skill root
-- [ ] Script execution from untrusted roots is denied by default unless explicitly allowed
-- [ ] Path traversal and out-of-root file access are blocked for all skill resource resolution
-- [ ] Guardrail decisions are logged with policy reason codes
-- [ ] Security tests validate traversal blocking and script execution policy enforcement
-- [ ] Operational docs define secure defaults and escalation workflow for trusted skills
+- [ ] `read-skill-resource` enforces trust policy before returning script content from `scripts/` directories
+- [ ] Script content from untrusted roots is denied by default unless explicitly allowed
+- [ ] `allowed-tools` frontmatter field is parsed and made available for agent tool filtering
+- [ ] Guardrail decisions are logged with policy reason codes for auditing
+- [ ] Security tests validate path traversal blocking, untrusted script denial, and policy escalation
+- [ ] Operational docs define secure defaults and trust escalation workflow
 
 ---
 
 #### ST-06005: Publish Agent Skills Integration Documentation and Conformance Suite
-**User story:** As a developer, I want clear docs and conformance checks so that I can enable Agent Skills confidently in production.
+**User story:** As a developer, I want clear docs and conformance checks so that I can enable Agent Skills confidently and author spec-compliant skills.
 
 **Priority:** P1 (High)
 **Estimate:** 6 hours
@@ -527,9 +542,10 @@
 
 **Acceptance criteria:**
 - [ ] Developer guide documents how to enable and configure Agent Skills in AgentForge
-- [ ] Authoring guide maps Agent Skills specification expectations to AgentForge behavior
-- [ ] End-to-end demo shows an agent using at least two skills from different roots
-- [ ] Conformance test suite covers discovery, selection, progressive loading, and trust policies
+- [ ] Skill authoring guide maps Agent Skills spec fields to AgentForge behavior
+- [ ] End-to-end demo shows an agent activating and using two skills from different roots via tool calls
+- [ ] Conformance test suite covers discovery, prompt injection, tool activation, resource loading, and trust policies
+- [ ] Fixture skill packs include valid, malformed, and untrusted examples
 - [ ] CI job runs conformance suite and fails on regressions
 - [ ] Rollout checklist includes feature-flag enablement, observability checks, and rollback procedure
 
@@ -543,7 +559,7 @@
 - P1 (High): 9 stories
 - P2 (Medium): 3 stories
 
-**Total Estimated Effort:** ~110 hours (14 working days)
+**Total Estimated Effort:** ~111 hours (14 working days)
 
 **Dependency Chain:**
 1. Phase 1 (Foundation): ST-01001 → ST-01002 → ST-01003 → ST-01004
