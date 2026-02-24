@@ -235,36 +235,39 @@ import { SkillRegistryEvent } from '@agentforge/core';
 
 // Log all activations
 registry.on(SkillRegistryEvent.SKILL_ACTIVATED, (data) => {
-  logger.info('Skill activated', data);
+  console.log('Skill activated', data);
 });
 
 // Alert on trust policy denials
 registry.on(SkillRegistryEvent.TRUST_POLICY_DENIED, (data) => {
-  logger.warn('Trust policy denied', data);
-  metrics.increment('skills.trust_denied');
+  console.warn('Trust policy denied', data);
 });
 
 // Track resource loads
 registry.on(SkillRegistryEvent.SKILL_RESOURCE_LOADED, (data) => {
-  metrics.increment('skills.resource_loaded');
+  console.log('Skill resource loaded', data);
 });
 
 // Monitor scan warnings
 registry.on(SkillRegistryEvent.SKILL_WARNING, (data) => {
-  logger.warn('Skill scan warning', data);
+  console.warn('Skill scan warning', data);
 });
 ```
 
+::: tip
+For production, replace `console.*` calls with structured logging (e.g. `createLogger` from `@agentforge/core`) and a metrics library.
+:::
+
 **Key events to monitor:**
 
-| Event | Severity | Action |
+| Event (enum → emitted string) | Severity | Action |
 |---|---|---|
-| `SKILL_DISCOVERED` | Info | Track discovery count per deploy |
-| `SKILL_ACTIVATED` | Info | Monitor activation frequency |
-| `SKILL_RESOURCE_LOADED` | Info | Track resource access patterns |
-| `TRUST_POLICY_DENIED` | Warning | Alert on unexpected denials |
-| `TRUST_POLICY_ALLOWED` | Info | Audit script access from trusted roots |
-| `SKILL_WARNING` | Warning | Investigate malformed skills |
+| `SKILL_DISCOVERED` (`skill:discovered`) | Info | Track discovery count per deploy |
+| `SKILL_ACTIVATED` (`skill:activated`) | Info | Monitor activation frequency |
+| `SKILL_RESOURCE_LOADED` (`skill:resource-loaded`) | Info | Track resource access patterns |
+| `TRUST_POLICY_DENIED` (`trust:policy-denied`) | Warning | Alert on unexpected denials |
+| `TRUST_POLICY_ALLOWED` (`trust:policy-allowed`) | Info | Audit script access from trusted roots |
+| `SKILL_WARNING` (`skill:warning`) | Warning | Investigate malformed skills |
 
 **Logging namespaces** (set `LOG_LEVEL=debug` for detailed output):
 

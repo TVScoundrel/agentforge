@@ -58,7 +58,7 @@ You are a code review expert. When activated, follow these steps:
 
 | Field | Type | Constraints | Description |
 |-------|------|-------------|-------------|
-| `name` | `string` | 1–64 chars, lowercase `[a-z0-9-]`, must match directory name | Unique skill identifier |
+| `name` | `string` | 1–64 chars, lowercase letters, digits, and hyphens; must match directory name; cannot start or end with `-` and cannot contain `--` | Unique skill identifier |
 | `description` | `string` | 1–1024 chars | Short description shown in skill listing |
 
 ### Optional
@@ -87,7 +87,7 @@ You are a code review expert. When activated, follow these steps:
 
 AgentForge validates skills during discovery:
 
-1. **Name format** — Must be 1–64 characters, lowercase alphanumeric with hyphens (`[a-z0-9-]+`)
+1. **Name format** — Must be 1–64 characters, lowercase letters, digits, and hyphens; cannot start or end with `-` and cannot contain `--`
 2. **Name match** — Frontmatter `name` must match the parent directory name
 3. **Description required** — Must be 1–1024 characters
 4. **SKILL.md required** — Directory must contain a `SKILL.md` file
