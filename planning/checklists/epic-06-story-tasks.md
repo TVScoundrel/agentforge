@@ -41,21 +41,31 @@
 **Branch:** `feat/st-06002-skill-registry-prompt-generation`
 
 ### Checklist
-- [ ] Create branch `feat/st-06002-skill-registry-prompt-generation`
-- [ ] Create draft PR with story ID in title
-- [ ] Implement `SkillRegistry.generatePrompt()` returning `<available_skills>` XML block (name + description per skill)
-- [ ] Implement `generatePrompt({ skills?: string[] })` subset filter — only named skills appear in XML, enabling focused agents with different skill sets
-- [ ] Follow Agent Skills integration guide XML format (name, description, location elements per skill)
-- [ ] Ensure prompt output composes naturally with `toolRegistry.generatePrompt()` in system prompt construction
-- [ ] Add `agentSkills.enabled` feature flag (default: off) — `generatePrompt()` returns empty string when disabled
-- [ ] Add configurable `maxDiscoveredSkills` cap to limit prompt token usage
-- [ ] Verify agents without skills enabled operate with unmodified system prompts
-- [ ] Add structured logs for prompt generation events (skill count, token estimate)
-- [ ] Create unit tests for XML generation, subset filtering, feature flag gating, prompt composition, and token budget limits
-- [ ] Add or update story documentation at docs/st06002-system-prompt-skills-injection.md (or document why not required)
-- [ ] Assess test impact; add/update automated tests when needed, or document why tests are not required
-- [ ] Run full test suite before finalizing the PR and record results
-- [ ] Run lint (`pnpm lint`) before finalizing the PR and record results
+- [x] Create branch `feat/st-06002-skill-registry-prompt-generation`
+- [x] Create draft PR with story ID in title
+  - PR #47: https://github.com/TVScoundrel/agentforge/pull/47
+- [x] Implement `SkillRegistry.generatePrompt()` returning `<available_skills>` XML block (name + description per skill)
+- [x] Implement `generatePrompt({ skills?: string[] })` subset filter — only named skills appear in XML, enabling focused agents with different skill sets
+- [x] Follow Agent Skills integration guide XML format (name, description, location elements per skill)
+- [x] Ensure prompt output composes naturally with `toolRegistry.generatePrompt()` in system prompt construction
+  - Tested: concatenating skill XML with tool plain text via `filter(Boolean).join('\n\n')`
+- [x] Add `agentSkills.enabled` feature flag (default: off) — `generatePrompt()` returns empty string when disabled
+  - Added `enabled?: boolean` to `SkillRegistryConfig` (default: `false`)
+- [x] Add configurable `maxDiscoveredSkills` cap to limit prompt token usage
+  - Added `maxDiscoveredSkills?: number` to `SkillRegistryConfig`, applied after subset filter
+- [x] Verify agents without skills enabled operate with unmodified system prompts
+  - Tested: disabled flag returns empty string, `filter(Boolean)` removes it from composed prompt
+- [x] Add structured logs for prompt generation events (skill count, token estimate)
+  - Logs: `skillCount`, `totalDiscovered`, `filterApplied`, `maxCap`, `estimatedTokens`, `xmlLength`
+- [x] Create unit tests for XML generation, subset filtering, feature flag gating, prompt composition, and token budget limits
+  - 23 tests in `packages/core/tests/skills/prompt.test.ts`
+- [x] Add or update story documentation at docs/st06002-system-prompt-skills-injection.md (or document why not required)
+- [x] Assess test impact; add/update automated tests when needed, or document why tests are not required
+  - 23 new unit tests covering all acceptance criteria
+- [x] Run full test suite before finalizing the PR and record results
+  - 149 test files passed, 7 failed (pre-existing Docker/testcontainers), 2129 tests passed
+- [x] Run lint (`pnpm lint`) before finalizing the PR and record results
+  - 0 errors, 109 warnings (all pre-existing @typescript-eslint/no-explicit-any in patterns package)
 - [ ] Commit completed checklist items as logical commits and push updates
 - [ ] Mark PR Ready only after all story tasks are complete
 - [ ] Wait for merge; do not merge directly from local branch

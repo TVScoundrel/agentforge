@@ -7,6 +7,7 @@ export type {
   SkillMetadata,
   Skill,
   SkillRegistryConfig,
+  SkillPromptOptions,
   SkillEventHandler,
   SkillParseResult,
   SkillValidationError,
