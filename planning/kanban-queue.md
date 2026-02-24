@@ -4,15 +4,21 @@
 
 ## Queue Status Summary
 
-- **Ready:** 1 story
-- **In Progress:** 0 stories
+- **Ready:** 0 stories
+- **In Progress:** 1 story
 - **In Review:** 0 stories
 - **Blocked:** 0 stories
-- **Backlog:** 5 stories (queued for prioritization and dependencies)
+- **Backlog:** 4 stories (queued for prioritization and dependencies)
 
 ---
 
 ## Ready
+
+_No stories currently ready_
+
+---
+
+## In Progress
 
 ### ST-06001: Implement SkillRegistry with Folder-Config Auto-Discovery
 - **Epic:** EP-06
@@ -21,12 +27,7 @@
 - **Dependencies:** None
 - **Checklist:** `planning/checklists/epic-06-story-tasks.md`
 - **Feature:** `planning/features/06-agent-skills-compatibility-feature-plan.md`
-
----
-
-## In Progress
-
-_No stories currently in progress_
+- **Branch:** `feat/st-06001-skill-registry-and-discovery`
 
 ---
 

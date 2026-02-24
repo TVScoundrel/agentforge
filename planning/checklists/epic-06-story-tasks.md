@@ -5,22 +5,26 @@
 **Branch:** `feat/st-06001-skill-registry-and-discovery`
 
 ### Checklist
-- [ ] Create branch `feat/st-06001-skill-registry-and-discovery`
+- [x] Create branch `feat/st-06001-skill-registry-and-discovery`
 - [ ] Create draft PR with story ID in title
-- [ ] Implement `SkillRegistry` class accepting `skillRoots: string[]` config (parallel to ToolRegistry)
-- [ ] Implement auto-scan of configured roots at init — identify directories containing a valid `SKILL.md`
-- [ ] Implement YAML frontmatter parser for all spec fields: `name`, `description`, `license`, `compatibility`, `metadata`, `allowed-tools`
-- [ ] Implement `name` field validation per spec (1-64 chars, lowercase alphanumeric + hyphens, no leading/trailing/consecutive hyphens, must match parent directory name)
-- [ ] Implement `description` field validation per spec (1-1024 chars, non-empty)
-- [ ] Add duplicate skill name handling with deterministic precedence and structured warnings
-- [ ] Expose query API: `.get(name)`, `.getAll()`, `.has(name)`, `.size()` — returning skill metadata (name, description, source path, full parsed metadata)
-- [ ] Emit events: `skill:discovered`, `skill:warning` during scan for observability
-- [ ] Add structured logs for discovery counts, parse successes, and parse failures
-- [ ] Create unit tests for SkillRegistry init, scanner, frontmatter parser, name validation, query API, duplicate handling, and malformed skill recovery
-- [ ] Add or update story documentation at docs/st06001-skill-discovery-and-frontmatter.md (or document why not required)
-- [ ] Assess test impact; add/update automated tests when needed, or document why tests are not required
-- [ ] Run full test suite before finalizing the PR and record results
-- [ ] Run lint (`pnpm lint`) before finalizing the PR and record results
+- [x] Implement `SkillRegistry` class accepting `skillRoots: string[]` config (parallel to ToolRegistry)
+- [x] Implement auto-scan of configured roots at init — identify directories containing a valid `SKILL.md`
+- [x] Implement YAML frontmatter parser for all spec fields: `name`, `description`, `license`, `compatibility`, `metadata`, `allowed-tools`
+- [x] Implement `name` field validation per spec (1-64 chars, lowercase alphanumeric + hyphens, no leading/trailing/consecutive hyphens, must match parent directory name)
+- [x] Implement `description` field validation per spec (1-1024 chars, non-empty)
+- [x] Add duplicate skill name handling with deterministic precedence and structured warnings
+- [x] Expose query API: `.get(name)`, `.getAll()`, `.has(name)`, `.size()` — returning skill metadata (name, description, source path, full parsed metadata)
+- [x] Emit events: `skill:discovered`, `skill:warning` during scan for observability
+- [x] Add structured logs for discovery counts, parse successes, and parse failures
+- [x] Create unit tests for SkillRegistry init, scanner, frontmatter parser, name validation, query API, duplicate handling, and malformed skill recovery
+  - 71 tests across 3 files: parser (34), scanner (10), registry (27)
+- [x] Add or update story documentation at docs/st06001-skill-discovery-and-frontmatter.md (or document why not required)
+- [x] Assess test impact; add/update automated tests when needed, or document why tests are not required
+  - 71 new unit tests added covering all acceptance criteria
+- [x] Run full test suite before finalizing the PR and record results
+  - 148 test files passed, 7 failed (pre-existing Docker/testcontainers — MySQL/PostgreSQL integration), 2106 tests passed
+- [x] Run lint (`pnpm lint`) before finalizing the PR and record results
+  - 0 errors, 109 warnings (all pre-existing @typescript-eslint/no-explicit-any in patterns package)
 - [ ] Commit completed checklist items as logical commits and push updates
 - [ ] Mark PR Ready only after all story tasks are complete
 - [ ] Wait for merge; do not merge directly from local branch
