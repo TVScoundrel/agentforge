@@ -6,7 +6,7 @@
 
 - **Ready:** 0 stories
 - **In Progress:** 0 stories
-- **In Review:** 1 story
+- **In Review:** 0 stories
 - **Blocked:** 0 stories
 - **Backlog:** 0 stories
 
@@ -26,11 +26,7 @@ _No stories currently in progress_
 
 ## In Review
 
-### ST-06005: Publish Agent Skills Integration Documentation and Conformance Suite
-- **Epic:** EP-06
-- **Priority:** P1
-- **PR:** [#50](https://github.com/TVScoundrel/agentforge/pull/50)
-- **Branch:** `docs/st-06005-agent-skills-docs-and-conformance`
+_No stories currently in review_
 
 ---
 
@@ -78,3 +74,5 @@ _No stories currently in backlog_
 - ✅ ST-06002 complete - generatePrompt() and system prompt integration (merged 2026-02-24)
 - ✅ ST-06003 complete - skill activation and resource tools (merged 2026-02-24)
 - ✅ ST-06004 complete - skill trust policies and execution guardrails (merged 2026-02-24)
+- ✅ ST-06005 complete - agent skills docs and conformance suite (merged 2026-02-24)
+- Epic 06 (Agent Skills Compatibility) is now complete — all 5 stories merged

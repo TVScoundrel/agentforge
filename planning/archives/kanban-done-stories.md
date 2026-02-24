@@ -180,6 +180,15 @@
 
 ---
 
+### ST-06005: Publish Agent Skills Integration Documentation and Conformance Suite
+- **Merged:** 2026-02-24
+- **PR:** https://github.com/TVScoundrel/agentforge/pull/50
+- **Epic:** EP-06 (Agent Skills Compatibility Layer)
+- **Estimate:** 6 hours
+- **Outcome:** Published developer setup guide (`agent-skills.md`) and skill authoring reference (`agent-skills-authoring.md`) to docs-site. Created 35-test conformance suite covering discovery, prompt generation, tool activation, resource loading, trust policy enforcement, allowed-tools, and full pipeline. Built committed fixture skill packs (valid/malformed/untrusted) and an end-to-end demo app (`skill-aware-agent`) demonstrating mixed-trust skill roots. Documented rollout validation, observability checks, and rollback procedure. Addressed 35+ Copilot review comments across 7 rounds covering: snake_case→kebab-case tool names, ESM `__dirname` fix, `.invoke()` API usage, run instruction accuracy, `workspace:*` vs `link:` deps, `skillRoots` required marking, brittle assertion fixes, activation tool clarification, trust-gating notes, event handler type safety, and runtime flow pseudocode. Final story of EP-06 — epic complete.
+
+---
+
 ## Archive Format
 
 When a story is completed and merged, it will be recorded here with:

@@ -541,13 +541,13 @@
 **Dependencies:** ST-06003, ST-06004
 
 **Acceptance criteria:**
-- [ ] Developer guide documents how to enable and configure Agent Skills in AgentForge
-- [ ] Skill authoring guide maps Agent Skills spec fields to AgentForge behavior
-- [ ] End-to-end demo shows an agent activating and using two skills from different roots via tool calls
-- [ ] Conformance test suite covers discovery, prompt injection, tool activation, resource loading, and trust policies
-- [ ] Fixture skill packs include valid, malformed, and untrusted examples
-- [ ] CI job runs conformance suite and fails on regressions
-- [ ] Rollout checklist includes feature-flag enablement, observability checks, and rollback procedure
+- [x] Developer guide documents how to enable and configure Agent Skills in AgentForge
+- [x] Skill authoring guide maps Agent Skills spec fields to AgentForge behavior
+- [x] End-to-end demo shows an agent activating and using two skills from different roots via tool calls
+- [x] Conformance test suite covers discovery, prompt injection, tool activation, resource loading, and trust policies
+- [x] Fixture skill packs include valid, malformed, and untrusted examples
+- [x] CI job runs conformance suite and fails on regressions
+- [x] Rollout checklist includes feature-flag enablement, observability checks, and rollback procedure
 
 ---
 

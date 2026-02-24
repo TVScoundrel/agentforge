@@ -157,16 +157,17 @@
 - [x] Run lint (`pnpm lint`) before finalizing the PR and record results — 0 errors, 109 pre-existing warnings
 - [x] Commit completed checklist items as logical commits and push updates
 - [x] Mark PR Ready only after all story tasks are complete
-- [ ] Wait for merge; do not merge directly from local branch
+- [x] Wait for merge; do not merge directly from local branch
+  - Merged PR: https://github.com/TVScoundrel/agentforge/pull/50 (2026-02-24)
 
 ---
 
 ## Epic 06 Completion Criteria
 
-- [ ] All 5 stories merged
-- [ ] `SkillRegistry` auto-discovers skills from configurable `skillRoots` with spec-compliant frontmatter parsing
-- [ ] `skillRegistry.generatePrompt()` produces `<available_skills>` XML (gated by feature flag)
-- [ ] `skillRegistry.toActivationTools()` provides `activate-skill` and `read-skill-resource` tools across all agent patterns
-- [ ] Trust policies prevent unsafe script execution from untrusted roots
-- [ ] Conformance suite passes in CI
-- [ ] Developer and authoring docs are complete and validated
+- [x] All 5 stories merged
+- [x] `SkillRegistry` auto-discovers skills from configurable `skillRoots` with spec-compliant frontmatter parsing
+- [x] `skillRegistry.generatePrompt()` produces `<available_skills>` XML (gated by feature flag)
+- [x] `skillRegistry.toActivationTools()` provides `activate-skill` and `read-skill-resource` tools across all agent patterns
+- [x] Trust policies prevent unsafe script execution from untrusted roots
+- [x] Conformance suite passes in CI
+- [x] Developer and authoring docs are complete and validated
