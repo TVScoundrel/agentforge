@@ -288,3 +288,10 @@ If issues are detected after enabling Agent Skills:
 Setting `enabled: false` only suppresses `generatePrompt()`. If activation tools are registered with the agent, they remain callable. Remove them from the tool array for a complete rollback.
 :::
 
+## See Also
+
+- **[Skill Authoring Guide](/guide/agent-skills-authoring)** — How to write spec-compliant SKILL.md files with frontmatter, resources, and trust policies
+- **[Skill-Powered Agent Tutorial](/tutorials/skill-powered-agent)** — Step-by-step walkthrough building a skill-powered agent from scratch
+- **[Agent Skills Examples](/examples/agent-skills)** — Common patterns and runnable code snippets
+- **[SkillRegistry API Reference](/api/core#skillregistry)** — Full API documentation for the SkillRegistry class
+

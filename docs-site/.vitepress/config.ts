@@ -73,6 +73,13 @@ export default defineConfig({
           ]
         },
         {
+          text: 'Agent Skills',
+          items: [
+            { text: 'Integration Guide', link: '/guide/agent-skills' },
+            { text: 'Authoring Skills', link: '/guide/agent-skills-authoring' }
+          ]
+        },
+        {
           text: 'Advanced',
           items: [
             { text: 'Streaming', link: '/guide/advanced/streaming' },
@@ -109,6 +116,7 @@ export default defineConfig({
             { text: 'Reflection Agent', link: '/examples/reflection' },
             { text: 'Multi-Agent System', link: '/examples/multi-agent' },
             { text: 'Custom Tools', link: '/examples/custom-tools' },
+            { text: 'Agent Skills', link: '/examples/agent-skills' },
             { text: 'Middleware Stack', link: '/examples/middleware' }
           ]
         }
@@ -124,6 +132,7 @@ export default defineConfig({
             { text: 'Advanced Patterns', link: '/tutorials/advanced-patterns' },
             { text: 'Production Deployment', link: '/tutorials/production-deployment' },
             { text: 'Database Agent', link: '/tutorials/database-agent' },
+            { text: 'Skill-Powered Agent', link: '/tutorials/skill-powered-agent' },
             { text: 'Testing Strategies', link: '/tutorials/testing' }
           ]
         }
