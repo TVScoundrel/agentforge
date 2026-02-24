@@ -62,6 +62,12 @@ export enum ToolCategory {
    * Use this for tools that don't fit other categories
    */
   CUSTOM = 'custom',
+
+  /**
+   * Tools for Agent Skills activation and resource loading
+   * Examples: activate-skill, read-skill-resource
+   */
+  SKILLS = 'skills',
 }
 
 /**

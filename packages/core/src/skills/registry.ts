@@ -33,6 +33,7 @@ import type {
 import { SkillRegistryEvent } from './types.js';
 import { scanAllSkillRoots } from './scanner.js';
 import { parseSkillContent } from './parser.js';
+import { createSkillActivationTools } from './activation.js';
 import { createLogger, LogLevel } from '../langgraph/observability/logger.js';
 
 const logger = createLogger('agentforge:core:skills:registry', { level: LogLevel.INFO });
@@ -49,6 +50,7 @@ const logger = createLogger('agentforge:core:skills:registry', { level: LogLevel
  * | registry.has('name')     | skillRegistry.has('name')                |
  * | registry.size()          | skillRegistry.size()                     |
  * | registry.generatePrompt()| skillRegistry.generatePrompt()           |
+ * | registry.toLangChainTools()| skillRegistry.toActivationTools()       |
  */
 export class SkillRegistry {
   private skills: Map<string, Skill> = new Map();
@@ -393,6 +395,44 @@ export class SkillRegistry {
         }
       });
     }
+  }
+
+  /**
+   * Emit an event (public API for activation tools).
+   *
+   * Used by skill activation tools to emit `skill:activated` and
+   * `skill:resource-loaded` events through the registry's event system.
+   *
+   * @param event - The event to emit
+   * @param data - The event data
+   */
+  emitEvent(event: SkillRegistryEvent, data: unknown): void {
+    this.emit(event, data);
+  }
+
+  // ─── Tool Integration ────────────────────────────────────────────────
+
+  /**
+   * Create activation tools pre-wired to this registry instance.
+   *
+   * Returns `activate-skill` and `read-skill-resource` tools that
+   * agents can use to load skill instructions and resources on demand.
+   *
+   * @returns Array of [activate-skill, read-skill-resource] tools
+   *
+   * @example
+   * ```ts
+   * const agent = createReActAgent({
+   *   model: llm,
+   *   tools: [
+   *     ...toolRegistry.toLangChainTools(),
+   *     ...skillRegistry.toActivationTools(),
+   *   ],
+   * });
+   * ```
+   */
+  toActivationTools(): ReturnType<typeof createSkillActivationTools> {
+    return createSkillActivationTools(this);
   }
 }
 

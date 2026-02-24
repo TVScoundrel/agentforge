@@ -102,6 +102,10 @@ export enum SkillRegistryEvent {
   SKILL_DISCOVERED = 'skill:discovered',
   /** Emitted when a skill parse or validation issue is encountered */
   SKILL_WARNING = 'skill:warning',
+  /** Emitted when a skill is activated (full body loaded) */
+  SKILL_ACTIVATED = 'skill:activated',
+  /** Emitted when a skill resource file is loaded */
+  SKILL_RESOURCE_LOADED = 'skill:resource-loaded',
 }
 
 /**
