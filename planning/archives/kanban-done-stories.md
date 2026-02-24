@@ -155,6 +155,13 @@
 - **Estimate:** 5 hours
 - **Outcome:** Implemented `SkillRegistry` in `@agentforge/core` with folder-config auto-discovery following the Agent Skills Specification (agentskills.io). Created YAML frontmatter parser (via gray-matter), filesystem scanner, spec-compliant name/description validation, duplicate handling with deterministic precedence, query API (get, getAll, has, size, getNames, getScanErrors), event system (skill:discovered, skill:warning), and structured logging. Added 71 unit tests across 3 test files (parser: 34, scanner: 10, registry: 27). First story of EP-06.
 
+### ST-06002: Implement SkillRegistry.generatePrompt() and System Prompt Integration
+- **Merged:** 2026-02-24
+- **PR:** https://github.com/TVScoundrel/agentforge/pull/47
+- **Epic:** EP-06 (Agent Skills Compatibility Layer)
+- **Estimate:** 5 hours
+- **Outcome:** Implemented `SkillRegistry.generatePrompt()` producing `<available_skills>` XML for system prompt injection. Added `SkillPromptOptions` with `skills?: string[]` subset filter for focused agents, `enabled` feature flag (default off) ensuring unmodified prompts for non-skills agents, `maxDiscoveredSkills` cap for token budget control, XML escaping, and structured logging with token estimates. Added 23 unit tests covering feature flag gating, XML generation, subset filtering, max cap, prompt composition, and edge cases.
+
 ---
 
 ## Archive Format

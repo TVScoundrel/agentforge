@@ -66,9 +66,13 @@
   - 149 test files passed, 7 failed (pre-existing Docker/testcontainers), 2129 tests passed
 - [x] Run lint (`pnpm lint`) before finalizing the PR and record results
   - 0 errors, 109 warnings (all pre-existing @typescript-eslint/no-explicit-any in patterns package)
-- [ ] Commit completed checklist items as logical commits and push updates
-- [ ] Mark PR Ready only after all story tasks are complete
-- [ ] Wait for merge; do not merge directly from local branch
+- [x] Commit completed checklist items as logical commits and push updates
+  - `feb6cd3` feat(st-06002): implement generatePrompt() with feature flag and subset filtering
+  - `d6a0ad7` test(st-06002): add unit tests for generatePrompt()
+  - `2bf9b6f` docs(st-06002): add story documentation and update trackers
+- [x] Mark PR Ready only after all story tasks are complete
+- [x] Wait for merge; do not merge directly from local branch
+  - Merged PR: https://github.com/TVScoundrel/agentforge/pull/47 (2026-02-24)
 
 ---
 
