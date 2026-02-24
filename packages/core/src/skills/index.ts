@@ -33,3 +33,11 @@ export {
 
 // Registry
 export { SkillRegistry } from './registry.js';
+
+// Activation Tools
+export {
+  createActivateSkillTool,
+  createReadSkillResourceTool,
+  createSkillActivationTools,
+  resolveResourcePath,
+} from './activation.js';
