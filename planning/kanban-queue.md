@@ -4,9 +4,9 @@
 
 ## Queue Status Summary
 
-- **Ready:** 1 story
+- **Ready:** 0 stories
 - **In Progress:** 0 stories
-- **In Review:** 0 stories
+- **In Review:** 1 story
 - **Blocked:** 0 stories
 - **Backlog:** 0 stories
 
@@ -14,13 +14,7 @@
 
 ## Ready
 
-### ST-06005: Publish Agent Skills Integration Documentation and Conformance Suite
-- **Epic:** EP-06
-- **Priority:** P1
-- **Estimate:** 6 hours
-- **Dependencies:** ST-06003 (merged), ST-06004 (merged)
-- **Checklist:** `planning/checklists/epic-06-story-tasks.md`
-- **Feature:** `planning/features/06-agent-skills-compatibility-feature-plan.md`
+_No stories currently ready_
 
 ---
 
@@ -32,7 +26,11 @@ _No stories currently in progress_
 
 ## In Review
 
-_No stories currently in review_
+### ST-06005: Publish Agent Skills Integration Documentation and Conformance Suite
+- **Epic:** EP-06
+- **Priority:** P1
+- **PR:** [#50](https://github.com/TVScoundrel/agentforge/pull/50)
+- **Branch:** `docs/st-06005-agent-skills-docs-and-conformance`
 
 ---
 
