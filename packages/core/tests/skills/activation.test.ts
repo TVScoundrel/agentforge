@@ -321,7 +321,7 @@ describe('read-skill-resource tool', () => {
     const skillDir = createSkillFixture(tempDir, 'my-skill', 'name: my-skill\ndescription: Test', '\nbody');
     createResourceFile(skillDir, 'scripts/setup.sh', '#!/bin/bash\necho "Hello"');
 
-    const registry = new SkillRegistry({ skillRoots: [tempDir] });
+    const registry = new SkillRegistry({ skillRoots: [{ path: tempDir, trust: 'trusted' }] });
     const tool = createReadSkillResourceTool(registry);
 
     const result = await tool.invoke({ name: 'my-skill', path: 'scripts/setup.sh' });
@@ -554,7 +554,10 @@ describe('End-to-end integration', () => {
     const skillBDir = createSkillFixture(root2, 'skill-b', 'name: skill-b\ndescription: Skill B', '\n# Skill B body');
     createResourceFile(skillBDir, 'scripts/run.sh', '#!/bin/bash\necho "running"');
 
-    const registry = new SkillRegistry({ skillRoots: [tempDir, root2] });
+    const registry = new SkillRegistry({ skillRoots: [
+      { path: tempDir, trust: 'workspace' },
+      { path: root2, trust: 'trusted' },
+    ] });
     const [activateTool, readResourceTool] = registry.toActivationTools();
 
     const bodyA = await activateTool.invoke({ name: 'skill-a' });
