@@ -142,21 +142,21 @@
 **Branch:** `docs/st-06005-agent-skills-docs-and-conformance`
 
 ### Checklist
-- [ ] Create branch `docs/st-06005-agent-skills-docs-and-conformance`
-- [ ] Create draft PR with story ID in title
-- [ ] Write developer setup guide for enabling Agent Skills in AgentForge (feature flag, skill roots, tool registration)
-- [ ] Write skill authoring guide mapping Agent Skills spec fields to AgentForge behavior
-- [ ] Create end-to-end demo agent activating and using at least two skills from different roots via tool calls
-- [ ] Build conformance test suite (discovery, prompt injection, tool activation, resource loading, trust policy enforcement)
-- [ ] Include fixture skill packs: valid, malformed frontmatter, and untrusted examples
-- [ ] Integrate conformance tests into CI gating
-- [ ] Document rollout validation, observability checks, and rollback path
-- [ ] Add or update story documentation at docs/st06005-agent-skills-docs-and-conformance.md (or document why not required)
-- [ ] Assess test impact; add/update automated tests when needed, or document why tests are not required
-- [ ] Run full test suite before finalizing the PR and record results
-- [ ] Run lint (`pnpm lint`) before finalizing the PR and record results
-- [ ] Commit completed checklist items as logical commits and push updates
-- [ ] Mark PR Ready only after all story tasks are complete
+- [x] Create branch `docs/st-06005-agent-skills-docs-and-conformance`
+- [x] Create draft PR with story ID in title — PR #50
+- [x] Write developer setup guide for enabling Agent Skills in AgentForge (feature flag, skill roots, tool registration)
+- [x] Write skill authoring guide mapping Agent Skills spec fields to AgentForge behavior
+- [x] Create end-to-end demo agent activating and using at least two skills from different roots via tool calls
+- [x] Build conformance test suite (discovery, prompt injection, tool activation, resource loading, trust policy enforcement) — 35 tests
+- [x] Include fixture skill packs: valid, malformed frontmatter, and untrusted examples
+- [x] Integrate conformance tests into CI gating — auto-included via vitest workspace `packages/core/tests/**/*.test.ts`
+- [x] Document rollout validation, observability checks, and rollback path
+- [x] Add or update story documentation at docs/st06005-agent-skills-docs-and-conformance.md
+- [x] Assess test impact; 35 new conformance tests added
+- [x] Run full test suite before finalizing the PR and record results — 152 files passed (2250 tests), 7 pre-existing Docker integration failures (unrelated)
+- [x] Run lint (`pnpm lint`) before finalizing the PR and record results — 0 errors, 109 pre-existing warnings
+- [x] Commit completed checklist items as logical commits and push updates
+- [x] Mark PR Ready only after all story tasks are complete
 - [ ] Wait for merge; do not merge directly from local branch
 
 ---
