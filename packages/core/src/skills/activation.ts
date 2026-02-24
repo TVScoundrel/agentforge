@@ -18,8 +18,9 @@
  * ```
  */
 
-import { readFileSync } from 'node:fs';
-import { resolve, relative, isAbsolute, dirname } from 'node:path';
+import { readFileSync, realpathSync } from 'node:fs';
+import { resolve, relative, isAbsolute } from 'node:path';
+import matter from 'gray-matter';
 import { z } from 'zod';
 import { ToolBuilder } from '../tools/builder.js';
 import { ToolCategory } from '../tools/types.js';
@@ -74,6 +75,21 @@ export function resolveResourcePath(
   const rel = relative(resolvedSkillPath, resolvedPath);
   if (rel.startsWith('..') || resolve(resolvedSkillPath, rel) !== resolvedPath) {
     return { success: false, error: 'Path traversal is not allowed — resource paths must stay within the skill directory' };
+  }
+
+  // Guard against symlink escapes: resolve real filesystem paths and
+  // verify that the real target still sits under the real skill root.
+  // This prevents a symlink inside the skill dir from pointing outside.
+  try {
+    const realSkillRoot = realpathSync(resolvedSkillPath);
+    const realTarget = realpathSync(resolvedPath);
+    const realRel = relative(realSkillRoot, realTarget);
+    if (realRel.startsWith('..') || isAbsolute(realRel)) {
+      return { success: false, error: 'Symlink target escapes the skill directory — access denied' };
+    }
+  } catch {
+    // File doesn't exist yet (or can't be stat'd) — skip symlink check.
+    // The caller (readFileSync) will produce a clear error if missing.
   }
 
   return { success: true, resolvedPath };
@@ -249,31 +265,12 @@ export function createSkillActivationTools(
 /**
  * Extract the body content below YAML frontmatter from a SKILL.md file.
  *
- * Frontmatter is delimited by `---` on lines by themselves.
- * If no frontmatter is found, returns the full content.
+ * Delegates to `gray-matter` for consistent frontmatter handling across
+ * the codebase (matches `parseSkillContent()` in parser.ts).
  *
  * @param content - The full SKILL.md file content
  * @returns The body content below the frontmatter
  */
 function extractBody(content: string): string {
-  const trimmed = content.trimStart();
-
-  // Check for frontmatter opening
-  if (!trimmed.startsWith('---')) {
-    return content.trim();
-  }
-
-  // Find the closing ---
-  const endIndex = trimmed.indexOf('---', 3);
-  if (endIndex === -1) {
-    return content.trim();
-  }
-
-  // Find the newline after the closing ---
-  const afterFrontmatter = trimmed.indexOf('\n', endIndex);
-  if (afterFrontmatter === -1) {
-    return '';
-  }
-
-  return trimmed.slice(afterFrontmatter + 1).trim();
+  return matter(content).content.trim();
 }

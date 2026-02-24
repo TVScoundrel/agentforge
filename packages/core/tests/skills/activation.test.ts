@@ -12,8 +12,8 @@
  */
 
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
-import { mkdirSync, writeFileSync, rmSync } from 'node:fs';
-import { join, dirname } from 'node:path';
+import { mkdirSync, writeFileSync, rmSync, symlinkSync } from 'node:fs';
+import { join, resolve, dirname } from 'node:path';
 import { tmpdir } from 'node:os';
 import { SkillRegistry } from '../../src/skills/registry.js';
 import { SkillRegistryEvent } from '../../src/skills/types.js';
@@ -60,7 +60,7 @@ describe('resolveResourcePath', () => {
     const result = resolveResourcePath('/skills/my-skill', 'references/guide.md');
     expect(result.success).toBe(true);
     if (result.success) {
-      expect(result.resolvedPath).toBe(join('/skills/my-skill', 'references/guide.md'));
+      expect(result.resolvedPath).toBe(resolve('/skills/my-skill', 'references/guide.md'));
     }
   });
 
@@ -107,7 +107,7 @@ describe('resolveResourcePath', () => {
     const result = resolveResourcePath('/skills/my-skill', 'README.md');
     expect(result.success).toBe(true);
     if (result.success) {
-      expect(result.resolvedPath).toBe(join('/skills/my-skill', 'README.md'));
+      expect(result.resolvedPath).toBe(resolve('/skills/my-skill', 'README.md'));
     }
   });
 
@@ -115,7 +115,7 @@ describe('resolveResourcePath', () => {
     const result = resolveResourcePath('/skills/my-skill', 'scripts/setup/install.sh');
     expect(result.success).toBe(true);
     if (result.success) {
-      expect(result.resolvedPath).toBe(join('/skills/my-skill', 'scripts/setup/install.sh'));
+      expect(result.resolvedPath).toBe(resolve('/skills/my-skill', 'scripts/setup/install.sh'));
     }
   });
 
@@ -128,8 +128,30 @@ describe('resolveResourcePath', () => {
     const result = resolveResourcePath('/skills/my-skill', 'references/foo..bar.md');
     expect(result.success).toBe(true);
     if (result.success) {
-      expect(result.resolvedPath).toBe(join('/skills/my-skill', 'references/foo..bar.md'));
+      expect(result.resolvedPath).toBe(resolve('/skills/my-skill', 'references/foo..bar.md'));
     }
+  });
+
+  it('should block symlinks that escape the skill directory', () => {
+    // Create a real temp skill directory and a target outside it
+    const skillRoot = createTempDir();
+    const outsideDir = createTempDir();
+    const outsideFile = join(outsideDir, 'secret.txt');
+    writeFileSync(outsideFile, 'secret-data', 'utf-8');
+
+    // Create a symlink inside the skill root that points outside
+    const symlinkPath = join(skillRoot, 'escape-link.txt');
+    symlinkSync(outsideFile, symlinkPath);
+
+    const result = resolveResourcePath(skillRoot, 'escape-link.txt');
+    expect(result.success).toBe(false);
+    if (!result.success) {
+      expect(result.error).toContain('Symlink target escapes the skill directory');
+    }
+
+    // Cleanup
+    rmSync(skillRoot, { recursive: true, force: true });
+    rmSync(outsideDir, { recursive: true, force: true });
   });
 });
 

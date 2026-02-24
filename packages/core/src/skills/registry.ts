@@ -431,7 +431,7 @@ export class SkillRegistry {
    * });
    * ```
    */
-  toActivationTools() {
+  toActivationTools(): ReturnType<typeof createSkillActivationTools> {
     return createSkillActivationTools(this);
   }
 }
