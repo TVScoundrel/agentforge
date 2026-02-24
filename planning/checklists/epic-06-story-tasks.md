@@ -132,7 +132,7 @@
 - [x] Run full test suite before finalizing the PR and record results — 175 pass, 0 fail
 - [x] Run lint (`pnpm lint`) before finalizing the PR and record results — 0 errors, 0 warnings
 - [x] Commit completed checklist items as logical commits and push updates
-- [ ] Mark PR Ready only after all story tasks are complete
+- [x] Mark PR Ready only after all story tasks are complete — marked ready 2026-02-24
 - [ ] Wait for merge; do not merge directly from local branch
 
 ---
