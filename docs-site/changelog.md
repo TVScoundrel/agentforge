@@ -7,6 +7,63 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.14.0] - 2026-02-24
+
+### Added
+
+#### @agentforge/core — Agent Skills Compatibility Layer
+- **SkillRegistry** — Auto-discover and manage agent skills following the [Agent Skills Specification](https://agentskills.io):
+  - Folder-config auto-discovery with YAML frontmatter parsing (via gray-matter)
+  - Configurable `skillRoots` with multi-root support and deterministic duplicate handling
+  - Query API: `get()`, `getAll()`, `has()`, `size`, `getNames()`, `getScanErrors()`
+  - `enabled` feature flag (default off) for zero-impact opt-in
+  - `maxDiscoveredSkills` cap for token budget control
+  - Structured logging with hierarchical logger names
+- **`generatePrompt()`** — System prompt integration producing `<available_skills>` XML:
+  - Subset filtering via `skills?: string[]` for focused agents
+  - XML escaping and token-aware prompt composition
+- **Skill Activation Tools** — Two LangGraph-compatible tools for runtime skill loading:
+  - `activate-skill` — Load full SKILL.md instructions by skill name
+  - `read-skill-resource` — Read resource files from skill directories with path security
+  - `toActivationTools()` convenience method returning both as a tuple
+  - `resolveResourcePath()` with segment-based traversal detection and symlink guard (realpathSync)
+  - Structured event emission (`SKILL_ACTIVATED`, `SKILL_RESOURCE_LOADED`)
+- **Trust Policy Engine** — Fine-grained access control for skill resources:
+  - `TrustLevel` (`workspace`/`trusted`/`untrusted`) configurable per skill root
+  - `evaluateTrustPolicy()` decision engine blocking scripts from untrusted roots by default
+  - `allowUntrustedScripts` config override for development workflows
+  - `getAllowedTools()` API for skill-declared tool filtering
+  - `TRUST_POLICY_DENIED`/`TRUST_POLICY_ALLOWED` events for observability
+  - Backward compatible — plain string roots default to `untrusted`
+- **`ToolCategory.SKILLS`** — New tool category enum value for skill-related tools
+- **Event System** — Registry events for observability, logging, and metrics:
+  - `skill:discovered`, `skill:warning`, `skill:activated`, `skill:resource-loaded`
+  - `trust:policy-allowed`, `trust:policy-denied`
+
+#### @agentforge/core — Testing
+- **35-Test Conformance Suite** — End-to-end validation covering discovery, prompt generation, tool activation, resource loading, trust policy enforcement, allowed-tools, and full pipeline
+- **180+ Skill Unit Tests** — Parser (34), scanner (10), registry (27), prompt (23), activation (40), trust (41), plus conformance (35)
+- **Fixture Skill Packs** — Committed test fixtures for valid, malformed, and untrusted skill scenarios
+
+#### Documentation Site
+- **Agent Skills Guide** — Developer setup guide (`guide/agent-skills.md`) covering SkillRegistry configuration, prompt integration, activation tools, and feature flags
+- **Skill Authoring Reference** — Author guide (`guide/agent-skills-authoring.md`) for creating SKILL.md files with frontmatter, instructions, resources, and trust levels
+- **Skill-Powered Agent Tutorial** — Step-by-step tutorial (`tutorials/skill-powered-agent.md`) building a skill-powered ReAct agent from scratch (9 steps)
+- **Agent Skills Examples** — 10 runnable integration patterns (`examples/agent-skills.md`): registry setup, prompt generation, activation tools, trust policies, event monitoring, multi-root configuration, combining skills with custom tools, and more
+- **SkillRegistry API Reference** — Full API documentation in `api/core.md` covering constructor options, query methods, event types, utility functions, and type definitions
+- **VitePress Sidebar & Cross-links** — Agent Skills section in Guide sidebar, tutorial and examples nav entries, cross-links between all related pages
+
+#### Examples
+- **`skill-aware-agent`** — End-to-end demo application demonstrating mixed-trust skill roots with observability events
+
+### Published
+- All packages published to npm registry at version 0.14.0:
+  - @agentforge/core@0.14.0
+  - @agentforge/patterns@0.14.0
+  - @agentforge/tools@0.14.0
+  - @agentforge/testing@0.14.0
+  - @agentforge/cli@0.14.0
+
 ## [0.13.0] - 2026-02-23
 
 ### Added
