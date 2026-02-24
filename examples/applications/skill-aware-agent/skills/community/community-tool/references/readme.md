@@ -13,4 +13,4 @@ Run the provided install script:
 ./scripts/install.sh
 ```
 
-This will configure the community tool in your workspace.
+This will configure the community tool in your workspace. Because this is a community (untrusted) skill pack, running this script requires explicitly promoting the skill root to `trusted` or enabling `allowUntrustedScripts` in your `SkillRegistryConfig`.

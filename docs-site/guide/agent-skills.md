@@ -110,9 +110,9 @@ Startup:
 
 Runtime (agent decides):
   4. Agent reads task → sees relevant skill in prompt
-  5. Agent calls activate-skill("skill-name")
+  5. Agent calls activate-skill({ name: "skill-name" })
      → Returns full SKILL.md body content
-  6. Agent optionally calls read-skill-resource("skill-name", "references/guide.md")
+  6. Agent optionally calls read-skill-resource({ name: "skill-name", path: "references/guide.md" })
      → Returns referenced file content
   7. Agent follows skill instructions using its existing tools
 ```
