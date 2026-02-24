@@ -949,14 +949,14 @@ interface SkillMetadata {
 | `createActivateSkillTool(registry)` | `(SkillRegistry) => Tool` | Create standalone activate-skill tool |
 | `createReadSkillResourceTool(registry)` | `(SkillRegistry) => Tool` | Create standalone read-skill-resource tool |
 | `createSkillActivationTools(registry)` | `(SkillRegistry) => [Tool, Tool]` | Create both tools as a tuple |
-| `resolveResourcePath(skillDir, resourcePath)` | `(string, string) => string` | Validate and resolve a resource path |
+| `resolveResourcePath(skillDir, resourcePath)` | `(string, string) => { success: true; resolvedPath: string } \| { success: false; error: string }` | Validate and resolve a resource path (returns discriminated union) |
 | `evaluateTrustPolicy(resourcePath, trustLevel, allowUntrustedScripts?)` | `(...) => TrustPolicyDecision` | Evaluate whether a resource access is allowed |
 | `isScriptResource(resourcePath)` | `(string) => boolean` | Check if path targets `scripts/` directory |
 | `normalizeRootConfig(root)` | `(string \| SkillRootConfig) => SkillRootConfig` | Normalize string to root config |
 | `parseSkillContent(content, dirName)` | `(string, string) => SkillParseResult` | Parse SKILL.md content and validate |
 | `validateSkillName(name)` | `(string) => SkillValidationError[]` | Validate skill name format |
 | `scanSkillRoot(rootPath)` | `(string) => SkillCandidate[]` | Scan a directory for skill candidates |
-| `scanAllSkillRoots(roots)` | `(SkillRootConfig[]) => SkillCandidate[]` | Scan multiple root directories |
+| `scanAllSkillRoots(roots)` | `(string[]) => SkillCandidate[]` | Scan multiple root directories |
 
 ## Type Definitions
 

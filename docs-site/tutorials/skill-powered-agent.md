@@ -250,7 +250,7 @@ const llm = new ChatOpenAI({
 
 // 5. Build the agent with skill tools
 const agent = createReActAgent({
-  llm,
+  model: llm,
   tools: [activateSkill, readSkillResource],
   systemPrompt: `You are a coding assistant with access to specialized skills.
 
@@ -405,7 +405,7 @@ const [activateSkill, readSkillResource] = skillRegistry.toActivationTools();
 const llm = new ChatOpenAI({ modelName: 'gpt-4o', temperature: 0 });
 
 const agent = createReActAgent({
-  llm,
+  model: llm,
   tools: [activateSkill, readSkillResource],
   systemPrompt: `You are a coding assistant with access to specialized skills.
 

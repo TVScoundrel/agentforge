@@ -103,7 +103,7 @@ const [activateSkill, readSkillResource] = skillRegistry.toActivationTools();
 
 // Use with ReAct agent
 const agent = createReActAgent({
-  llm: new ChatOpenAI({ modelName: 'gpt-4o' }),
+  model: new ChatOpenAI({ modelName: 'gpt-4o' }),
   tools: [activateSkill, readSkillResource],
   systemPrompt: `You have access to skills. ${skillRegistry.generatePrompt()}`,
 });
@@ -263,8 +263,8 @@ const allowedTools = skillRegistry.getAllowedTools('code-review');
 if (allowedTools) {
   // Filter registered tools to only those the skill expects
   const filtered = toolRegistry.getAll()
-    .filter(tool => allowedTools.includes(tool.name));
-  console.log('Filtered tools:', filtered.map(t => t.name));
+    .filter(tool => allowedTools.includes(tool.metadata.name));
+  console.log('Filtered tools:', filtered.map(t => t.metadata.name));
 }
 ```
 
@@ -370,7 +370,7 @@ const readFileTool = toolBuilder()
   .schema(z.object({
     path: z.string().describe('File path to read'),
   }))
-  .implement(async ({ path }) => {
+  .implementSafe(async ({ path }) => {
     const fs = await import('fs/promises');
     return fs.readFile(path, 'utf-8');
   })
@@ -386,7 +386,7 @@ const [activateSkill, readSkillResource] = skillRegistry.toActivationTools();
 
 // Combine custom tools + skill activation tools
 const agent = createReActAgent({
-  llm: new ChatOpenAI({ modelName: 'gpt-4o' }),
+  model: new ChatOpenAI({ modelName: 'gpt-4o' }),
   tools: [readFileTool, activateSkill, readSkillResource],
   systemPrompt: `You are a coding assistant.
 
