@@ -1,0 +1,19 @@
+{
+  "name": "skill-aware-agent-example",
+  "version": "0.1.0",
+  "description": "Demo agent that discovers and uses skills from multiple roots with trust policies",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "start": "tsx src/index.ts",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@agentforge/core": "workspace:*"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.2",
+    "tsx": "^4.21.0",
+    "typescript": "^5.7.2"
+  }
+}
