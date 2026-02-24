@@ -9,17 +9,17 @@
  *
  * @example
  * ```ts
- * const tools = createSkillActivationTools(registry);
- * // tools.activateSkill  — load full SKILL.md body
- * // tools.readSkillResource — load a resource file from a skill
+ * const [activateSkill, readSkillResource] = createSkillActivationTools(registry);
+ * // activateSkill       — load full SKILL.md body
+ * // readSkillResource   — load a resource file from a skill
  *
  * // Or use the convenience method:
- * const tools = registry.toActivationTools();
+ * const [activateSkill, readSkillResource] = registry.toActivationTools();
  * ```
  */
 
 import { readFileSync } from 'node:fs';
-import { resolve, normalize, relative } from 'node:path';
+import { resolve, relative, isAbsolute, dirname } from 'node:path';
 import { z } from 'zod';
 import { ToolBuilder } from '../tools/builder.js';
 import { ToolCategory } from '../tools/types.js';
@@ -54,18 +54,19 @@ export function resolveResourcePath(
   skillPath: string,
   resourcePath: string,
 ): { success: true; resolvedPath: string } | { success: false; error: string } {
-  // Reject absolute paths
-  if (resourcePath.startsWith('/') || resourcePath.startsWith('\\')) {
+  // Reject absolute paths using platform-aware check
+  if (isAbsolute(resourcePath)) {
     return { success: false, error: 'Absolute resource paths are not allowed' };
   }
 
-  // Reject obvious traversal patterns before resolution
-  const normalized = normalize(resourcePath);
-  if (normalized.startsWith('..') || normalized.includes('..')) {
+  // Reject traversal via segment-based '..' detection
+  // Split on both '/' and '\' to handle cross-platform separators
+  const segments = resourcePath.split(/[\/\\]/);
+  if (segments.some((seg) => seg === '..')) {
     return { success: false, error: 'Path traversal is not allowed — resource paths must stay within the skill directory' };
   }
 
-  // Resolve and verify containment
+  // Resolve and verify containment (final guard)
   const resolvedPath = resolve(skillPath, resourcePath);
   const resolvedSkillPath = resolve(skillPath);
 

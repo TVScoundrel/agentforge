@@ -13,7 +13,7 @@
 
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import { mkdirSync, writeFileSync, rmSync } from 'node:fs';
-import { join } from 'node:path';
+import { join, dirname } from 'node:path';
 import { tmpdir } from 'node:os';
 import { SkillRegistry } from '../../src/skills/registry.js';
 import { SkillRegistryEvent } from '../../src/skills/types.js';
@@ -48,8 +48,7 @@ function createSkillFixture(
 
 function createResourceFile(skillDir: string, relativePath: string, content: string): string {
   const fullPath = join(skillDir, relativePath);
-  const dir = fullPath.substring(0, fullPath.lastIndexOf('/'));
-  mkdirSync(dir, { recursive: true });
+  mkdirSync(dirname(fullPath), { recursive: true });
   writeFileSync(fullPath, content, 'utf-8');
   return fullPath;
 }
@@ -73,11 +72,18 @@ describe('resolveResourcePath', () => {
     }
   });
 
-  it('should block backslash absolute paths', () => {
+  it('should block backslash absolute paths on Windows or treat as relative on POSIX', () => {
     const result = resolveResourcePath('/skills/my-skill', '\\etc\\passwd');
-    expect(result.success).toBe(false);
-    if (!result.success) {
-      expect(result.error).toContain('Absolute resource paths');
+    if (process.platform === 'win32') {
+      // On Windows, backslash paths are absolute
+      expect(result.success).toBe(false);
+      if (!result.success) {
+        expect(result.error).toContain('Absolute resource paths');
+      }
+    } else {
+      // On POSIX, backslashes are valid filename chars — path stays within root
+      // The relative() containment guard handles this correctly
+      expect(result.success).toBe(true);
     }
   });
 
@@ -116,6 +122,14 @@ describe('resolveResourcePath', () => {
   it('should allow assets/ directory', () => {
     const result = resolveResourcePath('/skills/my-skill', 'assets/logo.png');
     expect(result.success).toBe(true);
+  });
+
+  it('should allow filenames containing double dots (e.g., foo..bar)', () => {
+    const result = resolveResourcePath('/skills/my-skill', 'references/foo..bar.md');
+    expect(result.success).toBe(true);
+    if (result.success) {
+      expect(result.resolvedPath).toBe(join('/skills/my-skill', 'references/foo..bar.md'));
+    }
   });
 });
 
