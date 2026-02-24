@@ -5,8 +5,8 @@
 ## Queue Status Summary
 
 - **Ready:** 0 stories
-- **In Progress:** 1 story
-- **In Review:** 0 stories
+- **In Progress:** 0 stories
+- **In Review:** 1 story
 - **Blocked:** 0 stories
 - **Backlog:** 0 stories
 
@@ -20,18 +20,16 @@ _No stories currently ready_
 
 ## In Progress
 
-### ST-06006: Comprehensive Docs-Site Documentation for Agent Skills
-- **Priority:** P1 (High)
-- **Estimate:** 5 hours
-- **Dependencies:** ST-06005 (complete)
-- **PR:** #51
-- **Deliverables:** Tutorial page, examples page, API reference, VitePress sidebar updates, cross-links
+_No stories currently in progress_
 
 ---
 
 ## In Review
 
-_No stories currently in review_
+### ST-06006: Comprehensive Docs-Site Documentation for Agent Skills
+- **Priority:** P1 (High)
+- **PR:** #51 — https://github.com/TVScoundrel/agentforge/pull/51
+- **Deliverables:** Tutorial, examples, API reference, sidebar, cross-links
 
 ---
 

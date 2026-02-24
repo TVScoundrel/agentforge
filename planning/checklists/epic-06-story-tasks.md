@@ -181,10 +181,14 @@
 - [x] Add or update story documentation at docs/st06006-agent-skills-docs-site.md
 - [x] Assess test impact; add/update automated tests when needed, or document why tests are not required
   - Documentation-only story — no runtime code changes, VitePress build validates pages
-- [ ] Run full test suite before finalizing the PR and record results
-- [ ] Run lint (`pnpm lint`) before finalizing the PR and record results
-- [ ] Commit completed checklist items as logical commits and push updates
-- [ ] Mark PR Ready only after all story tasks are complete
+- [x] Run full test suite before finalizing the PR and record results
+  - 152 files passed (2250 tests), 7 pre-existing Docker/testcontainers failures (unrelated)
+- [x] Run lint (`pnpm lint`) before finalizing the PR and record results
+  - 0 errors, 109 pre-existing warnings (all @typescript-eslint/no-explicit-any in patterns)
+- [x] Commit completed checklist items as logical commits and push updates
+  - `8849f12` docs(st-06006): add tutorial, examples, API reference, and sidebar for Agent Skills
+  - `51b3adc` docs(st-06006): add story documentation and update trackers
+- [x] Mark PR Ready only after all story tasks are complete
 - [ ] Wait for merge; do not merge directly from local branch
 
 ---
