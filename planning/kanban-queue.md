@@ -4,7 +4,7 @@
 
 ## Queue Status Summary
 
-- **Ready:** 0 stories
+- **Ready:** 1 story
 - **In Progress:** 0 stories
 - **In Review:** 0 stories
 - **Blocked:** 0 stories
@@ -14,7 +14,11 @@
 
 ## Ready
 
-_No stories currently ready_
+### ST-06006: Comprehensive Docs-Site Documentation for Agent Skills
+- **Priority:** P1 (High)
+- **Estimate:** 5 hours
+- **Dependencies:** ST-06005 (complete)
+- **Deliverables:** Tutorial page, examples page, API reference, VitePress sidebar updates, cross-links
 
 ---
 
@@ -75,4 +79,4 @@ _No stories currently in backlog_
 - ✅ ST-06003 complete - skill activation and resource tools (merged 2026-02-24)
 - ✅ ST-06004 complete - skill trust policies and execution guardrails (merged 2026-02-24)
 - ✅ ST-06005 complete - agent skills docs and conformance suite (merged 2026-02-24)
-- Epic 06 (Agent Skills Compatibility) is now complete — all 5 stories merged
+- Epic 06 (Agent Skills Compatibility) — 5 of 6 stories merged; ST-06006 (docs-site) in Ready

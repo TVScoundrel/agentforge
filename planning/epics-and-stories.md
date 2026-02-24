@@ -72,7 +72,7 @@
 - Skill loading follows progressive disclosure (metadata first, full instructions on activation)
 - Runtime guardrails enforce trust boundaries for skill resources and scripts
 
-**Stories:** ST-06001 through ST-06005
+**Stories:** ST-06001 through ST-06006
 
 ---
 
@@ -551,15 +551,34 @@
 
 ---
 
+#### ST-06006: Comprehensive Docs-Site Documentation for Agent Skills
+**User story:** As a developer visiting the docs site, I want tutorials, examples, and API reference pages for Agent Skills so that I can learn the feature end-to-end without reading source code.
+
+**Priority:** P1 (High)
+**Estimate:** 5 hours
+**Dependencies:** ST-06005
+
+**Acceptance criteria:**
+- [ ] VitePress sidebar updated: new "Agent Skills" section in the Guide sidebar linking to `agent-skills.md` and `agent-skills-authoring.md`
+- [ ] Tutorial page (`tutorials/skill-powered-agent.md`) walks through building a skill-powered agent step-by-step (comparable to `tutorials/database-agent.md`)
+- [ ] Examples page (`examples/agent-skills.md`) demonstrates common skill usage patterns with runnable code snippets (registry setup, prompt generation, activation tools, trust policies, events)
+- [ ] API reference section in `api/core.md` documents `SkillRegistry` public API (`constructor`, `get`, `getAll`, `has`, `size`, `generatePrompt`, `toActivationTools`, `getAllowedTools`, events)
+- [ ] VitePress sidebar updated: tutorial and examples pages linked in their respective nav sections
+- [ ] All new pages follow existing docs-site conventions (frontmatter, code highlighting, tip/warning callouts)
+- [ ] Cross-links between guide, tutorial, examples, and API reference pages for discoverability
+- [ ] `pnpm --filter docs-site dev` builds without dead-link warnings for new pages
+
+---
+
 ## Story Summary
 
-**Total Stories:** 24
+**Total Stories:** 25
 **By Priority:**
 - P0 (Critical): 12 stories
-- P1 (High): 9 stories
+- P1 (High): 10 stories
 - P2 (Medium): 3 stories
 
-**Total Estimated Effort:** ~111 hours (14 working days)
+**Total Estimated Effort:** ~116 hours (14.5 working days)
 
 **Dependency Chain:**
 1. Phase 1 (Foundation): ST-01001 → ST-01002 → ST-01003 → ST-01004
@@ -567,4 +586,4 @@
 3. Phase 3 (Schema): ST-03001 → ST-03002
 4. Phase 4 (Advanced): ST-04001, ST-04002, ST-04003 (can be parallel)
 5. Phase 5 (Quality): ST-05001 → ST-05002 → ST-05003 → ST-05004
-6. Phase 6 (Agent Skills): ST-06001 → ST-06002 → ST-06003 → ST-06004 → ST-06005
+6. Phase 6 (Agent Skills): ST-06001 → ST-06002 → ST-06003 → ST-06004 → ST-06005 → ST-06006

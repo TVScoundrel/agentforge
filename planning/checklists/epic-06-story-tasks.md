@@ -162,12 +162,36 @@
 
 ---
 
+## ST-06006: Comprehensive Docs-Site Documentation for Agent Skills
+
+**Branch:** `docs/st-06006-agent-skills-docs-site`
+
+### Checklist
+- [ ] Create branch `docs/st-06006-agent-skills-docs-site`
+- [ ] Create draft PR with story ID in title
+- [ ] Add "Agent Skills" section to VitePress guide sidebar linking `agent-skills.md` and `agent-skills-authoring.md`
+- [ ] Write tutorial page `tutorials/skill-powered-agent.md` — step-by-step guide building a skill-powered agent (prerequisites, project setup, creating skills, registry config, prompt wiring, activation, trust policies, testing)
+- [ ] Write examples page `examples/agent-skills.md` — runnable code snippets for common patterns (registry setup, prompt generation, activation tools, trust policies, events, multi-root configuration)
+- [ ] Add SkillRegistry API reference section to `api/core.md` — public methods, constructor options, event types, type signatures
+- [ ] Add tutorial and examples entries to VitePress sidebar nav sections
+- [ ] Add cross-links between guide, tutorial, examples, and API pages
+- [ ] Verify `pnpm --filter docs-site dev` builds without dead-link warnings for new/updated pages
+- [ ] Add or update story documentation at docs/st06006-agent-skills-docs-site.md
+- [ ] Assess test impact; add/update automated tests when needed, or document why tests are not required
+- [ ] Run full test suite before finalizing the PR and record results
+- [ ] Run lint (`pnpm lint`) before finalizing the PR and record results
+- [ ] Commit completed checklist items as logical commits and push updates
+- [ ] Mark PR Ready only after all story tasks are complete
+- [ ] Wait for merge; do not merge directly from local branch
+
+---
+
 ## Epic 06 Completion Criteria
 
-- [x] All 5 stories merged
+- [ ] All 6 stories merged
 - [x] `SkillRegistry` auto-discovers skills from configurable `skillRoots` with spec-compliant frontmatter parsing
 - [x] `skillRegistry.generatePrompt()` produces `<available_skills>` XML (gated by feature flag)
 - [x] `skillRegistry.toActivationTools()` provides `activate-skill` and `read-skill-resource` tools across all agent patterns
 - [x] Trust policies prevent unsafe script execution from untrusted roots
 - [x] Conformance suite passes in CI
-- [x] Developer and authoring docs are complete and validated
+- [ ] Developer and authoring docs are complete and validated (ST-06006 adds tutorials, examples, and API reference)
