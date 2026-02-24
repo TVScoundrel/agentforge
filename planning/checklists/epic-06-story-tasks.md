@@ -81,23 +81,29 @@
 **Branch:** `feat/st-06003-skill-activation-and-resource-tools`
 
 ### Checklist
-- [ ] Create branch `feat/st-06003-skill-activation-and-resource-tools`
-- [ ] Create draft PR with story ID in title
-- [ ] Implement `activate-skill` tool using AgentForge tool builder API — resolves skill via SkillRegistry, returns full SKILL.md body content
-- [ ] Implement `read-skill-resource` tool using AgentForge tool builder API — resolves skill + relative path via SkillRegistry, returns file content
-- [ ] Implement `SkillRegistry.toActivationTools()` convenience method returning both tools pre-wired to the registry instance
-- [ ] Resolve resource paths relative to skill root directory (scripts/, references/, assets/)
-- [ ] Block path traversal — resource resolution must stay within the skill root
-- [ ] Return clear error messages for non-existent skills and missing resource files
-- [ ] Emit structured logs and events (`skill:activated`, `skill:resource-loaded`) for activation and resource loads
-- [ ] Register both tools in a `SKILLS` tool category
-- [ ] Ensure tools can be added to any agent pattern (ReAct, Plan-Execute, Multi-Agent)
-- [ ] Create fixture skill packs for testing (valid, missing SKILL.md, traversal attempts)
-- [ ] Create integration tests for end-to-end activation and resource loading flows
-- [ ] Add or update story documentation at docs/st06003-skill-activation-and-resource-tools.md (or document why not required)
-- [ ] Assess test impact; add/update automated tests when needed, or document why tests are not required
-- [ ] Run full test suite before finalizing the PR and record results
-- [ ] Run lint (`pnpm lint`) before finalizing the PR and record results
+- [x] Create branch `feat/st-06003-skill-activation-and-resource-tools`
+- [x] Create draft PR with story ID in title
+  - PR #48: https://github.com/TVScoundrel/agentforge/pull/48
+- [x] Implement `activate-skill` tool using AgentForge tool builder API — resolves skill via SkillRegistry, returns full SKILL.md body content
+- [x] Implement `read-skill-resource` tool using AgentForge tool builder API — resolves skill + relative path via SkillRegistry, returns file content
+- [x] Implement `SkillRegistry.toActivationTools()` convenience method returning both tools pre-wired to the registry instance
+- [x] Resolve resource paths relative to skill root directory (scripts/, references/, assets/)
+- [x] Block path traversal — resource resolution must stay within the skill root
+- [x] Return clear error messages for non-existent skills and missing resource files
+- [x] Emit structured logs and events (`skill:activated`, `skill:resource-loaded`) for activation and resource loads
+- [x] Register both tools in a `SKILLS` tool category
+- [x] Ensure tools can be added to any agent pattern (ReAct, Plan-Execute, Multi-Agent)
+  - Tools use standard AgentForge Tool type, compatible with any agent pattern's tool array
+- [x] Create fixture skill packs for testing (valid, missing SKILL.md, traversal attempts)
+- [x] Create integration tests for end-to-end activation and resource loading flows
+  - 38 tests in `packages/core/tests/skills/activation.test.ts`
+- [x] Add or update story documentation at docs/st06003-skill-activation-and-resource-tools.md (or document why not required)
+- [x] Assess test impact; add/update automated tests when needed, or document why tests are not required
+  - 38 new unit tests covering all acceptance criteria
+- [x] Run full test suite before finalizing the PR and record results
+  - 150 test files passed, 7 failed (pre-existing Docker/testcontainers), 2167 tests passed
+- [x] Run lint (`pnpm lint`) before finalizing the PR and record results
+  - 0 errors, 109 warnings (all pre-existing @typescript-eslint/no-explicit-any in patterns package)
 - [ ] Commit completed checklist items as logical commits and push updates
 - [ ] Mark PR Ready only after all story tasks are complete
 - [ ] Wait for merge; do not merge directly from local branch
