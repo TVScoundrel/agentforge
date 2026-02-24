@@ -67,31 +67,31 @@ async function main(): Promise<void> {
 
   // ── 4. Obtain activation tools ─────────────────────────────────────
   const [activateSkill, readResource] = registry.toActivationTools();
-  console.log(`🔧 Activation tools ready: ${activateSkill.name}, ${readResource.name}\n`);
+  console.log(`🔧 Activation tools ready: ${activateSkill.metadata.name}, ${readResource.metadata.name}\n`);
 
   // ── 5. Activate skills ─────────────────────────────────────────────
   console.log('── Activate workspace skill: code-review ──');
-  const codeReviewBody = await activateSkill.execute({ name: 'code-review' });
+  const codeReviewBody = await activateSkill.invoke({ name: 'code-review' });
   console.log(`   Body (${codeReviewBody.length} chars):\n${indent(codeReviewBody)}\n`);
 
   console.log('── Activate workspace skill: test-generator ──');
-  const testGenBody = await activateSkill.execute({ name: 'test-generator' });
+  const testGenBody = await activateSkill.invoke({ name: 'test-generator' });
   console.log(`   Body (${testGenBody.length} chars):\n${indent(testGenBody)}\n`);
 
   console.log('── Activate community skill: community-tool ──');
-  const communityBody = await activateSkill.execute({ name: 'community-tool' });
+  const communityBody = await activateSkill.invoke({ name: 'community-tool' });
   console.log(`   Body (${communityBody.length} chars):\n${indent(communityBody)}\n`);
 
   // ── 6. Load resources ──────────────────────────────────────────────
   console.log('── Read workspace resource (reference — allowed) ──');
-  const styleGuide = await readResource.execute({
+  const styleGuide = await readResource.invoke({
     name: 'code-review',
     path: 'references/style-guide.md',
   });
   console.log(`   ${styleGuide.slice(0, 120).replace(/\n/g, ' ')}…\n`);
 
   console.log('── Read community resource (reference — allowed) ──');
-  const communityRef = await readResource.execute({
+  const communityRef = await readResource.invoke({
     name: 'community-tool',
     path: 'references/readme.md',
   });
@@ -99,7 +99,7 @@ async function main(): Promise<void> {
 
   // ── 7. Trust policy enforcement ────────────────────────────────────
   console.log('── Read community script (BLOCKED by trust policy) ──');
-  const scriptResult = await readResource.execute({
+  const scriptResult = await readResource.invoke({
     name: 'community-tool',
     path: 'scripts/install.sh',
   });

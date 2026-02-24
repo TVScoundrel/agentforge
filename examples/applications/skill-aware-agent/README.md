@@ -23,10 +23,7 @@ Demonstrates an AgentForge agent that discovers, activates, and uses skills from
 cd examples/applications/skill-aware-agent
 pnpm install
 
-# Set your OpenAI API key
-export OPENAI_API_KEY=your-key-here
-
-# Run the demo
+# Run the demo (no OpenAI API key required; this demo does not make LLM calls)
 pnpm start
 ```
 

@@ -5,4 +5,4 @@ description:
 
 This skill has invalid frontmatter:
 - Name uses uppercase and special characters (violates [a-z0-9-] rule)
-- Description is empty (violates 1-256 char rule)
+- Description is empty (violates non-empty description rule)

@@ -18,13 +18,16 @@
  */
 
 import { describe, it, expect, beforeEach } from 'vitest';
-import { resolve } from 'node:path';
+import { resolve, dirname } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { SkillRegistry } from '../../src/skills/registry.js';
 import { SkillRegistryEvent, type SkillRegistryConfig } from '../../src/skills/types.js';
 import { ToolCategory } from '../../src/tools/types.js';
 
 // ─── Fixture Roots ──────────────────────────────────────────────────────
 
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 const FIXTURES = resolve(__dirname, 'fixtures');
 const VALID_ROOT = resolve(FIXTURES, 'valid');
 const MALFORMED_ROOT = resolve(FIXTURES, 'malformed');
