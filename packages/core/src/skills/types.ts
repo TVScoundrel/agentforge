@@ -55,6 +55,43 @@ export interface SkillRegistryConfig {
    * @example ['.agentskills', '~/.agentskills', './project-skills']
    */
   skillRoots: string[];
+
+  /**
+   * Feature flag to enable Agent Skills in system prompts.
+   *
+   * When `false` (default), `generatePrompt()` returns an empty string
+   * so agents operate with unmodified system prompts.
+   *
+   * @default false
+   */
+  enabled?: boolean;
+
+  /**
+   * Maximum number of skills to include in generated prompts.
+   *
+   * Caps prompt token usage when many skills are discovered.
+   * Skills are included in discovery order (first root first).
+   * When undefined, all discovered skills are included.
+   */
+  maxDiscoveredSkills?: number;
+}
+
+/**
+ * Options for `SkillRegistry.generatePrompt()`.
+ */
+export interface SkillPromptOptions {
+  /**
+   * Subset of skill names to include in the generated prompt.
+   *
+   * When provided, only skills matching these names appear in the
+   * `<available_skills>` XML block. This enables creating focused
+   * agents with different skill sets from the same registry.
+   *
+   * When omitted or empty, all discovered skills are included.
+   *
+   * @example ['code-review', 'testing-strategy']
+   */
+  skills?: string[];
 }
 
 /**

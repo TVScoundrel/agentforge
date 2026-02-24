@@ -27,6 +27,7 @@
 import type {
   Skill,
   SkillRegistryConfig,
+  SkillPromptOptions,
   SkillEventHandler,
 } from './types.js';
 import { SkillRegistryEvent } from './types.js';
@@ -47,7 +48,7 @@ const logger = createLogger('agentforge:core:skills:registry', { level: LogLevel
  * | registry.getAll()        | skillRegistry.getAll()                   |
  * | registry.has('name')     | skillRegistry.has('name')                |
  * | registry.size()          | skillRegistry.size()                     |
- * | registry.generatePrompt()| skillRegistry.generatePrompt() (ST-06002)|
+ * | registry.generatePrompt()| skillRegistry.generatePrompt()           |
  */
 export class SkillRegistry {
   private skills: Map<string, Skill> = new Map();
@@ -243,6 +244,98 @@ export class SkillRegistry {
     return this.scanErrors;
   }
 
+  // ─── Prompt Generation ─────────────────────────────────────────────────
+
+  /**
+   * Generate an `<available_skills>` XML block for system prompt injection.
+   *
+   * Returns an empty string when:
+   * - `config.enabled` is `false` (default) — agents operate with unmodified prompts
+   * - No skills match the filter criteria
+   *
+   * The output composes naturally with `toolRegistry.generatePrompt()` —
+   * simply concatenate both into the system prompt.
+   *
+   * @param options - Optional filtering (subset of skill names)
+   * @returns XML string or empty string
+   *
+   * @example
+   * ```ts
+   * // All skills
+   * const xml = registry.generatePrompt();
+   *
+   * // Subset for a focused agent
+   * const xml = registry.generatePrompt({ skills: ['code-review', 'testing'] });
+   *
+   * // Compose with tool prompt
+   * const systemPrompt = [
+   *   toolRegistry.generatePrompt(),
+   *   skillRegistry.generatePrompt(),
+   * ].filter(Boolean).join('\n\n');
+   * ```
+   */
+  generatePrompt(options?: SkillPromptOptions): string {
+    // Feature flag gate — disabled by default
+    if (!this.config.enabled) {
+      logger.debug('Skill prompt generation skipped (disabled)', {
+        enabled: this.config.enabled ?? false,
+      });
+      return '';
+    }
+
+    // Resolve which skills to include
+    let skills = this.getAll();
+
+    // Apply subset filter if provided
+    if (options?.skills && options.skills.length > 0) {
+      const requested = new Set(options.skills);
+      skills = skills.filter((s) => requested.has(s.metadata.name));
+    }
+
+    // Apply maxDiscoveredSkills cap
+    if (this.config.maxDiscoveredSkills !== undefined && this.config.maxDiscoveredSkills >= 0) {
+      skills = skills.slice(0, this.config.maxDiscoveredSkills);
+    }
+
+    // No skills — return empty string
+    if (skills.length === 0) {
+      logger.debug('Skill prompt generation produced empty result', {
+        totalDiscovered: this.size(),
+        filterApplied: !!(options?.skills && options.skills.length > 0),
+        maxCap: this.config.maxDiscoveredSkills,
+      });
+      return '';
+    }
+
+    // Generate XML
+    const skillEntries = skills.map((skill) => {
+      const lines = [
+        '  <skill>',
+        `    <name>${escapeXml(skill.metadata.name)}</name>`,
+        `    <description>${escapeXml(skill.metadata.description)}</description>`,
+        `    <location>${escapeXml(skill.skillPath)}</location>`,
+        '  </skill>',
+      ];
+      return lines.join('\n');
+    });
+
+    const xml = `<available_skills>\n${skillEntries.join('\n')}\n</available_skills>`;
+
+    // Estimate token count (~4 chars per token, rough heuristic)
+    const estimatedTokens = Math.ceil(xml.length / 4);
+
+    logger.info('Skill prompt generated', {
+      skillCount: skills.length,
+      totalDiscovered: this.size(),
+      filterApplied: !!(options?.skills && options.skills.length > 0),
+      maxCap: this.config.maxDiscoveredSkills,
+      estimatedTokens,
+      xmlLength: xml.length,
+    });
+
+    return xml;
+  }
+
   // ─── Event System ──────────────────────────────────────────────────────
 
   /**
@@ -301,4 +394,19 @@ export class SkillRegistry {
       });
     }
   }
+}
+
+/**
+ * Escape special XML characters in a string.
+ *
+ * @param str - The string to escape
+ * @returns Escaped string safe for XML content
+ */
+function escapeXml(str: string): string {
+  return str
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&apos;');
 }
