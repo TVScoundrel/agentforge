@@ -104,8 +104,10 @@
   - 150 test files passed, 7 failed (pre-existing Docker/testcontainers), 2167 tests passed
 - [x] Run lint (`pnpm lint`) before finalizing the PR and record results
   - 0 errors, 109 warnings (all pre-existing @typescript-eslint/no-explicit-any in patterns package)
-- [ ] Commit completed checklist items as logical commits and push updates
-- [ ] Mark PR Ready only after all story tasks are complete
+- [x] Commit completed checklist items as logical commits and push updates
+  - `16cfceb` feat(st-06003): implement skill activation tools and resource loading
+  - `71a0679` docs(st-06003): add story documentation and update trackers
+- [x] Mark PR Ready only after all story tasks are complete
 - [ ] Wait for merge; do not merge directly from local branch
 
 ---

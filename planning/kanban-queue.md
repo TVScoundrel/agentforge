@@ -5,8 +5,8 @@
 ## Queue Status Summary
 
 - **Ready:** 0 stories
-- **In Progress:** 1 story
-- **In Review:** 0 stories
+- **In Progress:** 0 stories
+- **In Review:** 1 story
 - **Blocked:** 0 stories
 - **Backlog:** 2 stories (queued for prioritization and dependencies)
 
@@ -20,6 +20,12 @@ _No stories currently ready_
 
 ## In Progress
 
+_No stories currently in progress_
+
+---
+
+## In Review
+
 ### ST-06003: Implement Skill Activation and Resource Tools
 - **Epic:** EP-06
 - **Priority:** P0
@@ -29,12 +35,6 @@ _No stories currently ready_
 - **Feature:** `planning/features/06-agent-skills-compatibility-feature-plan.md`
 - **Branch:** `feat/st-06003-skill-activation-and-resource-tools`
 - **PR:** https://github.com/TVScoundrel/agentforge/pull/48
-
----
-
-## In Review
-
-_No stories currently in review_
 
 ---
 
