@@ -52,6 +52,10 @@ You are a code review expert. When activated, follow these steps:
 2. Check for common issues...
 ```
 
+::: info
+Activation tools (`activate-skill`, `read-skill-resource`) are always available to the agent and do not need to be listed in `allowed-tools`. Only list the general-purpose tools your skill instructions reference.
+:::
+
 ## Frontmatter Fields
 
 ### Required
@@ -158,7 +162,7 @@ const allowedTools = registry.getAllowedTools('code-review');
 ```
 
 ::: tip
-`allowed-tools` is informational — it doesn't enforce tool restrictions at the framework level. The agent or orchestrator decides whether to filter tools.
+`allowed-tools` is informational — it doesn't enforce tool restrictions at the framework level. The agent or orchestrator decides whether to filter tools. Activation tools (`activate-skill`, `read-skill-resource`) are always available and should not be listed here.
 :::
 
 ## Progressive Disclosure

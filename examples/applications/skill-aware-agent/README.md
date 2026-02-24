@@ -21,7 +21,7 @@ Demonstrates an AgentForge agent that discovers, activates, and uses skills from
 ```bash
 # From the repo root (after installing workspace dependencies)
 pnpm install
-pnpm tsx examples/applications/skill-aware-agent/src/index.ts
+pnpm dlx tsx examples/applications/skill-aware-agent/src/index.ts
 ```
 
 ## Expected Output

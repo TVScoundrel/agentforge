@@ -8,7 +8,7 @@
  * 3. Activates skills and loads resources via the activation tools
  * 4. Shows trust policy enforcement blocking untrusted script access
  *
- * Run (from repo root): pnpm tsx examples/applications/skill-aware-agent/src/index.ts
+ * Run (from repo root): pnpm dlx tsx examples/applications/skill-aware-agent/src/index.ts
  */
 
 import { resolve, dirname } from 'node:path';
