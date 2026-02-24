@@ -42,7 +42,8 @@
 
 ### Checklist
 - [x] Create branch `feat/st-06002-skill-registry-prompt-generation`
-- [ ] Create draft PR with story ID in title
+- [x] Create draft PR with story ID in title
+  - PR #47: https://github.com/TVScoundrel/agentforge/pull/47
 - [x] Implement `SkillRegistry.generatePrompt()` returning `<available_skills>` XML block (name + description per skill)
 - [x] Implement `generatePrompt({ skills?: string[] })` subset filter — only named skills appear in XML, enabling focused agents with different skill sets
 - [x] Follow Agent Skills integration guide XML format (name, description, location elements per skill)
