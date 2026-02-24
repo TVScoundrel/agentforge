@@ -167,21 +167,28 @@
 **Branch:** `docs/st-06006-agent-skills-docs-site`
 
 ### Checklist
-- [ ] Create branch `docs/st-06006-agent-skills-docs-site`
-- [ ] Create draft PR with story ID in title
-- [ ] Add "Agent Skills" section to VitePress guide sidebar linking `agent-skills.md` and `agent-skills-authoring.md`
-- [ ] Write tutorial page `tutorials/skill-powered-agent.md` — step-by-step guide building a skill-powered agent (prerequisites, project setup, creating skills, registry config, prompt wiring, activation, trust policies, testing)
-- [ ] Write examples page `examples/agent-skills.md` — runnable code snippets for common patterns (registry setup, prompt generation, activation tools, trust policies, events, multi-root configuration)
-- [ ] Add SkillRegistry API reference section to `api/core.md` — public methods, constructor options, event types, type signatures
-- [ ] Add tutorial and examples entries to VitePress sidebar nav sections
-- [ ] Add cross-links between guide, tutorial, examples, and API pages
-- [ ] Verify `pnpm --filter docs-site dev` builds without dead-link warnings for new/updated pages
-- [ ] Add or update story documentation at docs/st06006-agent-skills-docs-site.md
-- [ ] Assess test impact; add/update automated tests when needed, or document why tests are not required
-- [ ] Run full test suite before finalizing the PR and record results
-- [ ] Run lint (`pnpm lint`) before finalizing the PR and record results
-- [ ] Commit completed checklist items as logical commits and push updates
-- [ ] Mark PR Ready only after all story tasks are complete
+- [x] Create branch `docs/st-06006-agent-skills-docs-site`
+- [x] Create draft PR with story ID in title
+  - PR #51: https://github.com/TVScoundrel/agentforge/pull/51
+- [x] Add "Agent Skills" section to VitePress guide sidebar linking `agent-skills.md` and `agent-skills-authoring.md`
+- [x] Write tutorial page `tutorials/skill-powered-agent.md` — step-by-step guide building a skill-powered agent (prerequisites, project setup, creating skills, registry config, prompt wiring, activation, trust policies, testing)
+- [x] Write examples page `examples/agent-skills.md` — runnable code snippets for common patterns (registry setup, prompt generation, activation tools, trust policies, events, multi-root configuration)
+- [x] Add SkillRegistry API reference section to `api/core.md` — public methods, constructor options, event types, type signatures
+- [x] Add tutorial and examples entries to VitePress sidebar nav sections
+- [x] Add cross-links between guide, tutorial, examples, and API pages
+- [x] Verify `pnpm --filter docs-site dev` builds without dead-link warnings for new/updated pages
+  - `pnpm --filter docs-site build` completed successfully in 8.87s
+- [x] Add or update story documentation at docs/st06006-agent-skills-docs-site.md
+- [x] Assess test impact; add/update automated tests when needed, or document why tests are not required
+  - Documentation-only story — no runtime code changes, VitePress build validates pages
+- [x] Run full test suite before finalizing the PR and record results
+  - 152 files passed (2250 tests), 7 pre-existing Docker/testcontainers failures (unrelated)
+- [x] Run lint (`pnpm lint`) before finalizing the PR and record results
+  - 0 errors, 109 pre-existing warnings (all @typescript-eslint/no-explicit-any in patterns)
+- [x] Commit completed checklist items as logical commits and push updates
+  - `8849f12` docs(st-06006): add tutorial, examples, API reference, and sidebar for Agent Skills
+  - `51b3adc` docs(st-06006): add story documentation and update trackers
+- [x] Mark PR Ready only after all story tasks are complete
 - [ ] Wait for merge; do not merge directly from local branch
 
 ---
