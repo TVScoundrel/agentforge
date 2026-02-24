@@ -63,7 +63,7 @@ export function resolveResourcePath(
 
   // Reject traversal via segment-based '..' detection
   // Split on both '/' and '\' to handle cross-platform separators
-  const segments = resourcePath.split(/[\/\\]/);
+  const segments = resourcePath.split(/[/\\]/);
   if (segments.some((seg) => seg === '..')) {
     return { success: false, error: 'Path traversal is not allowed — resource paths must stay within the skill directory' };
   }
