@@ -29,11 +29,14 @@ import type {
   SkillRegistryConfig,
   SkillPromptOptions,
   SkillEventHandler,
+  TrustLevel,
 } from './types.js';
 import { SkillRegistryEvent } from './types.js';
-import { scanAllSkillRoots } from './scanner.js';
+import { scanAllSkillRoots, expandHome } from './scanner.js';
 import { parseSkillContent } from './parser.js';
 import { createSkillActivationTools } from './activation.js';
+import { normalizeRootConfig } from './trust.js';
+import { resolve as resolvePath } from 'node:path';
 import { createLogger, LogLevel } from '../langgraph/observability/logger.js';
 
 const logger = createLogger('agentforge:core:skills:registry', { level: LogLevel.INFO });
@@ -57,6 +60,8 @@ export class SkillRegistry {
   private eventHandlers: Map<SkillRegistryEvent, Set<SkillEventHandler>> = new Map();
   private readonly config: SkillRegistryConfig;
   private scanErrors: Array<{ path: string; error: string }> = [];
+  /** Maps resolved root paths → trust levels for skill trust assignment */
+  private rootTrustMap: Map<string, TrustLevel> = new Map();
 
   /**
    * Create a SkillRegistry and immediately scan configured roots for skills.
@@ -85,8 +90,19 @@ export class SkillRegistry {
   discover(): void {
     this.skills.clear();
     this.scanErrors = [];
+    this.rootTrustMap.clear();
 
-    const candidates = scanAllSkillRoots(this.config.skillRoots);
+    // Normalize roots: extract plain paths for the scanner and build trust map
+    const normalizedRoots = this.config.skillRoots.map(normalizeRootConfig);
+    const plainPaths = normalizedRoots.map((r) => r.path);
+
+    // Build trust map (resolve paths to match scanner output)
+    for (const root of normalizedRoots) {
+      const resolvedPath = resolvePath(expandHome(root.path));
+      this.rootTrustMap.set(resolvedPath, root.trust);
+    }
+
+    const candidates = scanAllSkillRoots(plainPaths);
 
     let successCount = 0;
     let warningCount = 0;
@@ -116,6 +132,7 @@ export class SkillRegistry {
         metadata: result.metadata!,
         skillPath: candidate.skillPath,
         rootPath: candidate.rootPath,
+        trustLevel: this.rootTrustMap.get(candidate.rootPath) ?? 'untrusted',
       };
 
       // Handle duplicate skill names — first root wins (deterministic precedence)
@@ -244,6 +261,39 @@ export class SkillRegistry {
    */
   getScanErrors(): ReadonlyArray<{ path: string; error: string }> {
     return this.scanErrors;
+  }
+
+  /**
+   * Check whether untrusted script access is allowed via config override.
+   *
+   * Used by activation tools to pass the override flag to trust policy checks.
+   *
+   * @returns True if `allowUntrustedScripts` is set in config
+   */
+  getAllowUntrustedScripts(): boolean {
+    return this.config.allowUntrustedScripts ?? false;
+  }
+
+  /**
+   * Get the `allowed-tools` list for a skill.
+   *
+   * Returns the `allowedTools` array from the skill's frontmatter metadata,
+   * enabling agents to filter their tool set based on what the skill expects.
+   *
+   * @param name - The skill name
+   * @returns Array of allowed tool names, or undefined if skill not found or field not set
+   *
+   * @example
+   * ```ts
+   * const allowed = registry.getAllowedTools('code-review');
+   * if (allowed) {
+   *   const filteredTools = allTools.filter(t => allowed.includes(t.name));
+   * }
+   * ```
+   */
+  getAllowedTools(name: string): string[] | undefined {
+    const skill = this.skills.get(name);
+    return skill?.metadata.allowedTools;
   }
 
   // ─── Prompt Generation ─────────────────────────────────────────────────

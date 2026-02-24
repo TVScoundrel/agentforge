@@ -118,21 +118,21 @@
 **Branch:** `feat/st-06004-skill-trust-policies-and-guardrails`
 
 ### Checklist
-- [ ] Create branch `feat/st-06004-skill-trust-policies-and-guardrails`
-- [ ] Create draft PR with story ID in title
-- [ ] Define trust policy configuration model for `workspace`, `trusted`, and `untrusted` roots
-- [ ] Enforce trust policy in `read-skill-resource` before returning script content from `scripts/` directories
-- [ ] Enforce default-deny for script resources from untrusted roots unless explicitly allowed
-- [ ] Parse `allowed-tools` frontmatter field and make available for agent tool filtering
-- [ ] Log guardrail decisions with policy reason codes for auditing
-- [ ] Create security regression tests for path traversal, untrusted script denial, and policy bypass attempts
-- [ ] Document secure defaults and trust escalation workflow
-- [ ] Add or update story documentation at docs/st06004-skill-trust-policies-and-guardrails.md (or document why not required)
-- [ ] Assess test impact; add/update automated tests when needed, or document why tests are not required
-- [ ] Run full test suite before finalizing the PR and record results
-- [ ] Run lint (`pnpm lint`) before finalizing the PR and record results
-- [ ] Commit completed checklist items as logical commits and push updates
-- [ ] Mark PR Ready only after all story tasks are complete
+- [x] Create branch `feat/st-06004-skill-trust-policies-and-guardrails`
+- [x] Create draft PR with story ID in title — PR #49
+- [x] Define trust policy configuration model for `workspace`, `trusted`, and `untrusted` roots
+- [x] Enforce trust policy in `read-skill-resource` before returning script content from `scripts/` directories
+- [x] Enforce default-deny for script resources from untrusted roots unless explicitly allowed
+- [x] Parse `allowed-tools` frontmatter field and make available for agent tool filtering
+- [x] Log guardrail decisions with policy reason codes for auditing
+- [x] Create security regression tests for path traversal, untrusted script denial, and policy bypass attempts
+- [x] Document secure defaults and trust escalation workflow
+- [x] Add or update story documentation at docs/st06004-skill-trust-policies-and-guardrails.md
+- [x] Assess test impact; add/update automated tests when needed — 41 trust tests + 175 total skills tests
+- [x] Run full test suite before finalizing the PR and record results — 175 pass, 0 fail
+- [x] Run lint (`pnpm lint`) before finalizing the PR and record results — 0 errors, 0 warnings
+- [x] Commit completed checklist items as logical commits and push updates
+- [x] Mark PR Ready only after all story tasks are complete — marked ready 2026-02-24
 - [ ] Wait for merge; do not merge directly from local branch
 
 ---

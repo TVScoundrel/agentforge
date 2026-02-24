@@ -26,7 +26,8 @@ import { ToolBuilder } from '../tools/builder.js';
 import { ToolCategory } from '../tools/types.js';
 import type { Tool } from '../tools/types.js';
 import type { SkillRegistry } from './registry.js';
-import { SkillRegistryEvent } from './types.js';
+import { SkillRegistryEvent, TrustPolicyReason } from './types.js';
+import { evaluateTrustPolicy } from './trust.js';
 import { createLogger, LogLevel } from '../langgraph/observability/logger.js';
 
 const logger = createLogger('agentforge:core:skills:activation', { level: LogLevel.INFO });
@@ -62,7 +63,7 @@ export function resolveResourcePath(
 
   // Reject traversal via segment-based '..' detection
   // Split on both '/' and '\' to handle cross-platform separators
-  const segments = resourcePath.split(/[\/\\]/);
+  const segments = resourcePath.split(/[/\\]/);
   if (segments.some((seg) => seg === '..')) {
     return { success: false, error: 'Path traversal is not allowed — resource paths must stay within the skill directory' };
   }
@@ -212,6 +213,50 @@ export function createReadSkillResourceTool(
           error: pathResult.error,
         });
         return pathResult.error;
+      }
+
+      // Enforce trust policy for script resources
+      const policyDecision = evaluateTrustPolicy(
+        resourcePath,
+        skill.trustLevel,
+        registry.getAllowUntrustedScripts(),
+      );
+
+      if (!policyDecision.allowed) {
+        logger.warn('Skill resource load blocked — trust policy', {
+          name,
+          resourcePath,
+          trustLevel: skill.trustLevel,
+          reason: policyDecision.reason,
+          message: policyDecision.message,
+        });
+
+        registry.emitEvent(SkillRegistryEvent.TRUST_POLICY_DENIED, {
+          name: skill.metadata.name,
+          resourcePath,
+          trustLevel: skill.trustLevel,
+          reason: policyDecision.reason,
+          message: policyDecision.message,
+        });
+
+        return policyDecision.message;
+      }
+
+      // Log allowed policy decisions for auditing (scripts only)
+      if (policyDecision.reason !== TrustPolicyReason.NOT_SCRIPT) {
+        logger.info('Skill resource trust policy — allowed', {
+          name,
+          resourcePath,
+          trustLevel: skill.trustLevel,
+          reason: policyDecision.reason,
+        });
+
+        registry.emitEvent(SkillRegistryEvent.TRUST_POLICY_ALLOWED, {
+          name: skill.metadata.name,
+          resourcePath,
+          trustLevel: skill.trustLevel,
+          reason: policyDecision.reason,
+        });
       }
 
       try {
