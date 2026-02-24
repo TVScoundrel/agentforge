@@ -162,6 +162,13 @@
 - **Estimate:** 5 hours
 - **Outcome:** Implemented `SkillRegistry.generatePrompt()` producing `<available_skills>` XML for system prompt injection. Added `SkillPromptOptions` with `skills?: string[]` subset filter for focused agents, `enabled` feature flag (default off) ensuring unmodified prompts for non-skills agents, `maxDiscoveredSkills` cap for token budget control, XML escaping, and structured logging with token estimates. Added 23 unit tests covering feature flag gating, XML generation, subset filtering, max cap, prompt composition, and edge cases.
 
+### ST-06003: Implement Skill Activation and Resource Tools
+- **Merged:** 2026-02-24
+- **PR:** https://github.com/TVScoundrel/agentforge/pull/48
+- **Epic:** EP-06 (Agent Skills Compatibility Layer)
+- **Estimate:** 7 hours
+- **Outcome:** Implemented `activate-skill` and `read-skill-resource` tools using AgentForge tool builder API, bound to SkillRegistry for runtime skill loading. Added `ToolCategory.SKILLS`, `resolveResourcePath()` with segment-based traversal detection plus symlink guard (realpathSync), `extractBody()` via gray-matter, `toActivationTools()` convenience method with explicit return type, and structured event emission (SKILL_ACTIVATED, SKILL_RESOURCE_LOADED). Addressed 8 Copilot review comments across 2 rounds covering path security, cross-platform test assertions, symlink protection, and frontmatter consistency. Added 40 unit tests. Third story of EP-06.
+
 ---
 
 ## Archive Format

@@ -108,7 +108,8 @@
   - `16cfceb` feat(st-06003): implement skill activation tools and resource loading
   - `71a0679` docs(st-06003): add story documentation and update trackers
 - [x] Mark PR Ready only after all story tasks are complete
-- [ ] Wait for merge; do not merge directly from local branch
+- [x] Wait for merge; do not merge directly from local branch
+  - Merged PR: https://github.com/TVScoundrel/agentforge/pull/48 (2026-02-24)
 
 ---
 

@@ -4,17 +4,23 @@
 
 ## Queue Status Summary
 
-- **Ready:** 0 stories
+- **Ready:** 1 story
 - **In Progress:** 0 stories
-- **In Review:** 1 story
+- **In Review:** 0 stories
 - **Blocked:** 0 stories
-- **Backlog:** 2 stories (queued for prioritization and dependencies)
+- **Backlog:** 1 story (queued for prioritization and dependencies)
 
 ---
 
 ## Ready
 
-_No stories currently ready_
+### ST-06004: Implement Skill Trust Policies and Execution Guardrails
+- **Epic:** EP-06
+- **Priority:** P1
+- **Estimate:** 6 hours
+- **Dependencies:** ST-06003 (merged)
+- **Checklist:** `planning/checklists/epic-06-story-tasks.md`
+- **Feature:** `planning/features/06-agent-skills-compatibility-feature-plan.md`
 
 ---
 
@@ -26,15 +32,7 @@ _No stories currently in progress_
 
 ## In Review
 
-### ST-06003: Implement Skill Activation and Resource Tools
-- **Epic:** EP-06
-- **Priority:** P0
-- **Estimate:** 7 hours
-- **Dependencies:** ST-06002 (merged)
-- **Checklist:** `planning/checklists/epic-06-story-tasks.md`
-- **Feature:** `planning/features/06-agent-skills-compatibility-feature-plan.md`
-- **Branch:** `feat/st-06003-skill-activation-and-resource-tools`
-- **PR:** https://github.com/TVScoundrel/agentforge/pull/48
+_No stories currently in review_
 
 ---
 
@@ -46,19 +44,11 @@ _No stories currently blocked_
 
 ## Backlog
 
-### ST-06004: Implement Skill Trust Policies and Execution Guardrails
-- **Epic:** EP-06
-- **Priority:** P1
-- **Estimate:** 6 hours
-- **Dependencies:** ST-06003
-- **Checklist:** `planning/checklists/epic-06-story-tasks.md`
-- **Feature:** `planning/features/06-agent-skills-compatibility-feature-plan.md`
-
 ### ST-06005: Publish Agent Skills Integration Documentation and Conformance Suite
 - **Epic:** EP-06
 - **Priority:** P1
 - **Estimate:** 6 hours
-- **Dependencies:** ST-06003, ST-06004
+- **Dependencies:** ST-06003 (merged), ST-06004
 - **Checklist:** `planning/checklists/epic-06-story-tasks.md`
 - **Feature:** `planning/features/06-agent-skills-compatibility-feature-plan.md`
 
@@ -94,3 +84,4 @@ _No stories currently blocked_
 - New Epic 06 (Agent Skills Compatibility) is planned and queued in Backlog for sequencing after current ready work
 - ✅ ST-06001 complete - SkillRegistry with folder-config auto-discovery (merged 2026-02-24)
 - ✅ ST-06002 complete - generatePrompt() and system prompt integration (merged 2026-02-24)
+- ✅ ST-06003 complete - skill activation and resource tools (merged 2026-02-24)
