@@ -193,3 +193,86 @@ const registryEnabled = new SkillRegistry({
 ```
 
 When disabled, skills are still discovered and activation tools still work — only prompt generation is suppressed. This allows gradual rollout.
+
+## Rollout Checklist
+
+Use this checklist when enabling Agent Skills in a production or team environment.
+
+### 1. Feature-Flag Enablement
+
+1. Start with `enabled: false` (default) — skills are discovered but not surfaced to the LLM
+2. Verify discovery with `registry.size()` and `registry.getScanErrors()` before enabling
+3. Set `enabled: true` to activate prompt injection
+4. Set `allowUntrustedScripts: false` (default) — block untrusted script access
+
+```typescript
+const registry = new SkillRegistry({
+  enabled: true,
+  skillRoots: [
+    { path: '.agentskills', trust: 'workspace' },
+    { path: '~/.agentskills', trust: 'untrusted' },
+  ],
+  allowUntrustedScripts: false,
+  maxDiscoveredSkills: 20,
+});
+```
+
+### 2. Observability Checks
+
+Subscribe to registry events for monitoring and alerting:
+
+```typescript
+import { SkillRegistryEvent } from '@agentforge/core';
+
+// Log all activations
+registry.on(SkillRegistryEvent.SKILL_ACTIVATED, (data) => {
+  logger.info('Skill activated', data);
+});
+
+// Alert on trust policy denials
+registry.on(SkillRegistryEvent.TRUST_POLICY_DENIED, (data) => {
+  logger.warn('Trust policy denied', data);
+  metrics.increment('skills.trust_denied');
+});
+
+// Track resource loads
+registry.on(SkillRegistryEvent.SKILL_RESOURCE_LOADED, (data) => {
+  metrics.increment('skills.resource_loaded');
+});
+
+// Monitor scan warnings
+registry.on(SkillRegistryEvent.SKILL_WARNING, (data) => {
+  logger.warn('Skill scan warning', data);
+});
+```
+
+**Key events to monitor:**
+
+| Event | Severity | Action |
+|---|---|---|
+| `SKILL_DISCOVERED` | Info | Track discovery count per deploy |
+| `SKILL_ACTIVATED` | Info | Monitor activation frequency |
+| `SKILL_RESOURCE_LOADED` | Info | Track resource access patterns |
+| `TRUST_POLICY_DENIED` | Warning | Alert on unexpected denials |
+| `TRUST_POLICY_ALLOWED` | Info | Audit script access from trusted roots |
+| `SKILL_WARNING` | Warning | Investigate malformed skills |
+
+**Logging namespaces** (set `LOG_LEVEL=debug` for detailed output):
+
+- `agentforge:core:skills:registry` — Discovery, registration
+- `agentforge:core:skills:activation` — Activation, resource loading, trust decisions
+- `agentforge:core:skills:scanner` — Directory scanning
+
+### 3. Rollback Procedure
+
+If issues are detected after enabling Agent Skills:
+
+1. **Immediate** — Set `enabled: false` to suppress prompt injection (agents stop seeing skills)
+2. **If activation tools are problematic** — Remove activation tools from the agent's tool array
+3. **If discovery causes issues** — Remove skill root paths from the configuration
+4. **Full rollback** — Remove the `SkillRegistry` instantiation entirely
+
+::: warning
+Setting `enabled: false` only suppresses `generatePrompt()`. If activation tools are registered with the agent, they remain callable. Remove them from the tool array for a complete rollback.
+:::
+
