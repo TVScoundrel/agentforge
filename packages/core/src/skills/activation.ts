@@ -26,7 +26,7 @@ import { ToolBuilder } from '../tools/builder.js';
 import { ToolCategory } from '../tools/types.js';
 import type { Tool } from '../tools/types.js';
 import type { SkillRegistry } from './registry.js';
-import { SkillRegistryEvent } from './types.js';
+import { SkillRegistryEvent, TrustPolicyReason } from './types.js';
 import { evaluateTrustPolicy } from './trust.js';
 import { createLogger, LogLevel } from '../langgraph/observability/logger.js';
 
@@ -243,7 +243,7 @@ export function createReadSkillResourceTool(
       }
 
       // Log allowed policy decisions for auditing (scripts only)
-      if (policyDecision.reason !== 'not-script') {
+      if (policyDecision.reason !== TrustPolicyReason.NOT_SCRIPT) {
         logger.info('Skill resource trust policy — allowed', {
           name,
           resourcePath,

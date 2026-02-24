@@ -24,25 +24,32 @@ Implements a security layer for the Agent Skills system that restricts access to
 
 ### Skill Root Configuration
 
+**Backward compatible** — string roots default to `'untrusted'`:
+
 ```typescript
 import { SkillRegistry } from '@agentforge/core';
 
-// Backward compatible — string roots default to 'untrusted'
-const registry = new SkillRegistry({
+const registryDefault = new SkillRegistry({
   skillRoots: ['/community/skills'],
 });
+```
 
-// Explicit trust levels
-const registry = new SkillRegistry({
+**Explicit trust levels:**
+
+```typescript
+const registryMixed = new SkillRegistry({
   skillRoots: [
     { path: '.agentskills', trust: 'workspace' },   // Full trust
     { path: '/org/shared-skills', trust: 'trusted' }, // Verified
     '/community/skills',                               // Untrusted (default)
   ],
 });
+```
 
-// Override: allow scripts from untrusted roots (use with caution)
-const registry = new SkillRegistry({
+**Override** — allow scripts from untrusted roots (use with caution):
+
+```typescript
+const registryOverride = new SkillRegistry({
   skillRoots: ['/community/skills'],
   allowUntrustedScripts: true,
 });
@@ -115,10 +122,11 @@ Event payload:
 
 ```typescript
 {
-  name: string;          // Skill name
-  resourcePath: string;  // Requested resource path
+  name: string;           // Skill name
+  resourcePath: string;   // Requested resource path
   trustLevel: TrustLevel;
   reason: TrustPolicyReason;
+  message?: string;       // Present on TRUST_POLICY_DENIED events
 }
 ```
 

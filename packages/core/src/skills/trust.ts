@@ -47,16 +47,29 @@ export function normalizeRootConfig(root: string | SkillRootConfig): SkillRootCo
  * Check whether a resource path refers to a script.
  *
  * A resource is considered a script if its relative path starts with
- * `scripts/` or is exactly `scripts`.
+ * `scripts/` or is exactly `scripts`, after normalizing path separators,
+ * stripping leading "./" segments, and ignoring case.
  *
  * @param resourcePath - Relative path within the skill directory
  * @returns True if the resource is in the scripts/ directory
  */
 export function isScriptResource(resourcePath: string): boolean {
-  // Normalize to forward slashes for consistent checking
-  const normalized = resourcePath.replace(/\\/g, '/');
-  return normalized === SCRIPT_PATH_EXACT
-    || normalized.startsWith(SCRIPT_PATH_PREFIX);
+  // Normalize to forward slashes and trim for consistent checking
+  let normalized = resourcePath.trim().replace(/\\/g, '/');
+
+  // Collapse repeated separators (e.g., "scripts//setup.sh" → "scripts/setup.sh")
+  normalized = normalized.replace(/\/+/g, '/');
+
+  // Strip leading "./" segments (e.g., "./scripts/setup.sh" → "scripts/setup.sh")
+  while (normalized.startsWith('./')) {
+    normalized = normalized.slice(2);
+  }
+
+  // Case-insensitive comparison to handle case-insensitive file systems
+  const lower = normalized.toLowerCase();
+
+  return lower === SCRIPT_PATH_EXACT
+    || lower.startsWith(SCRIPT_PATH_PREFIX);
 }
 
 // ─── Policy Engine ───────────────────────────────────────────────────────
@@ -123,8 +136,8 @@ export function evaluateTrustPolicy(
     default:
       return {
         allowed: false,
-        reason: TrustPolicyReason.UNTRUSTED_SCRIPT_DENIED,
-        message: `Script access denied — unknown trust level "${trustLevel}"`,
+        reason: TrustPolicyReason.UNKNOWN_TRUST_LEVEL,
+        message: `Script access denied — trust level "${trustLevel}" is unknown and is treated as untrusted for security.`,
       };
   }
 }

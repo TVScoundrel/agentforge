@@ -112,6 +112,27 @@ describe('isScriptResource', () => {
   it('should handle backslash separators', () => {
     expect(isScriptResource('scripts\\setup.sh')).toBe(true);
   });
+
+  it('should detect scripts with leading ./ prefix', () => {
+    expect(isScriptResource('./scripts/setup.sh')).toBe(true);
+  });
+
+  it('should detect scripts case-insensitively', () => {
+    expect(isScriptResource('Scripts/setup.sh')).toBe(true);
+    expect(isScriptResource('SCRIPTS/SETUP.SH')).toBe(true);
+  });
+
+  it('should handle collapsed repeated separators', () => {
+    expect(isScriptResource('scripts//setup.sh')).toBe(true);
+  });
+
+  it('should handle leading whitespace', () => {
+    expect(isScriptResource('  scripts/setup.sh')).toBe(true);
+  });
+
+  it('should detect exact "Scripts" path case-insensitively', () => {
+    expect(isScriptResource('Scripts')).toBe(true);
+  });
 });
 
 // ─── evaluateTrustPolicy ─────────────────────────────────────────────────

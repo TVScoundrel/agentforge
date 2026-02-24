@@ -63,6 +63,8 @@ export enum TrustPolicyReason {
   UNTRUSTED_SCRIPT_DENIED = 'untrusted-script-denied',
   /** Untrusted script access was explicitly allowed via config override */
   UNTRUSTED_SCRIPT_ALLOWED = 'untrusted-script-allowed-override',
+  /** Trust level is unknown — treated as untrusted for security */
+  UNKNOWN_TRUST_LEVEL = 'unknown-trust-level',
 }
 
 /**
