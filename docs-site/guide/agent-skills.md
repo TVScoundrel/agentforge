@@ -71,7 +71,7 @@ const agent = createReActAgent({
 | Option | Type | Default | Description |
 |--------|------|---------|-------------|
 | `enabled` | `boolean` | `false` | Feature flag — `generatePrompt()` returns `''` when disabled |
-| `skillRoots` | `Array<string \| SkillRootConfig>` | `[]` | Directories to scan for skills |
+| `skillRoots` | `Array<string \| SkillRootConfig>` | — (required) | Directories to scan for skills (required; pass `[]` to disable discovery) |
 | `maxDiscoveredSkills` | `number` | `undefined` | Cap on skills included in prompt |
 | `allowUntrustedScripts` | `boolean` | `false` | Allow script resources from untrusted roots |
 

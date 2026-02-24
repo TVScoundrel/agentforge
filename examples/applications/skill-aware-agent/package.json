@@ -9,7 +9,7 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@agentforge/core": "link:../../../packages/core"
+    "@agentforge/core": "workspace:*"
   },
   "devDependencies": {
     "@types/node": "^22.10.2",

@@ -228,9 +228,11 @@ describe('Conformance: Tool Activation', () => {
     const body = await activateSkill.invoke({ name: 'code-review' });
     expect(body).toContain('Code Review Skill');
     expect(body).toContain('Review Process');
-    // Frontmatter should be stripped
-    expect(body).not.toContain('---');
-    expect(body).not.toContain('name: code-review');
+    // Frontmatter should be stripped from the top of the body, but content
+    // may legitimately contain '---' or frontmatter-like text later on.
+    const headerRegion = body.split('\n').slice(0, 5).join('\n');
+    expect(headerRegion.trimStart().startsWith('---')).toBe(false);
+    expect(headerRegion).not.toContain('name: code-review');
   });
 
   it('should activate test-generator and return body content', async () => {
