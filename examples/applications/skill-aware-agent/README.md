@@ -19,12 +19,8 @@ Demonstrates an AgentForge agent that discovers, activates, and uses skills from
 ## Running
 
 ```bash
-# From the repo root
-cd examples/applications/skill-aware-agent
-pnpm install
-
-# Run the demo (no OpenAI API key required; this demo does not make LLM calls)
-pnpm start
+# From the repo root (no pnpm install needed; workspace:* deps resolve via the monorepo)
+pnpm tsx examples/applications/skill-aware-agent/src/index.ts
 ```
 
 ## Expected Output

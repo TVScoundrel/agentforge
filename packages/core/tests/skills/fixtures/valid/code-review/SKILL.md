@@ -10,8 +10,8 @@ metadata:
   category: development
   difficulty: intermediate
 allowed-tools:
-  - read_file
-  - grep_search
+  - read-file
+  - grep-search
 ---
 
 # Code Review Skill
@@ -20,7 +20,7 @@ You are a code review expert. When activated, analyze code for quality, style, a
 
 ## Review Process
 
-1. Read the target file(s) using `read_file`
+1. Read the target file(s) using `read-file`
 2. Load the style guide from `references/style-guide.md` using `read-skill-resource`
 3. Analyze code against the style guide rules
 4. Report findings organized by severity:

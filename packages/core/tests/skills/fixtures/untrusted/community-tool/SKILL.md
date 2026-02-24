@@ -3,7 +3,7 @@ name: community-tool
 description: A community-contributed skill with executable scripts that should be trust-gated
 version: 0.1.0
 allowed-tools:
-  - run_in_terminal
+  - run-in-terminal
 ---
 
 # Community Tool

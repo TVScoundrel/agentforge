@@ -74,7 +74,7 @@ describe('Conformance: Discovery', () => {
     expect(skill!.metadata.license).toBe('MIT');
     expect(skill!.metadata.compatibility).toEqual(['agentforge', 'copilot']);
     expect(skill!.metadata.metadata).toEqual({ category: 'development', difficulty: 'intermediate' });
-    expect(skill!.metadata.allowedTools).toEqual(['read_file', 'grep_search']);
+    expect(skill!.metadata.allowedTools).toEqual(['read-file', 'grep-search']);
   });
 
   it('should set correct trust level from root config', () => {
@@ -444,12 +444,12 @@ describe('Conformance: Trust Policy', () => {
 describe('Conformance: Allowed Tools', () => {
   it('should return allowedTools for code-review fixture', () => {
     const registry = createRegistry();
-    expect(registry.getAllowedTools('code-review')).toEqual(['read_file', 'grep_search']);
+    expect(registry.getAllowedTools('code-review')).toEqual(['read-file', 'grep-search']);
   });
 
   it('should return allowedTools for test-generator fixture', () => {
     const registry = createRegistry();
-    expect(registry.getAllowedTools('test-generator')).toEqual(['read_file', 'create_file', 'grep_search']);
+    expect(registry.getAllowedTools('test-generator')).toEqual(['read-file', 'create-file', 'grep-search']);
   });
 
   it('should return allowedTools for untrusted community-tool', () => {
@@ -457,7 +457,7 @@ describe('Conformance: Allowed Tools', () => {
       enabled: true,
       skillRoots: [{ path: UNTRUSTED_ROOT, trust: 'untrusted' }],
     });
-    expect(registry.getAllowedTools('community-tool')).toEqual(['run_in_terminal']);
+    expect(registry.getAllowedTools('community-tool')).toEqual(['run-in-terminal']);
   });
 });
 

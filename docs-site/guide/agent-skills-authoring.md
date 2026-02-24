@@ -39,16 +39,16 @@ metadata:
   category: development
   difficulty: intermediate
 allowed-tools:
-  - read_file
-  - grep_search
-  - run_in_terminal
+  - read-file
+  - grep-search
+  - run-in-terminal
 ---
 
 # Code Review Skill
 
 You are a code review expert. When activated, follow these steps:
 
-1. Read the file(s) to review using `read_file`
+1. Read the file(s) to review using `read-file`
 2. Check for common issues...
 ```
 
@@ -115,7 +115,7 @@ Executable scripts. **Access is controlled by trust policies.** Scripts from unt
 ```markdown
 Run the setup script to configure the linter:
 Use `read-skill-resource` to read `scripts/setup-linter.sh`
-Then execute it with `run_in_terminal`
+Then execute it with `run-in-terminal`
 ```
 
 ### `assets/`
@@ -154,7 +154,7 @@ The `allowed-tools` frontmatter field declares which tools a skill is designed t
 
 ```typescript
 const allowedTools = registry.getAllowedTools('code-review');
-// ['read_file', 'grep_search', 'run_in_terminal']
+// ['read-file', 'grep-search', 'run-in-terminal']
 ```
 
 ::: tip
@@ -202,9 +202,9 @@ metadata:
   category: testing
   framework: vitest
 allowed-tools:
-  - read_file
-  - create_file
-  - grep_search
+  - read-file
+  - create-file
+  - grep-search
 ---
 
 # Test Generator
@@ -214,12 +214,12 @@ test suites for the specified code.
 
 ## Process
 
-1. Read the source file using `read_file`
+1. Read the source file using `read-file`
 2. Load testing patterns from `references/testing-patterns.md`
    using `read-skill-resource`
 3. Analyze the code structure
 4. Generate tests following the patterns guide
-5. Write tests using `create_file`
+5. Write tests using `create-file`
 
 ## Test Quality Rules
 

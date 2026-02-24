@@ -3,7 +3,7 @@ name: community-tool
 description: A community-contributed skill with setup scripts
 version: 0.1.0
 allowed-tools:
-  - run_in_terminal
+  - run-in-terminal
 ---
 
 # Community Tool

@@ -9,9 +9,9 @@ metadata:
   category: testing
   framework: vitest
 allowed-tools:
-  - read_file
-  - create_file
-  - grep_search
+  - read-file
+  - create-file
+  - grep-search
 ---
 
 # Test Generator
@@ -20,11 +20,11 @@ You are an expert test writer. When activated, generate comprehensive test suite
 
 ## Process
 
-1. Read the source file using `read_file`
+1. Read the source file using `read-file`
 2. Load testing patterns from `references/testing-patterns.md` using `read-skill-resource`
 3. Analyze exports, classes, and functions
 4. Generate tests following the patterns guide
-5. Write test files using `create_file`
+5. Write test files using `create-file`
 
 ## Test Quality Rules
 
