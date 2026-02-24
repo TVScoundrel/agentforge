@@ -189,6 +189,15 @@
 
 ---
 
+### ST-06006: Comprehensive Docs-Site Documentation for Agent Skills
+- **Merged:** 2026-02-24
+- **PR:** https://github.com/TVScoundrel/agentforge/pull/51
+- **Epic:** EP-06 (Agent Skills Compatibility Layer)
+- **Estimate:** 5 hours
+- **Outcome:** Added comprehensive docs-site coverage for Agent Skills: step-by-step tutorial (`tutorials/skill-powered-agent.md`), examples page with 10 integration patterns (`examples/agent-skills.md`), SkillRegistry API reference section in `api/core.md`, VitePress sidebar updates, and cross-links between guide/tutorial/examples/API pages. Addressed 16 Copilot review comments across 3 rounds covering: correct API names (`toolBuilder()`, `model`, `tool.metadata.name`, `.implementSafe()`), accurate return types (`resolveResourcePath` discriminated union, `scanAllSkillRoots` string[] parameter), `@agentforge/tools` install step, file tools in agent configuration, and custom tool naming to avoid collisions. Documentation-only story — VitePress build validated, all quality gates passed. Final story of EP-06 — epic complete.
+
+---
+
 ## Archive Format
 
 When a story is completed and merged, it will be recorded here with:

@@ -189,16 +189,17 @@
   - `8849f12` docs(st-06006): add tutorial, examples, API reference, and sidebar for Agent Skills
   - `51b3adc` docs(st-06006): add story documentation and update trackers
 - [x] Mark PR Ready only after all story tasks are complete
-- [ ] Wait for merge; do not merge directly from local branch
+- [x] Wait for merge; do not merge directly from local branch
+  - Merged PR: https://github.com/TVScoundrel/agentforge/pull/51 (2026-02-24)
 
 ---
 
 ## Epic 06 Completion Criteria
 
-- [ ] All 6 stories merged
+- [x] All 6 stories merged
 - [x] `SkillRegistry` auto-discovers skills from configurable `skillRoots` with spec-compliant frontmatter parsing
 - [x] `skillRegistry.generatePrompt()` produces `<available_skills>` XML (gated by feature flag)
 - [x] `skillRegistry.toActivationTools()` provides `activate-skill` and `read-skill-resource` tools across all agent patterns
 - [x] Trust policies prevent unsafe script execution from untrusted roots
 - [x] Conformance suite passes in CI
-- [ ] Developer and authoring docs are complete and validated (ST-06006 adds tutorials, examples, and API reference)
+- [x] Developer and authoring docs are complete and validated (ST-06006 adds tutorials, examples, and API reference)

@@ -559,14 +559,14 @@
 **Dependencies:** ST-06005
 
 **Acceptance criteria:**
-- [ ] VitePress sidebar updated: new "Agent Skills" section in the Guide sidebar linking to `agent-skills.md` and `agent-skills-authoring.md`
-- [ ] Tutorial page (`tutorials/skill-powered-agent.md`) walks through building a skill-powered agent step-by-step (comparable to `tutorials/database-agent.md`)
-- [ ] Examples page (`examples/agent-skills.md`) demonstrates common skill usage patterns with runnable code snippets (registry setup, prompt generation, activation tools, trust policies, events)
-- [ ] API reference section in `api/core.md` documents `SkillRegistry` public API (`constructor`, `get`, `getAll`, `has`, `size`, `generatePrompt`, `toActivationTools`, `getAllowedTools`, events)
-- [ ] VitePress sidebar updated: tutorial and examples pages linked in their respective nav sections
-- [ ] All new pages follow existing docs-site conventions (frontmatter, code highlighting, tip/warning callouts)
-- [ ] Cross-links between guide, tutorial, examples, and API reference pages for discoverability
-- [ ] `pnpm --filter docs-site dev` builds without dead-link warnings for new pages
+- [x] VitePress sidebar updated: new "Agent Skills" section in the Guide sidebar linking to `agent-skills.md` and `agent-skills-authoring.md`
+- [x] Tutorial page (`tutorials/skill-powered-agent.md`) walks through building a skill-powered agent step-by-step (comparable to `tutorials/database-agent.md`)
+- [x] Examples page (`examples/agent-skills.md`) demonstrates common skill usage patterns with runnable code snippets (registry setup, prompt generation, activation tools, trust policies, events)
+- [x] API reference section in `api/core.md` documents `SkillRegistry` public API (`constructor`, `get`, `getAll`, `has`, `size`, `generatePrompt`, `toActivationTools`, `getAllowedTools`, events)
+- [x] VitePress sidebar updated: tutorial and examples pages linked in their respective nav sections
+- [x] All new pages follow existing docs-site conventions (frontmatter, code highlighting, tip/warning callouts)
+- [x] Cross-links between guide, tutorial, examples, and API reference pages for discoverability
+- [x] `pnpm --filter docs-site dev` builds without dead-link warnings for new pages
 
 ---
 
