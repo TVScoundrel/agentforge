@@ -5,8 +5,8 @@
 ## Queue Status Summary
 
 - **Ready:** 0 stories
-- **In Progress:** 1 story
-- **In Review:** 0 stories
+- **In Progress:** 0 stories
+- **In Review:** 1 story
 - **Blocked:** 0 stories
 - **Backlog:** 4 stories (queued for prioritization and dependencies)
 
@@ -20,6 +20,12 @@ _No stories currently ready_
 
 ## In Progress
 
+_No stories currently in progress_
+
+---
+
+## In Review
+
 ### ST-06001: Implement SkillRegistry with Folder-Config Auto-Discovery
 - **Epic:** EP-06
 - **Priority:** P0
@@ -28,12 +34,7 @@ _No stories currently ready_
 - **Checklist:** `planning/checklists/epic-06-story-tasks.md`
 - **Feature:** `planning/features/06-agent-skills-compatibility-feature-plan.md`
 - **Branch:** `feat/st-06001-skill-registry-and-discovery`
-
----
-
-## In Review
-
-_No stories currently in review_
+- **PR:** https://github.com/TVScoundrel/agentforge/pull/46
 
 ---
 

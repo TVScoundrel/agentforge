@@ -6,7 +6,8 @@
 
 ### Checklist
 - [x] Create branch `feat/st-06001-skill-registry-and-discovery`
-- [ ] Create draft PR with story ID in title
+- [x] Create draft PR with story ID in title
+  - PR #46: https://github.com/TVScoundrel/agentforge/pull/46
 - [x] Implement `SkillRegistry` class accepting `skillRoots: string[]` config (parallel to ToolRegistry)
 - [x] Implement auto-scan of configured roots at init — identify directories containing a valid `SKILL.md`
 - [x] Implement YAML frontmatter parser for all spec fields: `name`, `description`, `license`, `compatibility`, `metadata`, `allowed-tools`
@@ -25,8 +26,11 @@
   - 148 test files passed, 7 failed (pre-existing Docker/testcontainers — MySQL/PostgreSQL integration), 2106 tests passed
 - [x] Run lint (`pnpm lint`) before finalizing the PR and record results
   - 0 errors, 109 warnings (all pre-existing @typescript-eslint/no-explicit-any in patterns package)
-- [ ] Commit completed checklist items as logical commits and push updates
-- [ ] Mark PR Ready only after all story tasks are complete
+- [x] Commit completed checklist items as logical commits and push updates
+  - `05b85ca` feat(st-06001): implement SkillRegistry with folder-config auto-discovery
+  - `1844948` test(st-06001): add unit tests for SkillRegistry, parser, and scanner
+  - `7feb594` docs(st-06001): add story documentation and update trackers
+- [x] Mark PR Ready only after all story tasks are complete
 - [ ] Wait for merge; do not merge directly from local branch
 
 ---
