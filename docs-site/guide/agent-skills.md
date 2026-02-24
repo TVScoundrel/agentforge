@@ -155,7 +155,16 @@ The `SkillRegistry` emits structured events for observability:
 
 ```typescript
 registry.on(SkillRegistryEvent.SKILL_ACTIVATED, (data) => {
-  console.log(`Skill activated: ${data.name}`);
+  if (
+    typeof data === 'object' &&
+    data !== null &&
+    'name' in data &&
+    typeof (data as { name: unknown }).name === 'string'
+  ) {
+    console.log(`Skill activated: ${(data as { name: string }).name}`);
+  } else {
+    console.log('Skill activated');
+  }
 });
 ```
 
