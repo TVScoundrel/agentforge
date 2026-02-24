@@ -139,7 +139,8 @@ The agent calls this tool to load resource files from a skill directory:
 // read-skill-resource({ name: "test-generator", path: "references/test-template.md" })
 //
 // Returns the file content as a string.
-// Supported resource directories: references/, scripts/, assets/
+// Common resource directories: references/, scripts/, assets/ (any file within the skill directory is allowed)
+// Note: script files are subject to trust policy checks based on the skill root's trust level.
 ```
 
 ## Multi-Root Configuration
@@ -257,7 +258,7 @@ const toolRegistry = new ToolRegistry();
 
 // Get the allowed tools for a specific skill
 const allowedTools = skillRegistry.getAllowedTools('code-review');
-// Returns: ['read-file', 'grep-search'] or undefined if not set
+// Returns: ['file-reader', 'file-search'] or undefined if not set
 
 if (allowedTools) {
   // Filter registered tools to only those the skill expects
@@ -356,14 +357,14 @@ console.log(`After rescan: ${skillRegistry.size()} skills`);
 Build agents that use both custom tools and skill-driven instructions:
 
 ```typescript
-import { SkillRegistry, createToolBuilder, ToolCategory } from '@agentforge/core';
+import { SkillRegistry, toolBuilder, ToolCategory } from '@agentforge/core';
 import { createReActAgent } from '@agentforge/patterns';
 import { ChatOpenAI } from '@langchain/openai';
 import { z } from 'zod';
 
 // Custom tool
-const readFileTool = createToolBuilder()
-  .name('read-file')
+const readFileTool = toolBuilder()
+  .name('file-reader')
   .description('Read the contents of a file')
   .category(ToolCategory.FILE_SYSTEM)
   .schema(z.object({

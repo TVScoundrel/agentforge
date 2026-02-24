@@ -48,7 +48,7 @@ After this story:
 This story is documentation-only. No code changes to `packages/` — only `docs-site/` files. Tests are not required because:
 - No runtime code was modified
 - The VitePress build (`pnpm --filter docs-site build`) validates page rendering
-- Dead links are caught by the build with `ignoreDeadLinks: true` disabled (or manually verified)
+- Dead links for new and updated pages were manually verified; the docs-site VitePress config currently uses `ignoreDeadLinks: true`, so builds do not fail on dead links by default
 
 ## Validation
 

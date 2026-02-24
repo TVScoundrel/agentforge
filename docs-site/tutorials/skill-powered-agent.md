@@ -57,8 +57,8 @@ Create `.agentskills/code-review/SKILL.md`:
 name: code-review
 description: Performs thorough code reviews with focus on best practices, security, and maintainability.
 allowed-tools:
-  - read-file
-  - grep-search
+  - file-reader
+  - file-search
 ---
 
 # Code Review Skill
@@ -106,8 +106,8 @@ Create `.agentskills/test-generator/SKILL.md`:
 name: test-generator
 description: Generates comprehensive test suites following project conventions and testing best practices.
 allowed-tools:
-  - read-file
-  - write-file
+  - file-reader
+  - file-writer
 ---
 
 # Test Generator Skill
