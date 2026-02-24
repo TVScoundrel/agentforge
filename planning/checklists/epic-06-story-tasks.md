@@ -133,7 +133,7 @@
 - [x] Run lint (`pnpm lint`) before finalizing the PR and record results — 0 errors, 0 warnings
 - [x] Commit completed checklist items as logical commits and push updates
 - [x] Mark PR Ready only after all story tasks are complete — marked ready 2026-02-24
-- [ ] Wait for merge; do not merge directly from local branch
+- [x] Wait for merge; do not merge directly from local branch — merged 2026-02-24, PR #49
 
 ---
 

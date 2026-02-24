@@ -171,6 +171,15 @@
 
 ---
 
+### ST-06004: Implement Skill Trust Policies and Execution Guardrails
+- **Merged:** 2026-02-24
+- **PR:** https://github.com/TVScoundrel/agentforge/pull/49
+- **Epic:** EP-06 (Agent Skills Compatibility Layer)
+- **Estimate:** 6 hours
+- **Outcome:** Implemented trust policy engine for skill resource access control. Added `TrustLevel` (`workspace`/`trusted`/`untrusted`) configurable per skill root, `evaluateTrustPolicy()` decision engine, and enforcement in `read-skill-resource` blocking scripts from untrusted roots by default. Added `allowUntrustedScripts` config override, `getAllowedTools()` API, `TRUST_POLICY_DENIED`/`TRUST_POLICY_ALLOWED` events, and `UNKNOWN_TRUST_LEVEL` reason code. Hardened `isScriptResource()` with path normalization (strip `./`, collapse separators, case-insensitive check). Addressed 6 Copilot review comments in one round covering security hardening, enum usage, and docs accuracy. Backward compatible — plain string roots default to untrusted. 41 dedicated trust tests, 180 total skills tests. Fourth story of EP-06.
+
+---
+
 ## Archive Format
 
 When a story is completed and merged, it will be recorded here with:

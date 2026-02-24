@@ -4,17 +4,23 @@
 
 ## Queue Status Summary
 
-- **Ready:** 0 stories
+- **Ready:** 1 story
 - **In Progress:** 0 stories
-- **In Review:** 1 story
+- **In Review:** 0 stories
 - **Blocked:** 0 stories
-- **Backlog:** 1 story (queued for prioritization and dependencies)
+- **Backlog:** 0 stories
 
 ---
 
 ## Ready
 
-_No stories currently ready_
+### ST-06005: Publish Agent Skills Integration Documentation and Conformance Suite
+- **Epic:** EP-06
+- **Priority:** P1
+- **Estimate:** 6 hours
+- **Dependencies:** ST-06003 (merged), ST-06004 (merged)
+- **Checklist:** `planning/checklists/epic-06-story-tasks.md`
+- **Feature:** `planning/features/06-agent-skills-compatibility-feature-plan.md`
 
 ---
 
@@ -26,15 +32,7 @@ _No stories currently in progress_
 
 ## In Review
 
-### ST-06004: Implement Skill Trust Policies and Execution Guardrails
-- **Epic:** EP-06
-- **Priority:** P1
-- **Estimate:** 6 hours
-- **Dependencies:** ST-06003 (merged)
-- **Branch:** `feat/st-06004-skill-trust-policies-and-guardrails`
-- **PR:** #49 (draft)
-- **Checklist:** `planning/checklists/epic-06-story-tasks.md`
-- **Feature:** `planning/features/06-agent-skills-compatibility-feature-plan.md`
+_No stories currently in review_
 
 ---
 
@@ -46,13 +44,7 @@ _No stories currently blocked_
 
 ## Backlog
 
-### ST-06005: Publish Agent Skills Integration Documentation and Conformance Suite
-- **Epic:** EP-06
-- **Priority:** P1
-- **Estimate:** 6 hours
-- **Dependencies:** ST-06003 (merged), ST-06004
-- **Checklist:** `planning/checklists/epic-06-story-tasks.md`
-- **Feature:** `planning/features/06-agent-skills-compatibility-feature-plan.md`
+_No stories currently in backlog_
 
 ---
 
@@ -87,3 +79,4 @@ _No stories currently blocked_
 - ✅ ST-06001 complete - SkillRegistry with folder-config auto-discovery (merged 2026-02-24)
 - ✅ ST-06002 complete - generatePrompt() and system prompt integration (merged 2026-02-24)
 - ✅ ST-06003 complete - skill activation and resource tools (merged 2026-02-24)
+- ✅ ST-06004 complete - skill trust policies and execution guardrails (merged 2026-02-24)
