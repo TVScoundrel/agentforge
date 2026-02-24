@@ -58,8 +58,8 @@ if [ ! -f "$CHANGELOG_FILE" ]; then
 fi
 
 # Extract the section for this version from changelog
-# This is a simple extraction - you might need to adjust based on your changelog format
-RELEASE_NOTES=$(awk "/## \[$VERSION\]/,/## \[/" "$CHANGELOG_FILE" | sed '1d;$d')
+# Uses NR>1 to skip the matched header, then stops at the next ## [ section
+RELEASE_NOTES=$(awk "/## \[$VERSION\]/{found=1; next} found && /## \[/{exit} found" "$CHANGELOG_FILE")
 
 if [ -z "$RELEASE_NOTES" ]; then
   echo "⚠️  Warning: Could not extract release notes from changelog"
