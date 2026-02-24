@@ -2,7 +2,7 @@
 
 **Purpose:** Track completed and merged stories for the Relational Database Access Tool project.
 
-**Last Updated:** 2026-02-23
+**Last Updated:** 2026-02-24
 
 ---
 
@@ -147,6 +147,13 @@
 - **Epic:** EP-05 (Documentation, Examples, and Testing)
 - **Estimate:** 5 hours
 - **Outcome:** Created 3 public-facing VitePress documentation pages: concept guide (`guide/concepts/database.md`) covering ConnectionManager, CRUD tools, transactions, batch operations, streaming, security, and vendor differences; step-by-step tutorial (`tutorials/database-agent.md`) building a database-powered ReAct agent; and API reference section in `api/tools.md` with full parameter tables and response shapes for all 6 relational tools plus ConnectionManager and withTransaction. Updated VitePress sidebar config with new entries. Addressed 7 review comments covering misleading ConnectionManager usage, MissingPeerDependencyError throw behavior, missing `sql` import from drizzle-orm, and identifier validation regex accuracy. Epic EP-05 now fully complete — all 5 stories merged.
+
+### ST-06001: Implement SkillRegistry with Folder-Config Auto-Discovery
+- **Merged:** 2026-02-24
+- **PR:** https://github.com/TVScoundrel/agentforge/pull/46
+- **Epic:** EP-06 (Agent Skills Compatibility Layer)
+- **Estimate:** 5 hours
+- **Outcome:** Implemented `SkillRegistry` in `@agentforge/core` with folder-config auto-discovery following the Agent Skills Specification (agentskills.io). Created YAML frontmatter parser (via gray-matter), filesystem scanner, spec-compliant name/description validation, duplicate handling with deterministic precedence, query API (get, getAll, has, size, getNames, getScanErrors), event system (skill:discovered, skill:warning), and structured logging. Added 71 unit tests across 3 test files (parser: 34, scanner: 10, registry: 27). First story of EP-06.
 
 ---
 

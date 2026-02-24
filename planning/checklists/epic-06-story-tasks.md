@@ -31,7 +31,8 @@
   - `1844948` test(st-06001): add unit tests for SkillRegistry, parser, and scanner
   - `7feb594` docs(st-06001): add story documentation and update trackers
 - [x] Mark PR Ready only after all story tasks are complete
-- [ ] Wait for merge; do not merge directly from local branch
+- [x] Wait for merge; do not merge directly from local branch
+  - Merged PR: https://github.com/TVScoundrel/agentforge/pull/46 (2026-02-24)
 
 ---
 
