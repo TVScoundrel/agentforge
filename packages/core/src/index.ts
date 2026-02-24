@@ -24,3 +24,6 @@ export * from './monitoring/index.js';
 
 // Prompt template loader
 export * from './prompt-loader/index.js';
+
+// Skills system
+export * from './skills/index.js';
