@@ -6,7 +6,7 @@
 
 - **Ready:** 0 stories
 - **In Progress:** 0 stories
-- **In Review:** 1 story
+- **In Review:** 0 stories
 - **Blocked:** 0 stories
 - **Backlog:** 0 stories
 
@@ -26,13 +26,7 @@ _No stories currently in progress_
 
 ## In Review
 
-### ST-07006: Update Release Scripts and Checklist
-- **Epic:** EP-07 — Extract Skills into Dedicated Package
-- **Priority:** P1 (High)
-- **Estimate:** 2 hours
-- **Dependencies:** ST-07001 (merged)
-- **Branch:** `feat/st-07006-release-scripts-skills`
-- **PR:** #57
+_No stories currently in review_
 
 ---
 
@@ -87,3 +81,6 @@ _No stories in backlog_
 - ✅ ST-07002 complete - moved skills source files and re-wired imports (merged 2026-02-25)
 - ✅ ST-07003 complete - removed skills from core, breaking change (merged 2026-02-25)
 - ✅ ST-07004 complete - migrated skills tests and fixtures to skills package (merged 2026-02-25)
+- ✅ ST-07005 complete - documentation migration to @agentforge/skills imports (merged 2026-02-25)
+- ✅ ST-07006 complete - release scripts and checklist updated for skills package (merged 2026-02-25)
+- Epic 07 (Extract Skills into Dedicated Package) — all 6 stories merged; epic complete
