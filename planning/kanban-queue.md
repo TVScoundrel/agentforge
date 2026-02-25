@@ -4,9 +4,9 @@
 
 ## Queue Status Summary
 
-- **Ready:** 2 stories
+- **Ready:** 1 stories
 - **In Progress:** 0 stories
-- **In Review:** 0 stories
+- **In Review:** 1 stories
 - **Blocked:** 0 stories
 - **Backlog:** 1 stories
 
@@ -20,11 +20,22 @@
 - **Estimate:** 2 hours
 - **Dependencies:** ST-07001 (merged)
 
+---
+
+## In Progress
+
+_No stories currently in progress_
+
+---
+
+## In Review
+
 ### ST-07004: Migrate Tests and Fixtures
 - **Epic:** EP-07
 - **Priority:** P0 (Critical)
 - **Estimate:** 4 hours
 - **Dependencies:** ST-07002 (merged)
+- **PR:** #55
 
 ---
 
