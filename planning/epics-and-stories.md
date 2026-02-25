@@ -91,7 +91,7 @@
 2. **Clean keyword separation** — Remove skills vocabulary from core's package.json, README, and description. Core owns orchestration/runtime; skills owns agent-skills/modular-agents.
 3. **Discoverability** — Keywords and description should attract developers searching for agent capabilities to the AgentForge ecosystem.
 
-**Stories:** ST-07001 through ST-07005
+**Stories:** ST-07001 through ST-07006
 
 ---
 
@@ -685,9 +685,29 @@
 
 ---
 
+#### ST-07006: Update Release Scripts and Checklist for Skills Package
+**User story:** As a release engineer, I want the release scripts and checklists to include `@agentforge/skills` so that the package is not overlooked during version bumps, publishing, and verification.
+
+**Priority:** P1 (High)
+**Estimate:** 2 hours
+**Dependencies:** ST-07001
+
+**Acceptance criteria:**
+- [ ] `scripts/release.sh` — `PACKAGE_FILES` array includes `packages/skills/package.json`
+- [ ] `scripts/publish.sh` — `PACKAGES` array includes `packages/skills` in correct dependency order (after core, before cli)
+- [ ] `scripts/convert-workspace-deps.mjs` — workspace package list includes `'skills'`
+- [ ] `RELEASE_CHECKLIST.md` — skills added to version bump, publish, and verify sections
+- [ ] `.ai/RELEASE_PROCESS.md` — skills added to step 1 (version bump), step 8 (publish), step 9 (verify), quick checklist, and task template
+- [ ] CLI templates that reference `@agentforge/skills` (if any exist) are covered by `release.sh`
+- [ ] Add or update story documentation (or document why not required)
+- [ ] Run full test suite before finalizing the PR and record results
+- [ ] Run lint (`pnpm lint`) before finalizing the PR and record results
+
+---
+
 ## Story Summary
 
-**Total Stories:** 30
+**Total Stories:** 31
 **By Priority:**
 - P0 (Critical): 15 stories
 - P1 (High): 12 stories
@@ -702,4 +722,4 @@
 4. Phase 4 (Advanced): ST-04001, ST-04002, ST-04003 (can be parallel)
 5. Phase 5 (Quality): ST-05001 → ST-05002 → ST-05003 → ST-05004
 6. Phase 6 (Agent Skills): ST-06001 → ST-06002 → ST-06003 → ST-06004 → ST-06005 → ST-06006
-7. Phase 7 (Skills Extraction): ST-07001 → ST-07002 → [ST-07003, ST-07004 parallel] → ST-07005
+7. Phase 7 (Skills Extraction): ST-07001 → ST-07002 → [ST-07003, ST-07004 parallel] → ST-07005; ST-07001 → ST-07006 (independent)

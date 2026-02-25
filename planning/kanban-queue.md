@@ -8,7 +8,7 @@
 - **In Progress:** 0 stories
 - **In Review:** 1 story
 - **Blocked:** 0 stories
-- **Backlog:** 4 stories
+- **Backlog:** 5 stories
 
 ---
 
@@ -67,6 +67,12 @@ _No stories currently blocked_
 - **Priority:** P1 (High)
 - **Estimate:** 4 hours
 - **Dependencies:** ST-07003, ST-07004
+
+### ST-07006: Update Release Scripts and Checklist
+- **Epic:** EP-07
+- **Priority:** P1 (High)
+- **Estimate:** 2 hours
+- **Dependencies:** ST-07001
 
 ---
 

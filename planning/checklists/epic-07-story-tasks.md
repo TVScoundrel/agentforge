@@ -134,3 +134,25 @@
 - [ ] Run lint (`pnpm lint`) before finalizing the PR and record results
 - [ ] Mark PR Ready only after all story tasks are complete
 - [ ] Wait for merge; do not merge directly from local branch
+
+---
+
+## ST-07006: Update Release Scripts and Checklist for Skills Package
+
+**Branch:** `feat/st-07006-release-scripts-skills`
+
+### Checklist
+- [ ] Create branch `feat/st-07006-release-scripts-skills`
+- [ ] Create draft PR with story ID in title
+- [ ] Update `scripts/release.sh` — add `packages/skills/package.json` to `PACKAGE_FILES` array
+- [ ] Update `scripts/publish.sh` — add `packages/skills` to `PACKAGES` array (after core, before cli)
+- [ ] Update `scripts/convert-workspace-deps.mjs` — add `'skills'` to workspace package name list
+- [ ] Update `RELEASE_CHECKLIST.md` — add skills to version bump, publish, and verify sections
+- [ ] Update `.ai/RELEASE_PROCESS.md` — add skills to step 1 (version bump), step 8 (publish order), step 9 (verify), quick checklist, task template
+- [ ] Verify `./scripts/release.sh` dry-run logic still works (or manually inspect changes)
+- [ ] Add or update story documentation (or document why not required)
+- [ ] Assess test impact; add/update automated tests when needed, or document why tests are not required
+- [ ] Run full test suite before finalizing the PR and record results
+- [ ] Run lint (`pnpm lint`) before finalizing the PR and record results
+- [ ] Mark PR Ready only after all story tasks are complete
+- [ ] Wait for merge; do not merge directly from local branch
