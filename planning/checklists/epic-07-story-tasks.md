@@ -114,22 +114,35 @@
 **Branch:** `feat/st-07004-migrate-skills-tests`
 
 ### Checklist
-- [ ] Create branch `feat/st-07004-migrate-skills-tests`
-- [ ] Create draft PR with story ID in title
-- [ ] Move skills unit tests from `packages/core/` to `packages/skills/tests/`
-  - parser tests (34), scanner tests (10), registry tests (27), prompt tests (23), activation tests (40), trust tests (41)
-- [ ] Move conformance suite (35 tests) to `packages/skills/tests/`
-- [ ] Move fixture skill packs to `packages/skills/tests/fixtures/`
-- [ ] Update test imports from `@agentforge/core` skills paths to `@agentforge/skills` or relative paths
-- [ ] Verify no test files referencing skills remain in `packages/core/tests/`
-- [ ] Run `pnpm test --run` — same test count, 0 regressions
-- [ ] Verify conformance suite runs within the skills package
-- [ ] Add or update story documentation at `docs/st07004-migrate-skills-tests.md` (or document why not required)
-- [ ] Assess test impact; add/update automated tests when needed, or document why tests are not required
-- [ ] Update `docs-site/changelog.md` `[Unreleased]` section with changes from this story (or document why not applicable)
-- [ ] Run full test suite before finalizing the PR and record results
-- [ ] Run lint (`pnpm lint`) before finalizing the PR and record results
-- [ ] Mark PR Ready only after all story tasks are complete
+- [x] Create branch `feat/st-07004-migrate-skills-tests`
+- [x] Create draft PR with story ID in title
+  - PR #55: https://github.com/TVScoundrel/agentforge/pull/55
+- [x] Move skills unit tests from `packages/core/` to `packages/skills/tests/`
+  - parser tests (34), scanner tests (10), registry tests (27), prompt tests (23), activation tests (40), trust tests (46)
+  - Restored from git history (deleted in ST-07003), placed in `packages/skills/tests/`
+- [x] Move conformance suite (35 tests) to `packages/skills/tests/`
+- [x] Move fixture skill packs to `packages/skills/tests/fixtures/`
+  - 3 malformed fixtures, 1 untrusted fixture (with references + scripts), 2 valid fixtures (with references + scripts)
+- [x] Update test imports from `@agentforge/core` skills paths to `@agentforge/skills` or relative paths
+  - `../../src/skills/*` → `../src/*` (15 import statements across 7 files)
+  - `../../src/tools/types.js` → `@agentforge/core` (2 import statements in activation.test.ts, conformance.test.ts)
+- [x] Verify no test files referencing skills remain in `packages/core/tests/`
+  - Confirmed: no files matching `*skill*` or `*trust*`, no `grep` hits for "skills"
+- [x] Run `pnpm test --run` — same test count, 0 regressions
+  - 159 passed | 1 skipped (160 files); 2337 passed | 17 skipped (2354 tests); 0 failures
+  - Test count matches pre-ST-07003 baseline (215 skills tests restored)
+- [x] Verify conformance suite runs within the skills package
+  - `pnpm test --run --project skills` — 7 passed (7 files), 215 passed (215 tests)
+- [x] Add or update story documentation at `docs/st07004-migrate-skills-tests.md` (or document why not required)
+  - Not required — straightforward file migration with import updates, no architectural decisions. Checklist captures all details.
+- [x] Assess test impact; add/update automated tests when needed, or document why tests are not required
+  - This story IS the test migration. All 215 tests restored and passing in new location.
+- [x] Update `docs-site/changelog.md` `[Unreleased]` section with changes from this story (or document why not applicable)
+- [x] Run full test suite before finalizing the PR and record results
+  - 159 passed | 1 skipped (160 files); 2337 passed | 17 skipped (2354 tests); 0 failures
+- [x] Run lint (`pnpm lint`) before finalizing the PR and record results
+  - 0 errors, 109 warnings (all pre-existing `@typescript-eslint/no-explicit-any`)
+- [x] Mark PR Ready only after all story tasks are complete
 - [ ] Wait for merge; do not merge directly from local branch
 
 ---

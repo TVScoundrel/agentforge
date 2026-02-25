@@ -17,6 +17,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - All types: `Skill`, `SkillMetadata`, `SkillRegistryConfig`, `TrustLevel`, etc.
 - Imports re-wired from relative core internals to `@agentforge/core` package imports
 - Logger names updated to `agentforge:skills:*` namespace
+- **Skills test suite** (215 tests) migrated from `packages/core/tests/skills/` to `packages/skills/tests/`
+  - 7 test files: activation, conformance, parser, prompt, registry, scanner, trust
+  - Fixture skill packs (valid, malformed, untrusted) moved to `packages/skills/tests/fixtures/`
 
 ### Removed
 
