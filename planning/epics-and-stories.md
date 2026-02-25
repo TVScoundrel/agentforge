@@ -608,6 +608,7 @@
 - [ ] Package registered in `pnpm-workspace.yaml`
 - [ ] `pnpm install` and `pnpm -r build` succeed with the new package present
 - [ ] Vitest workspace config updated to include `packages/skills`
+- [ ] Update `docs-site/changelog.md` `[Unreleased]` section with changes from this story (or document why not applicable)
 
 ---
 
@@ -625,6 +626,7 @@
 - [ ] `ToolCategory.SKILLS` enum value remains in `@agentforge/core` (it's a core primitive)
 - [ ] `pnpm -r build` succeeds; `@agentforge/skills` produces valid ESM/CJS output
 - [ ] TypeScript strict mode passes with no new errors
+- [ ] Update `docs-site/changelog.md` `[Unreleased]` section with changes from this story (or document why not applicable)
 
 ---
 
@@ -645,6 +647,7 @@
 - [ ] Core build and bundle size verified (smaller without skills code)
 - [ ] Skills-related keywords removed from core's `package.json` (no `agent-skills`, `skill-*` terms)
 - [ ] Core's description and README focused on orchestration/runtime primitives only
+- [ ] Update `docs-site/changelog.md` `[Unreleased]` section with changes from this story (or document why not applicable)
 
 ---
 
@@ -661,6 +664,7 @@
 - [ ] Test imports updated from `@agentforge/core` skills paths to `@agentforge/skills` or relative paths
 - [ ] `pnpm test --run` passes with 0 regressions (same test count, same coverage)
 - [ ] Conformance suite runs as part of skills package test suite
+- [ ] Update `docs-site/changelog.md` `[Unreleased]` section with changes from this story (or document why not applicable)
 
 ---
 
@@ -680,6 +684,7 @@
 - [ ] `docs-site/changelog.md` entry drafted for next release
 - [ ] Add or update story documentation at `docs/st07005-skills-package-docs-migration.md`
 - [ ] Assess test impact; add/update automated tests when needed, or document why tests are not required
+- [ ] Update `docs-site/changelog.md` `[Unreleased]` section with changes from this story (or document why not applicable)
 - [ ] Run full test suite before finalizing the PR and record results
 - [ ] Run lint (`pnpm lint`) before finalizing the PR and record results
 
@@ -700,6 +705,7 @@
 - [ ] `.ai/RELEASE_PROCESS.md` — skills added to step 1 (version bump), step 8 (publish), step 9 (verify), quick checklist, and task template
 - [ ] CLI templates that reference `@agentforge/skills` (if any exist) are covered by `release.sh`
 - [ ] Add or update story documentation (or document why not required)
+- [ ] Update `docs-site/changelog.md` `[Unreleased]` section with changes from this story (or document why not applicable)
 - [ ] Run full test suite before finalizing the PR and record results
 - [ ] Run lint (`pnpm lint`) before finalizing the PR and record results
 

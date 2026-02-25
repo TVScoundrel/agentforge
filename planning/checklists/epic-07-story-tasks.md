@@ -27,6 +27,8 @@
 - [x] Add or update story documentation at `docs/st07001-scaffold-skills-package.md` (or document why not required)
 - [x] Assess test impact; add/update automated tests when needed, or document why tests are not required
   - No tests required — scaffold-only, no business logic. Tests migrate in ST-07004.
+- [x] Update `docs-site/changelog.md` `[Unreleased]` section with changes from this story (or document why not applicable)
+  - Not applicable — scaffold-only, no user-facing changes
 - [x] Run full test suite before finalizing the PR and record results
   - 158 passed | 1 skipped | 1 failed (160 files); 2336 passed | 17 skipped | 1 failed (2354 tests)
   - The 1 failure is a **pre-existing flaky timer test** (`packages/tools/tests/web/web-search/utils.test.ts` line 63: expected >=100ms, got 99ms) — unrelated to this change
@@ -55,6 +57,7 @@
 - [ ] Verify TypeScript strict mode passes (`pnpm typecheck`)
 - [ ] Add or update story documentation at `docs/st07002-move-skills-source.md` (or document why not required)
 - [ ] Assess test impact; add/update automated tests when needed, or document why tests are not required
+- [ ] Update `docs-site/changelog.md` `[Unreleased]` section with changes from this story (or document why not applicable)
 - [ ] Run full test suite before finalizing the PR and record results
 - [ ] Run lint (`pnpm lint`) before finalizing the PR and record results
 - [ ] Mark PR Ready only after all story tasks are complete
@@ -80,6 +83,7 @@
 - [ ] Verify IDE shows strikethrough on deprecated imports
 - [ ] Add or update story documentation at `docs/st07003-core-deprecation-shim.md` (or document why not required)
 - [ ] Assess test impact; add/update automated tests when needed, or document why tests are not required
+- [ ] Update `docs-site/changelog.md` `[Unreleased]` section with changes from this story (or document why not applicable)
 - [ ] Run full test suite before finalizing the PR and record results
 - [ ] Run lint (`pnpm lint`) before finalizing the PR and record results
 - [ ] Mark PR Ready only after all story tasks are complete
@@ -104,6 +108,7 @@
 - [ ] Verify conformance suite runs within the skills package
 - [ ] Add or update story documentation at `docs/st07004-migrate-skills-tests.md` (or document why not required)
 - [ ] Assess test impact; add/update automated tests when needed, or document why tests are not required
+- [ ] Update `docs-site/changelog.md` `[Unreleased]` section with changes from this story (or document why not applicable)
 - [ ] Run full test suite before finalizing the PR and record results
 - [ ] Run lint (`pnpm lint`) before finalizing the PR and record results
 - [ ] Mark PR Ready only after all story tasks are complete
@@ -130,6 +135,7 @@
 - [ ] Verify `pnpm --filter docs-site dev` builds without dead-link warnings
 - [ ] Add or update story documentation at `docs/st07005-skills-package-docs-migration.md`
 - [ ] Assess test impact; add/update automated tests when needed, or document why tests are not required
+- [ ] Update `docs-site/changelog.md` `[Unreleased]` section with changes from this story (or document why not applicable)
 - [ ] Run full test suite before finalizing the PR and record results
 - [ ] Run lint (`pnpm lint`) before finalizing the PR and record results
 - [ ] Mark PR Ready only after all story tasks are complete
@@ -152,6 +158,7 @@
 - [ ] Verify `./scripts/release.sh` dry-run logic still works (or manually inspect changes)
 - [ ] Add or update story documentation (or document why not required)
 - [ ] Assess test impact; add/update automated tests when needed, or document why tests are not required
+- [ ] Update `docs-site/changelog.md` `[Unreleased]` section with changes from this story (or document why not applicable)
 - [ ] Run full test suite before finalizing the PR and record results
 - [ ] Run lint (`pnpm lint`) before finalizing the PR and record results
 - [ ] Mark PR Ready only after all story tasks are complete
