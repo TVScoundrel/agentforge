@@ -23,6 +23,8 @@ describe('Logging Middleware', () => {
         warn: vi.fn(),
         error: vi.fn(),
         withContext: vi.fn(),
+        isDebugEnabled: vi.fn().mockReturnValue(false),
+        isLevelEnabled: vi.fn().mockReturnValue(false),
       };
 
       const loggedNode = withLogging({
@@ -51,6 +53,8 @@ describe('Logging Middleware', () => {
         warn: vi.fn(),
         error: vi.fn(),
         withContext: vi.fn(),
+        isDebugEnabled: vi.fn().mockReturnValue(false),
+        isLevelEnabled: vi.fn().mockReturnValue(false),
       };
 
       const loggedNode = withLogging({
@@ -80,6 +84,8 @@ describe('Logging Middleware', () => {
         warn: vi.fn(),
         error: errorSpy,
         withContext: vi.fn(),
+        isDebugEnabled: vi.fn().mockReturnValue(false),
+        isLevelEnabled: vi.fn().mockReturnValue(false),
       };
 
       const loggedNode = withLogging({
@@ -106,6 +112,8 @@ describe('Logging Middleware', () => {
         warn: vi.fn(),
         error: vi.fn(),
         withContext: vi.fn(),
+        isDebugEnabled: vi.fn().mockReturnValue(false),
+        isLevelEnabled: vi.fn().mockReturnValue(false),
       };
 
       const loggedNode = withLogging({
@@ -130,6 +138,8 @@ describe('Logging Middleware', () => {
         warn: vi.fn(),
         error: vi.fn(),
         withContext: vi.fn(),
+        isDebugEnabled: vi.fn().mockReturnValue(false),
+        isLevelEnabled: vi.fn().mockReturnValue(false),
       };
 
       const loggedNode = withLogging({
@@ -157,6 +167,8 @@ describe('Logging Middleware', () => {
         warn: vi.fn(),
         error: vi.fn(),
         withContext: vi.fn(),
+        isDebugEnabled: vi.fn().mockReturnValue(false),
+        isLevelEnabled: vi.fn().mockReturnValue(false),
       };
 
       const extractData = <State,>(state: State) => ({ value: (state as TestState).value });
@@ -187,6 +199,8 @@ describe('Logging Middleware', () => {
         warn: vi.fn(),
         error: vi.fn(),
         withContext: vi.fn(),
+        isDebugEnabled: vi.fn().mockReturnValue(false),
+        isLevelEnabled: vi.fn().mockReturnValue(false),
       };
 
       const loggedNode = withLogging({
@@ -212,6 +226,8 @@ describe('Logging Middleware', () => {
         warn: vi.fn(),
         error: vi.fn(),
         withContext: vi.fn(),
+        isDebugEnabled: vi.fn().mockReturnValue(false),
+        isLevelEnabled: vi.fn().mockReturnValue(false),
       };
 
       const loggedNode = withLogging({
@@ -241,6 +257,8 @@ describe('Logging Middleware', () => {
         warn: vi.fn(),
         error: vi.fn(),
         withContext: vi.fn(),
+        isDebugEnabled: vi.fn().mockReturnValue(false),
+        isLevelEnabled: vi.fn().mockReturnValue(false),
       };
 
       const loggedNode = withLogging({

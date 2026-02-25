@@ -45,23 +45,31 @@
 **Branch:** `feat/st-07002-move-skills-source`
 
 ### Checklist
-- [ ] Create branch `feat/st-07002-move-skills-source`
-- [ ] Create draft PR with story ID in title
-- [ ] Move `packages/core/src/skills/*.ts` to `packages/skills/src/` (activation.ts, index.ts, parser.ts, registry.ts, scanner.ts, trust.ts, types.ts)
-- [ ] Replace relative imports to core internals with `@agentforge/core` package imports:
+- [x] Create branch `feat/st-07002-move-skills-source`
+- [x] Create draft PR with story ID in title
+  - PR #53: https://github.com/TVScoundrel/agentforge/pull/53
+- [x] Move `packages/core/src/skills/*.ts` to `packages/skills/src/` (activation.ts, parser.ts, registry.ts, scanner.ts, trust.ts, types.ts)
+  - Core files remain in place; deleted in ST-07003 when deprecation re-exports replace them
+- [x] Replace relative imports to core internals with `@agentforge/core` package imports:
   - `../tools/builder.js` → `@agentforge/core` (ToolBuilder)
   - `../tools/types.js` → `@agentforge/core` (ToolCategory, Tool)
   - `../langgraph/observability/logger.js` → `@agentforge/core` (createLogger, LogLevel)
-- [ ] Verify `ToolCategory.SKILLS` enum value stays in `@agentforge/core` (no move needed)
-- [ ] Update `packages/skills/src/index.ts` barrel exports to match previous public API
-- [ ] Verify `pnpm -r build` succeeds with clean output
-- [ ] Verify TypeScript strict mode passes (`pnpm typecheck`)
-- [ ] Add or update story documentation at `docs/st07002-move-skills-source.md` (or document why not required)
-- [ ] Assess test impact; add/update automated tests when needed, or document why tests are not required
-- [ ] Update `docs-site/changelog.md` `[Unreleased]` section with changes from this story (or document why not applicable)
-- [ ] Run full test suite before finalizing the PR and record results
-- [ ] Run lint (`pnpm lint`) before finalizing the PR and record results
-- [ ] Mark PR Ready only after all story tasks are complete
+- [x] Verify `ToolCategory.SKILLS` enum value stays in `@agentforge/core` (no move needed)
+  - Confirmed — ToolCategory enum stays in core; skills package imports it via `@agentforge/core`
+- [x] Update `packages/skills/src/index.ts` barrel exports to match previous public API
+- [x] Verify `pnpm -r build` succeeds with clean output
+  - All 7 packages build: skills ESM/CJS/DTS all succeed
+- [x] Verify TypeScript strict mode passes (`pnpm typecheck`)
+  - Skills passes with zero errors; core has 9 pre-existing errors in logging.test.ts (unrelated)
+- [x] Add or update story documentation at `docs/st07002-move-skills-source.md` (or document why not required)
+- [x] Assess test impact; add/update automated tests when needed, or document why tests are not required
+  - No new tests required — source is copied (not changed), existing tests in core still pass against core's files. Tests migrate to skills package in ST-07004.
+- [x] Update `docs-site/changelog.md` `[Unreleased]` section with changes from this story (or document why not applicable)
+- [x] Run full test suite before finalizing the PR and record results
+  - 159 passed | 1 skipped (160 files); 2337 passed | 17 skipped (2354 tests); 0 failures
+- [x] Run lint (`pnpm lint`) before finalizing the PR and record results
+  - 0 errors, 109 warnings (all pre-existing `@typescript-eslint/no-explicit-any`)
+- [x] Mark PR Ready only after all story tasks are complete
 - [ ] Wait for merge; do not merge directly from local branch
 
 ---
