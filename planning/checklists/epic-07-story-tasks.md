@@ -197,7 +197,7 @@
 - [x] Add or update story documentation — not required; changes are to build/release scripts only, no new APIs or patterns
 - [x] Assess test impact — no tests needed; release scripts are not covered by vitest (shell scripts + Node.js CLI helpers); correctness verified by manual inspection
 - [x] Update `docs-site/changelog.md` `[Unreleased]` section — added "Release Tooling — Skills Package Support" subsection
-- [ ] Run full test suite before finalizing the PR and record results
-- [ ] Run lint (`pnpm lint`) before finalizing the PR and record results
+- [x] Run full test suite before finalizing the PR and record results — 159 passed | 1 skipped (160 files), 2337 passed | 17 skipped (2354 tests)
+- [x] Run lint (`pnpm lint`) before finalizing the PR and record results — 0 errors, 109 warnings (pre-existing)
 - [ ] Mark PR Ready only after all story tasks are complete
 - [ ] Wait for merge; do not merge directly from local branch
