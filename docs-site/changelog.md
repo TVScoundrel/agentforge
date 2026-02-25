@@ -7,6 +7,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+#### @agentforge/skills — Skills Package Source Migration (EP-07)
+- **Skills source files** now live in `@agentforge/skills` with full public API:
+  - `SkillRegistry`, `parseSkillContent`, `scanSkillRoot`, `scanAllSkillRoots`
+  - `createActivateSkillTool`, `createReadSkillResourceTool`, `createSkillActivationTools`
+  - `evaluateTrustPolicy`, `isScriptResource`, `normalizeRootConfig`, `resolveResourcePath`
+  - All types: `Skill`, `SkillMetadata`, `SkillRegistryConfig`, `TrustLevel`, etc.
+- Imports re-wired from relative core internals to `@agentforge/core` package imports
+- Logger names updated to `agentforge:skills:*` namespace
+
+### Note
+- `@agentforge/core` still exports the same skills API (deprecation re-exports coming in next release)
+
 ## [0.14.0] - 2026-02-24
 
 ### Added
