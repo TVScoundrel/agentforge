@@ -286,4 +286,4 @@ describe('functionName', () => {
 - **[Agent Skills Integration Guide](/guide/agent-skills)** — Configuration reference, runtime flow, security, and rollout checklist
 - **[Skill-Powered Agent Tutorial](/tutorials/skill-powered-agent)** — Step-by-step walkthrough building a skill-powered agent from scratch
 - **[Agent Skills Examples](/examples/agent-skills)** — Common patterns and runnable code snippets
-- **[SkillRegistry API Reference](/api/core#skillregistry)** — Full API documentation for the SkillRegistry class
+- **[SkillRegistry API Reference](/api/skills#skillregistry)** — Full API documentation for the SkillRegistry class

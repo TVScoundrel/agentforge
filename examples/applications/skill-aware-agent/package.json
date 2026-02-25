@@ -9,7 +9,8 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@agentforge/core": "workspace:*"
+    "@agentforge/core": "workspace:*",
+    "@agentforge/skills": "workspace:*"
   },
   "devDependencies": {
     "@types/node": "^22.10.2",

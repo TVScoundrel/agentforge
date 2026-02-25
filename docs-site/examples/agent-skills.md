@@ -11,7 +11,7 @@ Practical code examples for integrating Agent Skills into your AgentForge agents
 Create a `SkillRegistry` that scans a local directory for skills:
 
 ```typescript
-import { SkillRegistry } from '@agentforge/core';
+import { SkillRegistry } from '@agentforge/skills';
 import path from 'path';
 import { fileURLToPath } from 'url';
 
@@ -49,7 +49,7 @@ for (const skill of skillRegistry.getAll()) {
 Generate the `<available_skills>` XML block to include in your agent's system prompt:
 
 ```typescript
-import { SkillRegistry } from '@agentforge/core';
+import { SkillRegistry } from '@agentforge/skills';
 
 const skillRegistry = new SkillRegistry({
   skillRoots: [{ path: './.agentskills', trust: 'workspace' }],
@@ -89,7 +89,7 @@ When `enabled: false` (the default), `generatePrompt()` returns an empty string.
 Wire skill activation into any agent pattern using `toActivationTools()`:
 
 ```typescript
-import { SkillRegistry } from '@agentforge/core';
+import { SkillRegistry } from '@agentforge/skills';
 import { createReActAgent } from '@agentforge/patterns';
 import { ChatOpenAI } from '@langchain/openai';
 
@@ -112,7 +112,7 @@ const agent = createReActAgent({
 import {
   createActivateSkillTool,
   createReadSkillResourceTool,
-} from '@agentforge/core';
+} from '@agentforge/skills';
 
 const activate = createActivateSkillTool(skillRegistry);
 const readResource = createReadSkillResourceTool(skillRegistry);
@@ -148,7 +148,7 @@ The agent calls this tool to load resource files from a skill directory:
 Configure multiple skill roots with different trust levels for layered access control:
 
 ```typescript
-import { SkillRegistry } from '@agentforge/core';
+import { SkillRegistry } from '@agentforge/skills';
 
 const skillRegistry = new SkillRegistry({
   skillRoots: [
@@ -195,7 +195,7 @@ const registry = new SkillRegistry({
 Control what resources agents can access based on the skill root's trust level:
 
 ```typescript
-import { SkillRegistry, SkillRegistryEvent } from '@agentforge/core';
+import { SkillRegistry, SkillRegistryEvent } from '@agentforge/skills';
 
 const skillRegistry = new SkillRegistry({
   skillRoots: [
@@ -246,7 +246,8 @@ The `read-skill-resource` tool blocks all path traversal attempts. Absolute path
 Skills can declare which tools they're designed to use. Use `getAllowedTools()` to filter your agent's tool set per skill:
 
 ```typescript
-import { SkillRegistry, ToolRegistry } from '@agentforge/core';
+import { SkillRegistry } from '@agentforge/skills';
+import { ToolRegistry } from '@agentforge/core';
 
 const skillRegistry = new SkillRegistry({
   skillRoots: [{ path: './.agentskills', trust: 'workspace' }],
@@ -273,7 +274,7 @@ if (allowedTools) {
 Subscribe to registry events for observability, logging, and metrics:
 
 ```typescript
-import { SkillRegistry, SkillRegistryEvent } from '@agentforge/core';
+import { SkillRegistry, SkillRegistryEvent } from '@agentforge/skills';
 
 const skillRegistry = new SkillRegistry({
   skillRoots: [{ path: './.agentskills', trust: 'workspace' }],
@@ -357,7 +358,8 @@ console.log(`After rescan: ${skillRegistry.size()} skills`);
 Build agents that use both custom tools and skill-driven instructions:
 
 ```typescript
-import { SkillRegistry, toolBuilder, ToolCategory } from '@agentforge/core';
+import { SkillRegistry } from '@agentforge/skills';
+import { toolBuilder, ToolCategory } from '@agentforge/core';
 import { createReActAgent } from '@agentforge/patterns';
 import { ChatOpenAI } from '@langchain/openai';
 import { z } from 'zod';
@@ -402,4 +404,4 @@ You also have direct tools available for file operations.`,
 - **[Agent Skills Integration Guide](/guide/agent-skills)** — Configuration reference, runtime flow, security, and rollout checklist
 - **[Skill Authoring Guide](/guide/agent-skills-authoring)** — How to write spec-compliant SKILL.md files
 - **[Skill-Powered Agent Tutorial](/tutorials/skill-powered-agent)** — Step-by-step walkthrough building from scratch
-- **[SkillRegistry API Reference](/api/core#skillregistry)** — Full API documentation
+- **[SkillRegistry API Reference](/api/skills#skillregistry)** — Full API documentation

@@ -153,21 +153,22 @@
 **Branch:** `feat/st-07005-skills-docs-migration`
 
 ### Checklist
-- [ ] Create branch `feat/st-07005-skills-docs-migration`
-- [ ] Create draft PR with story ID in title
-- [ ] Update `docs-site/guide/agent-skills.md` install instructions to `@agentforge/skills`
-- [ ] Update `docs-site/guide/agent-skills-authoring.md` import references
-- [ ] Update `docs-site/tutorials/skill-powered-agent.md` imports and install steps
-- [ ] Update `docs-site/examples/agent-skills.md` code samples to import from `@agentforge/skills`
-- [ ] Update `docs-site/api/core.md` — move SkillRegistry API docs to new `api/skills.md` page
-- [ ] Add migration note to `docs-site/guide/migration.md` documenting the `@agentforge/core` → `@agentforge/skills` move
-- [ ] Update `examples/applications/skill-aware-agent` to depend on `@agentforge/skills`
-- [ ] Update root `README.md` package table to include `@agentforge/skills`
-- [ ] Draft `docs-site/changelog.md` entry for next release covering the extraction
+- [x] Create branch `feat/st-07005-skills-docs-migration`
+- [x] Create draft PR with story ID in title
+  - PR #56: https://github.com/TVScoundrel/agentforge/pull/56
+- [x] Update `docs-site/guide/agent-skills.md` install instructions to `@agentforge/skills`
+- [x] Update `docs-site/guide/agent-skills-authoring.md` import references
+- [x] Update `docs-site/tutorials/skill-powered-agent.md` imports and install steps
+- [x] Update `docs-site/examples/agent-skills.md` code samples to import from `@agentforge/skills`
+- [x] Update `docs-site/api/core.md` — move SkillRegistry API docs to new `api/skills.md` page
+- [x] Add migration note to `docs-site/guide/migration.md` documenting the `@agentforge/core` → `@agentforge/skills` move
+- [x] Update `examples/applications/skill-aware-agent` to depend on `@agentforge/skills`
+- [x] Update root `README.md` package table to include `@agentforge/skills`
+- [x] Draft `docs-site/changelog.md` entry for next release covering the extraction
 - [ ] Verify `pnpm --filter docs-site dev` builds without dead-link warnings
 - [ ] Add or update story documentation at `docs/st07005-skills-package-docs-migration.md`
 - [ ] Assess test impact; add/update automated tests when needed, or document why tests are not required
-- [ ] Update `docs-site/changelog.md` `[Unreleased]` section with changes from this story (or document why not applicable)
+- [x] Update `docs-site/changelog.md` `[Unreleased]` section with changes from this story (or document why not applicable)
 - [ ] Run full test suite before finalizing the PR and record results
 - [ ] Run lint (`pnpm lint`) before finalizing the PR and record results
 - [ ] Mark PR Ready only after all story tasks are complete

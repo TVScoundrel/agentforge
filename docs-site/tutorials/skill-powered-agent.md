@@ -33,7 +33,7 @@ pnpm install
 Install the LLM provider and tools:
 
 ```bash
-pnpm add @agentforge/core @agentforge/patterns @agentforge/tools @langchain/openai
+pnpm add @agentforge/core @agentforge/skills @agentforge/patterns @agentforge/tools @langchain/openai
 ```
 
 Create `.env`:
@@ -156,7 +156,7 @@ describe('<ModuleName>', () => {
 Now wire the skills into your agent. Create `src/index.ts`:
 
 ```typescript
-import { SkillRegistry } from '@agentforge/core';
+import { SkillRegistry } from '@agentforge/skills';
 import { createReActAgent } from '@agentforge/patterns';
 import { ChatOpenAI } from '@langchain/openai';
 import path from 'path';
@@ -304,7 +304,7 @@ pnpm dlx tsx src/index.ts
 The `SkillRegistry` emits events you can monitor for observability:
 
 ```typescript
-import { SkillRegistryEvent } from '@agentforge/core';
+import { SkillRegistryEvent } from '@agentforge/skills';
 
 // Listen for skill activations
 skillRegistry.on(SkillRegistryEvent.SKILL_ACTIVATED, (data) => {
@@ -370,7 +370,7 @@ Resources under `scripts/` directories are subject to trust policy enforcement. 
 Here's the full `src/index.ts` putting it all together:
 
 ```typescript
-import { SkillRegistry, SkillRegistryEvent } from '@agentforge/core';
+import { SkillRegistry, SkillRegistryEvent } from '@agentforge/skills';
 import { createReActAgent } from '@agentforge/patterns';
 import { createFileReaderTool, createFileSearchTool } from '@agentforge/tools';
 import { ChatOpenAI } from '@langchain/openai';
@@ -446,4 +446,4 @@ for (const msg of result.messages) {
 - **[Agent Skills Integration Guide](/guide/agent-skills)** — Configuration reference, runtime flow, security, and rollout checklist
 - **[Skill Authoring Guide](/guide/agent-skills-authoring)** — How to write spec-compliant SKILL.md files with frontmatter, resources, and trust policies
 - **[Agent Skills Examples](/examples/agent-skills)** — Common patterns and code snippets for skill integration
-- **[SkillRegistry API Reference](/api/core#skillregistry)** — Full API documentation for the SkillRegistry class
+- **[SkillRegistry API Reference](/api/skills#skillregistry)** — Full API documentation for the SkillRegistry class
