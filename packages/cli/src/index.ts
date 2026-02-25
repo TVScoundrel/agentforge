@@ -19,7 +19,7 @@ const program = new Command();
 
 program
   .name('agentforge')
-  .description('CLI tool for AgentForge - scaffolding, development, and deployment')
+  .description('CLI tool for AgentForge - scaffolding and development')
   .version('0.1.0');
 
 // Project scaffolding
