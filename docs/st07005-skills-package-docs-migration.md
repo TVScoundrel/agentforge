@@ -63,7 +63,7 @@ agentforge:skills:scanner
 
 ## Test Impact
 
-No test changes required — this story is documentation-only. All 2337 tests continue to pass (159 files passed, 1 skipped).
+No test changes required — this story only updates documentation and the `skill-aware-agent` example app. All 2337 tests continue to pass (159 files passed, 1 skipped).
 
 ## Validation
 

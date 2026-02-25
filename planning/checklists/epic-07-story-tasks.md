@@ -169,7 +169,7 @@
   - `vitepress build` completed successfully with no errors or dead link warnings
 - [x] Add or update story documentation at `docs/st07005-skills-package-docs-migration.md`
 - [x] Assess test impact; add/update automated tests when needed, or document why tests are not required
-  - No test changes needed — documentation-only story. All 2337 tests pass.
+  - No test changes needed — docs + examples only (no behavioral changes). All 2337 tests pass.
 - [x] Update `docs-site/changelog.md` `[Unreleased]` section with changes from this story (or document why not applicable)
 - [x] Run full test suite before finalizing the PR and record results
   - 159 passed | 1 skipped (160 files); 2337 passed | 17 skipped (2354 tests)
