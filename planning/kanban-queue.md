@@ -5,8 +5,8 @@
 ## Queue Status Summary
 
 - **Ready:** 1 stories
-- **In Progress:** 1 stories
-- **In Review:** 0 stories
+- **In Progress:** 0 stories
+- **In Review:** 1 stories
 - **Blocked:** 0 stories
 - **Backlog:** 3 stories
 
@@ -24,18 +24,18 @@
 
 ## In Progress
 
+_No stories currently in progress_
+
+---
+
+## In Review
+
 ### ST-07002: Move Skills Source Files and Re-wire Imports
 - **Epic:** EP-07 — Extract Skills into Dedicated Package
 - **Priority:** P0 (Critical)
 - **Estimate:** 5 hours
 - **Dependencies:** ST-07001 (merged)
 - **PR:** #53
-
----
-
-## In Review
-
-_No stories currently in review_
 
 ---
 

@@ -65,9 +65,11 @@
 - [x] Assess test impact; add/update automated tests when needed, or document why tests are not required
   - No new tests required — source is copied (not changed), existing tests in core still pass against core's files. Tests migrate to skills package in ST-07004.
 - [x] Update `docs-site/changelog.md` `[Unreleased]` section with changes from this story (or document why not applicable)
-- [ ] Run full test suite before finalizing the PR and record results
-- [ ] Run lint (`pnpm lint`) before finalizing the PR and record results
-- [ ] Mark PR Ready only after all story tasks are complete
+- [x] Run full test suite before finalizing the PR and record results
+  - 159 passed | 1 skipped (160 files); 2337 passed | 17 skipped (2354 tests); 0 failures
+- [x] Run lint (`pnpm lint`) before finalizing the PR and record results
+  - 0 errors, 109 warnings (all pre-existing `@typescript-eslint/no-explicit-any`)
+- [x] Mark PR Ready only after all story tasks are complete
 - [ ] Wait for merge; do not merge directly from local branch
 
 ---
