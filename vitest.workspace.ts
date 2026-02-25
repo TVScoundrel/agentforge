@@ -64,5 +64,17 @@ export default defineWorkspace([
       ],
     },
   },
+
+  // Skills package
+  {
+    extends: './vitest.config.ts',
+    test: {
+      name: 'skills',
+      include: [
+        'packages/skills/tests/**/*.test.ts',
+        'packages/skills/src/**/__tests__/**/*.test.ts',
+      ],
+    },
+  },
 ]);
 

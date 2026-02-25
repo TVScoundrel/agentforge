@@ -1,0 +1,74 @@
+{
+  "name": "@agentforge/skills",
+  "version": "0.14.0",
+  "description": "Composable skill system for building modular AI agents in TypeScript, part of the AgentForge framework.",
+  "type": "module",
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch",
+    "test": "vitest",
+    "test:watch": "vitest --watch",
+    "test:ui": "vitest --ui",
+    "test:coverage": "vitest --coverage",
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "clean": "rm -rf dist"
+  },
+  "dependencies": {
+    "gray-matter": "^4.0.3"
+  },
+  "peerDependencies": {
+    "@agentforge/core": ">=0.14.0"
+  },
+  "devDependencies": {
+    "@agentforge/core": "workspace:*",
+    "@eslint/js": "^9.17.0",
+    "@types/node": "^22.10.2",
+    "@vitest/ui": "^2.1.8",
+    "eslint": "^9.17.0",
+    "prettier": "^3.4.2",
+    "tsup": "^8.3.5",
+    "typescript": "^5.7.2",
+    "typescript-eslint": "^8.19.1",
+    "vitest": "^2.1.8",
+    "zod": "^3.24.1"
+  },
+  "keywords": [
+    "agent-skills",
+    "llm-skills",
+    "composable-agents",
+    "modular-agents",
+    "skill-authoring",
+    "agent-capabilities",
+    "typescript",
+    "agent-skills-specification",
+    "skill-registry",
+    "langchain-typescript"
+  ],
+  "author": "Tom Van Schoor",
+  "license": "MIT",
+  "homepage": "https://tvscoundrel.github.io/agentforge/",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/TVScoundrel/agentforge.git",
+    "directory": "packages/skills"
+  },
+  "bugs": {
+    "url": "https://github.com/TVScoundrel/agentforge/issues"
+  }
+}

@@ -4,22 +4,17 @@
 
 ## Queue Status Summary
 
-- **Ready:** 1 story
+- **Ready:** 0 stories
 - **In Progress:** 0 stories
-- **In Review:** 0 stories
+- **In Review:** 1 story
 - **Blocked:** 0 stories
-- **Backlog:** 4 stories
+- **Backlog:** 5 stories
 
 ---
 
 ## Ready
 
-### ST-07001: Scaffold `@agentforge/skills` Package
-- **Epic:** EP-07 — Extract Skills into Dedicated Package
-- **Priority:** P0 (Critical)
-- **Estimate:** 3 hours
-- **Dependencies:** None (EP-06 complete)
-- **Branch:** `feat/st-07001-scaffold-skills-package`
+_No stories currently ready_
 
 ---
 
@@ -31,7 +26,13 @@ _No stories currently in progress_
 
 ## In Review
 
-_No stories currently in review_
+### ST-07001: Scaffold `@agentforge/skills` Package
+- **Epic:** EP-07 — Extract Skills into Dedicated Package
+- **Priority:** P0 (Critical)
+- **Estimate:** 3 hours
+- **Dependencies:** None (EP-06 complete)
+- **Branch:** `feat/st-07001-scaffold-skills-package`
+- **PR:** #52
 
 ---
 
@@ -66,6 +67,12 @@ _No stories currently blocked_
 - **Priority:** P1 (High)
 - **Estimate:** 4 hours
 - **Dependencies:** ST-07003, ST-07004
+
+### ST-07006: Update Release Scripts and Checklist
+- **Epic:** EP-07
+- **Priority:** P1 (High)
+- **Estimate:** 2 hours
+- **Dependencies:** ST-07001
 
 ---
 
