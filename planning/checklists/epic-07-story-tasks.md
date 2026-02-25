@@ -8,6 +8,8 @@
 - [ ] Create branch `feat/st-07001-scaffold-skills-package`
 - [ ] Create draft PR with story ID in title
 - [ ] Create `packages/skills/` directory with `package.json` (name: `@agentforge/skills`, version matching monorepo)
+- [ ] Set package description to standalone identity (no AgentForge dependency to make sense): e.g. "Composable skill system for TypeScript AI agents with reusable capabilities and structured execution"
+- [ ] Set keywords for independent discoverability: `agent-skills`, `llm-skills`, `composable-agents`, `modular-agents`, `skill-authoring`, `agent-capabilities`, `typescript`
 - [ ] Add `@agentforge/core` as peer dependency and dev dependency
 - [ ] Move `gray-matter` dependency from `packages/core/package.json` to `packages/skills/package.json`
 - [ ] Add `tsconfig.json` extending `../../tsconfig.base.json`
@@ -51,7 +53,7 @@
 
 ---
 
-## ST-07003: Add Deprecation Re-exports in Core
+## ST-07003: Add Deprecation Re-exports in Core and Clean Keywords
 
 **Branch:** `feat/st-07003-core-deprecation-shim`
 
@@ -63,6 +65,8 @@
 - [ ] Add `@agentforge/skills` as optional peer dependency of `@agentforge/core`
 - [ ] Implement one-time console deprecation warning on first import of the shim
 - [ ] Remove `gray-matter` from `packages/core/package.json` dependencies
+- [ ] Remove skills-related keywords from core's `package.json` (`agent-skills`, `skill-*` terms)
+- [ ] Audit core's description/README — ensure focused on orchestration/runtime, no skills vocabulary
 - [ ] Verify core build succeeds and bundle size is smaller
 - [ ] Verify IDE shows strikethrough on deprecated imports
 - [ ] Add or update story documentation at `docs/st07003-core-deprecation-shim.md` (or document why not required)

@@ -77,14 +77,20 @@
 ---
 
 ### EP-07: Extract Skills into Dedicated Package
-**Capability:** Move the Agent Skills subsystem from `@agentforge/core` into a standalone `@agentforge/skills` package to keep core lean and make skills an explicit opt-in dependency.
+**Capability:** Establish `@agentforge/skills` as a first-class, independently adoptable composable skill system — not a code move, but a positioning move.
 
 **Outcomes:**
-- `@agentforge/core` remains focused on primitives (tool builder, state, middleware, streaming, observability)
+- `@agentforge/core` remains focused on orchestration/runtime primitives (tool builder, state, middleware, streaming, observability)
+- `@agentforge/skills` stands alone with its own identity: "Composable skill system for TypeScript AI agents with reusable capabilities and structured execution"
 - Skills-specific dependency (`gray-matter`) no longer ships with core
-- Consumers install `@agentforge/skills` only when they need skill features
-- `@agentforge/skills` depends on `@agentforge/core` (same pattern as `@agentforge/patterns`)
-- Public API and import paths migrate from `@agentforge/core` to `@agentforge/skills` with deprecation re-exports in core for one minor version
+- Package is adoptable outside full AgentForge usage to increase ecosystem gravity
+- Skills-related keywords (`agent-skills`, `llm-skills`, `composable-agents`, `modular-agents`, `skill-authoring`) concentrated in the skills package, removed from core to prevent keyword dilution
+- Public API migrates from `@agentforge/core` to `@agentforge/skills` with deprecation re-exports in core for one minor version
+
+**Strategic Principles:**
+1. **First-class identity** — The package description and README must make sense without mentioning AgentForge. Skills is a composable system, not "some utilities."
+2. **Clean keyword separation** — Remove skills vocabulary from core's package.json, README, and description. Core owns orchestration/runtime; skills owns agent-skills/modular-agents.
+3. **Ecosystem gravity** — Position for independent adoption. Keywords, description, and docs should attract users who aren't (yet) using AgentForge.
 
 **Stories:** ST-07001 through ST-07005
 
@@ -587,7 +593,7 @@
 ### Epic 07: Extract Skills into Dedicated Package
 
 #### ST-07001: Scaffold `@agentforge/skills` Package
-**User story:** As a maintainer, I want a new `packages/skills` workspace package with the standard monorepo scaffolding so that the skills code has a proper home.
+**User story:** As a maintainer, I want a new `packages/skills` workspace package with first-class identity and standard monorepo scaffolding so that the skills system is independently positionable.
 
 **Priority:** P0 (Critical)
 **Estimate:** 3 hours
@@ -595,6 +601,8 @@
 
 **Acceptance criteria:**
 - [ ] `packages/skills/` created with `package.json`, `tsconfig.json`, `tsup.config.ts` matching monorepo conventions
+- [ ] Package description is standalone (no AgentForge dependency to make sense): e.g. "Composable skill system for TypeScript AI agents with reusable capabilities and structured execution"
+- [ ] Keywords optimized for independent discoverability: `agent-skills`, `llm-skills`, `composable-agents`, `modular-agents`, `skill-authoring`, `agent-capabilities`, `typescript`
 - [ ] `@agentforge/core` listed as a peer dependency (and dev dependency)
 - [ ] `gray-matter` dependency moved from core's `package.json` to skills' `package.json`
 - [ ] Dual ESM/CJS build outputs configured (`dist/index.js`, `dist/index.cjs`, `dist/index.d.ts`)
@@ -621,8 +629,8 @@
 
 ---
 
-#### ST-07003: Add Deprecation Re-exports in Core
-**User story:** As a consumer who imports skills from `@agentforge/core`, I want my existing imports to keep working (with a deprecation warning) for one minor version so that I have time to migrate.
+#### ST-07003: Add Deprecation Re-exports in Core and Clean Keywords
+**User story:** As a consumer who imports skills from `@agentforge/core`, I want my existing imports to keep working (with a deprecation warning) for one minor version, and I want core's public identity to reflect its orchestration focus.
 
 **Priority:** P1 (High)
 **Estimate:** 3 hours
@@ -636,6 +644,8 @@
 - [ ] TypeScript `@deprecated` tag causes IDE strikethrough on old imports
 - [ ] `gray-matter` removed from core's `dependencies`
 - [ ] Core build and bundle size verified (smaller without skills code)
+- [ ] Skills-related keywords removed from core's `package.json` (no `agent-skills`, `skill-*` terms)
+- [ ] Core's description and README focused on orchestration/runtime primitives only
 
 ---
 
