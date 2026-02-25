@@ -89,6 +89,7 @@ PACKAGE_FILES=(
     "packages/core/package.json"
     "packages/patterns/package.json"
     "packages/tools/package.json"
+    "packages/skills/package.json"
     "packages/testing/package.json"
     "packages/cli/package.json"
     "docs-site/package.json"
