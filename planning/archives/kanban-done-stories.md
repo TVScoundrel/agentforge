@@ -207,6 +207,15 @@
 
 ---
 
+### ST-07002: Move Skills Source Files and Re-wire Imports
+- **Merged:** 2026-02-25
+- **PR:** https://github.com/TVScoundrel/agentforge/pull/53
+- **Epic:** EP-07 (Extract Skills into Dedicated Package)
+- **Estimate:** 5 hours
+- **Outcome:** Migrated 6 skills source files (types, trust, parser, scanner, registry, activation) from `packages/core/src/skills/` to `packages/skills/src/` with imports re-wired from relative core internals to `@agentforge/core` package imports. Updated logger names from `agentforge:core:skills:*` to `agentforge:skills:*`. Updated barrel exports to match previous public API. Moved `zod` from devDependencies to dependencies (runtime usage in activation.ts). Also fixed 9 pre-existing TS2739 typecheck errors in core's logging middleware tests (mock Logger objects missing `isDebugEnabled`/`isLevelEnabled`). Addressed 1 Copilot review comment (zod dependency classification). All quality gates passed (2337 tests, lint clean). Second story of EP-07.
+
+---
+
 ## Archive Format
 
 When a story is completed and merged, it will be recorded here with:

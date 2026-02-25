@@ -612,21 +612,22 @@
 
 ---
 
-#### ST-07002: Move Skills Source Files and Re-wire Imports
+#### ST-07002: Move Skills Source Files and Re-wire Imports ✅ Merged
 **User story:** As a developer, I want the skills source code to live in `packages/skills/src/` with correct imports so that the module is self-contained.
 
 **Priority:** P0 (Critical)
 **Estimate:** 5 hours
 **Dependencies:** ST-07001
+**Status:** Merged (PR #53, 2026-02-25)
 
 **Acceptance criteria:**
-- [ ] All files from `packages/core/src/skills/` moved to `packages/skills/src/`
-- [ ] Internal relative imports (`../tools/builder.js`, `../tools/types.js`, `../langgraph/observability/logger.js`) replaced with `@agentforge/core` package imports
-- [ ] `packages/skills/src/index.ts` barrel export matches the previous public surface from `packages/core/src/skills/index.ts`
-- [ ] `ToolCategory.SKILLS` enum value remains in `@agentforge/core` (it's a core primitive)
-- [ ] `pnpm -r build` succeeds; `@agentforge/skills` produces valid ESM/CJS output
-- [ ] TypeScript strict mode passes with no new errors
-- [ ] Update `docs-site/changelog.md` `[Unreleased]` section with changes from this story (or document why not applicable)
+- [x] All files from `packages/core/src/skills/` moved to `packages/skills/src/`
+- [x] Internal relative imports (`../tools/builder.js`, `../tools/types.js`, `../langgraph/observability/logger.js`) replaced with `@agentforge/core` package imports
+- [x] `packages/skills/src/index.ts` barrel export matches the previous public surface from `packages/core/src/skills/index.ts`
+- [x] `ToolCategory.SKILLS` enum value remains in `@agentforge/core` (it's a core primitive)
+- [x] `pnpm -r build` succeeds; `@agentforge/skills` produces valid ESM/CJS output
+- [x] TypeScript strict mode passes with no new errors
+- [x] Update `docs-site/changelog.md` `[Unreleased]` section with changes from this story (or document why not applicable)
 
 ---
 

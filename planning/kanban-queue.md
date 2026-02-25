@@ -4,11 +4,11 @@
 
 ## Queue Status Summary
 
-- **Ready:** 1 stories
+- **Ready:** 3 stories
 - **In Progress:** 0 stories
-- **In Review:** 1 stories
+- **In Review:** 0 stories
 - **Blocked:** 0 stories
-- **Backlog:** 3 stories
+- **Backlog:** 1 stories
 
 ---
 
@@ -20,6 +20,18 @@
 - **Estimate:** 2 hours
 - **Dependencies:** ST-07001 (merged)
 
+### ST-07003: Add Deprecation Re-exports in Core
+- **Epic:** EP-07
+- **Priority:** P1 (High)
+- **Estimate:** 3 hours
+- **Dependencies:** ST-07002 (merged)
+
+### ST-07004: Migrate Tests and Fixtures
+- **Epic:** EP-07
+- **Priority:** P0 (Critical)
+- **Estimate:** 4 hours
+- **Dependencies:** ST-07002 (merged)
+
 ---
 
 ## In Progress
@@ -30,12 +42,7 @@ _No stories currently in progress_
 
 ## In Review
 
-### ST-07002: Move Skills Source Files and Re-wire Imports
-- **Epic:** EP-07 — Extract Skills into Dedicated Package
-- **Priority:** P0 (Critical)
-- **Estimate:** 5 hours
-- **Dependencies:** ST-07001 (merged)
-- **PR:** #53
+_No stories currently in review_
 
 ---
 
@@ -46,18 +53,6 @@ _No stories currently blocked_
 ---
 
 ## Backlog
-
-### ST-07003: Add Deprecation Re-exports in Core
-- **Epic:** EP-07
-- **Priority:** P1 (High)
-- **Estimate:** 3 hours
-- **Dependencies:** ST-07002
-
-### ST-07004: Migrate Tests and Fixtures
-- **Epic:** EP-07
-- **Priority:** P0 (Critical)
-- **Estimate:** 4 hours
-- **Dependencies:** ST-07002
 
 ### ST-07005: Update Documentation and Examples
 - **Epic:** EP-07
@@ -103,3 +98,4 @@ _No stories currently blocked_
 - Epic 06 (Agent Skills Compatibility) — all 6 stories merged; epic complete
 - ✅ ST-06006 complete - comprehensive docs-site documentation for Agent Skills (merged 2026-02-24)
 - ✅ ST-07001 complete - scaffolded @agentforge/skills package (merged 2026-02-25)
+- ✅ ST-07002 complete - moved skills source files and re-wired imports (merged 2026-02-25)
