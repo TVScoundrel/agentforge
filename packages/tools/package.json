@@ -1,7 +1,7 @@
 {
   "name": "@agentforge/tools",
   "version": "0.14.0",
-  "description": "Standard tools collection for AgentForge framework - web, data, file, and utility tools",
+  "description": "Tool library for TypeScript AI agents: web, data, file, and integration tools (HTTP, scraping, CSV, XML/JSON, Slack, databases).",
   "type": "module",
   "main": "./dist/index.js",
   "module": "./dist/index.js",
@@ -84,20 +84,21 @@
     "vitest": "^2.1.8"
   },
   "keywords": [
-    "agentforge",
-    "tools",
+    "agent-tools",
+    "llm-tools",
+    "ai-tools",
+    "typescript",
+    "nodejs",
     "web-tools",
     "data-tools",
     "file-tools",
-    "utilities",
-    "ai",
-    "agents",
-    "http",
+    "http-client",
     "scraper",
     "parser",
     "csv",
     "json",
-    "xml"
+    "xml",
+    "slack"
   ],
   "author": "Tom Van Schoor",
   "license": "MIT",

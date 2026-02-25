@@ -1,7 +1,7 @@
 {
   "name": "@agentforge/core",
   "version": "0.14.0",
-  "description": "Core abstractions for AgentForge - production-ready deep agents framework",
+  "description": "Production-ready TypeScript agent framework built on LangGraph with orchestration, middleware, and typed abstractions.",
   "type": "module",
   "main": "./dist/index.cjs",
   "module": "./dist/index.js",
@@ -28,11 +28,19 @@
     "clean": "rm -rf dist *.tsbuildinfo"
   },
   "keywords": [
-    "agents",
-    "ai",
-    "langchain",
-    "langgraph",
-    "tools"
+    "agent-framework",
+    "llm-framework",
+    "ai-framework",
+    "typescript",
+    "nodejs",
+    "langchain-typescript",
+    "langgraph-typescript",
+    "agent-orchestration",
+    "workflow-engine",
+    "ai-middleware",
+    "typed-agents",
+    "production-ai",
+    "agent-runtime"
   ],
   "author": "Tom Van Schoor",
   "license": "MIT",

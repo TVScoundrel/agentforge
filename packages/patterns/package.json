@@ -1,7 +1,7 @@
 {
   "name": "@agentforge/patterns",
   "version": "0.14.0",
-  "description": "Agent patterns (ReAct, Planner-Executor) for AgentForge framework",
+  "description": "Production-ready agent workflow patterns for TypeScript including ReAct and Planner-Executor, built on LangGraph.",
   "type": "module",
   "main": "./dist/index.cjs",
   "module": "./dist/index.js",
@@ -28,12 +28,17 @@
     "clean": "rm -rf dist *.tsbuildinfo"
   },
   "keywords": [
-    "agents",
-    "ai",
-    "langchain",
-    "langgraph",
-    "react",
-    "patterns"
+    "agent-patterns",
+    "react-agent",
+    "planner-executor",
+    "agent-workflows",
+    "llm-workflows",
+    "agent-architecture",
+    "langgraph-patterns",
+    "langchain-typescript",
+    "workflow-agents",
+    "ai-design-patterns",
+    "typescript"
   ],
   "author": "Tom Van Schoor",
   "license": "MIT",

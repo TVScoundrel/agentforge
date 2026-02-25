@@ -1,7 +1,7 @@
 {
   "name": "@agentforge/cli",
   "version": "0.14.0",
-  "description": "CLI tool for AgentForge - scaffolding, development, and deployment",
+  "description": "CLI for AgentForge to scaffold TypeScript AI agent projects, generate boilerplate, and manage local development workflows.",
   "type": "module",
   "bin": {
     "agentforge": "./bin/agentforge.js"
@@ -30,14 +30,17 @@
     "format": "prettier --write \"src/**/*.ts\""
   },
   "keywords": [
-    "agentforge",
-    "cli",
-    "scaffolding",
-    "agent",
-    "ai",
-    "llm",
-    "langchain",
-    "langgraph"
+    "agent-cli",
+    "ai-cli",
+    "llm-cli",
+    "project-scaffolding",
+    "code-generator",
+    "agent-scaffold",
+    "agent-generator",
+    "typescript-cli",
+    "nodejs-cli",
+    "langchain-typescript",
+    "langgraph-typescript"
   ],
   "author": "Tom Van Schoor",
   "license": "MIT",
