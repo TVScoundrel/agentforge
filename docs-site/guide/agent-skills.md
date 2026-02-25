@@ -29,7 +29,7 @@ Agent Skills are markdown-based instruction packs that agents load on demand via
 ### 1. Create a Skill Registry
 
 ```typescript
-import { SkillRegistry } from '@agentforge/core';
+import { SkillRegistry } from '@agentforge/skills';
 
 const skillRegistry = new SkillRegistry({
   enabled: true,
@@ -231,7 +231,7 @@ const registry = new SkillRegistry({
 Subscribe to registry events for monitoring and alerting:
 
 ```typescript
-import { SkillRegistryEvent } from '@agentforge/core';
+import { SkillRegistryEvent } from '@agentforge/skills';
 
 // Log all activations
 registry.on(SkillRegistryEvent.SKILL_ACTIVATED, (data) => {
@@ -271,9 +271,9 @@ For production, replace `console.*` calls with structured logging (e.g. `createL
 
 **Logging namespaces** (set `LOG_LEVEL=debug` for detailed output):
 
-- `agentforge:core:skills:registry` — Discovery, registration
-- `agentforge:core:skills:activation` — Activation, resource loading, trust decisions
-- `agentforge:core:skills:scanner` — Directory scanning
+- `agentforge:skills:registry` — Discovery, registration
+- `agentforge:skills:activation` — Activation, resource loading, trust decisions
+- `agentforge:skills:scanner` — Directory scanning
 
 ### 3. Rollback Procedure
 
@@ -293,5 +293,5 @@ Setting `enabled: false` only suppresses `generatePrompt()`. If activation tools
 - **[Skill Authoring Guide](/guide/agent-skills-authoring)** — How to write spec-compliant SKILL.md files with frontmatter, resources, and trust policies
 - **[Skill-Powered Agent Tutorial](/tutorials/skill-powered-agent)** — Step-by-step walkthrough building a skill-powered agent from scratch
 - **[Agent Skills Examples](/examples/agent-skills)** — Common patterns and runnable code snippets
-- **[SkillRegistry API Reference](/api/core#skillregistry)** — Full API documentation for the SkillRegistry class
+- **[SkillRegistry API Reference](/api/skills#skillregistry)** — Full API documentation for the SkillRegistry class
 

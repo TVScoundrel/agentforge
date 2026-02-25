@@ -17,7 +17,7 @@ import {
   SkillRegistry,
   SkillRegistryEvent,
   type SkillRegistryConfig,
-} from '@agentforge/core';
+} from '@agentforge/skills';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 

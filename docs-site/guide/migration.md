@@ -7,6 +7,7 @@
 ## Table of Contents
 
 - [Why Migrate?](#why-migrate)
+- [Skills Package Extraction](#skills-package-extraction)
 - [Quick Comparison](#quick-comparison)
 - [Step-by-Step Migration](#step-by-step-migration)
 - [Common Patterns](#common-patterns)
@@ -25,6 +26,69 @@ AgentForge builds on top of LangChain, providing:
 ✅ **Discoverability** - Registry system with search and categorization  
 ✅ **Auto Prompts** - Generate LLM prompts automatically from metadata  
 ✅ **100% Compatible** - Convert back to LangChain tools anytime  
+
+---
+
+## Skills Package Extraction {#skills-package-extraction}
+
+::: warning Breaking Change
+As of v0.15.0, all **Agent Skills** exports have moved from `@agentforge/core` to the dedicated **`@agentforge/skills`** package.
+:::
+
+### What Moved
+
+The following symbols are now exported from `@agentforge/skills`:
+
+- `SkillRegistry`, `SkillRegistryConfig`, `SkillRegistryEvent`
+- `Skill`, `SkillMetadata`, `SkillParseResult`, `SkillCandidate`, `SkillValidationError`
+- `TrustLevel`, `TrustPolicyReason`, `TrustPolicyDecision`, `SkillRootConfig`
+- `createActivateSkillTool`, `createReadSkillResourceTool`, `createSkillActivationTools`
+- `resolveResourcePath`, `evaluateTrustPolicy`, `isScriptResource`
+- `normalizeRootConfig`, `parseSkillContent`, `validateSkillName`
+- `scanSkillRoot`, `scanAllSkillRoots`
+
+### Migration Steps
+
+**1. Install the new package:**
+
+```bash
+pnpm add @agentforge/skills
+```
+
+**2. Update imports:**
+
+```typescript
+// Before
+import { SkillRegistry, SkillRegistryEvent } from '@agentforge/core';
+
+// After
+import { SkillRegistry, SkillRegistryEvent } from '@agentforge/skills';
+```
+
+**3. Split mixed imports** (if you imported skills and non-skills from core):
+
+```typescript
+// Before
+import { SkillRegistry, ToolRegistry } from '@agentforge/core';
+
+// After
+import { SkillRegistry } from '@agentforge/skills';
+import { ToolRegistry } from '@agentforge/core';
+```
+
+**4. Update logger namespaces** (if filtering by namespace):
+
+```
+# Before
+agentforge:core:skills:*
+
+# After
+agentforge:skills:*
+```
+
+### What Stays in `@agentforge/core`
+
+Tool system (`ToolRegistry`, `toolBuilder`, `ToolCategory`), middleware, streaming, monitoring, and all non-skills functionality remain in `@agentforge/core` unchanged.
 
 ---
 

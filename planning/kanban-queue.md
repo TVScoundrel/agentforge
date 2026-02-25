@@ -4,9 +4,9 @@
 
 ## Queue Status Summary
 
-- **Ready:** 2 stories
+- **Ready:** 1 story
 - **In Progress:** 0 stories
-- **In Review:** 0 stories
+- **In Review:** 1 story
 - **Blocked:** 0 stories
 - **Backlog:** 0 stories
 
@@ -20,12 +20,6 @@
 - **Estimate:** 2 hours
 - **Dependencies:** ST-07001 (merged)
 
-### ST-07005: Update Documentation and Examples
-- **Epic:** EP-07
-- **Priority:** P1 (High)
-- **Estimate:** 4 hours
-- **Dependencies:** ST-07003 (merged), ST-07004 (merged)
-
 ---
 
 ## In Progress
@@ -36,7 +30,11 @@ _No stories currently in progress_
 
 ## In Review
 
-_No stories currently in review_
+### ST-07005: Update Documentation and Examples
+- **Epic:** EP-07
+- **Priority:** P1 (High)
+- **Branch:** `feat/st-07005-skills-docs-migration`
+- **PR:** #56
 
 ---
 

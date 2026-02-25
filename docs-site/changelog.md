@@ -21,6 +21,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - 7 test files: activation, conformance, parser, prompt, registry, scanner, trust
   - Fixture skill packs (valid, malformed, untrusted) moved to `packages/skills/tests/fixtures/`
 
+#### Documentation — Skills Package Migration (EP-07)
+- All docs, guides, examples, and tutorials updated to import from `@agentforge/skills`
+- New **[@agentforge/skills API Reference](/api/skills)** page (extracted from core API docs)
+- **Migration guide** updated with Skills Package Extraction section
+- Logger namespace references updated: `agentforge:core:skills:*` → `agentforge:skills:*`
+- Example app `skill-aware-agent` updated to depend on `@agentforge/skills`
+- Root README package table now includes `@agentforge/skills`
+
 ### Removed
 
 #### @agentforge/core — Skills Extraction (Breaking Change)
