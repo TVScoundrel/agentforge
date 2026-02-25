@@ -1,7 +1,7 @@
 {
   "name": "@agentforge/skills",
   "version": "0.14.0",
-  "description": "Composable skill system for building modular AI agents in TypeScript, part of the AgentForge framework.",
+  "description": "Composable skill system for building modular TypeScript AI agents: author skills, register capabilities, and compose behaviors.",
   "type": "module",
   "main": "./dist/index.js",
   "module": "./dist/index.js",
@@ -51,14 +51,15 @@
   "keywords": [
     "agent-skills",
     "llm-skills",
+    "skills-system",
+    "skill-authoring",
+    "skill-registry",
+    "reusable-skills",
+    "agent-capabilities",
+    "agent-composition",
     "composable-agents",
     "modular-agents",
-    "skill-authoring",
-    "agent-capabilities",
-    "typescript",
-    "agent-skills-specification",
-    "skill-registry",
-    "langchain-typescript"
+    "typescript"
   ],
   "author": "Tom Van Schoor",
   "license": "MIT",
