@@ -200,6 +200,9 @@ importers:
 
   packages/skills:
     dependencies:
+      '@agentforge/core':
+        specifier: workspace:*
+        version: link:../core
       gray-matter:
         specifier: ^4.0.3
         version: 4.0.3
@@ -207,9 +210,6 @@ importers:
         specifier: ^3.24.1
         version: 3.25.76
     devDependencies:
-      '@agentforge/core':
-        specifier: workspace:*
-        version: link:../core
       '@eslint/js':
         specifier: ^9.17.0
         version: 9.39.2

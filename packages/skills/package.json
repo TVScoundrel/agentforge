@@ -1,6 +1,6 @@
 {
   "name": "@agentforge/skills",
-  "version": "0.15.0",
+  "version": "0.15.1",
   "description": "Composable skill system for building modular TypeScript AI agents: author skills, register capabilities, and compose behaviors.",
   "type": "module",
   "main": "./dist/index.js",
@@ -30,14 +30,11 @@
     "clean": "rm -rf dist"
   },
   "dependencies": {
+    "@agentforge/core": "workspace:*",
     "gray-matter": "^4.0.3",
     "zod": "^3.24.1"
   },
-  "peerDependencies": {
-    "@agentforge/core": ">=0.14.0"
-  },
   "devDependencies": {
-    "@agentforge/core": "workspace:*",
     "@eslint/js": "^9.17.0",
     "@types/node": "^22.10.2",
     "@vitest/ui": "^2.1.8",

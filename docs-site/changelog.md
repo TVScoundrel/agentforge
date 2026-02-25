@@ -5,6 +5,22 @@ All notable changes to AgentForge will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.15.1] - 2026-02-25
+
+### Fixed
+
+#### @agentforge/skills — Dependency Fix
+- Moved `@agentforge/core` from `peerDependencies` to `dependencies` so it auto-installs for consumers (matching `@agentforge/patterns` convention)
+
+### Published
+- All packages published to npm registry at version 0.15.1:
+  - @agentforge/core@0.15.1
+  - @agentforge/skills@0.15.1
+  - @agentforge/patterns@0.15.1
+  - @agentforge/tools@0.15.1
+  - @agentforge/testing@0.15.1
+  - @agentforge/cli@0.15.1
+
 ## [0.15.0] - 2026-02-25
 
 ### Added
