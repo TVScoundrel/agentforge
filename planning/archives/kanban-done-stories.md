@@ -225,6 +225,15 @@
 
 ---
 
+### ST-07004: Migrate Tests and Fixtures
+- **Merged:** 2026-02-25
+- **PR:** https://github.com/TVScoundrel/agentforge/pull/55
+- **Epic:** EP-07 (Extract Skills into Dedicated Package)
+- **Estimate:** 4 hours
+- **Outcome:** Migrated all 215 skills tests (7 test files) and 11 fixture skill packs from `packages/core/tests/skills/` to `packages/skills/tests/`. Restored from git history (deleted in ST-07003), updated 15 import paths from `../../src/skills/*` to `../src/*` and 2 imports from `../../src/tools/types.js` to `@agentforge/core`. Fixed fixture layout comment path. Corrected per-file test counts (parser 32, scanner 12). Addressed 2 Copilot review comments. All quality gates passed (2337 tests, lint clean). Fourth story of EP-07.
+
+---
+
 ## Archive Format
 
 When a story is completed and merged, it will be recorded here with:

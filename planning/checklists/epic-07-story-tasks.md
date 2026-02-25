@@ -143,7 +143,8 @@
 - [x] Run lint (`pnpm lint`) before finalizing the PR and record results
   - 0 errors, 109 warnings (all pre-existing `@typescript-eslint/no-explicit-any`)
 - [x] Mark PR Ready only after all story tasks are complete
-- [ ] Wait for merge; do not merge directly from local branch
+- [x] Wait for merge; do not merge directly from local branch
+  - Merged PR: https://github.com/TVScoundrel/agentforge/pull/55 (2026-02-25)
 
 ---
 

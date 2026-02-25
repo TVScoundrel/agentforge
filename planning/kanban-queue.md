@@ -4,11 +4,11 @@
 
 ## Queue Status Summary
 
-- **Ready:** 1 stories
+- **Ready:** 2 stories
 - **In Progress:** 0 stories
-- **In Review:** 1 stories
+- **In Review:** 0 stories
 - **Blocked:** 0 stories
-- **Backlog:** 1 stories
+- **Backlog:** 0 stories
 
 ---
 
@@ -20,22 +20,11 @@
 - **Estimate:** 2 hours
 - **Dependencies:** ST-07001 (merged)
 
----
-
-## In Progress
-
-_No stories currently in progress_
-
----
-
-## In Review
-
-### ST-07004: Migrate Tests and Fixtures
+### ST-07005: Update Documentation and Examples
 - **Epic:** EP-07
-- **Priority:** P0 (Critical)
+- **Priority:** P1 (High)
 - **Estimate:** 4 hours
-- **Dependencies:** ST-07002 (merged)
-- **PR:** #55
+- **Dependencies:** ST-07003 (merged), ST-07004 (merged)
 
 ---
 
@@ -59,11 +48,7 @@ _No stories currently blocked_
 
 ## Backlog
 
-### ST-07005: Update Documentation and Examples
-- **Epic:** EP-07
-- **Priority:** P1 (High)
-- **Estimate:** 4 hours
-- **Dependencies:** ST-07003 (merged), ST-07004
+_No stories in backlog_
 
 ---
 
@@ -105,3 +90,4 @@ _No stories currently blocked_
 - ✅ ST-07001 complete - scaffolded @agentforge/skills package (merged 2026-02-25)
 - ✅ ST-07002 complete - moved skills source files and re-wired imports (merged 2026-02-25)
 - ✅ ST-07003 complete - removed skills from core, breaking change (merged 2026-02-25)
+- ✅ ST-07004 complete - migrated skills tests and fixtures to skills package (merged 2026-02-25)
