@@ -8,7 +8,7 @@
 - [ ] Create branch `feat/st-07001-scaffold-skills-package`
 - [ ] Create draft PR with story ID in title
 - [ ] Create `packages/skills/` directory with `package.json` (name: `@agentforge/skills`, version matching monorepo)
-- [ ] Set package description to standalone identity (no AgentForge dependency to make sense): e.g. "Composable skill system for TypeScript AI agents with reusable capabilities and structured execution"
+- [ ] Set package description to be clear and discoverable while acknowledging AgentForge: e.g. "Composable skill system for building modular AI agents in TypeScript, part of the AgentForge framework"
 - [ ] Set keywords for independent discoverability: `agent-skills`, `llm-skills`, `composable-agents`, `modular-agents`, `skill-authoring`, `agent-capabilities`, `typescript`
 - [ ] Add `@agentforge/core` as peer dependency and dev dependency
 - [ ] Move `gray-matter` dependency from `packages/core/package.json` to `packages/skills/package.json`

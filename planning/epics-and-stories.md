@@ -81,16 +81,15 @@
 
 **Outcomes:**
 - `@agentforge/core` remains focused on orchestration/runtime primitives (tool builder, state, middleware, streaming, observability)
-- `@agentforge/skills` stands alone with its own identity: "Composable skill system for TypeScript AI agents with reusable capabilities and structured execution"
+- `@agentforge/skills` stands alone with its own identity: "Composable skill system for building modular AI agents in TypeScript" (part of the AgentForge ecosystem, depends on `@agentforge/core`)
 - Skills-specific dependency (`gray-matter`) no longer ships with core
-- Package is adoptable outside full AgentForge usage to increase ecosystem gravity
 - Skills-related keywords (`agent-skills`, `llm-skills`, `composable-agents`, `modular-agents`, `skill-authoring`) concentrated in the skills package, removed from core to prevent keyword dilution
 - Public API migrates from `@agentforge/core` to `@agentforge/skills` with deprecation re-exports in core for one minor version
 
 **Strategic Principles:**
-1. **First-class identity** — The package description and README must make sense without mentioning AgentForge. Skills is a composable system, not "some utilities."
+1. **First-class identity** — The package description should convey what skills *does* without requiring prior AgentForge knowledge — making it discoverable to developers searching for agent skill systems.
 2. **Clean keyword separation** — Remove skills vocabulary from core's package.json, README, and description. Core owns orchestration/runtime; skills owns agent-skills/modular-agents.
-3. **Ecosystem gravity** — Position for independent adoption. Keywords, description, and docs should attract users who aren't (yet) using AgentForge.
+3. **Discoverability** — Keywords and description should attract developers searching for agent capabilities to the AgentForge ecosystem.
 
 **Stories:** ST-07001 through ST-07005
 
@@ -601,7 +600,7 @@
 
 **Acceptance criteria:**
 - [ ] `packages/skills/` created with `package.json`, `tsconfig.json`, `tsup.config.ts` matching monorepo conventions
-- [ ] Package description is standalone (no AgentForge dependency to make sense): e.g. "Composable skill system for TypeScript AI agents with reusable capabilities and structured execution"
+- [ ] Package description is clear and discoverable while acknowledging AgentForge: e.g. "Composable skill system for building modular AI agents in TypeScript, part of the AgentForge framework"
 - [ ] Keywords optimized for independent discoverability: `agent-skills`, `llm-skills`, `composable-agents`, `modular-agents`, `skill-authoring`, `agent-capabilities`, `typescript`
 - [ ] `@agentforge/core` listed as a peer dependency (and dev dependency)
 - [ ] `gray-matter` dependency moved from core's `package.json` to skills' `package.json`
