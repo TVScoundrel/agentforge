@@ -175,7 +175,7 @@
   - 159 passed | 1 skipped (160 files); 2337 passed | 17 skipped (2354 tests)
 - [x] Run lint (`pnpm lint`) before finalizing the PR and record results
   - 0 errors, 109 warnings (all pre-existing `@typescript-eslint/no-explicit-any`)
-- [ ] Mark PR Ready only after all story tasks are complete
+- [x] Mark PR Ready only after all story tasks are complete
 - [ ] Wait for merge; do not merge directly from local branch
 
 ---
