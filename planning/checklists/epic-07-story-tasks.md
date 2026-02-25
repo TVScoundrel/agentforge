@@ -118,7 +118,7 @@
 - [x] Create draft PR with story ID in title
   - PR #55: https://github.com/TVScoundrel/agentforge/pull/55
 - [x] Move skills unit tests from `packages/core/` to `packages/skills/tests/`
-  - parser tests (34), scanner tests (10), registry tests (27), prompt tests (23), activation tests (40), trust tests (46)
+  - parser tests (32), scanner tests (12), registry tests (27), prompt tests (23), activation tests (40), trust tests (46)
   - Restored from git history (deleted in ST-07003), placed in `packages/skills/tests/`
 - [x] Move conformance suite (35 tests) to `packages/skills/tests/`
 - [x] Move fixture skill packs to `packages/skills/tests/fixtures/`

@@ -11,7 +11,7 @@
  *   scan → parse → register → prompt → activate → read-resource → trust
  *
  * Fixture layout:
- *   tests/skills/fixtures/
+ *   fixtures/
  *   ├── valid/           (code-review, test-generator)
  *   ├── malformed/       (bad-frontmatter, name-mismatch, no-frontmatter)
  *   └── untrusted/       (community-tool with scripts)
