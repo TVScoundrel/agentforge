@@ -206,6 +206,9 @@ importers:
       gray-matter:
         specifier: ^4.0.3
         version: 4.0.3
+      zod:
+        specifier: ^3.24.1
+        version: 3.25.76
     devDependencies:
       '@agentforge/core':
         specifier: workspace:*
@@ -237,9 +240,6 @@ importers:
       vitest:
         specifier: ^2.1.8
         version: 2.1.9(@types/node@22.19.3)(@vitest/ui@2.1.9)
-      zod:
-        specifier: ^3.24.1
-        version: 3.25.76
 
   packages/testing:
     dependencies:

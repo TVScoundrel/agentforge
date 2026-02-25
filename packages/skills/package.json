@@ -30,7 +30,8 @@
     "clean": "rm -rf dist"
   },
   "dependencies": {
-    "gray-matter": "^4.0.3"
+    "gray-matter": "^4.0.3",
+    "zod": "^3.24.1"
   },
   "peerDependencies": {
     "@agentforge/core": ">=0.14.0"
@@ -45,8 +46,7 @@
     "tsup": "^8.3.5",
     "typescript": "^5.7.2",
     "typescript-eslint": "^8.19.1",
-    "vitest": "^2.1.8",
-    "zod": "^3.24.1"
+    "vitest": "^2.1.8"
   },
   "keywords": [
     "agent-skills",
