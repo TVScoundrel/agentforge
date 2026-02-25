@@ -15,6 +15,7 @@ This checklist ensures all steps are completed before tagging and publishing a n
   - [ ] `packages/core/package.json`
   - [ ] `packages/patterns/package.json`
   - [ ] `packages/tools/package.json`
+  - [ ] `packages/skills/package.json`
   - [ ] `packages/testing/package.json`
   - [ ] `packages/cli/package.json`
   - [ ] `docs-site/package.json`
@@ -64,12 +65,14 @@ This checklist ensures all steps are completed before tagging and publishing a n
 - [ ] Verify npm login: `npm whoami`
 - [ ] Publish packages in order:
   - [ ] `cd packages/core && pnpm publish --access public --no-git-checks`
+  - [ ] `cd packages/skills && pnpm publish --access public --no-git-checks`
   - [ ] `cd packages/patterns && pnpm publish --access public --no-git-checks`
   - [ ] `cd packages/tools && pnpm publish --access public --no-git-checks`
   - [ ] `cd packages/testing && pnpm publish --access public --no-git-checks`
   - [ ] `cd packages/cli && pnpm publish --access public --no-git-checks`
 - [ ] Verify all packages are published:
   - [ ] `npm view @agentforge/core version`
+  - [ ] `npm view @agentforge/skills version`
   - [ ] `npm view @agentforge/patterns version`
   - [ ] `npm view @agentforge/tools version`
   - [ ] `npm view @agentforge/testing version`
@@ -88,6 +91,7 @@ This checklist ensures all steps are completed before tagging and publishing a n
 packages/core/package.json
 packages/patterns/package.json
 packages/tools/package.json
+packages/skills/package.json
 packages/testing/package.json
 packages/cli/package.json
 packages/cli/templates/minimal/package.json
@@ -102,8 +106,10 @@ CHANGELOG.md
 
 ### Publish Order (respects dependencies)
 1. @agentforge/core (no agentforge dependencies)
-2. @agentforge/patterns, @agentforge/tools, @agentforge/testing (depend on core)
-3. @agentforge/cli (depends on all above)
+2. @agentforge/skills (depends on core)
+3. @agentforge/patterns, @agentforge/tools (depend on core)
+4. @agentforge/testing (depends on core and patterns; publish after patterns)
+5. @agentforge/cli (depends on all above)
 
 ## Notes
 - Always update CHANGELOG.md BEFORE creating the git tag

@@ -186,18 +186,18 @@
 **Branch:** `feat/st-07006-release-scripts-skills`
 
 ### Checklist
-- [ ] Create branch `feat/st-07006-release-scripts-skills`
-- [ ] Create draft PR with story ID in title
-- [ ] Update `scripts/release.sh` — add `packages/skills/package.json` to `PACKAGE_FILES` array
-- [ ] Update `scripts/publish.sh` — add `packages/skills` to `PACKAGES` array (after core, before cli)
-- [ ] Update `scripts/convert-workspace-deps.mjs` — add `'skills'` to workspace package name list
-- [ ] Update `RELEASE_CHECKLIST.md` — add skills to version bump, publish, and verify sections
-- [ ] Update `.ai/RELEASE_PROCESS.md` — add skills to step 1 (version bump), step 8 (publish order), step 9 (verify), quick checklist, task template
-- [ ] Verify `./scripts/release.sh` dry-run logic still works (or manually inspect changes)
-- [ ] Add or update story documentation (or document why not required)
-- [ ] Assess test impact; add/update automated tests when needed, or document why tests are not required
-- [ ] Update `docs-site/changelog.md` `[Unreleased]` section with changes from this story (or document why not applicable)
-- [ ] Run full test suite before finalizing the PR and record results
-- [ ] Run lint (`pnpm lint`) before finalizing the PR and record results
-- [ ] Mark PR Ready only after all story tasks are complete
+- [x] Create branch `feat/st-07006-release-scripts-skills`
+- [x] Create draft PR with story ID in title — PR #57
+- [x] Update `scripts/release.sh` — add `packages/skills/package.json` to `PACKAGE_FILES` array
+- [x] Update `scripts/publish.sh` — add `packages/skills` to `PACKAGES` array (after core, before patterns)
+- [x] Update `scripts/convert-workspace-deps.mjs` — add `'skills'` to workspace package name list
+- [x] Update `RELEASE_CHECKLIST.md` — add skills to version bump, publish, and verify sections
+- [x] Update `.ai/RELEASE_PROCESS.md` — add skills to step 1 (version bump), step 8 (publish order), step 9 (verify), quick checklist, task template (local-only, .ai/ is gitignored)
+- [x] Verify `./scripts/release.sh` dry-run logic still works — manually inspected: PACKAGE_FILES iteration correctly handles new entry
+- [x] Add or update story documentation — not required; changes are to build/release scripts only, no new APIs or patterns
+- [x] Assess test impact — no tests needed; release scripts are not covered by vitest (shell scripts + Node.js CLI helpers); correctness verified by manual inspection
+- [x] Update `docs-site/changelog.md` `[Unreleased]` section — added "Release Tooling — Skills Package Support" subsection
+- [x] Run full test suite before finalizing the PR and record results — 159 passed | 1 skipped (160 files), 2337 passed | 17 skipped (2354 tests)
+- [x] Run lint (`pnpm lint`) before finalizing the PR and record results — 0 errors, 109 warnings (pre-existing)
+- [x] Mark PR Ready only after all story tasks are complete — PR #57 marked ready for review
 - [ ] Wait for merge; do not merge directly from local branch

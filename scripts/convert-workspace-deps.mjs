@@ -41,7 +41,7 @@ const packageJsonPath = path.join(packageDir, 'package.json');
   const packagesDir = path.join(__dirname, '../packages');
 
   // Read all workspace package versions
-  for (const wsPackageName of ['core', 'patterns', 'tools', 'testing', 'cli']) {
+  for (const wsPackageName of ['core', 'skills', 'patterns', 'tools', 'testing', 'cli']) {
     const wsPackagePath = path.join(packagesDir, wsPackageName, 'package.json');
     try {
       const wsContent = await readFile(wsPackagePath, 'utf-8');

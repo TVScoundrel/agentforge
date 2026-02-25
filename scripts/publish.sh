@@ -70,6 +70,7 @@ cd "$(dirname "$0")/.."
 # Publish packages in dependency order
 PACKAGES=(
     "packages/core"
+    "packages/skills"
     "packages/patterns"
     "packages/tools"
     "packages/testing"
