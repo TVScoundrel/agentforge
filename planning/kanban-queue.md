@@ -1,20 +1,25 @@
-# Kanban Queue: Relational Database Access Tool
+# Kanban Queue: AgentForge
 
-**Last Updated:** 2026-02-24
+**Last Updated:** 2026-02-25
 
 ## Queue Status Summary
 
-- **Ready:** 0 stories
+- **Ready:** 1 story
 - **In Progress:** 0 stories
 - **In Review:** 0 stories
 - **Blocked:** 0 stories
-- **Backlog:** 0 stories
+- **Backlog:** 4 stories
 
 ---
 
 ## Ready
 
-_No stories currently ready_
+### ST-07001: Scaffold `@agentforge/skills` Package
+- **Epic:** EP-07 — Extract Skills into Dedicated Package
+- **Priority:** P0 (Critical)
+- **Estimate:** 3 hours
+- **Dependencies:** None (EP-06 complete)
+- **Branch:** `feat/st-07001-scaffold-skills-package`
 
 ---
 
@@ -38,7 +43,29 @@ _No stories currently blocked_
 
 ## Backlog
 
-_No stories currently in backlog_
+### ST-07002: Move Skills Source Files and Re-wire Imports
+- **Epic:** EP-07
+- **Priority:** P0 (Critical)
+- **Estimate:** 5 hours
+- **Dependencies:** ST-07001
+
+### ST-07003: Add Deprecation Re-exports in Core
+- **Epic:** EP-07
+- **Priority:** P1 (High)
+- **Estimate:** 3 hours
+- **Dependencies:** ST-07002
+
+### ST-07004: Migrate Tests and Fixtures
+- **Epic:** EP-07
+- **Priority:** P0 (Critical)
+- **Estimate:** 4 hours
+- **Dependencies:** ST-07002
+
+### ST-07005: Update Documentation and Examples
+- **Epic:** EP-07
+- **Priority:** P1 (High)
+- **Estimate:** 4 hours
+- **Dependencies:** ST-07003, ST-07004
 
 ---
 

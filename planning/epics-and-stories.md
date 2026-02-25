@@ -76,6 +76,20 @@
 
 ---
 
+### EP-07: Extract Skills into Dedicated Package
+**Capability:** Move the Agent Skills subsystem from `@agentforge/core` into a standalone `@agentforge/skills` package to keep core lean and make skills an explicit opt-in dependency.
+
+**Outcomes:**
+- `@agentforge/core` remains focused on primitives (tool builder, state, middleware, streaming, observability)
+- Skills-specific dependency (`gray-matter`) no longer ships with core
+- Consumers install `@agentforge/skills` only when they need skill features
+- `@agentforge/skills` depends on `@agentforge/core` (same pattern as `@agentforge/patterns`)
+- Public API and import paths migrate from `@agentforge/core` to `@agentforge/skills` with deprecation re-exports in core for one minor version
+
+**Stories:** ST-07001 through ST-07005
+
+---
+
 ## Stories
 
 ### Epic 01: Core Database Connection Management
@@ -570,15 +584,107 @@
 
 ---
 
+### Epic 07: Extract Skills into Dedicated Package
+
+#### ST-07001: Scaffold `@agentforge/skills` Package
+**User story:** As a maintainer, I want a new `packages/skills` workspace package with the standard monorepo scaffolding so that the skills code has a proper home.
+
+**Priority:** P0 (Critical)
+**Estimate:** 3 hours
+**Dependencies:** None (EP-06 complete)
+
+**Acceptance criteria:**
+- [ ] `packages/skills/` created with `package.json`, `tsconfig.json`, `tsup.config.ts` matching monorepo conventions
+- [ ] `@agentforge/core` listed as a peer dependency (and dev dependency)
+- [ ] `gray-matter` dependency moved from core's `package.json` to skills' `package.json`
+- [ ] Dual ESM/CJS build outputs configured (`dist/index.js`, `dist/index.cjs`, `dist/index.d.ts`)
+- [ ] Package registered in `pnpm-workspace.yaml`
+- [ ] `pnpm install` and `pnpm -r build` succeed with the new package present
+- [ ] Vitest workspace config updated to include `packages/skills`
+
+---
+
+#### ST-07002: Move Skills Source Files and Re-wire Imports
+**User story:** As a developer, I want the skills source code to live in `packages/skills/src/` with correct imports so that the module is self-contained.
+
+**Priority:** P0 (Critical)
+**Estimate:** 5 hours
+**Dependencies:** ST-07001
+
+**Acceptance criteria:**
+- [ ] All files from `packages/core/src/skills/` moved to `packages/skills/src/`
+- [ ] Internal relative imports (`../tools/builder.js`, `../tools/types.js`, `../langgraph/observability/logger.js`) replaced with `@agentforge/core` package imports
+- [ ] `packages/skills/src/index.ts` barrel export matches the previous public surface from `packages/core/src/skills/index.ts`
+- [ ] `ToolCategory.SKILLS` enum value remains in `@agentforge/core` (it's a core primitive)
+- [ ] `pnpm -r build` succeeds; `@agentforge/skills` produces valid ESM/CJS output
+- [ ] TypeScript strict mode passes with no new errors
+
+---
+
+#### ST-07003: Add Deprecation Re-exports in Core
+**User story:** As a consumer who imports skills from `@agentforge/core`, I want my existing imports to keep working (with a deprecation warning) for one minor version so that I have time to migrate.
+
+**Priority:** P1 (High)
+**Estimate:** 3 hours
+**Dependencies:** ST-07002
+
+**Acceptance criteria:**
+- [ ] `packages/core/src/skills/index.ts` replaced with thin re-exports from `@agentforge/skills`
+- [ ] Each re-export annotated with `@deprecated` JSDoc pointing to `@agentforge/skills`
+- [ ] `@agentforge/skills` added as an optional peer dependency of core (for the shim)
+- [ ] Console deprecation warning emitted once per process when the shim is loaded
+- [ ] TypeScript `@deprecated` tag causes IDE strikethrough on old imports
+- [ ] `gray-matter` removed from core's `dependencies`
+- [ ] Core build and bundle size verified (smaller without skills code)
+
+---
+
+#### ST-07004: Migrate Tests and Fixtures
+**User story:** As a maintainer, I want the 215+ skills tests and fixture packs to live alongside the skills package so that test ownership is clear.
+
+**Priority:** P0 (Critical)
+**Estimate:** 4 hours
+**Dependencies:** ST-07002
+
+**Acceptance criteria:**
+- [ ] All skills tests moved from `packages/core/tests/` (or `src/__tests__/`) to `packages/skills/tests/`
+- [ ] Fixture skill packs moved to `packages/skills/tests/fixtures/`
+- [ ] Test imports updated from `@agentforge/core` skills paths to `@agentforge/skills` or relative paths
+- [ ] `pnpm test --run` passes with 0 regressions (same test count, same coverage)
+- [ ] Conformance suite runs as part of skills package test suite
+
+---
+
+#### ST-07005: Update Documentation and Examples
+**User story:** As a developer, I want the docs-site, README, and examples to reference `@agentforge/skills` so that new users install the right package.
+
+**Priority:** P1 (High)
+**Estimate:** 4 hours
+**Dependencies:** ST-07003, ST-07004
+
+**Acceptance criteria:**
+- [ ] Docs-site guide, tutorial, examples, and API reference pages updated: install instructions reference `@agentforge/skills`
+- [ ] Import paths in code samples changed from `@agentforge/core` to `@agentforge/skills`
+- [ ] Migration note added to `docs-site/guide/migration.md` documenting the move
+- [ ] `examples/applications/skill-aware-agent` updated to depend on `@agentforge/skills`
+- [ ] Root `README.md` package table updated to include `@agentforge/skills`
+- [ ] `docs-site/changelog.md` entry drafted for next release
+- [ ] Add or update story documentation at `docs/st07005-skills-package-docs-migration.md`
+- [ ] Assess test impact; add/update automated tests when needed, or document why tests are not required
+- [ ] Run full test suite before finalizing the PR and record results
+- [ ] Run lint (`pnpm lint`) before finalizing the PR and record results
+
+---
+
 ## Story Summary
 
-**Total Stories:** 25
+**Total Stories:** 30
 **By Priority:**
-- P0 (Critical): 12 stories
-- P1 (High): 10 stories
+- P0 (Critical): 15 stories
+- P1 (High): 12 stories
 - P2 (Medium): 3 stories
 
-**Total Estimated Effort:** ~116 hours (14.5 working days)
+**Total Estimated Effort:** ~135 hours (16.9 working days)
 
 **Dependency Chain:**
 1. Phase 1 (Foundation): ST-01001 → ST-01002 → ST-01003 → ST-01004
@@ -587,3 +693,4 @@
 4. Phase 4 (Advanced): ST-04001, ST-04002, ST-04003 (can be parallel)
 5. Phase 5 (Quality): ST-05001 → ST-05002 → ST-05003 → ST-05004
 6. Phase 6 (Agent Skills): ST-06001 → ST-06002 → ST-06003 → ST-06004 → ST-06005 → ST-06006
+7. Phase 7 (Skills Extraction): ST-07001 → ST-07002 → [ST-07003, ST-07004 parallel] → ST-07005
