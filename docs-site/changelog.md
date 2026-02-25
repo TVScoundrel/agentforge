@@ -18,8 +18,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Imports re-wired from relative core internals to `@agentforge/core` package imports
 - Logger names updated to `agentforge:skills:*` namespace
 
-### Note
-- `@agentforge/core` still exports the same skills API (deprecation re-exports coming in next release)
+### Removed
+
+#### @agentforge/core — Skills Extraction (Breaking Change)
+- **Skills source code** removed from `@agentforge/core` entirely — import from `@agentforge/skills` instead
+- `gray-matter` removed from core dependencies (now only in `@agentforge/skills`)
+- Core bundle size reduced ~16% (ESM: 171.62 KB → 143.67 KB)
+
+### Breaking Changes
+- `SkillRegistry`, `parseSkillContent`, `scanSkillRoot`, `evaluateTrustPolicy`, and all skills-related types are no longer exported from `@agentforge/core`
+- Consumers must install `@agentforge/skills` and update imports accordingly
 
 ## [0.14.0] - 2026-02-24
 
