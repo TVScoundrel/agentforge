@@ -4,9 +4,9 @@
 
 ## Queue Status Summary
 
-- **Ready:** 3 stories
+- **Ready:** 2 stories
 - **In Progress:** 0 stories
-- **In Review:** 0 stories
+- **In Review:** 1 stories
 - **Blocked:** 0 stories
 - **Backlog:** 1 stories
 
@@ -19,12 +19,6 @@
 - **Priority:** P1 (High)
 - **Estimate:** 2 hours
 - **Dependencies:** ST-07001 (merged)
-
-### ST-07003: Add Deprecation Re-exports in Core
-- **Epic:** EP-07
-- **Priority:** P1 (High)
-- **Estimate:** 3 hours
-- **Dependencies:** ST-07002 (merged)
 
 ### ST-07004: Migrate Tests and Fixtures
 - **Epic:** EP-07
@@ -42,7 +36,12 @@ _No stories currently in progress_
 
 ## In Review
 
-_No stories currently in review_
+### ST-07003: Remove Skills from Core (Breaking Change)
+- **Epic:** EP-07
+- **Priority:** P1 (High)
+- **Estimate:** 3 hours
+- **Dependencies:** ST-07002 (merged)
+- **PR:** #54
 
 ---
 
