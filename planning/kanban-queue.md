@@ -5,8 +5,8 @@
 ## Queue Status Summary
 
 - **Ready:** 0 stories
-- **In Progress:** 1 story
-- **In Review:** 0 stories
+- **In Progress:** 0 stories
+- **In Review:** 1 story
 - **Blocked:** 0 stories
 - **Backlog:** 4 stories
 
@@ -20,6 +20,12 @@ _No stories currently ready_
 
 ## In Progress
 
+_No stories currently in progress_
+
+---
+
+## In Review
+
 ### ST-07001: Scaffold `@agentforge/skills` Package
 - **Epic:** EP-07 — Extract Skills into Dedicated Package
 - **Priority:** P0 (Critical)
@@ -27,12 +33,6 @@ _No stories currently ready_
 - **Dependencies:** None (EP-06 complete)
 - **Branch:** `feat/st-07001-scaffold-skills-package`
 - **PR:** #52
-
----
-
-## In Review
-
-_No stories currently in review_
 
 ---
 

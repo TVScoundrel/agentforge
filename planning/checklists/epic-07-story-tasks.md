@@ -27,9 +27,12 @@
 - [x] Add or update story documentation at `docs/st07001-scaffold-skills-package.md` (or document why not required)
 - [x] Assess test impact; add/update automated tests when needed, or document why tests are not required
   - No tests required — scaffold-only, no business logic. Tests migrate in ST-07004.
-- [ ] Run full test suite before finalizing the PR and record results
-- [ ] Run lint (`pnpm lint`) before finalizing the PR and record results
-- [ ] Mark PR Ready only after all story tasks are complete
+- [x] Run full test suite before finalizing the PR and record results
+  - 158 passed | 1 skipped | 1 failed (160 files); 2336 passed | 17 skipped | 1 failed (2354 tests)
+  - The 1 failure is a **pre-existing flaky timer test** (`packages/tools/tests/web/web-search/utils.test.ts` line 63: expected >=100ms, got 99ms) — unrelated to this change
+- [x] Run lint (`pnpm lint`) before finalizing the PR and record results
+  - 0 errors, 109 warnings (all pre-existing `@typescript-eslint/no-explicit-any`)
+- [x] Mark PR Ready only after all story tasks are complete
 - [ ] Wait for merge; do not merge directly from local branch
 
 ---
