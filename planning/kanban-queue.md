@@ -4,8 +4,8 @@
 
 ## Queue Status Summary
 
-- **Ready:** 1 story
-- **In Progress:** 0 stories
+- **Ready:** 0 stories
+- **In Progress:** 1 story
 - **In Review:** 0 stories
 - **Blocked:** 0 stories
 - **Backlog:** 0 stories
@@ -14,17 +14,19 @@
 
 ## Ready
 
-### ST-07006: Update Release Scripts and Checklist
-- **Epic:** EP-07 — Extract Skills into Dedicated Package
-- **Priority:** P1 (High)
-- **Estimate:** 2 hours
-- **Dependencies:** ST-07001 (merged)
+_No stories currently ready_
 
 ---
 
 ## In Progress
 
-_No stories currently in progress_
+### ST-07006: Update Release Scripts and Checklist
+- **Epic:** EP-07 — Extract Skills into Dedicated Package
+- **Priority:** P1 (High)
+- **Estimate:** 2 hours
+- **Dependencies:** ST-07001 (merged)
+- **Branch:** `feat/st-07006-release-scripts-skills`
+- **PR:** #57
 
 ---
 
