@@ -1,6 +1,6 @@
 {
   "name": "@agentforge/cli",
-  "version": "0.14.0",
+  "version": "0.15.0",
   "description": "CLI for AgentForge to scaffold TypeScript AI agent projects, generate boilerplate, and manage local development workflows.",
   "type": "module",
   "bin": {

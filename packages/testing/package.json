@@ -1,6 +1,6 @@
 {
   "name": "@agentforge/testing",
-  "version": "0.14.0",
+  "version": "0.15.0",
   "description": "Testing utilities for TypeScript AI agents, including mock LLMs, mock tools, state builders, fixtures, and workflow assertions.",
   "type": "module",
   "main": "./dist/index.js",

@@ -5,12 +5,12 @@ All notable changes to AgentForge will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [0.15.0] - 2026-02-25
 
 ### Added
 
-#### @agentforge/skills — Skills Package Source Migration (EP-07)
-- **Skills source files** now live in `@agentforge/skills` with full public API:
+#### @agentforge/skills — New Package (EP-07)
+- **New `@agentforge/skills` package** — Skills source files extracted from `@agentforge/core` into a dedicated package with full public API:
   - `SkillRegistry`, `parseSkillContent`, `scanSkillRoot`, `scanAllSkillRoots`
   - `createActivateSkillTool`, `createReadSkillResourceTool`, `createSkillActivationTools`
   - `evaluateTrustPolicy`, `isScriptResource`, `normalizeRootConfig`, `resolveResourcePath`
@@ -45,6 +45,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Breaking Changes
 - `SkillRegistry`, `parseSkillContent`, `scanSkillRoot`, `evaluateTrustPolicy`, and all skills-related types are no longer exported from `@agentforge/core`
 - Consumers must install `@agentforge/skills` and update imports accordingly
+
+### Published
+- All packages published to npm registry at version 0.15.0:
+  - @agentforge/core@0.15.0
+  - @agentforge/skills@0.15.0
+  - @agentforge/patterns@0.15.0
+  - @agentforge/tools@0.15.0
+  - @agentforge/testing@0.15.0
+  - @agentforge/cli@0.15.0
 
 ## [0.14.0] - 2026-02-24
 

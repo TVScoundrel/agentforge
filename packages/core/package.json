@@ -1,6 +1,6 @@
 {
   "name": "@agentforge/core",
-  "version": "0.14.0",
+  "version": "0.15.0",
   "description": "Production-ready TypeScript agent framework built on LangGraph with orchestration, middleware, and typed abstractions.",
   "type": "module",
   "main": "./dist/index.cjs",
