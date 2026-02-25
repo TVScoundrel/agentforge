@@ -165,12 +165,16 @@
 - [x] Update `examples/applications/skill-aware-agent` to depend on `@agentforge/skills`
 - [x] Update root `README.md` package table to include `@agentforge/skills`
 - [x] Draft `docs-site/changelog.md` entry for next release covering the extraction
-- [ ] Verify `pnpm --filter docs-site dev` builds without dead-link warnings
-- [ ] Add or update story documentation at `docs/st07005-skills-package-docs-migration.md`
-- [ ] Assess test impact; add/update automated tests when needed, or document why tests are not required
+- [x] Verify `pnpm --filter docs-site dev` builds without dead-link warnings
+  - `vitepress build` completed successfully with no errors or dead link warnings
+- [x] Add or update story documentation at `docs/st07005-skills-package-docs-migration.md`
+- [x] Assess test impact; add/update automated tests when needed, or document why tests are not required
+  - No test changes needed — documentation-only story. All 2337 tests pass.
 - [x] Update `docs-site/changelog.md` `[Unreleased]` section with changes from this story (or document why not applicable)
-- [ ] Run full test suite before finalizing the PR and record results
-- [ ] Run lint (`pnpm lint`) before finalizing the PR and record results
+- [x] Run full test suite before finalizing the PR and record results
+  - 159 passed | 1 skipped (160 files); 2337 passed | 17 skipped (2354 tests)
+- [x] Run lint (`pnpm lint`) before finalizing the PR and record results
+  - 0 errors, 109 warnings (all pre-existing `@typescript-eslint/no-explicit-any`)
 - [ ] Mark PR Ready only after all story tasks are complete
 - [ ] Wait for merge; do not merge directly from local branch
 
