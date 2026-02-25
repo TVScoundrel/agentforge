@@ -9,5 +9,5 @@ export default defineConfig({
   clean: true,
   treeshake: true,
   minify: false,
-  external: ['@agentforge/core', '@langchain/core', 'gray-matter'],
+  external: ['@agentforge/core', 'gray-matter'],
 });

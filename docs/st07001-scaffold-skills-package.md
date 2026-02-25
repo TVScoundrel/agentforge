@@ -14,8 +14,8 @@ Scaffolded the `@agentforge/skills` workspace package as the future home for the
 ### Dependency Strategy
 - `@agentforge/core` as **peer dependency** (`>=0.14.0`) — consumer must install core
 - `@agentforge/core` as **dev dependency** (`workspace:*`) — for local development/testing
-- `gray-matter` added to skills' `dependencies` — will be **removed from core** in ST-07003 when the source code moves
-- Cannot remove from core yet because `packages/core/src/skills/parser.ts` still imports it
+- `gray-matter` added to skills' `dependencies` — skills source will move from core to this package in ST-07002; `gray-matter` will be **removed from core** in ST-07003 once the deprecation shim is in place
+- Cannot remove from core yet because `packages/core/src/skills/parser.ts` still imports it; that dependency will be dropped as part of ST-07003
 
 ### tsconfig Convention
 - Matches `packages/testing/tsconfig.json` pattern — standalone config with same options as `tsconfig.base.json` rather than extending it
