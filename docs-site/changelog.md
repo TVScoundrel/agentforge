@@ -33,7 +33,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `scripts/release.sh` — Added `packages/skills/package.json` to `PACKAGE_FILES` for automated version bumps
 - `scripts/publish.sh` — Added `packages/skills` to `PACKAGES` in correct dependency order (after core, before patterns)
 - `scripts/convert-workspace-deps.mjs` — Added `skills` to workspace package name list for workspace:* → concrete version conversion
-- `RELEASE_CHECKLIST.md` — Added skills to version bump, publish order (4-tier: core → skills → patterns/tools/testing → cli), and verify sections
+- `RELEASE_CHECKLIST.md` — Added skills to version bump, publish order (5-tier: core → skills → patterns/tools → testing (depends on core + patterns) → cli), and verify sections
 
 ### Removed
 

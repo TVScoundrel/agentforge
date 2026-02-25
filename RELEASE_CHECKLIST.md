@@ -107,8 +107,9 @@ CHANGELOG.md
 ### Publish Order (respects dependencies)
 1. @agentforge/core (no agentforge dependencies)
 2. @agentforge/skills (depends on core)
-3. @agentforge/patterns, @agentforge/tools, @agentforge/testing (depend on core)
-4. @agentforge/cli (depends on all above)
+3. @agentforge/patterns, @agentforge/tools (depend on core)
+4. @agentforge/testing (depends on core and patterns; publish after patterns)
+5. @agentforge/cli (depends on all above)
 
 ## Notes
 - Always update CHANGELOG.md BEFORE creating the git tag
