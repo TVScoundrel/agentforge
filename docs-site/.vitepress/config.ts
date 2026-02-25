@@ -101,6 +101,7 @@ export default defineConfig({
             { text: '@agentforge/core', link: '/api/core' },
             { text: '@agentforge/patterns', link: '/api/patterns' },
             { text: '@agentforge/cli', link: '/api/cli' },
+            { text: '@agentforge/skills', link: '/api/skills' },
             { text: '@agentforge/testing', link: '/api/testing' },
             { text: '@agentforge/tools', link: '/api/tools' }
           ]

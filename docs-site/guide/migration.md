@@ -46,7 +46,6 @@ The following symbols are now exported from `@agentforge/skills`:
 - `resolveResourcePath`, `evaluateTrustPolicy`, `isScriptResource`
 - `normalizeRootConfig`, `parseSkillContent`, `validateSkillName`
 - `scanSkillRoot`, `scanAllSkillRoots`
-- `createPatternLogger` (skills-specific)
 
 ### Migration Steps
 
