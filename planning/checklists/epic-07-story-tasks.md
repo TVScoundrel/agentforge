@@ -5,22 +5,28 @@
 **Branch:** `feat/st-07001-scaffold-skills-package`
 
 ### Checklist
-- [ ] Create branch `feat/st-07001-scaffold-skills-package`
-- [ ] Create draft PR with story ID in title
-- [ ] Create `packages/skills/` directory with `package.json` (name: `@agentforge/skills`, version matching monorepo)
-- [ ] Set package description to be clear and discoverable while acknowledging AgentForge: e.g. "Composable skill system for building modular AI agents in TypeScript, part of the AgentForge framework"
-- [ ] Set keywords for independent discoverability: `agent-skills`, `llm-skills`, `composable-agents`, `modular-agents`, `skill-authoring`, `agent-capabilities`, `typescript`
-- [ ] Add `@agentforge/core` as peer dependency and dev dependency
-- [ ] Move `gray-matter` dependency from `packages/core/package.json` to `packages/skills/package.json`
-- [ ] Add `tsconfig.json` extending `../../tsconfig.base.json`
-- [ ] Add `tsup.config.ts` for dual ESM/CJS build output
-- [ ] Register `packages/skills` in `pnpm-workspace.yaml`
-- [ ] Update `vitest.workspace.ts` to include `packages/skills`
-- [ ] Create placeholder `src/index.ts` export
-- [ ] Verify `pnpm install` succeeds with workspace linking
-- [ ] Verify `pnpm -r build` succeeds including new package
-- [ ] Add or update story documentation at `docs/st07001-scaffold-skills-package.md` (or document why not required)
-- [ ] Assess test impact; add/update automated tests when needed, or document why tests are not required
+- [x] Create branch `feat/st-07001-scaffold-skills-package`
+- [x] Create draft PR with story ID in title
+  - PR #52: https://github.com/TVScoundrel/agentforge/pull/52
+- [x] Create `packages/skills/` directory with `package.json` (name: `@agentforge/skills`, version matching monorepo)
+- [x] Set package description to be clear and discoverable while acknowledging AgentForge: e.g. "Composable skill system for building modular AI agents in TypeScript, part of the AgentForge framework"
+- [x] Set keywords for independent discoverability: `agent-skills`, `llm-skills`, `composable-agents`, `modular-agents`, `skill-authoring`, `agent-capabilities`, `typescript`
+- [x] Add `@agentforge/core` as peer dependency and dev dependency
+- [x] Move `gray-matter` dependency from `packages/core/package.json` to `packages/skills/package.json`
+  - Added to skills; removal from core deferred to ST-07003 (code still lives in core)
+- [x] Add `tsconfig.json` extending `../../tsconfig.base.json`
+  - Uses matching conventions (ES2022, Node16) without extending base (consistent with testing package)
+- [x] Add `tsup.config.ts` for dual ESM/CJS build output
+- [x] Register `packages/skills` in `pnpm-workspace.yaml`
+  - Auto-included via `packages/*` glob
+- [x] Update `vitest.workspace.ts` to include `packages/skills`
+- [x] Create placeholder `src/index.ts` export
+- [x] Verify `pnpm install` succeeds with workspace linking
+- [x] Verify `pnpm -r build` succeeds including new package
+  - Skills outputs: dist/index.js (ESM), dist/index.cjs (CJS), dist/index.d.ts (DTS)
+- [x] Add or update story documentation at `docs/st07001-scaffold-skills-package.md` (or document why not required)
+- [x] Assess test impact; add/update automated tests when needed, or document why tests are not required
+  - No tests required — scaffold-only, no business logic. Tests migrate in ST-07004.
 - [ ] Run full test suite before finalizing the PR and record results
 - [ ] Run lint (`pnpm lint`) before finalizing the PR and record results
 - [ ] Mark PR Ready only after all story tasks are complete
