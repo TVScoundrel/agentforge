@@ -198,6 +198,15 @@
 
 ---
 
+### ST-07001: Scaffold `@agentforge/skills` Package
+- **Merged:** 2026-02-25
+- **PR:** https://github.com/TVScoundrel/agentforge/pull/52
+- **Epic:** EP-07 (Extract Skills into Dedicated Package)
+- **Estimate:** 3 hours
+- **Outcome:** Scaffolded `@agentforge/skills` workspace package with first-class npm identity (description, keywords for discoverability). Created package.json (v0.14.0, peer dep on core), tsconfig.json, tsup.config.ts (dual ESM/CJS), placeholder src/index.ts, README.md, eslint.config.js. Registered in vitest workspace. Added gray-matter dependency (removal from core deferred to ST-07003). Addressed 8 Copilot review comments across 2 rounds: added README.md and eslint.config.js, removed premature @langchain/core from externals, fixed docs URL, clarified gray-matter timeline; deferred Node16→NodeNext normalization to monorepo-wide chore. All quality gates passed (2336 tests, lint clean). First story of EP-07.
+
+---
+
 ## Archive Format
 
 When a story is completed and merged, it will be recorded here with:

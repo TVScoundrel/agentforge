@@ -4,17 +4,27 @@
 
 ## Queue Status Summary
 
-- **Ready:** 0 stories
+- **Ready:** 2 stories
 - **In Progress:** 0 stories
-- **In Review:** 1 story
+- **In Review:** 0 stories
 - **Blocked:** 0 stories
-- **Backlog:** 5 stories
+- **Backlog:** 3 stories
 
 ---
 
 ## Ready
 
-_No stories currently ready_
+### ST-07002: Move Skills Source Files and Re-wire Imports
+- **Epic:** EP-07 — Extract Skills into Dedicated Package
+- **Priority:** P0 (Critical)
+- **Estimate:** 5 hours
+- **Dependencies:** ST-07001 (merged)
+
+### ST-07006: Update Release Scripts and Checklist
+- **Epic:** EP-07 — Extract Skills into Dedicated Package
+- **Priority:** P1 (High)
+- **Estimate:** 2 hours
+- **Dependencies:** ST-07001 (merged)
 
 ---
 
@@ -26,13 +36,7 @@ _No stories currently in progress_
 
 ## In Review
 
-### ST-07001: Scaffold `@agentforge/skills` Package
-- **Epic:** EP-07 — Extract Skills into Dedicated Package
-- **Priority:** P0 (Critical)
-- **Estimate:** 3 hours
-- **Dependencies:** None (EP-06 complete)
-- **Branch:** `feat/st-07001-scaffold-skills-package`
-- **PR:** #52
+_No stories currently in review_
 
 ---
 
@@ -43,12 +47,6 @@ _No stories currently blocked_
 ---
 
 ## Backlog
-
-### ST-07002: Move Skills Source Files and Re-wire Imports
-- **Epic:** EP-07
-- **Priority:** P0 (Critical)
-- **Estimate:** 5 hours
-- **Dependencies:** ST-07001
 
 ### ST-07003: Add Deprecation Re-exports in Core
 - **Epic:** EP-07
@@ -67,12 +65,6 @@ _No stories currently blocked_
 - **Priority:** P1 (High)
 - **Estimate:** 4 hours
 - **Dependencies:** ST-07003, ST-07004
-
-### ST-07006: Update Release Scripts and Checklist
-- **Epic:** EP-07
-- **Priority:** P1 (High)
-- **Estimate:** 2 hours
-- **Dependencies:** ST-07001
 
 ---
 
@@ -111,3 +103,4 @@ _No stories currently blocked_
 - ✅ ST-06005 complete - agent skills docs and conformance suite (merged 2026-02-24)
 - Epic 06 (Agent Skills Compatibility) — all 6 stories merged; epic complete
 - ✅ ST-06006 complete - comprehensive docs-site documentation for Agent Skills (merged 2026-02-24)
+- ✅ ST-07001 complete - scaffolded @agentforge/skills package (merged 2026-02-25)
