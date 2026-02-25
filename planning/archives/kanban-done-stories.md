@@ -216,6 +216,15 @@
 
 ---
 
+### ST-07003: Remove Skills from Core (Breaking Change)
+- **Merged:** 2026-02-25
+- **PR:** https://github.com/TVScoundrel/agentforge/pull/54
+- **Epic:** EP-07 (Extract Skills into Dedicated Package)
+- **Estimate:** 3 hours
+- **Outcome:** Removed skills system entirely from `@agentforge/core` as a breaking change (clean break, no deprecation shim). Deleted `packages/core/src/skills/` directory (7 files), removed barrel re-export, removed `gray-matter` dependency. Bundle reduction: ESM −16.3% (171.62→143.67 KB), CJS −16.2% (181.15→151.82 KB). Removed 7 dead test files (215 tests) from core — migration to skills package tracked in ST-07004. Original plan called for deprecation re-exports, but circular dependency (core↔skills) made that infeasible, and the skills feature being brand new (EP-06, v0.14.0, no external consumers) justified a clean break. No Copilot review comments. All quality gates passed (2122 tests, lint clean). Third story of EP-07.
+
+---
+
 ## Archive Format
 
 When a story is completed and merged, it will be recorded here with:
