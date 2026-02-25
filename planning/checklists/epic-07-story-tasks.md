@@ -199,5 +199,5 @@
 - [x] Update `docs-site/changelog.md` `[Unreleased]` section — added "Release Tooling — Skills Package Support" subsection
 - [x] Run full test suite before finalizing the PR and record results — 159 passed | 1 skipped (160 files), 2337 passed | 17 skipped (2354 tests)
 - [x] Run lint (`pnpm lint`) before finalizing the PR and record results — 0 errors, 109 warnings (pre-existing)
-- [ ] Mark PR Ready only after all story tasks are complete
+- [x] Mark PR Ready only after all story tasks are complete — PR #57 marked ready for review
 - [ ] Wait for merge; do not merge directly from local branch
