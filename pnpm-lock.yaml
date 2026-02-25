@@ -123,9 +123,6 @@ importers:
       '@langchain/langgraph':
         specifier: ^1.1.2
         version: 1.1.2(@langchain/core@1.1.17(openai@6.16.0(zod@3.25.76)))(zod-to-json-schema@3.25.0(zod@3.25.76))(zod@3.25.76)
-      gray-matter:
-        specifier: ^4.0.3
-        version: 4.0.3
       zod:
         specifier: ^3.23.0
         version: 3.25.76
