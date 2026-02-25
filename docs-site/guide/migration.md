@@ -32,7 +32,7 @@ AgentForge builds on top of LangChain, providing:
 ## Skills Package Extraction {#skills-package-extraction}
 
 ::: warning Breaking Change
-Starting with the latest release, all **Agent Skills** exports have moved from `@agentforge/core` to the dedicated **`@agentforge/skills`** package.
+As of v0.15.0, all **Agent Skills** exports have moved from `@agentforge/core` to the dedicated **`@agentforge/skills`** package.
 :::
 
 ### What Moved

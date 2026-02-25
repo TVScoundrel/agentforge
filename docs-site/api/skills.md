@@ -5,8 +5,10 @@ The skills package provides SKILL.md-driven capability loading for agents. Skill
 ## Installation
 
 ```bash
-pnpm add @agentforge/skills
+pnpm add @agentforge/core @agentforge/skills
 ```
+
+> `@agentforge/core` is a peer dependency of `@agentforge/skills` and must be installed alongside it.
 
 ::: tip
 For a step-by-step tutorial, see [Building a Skill-Powered Agent](/tutorials/skill-powered-agent). For usage patterns, see [Agent Skills Examples](/examples/agent-skills).
