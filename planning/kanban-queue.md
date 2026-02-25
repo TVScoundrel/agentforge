@@ -38,12 +38,6 @@ _No stories currently in progress_
 
 ---
 
-## In Review
-
-_No stories currently in review_
-
----
-
 ## Blocked
 
 _No stories currently blocked_
