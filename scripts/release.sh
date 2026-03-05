@@ -3,9 +3,9 @@
 # AgentForge Release Script
 # This script automates the version bump process for all packages
 #
-# FULL RELEASE PROCESS (see RELEASE_CHECKLIST.md):
+# FULL RELEASE PROCESS (see .ai/RELEASE_PROCESS.md):
 # 1. Run this script: ./scripts/release.sh X.Y.Z
-# 2. Update CHANGELOG.md with release notes (IMPORTANT!)
+# 2. Update docs-site/changelog.md with release notes (IMPORTANT!)
 # 3. Build and test: pnpm build && pnpm test
 # 4. Review changes: git diff
 # 5. Commit: git add . && git commit -m "chore: Bump version to X.Y.Z"
@@ -14,10 +14,10 @@
 # 8. Publish (uses pnpm publish): ./scripts/publish.sh
 #
 # AI Assistant: When asked to do a release, ALWAYS:
-# - Read RELEASE_CHECKLIST.md first
+# - Read .ai/RELEASE_PROCESS.md first
 # - Use task management to track all steps
-# - Don't skip CHANGELOG.md update
-# - Don't create git tag until CHANGELOG is updated
+# - Don't skip docs-site/changelog.md update
+# - Don't create git tag until docs-site/changelog.md is updated
 
 set -e  # Exit on error
 
@@ -158,13 +158,13 @@ fi
 print_success "All version files updated to $NEW_VERSION"
 echo ""
 print_warning "IMPORTANT: You still need to:"
-echo "  1. Update CHANGELOG.md with release notes"
+echo "  1. Update docs-site/changelog.md with release notes"
 echo "  2. Run 'pnpm build' to rebuild all packages"
 echo "  3. Run 'pnpm test' to verify all tests pass"
 echo "  4. Review all changes with 'git diff'"
 echo "  5. Commit changes: git add . && git commit -m 'chore: Bump version to $NEW_VERSION'"
 echo "  6. Create tag: git tag -a v$NEW_VERSION -m 'Release v$NEW_VERSION'"
 echo "  7. Push: git push && git push --tags"
-echo "  8. Publish to npm (see RELEASE_CHECKLIST.md)"
+echo "  8. Publish to npm via ./scripts/publish.sh"
 echo ""
-print_step "See RELEASE_CHECKLIST.md for the complete release process"
+print_step "See .ai/RELEASE_PROCESS.md for the complete release process"

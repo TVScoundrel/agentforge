@@ -409,11 +409,11 @@ For maintainers releasing new versions:
    ```
    This updates all package.json files, CLI templates, and documentation.
 
-2. **Manual Steps** (see [RELEASE_CHECKLIST.md](./RELEASE_CHECKLIST.md)):
-   - Update CHANGELOG.md with release notes
+2. **Manual Steps** (see [release process guide](./.ai/RELEASE_PROCESS.md)):
+   - Update `docs-site/changelog.md` with release notes
    - Run `pnpm build` and `pnpm test`
    - Review changes with `git diff`
-   - Commit: `git add . && git commit -m "chore: Bump version to X.Y.Z"`
+   - Commit: `git add . && git commit -S -m "chore: Bump version to X.Y.Z"`
    - Tag: `git tag -a vX.Y.Z -m "Release vX.Y.Z"`
    - Push: `git push && git push --tags`
 
@@ -423,7 +423,7 @@ For maintainers releasing new versions:
    ```
    This publishes all packages in the correct dependency order.
 
-See [RELEASE_CHECKLIST.md](./RELEASE_CHECKLIST.md) for the complete checklist.
+See [`.ai/RELEASE_PROCESS.md`](./.ai/RELEASE_PROCESS.md) for the complete process.
 
 ---
 
