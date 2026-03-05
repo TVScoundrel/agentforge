@@ -130,6 +130,14 @@ export function buildAgent(config: AgentBuilderConfig): CompiledStateGraph<any, 
 
   // Create the workflow
   const workflow = new StateGraph(state);
+  const dynamicWorkflow = workflow as unknown as {
+    addEdge: (from: string, to: string | typeof END) => void;
+    addConditionalEdges: (
+      from: string,
+      condition: (state: any) => string | typeof END | string[],
+      mapping?: Record<string, string | typeof END>
+    ) => void;
+  };
 
   // Add all nodes
   for (const { name, fn } of nodes) {
@@ -137,19 +145,19 @@ export function buildAgent(config: AgentBuilderConfig): CompiledStateGraph<any, 
   }
 
   // Set entry point
-  workflow.addEdge('__start__', entryPoint);
+  dynamicWorkflow.addEdge('__start__', entryPoint);
 
   // Add simple edges
   for (const edge of edges) {
-    workflow.addEdge(edge.from, edge.to as any);
+    dynamicWorkflow.addEdge(edge.from, edge.to);
   }
 
   // Add conditional edges
   for (const edge of conditionalEdges) {
     if (edge.mapping) {
-      workflow.addConditionalEdges(edge.from, edge.condition as any, edge.mapping as any);
+      dynamicWorkflow.addConditionalEdges(edge.from, edge.condition, edge.mapping);
     } else {
-      workflow.addConditionalEdges(edge.from, edge.condition as any);
+      dynamicWorkflow.addConditionalEdges(edge.from, edge.condition);
     }
   }
 

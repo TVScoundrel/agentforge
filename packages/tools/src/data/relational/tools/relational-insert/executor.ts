@@ -160,7 +160,7 @@ async function executeInsertOnce(
   // execute each statement individually and aggregate results.
   if (Array.isArray(built.query)) {
     let totalRowCount = 0;
-    const allRows: Record<string, unknown>[] = [];
+    const allRows: unknown[] = [];
     const allIds: Array<string | number> = [];
 
     for (const singleQuery of built.query) {
