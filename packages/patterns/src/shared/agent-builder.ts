@@ -134,7 +134,7 @@ export function buildAgent(config: AgentBuilderConfig): CompiledStateGraph<any, 
     addEdge: (from: string, to: string | typeof END) => void;
     addConditionalEdges: (
       from: string,
-      condition: (state: any) => string | typeof END | string[],
+      condition: (state: unknown) => string | typeof END | string[],
       mapping?: Record<string, string | typeof END>
     ) => void;
   };
