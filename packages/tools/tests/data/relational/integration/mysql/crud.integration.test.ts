@@ -11,6 +11,7 @@ import type { ConnectionConfig } from '../../../../../src/data/relational/connec
 import {
   startMySQLContainer,
   stopMySQLContainer,
+  runContainerIntegrationTests,
   type MySQLContainerInfo,
 } from '../setup/containers.js';
 import { setupTestSchema } from '../setup/test-helpers.js';
@@ -18,7 +19,7 @@ import { setupTestSchema } from '../setup/test-helpers.js';
 let mysqlContainer: MySQLContainerInfo;
 let manager: ConnectionManager;
 
-describe('MySQL CRUD Integration', () => {
+describe.skipIf(!runContainerIntegrationTests)('MySQL CRUD Integration', () => {
   beforeAll(async () => {
     mysqlContainer = await startMySQLContainer();
 

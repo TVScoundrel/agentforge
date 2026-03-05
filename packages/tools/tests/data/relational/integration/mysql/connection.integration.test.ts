@@ -11,12 +11,13 @@ import type { ConnectionConfig } from '../../../../../src/data/relational/connec
 import {
   startMySQLContainer,
   stopMySQLContainer,
+  runContainerIntegrationTests,
   type MySQLContainerInfo,
 } from '../setup/containers.js';
 
 let mysqlContainer: MySQLContainerInfo;
 
-describe('MySQL Connection Integration', () => {
+describe.skipIf(!runContainerIntegrationTests)('MySQL Connection Integration', () => {
   let manager: ConnectionManager;
 
   beforeAll(async () => {

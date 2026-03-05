@@ -10,6 +10,12 @@
 import { PostgreSqlContainer, type StartedPostgreSqlContainer } from '@testcontainers/postgresql';
 import { MySqlContainer, type StartedMySqlContainer } from '@testcontainers/mysql';
 
+/**
+ * Integration tests that require Docker/testcontainers are opt-in to keep
+ * default local and CI test runs deterministic.
+ */
+export const runContainerIntegrationTests = process.env.RUN_INTEGRATION_TESTS === 'true';
+
 export interface PostgreSQLContainerInfo {
   container: StartedPostgreSqlContainer;
   connectionString: string;

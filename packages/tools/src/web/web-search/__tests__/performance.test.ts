@@ -7,16 +7,11 @@
 import { describe, it, expect } from 'vitest';
 import { webSearch } from '../index.js';
 
-describe('Web Search Performance Tests', () => {
-  // Skip these tests in CI to avoid rate limiting
-  const skipInCI = process.env.CI === 'true';
+const runWebPerformanceTests = process.env.RUN_WEB_PERFORMANCE_TESTS === 'true';
+
+describe.skipIf(!runWebPerformanceTests)('Web Search Performance Tests', () => {
 
   it('should complete typical query within 5 seconds', async () => {
-    if (skipInCI) {
-      console.log('Skipping performance test in CI');
-      return;
-    }
-
     const startTime = Date.now();
 
     const result = await webSearch.execute({
@@ -34,11 +29,6 @@ describe('Web Search Performance Tests', () => {
   }, 10000); // 10 second timeout for API call
 
   it('should handle large result sets efficiently (maxResults=50)', async () => {
-    if (skipInCI) {
-      console.log('Skipping performance test in CI');
-      return;
-    }
-
     const startTime = Date.now();
 
     const result = await webSearch.execute({
@@ -56,11 +46,6 @@ describe('Web Search Performance Tests', () => {
   }, 15000); // 15 second timeout for large result sets
 
   it('should respect custom timeout', async () => {
-    if (skipInCI) {
-      console.log('Skipping performance test in CI');
-      return;
-    }
-
     const result = await webSearch.execute({
       query: 'Python programming',
       maxResults: 5,
@@ -74,11 +59,6 @@ describe('Web Search Performance Tests', () => {
   }, 10000); // 10 second timeout for test
 
   it('should handle timeout gracefully', async () => {
-    if (skipInCI) {
-      console.log('Skipping performance test in CI');
-      return;
-    }
-
     // Set a very short timeout to test timeout handling
     const result = await webSearch.execute({
       query: 'Machine learning algorithms',
@@ -98,11 +78,6 @@ describe('Web Search Performance Tests', () => {
   }, 10000); // 10 second timeout for test
 
   it('should measure response time accurately', async () => {
-    if (skipInCI) {
-      console.log('Skipping performance test in CI');
-      return;
-    }
-
     const startTime = Date.now();
 
     const result = await webSearch.execute({
@@ -122,11 +97,6 @@ describe('Web Search Performance Tests', () => {
   }, 10000); // 10 second timeout for test
 
   it('should handle concurrent requests efficiently', async () => {
-    if (skipInCI) {
-      console.log('Skipping performance test in CI');
-      return;
-    }
-
     const queries = [
       'TypeScript',
       'JavaScript',
@@ -157,4 +127,3 @@ describe('Web Search Performance Tests', () => {
     console.log(`Average per query: ${duration / 5}ms`);
   }, 20000); // 20 second timeout for concurrent requests
 });
-

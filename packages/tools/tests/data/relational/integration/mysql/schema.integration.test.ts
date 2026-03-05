@@ -10,6 +10,7 @@ import type { ConnectionConfig } from '../../../../../src/data/relational/connec
 import {
   startMySQLContainer,
   stopMySQLContainer,
+  runContainerIntegrationTests,
   type MySQLContainerInfo,
 } from '../setup/containers.js';
 import { setupTestSchema } from '../setup/test-helpers.js';
@@ -18,7 +19,7 @@ import { SchemaInspector } from '../../../../../src/data/relational/schema/schem
 let mysqlContainer: MySQLContainerInfo;
 let manager: ConnectionManager;
 
-describe('MySQL Schema Introspection Integration', () => {
+describe.skipIf(!runContainerIntegrationTests)('MySQL Schema Introspection Integration', () => {
   beforeAll(async () => {
     mysqlContainer = await startMySQLContainer();
 

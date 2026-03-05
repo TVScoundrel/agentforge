@@ -11,12 +11,13 @@ import type { ConnectionConfig } from '../../../../../src/data/relational/connec
 import {
   startPostgreSQLContainer,
   stopPostgreSQLContainer,
+  runContainerIntegrationTests,
   type PostgreSQLContainerInfo,
 } from '../setup/containers.js';
 
 let pgContainer: PostgreSQLContainerInfo;
 
-describe('PostgreSQL Connection Integration', () => {
+describe.skipIf(!runContainerIntegrationTests)('PostgreSQL Connection Integration', () => {
   let manager: ConnectionManager;
 
   beforeAll(async () => {

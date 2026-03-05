@@ -5,6 +5,45 @@ All notable changes to AgentForge will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.15.2] - 2026-03-05
+
+### Added
+
+#### @agentforge/patterns — Testing
+- Added shared regression tests for `withErrorHandling`:
+  - GraphInterrupt passthrough behavior
+  - Error fallback shape behavior for states with optional `status`/`error`
+
+### Changed
+
+#### Release Tooling & Documentation
+- Removed `RELEASE_CHECKLIST.md` to avoid duplicate/conflicting release guidance
+- Updated release references in `README.md` and `scripts/release.sh` to use `.ai/RELEASE_PROCESS.md`
+- Updated release script messaging to reference `docs-site/changelog.md` and `./scripts/publish.sh`
+
+### Fixed
+
+#### @agentforge/tools — Relational Insert
+- Fixed strict typing mismatch in batch insert aggregation (`allRows` now aligned with `InsertResult.rows` type)
+
+#### @agentforge/tools — Test Stability
+- Made Docker-backed relational integration suites opt-in via `RUN_INTEGRATION_TESTS=true` to avoid failing default test runs when container runtime is unavailable
+- Made live web-search performance suite opt-in via `RUN_WEB_PERFORMANCE_TESTS=true` to avoid network-dependent failures in default test runs
+
+#### @agentforge/patterns — Shared Utilities
+- Improved `buildAgent` dynamic edge wiring types for strict typecheck compatibility
+- Refined `withErrorHandling` fallback typing to expose explicit `{ status: 'failed'; error: string }` fallback shape
+- Fixed typecheck compatibility for package-wide strict checks
+
+### Published
+- All packages published to npm registry at version 0.15.2:
+  - @agentforge/core@0.15.2
+  - @agentforge/skills@0.15.2
+  - @agentforge/patterns@0.15.2
+  - @agentforge/tools@0.15.2
+  - @agentforge/testing@0.15.2
+  - @agentforge/cli@0.15.2
+
 ## [0.15.1] - 2026-02-25
 
 ### Fixed
@@ -2241,4 +2280,3 @@ This feature was removed in a later version. See [Unreleased] section for migrat
 - [Documentation](https://tvscoundrel.github.io/agentforge/)
 - [npm Package](https://www.npmjs.com/package/@agentforge/core)
 - [Issues](https://github.com/TVScoundrel/agentforge/issues)
-

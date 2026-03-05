@@ -18,6 +18,7 @@ import type { DatabaseVendor } from '../../../../../src/data/relational/types.js
 import {
   startPostgreSQLContainer,
   stopPostgreSQLContainer,
+  runContainerIntegrationTests,
   type PostgreSQLContainerInfo,
 } from '../setup/containers.js';
 import {
@@ -64,7 +65,7 @@ const benchmarkResults: Array<{
   rowCount: number;
 }> = [];
 
-describe('Performance Benchmarks', () => {
+describe.skipIf(!runContainerIntegrationTests)('Performance Benchmarks', () => {
   beforeAll(async () => {
     // Start PostgreSQL container
     pgContainer = await startPostgreSQLContainer();

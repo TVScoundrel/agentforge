@@ -10,6 +10,7 @@ import type { ConnectionConfig } from '../../../../../src/data/relational/connec
 import {
   startPostgreSQLContainer,
   stopPostgreSQLContainer,
+  runContainerIntegrationTests,
   type PostgreSQLContainerInfo,
 } from '../setup/containers.js';
 import { setupTestSchema } from '../setup/test-helpers.js';
@@ -18,7 +19,7 @@ import { SchemaInspector } from '../../../../../src/data/relational/schema/schem
 let pgContainer: PostgreSQLContainerInfo;
 let manager: ConnectionManager;
 
-describe('PostgreSQL Schema Introspection Integration', () => {
+describe.skipIf(!runContainerIntegrationTests)('PostgreSQL Schema Introspection Integration', () => {
   beforeAll(async () => {
     pgContainer = await startPostgreSQLContainer();
 

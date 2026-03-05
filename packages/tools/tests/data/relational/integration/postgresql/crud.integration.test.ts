@@ -11,6 +11,7 @@ import type { ConnectionConfig } from '../../../../../src/data/relational/connec
 import {
   startPostgreSQLContainer,
   stopPostgreSQLContainer,
+  runContainerIntegrationTests,
   type PostgreSQLContainerInfo,
 } from '../setup/containers.js';
 import { setupTestSchema } from '../setup/test-helpers.js';
@@ -18,7 +19,7 @@ import { setupTestSchema } from '../setup/test-helpers.js';
 let pgContainer: PostgreSQLContainerInfo;
 let manager: ConnectionManager;
 
-describe('PostgreSQL CRUD Integration', () => {
+describe.skipIf(!runContainerIntegrationTests)('PostgreSQL CRUD Integration', () => {
   beforeAll(async () => {
     pgContainer = await startPostgreSQLContainer();
 
