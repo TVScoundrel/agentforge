@@ -103,19 +103,11 @@ export function withErrorHandling<TState extends Record<string, any>>(
       return await nodeFn(state);
     } catch (error) {
       const errorMessage = handleNodeError(error, context, verbose);
-      const fallback: Partial<TState> = {};
-      const stateWithUnknownKeys = state as Record<string, unknown>;
-      const fallbackWithUnknownKeys = fallback as Record<string, unknown>;
-
-      if ('status' in stateWithUnknownKeys) {
-        fallbackWithUnknownKeys.status = 'failed';
-      }
-
-      if ('error' in stateWithUnknownKeys) {
-        fallbackWithUnknownKeys.error = errorMessage;
-      }
-
-      return fallback;
+      const fallback: { status?: string; error?: string } = {
+        status: 'failed',
+        error: errorMessage,
+      };
+      return fallback as Partial<TState>;
     }
   };
 }
