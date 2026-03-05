@@ -93,11 +93,6 @@ export function handleNodeError(
  * );
  * ```
  */
-export function withErrorHandling<TState extends Record<string, any> & { status?: string; error?: string }>(
-  nodeFn: (state: TState) => Promise<Partial<TState>>,
-  context: string,
-  verbose?: boolean
-): (state: TState) => Promise<Partial<TState>>;
 export function withErrorHandling<TState extends Record<string, any>>(
   nodeFn: (state: TState) => Promise<Partial<TState>>,
   context: string,
