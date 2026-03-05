@@ -26,9 +26,7 @@ describe('withErrorHandling', () => {
     );
 
     const result = await wrapped({ input: 'test' });
-    const fallback = result as { status?: string; error?: string };
-
-    expect(fallback.status).toBe('failed');
-    expect(fallback.error).toBe('boom');
+    expect(result.status).toBe('failed');
+    expect(result.error).toBe('boom');
   });
 });

@@ -97,7 +97,7 @@ export function withErrorHandling<TState extends Record<string, any>>(
   nodeFn: (state: TState) => Promise<Partial<TState>>,
   context: string,
   verbose: boolean = false
-): (state: TState) => Promise<Partial<TState>> {
+): (state: TState) => Promise<Partial<TState> | { status?: string; error?: string }> {
   return async (state: TState) => {
     try {
       return await nodeFn(state);
@@ -107,7 +107,7 @@ export function withErrorHandling<TState extends Record<string, any>>(
         status: 'failed',
         error: errorMessage,
       };
-      return fallback as Partial<TState>;
+      return fallback;
     }
   };
 }

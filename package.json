@@ -34,7 +34,7 @@
     "lint:fix": "pnpm -r lint:fix",
     "format": "prettier --write \"packages/**/*.ts\"",
     "format:check": "prettier --check \"packages/**/*.ts\"",
-    "typecheck": "pnpm -r --filter './packages/*' typecheck",
+    "typecheck": "pnpm -r --filter \"./packages/*\" typecheck",
     "typecheck:all": "pnpm -r typecheck",
     "clean": "pnpm -r clean && rm -rf node_modules"
   },
