@@ -93,17 +93,27 @@ export function handleNodeError(
  * );
  * ```
  */
+export function withErrorHandling<TState extends Record<string, any> & { status?: string; error?: string }>(
+  nodeFn: (state: TState) => Promise<Partial<TState>>,
+  context: string,
+  verbose?: boolean
+): (state: TState) => Promise<Partial<TState>>;
+export function withErrorHandling<TState extends Record<string, any>>(
+  nodeFn: (state: TState) => Promise<Partial<TState>>,
+  context: string,
+  verbose?: boolean
+): (state: TState) => Promise<Partial<TState> | { status: 'failed'; error: string }>;
 export function withErrorHandling<TState extends Record<string, any>>(
   nodeFn: (state: TState) => Promise<Partial<TState>>,
   context: string,
   verbose: boolean = false
-): (state: TState) => Promise<Partial<TState> | { status?: string; error?: string }> {
+): (state: TState) => Promise<Partial<TState> | { status: 'failed'; error: string }> {
   return async (state: TState) => {
     try {
       return await nodeFn(state);
     } catch (error) {
       const errorMessage = handleNodeError(error, context, verbose);
-      const fallback: { status?: string; error?: string } = {
+      const fallback: { status: 'failed'; error: string } = {
         status: 'failed',
         error: errorMessage,
       };

@@ -17,7 +17,7 @@ describe('withErrorHandling', () => {
   });
 
   it('returns fallback status and error even when state omits optional channels', async () => {
-    type MinimalState = { input: string };
+    type MinimalState = { input: string; status?: string; error?: string };
     const wrapped = withErrorHandling<MinimalState>(
       async () => {
         throw new Error('boom');
