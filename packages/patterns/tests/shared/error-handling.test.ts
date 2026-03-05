@@ -1,0 +1,32 @@
+import { describe, it, expect } from 'vitest';
+import { withErrorHandling } from '../../src/shared/error-handling.js';
+
+describe('withErrorHandling', () => {
+  it('rethrows GraphInterrupt-like errors', async () => {
+    const graphInterrupt = {
+      constructor: { name: 'GraphInterrupt' },
+    };
+    const wrapped = withErrorHandling(
+      async () => {
+        throw graphInterrupt;
+      },
+      'test-node'
+    );
+
+    await expect(wrapped({ input: 'test' })).rejects.toBe(graphInterrupt);
+  });
+
+  it('returns fallback status and error even when state omits optional channels', async () => {
+    type MinimalState = { input: string; status?: string; error?: string };
+    const wrapped = withErrorHandling<MinimalState>(
+      async () => {
+        throw new Error('boom');
+      },
+      'test-node'
+    );
+
+    const result = await wrapped({ input: 'test' });
+    expect(result.status).toBe('failed');
+    expect(result.error).toBe('boom');
+  });
+});
