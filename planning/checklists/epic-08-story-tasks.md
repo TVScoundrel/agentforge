@@ -28,8 +28,12 @@
 - [x] Run lint (`pnpm lint`) before finalizing the PR and record results
   - `pnpm lint` → 0 errors, warnings-only baseline output in package lint runs
   - `pnpm lint:explicit-any:baseline` → passed at 496/496 (`src/**`)
-- [ ] Commit completed checklist items as logical commits and push updates
-- [ ] Mark PR Ready only after all story tasks are complete
+- [x] Commit completed checklist items as logical commits and push updates
+  - `805b325` fix(st-08001): add explicit-any baseline gate
+  - `3753e64` docs(st-08001): document baseline and validation
+  - Pushed to `origin/codex/fix/st-08001-explicit-any-baseline-gate`
+- [x] Mark PR Ready only after all story tasks are complete
+  - PR #59 marked ready: https://github.com/TVScoundrel/agentforge/pull/59
 - [ ] Wait for merge; do not merge directly from local branch
 
 ---

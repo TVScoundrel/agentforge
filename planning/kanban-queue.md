@@ -5,8 +5,8 @@
 ## Queue Status Summary
 
 - **Ready:** 0 stories
-- **In Progress:** 1 story
-- **In Review:** 0 stories
+- **In Progress:** 0 stories
+- **In Review:** 1 story
 - **Blocked:** 0 stories
 - **Backlog:** 3 stories
 
@@ -20,15 +20,16 @@ _No stories currently ready_
 
 ## In Progress
 
-- [ ] ST-08001 Establish Explicit `any` Baseline and No-Regression Gate for `src/**`
-  - Checklist: `planning/checklists/epic-08-story-tasks.md` (`## ST-08001: Establish Explicit 'any' Baseline and No-Regression Gate for src/**`)
-  - Dependencies: None
+_No stories currently in progress_
 
 ---
 
 ## In Review
 
-_No stories currently in review_
+- [ ] ST-08001 Establish Explicit `any` Baseline and No-Regression Gate for `src/**`
+  - Checklist: `planning/checklists/epic-08-story-tasks.md` (`## ST-08001: Establish Explicit 'any' Baseline and No-Regression Gate for src/**`)
+  - PR: https://github.com/TVScoundrel/agentforge/pull/59
+  - Dependencies: None
 
 ---
 
@@ -95,4 +96,4 @@ _No stories currently blocked_
 - ✅ ST-07006 complete - release scripts and checklist updated for skills package (merged 2026-02-25)
 - Epic 07 (Extract Skills into Dedicated Package) — all 6 stories merged; epic complete
 - Epic 08 (Type Safety Hardening and `no-explicit-any` Debt Burn-Down) created in Fix Mode on 2026-03-06
-- ST-08001 moved to Ready for immediate execution; ST-08002 through ST-08004 queued in Backlog
+- ST-08001 is in review (PR #59); ST-08002 through ST-08004 remain queued in Backlog

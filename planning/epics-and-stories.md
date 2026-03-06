@@ -121,6 +121,7 @@
 **Priority:** P0 (Critical)
 **Estimate:** 2 hours
 **Dependencies:** None
+**Status:** In Review (PR #59, 2026-03-06)
 
 **Acceptance criteria:**
 - [ ] Drizzle ORM packages installed as dependencies (drizzle-orm, drizzle-kit)
