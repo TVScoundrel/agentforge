@@ -32,6 +32,7 @@
   - `805b325` fix(st-08001): add explicit-any baseline gate
   - `3753e64` docs(st-08001): document baseline and validation
   - `5954c2c` chore(st-08001): update trackers to in-review
+  - `4a2aa00` chore(st-08001): correct epic story status mapping
   - Pushed to `origin/codex/fix/st-08001-explicit-any-baseline-gate`
 - [x] Mark PR Ready only after all story tasks are complete
   - PR #59 marked ready: https://github.com/TVScoundrel/agentforge/pull/59
