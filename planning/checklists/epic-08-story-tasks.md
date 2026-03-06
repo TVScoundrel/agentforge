@@ -16,7 +16,7 @@
   - Added `scripts/check-explicit-any-baseline.mjs`
   - Added npm script: `pnpm lint:explicit-any:baseline`
 - [x] Wire the verification command into CI or an existing verification workflow
-  - Integrated into root lint flow (`pnpm lint`)
+  - Added CI-complete lint flow (`pnpm lint:ci`)
   - Added CI workflow `.github/workflows/type-safety-baseline.yml`
 - [x] Document local execution steps and expected pass/fail behavior
   - Documented in `docs/st08001-explicit-any-baseline-and-gate.md` under "Local Verification"

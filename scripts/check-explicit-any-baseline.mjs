@@ -3,10 +3,14 @@
 import { spawnSync } from 'node:child_process';
 import { mkdir, readFile } from 'node:fs/promises';
 import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 
 const RULE_ID = '@typescript-eslint/no-explicit-any';
 const TARGET_GLOB = 'packages/**/src/**/*.ts';
-const ESLINT_CACHE_LOCATION = 'node_modules/.cache/eslint-explicit-any.cache';
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+const REPO_ROOT = path.resolve(__dirname, '..');
+const ESLINT_CACHE_LOCATION = path.join(REPO_ROOT, 'node_modules/.cache/eslint-explicit-any.cache');
 
 function normalizePath(filePath) {
   return filePath.replaceAll('\\', '/');
@@ -118,7 +122,7 @@ async function readEslintResults() {
       '-f',
       'json',
     ],
-    { encoding: 'utf8', maxBuffer: 1024 * 1024 * 50 }
+    { cwd: REPO_ROOT, encoding: 'utf8', maxBuffer: 1024 * 1024 * 50 }
   );
 
   const stdout = eslintRun.stdout ?? '';
