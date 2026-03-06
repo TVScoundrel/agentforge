@@ -31,6 +31,7 @@
 - [x] Commit completed checklist items as logical commits and push updates
   - `805b325` fix(st-08001): add explicit-any baseline gate
   - `3753e64` docs(st-08001): document baseline and validation
+  - `5954c2c` chore(st-08001): update trackers to in-review
   - Pushed to `origin/codex/fix/st-08001-explicit-any-baseline-gate`
 - [x] Mark PR Ready only after all story tasks are complete
   - PR #59 marked ready: https://github.com/TVScoundrel/agentforge/pull/59
