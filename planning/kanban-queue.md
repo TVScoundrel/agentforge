@@ -1,20 +1,22 @@
 # Kanban Queue: AgentForge
 
-**Last Updated:** 2026-02-25
+**Last Updated:** 2026-03-06
 
 ## Queue Status Summary
 
-- **Ready:** 0 stories
+- **Ready:** 1 story
 - **In Progress:** 0 stories
 - **In Review:** 0 stories
 - **Blocked:** 0 stories
-- **Backlog:** 0 stories
+- **Backlog:** 3 stories
 
 ---
 
 ## Ready
 
-_No stories currently ready_
+- [ ] ST-08001 Establish Explicit `any` Baseline and No-Regression Gate for `src/**`
+  - Checklist: `planning/checklists/epic-08-story-tasks.md` (`## ST-08001: Establish Explicit 'any' Baseline and No-Regression Gate for src/**`)
+  - Dependencies: None
 
 ---
 
@@ -38,7 +40,15 @@ _No stories currently blocked_
 
 ## Backlog
 
-_No stories in backlog_
+- [ ] ST-08002 Hardening Pass 1 for `@agentforge/core` Runtime Hotspots
+  - Checklist: `planning/checklists/epic-08-story-tasks.md` (`## ST-08002: Hardening Pass 1 for @agentforge/core Runtime Hotspots`)
+  - Dependencies: ST-08001
+- [ ] ST-08003 Hardening Pass 1 for `@agentforge/tools` and `@agentforge/patterns`
+  - Checklist: `planning/checklists/epic-08-story-tasks.md` (`## ST-08003: Hardening Pass 1 for @agentforge/tools and @agentforge/patterns`)
+  - Dependencies: ST-08001
+- [ ] ST-08004 Test/Example Typing Policy and Targeted Cleanup
+  - Checklist: `planning/checklists/epic-08-story-tasks.md` (`## ST-08004: Test/Example Typing Policy and Targeted Cleanup`)
+  - Dependencies: ST-08001
 
 ---
 
@@ -84,3 +94,5 @@ _No stories in backlog_
 - ✅ ST-07005 complete - documentation migration to @agentforge/skills imports (merged 2026-02-25)
 - ✅ ST-07006 complete - release scripts and checklist updated for skills package (merged 2026-02-25)
 - Epic 07 (Extract Skills into Dedicated Package) — all 6 stories merged; epic complete
+- Epic 08 (Type Safety Hardening and `no-explicit-any` Debt Burn-Down) created in Fix Mode on 2026-03-06
+- ST-08001 moved to Ready for immediate execution; ST-08002 through ST-08004 queued in Backlog

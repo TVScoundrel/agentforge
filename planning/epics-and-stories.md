@@ -95,6 +95,22 @@
 
 ---
 
+### EP-08: Type Safety Hardening and `no-explicit-any` Debt Burn-Down
+**Capability:** Improve runtime type safety and reduce lint warning debt by removing high-risk explicit `any` usage and enforcing a no-regression gate.
+
+**Outcomes:**
+- Runtime-facing code paths in `core`, `tools`, and `patterns` use stronger typing (`unknown` + narrowing, explicit generics) instead of broad `any`
+- Lint noise is reduced and warning regressions are prevented for `src/**` code
+- Tests/examples have a clear, documented policy for intentional `any` usage to avoid ambiguous warning debt
+
+**Fix-mode New Epic Exception Rationale:**
+- This remediation is cross-cutting and does not fit existing feature epics (EP-01 through EP-07 are domain-specific and complete).
+- It establishes a durable capability boundary for ongoing engineering quality controls (type-safety governance + warning regression controls).
+
+**Stories:** ST-08001 through ST-08004
+
+---
+
 ## Stories
 
 ### Epic 01: Core Database Connection Management
@@ -712,15 +728,88 @@
 
 ---
 
+### Epic 08: Type Safety Hardening and `no-explicit-any` Debt Burn-Down
+
+#### Fix Context: Explicit `any` Warning Debt and Runtime Type Weakness
+- Symptom: Large workspace baseline of `@typescript-eslint/no-explicit-any` warnings, including runtime-facing `src/**` code.
+- Impact: Reduced static guarantees in critical paths and noisy lint output that obscures meaningful regressions.
+- Root-cause hypothesis: Historical velocity favored permissive typings (`any`, `as any`, broad records) and there is no no-regression gate for `src/**`.
+- Owning epic(s): EP-08
+- Rollback/safety control: Keep changes behavior-preserving, scoped per story, and require full test + lint verification before PR readiness.
+
+#### ST-08001: Establish Explicit `any` Baseline and No-Regression Gate for `src/**`
+**User story:** As a maintainer, I want an explicit-any baseline and a no-regression guard in CI so that warning debt cannot grow while remediation proceeds incrementally.
+
+**Priority:** P0 (Critical)
+**Estimate:** 2 hours
+**Dependencies:** None
+
+**Acceptance criteria:**
+- [ ] Baseline counts for `@typescript-eslint/no-explicit-any` are captured for `packages/**/src/**/*.ts` and documented in the story documentation
+- [ ] A CI/verification command fails if explicit-`any` warnings in `src/**` increase above the committed baseline
+- [ ] Verification command is documented and runnable locally
+- [ ] Existing lint workflow remains compatible (no regressions to current lint/test scripts)
+- [ ] Add or update story documentation at `docs/st08001-explicit-any-baseline-and-gate.md`
+
+---
+
+#### ST-08002: Hardening Pass 1 for `@agentforge/core` Runtime Hotspots
+**User story:** As a maintainer, I want to replace high-risk explicit `any` usage in core runtime paths so that core APIs and execution flows have stronger compile-time guarantees.
+
+**Priority:** P1 (High)
+**Estimate:** 4 hours
+**Dependencies:** ST-08001
+
+**Acceptance criteria:**
+- [ ] High-volume `@typescript-eslint/no-explicit-any` warnings are reduced in `packages/core/src/tools/registry.ts`, `packages/core/src/tools/executor.ts`, and `packages/core/src/resources/http-pool.ts`
+- [ ] Replacements use `unknown` + narrowing, concrete generics, or stronger domain types instead of reintroducing `any`
+- [ ] No behavior regressions in existing unit/integration tests for touched areas
+- [ ] Story docs summarize key type-design decisions and narrowing patterns used
+- [ ] Add or update story documentation at `docs/st08002-core-runtime-type-hardening.md`
+
+---
+
+#### ST-08003: Hardening Pass 1 for `@agentforge/tools` and `@agentforge/patterns`
+**User story:** As a maintainer, I want to reduce explicit `any` usage in tools/patterns runtime surfaces so that downstream consumers get safer type inference and fewer runtime type ambiguities.
+
+**Priority:** P1 (High)
+**Estimate:** 4 hours
+**Dependencies:** ST-08001
+
+**Acceptance criteria:**
+- [ ] `@typescript-eslint/no-explicit-any` warnings are reduced in high-warning runtime files within `packages/tools/src/**` and `packages/patterns/src/**`
+- [ ] Shared helper/type aliases are introduced where useful to avoid repeated broad casts
+- [ ] Public function signatures remain backward compatible unless explicitly documented
+- [ ] Tests covering touched packages pass with no functional regressions
+- [ ] Add or update story documentation at `docs/st08003-tools-patterns-type-hardening.md`
+
+---
+
+#### ST-08004: Test/Example Typing Policy and Targeted Cleanup
+**User story:** As a maintainer, I want a clear policy for intentional `any` usage in tests/examples so that lint output remains useful without blocking practical test authoring patterns.
+
+**Priority:** P2 (Medium)
+**Estimate:** 2 hours
+**Dependencies:** ST-08001
+
+**Acceptance criteria:**
+- [ ] Policy documented for when `any` is acceptable in tests/examples vs when `unknown`/specific types are required
+- [ ] ESLint configuration is updated if needed so policy is enforceable and predictable per file scope
+- [ ] A targeted cleanup removes low-effort explicit-`any` warnings in tests/examples without reducing test clarity
+- [ ] Lint output after cleanup is recorded in story docs for reviewer visibility
+- [ ] Add or update story documentation at `docs/st08004-test-example-typing-policy.md`
+
+---
+
 ## Story Summary
 
-**Total Stories:** 31
+**Total Stories:** 36
 **By Priority:**
-- P0 (Critical): 15 stories
-- P1 (High): 12 stories
-- P2 (Medium): 3 stories
+- P0 (Critical): 17 stories
+- P1 (High): 14 stories
+- P2 (Medium): 5 stories
 
-**Total Estimated Effort:** ~135 hours (16.9 working days)
+**Total Estimated Effort:** ~147 hours (18.4 working days)
 
 **Dependency Chain:**
 1. Phase 1 (Foundation): ST-01001 → ST-01002 → ST-01003 → ST-01004
@@ -730,3 +819,4 @@
 5. Phase 5 (Quality): ST-05001 → ST-05002 → ST-05003 → ST-05004
 6. Phase 6 (Agent Skills): ST-06001 → ST-06002 → ST-06003 → ST-06004 → ST-06005 → ST-06006
 7. Phase 7 (Skills Extraction): ST-07001 → ST-07002 → [ST-07003, ST-07004 parallel] → ST-07005; ST-07001 → ST-07006 (independent)
+8. Phase 8 (Type Safety Hardening): ST-08001 → [ST-08002, ST-08003, ST-08004 parallel]
