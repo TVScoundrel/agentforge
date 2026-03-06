@@ -46,5 +46,5 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
-      - name: Verify explicit-any baseline
-        run: pnpm lint:explicit-any:baseline
+      - name: Run lint and explicit-any baseline gate
+        run: pnpm lint:ci
