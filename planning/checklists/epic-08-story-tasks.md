@@ -2,7 +2,7 @@
 
 ## ST-08001: Establish Explicit `any` Baseline and No-Regression Gate for `src/**`
 
-**Branch:** `fix/st-08001-explicit-any-baseline-gate`
+**Branch:** `codex/fix/st-08001-explicit-any-baseline-gate`
 
 ### Checklist
 - [x] Create branch `fix/st-08001-explicit-any-baseline-gate`

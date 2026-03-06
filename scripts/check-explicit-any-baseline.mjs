@@ -2,10 +2,11 @@
 
 import { spawnSync } from 'node:child_process';
 import { mkdir, readFile } from 'node:fs/promises';
+import path from 'node:path';
 
 const RULE_ID = '@typescript-eslint/no-explicit-any';
 const TARGET_GLOB = 'packages/**/src/**/*.ts';
-const ESLINT_CACHE_LOCATION = '.tmp/eslint-explicit-any.cache';
+const ESLINT_CACHE_LOCATION = 'node_modules/.cache/eslint-explicit-any.cache';
 
 function normalizePath(filePath) {
   return filePath.replaceAll('\\', '/');
@@ -86,7 +87,7 @@ function validateBaselineConfig(baseline) {
 }
 
 async function readEslintResults() {
-  await mkdir('.tmp', { recursive: true });
+  await mkdir(path.dirname(ESLINT_CACHE_LOCATION), { recursive: true });
 
   const eslintRun = spawnSync(
     'pnpm',
