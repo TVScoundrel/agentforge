@@ -40,6 +40,34 @@ function collectCounts(eslintResults) {
 }
 
 function validateBaselineConfig(baseline) {
+  if (!baseline || typeof baseline !== 'object' || Array.isArray(baseline)) {
+    console.error('Baseline config must be a JSON object.');
+    process.exit(1);
+  }
+
+  if (typeof baseline.maxWarnings !== 'number' || !Number.isFinite(baseline.maxWarnings) || baseline.maxWarnings < 0) {
+    console.error('Baseline config field "maxWarnings" is required and must be a non-negative number.');
+    process.exit(1);
+  }
+
+  if (!baseline.byPackage || typeof baseline.byPackage !== 'object' || Array.isArray(baseline.byPackage)) {
+    console.error('Baseline config field "byPackage" is required and must be an object of package caps.');
+    process.exit(1);
+  }
+
+  for (const [pkg, cap] of Object.entries(baseline.byPackage)) {
+    if (!pkg) {
+      console.error('Baseline config "byPackage" contains an empty package name.');
+      process.exit(1);
+    }
+    if (typeof cap !== 'number' || !Number.isFinite(cap) || cap < 0) {
+      console.error(
+        `Baseline config "byPackage.${pkg}" must be a non-negative number, got: ${String(cap)}.`
+      );
+      process.exit(1);
+    }
+  }
+
   if (baseline.ruleId && baseline.ruleId !== RULE_ID) {
     console.error(
       `Baseline ruleId mismatch: baseline has "${baseline.ruleId}" but checker expects "${RULE_ID}".`
