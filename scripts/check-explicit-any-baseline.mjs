@@ -86,6 +86,22 @@ function validateBaselineConfig(baseline) {
   }
 }
 
+async function loadBaselineConfig() {
+  try {
+    const baselineJson = await readFile(
+      new URL('./no-explicit-any-baseline.json', import.meta.url),
+      'utf8'
+    );
+    return JSON.parse(baselineJson);
+  } catch (error) {
+    console.error(
+      'Unable to load or parse baseline JSON from scripts/no-explicit-any-baseline.json:',
+      error
+    );
+    process.exit(1);
+  }
+}
+
 async function readEslintResults() {
   await mkdir(path.dirname(ESLINT_CACHE_LOCATION), { recursive: true });
 
@@ -150,7 +166,7 @@ async function readEslintResults() {
   }
 }
 
-const baseline = JSON.parse(await readFile(new URL('./no-explicit-any-baseline.json', import.meta.url), 'utf8'));
+const baseline = await loadBaselineConfig();
 validateBaselineConfig(baseline);
 const eslintResults = await readEslintResults();
 const { total, byPackage, byFile } = collectCounts(eslintResults);
