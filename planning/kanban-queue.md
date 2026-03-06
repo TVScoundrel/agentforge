@@ -4,8 +4,8 @@
 
 ## Queue Status Summary
 
-- **Ready:** 1 story
-- **In Progress:** 0 stories
+- **Ready:** 0 stories
+- **In Progress:** 1 story
 - **In Review:** 0 stories
 - **Blocked:** 0 stories
 - **Backlog:** 3 stories
@@ -14,15 +14,15 @@
 
 ## Ready
 
-- [ ] ST-08001 Establish Explicit `any` Baseline and No-Regression Gate for `src/**`
-  - Checklist: `planning/checklists/epic-08-story-tasks.md` (`## ST-08001: Establish Explicit 'any' Baseline and No-Regression Gate for src/**`)
-  - Dependencies: None
+_No stories currently ready_
 
 ---
 
 ## In Progress
 
-_No stories currently in progress_
+- [ ] ST-08001 Establish Explicit `any` Baseline and No-Regression Gate for `src/**`
+  - Checklist: `planning/checklists/epic-08-story-tasks.md` (`## ST-08001: Establish Explicit 'any' Baseline and No-Regression Gate for src/**`)
+  - Dependencies: None
 
 ---
 
