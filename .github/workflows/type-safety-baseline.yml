@@ -1,0 +1,50 @@
+# Explicit-any baseline gate for src code
+name: Type Safety Baseline
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'packages/**/*.ts'
+      - 'scripts/check-explicit-any-baseline.mjs'
+      - 'scripts/no-explicit-any-baseline.json'
+      - 'eslint.config.js'
+      - 'packages/**/eslint.config.js'
+      - 'package.json'
+      - 'pnpm-lock.yaml'
+      - '.github/workflows/type-safety-baseline.yml'
+  pull_request:
+    branches: [main]
+    paths:
+      - 'packages/**/*.ts'
+      - 'scripts/check-explicit-any-baseline.mjs'
+      - 'scripts/no-explicit-any-baseline.json'
+      - 'eslint.config.js'
+      - 'packages/**/eslint.config.js'
+      - 'package.json'
+      - 'pnpm-lock.yaml'
+      - '.github/workflows/type-safety-baseline.yml'
+  workflow_dispatch:
+
+jobs:
+  explicit-any-baseline:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Verify explicit-any baseline
+        run: pnpm lint:explicit-any:baseline
