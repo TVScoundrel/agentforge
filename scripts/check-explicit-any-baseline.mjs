@@ -69,10 +69,17 @@ const baseline = JSON.parse(await readFile(new URL('./no-explicit-any-baseline.j
 const eslintResults = readEslintResults();
 const { total, byPackage, byFile } = collectCounts(eslintResults);
 
-const packageRows = Object.entries(baseline.byPackage ?? {}).map(([name, max]) => {
-  const current = byPackage.get(name) ?? 0;
-  return { name, current, max };
-});
+const baselineByPackage = baseline.byPackage ?? {};
+const packageNames = new Set([...Object.keys(baselineByPackage), ...byPackage.keys(), 'unknown']);
+
+const packageRows = [...packageNames]
+  .sort((a, b) => a.localeCompare(b))
+  .map((name) => {
+    const current = byPackage.get(name) ?? 0;
+    const hasBaselineEntry = Object.prototype.hasOwnProperty.call(baselineByPackage, name);
+    const max = hasBaselineEntry ? baselineByPackage[name] : 0;
+    return { name, current, max, hasBaselineEntry };
+  });
 
 const regressions = packageRows.filter((row) => row.current > row.max);
 const totalRegression = total > baseline.maxWarnings;
@@ -93,6 +100,9 @@ if (regressions.length > 0 || totalRegression) {
 
   for (const regression of regressions) {
     console.error(`- Package ${regression.name} increased: ${regression.current} > ${regression.max}`);
+  }
+  for (const regression of regressions.filter((row) => !row.hasBaselineEntry)) {
+    console.error(`  Add "${regression.name}" to scripts/no-explicit-any-baseline.json to set an explicit cap.`);
   }
 
   const topFiles = [...byFile.entries()].sort((a, b) => b[1] - a[1]).slice(0, 10);
