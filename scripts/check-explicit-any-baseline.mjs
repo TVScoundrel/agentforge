@@ -1,10 +1,11 @@
 #!/usr/bin/env node
 
 import { spawnSync } from 'node:child_process';
-import { readFile } from 'node:fs/promises';
+import { mkdir, readFile } from 'node:fs/promises';
 
 const RULE_ID = '@typescript-eslint/no-explicit-any';
 const TARGET_GLOB = 'packages/**/src/**/*.ts';
+const ESLINT_CACHE_LOCATION = '.tmp/eslint-explicit-any.cache';
 
 function normalizePath(filePath) {
   return filePath.replaceAll('\\', '/');
@@ -38,17 +39,72 @@ function collectCounts(eslintResults) {
   return { total, byPackage, byFile };
 }
 
-function readEslintResults() {
+function validateBaselineConfig(baseline) {
+  if (baseline.ruleId && baseline.ruleId !== RULE_ID) {
+    console.error(
+      `Baseline ruleId mismatch: baseline has "${baseline.ruleId}" but checker expects "${RULE_ID}".`
+    );
+    console.error('Update scripts/no-explicit-any-baseline.json or adjust checker constants.');
+    process.exit(1);
+  }
+
+  if (baseline.target && baseline.target !== TARGET_GLOB) {
+    console.error(
+      `Baseline target mismatch: baseline has "${baseline.target}" but checker expects "${TARGET_GLOB}".`
+    );
+    console.error('Update scripts/no-explicit-any-baseline.json or adjust checker constants.');
+    process.exit(1);
+  }
+}
+
+async function readEslintResults() {
+  await mkdir('.tmp', { recursive: true });
+
   const eslintRun = spawnSync(
     'pnpm',
-    ['exec', 'eslint', TARGET_GLOB, '--max-warnings=-1', '-f', 'json'],
+    [
+      'exec',
+      'eslint',
+      TARGET_GLOB,
+      '--max-warnings=-1',
+      '--cache',
+      '--cache-location',
+      ESLINT_CACHE_LOCATION,
+      '-f',
+      'json',
+    ],
     { encoding: 'utf8', maxBuffer: 1024 * 1024 * 50 }
   );
 
   const stdout = eslintRun.stdout ?? '';
   const stderr = eslintRun.stderr ?? '';
 
-  // ESLint exits non-zero when lint errors exist, but JSON output can still be valid.
+  if (eslintRun.error) {
+    console.error('Failed to run ESLint for explicit-any baseline check:', eslintRun.error);
+    if (stderr.trim()) {
+      console.error(stderr.trim());
+    }
+    process.exit(1);
+  }
+
+  if (typeof eslintRun.status === 'number' && eslintRun.status !== 0) {
+    if (stderr.trim()) {
+      console.error(stderr.trim());
+    }
+    console.error(
+      `ESLint exited with non-zero status (${eslintRun.status}) during explicit-any baseline check.`
+    );
+    process.exit(eslintRun.status || 1);
+  }
+
+  if (eslintRun.signal) {
+    if (stderr.trim()) {
+      console.error(stderr.trim());
+    }
+    console.error(`ESLint terminated by signal (${eslintRun.signal}) during baseline check.`);
+    process.exit(1);
+  }
+
   if (!stdout.trim().startsWith('[')) {
     if (stderr.trim()) {
       console.error(stderr.trim());
@@ -66,7 +122,8 @@ function readEslintResults() {
 }
 
 const baseline = JSON.parse(await readFile(new URL('./no-explicit-any-baseline.json', import.meta.url), 'utf8'));
-const eslintResults = readEslintResults();
+validateBaselineConfig(baseline);
+const eslintResults = await readEslintResults();
 const { total, byPackage, byFile } = collectCounts(eslintResults);
 
 const baselineByPackage = baseline.byPackage ?? {};
