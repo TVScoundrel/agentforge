@@ -181,7 +181,7 @@ const eslintResults = await readEslintResults();
 const { total, byPackage, byFile } = collectCounts(eslintResults);
 
 const baselineByPackage = baseline.byPackage ?? {};
-const packageNames = new Set([...Object.keys(baselineByPackage), ...byPackage.keys(), 'unknown']);
+const packageNames = new Set([...Object.keys(baselineByPackage), ...byPackage.keys()]);
 
 const packageRows = [...packageNames]
   .sort((a, b) => a.localeCompare(b))

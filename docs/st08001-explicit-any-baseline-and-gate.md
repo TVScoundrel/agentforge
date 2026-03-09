@@ -8,7 +8,7 @@ Implemented a repository-level baseline gate for `@typescript-eslint/no-explicit
 
 | File | Change |
 |------|--------|
-| `scripts/check-explicit-any-baseline.mjs` | Added baseline checker that runs ESLint for `src/**`, compares current warning counts against baseline totals/package caps, and fails on regressions |
+| `scripts/check-explicit-any-baseline.mjs` | Added baseline checker that runs ESLint for `packages/**/src/**/*.ts`, compares current warning counts against baseline totals/package caps, and fails on regressions |
 | `scripts/no-explicit-any-baseline.json` | Added committed baseline snapshot (`maxWarnings: 496`) with per-package caps |
 | `package.json` | Added `lint:explicit-any:baseline` plus `lint:ci` to run full lint + baseline gate in CI flows |
 | `.github/workflows/type-safety-baseline.yml` | Added CI workflow to enforce baseline on push/PR to `main` |
