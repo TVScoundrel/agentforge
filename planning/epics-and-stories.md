@@ -743,6 +743,7 @@
 **Priority:** P0 (Critical)
 **Estimate:** 2 hours
 **Dependencies:** None
+**Status:** In Review (PR #59, 2026-03-06)
 
 **Acceptance criteria:**
 - [ ] Baseline counts for `@typescript-eslint/no-explicit-any` are captured for `packages/**/src/**/*.ts` and documented in the story documentation

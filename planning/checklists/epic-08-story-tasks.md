@@ -2,21 +2,40 @@
 
 ## ST-08001: Establish Explicit `any` Baseline and No-Regression Gate for `src/**`
 
-**Branch:** `fix/st-08001-explicit-any-baseline-gate`
+**Branch:** `codex/fix/st-08001-explicit-any-baseline-gate`
 
 ### Checklist
-- [ ] Create branch `fix/st-08001-explicit-any-baseline-gate`
-- [ ] Create draft PR with story ID in title
-- [ ] Capture baseline `@typescript-eslint/no-explicit-any` counts for `packages/**/src/**/*.ts` and record package/file hotspots
-- [ ] Implement a verification command that fails when `src/**` explicit-`any` warnings increase above baseline
-- [ ] Wire the verification command into CI or an existing verification workflow
-- [ ] Document local execution steps and expected pass/fail behavior
-- [ ] Add or update story documentation at `docs/st08001-explicit-any-baseline-and-gate.md` (or document why not required)
-- [ ] Assess test impact; add/update automated tests when needed, or document why tests are not required
-- [ ] Run full test suite before finalizing the PR and record results
-- [ ] Run lint (`pnpm lint`) before finalizing the PR and record results
-- [ ] Commit completed checklist items as logical commits and push updates
-- [ ] Mark PR Ready only after all story tasks are complete
+- [x] Create branch `codex/fix/st-08001-explicit-any-baseline-gate`
+  - Created as `codex/fix/st-08001-explicit-any-baseline-gate` (workspace branch-prefix policy)
+- [x] Create draft PR with story ID in title
+  - PR #59: https://github.com/TVScoundrel/agentforge/pull/59
+- [x] Capture baseline `@typescript-eslint/no-explicit-any` counts for `packages/**/src/**/*.ts` and record package/file hotspots
+  - Baseline captured in `scripts/no-explicit-any-baseline.json` and documented in `docs/st08001-explicit-any-baseline-and-gate.md`
+  - Total: 496 warnings (`src/**`) | Packages: core 256, tools 82, patterns 82, testing 51, cli 25, skills 0
+- [x] Implement a verification command that fails when `src/**` explicit-`any` warnings increase above baseline
+  - Added `scripts/check-explicit-any-baseline.mjs`
+  - Added npm script: `pnpm lint:explicit-any:baseline`
+- [x] Wire the verification command into CI or an existing verification workflow
+  - Added CI-complete lint flow (`pnpm lint:ci`)
+  - Added CI workflow `.github/workflows/type-safety-baseline.yml`
+- [x] Document local execution steps and expected pass/fail behavior
+  - Documented in `docs/st08001-explicit-any-baseline-and-gate.md` under "Local Verification"
+- [x] Add or update story documentation at `docs/st08001-explicit-any-baseline-and-gate.md` (or document why not required)
+- [x] Assess test impact; add/update automated tests when needed, or document why tests are not required
+  - No runtime behavior changes; tooling/CI-only story, so no new tests added
+- [x] Run full test suite before finalizing the PR and record results
+  - `pnpm test --run` → 145 passed | 16 skipped (161 files); 2070 passed | 286 skipped (2356 tests)
+- [x] Run lint (`pnpm lint`) before finalizing the PR and record results
+  - `pnpm lint` → 0 errors, warnings-only baseline output in package lint runs
+  - `pnpm lint:explicit-any:baseline` → passed at 496/496 (`src/**`)
+- [x] Commit completed checklist items as logical commits and push updates
+  - `805b325` fix(st-08001): add explicit-any baseline gate
+  - `3753e64` docs(st-08001): document baseline and validation
+  - `5954c2c` chore(st-08001): update trackers to in-review
+  - `4a2aa00` chore(st-08001): correct epic story status mapping
+  - Pushed to `origin/codex/fix/st-08001-explicit-any-baseline-gate`
+- [x] Mark PR Ready only after all story tasks are complete
+  - PR #59 marked ready: https://github.com/TVScoundrel/agentforge/pull/59
 - [ ] Wait for merge; do not merge directly from local branch
 
 ---
