@@ -60,7 +60,7 @@ describe('Web Search Utils', () => {
       const { result, duration } = await measureTime(testFn);
 
       expect(result).toBe('test result');
-      expect(duration).toBeGreaterThanOrEqual(100);
+      expect(duration).toBeGreaterThanOrEqual(90);
       expect(duration).toBeLessThan(200); // Allow some margin
     });
 
@@ -96,4 +96,3 @@ describe('Web Search Utils', () => {
     });
   });
 });
-

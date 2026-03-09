@@ -5,6 +5,37 @@ All notable changes to AgentForge will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.15.3] - 2026-03-09
+
+### Added
+
+#### Type Safety Governance
+- Added an explicit `any` no-regression baseline checker for `packages/**/src/**/*.ts`
+- Added committed baseline snapshot at `scripts/no-explicit-any-baseline.json`
+- Added CI workflow to enforce the baseline gate (`.github/workflows/type-safety-baseline.yml`)
+- Added story documentation for the baseline and local verification flow
+
+### Changed
+
+#### Linting Policy Alignment
+- Added `lint:explicit-any:baseline` and `lint:ci` scripts in root `package.json`
+- Aligned `@typescript-eslint/no-explicit-any` to `warn` in `@agentforge/testing` and `@agentforge/skills` package ESLint configs so package lint and baseline enforcement are consistent
+- Tightened baseline schema validation and output behavior in `scripts/check-explicit-any-baseline.mjs`:
+  - Require matching `ruleId` and `target`
+  - Enforce integer caps for total and per-package warning limits
+  - Run ESLint from repo root with explicit cache location
+  - Improve baseline load/parse and command execution error handling
+  - Remove non-actionable always-on `unknown: 0/0` output row
+
+### Published
+- All packages published to npm registry at version 0.15.3:
+  - @agentforge/core@0.15.3
+  - @agentforge/skills@0.15.3
+  - @agentforge/patterns@0.15.3
+  - @agentforge/tools@0.15.3
+  - @agentforge/testing@0.15.3
+  - @agentforge/cli@0.15.3
+
 ## [0.15.2] - 2026-03-05
 
 ### Added
