@@ -5,7 +5,7 @@
 **Branch:** `codex/fix/st-08001-explicit-any-baseline-gate`
 
 ### Checklist
-- [x] Create branch `fix/st-08001-explicit-any-baseline-gate`
+- [x] Create branch `codex/fix/st-08001-explicit-any-baseline-gate`
   - Created as `codex/fix/st-08001-explicit-any-baseline-gate` (workspace branch-prefix policy)
 - [x] Create draft PR with story ID in title
   - PR #59: https://github.com/TVScoundrel/agentforge/pull/59

@@ -50,8 +50,13 @@ function validateBaselineConfig(baseline) {
     process.exit(1);
   }
 
-  if (typeof baseline.maxWarnings !== 'number' || !Number.isFinite(baseline.maxWarnings) || baseline.maxWarnings < 0) {
-    console.error('Baseline config field "maxWarnings" is required and must be a non-negative number.');
+  if (
+    typeof baseline.maxWarnings !== 'number' ||
+    !Number.isFinite(baseline.maxWarnings) ||
+    !Number.isInteger(baseline.maxWarnings) ||
+    baseline.maxWarnings < 0
+  ) {
+    console.error('Baseline config field "maxWarnings" is required and must be a non-negative integer.');
     process.exit(1);
   }
 
@@ -65,25 +70,25 @@ function validateBaselineConfig(baseline) {
       console.error('Baseline config "byPackage" contains an empty package name.');
       process.exit(1);
     }
-    if (typeof cap !== 'number' || !Number.isFinite(cap) || cap < 0) {
+    if (typeof cap !== 'number' || !Number.isFinite(cap) || !Number.isInteger(cap) || cap < 0) {
       console.error(
-        `Baseline config "byPackage.${pkg}" must be a non-negative number, got: ${String(cap)}.`
+        `Baseline config "byPackage.${pkg}" must be a non-negative integer, got: ${String(cap)}.`
       );
       process.exit(1);
     }
   }
 
-  if (baseline.ruleId && baseline.ruleId !== RULE_ID) {
+  if (baseline.ruleId !== RULE_ID) {
     console.error(
-      `Baseline ruleId mismatch: baseline has "${baseline.ruleId}" but checker expects "${RULE_ID}".`
+      `Baseline ruleId mismatch: baseline must declare "${RULE_ID}", got "${String(baseline.ruleId)}".`
     );
     console.error('Update scripts/no-explicit-any-baseline.json or adjust checker constants.');
     process.exit(1);
   }
 
-  if (baseline.target && baseline.target !== TARGET_GLOB) {
+  if (baseline.target !== TARGET_GLOB) {
     console.error(
-      `Baseline target mismatch: baseline has "${baseline.target}" but checker expects "${TARGET_GLOB}".`
+      `Baseline target mismatch: baseline must declare "${TARGET_GLOB}", got "${String(baseline.target)}".`
     );
     console.error('Update scripts/no-explicit-any-baseline.json or adjust checker constants.');
     process.exit(1);
