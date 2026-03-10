@@ -760,7 +760,7 @@
 **Priority:** P1 (High)
 **Estimate:** 4 hours
 **Dependencies:** ST-08001
-**Status:** In Review (PR #60, 2026-03-10)
+**Status:** Merged (PR #60, 2026-03-10)
 
 **Acceptance criteria:**
 - [ ] High-volume `@typescript-eslint/no-explicit-any` warnings are reduced in `packages/core/src/tools/registry.ts`, `packages/core/src/tools/executor.ts`, and `packages/core/src/resources/http-pool.ts`

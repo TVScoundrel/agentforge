@@ -2,7 +2,7 @@
 
 **Purpose:** Track completed and merged stories for the Relational Database Access Tool project.
 
-**Last Updated:** 2026-02-24
+**Last Updated:** 2026-03-10
 
 ---
 
@@ -231,6 +231,22 @@
 - **Epic:** EP-07 (Extract Skills into Dedicated Package)
 - **Estimate:** 4 hours
 - **Outcome:** Migrated all 215 skills tests (7 test files) and 11 fixture skill packs from `packages/core/tests/skills/` to `packages/skills/tests/`. Restored from git history (deleted in ST-07003), updated 15 import paths from `../../src/skills/*` to `../src/*` and 2 imports from `../../src/tools/types.js` to `@agentforge/core`. Fixed fixture layout comment path. Corrected per-file test counts (parser 32, scanner 12). Addressed 2 Copilot review comments. All quality gates passed (2337 tests, lint clean). Fourth story of EP-07.
+
+---
+
+### ST-08001: Establish Explicit `any` Baseline and No-Regression Gate for `src/**`
+- **Merged:** 2026-03-09
+- **PR:** https://github.com/TVScoundrel/agentforge/pull/59 (commit 27ede91)
+- **Epic:** EP-08 (Type Safety Hardening and `no-explicit-any` Debt Burn-Down)
+- **Estimate:** 2 hours
+- **Outcome:** Added explicit-`any` baseline capture and a no-regression verification gate for `packages/**/src/**/*.ts`, wired the check into CI/lint workflows, and documented local verification behavior in `docs/st08001-explicit-any-baseline-and-gate.md`.
+
+### ST-08002: Hardening Pass 1 for `@agentforge/core` Runtime Hotspots
+- **Merged:** 2026-03-10
+- **PR:** https://github.com/TVScoundrel/agentforge/pull/60 (commit 78ba4c6)
+- **Epic:** EP-08 (Type Safety Hardening and `no-explicit-any` Debt Burn-Down)
+- **Estimate:** 4 hours
+- **Outcome:** Hardened `@agentforge/core` runtime typing in tool registry/executor and HTTP pool hotspots, added focused `http-pool` tests, and validated reductions in explicit-`any` warnings with story decisions captured in `docs/st08002-core-runtime-type-hardening.md`.
 
 ---
 

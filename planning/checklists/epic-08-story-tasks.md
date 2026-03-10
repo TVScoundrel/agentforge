@@ -36,7 +36,8 @@
   - Pushed to `origin/codex/fix/st-08001-explicit-any-baseline-gate`
 - [x] Mark PR Ready only after all story tasks are complete
   - PR #59 marked ready: https://github.com/TVScoundrel/agentforge/pull/59
-- [ ] Wait for merge; do not merge directly from local branch
+- [x] Wait for merge; do not merge directly from local branch
+  - Merged via PR #59 on 2026-03-09
 
 ---
 
@@ -69,7 +70,8 @@
   - `3080b0d` docs(st-08002): finalize validation and review status
 - [x] Mark PR Ready only after all story tasks are complete
   - PR #60 marked ready: https://github.com/TVScoundrel/agentforge/pull/60
-- [ ] Wait for merge; do not merge directly from local branch
+- [x] Wait for merge; do not merge directly from local branch
+  - Merged via PR #60 on 2026-03-10
 
 ---
 
