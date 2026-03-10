@@ -19,24 +19,32 @@ export interface HttpPoolConfig extends PoolConfig {
 }
 
 export interface HttpClient {
-  get<T = any>(url: string, config?: RequestConfig): Promise<HttpResponse<T>>;
-  post<T = any>(url: string, data?: any, config?: RequestConfig): Promise<HttpResponse<T>>;
-  put<T = any>(url: string, data?: any, config?: RequestConfig): Promise<HttpResponse<T>>;
-  delete<T = any>(url: string, config?: RequestConfig): Promise<HttpResponse<T>>;
-  request<T = any>(config: RequestConfig): Promise<HttpResponse<T>>;
+  get<T = unknown>(url: string, config?: RequestConfig): Promise<HttpResponse<T>>;
+  post<T = unknown, TData = unknown>(
+    url: string,
+    data?: TData,
+    config?: RequestConfig<TData>
+  ): Promise<HttpResponse<T>>;
+  put<T = unknown, TData = unknown>(
+    url: string,
+    data?: TData,
+    config?: RequestConfig<TData>
+  ): Promise<HttpResponse<T>>;
+  delete<T = unknown>(url: string, config?: RequestConfig): Promise<HttpResponse<T>>;
+  request<T = unknown, TData = unknown>(config: RequestConfig<TData>): Promise<HttpResponse<T>>;
   close(): Promise<void>;
 }
 
-export interface RequestConfig {
+export interface RequestConfig<TData = unknown> {
   url?: string;
   method?: string;
   headers?: Record<string, string>;
-  params?: Record<string, any>;
-  data?: any;
+  params?: Record<string, unknown>;
+  data?: TData;
   timeout?: number;
 }
 
-export interface HttpResponse<T = any> {
+export interface HttpResponse<T = unknown> {
   data: T;
   status: number;
   statusText: string;
@@ -61,25 +69,35 @@ export interface HttpPoolOptions {
 class MockHttpClient implements HttpClient {
   private closed = false;
 
-  constructor(private config: HttpConfig) {}
+  constructor(private readonly _config: HttpConfig) {}
 
-  async get<T = any>(url: string, config?: RequestConfig): Promise<HttpResponse<T>> {
+  async get<T = unknown>(url: string, config?: RequestConfig): Promise<HttpResponse<T>> {
     return this.request<T>({ ...config, url, method: 'GET' });
   }
 
-  async post<T = any>(url: string, data?: any, config?: RequestConfig): Promise<HttpResponse<T>> {
+  async post<T = unknown, TData = unknown>(
+    url: string,
+    data?: TData,
+    config?: RequestConfig<TData>
+  ): Promise<HttpResponse<T>> {
     return this.request<T>({ ...config, url, method: 'POST', data });
   }
 
-  async put<T = any>(url: string, data?: any, config?: RequestConfig): Promise<HttpResponse<T>> {
+  async put<T = unknown, TData = unknown>(
+    url: string,
+    data?: TData,
+    config?: RequestConfig<TData>
+  ): Promise<HttpResponse<T>> {
     return this.request<T>({ ...config, url, method: 'PUT', data });
   }
 
-  async delete<T = any>(url: string, config?: RequestConfig): Promise<HttpResponse<T>> {
+  async delete<T = unknown>(url: string, config?: RequestConfig): Promise<HttpResponse<T>> {
     return this.request<T>({ ...config, url, method: 'DELETE' });
   }
 
-  async request<T = any>(config: RequestConfig): Promise<HttpResponse<T>> {
+  async request<T = unknown, TData = unknown>(
+    _config: RequestConfig<TData>
+  ): Promise<HttpResponse<T>> {
     if (this.closed) {
       throw new Error('Client is closed');
     }
@@ -139,7 +157,9 @@ export class HttpPool {
     return this.pool.release(client);
   }
 
-  async request<T = any>(config: RequestConfig): Promise<HttpResponse<T>> {
+  async request<T = unknown, TData = unknown>(
+    config: RequestConfig<TData>
+  ): Promise<HttpResponse<T>> {
     const client = await this.acquire();
     try {
       return await client.request<T>(config);
@@ -164,4 +184,3 @@ export class HttpPool {
 export function createHttpPool(options: HttpPoolOptions): HttpPool {
   return new HttpPool(options);
 }
-

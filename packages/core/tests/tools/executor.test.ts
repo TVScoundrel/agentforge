@@ -156,6 +156,27 @@ describe('Tool Executor', () => {
       expect(result).toBe('Success after 2 attempts');
       expect(attempts).toBe(2);
     });
+
+    it('should throw a clear error when maxAttempts is less than 1', async () => {
+      const invoke = vi.fn(async (input: string) => `Result: ${input}`);
+      const tool = {
+        name: 'invalid-retry-policy-tool',
+        invoke,
+      };
+
+      const executor = createToolExecutor({
+        retryPolicy: {
+          maxAttempts: 0,
+          backoff: 'fixed',
+          initialDelay: 10,
+        },
+      });
+
+      await expect(executor.execute(tool, 'test')).rejects.toThrow(
+        'Invalid retry policy: maxAttempts must be an integer >= 1'
+      );
+      expect(invoke).not.toHaveBeenCalled();
+    });
   });
 
   describe('metrics tracking', () => {
@@ -270,4 +291,3 @@ describe('Tool Executor', () => {
     });
   });
 });
-

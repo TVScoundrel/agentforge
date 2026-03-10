@@ -42,22 +42,33 @@
 
 ## ST-08002: Hardening Pass 1 for `@agentforge/core` Runtime Hotspots
 
-**Branch:** `fix/st-08002-core-runtime-type-hardening`
+**Branch:** `codex/fix/st-08002-core-runtime-type-hardening`
 
 ### Checklist
-- [ ] Create branch `fix/st-08002-core-runtime-type-hardening`
-- [ ] Create draft PR with story ID in title
-- [ ] Replace explicit `any` usage in `packages/core/src/tools/registry.ts` hotspots with `unknown` + narrowing or specific generic constraints
-- [ ] Replace explicit `any` usage in `packages/core/src/tools/executor.ts` hotspots with stronger domain typing
-- [ ] Replace explicit `any` usage in `packages/core/src/resources/http-pool.ts` hotspots with safer typed boundaries
-- [ ] Add focused tests or adapt existing tests to validate behavior remains unchanged in touched areas
-- [ ] Record before/after warning counts for touched files in PR/story docs
-- [ ] Add or update story documentation at `docs/st08002-core-runtime-type-hardening.md` (or document why not required)
-- [ ] Assess test impact; add/update automated tests when needed, or document why tests are not required
-- [ ] Run full test suite before finalizing the PR and record results
-- [ ] Run lint (`pnpm lint`) before finalizing the PR and record results
-- [ ] Commit completed checklist items as logical commits and push updates
-- [ ] Mark PR Ready only after all story tasks are complete
+- [x] Create branch `codex/fix/st-08002-core-runtime-type-hardening`
+- [x] Create draft PR with story ID in title
+  - PR #60: https://github.com/TVScoundrel/agentforge/pull/60
+- [x] Replace explicit `any` usage in `packages/core/src/tools/registry.ts` hotspots with `unknown` + narrowing or specific generic constraints
+- [x] Replace explicit `any` usage in `packages/core/src/tools/executor.ts` hotspots with stronger domain typing
+- [x] Replace explicit `any` usage in `packages/core/src/resources/http-pool.ts` hotspots with safer typed boundaries
+- [x] Add focused tests or adapt existing tests to validate behavior remains unchanged in touched areas
+  - Added `packages/core/tests/resources/http-pool.test.ts`
+  - Ran targeted touched-area tests (`registry`, `executor`, `http-pool`) → 58 passed
+- [x] Record before/after warning counts for touched files in PR/story docs
+  - Recorded in `docs/st08002-core-runtime-type-hardening.md` (`25/21/18 -> 0/0/0`, core `256 -> 192`)
+- [x] Add or update story documentation at `docs/st08002-core-runtime-type-hardening.md` (or document why not required)
+- [x] Assess test impact; add/update automated tests when needed, or document why tests are not required
+  - Added focused `http-pool` tests and re-ran touched-area validations
+- [x] Run full test suite before finalizing the PR and record results
+  - `pnpm test --run` → 146 passed | 16 skipped (162 files); 2073 passed | 286 skipped (2359 tests)
+- [x] Run lint (`pnpm lint`) before finalizing the PR and record results
+  - `pnpm lint` → 0 errors (warnings-only across workspace)
+- [x] Commit completed checklist items as logical commits and push updates
+  - `6a28091` refactor(st-08002): harden core runtime typing hotspots
+  - `a7208e2` chore(st-08002): record draft PR creation
+  - `3080b0d` docs(st-08002): finalize validation and review status
+- [x] Mark PR Ready only after all story tasks are complete
+  - PR #60 marked ready: https://github.com/TVScoundrel/agentforge/pull/60
 - [ ] Wait for merge; do not merge directly from local branch
 
 ---
