@@ -777,6 +777,7 @@
 **Priority:** P1 (High)
 **Estimate:** 4 hours
 **Dependencies:** ST-08001
+**Status:** In Progress (2026-03-10)
 
 **Acceptance criteria:**
 - [ ] `@typescript-eslint/no-explicit-any` warnings are reduced in high-warning runtime files within `packages/tools/src/**` and `packages/patterns/src/**`

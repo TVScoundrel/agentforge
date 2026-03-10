@@ -77,10 +77,11 @@
 
 ## ST-08003: Hardening Pass 1 for `@agentforge/tools` and `@agentforge/patterns`
 
-**Branch:** `fix/st-08003-tools-patterns-type-hardening`
+**Branch:** `codex/fix/st-08003-tools-patterns-type-hardening`
 
 ### Checklist
-- [ ] Create branch `fix/st-08003-tools-patterns-type-hardening`
+- [x] Create branch `fix/st-08003-tools-patterns-type-hardening`
+  - Created as `codex/fix/st-08003-tools-patterns-type-hardening` (workspace branch-prefix policy)
 - [ ] Create draft PR with story ID in title
 - [ ] Reduce explicit `any` usage in top warning files under `packages/tools/src/**`
 - [ ] Reduce explicit `any` usage in top warning files under `packages/patterns/src/**`
