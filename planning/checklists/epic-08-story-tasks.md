@@ -63,7 +63,10 @@
   - `pnpm test --run` → 146 passed | 16 skipped (162 files); 2073 passed | 286 skipped (2359 tests)
 - [x] Run lint (`pnpm lint`) before finalizing the PR and record results
   - `pnpm lint` → 0 errors (warnings-only across workspace)
-- [ ] Commit completed checklist items as logical commits and push updates
+- [x] Commit completed checklist items as logical commits and push updates
+  - `6a28091` refactor(st-08002): harden core runtime typing hotspots
+  - `a7208e2` chore(st-08002): record draft PR creation
+  - `3080b0d` docs(st-08002): finalize validation and review status
 - [x] Mark PR Ready only after all story tasks are complete
   - PR #60 marked ready: https://github.com/TVScoundrel/agentforge/pull/60
 - [ ] Wait for merge; do not merge directly from local branch
