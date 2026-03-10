@@ -17,7 +17,7 @@ import { handleNodeError } from '../shared/error-handling.js';
 
 // Create logger for nodes
 const logLevel = (process.env.LOG_LEVEL?.toLowerCase() as LogLevel) || LogLevel.INFO;
-const logger = createLogger('multi-agent:nodes', { level: logLevel });
+const logger = createLogger('agentforge:patterns:multi-agent:nodes', { level: logLevel });
 
 /**
  * Default system prompt for aggregator
@@ -324,7 +324,9 @@ Execute the assigned task using your skills and tools. Provide a clear, actionab
             toolCount: tools.length,
             toolNames: tools.map(t => t.metadata.name)
           });
-          const langchainTools = toLangChainTools(tools);
+          const langchainTools = toLangChainTools(
+            tools as unknown as Parameters<typeof toLangChainTools>[0]
+          );
           modelToUse = model!.bindTools(langchainTools);
         }
 
@@ -623,4 +625,3 @@ Please synthesize these results into a comprehensive response that addresses the
     }
   };
 }
-

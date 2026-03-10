@@ -11,13 +11,14 @@ import type { CompiledStateGraph } from '@langchain/langgraph';
 import type { RunnableConfig } from '@langchain/core/runnables';
 import type { MultiAgentStateType } from './state.js';
 import type { TaskResult } from './schemas.js';
+import type { WorkerExecutionConfig } from './types.js';
 import { createLogger, LogLevel } from '@agentforge/core';
 import { handleNodeError } from '../shared/error-handling.js';
 
 // Create logger for multi-agent utils
 // Log level can be controlled via LOG_LEVEL environment variable
 const logLevel = (process.env.LOG_LEVEL?.toLowerCase() as LogLevel) || LogLevel.INFO;
-const logger = createLogger('multi-agent', { level: logLevel });
+const logger = createLogger('agentforge:patterns:multi-agent:utils', { level: logLevel });
 
 type ReActAgentGraph = CompiledStateGraph<string, unknown>;
 
@@ -33,6 +34,13 @@ interface ReActResultShape {
 
 function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === 'object' && value !== null;
+}
+
+function toRunnableConfig(config: WorkerExecutionConfig | undefined): RunnableConfig | undefined {
+  if (!isRecord(config)) {
+    return undefined;
+  }
+  return config as RunnableConfig;
 }
 
 function getReActResultShape(value: unknown): ReActResultShape {
@@ -132,10 +140,14 @@ export function wrapReActAgent(
   workerId: string,
   agent: ReActAgentGraph,
   verbose = false
-): (state: MultiAgentStateType, config?: RunnableConfig) => Promise<Partial<MultiAgentStateType>> {
-  return async (state: MultiAgentStateType, config?: RunnableConfig): Promise<Partial<MultiAgentStateType>> => {
+): (state: MultiAgentStateType, config?: WorkerExecutionConfig) => Promise<Partial<MultiAgentStateType>> {
+  return async (
+    state: MultiAgentStateType,
+    config?: WorkerExecutionConfig
+  ): Promise<Partial<MultiAgentStateType>> => {
     try {
       logger.debug('Wrapping ReAct agent execution', { workerId });
+      const runnableConfig = toRunnableConfig(config);
 
       // Find current assignment for this worker
       const currentAssignment = state.activeAssignments.find(
@@ -163,23 +175,23 @@ export function wrapReActAgent(
       // Generate worker-specific thread_id for separate checkpoint namespace
       // This allows the worker's ReAct agent to have its own checkpoint that can be resumed independently
       // Format: {parent_thread_id}:worker:{workerId}
-      const workerThreadId = config?.configurable?.thread_id
-        ? `${config.configurable.thread_id}:worker:${workerId}`
+      const workerThreadId = runnableConfig?.configurable?.thread_id
+        ? `${runnableConfig.configurable.thread_id}:worker:${workerId}`
         : undefined;
 
       const workerConfig: RunnableConfig | undefined = workerThreadId
         ? {
-          ...config,
+          ...runnableConfig,
           configurable: {
-            ...(config?.configurable ?? {}),
+            ...(runnableConfig?.configurable ?? {}),
             thread_id: workerThreadId
           }
         }
-        : config;
+        : runnableConfig;
 
       logger.debug('Invoking ReAct agent with worker-specific config', {
         workerId,
-        parentThreadId: config?.configurable?.thread_id,
+        parentThreadId: runnableConfig?.configurable?.thread_id,
         workerThreadId,
         hasConfig: !!workerConfig
       });

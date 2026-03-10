@@ -18,7 +18,7 @@ import { RoutingDecisionSchema } from './schemas.js';
 
 // Create logger for agent system
 const logLevel = (process.env.LOG_LEVEL?.toLowerCase() as LogLevel) || LogLevel.INFO;
-const logger = createLogger('multi-agent:system', { level: logLevel });
+const logger = createLogger('agentforge:patterns:multi-agent:system', { level: logLevel });
 
 type ToolLike = {
   metadata?: { name?: string };
