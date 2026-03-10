@@ -68,3 +68,11 @@ Results:
 - Lint/typecheck passed for touched code.
 - Focused tests passed (`58` tests across touched core areas).
 - Baseline gate passed and reported improvement.
+
+## Finalization Gates
+
+- `pnpm test --run`:
+  - `146` passed | `16` skipped (test files)
+  - `2073` passed | `286` skipped (tests)
+- `pnpm lint`:
+  - Passed with warnings-only output (0 errors).
