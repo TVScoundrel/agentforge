@@ -40,6 +40,9 @@ export enum RegistryEvent {
 export type EventHandler = (data: unknown) => void;
 
 type RegistryTool = Tool<unknown, unknown>;
+// Use `never` for erased input so heterogeneous Tool<TInput, TOutput> values
+// remain assignable through the contravariant invoke parameter.
+type RegisterManyTool = Tool<never, unknown>;
 
 function eraseToolType<TInput, TOutput>(tool: Tool<TInput, TOutput>): RegistryTool {
   return tool as unknown as RegistryTool;
@@ -315,12 +318,14 @@ export class ToolRegistry {
    * registry.registerMany([tool1, tool2, tool3]);
    * ```
    */
-  registerMany(tools: RegistryTool[]): void {
+  registerMany(tools: Iterable<RegisterManyTool>): void {
+    const toolsToRegister = Array.from(tools);
+
     // Check for duplicates within the input list first
     const inputNames = new Set<string>();
     const duplicatesInInput: string[] = [];
 
-    for (const tool of tools) {
+    for (const tool of toolsToRegister) {
       const name = tool.metadata.name;
       if (inputNames.has(name)) {
         duplicatesInInput.push(name);
@@ -337,7 +342,7 @@ export class ToolRegistry {
 
     // Check for conflicts with existing tools
     const conflicts: string[] = [];
-    for (const tool of tools) {
+    for (const tool of toolsToRegister) {
       if (this.tools.has(tool.metadata.name)) {
         conflicts.push(tool.metadata.name);
       }
@@ -350,7 +355,7 @@ export class ToolRegistry {
     }
 
     // Register all tools
-    for (const tool of tools) {
+    for (const tool of toolsToRegister) {
       this.register(tool);
     }
   }
