@@ -7,6 +7,11 @@
 import { Node, Relationship, Path, Integer } from 'neo4j-driver';
 import type { Neo4jNode, Neo4jRelationship, Neo4jPath } from '../types.js';
 
+type Neo4jRecord = {
+  keys: PropertyKey[];
+  get: (key: PropertyKey) => unknown;
+};
+
 /**
  * Convert Neo4j Integer to JavaScript number or string
  */
@@ -20,7 +25,7 @@ export function formatInteger(value: Integer): number | string {
 /**
  * Format any Neo4j value to JSON-serializable format
  */
-export function formatValue(value: any): any {
+export function formatValue(value: unknown): unknown {
   if (value === null || value === undefined) {
     return value;
   }
@@ -52,7 +57,7 @@ export function formatValue(value: any): any {
 
   // Handle objects
   if (typeof value === 'object') {
-    const formatted: Record<string, any> = {};
+    const formatted: Record<string, unknown> = {};
     for (const [key, val] of Object.entries(value)) {
       formatted[key] = formatValue(val);
     }
@@ -69,7 +74,7 @@ export function formatNode(node: Node): Neo4jNode {
   return {
     identity: formatInteger(node.identity),
     labels: node.labels,
-    properties: formatValue(node.properties),
+    properties: formatValue(node.properties) as Neo4jNode['properties'],
   };
 }
 
@@ -82,7 +87,7 @@ export function formatRelationship(rel: Relationship): Neo4jRelationship {
     type: rel.type,
     start: formatInteger(rel.start),
     end: formatInteger(rel.end),
-    properties: formatValue(rel.properties),
+    properties: formatValue(rel.properties) as Neo4jRelationship['properties'],
   };
 }
 
@@ -105,13 +110,12 @@ export function formatPath(path: Path): Neo4jPath {
 /**
  * Format query results to JSON-serializable format
  */
-export function formatResults(records: any[]): any[] {
+export function formatResults(records: Neo4jRecord[]): Array<Record<string, unknown>> {
   return records.map((record) => {
-    const formatted: Record<string, any> = {};
+    const formatted: Record<string, unknown> = {};
     for (const key of record.keys) {
-      formatted[key] = formatValue(record.get(key));
+      formatted[String(key)] = formatValue(record.get(key));
     }
     return formatted;
   });
 }
-

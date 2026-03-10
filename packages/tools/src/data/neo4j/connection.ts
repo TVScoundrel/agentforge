@@ -97,9 +97,9 @@ class Neo4jConnectionPool {
   /**
    * Execute a query with automatic session management
    */
-  async executeQuery<T = any>(
+  async executeQuery<T = unknown>(
     cypher: string,
-    parameters?: Record<string, any>,
+    parameters?: Record<string, unknown>,
     database?: string
   ): Promise<T[]> {
     const session = this.getSession(database);
@@ -114,9 +114,9 @@ class Neo4jConnectionPool {
   /**
    * Execute a read query
    */
-  async executeReadQuery<T = any>(
+  async executeReadQuery<T = unknown>(
     cypher: string,
-    parameters?: Record<string, any>,
+    parameters?: Record<string, unknown>,
     database?: string
   ): Promise<T[]> {
     const session = this.getSession(database);
@@ -131,9 +131,9 @@ class Neo4jConnectionPool {
   /**
    * Execute a write query
    */
-  async executeWriteQuery<T = any>(
+  async executeWriteQuery<T = unknown>(
     cypher: string,
-    parameters?: Record<string, any>,
+    parameters?: Record<string, unknown>,
     database?: string
   ): Promise<T[]> {
     const session = this.getSession(database);
@@ -216,4 +216,3 @@ export async function initializeFromEnv(): Promise<void> {
 
   await neo4jPool.initialize(config);
 }
-

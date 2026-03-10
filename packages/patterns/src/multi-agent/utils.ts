@@ -8,6 +8,7 @@
  */
 
 import type { CompiledStateGraph } from '@langchain/langgraph';
+import type { RunnableConfig } from '@langchain/core/runnables';
 import type { MultiAgentStateType } from './state.js';
 import type { TaskResult } from './schemas.js';
 import { createLogger, LogLevel } from '@agentforge/core';
@@ -17,6 +18,61 @@ import { handleNodeError } from '../shared/error-handling.js';
 // Log level can be controlled via LOG_LEVEL environment variable
 const logLevel = (process.env.LOG_LEVEL?.toLowerCase() as LogLevel) || LogLevel.INFO;
 const logger = createLogger('multi-agent', { level: logLevel });
+
+type ReActAgentGraph = CompiledStateGraph<string, unknown>;
+
+interface ReActAction {
+  name?: unknown;
+}
+
+interface ReActResultShape {
+  messages?: Array<{ content?: unknown }>;
+  actions?: ReActAction[];
+  iteration?: unknown;
+}
+
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return typeof value === 'object' && value !== null;
+}
+
+function getReActResultShape(value: unknown): ReActResultShape {
+  if (!isRecord(value)) {
+    return {};
+  }
+
+  const messages = Array.isArray(value.messages)
+    ? value.messages.filter((message): message is { content?: unknown } => isRecord(message))
+    : undefined;
+
+  const actions = Array.isArray(value.actions)
+    ? value.actions.filter((action): action is ReActAction => isRecord(action))
+    : undefined;
+
+  return {
+    messages,
+    actions,
+    iteration: value.iteration,
+  };
+}
+
+function extractResponse(result: unknown): string {
+  const { messages } = getReActResultShape(result);
+  const lastMessage = messages?.[messages.length - 1];
+  return typeof lastMessage?.content === 'string' ? lastMessage.content : 'No response';
+}
+
+function extractToolsUsed(result: unknown): string[] {
+  const { actions } = getReActResultShape(result);
+  const names = actions
+    ?.map((action) => action.name)
+    .filter((name): name is string => typeof name === 'string' && name.length > 0) || [];
+  return [...new Set(names)];
+}
+
+function extractIteration(result: unknown): number {
+  const { iteration } = getReActResultShape(result);
+  return typeof iteration === 'number' ? iteration : 0;
+}
 
 /**
  * Check if an object is a ReAct agent (CompiledStateGraph)
@@ -34,11 +90,13 @@ const logger = createLogger('multi-agent', { level: logLevel });
  * console.log(isReActAgent({})); // false
  * ```
  */
-export function isReActAgent(obj: any): obj is CompiledStateGraph<any, any> {
-  return (
+export function isReActAgent(obj: unknown): obj is ReActAgentGraph {
+  return Boolean(
     obj &&
     typeof obj === 'object' &&
+    'invoke' in obj &&
     typeof obj.invoke === 'function' &&
+    'stream' in obj &&
     typeof obj.stream === 'function' &&
     // Additional check to ensure it's not just any object with invoke/stream
     (obj.constructor?.name === 'CompiledGraph' || obj.constructor?.name === 'CompiledStateGraph')
@@ -72,10 +130,10 @@ export function isReActAgent(obj: any): obj is CompiledStateGraph<any, any> {
  */
 export function wrapReActAgent(
   workerId: string,
-  agent: CompiledStateGraph<any, any>,
+  agent: ReActAgentGraph,
   verbose = false
-): (state: MultiAgentStateType, config?: any) => Promise<Partial<MultiAgentStateType>> {
-  return async (state: MultiAgentStateType, config?: any): Promise<Partial<MultiAgentStateType>> => {
+): (state: MultiAgentStateType, config?: RunnableConfig) => Promise<Partial<MultiAgentStateType>> {
+  return async (state: MultiAgentStateType, config?: RunnableConfig): Promise<Partial<MultiAgentStateType>> => {
     try {
       logger.debug('Wrapping ReAct agent execution', { workerId });
 
@@ -109,13 +167,15 @@ export function wrapReActAgent(
         ? `${config.configurable.thread_id}:worker:${workerId}`
         : undefined;
 
-      const workerConfig = workerThreadId ? {
-        ...config,
-        configurable: {
-          ...config.configurable,
-          thread_id: workerThreadId
+      const workerConfig: RunnableConfig | undefined = workerThreadId
+        ? {
+          ...config,
+          configurable: {
+            ...(config?.configurable ?? {}),
+            thread_id: workerThreadId
+          }
         }
-      } : config;
+        : config;
 
       logger.debug('Invoking ReAct agent with worker-specific config', {
         workerId,
@@ -127,7 +187,7 @@ export function wrapReActAgent(
       // Invoke ReAct agent with worker-specific config for separate checkpoint namespace
       // This ensures that when the worker's ReAct agent calls interrupt(), the checkpoint
       // is saved in a separate namespace and can be resumed independently
-      const result: any = await agent.invoke(
+      const result = await agent.invoke(
         {
           messages: [{ role: 'user', content: task }],
         },
@@ -135,7 +195,7 @@ export function wrapReActAgent(
       );
 
       // Extract response from ReAct agent's messages
-      const response = result.messages?.[result.messages.length - 1]?.content || 'No response';
+      const response = extractResponse(result);
 
       logger.debug('Received response from ReAct agent', {
         workerId,
@@ -143,8 +203,7 @@ export function wrapReActAgent(
       });
 
       // Extract tools used from ReAct agent's actions
-      const toolsUsed = result.actions?.map((action: any) => action.name).filter(Boolean) || [];
-      const uniqueTools = [...new Set(toolsUsed)]; // Remove duplicates
+      const uniqueTools = extractToolsUsed(result);
 
       if (uniqueTools.length > 0) {
         logger.debug('Tools used by ReAct agent', { workerId, tools: uniqueTools });
@@ -159,7 +218,7 @@ export function wrapReActAgent(
         success: true,
         metadata: {
           agent_type: 'react',
-          iterations: result.iteration || 0,
+          iterations: extractIteration(result),
           tools_used: uniqueTools,
         },
       };
@@ -168,9 +227,9 @@ export function wrapReActAgent(
       return {
         completedTasks: [taskResult],
       };
-    } catch (error: any) {
+    } catch (error: unknown) {
       // Handle error with proper GraphInterrupt detection
-      const errorMessage = handleNodeError(error, `react-agent:${workerId}`, false);
+      const errorMessage = handleNodeError(error, `react-agent:${workerId}`, verbose);
 
       logger.error('Error in ReAct agent execution', {
         workerId,
@@ -206,4 +265,3 @@ export function wrapReActAgent(
     }
   };
 }
-

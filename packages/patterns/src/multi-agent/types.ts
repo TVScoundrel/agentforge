@@ -7,6 +7,7 @@
  */
 
 import type { BaseChatModel } from '@langchain/core/language_models/chat_models';
+import type { RunnableConfig } from '@langchain/core/runnables';
 import type { CompiledStateGraph, BaseCheckpointSaver } from '@langchain/langgraph';
 import type { Tool } from '@agentforge/core';
 import type { MultiAgentStateType } from './state.js';
@@ -78,7 +79,7 @@ export interface WorkerConfig {
   /**
    * Available tools for this worker
    */
-  tools?: Tool<any, any>[];
+  tools?: Tool<unknown, unknown>[];
 
   /**
    * System prompt for the worker
@@ -99,7 +100,7 @@ export interface WorkerConfig {
    * The config parameter contains LangGraph runtime configuration including
    * thread_id for checkpointing, which is required for interrupt functionality.
    */
-  executeFn?: (state: MultiAgentStateType, config?: any) => Promise<Partial<MultiAgentStateType>>;
+  executeFn?: (state: MultiAgentStateType, config?: RunnableConfig) => Promise<Partial<MultiAgentStateType>>;
 
   /**
    * ReAct agent instance
@@ -123,7 +124,7 @@ export interface WorkerConfig {
    * });
    * ```
    */
-  agent?: CompiledStateGraph<any, any>;
+  agent?: CompiledStateGraph<string, unknown>;
 }
 
 /**
@@ -249,7 +250,7 @@ export type MultiAgentNode = 'supervisor' | 'aggregator' | string; // string for
 /**
  * Route type for multi-agent graph
  */
-export type MultiAgentRoute = 'continue' | 'aggregate' | 'end' | string; // string for worker IDs
+export type MultiAgentRoute = 'continue' | 'aggregate' | 'end' | string | string[]; // string/string[] for worker IDs
 
 /**
  * Router function type
@@ -270,4 +271,3 @@ export interface RoutingStrategyImpl {
    */
   route: (state: MultiAgentStateType, config: SupervisorConfig) => Promise<RoutingDecision>;
 }
-
