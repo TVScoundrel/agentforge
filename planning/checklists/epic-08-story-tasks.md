@@ -91,7 +91,7 @@
 - [x] Introduce shared helper types where useful to avoid repeated broad casts
   - Added ReAct result-narrowing helpers in `packages/patterns/src/multi-agent/utils.ts`
 - [x] Confirm no public API regressions for touched signatures (or explicitly document intentional changes)
-  - No intentional API behavior changes; package typechecks pass after refactor
+  - Public signatures remain compatible; intentional bug fix documented: `wrapReActAgent` error path now honors configured `verbose` logging
 - [x] Add focused tests or adapt existing tests for behavior-sensitive changes
   - `pnpm test --run packages/patterns/tests/multi-agent/agent.test.ts packages/patterns/tests/multi-agent/utils.test.ts packages/tools/tests/data/neo4j.test.ts` -> 20 passed, 13 skipped
 - [x] Record before/after warning counts for touched files in PR/story docs
