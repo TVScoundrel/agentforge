@@ -5,6 +5,34 @@ All notable changes to AgentForge will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.15.4] - 2026-03-10
+
+### Added
+
+#### @agentforge/core — Test Coverage
+- Added focused `HttpPool` runtime-behavior tests for request handling, pool stats, and draining behavior
+
+### Changed
+
+#### @agentforge/core — Type Safety Hardening
+- Reduced explicit-`any` usage in core runtime hotspots by replacing broad casts with `unknown`-first boundaries and narrowing
+- Updated tool registry bulk registration typing to support heterogeneous tool collections while preserving runtime-erased storage boundaries
+
+### Fixed
+
+#### @agentforge/core — Executor Retry Safety
+- Added retry policy validation so misconfigured `maxAttempts` values (< 1 or non-integer) fail fast with a clear error
+- Ensured retry execution consistently throws `Error` instances in terminal retry paths
+
+### Published
+- All packages published to npm registry at version 0.15.4:
+  - @agentforge/core@0.15.4
+  - @agentforge/skills@0.15.4
+  - @agentforge/patterns@0.15.4
+  - @agentforge/tools@0.15.4
+  - @agentforge/testing@0.15.4
+  - @agentforge/cli@0.15.4
+
 ## [0.15.3] - 2026-03-09
 
 ### Added
