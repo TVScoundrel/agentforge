@@ -165,20 +165,27 @@ export function createToolExecutor(config: ToolExecutorConfig = {}) {
       return await executeFn.call(tool, input);
     }
 
+    if (!Number.isInteger(policy.maxAttempts) || policy.maxAttempts < 1) {
+      throw new Error(
+        `Invalid retry policy: maxAttempts must be an integer >= 1 (received ${String(policy.maxAttempts)})`
+      );
+    }
+
     let lastError: Error | undefined;
     for (let attempt = 1; attempt <= policy.maxAttempts; attempt++) {
       try {
         return await executeFn.call(tool, input);
       } catch (error) {
-        lastError = toError(error);
+        const currentError = toError(error);
+        lastError = currentError;
 
         // Check if error is retryable
         if (policy.retryableErrors && policy.retryableErrors.length > 0) {
           const isRetryable = policy.retryableErrors.some((msg) =>
-            lastError!.message.includes(msg)
+            currentError.message.includes(msg)
           );
           if (!isRetryable) {
-            throw lastError;
+            throw currentError;
           }
         }
 
@@ -190,7 +197,7 @@ export function createToolExecutor(config: ToolExecutorConfig = {}) {
       }
     }
 
-    throw lastError;
+    throw lastError ?? new Error('Tool execution failed after retries');
   }
 
   /**

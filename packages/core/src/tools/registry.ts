@@ -315,7 +315,7 @@ export class ToolRegistry {
    * registry.registerMany([tool1, tool2, tool3]);
    * ```
    */
-  registerMany<TInput, TOutput>(tools: Tool<TInput, TOutput>[]): void {
+  registerMany(tools: RegistryTool[]): void {
     // Check for duplicates within the input list first
     const inputNames = new Set<string>();
     const duplicatesInInput: string[] = [];
