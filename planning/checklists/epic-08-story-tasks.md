@@ -46,7 +46,8 @@
 
 ### Checklist
 - [x] Create branch `codex/fix/st-08002-core-runtime-type-hardening`
-- [ ] Create draft PR with story ID in title
+- [x] Create draft PR with story ID in title
+  - PR #60: https://github.com/TVScoundrel/agentforge/pull/60
 - [x] Replace explicit `any` usage in `packages/core/src/tools/registry.ts` hotspots with `unknown` + narrowing or specific generic constraints
 - [x] Replace explicit `any` usage in `packages/core/src/tools/executor.ts` hotspots with stronger domain typing
 - [x] Replace explicit `any` usage in `packages/core/src/resources/http-pool.ts` hotspots with safer typed boundaries
