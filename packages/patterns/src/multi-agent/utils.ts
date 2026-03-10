@@ -55,22 +55,22 @@ function getReActResultShape(value: unknown): ReActResultShape {
   };
 }
 
-function extractResponse(result: unknown): string {
-  const { messages } = getReActResultShape(result);
+function extractResponse(resultShape: ReActResultShape): string {
+  const { messages } = resultShape;
   const lastMessage = messages?.[messages.length - 1];
   return typeof lastMessage?.content === 'string' ? lastMessage.content : 'No response';
 }
 
-function extractToolsUsed(result: unknown): string[] {
-  const { actions } = getReActResultShape(result);
+function extractToolsUsed(resultShape: ReActResultShape): string[] {
+  const { actions } = resultShape;
   const names = actions
     ?.map((action) => action.name)
     .filter((name): name is string => typeof name === 'string' && name.length > 0) || [];
   return [...new Set(names)];
 }
 
-function extractIteration(result: unknown): number {
-  const { iteration } = getReActResultShape(result);
+function extractIteration(resultShape: ReActResultShape): number {
+  const { iteration } = resultShape;
   return typeof iteration === 'number' ? iteration : 0;
 }
 
@@ -193,9 +193,10 @@ export function wrapReActAgent(
         },
         workerConfig  // Worker-specific config with unique thread_id
       );
+      const resultShape = getReActResultShape(result);
 
       // Extract response from ReAct agent's messages
-      const response = extractResponse(result);
+      const response = extractResponse(resultShape);
 
       logger.debug('Received response from ReAct agent', {
         workerId,
@@ -203,7 +204,7 @@ export function wrapReActAgent(
       });
 
       // Extract tools used from ReAct agent's actions
-      const uniqueTools = extractToolsUsed(result);
+      const uniqueTools = extractToolsUsed(resultShape);
 
       if (uniqueTools.length > 0) {
         logger.debug('Tools used by ReAct agent', { workerId, tools: uniqueTools });
@@ -218,7 +219,7 @@ export function wrapReActAgent(
         success: true,
         metadata: {
           agent_type: 'react',
-          iterations: extractIteration(result),
+          iterations: extractIteration(resultShape),
           tools_used: uniqueTools,
         },
       };
