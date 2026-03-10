@@ -310,7 +310,7 @@ export class ToolRegistry {
   /**
    * Register multiple tools at once
    *
-   * @param tools - Array of tools to register
+   * @param tools - Iterable of tools to register
    * @throws Error if any tool name conflicts with existing tools
    *
    * @example
