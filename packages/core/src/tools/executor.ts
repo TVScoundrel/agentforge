@@ -61,7 +61,7 @@ interface QueuedExecution extends ToolExecution {
   timestamp: number;
 }
 
-interface ExecutableTool<TInput = unknown, TOutput = unknown> {
+export interface ExecutableTool<TInput = unknown, TOutput = unknown> {
   metadata?: {
     name?: string;
   };
@@ -228,6 +228,7 @@ export function createToolExecutor(config: ToolExecutorConfig = {}) {
       return result;
     } catch (error) {
       const duration = Date.now() - startTime;
+      const normalizedError = toError(error);
 
       // Update metrics
       metrics.totalExecutions++;
@@ -236,9 +237,8 @@ export function createToolExecutor(config: ToolExecutorConfig = {}) {
       metrics.averageDuration = metrics.totalDuration / metrics.totalExecutions;
       metrics.byPriority[priority]++;
 
-      onExecutionError?.(tool, input, toError(error), duration);
-
-      throw error;
+      onExecutionError?.(tool, input, normalizedError, duration);
+      throw normalizedError;
     }
   }
 

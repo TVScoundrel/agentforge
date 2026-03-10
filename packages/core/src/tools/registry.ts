@@ -41,6 +41,10 @@ export type EventHandler = (data: unknown) => void;
 
 type RegistryTool = Tool<unknown, unknown>;
 
+function eraseToolType<TInput, TOutput>(tool: Tool<TInput, TOutput>): RegistryTool {
+  return tool as unknown as RegistryTool;
+}
+
 /**
  * Options for generating tool prompts
  */
@@ -119,7 +123,8 @@ export class ToolRegistry {
    * registry.register(readFileTool);
    * ```
    */
-  register(tool: RegistryTool): void {
+  register<TInput, TOutput>(tool: Tool<TInput, TOutput>): void {
+    const erasedTool = eraseToolType(tool);
     const name = tool.metadata.name;
     
     if (this.tools.has(name)) {
@@ -128,7 +133,7 @@ export class ToolRegistry {
       );
     }
 
-    this.tools.set(name, tool);
+    this.tools.set(name, erasedTool);
     this.emit(RegistryEvent.TOOL_REGISTERED, tool);
   }
 
@@ -203,7 +208,8 @@ export class ToolRegistry {
    * const updated = registry.update('read-file', newReadFileTool);
    * ```
    */
-  update(name: string, tool: RegistryTool): boolean {
+  update<TInput, TOutput>(name: string, tool: Tool<TInput, TOutput>): boolean {
+    const erasedTool = eraseToolType(tool);
     if (!this.tools.has(name)) {
       return false;
     }
@@ -216,7 +222,7 @@ export class ToolRegistry {
       );
     }
 
-    this.tools.set(name, tool);
+    this.tools.set(name, erasedTool);
     this.emit(RegistryEvent.TOOL_UPDATED, { name, tool });
     return true;
   }
@@ -309,7 +315,7 @@ export class ToolRegistry {
    * registry.registerMany([tool1, tool2, tool3]);
    * ```
    */
-  registerMany(tools: RegistryTool[]): void {
+  registerMany<TInput, TOutput>(tools: Tool<TInput, TOutput>[]): void {
     // Check for duplicates within the input list first
     const inputNames = new Set<string>();
     const duplicatesInInput: string[] = [];

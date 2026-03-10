@@ -18,7 +18,7 @@ describe('HttpPool', () => {
     });
     pools.push(pool);
 
-    const response = await pool.request<{ ok: boolean }>({
+    const response = await pool.request({
       url: '/health',
       method: 'GET',
     });
