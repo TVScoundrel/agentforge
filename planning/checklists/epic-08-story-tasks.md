@@ -82,19 +82,31 @@
 ### Checklist
 - [x] Create branch `fix/st-08003-tools-patterns-type-hardening`
   - Created as `codex/fix/st-08003-tools-patterns-type-hardening` (workspace branch-prefix policy)
-- [ ] Create draft PR with story ID in title
-- [ ] Reduce explicit `any` usage in top warning files under `packages/tools/src/**`
-- [ ] Reduce explicit `any` usage in top warning files under `packages/patterns/src/**`
-- [ ] Introduce shared helper types where useful to avoid repeated broad casts
-- [ ] Confirm no public API regressions for touched signatures (or explicitly document intentional changes)
-- [ ] Add focused tests or adapt existing tests for behavior-sensitive changes
-- [ ] Record before/after warning counts for touched files in PR/story docs
-- [ ] Add or update story documentation at `docs/st08003-tools-patterns-type-hardening.md` (or document why not required)
-- [ ] Assess test impact; add/update automated tests when needed, or document why tests are not required
-- [ ] Run full test suite before finalizing the PR and record results
-- [ ] Run lint (`pnpm lint`) before finalizing the PR and record results
-- [ ] Commit completed checklist items as logical commits and push updates
-- [ ] Mark PR Ready only after all story tasks are complete
+- [x] Create draft PR with story ID in title
+  - PR #61: https://github.com/TVScoundrel/agentforge/pull/61
+- [x] Reduce explicit `any` usage in top warning files under `packages/tools/src/**`
+  - Eliminated explicit-`any` usage in `packages/tools/src/data/neo4j/connection.ts` and `packages/tools/src/data/neo4j/utils/result-formatter.ts`
+- [x] Reduce explicit `any` usage in top warning files under `packages/patterns/src/**`
+  - Eliminated explicit-`any` usage in `packages/patterns/src/multi-agent/agent.ts`, `utils.ts`, and `types.ts`
+- [x] Introduce shared helper types where useful to avoid repeated broad casts
+  - Added ReAct result-narrowing helpers in `packages/patterns/src/multi-agent/utils.ts`
+- [x] Confirm no public API regressions for touched signatures (or explicitly document intentional changes)
+  - No intentional API behavior changes; package typechecks pass after refactor
+- [x] Add focused tests or adapt existing tests for behavior-sensitive changes
+  - `pnpm test --run packages/patterns/tests/multi-agent/agent.test.ts packages/patterns/tests/multi-agent/utils.test.ts packages/tools/tests/data/neo4j.test.ts` -> 20 passed, 13 skipped
+- [x] Record before/after warning counts for touched files in PR/story docs
+  - Recorded in `docs/st08003-tools-patterns-type-hardening.md` (`164 -> 120`, delta `-44`)
+- [x] Add or update story documentation at `docs/st08003-tools-patterns-type-hardening.md` (or document why not required)
+- [x] Assess test impact; add/update automated tests when needed, or document why tests are not required
+  - Existing tests cover touched multi-agent/neo4j behavior; focused suite re-run and passing
+- [x] Run full test suite before finalizing the PR and record results
+  - `pnpm test --run` -> `146 passed | 16 skipped` files; `2074 passed | 286 skipped` tests
+- [x] Run lint (`pnpm lint`) before finalizing the PR and record results
+  - `pnpm lint` -> exit `0`; warnings only (`0` errors)
+- [x] Commit completed checklist items as logical commits and push updates
+  - Commits on branch: `21d51bd`, `3dc27f9` (plus checklist/tracker sync in finalization commit)
+- [x] Mark PR Ready only after all story tasks are complete
+  - PR #61 marked ready: https://github.com/TVScoundrel/agentforge/pull/61
 - [ ] Wait for merge; do not merge directly from local branch
 
 ---
