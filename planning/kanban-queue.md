@@ -1,14 +1,14 @@
 # Kanban Queue: AgentForge
 
-**Last Updated:** 2026-03-06
+**Last Updated:** 2026-03-10
 
 ## Queue Status Summary
 
 - **Ready:** 0 stories
-- **In Progress:** 0 stories
+- **In Progress:** 1 story
 - **In Review:** 1 story
 - **Blocked:** 0 stories
-- **Backlog:** 3 stories
+- **Backlog:** 2 stories
 
 ---
 
@@ -20,7 +20,10 @@ _No stories currently ready_
 
 ## In Progress
 
-_No stories currently in progress_
+- [ ] ST-08002 Hardening Pass 1 for `@agentforge/core` Runtime Hotspots
+  - Checklist: `planning/checklists/epic-08-story-tasks.md` (`## ST-08002: Hardening Pass 1 for @agentforge/core Runtime Hotspots`)
+  - Branch: `codex/fix/st-08002-core-runtime-type-hardening`
+  - Dependencies: ST-08001 (merged)
 
 ---
 
@@ -41,15 +44,12 @@ _No stories currently blocked_
 
 ## Backlog
 
-- [ ] ST-08002 Hardening Pass 1 for `@agentforge/core` Runtime Hotspots
-  - Checklist: `planning/checklists/epic-08-story-tasks.md` (`## ST-08002: Hardening Pass 1 for @agentforge/core Runtime Hotspots`)
-  - Dependencies: ST-08001
 - [ ] ST-08003 Hardening Pass 1 for `@agentforge/tools` and `@agentforge/patterns`
   - Checklist: `planning/checklists/epic-08-story-tasks.md` (`## ST-08003: Hardening Pass 1 for @agentforge/tools and @agentforge/patterns`)
-  - Dependencies: ST-08001
+  - Dependencies: ST-08001 (merged)
 - [ ] ST-08004 Test/Example Typing Policy and Targeted Cleanup
   - Checklist: `planning/checklists/epic-08-story-tasks.md` (`## ST-08004: Test/Example Typing Policy and Targeted Cleanup`)
-  - Dependencies: ST-08001
+  - Dependencies: ST-08001 (merged)
 
 ---
 
@@ -96,4 +96,4 @@ _No stories currently blocked_
 - ✅ ST-07006 complete - release scripts and checklist updated for skills package (merged 2026-02-25)
 - Epic 07 (Extract Skills into Dedicated Package) — all 6 stories merged; epic complete
 - Epic 08 (Type Safety Hardening and `no-explicit-any` Debt Burn-Down) created in Fix Mode on 2026-03-06
-- ST-08001 is in review (PR #59); ST-08002 through ST-08004 remain queued in Backlog
+- ST-08001 merged (PR #59); ST-08002 is in progress and ST-08003/ST-08004 remain queued in Backlog

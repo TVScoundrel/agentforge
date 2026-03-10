@@ -23,15 +23,25 @@ export interface ToolExecutorConfig {
   maxConcurrent?: number;
   timeout?: number;
   retryPolicy?: RetryPolicy;
-  priorityFn?: (tool: any) => Priority;
-  onExecutionStart?: (tool: any, input: any) => void;
-  onExecutionComplete?: (tool: any, input: any, result: any, duration: number) => void;
-  onExecutionError?: (tool: any, input: any, error: Error, duration: number) => void;
+  priorityFn?: (tool: ExecutableTool) => Priority;
+  onExecutionStart?: (tool: ExecutableTool, input: unknown) => void;
+  onExecutionComplete?: (
+    tool: ExecutableTool,
+    input: unknown,
+    result: unknown,
+    duration: number
+  ) => void;
+  onExecutionError?: (
+    tool: ExecutableTool,
+    input: unknown,
+    error: Error,
+    duration: number
+  ) => void;
 }
 
 export interface ToolExecution {
-  tool: any;
-  input: any;
+  tool: ExecutableTool;
+  input: unknown;
   priority?: Priority;
 }
 
@@ -45,10 +55,18 @@ export interface ExecutionMetrics {
 }
 
 interface QueuedExecution extends ToolExecution {
-  resolve: (value: any) => void;
+  resolve: (value: unknown) => void;
   reject: (error: Error) => void;
   priority: Priority;
   timestamp: number;
+}
+
+interface ExecutableTool<TInput = unknown, TOutput = unknown> {
+  metadata?: {
+    name?: string;
+  };
+  invoke?: (input: TInput) => Promise<TOutput>;
+  execute?: (input: TInput) => Promise<TOutput>;
 }
 
 const PRIORITY_ORDER: Record<Priority, number> = {
@@ -106,14 +124,22 @@ export function createToolExecutor(config: ToolExecutorConfig = {}) {
     return Math.min(delay, maxDelay);
   }
 
+  function toError(error: unknown): Error {
+    if (error instanceof Error) {
+      return error;
+    }
+
+    return new Error(String(error));
+  }
+
   /**
    * Execute a tool with retry logic
    */
   async function executeWithRetry(
-    tool: any,
-    input: any,
+    tool: ExecutableTool,
+    input: unknown,
     policy?: RetryPolicy
-  ): Promise<any> {
+  ): Promise<unknown> {
     // Require invoke() as the primary method (industry standard)
     // Fall back to execute() only for backward compatibility with tools created before v0.11.0
     const executeFn = tool.invoke || tool.execute;
@@ -144,7 +170,7 @@ export function createToolExecutor(config: ToolExecutorConfig = {}) {
       try {
         return await executeFn.call(tool, input);
       } catch (error) {
-        lastError = error as Error;
+        lastError = toError(error);
 
         // Check if error is retryable
         if (policy.retryableErrors && policy.retryableErrors.length > 0) {
@@ -171,10 +197,10 @@ export function createToolExecutor(config: ToolExecutorConfig = {}) {
    * Execute a single tool
    */
   async function executeSingle(
-    tool: any,
-    input: any,
+    tool: ExecutableTool,
+    input: unknown,
     priority: Priority
-  ): Promise<any> {
+  ): Promise<unknown> {
     const startTime = Date.now();
 
     try {
@@ -210,7 +236,7 @@ export function createToolExecutor(config: ToolExecutorConfig = {}) {
       metrics.averageDuration = metrics.totalDuration / metrics.totalExecutions;
       metrics.byPriority[priority]++;
 
-      onExecutionError?.(tool, input, error as Error, duration);
+      onExecutionError?.(tool, input, toError(error), duration);
 
       throw error;
     }
@@ -252,10 +278,10 @@ export function createToolExecutor(config: ToolExecutorConfig = {}) {
    * Execute a tool
    */
   async function execute(
-    tool: any,
-    input: any,
+    tool: ExecutableTool,
+    input: unknown,
     options: { priority?: Priority } = {}
-  ): Promise<any> {
+  ): Promise<unknown> {
     const priority = options.priority || priorityFn(tool);
 
     return new Promise((resolve, reject) => {
@@ -275,7 +301,7 @@ export function createToolExecutor(config: ToolExecutorConfig = {}) {
   /**
    * Execute multiple tools in parallel
    */
-  async function executeParallel(executions: ToolExecution[]): Promise<any[]> {
+  async function executeParallel(executions: ToolExecution[]): Promise<unknown[]> {
     return Promise.all(
       executions.map((exec) =>
         execute(exec.tool, exec.input, { priority: exec.priority })
@@ -321,5 +347,3 @@ export function createToolExecutor(config: ToolExecutorConfig = {}) {
     getQueueStatus,
   };
 }
-
-

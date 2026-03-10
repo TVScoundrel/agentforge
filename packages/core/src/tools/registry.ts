@@ -19,6 +19,7 @@
 import { Tool, ToolCategory, ToolRelations } from './types.js';
 import { toLangChainTools as convertToLangChainTools } from '../langchain/converter.js';
 import type { DynamicStructuredTool } from '@langchain/core/tools';
+import { z } from 'zod';
 import { createLogger, LogLevel } from '../langgraph/observability/logger.js';
 
 const logger = createLogger('agentforge:core:tools:registry', { level: LogLevel.INFO });
@@ -36,7 +37,9 @@ export enum RegistryEvent {
 /**
  * Event handler type
  */
-export type EventHandler = (data: any) => void;
+export type EventHandler = (data: unknown) => void;
+
+type RegistryTool = Tool<unknown, unknown>;
 
 /**
  * Options for generating tool prompts
@@ -102,7 +105,7 @@ export interface PromptOptions {
  * ```
  */
 export class ToolRegistry {
-  private tools: Map<string, Tool<any, any>> = new Map();
+  private tools: Map<string, RegistryTool> = new Map();
   private eventHandlers: Map<RegistryEvent, Set<EventHandler>> = new Map();
 
   /**
@@ -116,7 +119,7 @@ export class ToolRegistry {
    * registry.register(readFileTool);
    * ```
    */
-  register(tool: Tool<any, any>): void {
+  register(tool: RegistryTool): void {
     const name = tool.metadata.name;
     
     if (this.tools.has(name)) {
@@ -143,7 +146,7 @@ export class ToolRegistry {
    * }
    * ```
    */
-  get(name: string): Tool<any, any> | undefined {
+  get(name: string): RegistryTool | undefined {
     return this.tools.get(name);
   }
 
@@ -200,7 +203,7 @@ export class ToolRegistry {
    * const updated = registry.update('read-file', newReadFileTool);
    * ```
    */
-  update(name: string, tool: Tool<any, any>): boolean {
+  update(name: string, tool: RegistryTool): boolean {
     if (!this.tools.has(name)) {
       return false;
     }
@@ -229,7 +232,7 @@ export class ToolRegistry {
    * console.log(`Total tools: ${allTools.length}`);
    * ```
    */
-  getAll(): Tool<any, any>[] {
+  getAll(): RegistryTool[] {
     return Array.from(this.tools.values());
   }
 
@@ -244,7 +247,7 @@ export class ToolRegistry {
    * const fileTools = registry.getByCategory(ToolCategory.FILE_SYSTEM);
    * ```
    */
-  getByCategory(category: ToolCategory): Tool<any, any>[] {
+  getByCategory(category: ToolCategory): RegistryTool[] {
     return this.getAll().filter((tool) => tool.metadata.category === category);
   }
 
@@ -259,7 +262,7 @@ export class ToolRegistry {
    * const fileTools = registry.getByTag('file');
    * ```
    */
-  getByTag(tag: string): Tool<any, any>[] {
+  getByTag(tag: string): RegistryTool[] {
     return this.getAll().filter((tool) =>
       tool.metadata.tags?.includes(tag)
     );
@@ -279,7 +282,7 @@ export class ToolRegistry {
    * // Returns tools with 'file' in name or description
    * ```
    */
-  search(query: string): Tool<any, any>[] {
+  search(query: string): RegistryTool[] {
     const lowerQuery = query.toLowerCase();
 
     return this.getAll().filter((tool) => {
@@ -306,7 +309,7 @@ export class ToolRegistry {
    * registry.registerMany([tool1, tool2, tool3]);
    * ```
    */
-  registerMany(tools: Tool<any, any>[]): void {
+  registerMany(tools: RegistryTool[]): void {
     // Check for duplicates within the input list first
     const inputNames = new Set<string>();
     const duplicatesInInput: string[] = [];
@@ -436,7 +439,7 @@ export class ToolRegistry {
    * @param data - The event data
    * @private
    */
-  private emit(event: RegistryEvent, data: any): void {
+  private emit(event: RegistryEvent, data: unknown): void {
     const handlers = this.eventHandlers.get(event);
     if (handlers) {
       handlers.forEach((handler) => {
@@ -534,7 +537,7 @@ export class ToolRegistry {
 
     if (groupByCategory) {
       // Group tools by category
-      const toolsByCategory = new Map<ToolCategory, Tool<any, any>[]>();
+      const toolsByCategory = new Map<ToolCategory, RegistryTool[]>();
 
       for (const tool of tools) {
         const category = tool.metadata.category;
@@ -588,7 +591,7 @@ export class ToolRegistry {
    * @private
    */
   private formatToolForPrompt(
-    tool: Tool<any, any>,
+    tool: RegistryTool,
     options: {
       includeExamples?: boolean;
       includeNotes?: boolean;
@@ -661,13 +664,14 @@ export class ToolRegistry {
     lines.push(`- ${metadata.name}: ${metadata.description}`);
 
     // Get schema properties
-    const schemaShape = (tool.schema as any)._def?.shape?.();
+    const schemaShape = this.getSchemaShape(tool.schema);
     if (schemaShape) {
       const params = Object.keys(schemaShape);
       if (params.length > 0) {
         const paramDescriptions = params.map((param) => {
           const field = schemaShape[param];
-          const type = field._def?.typeName?.replace('Zod', '').toLowerCase() || 'any';
+          const typeName = field._def.typeName;
+          const type = typeName.replace('Zod', '').toLowerCase();
           return `${param} (${type})`;
         });
         lines.push(`  Parameters: ${paramDescriptions.join(', ')}`);
@@ -744,5 +748,14 @@ export class ToolRegistry {
 
     return lines;
   }
-}
 
+  private getSchemaShape(
+    schema: z.ZodSchema<unknown>
+  ): z.ZodRawShape | undefined {
+    if (schema instanceof z.ZodObject) {
+      return schema.shape;
+    }
+
+    return undefined;
+  }
+}
