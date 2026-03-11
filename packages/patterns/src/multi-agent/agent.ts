@@ -7,7 +7,8 @@
  */
 
 import { StateGraph, END, CompiledStateGraph } from '@langchain/langgraph';
-import { createLogger, LogLevel } from '@agentforge/core';
+import type { RunnableConfig } from '@langchain/core/runnables';
+import { createPatternLogger } from '../shared/deduplication.js';
 import { MultiAgentState } from './state.js';
 import type { MultiAgentStateType } from './state.js';
 import type { MultiAgentSystemConfig, MultiAgentRouter, WorkerConfig } from './types.js';
@@ -15,9 +16,12 @@ import { createSupervisorNode, createWorkerNode, createAggregatorNode } from './
 import type { WorkerCapabilities } from './schemas.js';
 import { RoutingDecisionSchema } from './schemas.js';
 
-// Create logger for agent system
-const logLevel = (process.env.LOG_LEVEL?.toLowerCase() as LogLevel) || LogLevel.INFO;
-const logger = createLogger('multi-agent:system', { level: logLevel });
+const logger = createPatternLogger('agentforge:patterns:multi-agent:system');
+
+type ToolLike = {
+  metadata?: { name?: string };
+  name?: string;
+};
 
 /**
  * Extract tool name from either AgentForge Tool or LangChain tool
@@ -28,15 +32,21 @@ const logger = createLogger('multi-agent:system', { level: logLevel });
  * @param tool - Tool instance (AgentForge or LangChain)
  * @returns Tool name or 'unknown' if not found
  */
-function getToolName(tool: any): string {
+function getToolName(tool: unknown): string {
+  if (!tool || typeof tool !== 'object') {
+    return 'unknown';
+  }
+
+  const candidate = tool as ToolLike;
+
   // AgentForge Tool: has metadata.name
-  if (tool.metadata?.name) {
-    return tool.metadata.name;
+  if (typeof candidate.metadata?.name === 'string') {
+    return candidate.metadata.name;
   }
 
   // LangChain tool: has name directly
-  if (tool.name) {
-    return tool.name;
+  if (typeof candidate.name === 'string') {
+    return candidate.name;
   }
 
   // Fallback
@@ -149,7 +159,7 @@ export function createMultiAgentSystem(config: MultiAgentSystemConfig): MultiAge
 
     // Add structured output for routing decisions (forces JSON response)
     if (supervisor.strategy === 'llm-based') {
-      configuredModel = configuredModel.withStructuredOutput!(RoutingDecisionSchema) as any;
+      configuredModel = configuredModel.withStructuredOutput!(RoutingDecisionSchema) as unknown as typeof configuredModel;
     }
 
     supervisorConfig.model = configuredModel;
@@ -213,7 +223,7 @@ export function createMultiAgentSystem(config: MultiAgentSystemConfig): MultiAge
           agents,
           count: agents.length
         });
-        return agents as any; // LangGraph supports returning arrays for parallel execution
+        return agents; // LangGraph supports returning arrays for parallel execution
       }
       // Single agent routing
       logger.info('Supervisor router: single agent routing', {
@@ -272,11 +282,11 @@ export function createMultiAgentSystem(config: MultiAgentSystemConfig): MultiAge
   workflow.addConditionalEdges('aggregator', aggregatorRouter, [END]);
 
   // Compile the graph with checkpointer if provided
-  const compiled = workflow.compile(checkpointer ? { checkpointer } : undefined);
+  const compiled = workflow.compile(checkpointer ? { checkpointer } : undefined) as unknown as MultiAgentSystemWithRegistry;
 
   // Wrap the invoke method to inject worker capabilities into the initial state
   const originalInvoke = compiled.invoke.bind(compiled);
-  compiled.invoke = async function(input: Partial<MultiAgentStateType>, config?: any) {
+  compiled.invoke = (async function(input: Partial<MultiAgentStateType>, config?: RunnableConfig) {
     // Merge worker capabilities with any workers in the input
     const mergedInput = {
       ...input,
@@ -286,12 +296,15 @@ export function createMultiAgentSystem(config: MultiAgentSystemConfig): MultiAge
       },
     };
 
-    return originalInvoke(mergedInput, config);
-  } as any;
+    return originalInvoke(
+      mergedInput as Parameters<typeof originalInvoke>[0],
+      config as Parameters<typeof originalInvoke>[1]
+    );
+  }) as unknown as typeof compiled.invoke;
 
   // Wrap the stream method to inject worker capabilities into the initial state
   const originalStream = compiled.stream.bind(compiled);
-  compiled.stream = async function(input: Partial<MultiAgentStateType>, config?: any) {
+  compiled.stream = (async function(input: Partial<MultiAgentStateType>, config?: RunnableConfig) {
     // Merge worker capabilities with any workers in the input
     const mergedInput = {
       ...input,
@@ -301,8 +314,11 @@ export function createMultiAgentSystem(config: MultiAgentSystemConfig): MultiAge
       },
     };
 
-    return originalStream(mergedInput, config);
-  } as any;
+    return originalStream(
+      mergedInput as Parameters<typeof originalStream>[0],
+      config as Parameters<typeof originalStream>[1]
+    );
+  }) as unknown as typeof compiled.stream;
 
   return compiled as MultiAgentSystemWithRegistry;
 }
@@ -353,9 +369,9 @@ export class MultiAgentSystemBuilder {
     name: string;
     description?: string;
     capabilities: string[];
-    tools?: any[];
+    tools?: WorkerConfig['tools'];
     systemPrompt?: string;
-    model?: any;
+    model?: WorkerConfig['model'];
   }>): this {
     if (this.compiled) {
       throw new Error('Cannot register workers after the system has been compiled');
@@ -408,10 +424,10 @@ export class MultiAgentSystemBuilder {
 /**
  * Extended multi-agent system with worker registration support
  */
-export interface MultiAgentSystemWithRegistry extends CompiledStateGraph<any, any, any> {
+export interface MultiAgentSystemWithRegistry extends CompiledStateGraph<MultiAgentStateType, unknown> {
   _workerRegistry?: Record<string, WorkerCapabilities>;
-  _originalInvoke?: typeof CompiledStateGraph.prototype.invoke;
-  _originalStream?: typeof CompiledStateGraph.prototype.stream;
+  _originalInvoke?: MultiAgentSystemWithRegistry['invoke'];
+  _originalStream?: MultiAgentSystemWithRegistry['stream'];
 }
 
 /**
@@ -447,14 +463,14 @@ export function registerWorkers(
     name: string;
     description?: string;
     capabilities: string[];
-    tools?: any[];
+    tools?: WorkerConfig['tools'];
     systemPrompt?: string;
   }>
 ): void {
   console.warn(
     '[AgentForge] registerWorkers() on a compiled system only updates worker capabilities in state.\n' +
     'It does NOT add worker nodes to the graph. Use MultiAgentSystemBuilder for proper worker registration.\n' +
-    'See: https://github.com/agentforge/agentforge/blob/main/packages/patterns/docs/multi-agent-pattern.md'
+    'See: https://github.com/TVScoundrel/agentforge/blob/main/packages/patterns/docs/multi-agent-pattern.md'
   );
 
   // Initialize registry if it doesn't exist
@@ -476,7 +492,7 @@ export function registerWorkers(
   if (!system._originalInvoke) {
     system._originalInvoke = system.invoke.bind(system);
 
-    system.invoke = async function(input: Partial<MultiAgentStateType>, config?: any) {
+    system.invoke = (async function(input: Partial<MultiAgentStateType>, config?: RunnableConfig) {
       // Merge registered workers with any workers in the input
       const mergedInput = {
         ...input,
@@ -486,15 +502,18 @@ export function registerWorkers(
         },
       };
 
-      return system._originalInvoke!(mergedInput, config);
-    } as any;
+      return system._originalInvoke!(
+        mergedInput as Parameters<NonNullable<typeof system._originalInvoke>>[0],
+        config as Parameters<NonNullable<typeof system._originalInvoke>>[1]
+      );
+    }) as unknown as typeof system.invoke;
   }
 
   // Wrap the stream method to inject workers into state (only once)
   if (!system._originalStream) {
     system._originalStream = system.stream.bind(system);
 
-    system.stream = async function(input: Partial<MultiAgentStateType>, config?: any) {
+    system.stream = (async function(input: Partial<MultiAgentStateType>, config?: RunnableConfig) {
       // Merge registered workers with any workers in the input
       const mergedInput = {
         ...input,
@@ -504,8 +523,11 @@ export function registerWorkers(
         },
       };
 
-      return system._originalStream!(mergedInput, config);
-    } as any;
+      return system._originalStream!(
+        mergedInput as Parameters<NonNullable<typeof system._originalStream>>[0],
+        config as Parameters<NonNullable<typeof system._originalStream>>[1]
+      );
+    }) as unknown as typeof system.stream;
   }
 }
 

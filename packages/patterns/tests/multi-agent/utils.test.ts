@@ -186,6 +186,114 @@ describe('Multi-Agent Utils', () => {
       expect(mockReActAgent.invoke).not.toHaveBeenCalled();
       expect(result).toEqual({});
     });
+
+    it('should serialize structured non-string response content', async () => {
+      const mockReActAgent = {
+        invoke: vi.fn(async () => ({
+          messages: [
+            {
+              content: [
+                { type: 'text', text: 'Structured response' },
+                { type: 'meta', source: 'tool-a' },
+              ],
+            },
+          ],
+          actions: [],
+          iteration: 1,
+        })),
+      } as any;
+
+      const state: MultiAgentStateType = {
+        input: 'Test input',
+        messages: [],
+        workers: {
+          worker1: {
+            skills: ['skill1'],
+            tools: [],
+            available: true,
+            currentWorkload: 1,
+          },
+        },
+        currentAgent: 'worker1',
+        routingHistory: [],
+        activeAssignments: [
+          {
+            id: 'assignment-1',
+            workerId: 'worker1',
+            task: 'Summarize result',
+            priority: 5,
+            assignedAt: Date.now(),
+          },
+        ],
+        completedTasks: [],
+        handoffs: [],
+        status: 'executing',
+        iteration: 1,
+        maxIterations: 10,
+        response: '',
+      };
+
+      const wrappedAgent = wrapReActAgent('worker1', mockReActAgent);
+      const result = await wrappedAgent(state);
+      const taskResult = result.completedTasks?.[0];
+
+      expect(taskResult?.success).toBe(true);
+      expect(taskResult?.result).toContain('Structured response');
+      expect(taskResult?.result).toContain('"source":"tool-a"');
+    });
+
+    it('should emit more error console output when verbose is enabled', async () => {
+      const mockReActAgent = {
+        invoke: vi.fn(async () => {
+          throw new Error('forced failure');
+        }),
+      } as any;
+
+      const state: MultiAgentStateType = {
+        input: 'Test input',
+        messages: [],
+        workers: {
+          worker1: {
+            skills: ['skill1'],
+            tools: [],
+            available: true,
+            currentWorkload: 1,
+          },
+        },
+        currentAgent: 'worker1',
+        routingHistory: [],
+        activeAssignments: [
+          {
+            id: 'assignment-1',
+            workerId: 'worker1',
+            task: 'Fail task',
+            priority: 5,
+            assignedAt: Date.now(),
+          },
+        ],
+        completedTasks: [],
+        handoffs: [],
+        status: 'executing',
+        iteration: 1,
+        maxIterations: 10,
+        response: '',
+      };
+
+      const consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
+
+      const nonVerboseAgent = wrapReActAgent('worker1', mockReActAgent, false);
+      await nonVerboseAgent(state);
+      const nonVerboseCalls = consoleErrorSpy.mock.calls.length;
+
+      consoleErrorSpy.mockClear();
+
+      const verboseAgent = wrapReActAgent('worker1', mockReActAgent, true);
+      await verboseAgent(state);
+      const verboseCalls = consoleErrorSpy.mock.calls.length;
+
+      consoleErrorSpy.mockRestore();
+
+      expect(verboseCalls).toBeGreaterThan(nonVerboseCalls);
+    });
   });
 });
-

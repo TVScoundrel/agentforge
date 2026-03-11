@@ -7,10 +7,23 @@
  */
 
 import type { BaseChatModel } from '@langchain/core/language_models/chat_models';
+import type { RunnableConfig } from '@langchain/core/runnables';
 import type { CompiledStateGraph, BaseCheckpointSaver } from '@langchain/langgraph';
 import type { Tool } from '@agentforge/core';
 import type { MultiAgentStateType } from './state.js';
 import type { RoutingStrategy, WorkerCapabilities, RoutingDecision } from './schemas.js';
+
+// Use `never` for input erasure so heterogeneous Tool<TInput, TOutput> values
+// remain assignable through the contravariant invoke parameter.
+type WorkerTool = Tool<never, unknown>;
+
+/**
+ * Runtime config passed to worker execution functions.
+ *
+ * Includes LangGraph's RunnableConfig while remaining open to caller-defined
+ * keys used by integrations.
+ */
+export type WorkerExecutionConfig = RunnableConfig | Record<string, unknown>;
 
 /**
  * Configuration for the supervisor node
@@ -78,7 +91,7 @@ export interface WorkerConfig {
   /**
    * Available tools for this worker
    */
-  tools?: Tool<any, any>[];
+  tools?: WorkerTool[];
 
   /**
    * System prompt for the worker
@@ -99,7 +112,7 @@ export interface WorkerConfig {
    * The config parameter contains LangGraph runtime configuration including
    * thread_id for checkpointing, which is required for interrupt functionality.
    */
-  executeFn?: (state: MultiAgentStateType, config?: any) => Promise<Partial<MultiAgentStateType>>;
+  executeFn?: (state: MultiAgentStateType, config?: WorkerExecutionConfig) => Promise<Partial<MultiAgentStateType>>;
 
   /**
    * ReAct agent instance
@@ -123,7 +136,7 @@ export interface WorkerConfig {
    * });
    * ```
    */
-  agent?: CompiledStateGraph<any, any>;
+  agent?: CompiledStateGraph<unknown, unknown>;
 }
 
 /**
@@ -249,7 +262,7 @@ export type MultiAgentNode = 'supervisor' | 'aggregator' | string; // string for
 /**
  * Route type for multi-agent graph
  */
-export type MultiAgentRoute = 'continue' | 'aggregate' | 'end' | string; // string for worker IDs
+export type MultiAgentRoute = 'continue' | 'aggregate' | 'end' | string | string[]; // string/string[] for worker IDs
 
 /**
  * Router function type
@@ -270,4 +283,3 @@ export interface RoutingStrategyImpl {
    */
   route: (state: MultiAgentStateType, config: SupervisorConfig) => Promise<RoutingDecision>;
 }
-

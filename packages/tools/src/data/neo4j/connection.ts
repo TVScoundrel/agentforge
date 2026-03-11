@@ -10,6 +10,10 @@ import type { Neo4jConfig } from './types.js';
 
 const logger = createLogger('agentforge:tools:neo4j:pool');
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any -- Keep legacy query helper compatibility for untyped callers.
+type Neo4jQueryResult = any;
+type Neo4jQueryParameters = Record<string, unknown>;
+
 /**
  * Neo4j connection pool singleton
  */
@@ -97,9 +101,9 @@ class Neo4jConnectionPool {
   /**
    * Execute a query with automatic session management
    */
-  async executeQuery<T = any>(
+  async executeQuery<T = Neo4jQueryResult>(
     cypher: string,
-    parameters?: Record<string, any>,
+    parameters?: Neo4jQueryParameters,
     database?: string
   ): Promise<T[]> {
     const session = this.getSession(database);
@@ -114,9 +118,9 @@ class Neo4jConnectionPool {
   /**
    * Execute a read query
    */
-  async executeReadQuery<T = any>(
+  async executeReadQuery<T = Neo4jQueryResult>(
     cypher: string,
-    parameters?: Record<string, any>,
+    parameters?: Neo4jQueryParameters,
     database?: string
   ): Promise<T[]> {
     const session = this.getSession(database);
@@ -131,9 +135,9 @@ class Neo4jConnectionPool {
   /**
    * Execute a write query
    */
-  async executeWriteQuery<T = any>(
+  async executeWriteQuery<T = Neo4jQueryResult>(
     cypher: string,
-    parameters?: Record<string, any>,
+    parameters?: Neo4jQueryParameters,
     database?: string
   ): Promise<T[]> {
     const session = this.getSession(database);
@@ -216,4 +220,3 @@ export async function initializeFromEnv(): Promise<void> {
 
   await neo4jPool.initialize(config);
 }
-

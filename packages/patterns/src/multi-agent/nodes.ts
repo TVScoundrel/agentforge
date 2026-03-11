@@ -7,17 +7,24 @@
  */
 
 import { HumanMessage, SystemMessage } from '@langchain/core/messages';
-import { toLangChainTools, createLogger, LogLevel } from '@agentforge/core';
+import { toLangChainTools } from '@agentforge/core';
 import type { MultiAgentStateType } from './state.js';
 import type { SupervisorConfig, WorkerConfig, AggregatorConfig } from './types.js';
 import type { AgentMessage, TaskAssignment, TaskResult } from './schemas.js';
 import { getRoutingStrategy } from './routing.js';
 import { isReActAgent, wrapReActAgent } from './utils.js';
+import { createPatternLogger } from '../shared/deduplication.js';
 import { handleNodeError } from '../shared/error-handling.js';
 
-// Create logger for nodes
-const logLevel = (process.env.LOG_LEVEL?.toLowerCase() as LogLevel) || LogLevel.INFO;
-const logger = createLogger('multi-agent:nodes', { level: logLevel });
+const logger = createPatternLogger('agentforge:patterns:multi-agent:nodes');
+
+function convertWorkerToolsForLangChain(tools: WorkerConfig['tools']) {
+  // Single unsafe boundary for heterogeneous Tool<TInput, TOutput> values.
+  const safeTools = tools ?? [];
+  return toLangChainTools(
+    safeTools as unknown as Parameters<typeof toLangChainTools>[0]
+  );
+}
 
 /**
  * Default system prompt for aggregator
@@ -324,7 +331,7 @@ Execute the assigned task using your skills and tools. Provide a clear, actionab
             toolCount: tools.length,
             toolNames: tools.map(t => t.metadata.name)
           });
-          const langchainTools = toLangChainTools(tools);
+          const langchainTools = convertWorkerToolsForLangChain(tools);
           modelToUse = model!.bindTools(langchainTools);
         }
 
@@ -623,4 +630,3 @@ Please synthesize these results into a comprehensive response that addresses the
     }
   };
 }
-
