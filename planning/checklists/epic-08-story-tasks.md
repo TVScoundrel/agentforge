@@ -107,7 +107,8 @@
   - Commits on branch: `21d51bd`, `3dc27f9` (plus checklist/tracker sync in finalization commit)
 - [x] Mark PR Ready only after all story tasks are complete
   - PR #61 marked ready: https://github.com/TVScoundrel/agentforge/pull/61
-- [ ] Wait for merge; do not merge directly from local branch
+- [x] Wait for merge; do not merge directly from local branch
+  - Merged via PR #61 on 2026-03-11
 
 ---
 

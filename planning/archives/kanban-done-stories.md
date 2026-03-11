@@ -248,6 +248,13 @@
 - **Estimate:** 4 hours
 - **Outcome:** Hardened `@agentforge/core` runtime typing in tool registry/executor and HTTP pool hotspots, added focused `http-pool` tests, and validated reductions in explicit-`any` warnings with story decisions captured in `docs/st08002-core-runtime-type-hardening.md`.
 
+### ST-08003: Hardening Pass 1 for `@agentforge/tools` and `@agentforge/patterns`
+- **Merged:** 2026-03-11
+- **PR:** https://github.com/TVScoundrel/agentforge/pull/61
+- **Epic:** EP-08 (Type Safety Hardening and `no-explicit-any` Debt Burn-Down)
+- **Estimate:** 4 hours
+- **Outcome:** Reduced explicit-`any` usage across targeted tools/patterns runtime hotspots, added/updated focused multi-agent and neo4j tests, and documented compatibility decisions and warning deltas in `docs/st08003-tools-patterns-type-hardening.md`.
+
 ---
 
 ## Archive Format
