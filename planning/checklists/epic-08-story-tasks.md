@@ -85,7 +85,7 @@
 - [x] Create draft PR with story ID in title
   - PR #61: https://github.com/TVScoundrel/agentforge/pull/61
 - [x] Reduce explicit `any` usage in top warning files under `packages/tools/src/**`
-  - Eliminated explicit-`any` usage in `packages/tools/src/data/neo4j/connection.ts` and `packages/tools/src/data/neo4j/utils/result-formatter.ts`
+  - Reduced explicit-`any` usage in `packages/tools/src/data/neo4j/connection.ts` and `packages/tools/src/data/neo4j/utils/result-formatter.ts`; remaining usage is confined to a single suppressed legacy boundary in `connection.ts`
 - [x] Reduce explicit `any` usage in top warning files under `packages/patterns/src/**`
   - Eliminated explicit-`any` usage in `packages/patterns/src/multi-agent/agent.ts`, `utils.ts`, and `types.ts`
 - [x] Introduce shared helper types where useful to avoid repeated broad casts

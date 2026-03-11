@@ -424,7 +424,7 @@ export class MultiAgentSystemBuilder {
 /**
  * Extended multi-agent system with worker registration support
  */
-export interface MultiAgentSystemWithRegistry extends CompiledStateGraph<string, unknown> {
+export interface MultiAgentSystemWithRegistry extends CompiledStateGraph<MultiAgentStateType, unknown> {
   _workerRegistry?: Record<string, WorkerCapabilities>;
   _originalInvoke?: MultiAgentSystemWithRegistry['invoke'];
   _originalStream?: MultiAgentSystemWithRegistry['stream'];

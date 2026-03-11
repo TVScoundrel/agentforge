@@ -136,7 +136,7 @@ export interface WorkerConfig {
    * });
    * ```
    */
-  agent?: CompiledStateGraph<string, unknown>;
+  agent?: CompiledStateGraph<unknown, unknown>;
 }
 
 /**

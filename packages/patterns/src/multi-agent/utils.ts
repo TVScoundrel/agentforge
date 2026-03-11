@@ -63,7 +63,8 @@ function getReActResultShape(value: unknown): ReActResultShape {
 function extractResponse(resultShape: ReActResultShape): string {
   const { messages } = resultShape;
   const lastMessage = messages?.[messages.length - 1];
-  return typeof lastMessage?.content === 'string' ? lastMessage.content : 'No response';
+  const content = lastMessage?.content;
+  return typeof content === 'string' && content.length > 0 ? content : 'No response';
 }
 
 function extractToolsUsed(resultShape: ReActResultShape): string[] {
@@ -76,7 +77,7 @@ function extractToolsUsed(resultShape: ReActResultShape): string[] {
 
 function extractIteration(resultShape: ReActResultShape): number {
   const { iteration } = resultShape;
-  return typeof iteration === 'number' ? iteration : 0;
+  return typeof iteration === 'number' && Number.isFinite(iteration) ? iteration : 0;
 }
 
 /**
