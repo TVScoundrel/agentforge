@@ -18,6 +18,14 @@ import { handleNodeError } from '../shared/error-handling.js';
 
 const logger = createPatternLogger('agentforge:patterns:multi-agent:nodes');
 
+function convertWorkerToolsForLangChain(tools: WorkerConfig['tools']) {
+  // Single unsafe boundary for heterogeneous Tool<TInput, TOutput> values.
+  const safeTools = tools ?? [];
+  return toLangChainTools(
+    safeTools as unknown as Parameters<typeof toLangChainTools>[0]
+  );
+}
+
 /**
  * Default system prompt for aggregator
  */
@@ -323,9 +331,7 @@ Execute the assigned task using your skills and tools. Provide a clear, actionab
             toolCount: tools.length,
             toolNames: tools.map(t => t.metadata.name)
           });
-          const langchainTools = toLangChainTools(
-            tools as unknown as Parameters<typeof toLangChainTools>[0]
-          );
+          const langchainTools = convertWorkerToolsForLangChain(tools);
           modelToUse = model!.bindTools(langchainTools);
         }
 

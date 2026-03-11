@@ -11,6 +11,7 @@ This story focused on top-warning files with behavior-preserving refactors from 
 - `packages/patterns/src/multi-agent/agent.ts`
 - `packages/patterns/src/multi-agent/utils.ts`
 - `packages/patterns/src/multi-agent/types.ts`
+- `packages/patterns/src/multi-agent/nodes.ts`
 - `packages/tools/src/data/neo4j/connection.ts`
 - `packages/tools/src/data/neo4j/utils/result-formatter.ts`
 
