@@ -17,7 +17,7 @@ This story focused on top-warning files with behavior-preserving refactors from 
 ## Type Design Notes
 - Replaced broad `any`-typed graph/tool boundaries with `unknown` + narrowing helpers.
 - Added record/result extraction helpers for ReAct agent outputs to keep runtime safety while preserving existing behavior.
-- Replaced Neo4j query parameter/result `any` signatures with typed `unknown` boundaries and safe conversions.
+- Reduced Neo4j query parameter/result explicit `any` usage by introducing typed `unknown` boundaries and safe conversions, while keeping the default query result generic permissive for backward compatibility.
 - Kept public API signatures compatible.
 - Intentional bug fix: `wrapReActAgent` now passes through the configured `verbose` flag to `handleNodeError` in the catch path, so error logging is no longer silently suppressed when `verbose=true`.
 

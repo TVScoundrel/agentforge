@@ -472,7 +472,7 @@ export function registerWorkers(
   console.warn(
     '[AgentForge] registerWorkers() on a compiled system only updates worker capabilities in state.\n' +
     'It does NOT add worker nodes to the graph. Use MultiAgentSystemBuilder for proper worker registration.\n' +
-    'See: https://github.com/agentforge/agentforge/blob/main/packages/patterns/docs/multi-agent-pattern.md'
+    'See: https://github.com/TVScoundrel/agentforge/blob/main/packages/patterns/docs/multi-agent-pattern.md'
   );
 
   // Initialize registry if it doesn't exist

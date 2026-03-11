@@ -12,8 +12,7 @@ const logger = createLogger('agentforge:tools:neo4j:pool');
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any -- Keep legacy query helper compatibility for untyped callers.
 type Neo4jQueryResult = any;
-// eslint-disable-next-line @typescript-eslint/no-explicit-any -- Keep permissive query parameter typing for backward compatibility.
-type Neo4jQueryParameters = Record<string, any>;
+type Neo4jQueryParameters = Record<string, unknown>;
 
 /**
  * Neo4j connection pool singleton
