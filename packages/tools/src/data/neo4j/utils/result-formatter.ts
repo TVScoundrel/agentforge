@@ -18,9 +18,20 @@ type RawNeo4jRecord = {
 };
 
 function normalizeRecord(record: RawNeo4jRecord): Neo4jRecord {
+  const originalKeyByString = new Map<string, PropertyKey>();
+  const normalizedKeys: string[] = [];
+
+  for (const key of record.keys) {
+    const keyString = String(key);
+    if (!originalKeyByString.has(keyString)) {
+      originalKeyByString.set(keyString, key);
+      normalizedKeys.push(keyString);
+    }
+  }
+
   return {
-    keys: record.keys.map((key) => String(key)),
-    get: (key: string) => record.get(key),
+    keys: normalizedKeys,
+    get: (key: string) => record.get(originalKeyByString.get(key) ?? key),
   };
 }
 
