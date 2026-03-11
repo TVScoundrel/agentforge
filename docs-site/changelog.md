@@ -5,6 +5,44 @@ All notable changes to AgentForge will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.15.5] - 2026-03-11
+
+### Added
+
+#### @agentforge/patterns — Multi-Agent Validation
+- Added focused regression tests in `packages/patterns/tests/multi-agent/utils.test.ts` covering structured/non-string response serialization and verbose/non-verbose error-path behavior
+
+### Changed
+
+#### Type Safety Hardening — Tools and Patterns Runtime Hotspots
+- Reduced explicit-`any` usage across high-warning runtime files in `@agentforge/tools` and `@agentforge/patterns`
+- Hardened multi-agent runtime typing in:
+  - `packages/patterns/src/multi-agent/agent.ts`
+  - `packages/patterns/src/multi-agent/nodes.ts`
+  - `packages/patterns/src/multi-agent/types.ts`
+  - `packages/patterns/src/multi-agent/utils.ts`
+- Hardened Neo4j runtime typing in:
+  - `packages/tools/src/data/neo4j/connection.ts`
+  - `packages/tools/src/data/neo4j/utils/result-formatter.ts`
+
+### Fixed
+
+#### @agentforge/patterns — Multi-Agent Error Handling
+- `wrapReActAgent` now correctly honors the configured `verbose` flag in catch-path error handling (instead of always suppressing verbose error logging)
+- Improved extraction guards for multi-agent ReAct result shapes to preserve behavior while handling non-string/structured message content more safely
+
+#### @agentforge/tools — Neo4j Result Formatting
+- Fixed Neo4j record formatting to preserve key identity when normalizing output keys, preventing lookup mismatches when key coercion is involved
+
+### Published
+- All packages published to npm registry at version 0.15.5:
+  - @agentforge/core@0.15.5
+  - @agentforge/skills@0.15.5
+  - @agentforge/patterns@0.15.5
+  - @agentforge/tools@0.15.5
+  - @agentforge/testing@0.15.5
+  - @agentforge/cli@0.15.5
+
 ## [0.15.4] - 2026-03-10
 
 ### Added
