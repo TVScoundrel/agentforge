@@ -8,7 +8,7 @@
 
 import { StateGraph, END, CompiledStateGraph } from '@langchain/langgraph';
 import type { RunnableConfig } from '@langchain/core/runnables';
-import { createLogger, LogLevel } from '@agentforge/core';
+import { createPatternLogger } from '../shared/deduplication.js';
 import { MultiAgentState } from './state.js';
 import type { MultiAgentStateType } from './state.js';
 import type { MultiAgentSystemConfig, MultiAgentRouter, WorkerConfig } from './types.js';
@@ -16,9 +16,7 @@ import { createSupervisorNode, createWorkerNode, createAggregatorNode } from './
 import type { WorkerCapabilities } from './schemas.js';
 import { RoutingDecisionSchema } from './schemas.js';
 
-// Create logger for agent system
-const logLevel = (process.env.LOG_LEVEL?.toLowerCase() as LogLevel) || LogLevel.INFO;
-const logger = createLogger('agentforge:patterns:multi-agent:system', { level: logLevel });
+const logger = createPatternLogger('agentforge:patterns:multi-agent:system');
 
 type ToolLike = {
   metadata?: { name?: string };

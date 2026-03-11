@@ -12,13 +12,10 @@ import type { RunnableConfig } from '@langchain/core/runnables';
 import type { MultiAgentStateType } from './state.js';
 import type { TaskResult } from './schemas.js';
 import type { WorkerExecutionConfig } from './types.js';
-import { createLogger, LogLevel } from '@agentforge/core';
+import { createPatternLogger } from '../shared/deduplication.js';
 import { handleNodeError } from '../shared/error-handling.js';
 
-// Create logger for multi-agent utils
-// Log level can be controlled via LOG_LEVEL environment variable
-const logLevel = (process.env.LOG_LEVEL?.toLowerCase() as LogLevel) || LogLevel.INFO;
-const logger = createLogger('agentforge:patterns:multi-agent:utils', { level: logLevel });
+const logger = createPatternLogger('agentforge:patterns:multi-agent:utils');
 
 type ReActAgentGraph = CompiledStateGraph<string, unknown>;
 
@@ -33,7 +30,7 @@ interface ReActResultShape {
 }
 
 function isRecord(value: unknown): value is Record<string, unknown> {
-  return typeof value === 'object' && value !== null;
+  return typeof value === 'object' && value !== null && !Array.isArray(value);
 }
 
 function toRunnableConfig(config: WorkerExecutionConfig | undefined): RunnableConfig | undefined {

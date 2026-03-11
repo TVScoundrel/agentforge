@@ -114,7 +114,8 @@ export function formatResults(records: Neo4jRecord[]): Array<Record<string, unkn
   return records.map((record) => {
     const formatted: Record<string, unknown> = {};
     for (const key of record.keys) {
-      formatted[String(key)] = formatValue(record.get(key));
+      const lookupKey = String(key);
+      formatted[lookupKey] = formatValue(record.get(lookupKey));
     }
     return formatted;
   });
