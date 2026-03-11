@@ -40,12 +40,12 @@ function getToolName(tool: unknown): string {
   const candidate = tool as ToolLike;
 
   // AgentForge Tool: has metadata.name
-  if (candidate.metadata?.name) {
+  if (typeof candidate.metadata?.name === 'string') {
     return candidate.metadata.name;
   }
 
   // LangChain tool: has name directly
-  if (candidate.name) {
+  if (typeof candidate.name === 'string') {
     return candidate.name;
   }
 

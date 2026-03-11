@@ -80,7 +80,7 @@
 **Branch:** `codex/fix/st-08003-tools-patterns-type-hardening`
 
 ### Checklist
-- [x] Create branch `fix/st-08003-tools-patterns-type-hardening`
+- [x] Create branch `codex/fix/st-08003-tools-patterns-type-hardening`
   - Created as `codex/fix/st-08003-tools-patterns-type-hardening` (workspace branch-prefix policy)
 - [x] Create draft PR with story ID in title
   - PR #61: https://github.com/TVScoundrel/agentforge/pull/61

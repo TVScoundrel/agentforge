@@ -8,9 +8,21 @@ import { Node, Relationship, Path, Integer } from 'neo4j-driver';
 import type { Neo4jNode, Neo4jRelationship, Neo4jPath } from '../types.js';
 
 type Neo4jRecord = {
+  keys: string[];
+  get: (key: string) => unknown;
+};
+
+type RawNeo4jRecord = {
   keys: PropertyKey[];
   get: (key: PropertyKey) => unknown;
 };
+
+function normalizeRecord(record: RawNeo4jRecord): Neo4jRecord {
+  return {
+    keys: record.keys.map((key) => String(key)),
+    get: (key: string) => record.get(key),
+  };
+}
 
 /**
  * Convert Neo4j Integer to JavaScript number or string
@@ -110,11 +122,12 @@ export function formatPath(path: Path): Neo4jPath {
 /**
  * Format query results to JSON-serializable format
  */
-export function formatResults(records: Neo4jRecord[]): Array<Record<string, unknown>> {
-  return records.map((record) => {
+export function formatResults(records: RawNeo4jRecord[]): Array<Record<string, unknown>> {
+  return records.map((rawRecord) => {
+    const record = normalizeRecord(rawRecord);
     const formatted: Record<string, unknown> = {};
     for (const key of record.keys) {
-      formatted[String(key)] = formatValue(record.get(key));
+      formatted[key] = formatValue(record.get(key));
     }
     return formatted;
   });
