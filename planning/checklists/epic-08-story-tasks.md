@@ -114,11 +114,10 @@
 
 ## ST-08004: Test/Example Typing Policy and Targeted Cleanup
 
-**Branch:** `chore/st-08004-test-example-typing-policy`
+**Branch:** `codex/chore/st-08004-test-example-typing-policy`
 
 ### Checklist
-- [x] Create branch `chore/st-08004-test-example-typing-policy`
-  - Created as `codex/chore/st-08004-test-example-typing-policy` (workspace branch-prefix policy)
+- [x] Create branch `codex/chore/st-08004-test-example-typing-policy`
 - [x] Create draft PR with story ID in title
   - PR #62: https://github.com/TVScoundrel/agentforge/pull/62
 - [x] Define and document policy for acceptable `any` usage in tests/examples vs required `unknown`/specific typing
