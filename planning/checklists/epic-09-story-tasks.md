@@ -25,6 +25,7 @@
 - [x] Commit completed checklist items as logical commits and push updates
   - `bcdb705` refactor(st-09001): harden core tool composition typing
   - `e8f3698` docs(st-09001): record validation and move story to in-review
+  - `fbf3c85` fix(st-09001): clear timeout handle after promise race
 - [x] Mark PR Ready only after all story tasks are complete
   - PR #63 marked ready: https://github.com/TVScoundrel/agentforge/pull/63
 - [ ] Wait for merge; do not merge directly from local branch
