@@ -7,15 +7,21 @@
 ### Checklist
 - [x] Create branch `fix/st-09001-core-tool-composition-contracts`
   - Created as `codex/fix/st-09001-core-tool-composition-contracts` (workspace branch-prefix policy)
-- [ ] Create draft PR with story ID in title
-- [ ] Replace explicit `any`-based contracts in `packages/core/src/tools/composition.ts` with generic/`unknown`-based boundaries
-- [ ] Refactor composition helpers where needed to keep responsibilities isolated and readable
-- [ ] Add/update focused tests for composition flows (sequential, parallel, conditional, retry, timeout, cache)
-- [ ] Record explicit-`any` warning deltas for touched files in story docs
-- [ ] Add or update story documentation at `docs/st09001-core-tool-composition-contracts.md` (or document why not required)
-- [ ] Assess test impact; add/update automated tests when needed, or document why tests are not required
-- [ ] Run full test suite before finalizing the PR and record results
-- [ ] Run lint (`pnpm lint`) before finalizing the PR and record results
+- [x] Create draft PR with story ID in title
+  - PR #63: https://github.com/TVScoundrel/agentforge/pull/63
+- [x] Replace explicit `any`-based contracts in `packages/core/src/tools/composition.ts` with generic/`unknown`-based boundaries
+- [x] Refactor composition helpers where needed to keep responsibilities isolated and readable
+- [x] Add/update focused tests for composition flows (sequential, parallel, conditional, retry, timeout, cache)
+  - `pnpm test --run packages/core/tests/tools/composition.test.ts` -> 8 passed
+- [x] Record explicit-`any` warning deltas for touched files in story docs
+  - Recorded in `docs/st09001-core-tool-composition-contracts.md` (`13 -> 0`, overall `385 -> 372`)
+- [x] Add or update story documentation at `docs/st09001-core-tool-composition-contracts.md` (or document why not required)
+- [x] Assess test impact; add/update automated tests when needed, or document why tests are not required
+  - Added focused composition tests in `packages/core/tests/tools/composition.test.ts`
+- [x] Run full test suite before finalizing the PR and record results
+  - `pnpm test --run` -> `147 passed | 16 skipped` files; `2084 passed | 286 skipped` tests
+- [x] Run lint (`pnpm lint`) before finalizing the PR and record results
+  - `pnpm lint` -> exit `0`; warnings only (`0` errors)
 - [ ] Commit completed checklist items as logical commits and push updates
 - [ ] Mark PR Ready only after all story tasks are complete
 - [ ] Wait for merge; do not merge directly from local branch

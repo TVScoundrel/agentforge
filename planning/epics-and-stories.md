@@ -826,7 +826,7 @@
 **Priority:** P1 (High)
 **Estimate:** 3 hours
 **Dependencies:** ST-08004
-**Status:** In Progress
+**Status:** In Review (PR #63)
 
 **Acceptance criteria:**
 - [ ] `packages/core/src/tools/composition.ts` replaces broad `any`-based public contracts with generic input/output types (`unknown` where runtime-erased)
