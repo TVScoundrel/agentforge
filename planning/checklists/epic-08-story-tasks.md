@@ -117,7 +117,8 @@
 **Branch:** `chore/st-08004-test-example-typing-policy`
 
 ### Checklist
-- [ ] Create branch `chore/st-08004-test-example-typing-policy`
+- [x] Create branch `chore/st-08004-test-example-typing-policy`
+  - Created as `codex/chore/st-08004-test-example-typing-policy` (workspace branch-prefix policy)
 - [ ] Create draft PR with story ID in title
 - [ ] Define and document policy for acceptable `any` usage in tests/examples vs required `unknown`/specific typing
 - [ ] Update ESLint configuration/scoping if needed so policy is explicit and enforceable

@@ -1,11 +1,11 @@
 # Kanban Queue: AgentForge
 
-**Last Updated:** 2026-03-11
+**Last Updated:** 2026-03-12
 
 ## Queue Status Summary
 
-- **Ready:** 1 story
-- **In Progress:** 0 stories
+- **Ready:** 0 stories
+- **In Progress:** 1 story
 - **In Review:** 0 stories
 - **Blocked:** 0 stories
 - **Backlog:** 0 stories
@@ -14,15 +14,16 @@
 
 ## Ready
 
-- [ ] ST-08004 Test/Example Typing Policy and Targeted Cleanup
-  - Checklist: `planning/checklists/epic-08-story-tasks.md` (`## ST-08004: Test/Example Typing Policy and Targeted Cleanup`)
-  - Dependencies: ST-08001 (merged)
+_No stories currently ready_
 
 ---
 
 ## In Progress
 
-_No stories currently in progress_
+- [ ] ST-08004 Test/Example Typing Policy and Targeted Cleanup
+  - Checklist: `planning/checklists/epic-08-story-tasks.md` (`## ST-08004: Test/Example Typing Policy and Targeted Cleanup`)
+  - Branch: `codex/chore/st-08004-test-example-typing-policy`
+  - Dependencies: ST-08001 (merged)
 
 ---
 
@@ -87,4 +88,4 @@ _No stories currently in backlog_
 - ✅ ST-07006 complete - release scripts and checklist updated for skills package (merged 2026-02-25)
 - Epic 07 (Extract Skills into Dedicated Package) — all 6 stories merged; epic complete
 - Epic 08 (Type Safety Hardening and `no-explicit-any` Debt Burn-Down) created in Fix Mode on 2026-03-06
-- ST-08001, ST-08002, and ST-08003 merged (PR #59, PR #60, PR #61); ST-08004 remains Ready
+- ST-08001, ST-08002, and ST-08003 merged (PR #59, PR #60, PR #61); ST-08004 moved to In Progress
