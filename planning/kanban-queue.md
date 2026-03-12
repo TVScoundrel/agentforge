@@ -4,9 +4,9 @@
 
 ## Queue Status Summary
 
-- **Ready:** 1 story
+- **Ready:** 0 stories
 - **In Progress:** 0 stories
-- **In Review:** 0 stories
+- **In Review:** 1 story
 - **Blocked:** 0 stories
 - **Backlog:** 4 stories
 
@@ -14,10 +14,7 @@
 
 ## Ready
 
-- **ST-09001: Harden Core Tool Composition Contracts** (EP-09, P1, 3h)
-  - Branch: `fix/st-09001-core-tool-composition-contracts`
-  - Dependencies: ST-08004 (complete)
-  - Scope: `packages/core/src/tools/composition.ts` typed contract hardening + focused tests
+_No stories currently ready_
 
 ---
 
@@ -29,7 +26,9 @@ _No stories currently in progress_
 
 ## In Review
 
-_No stories currently in review_
+- **ST-09001: Harden Core Tool Composition Contracts** (EP-09, P1, 3h)
+  - PR: https://github.com/TVScoundrel/agentforge/pull/63
+  - Scope: `packages/core/src/tools/composition.ts` typed contract hardening + focused tests
 
 ---
 
@@ -101,4 +100,4 @@ _No stories currently blocked_
 - Epic 08 (Type Safety Hardening and `no-explicit-any` Debt Burn-Down) created in Fix Mode on 2026-03-06
 - ST-08001, ST-08002, ST-08003, and ST-08004 merged (PR #59, PR #60, PR #61, PR #62); Epic 08 complete
 - Epic 09 (SOLID Micro-Refactors and Type Boundary Hardening) planned on 2026-03-12
-- ST-09001 moved to Ready; ST-09002 through ST-09005 queued in Backlog for daily execution
+- ST-09001 moved to In Review (PR #63); ST-09002 through ST-09005 remain queued in Backlog
