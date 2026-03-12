@@ -140,7 +140,7 @@
   - `8d1d88f` chore(st-08004): start story execution and move to in-progress
   - `4668ad0` chore(st-08004): record draft pr and tracker links
   - `59f5d0b` refactor(st-08004): apply test typing policy and reduce any hotspots
-  - Plus finalization commit for in-review transition and checklist completion
+  - `deb505c` docs(st-08004): finalize validation and move story to in-review
 - [x] Mark PR Ready only after all story tasks are complete
   - PR #62 marked ready: https://github.com/TVScoundrel/agentforge/pull/62
 - [ ] Wait for merge; do not merge directly from local branch
