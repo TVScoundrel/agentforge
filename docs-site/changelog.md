@@ -5,6 +5,35 @@ All notable changes to AgentForge will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.15.6] - 2026-03-12
+
+### Added
+
+#### @agentforge/core — Composition Test Coverage
+- Added focused composition utility tests in `packages/core/tests/tools/composition.test.ts` covering sequential, parallel, conditional, compose, retry, timeout, and cache behavior
+- Added a regression test ensuring `timeout()` clears scheduled timer handles when the wrapped tool completes before the deadline
+
+### Changed
+
+#### @agentforge/core — Tool Composition Contracts
+- Reworked `packages/core/src/tools/composition.ts` to replace broad explicit-`any` contracts with generic `ComposedTool<TInput, TOutput>` and `unknown`-based runtime boundaries
+- Split composition utility concerns with focused helpers for conditional-step detection, retry delay calculation, and error normalization
+- Reduced explicit-`any` warnings in `packages/core/src/tools/composition.ts` from `13` to `0`
+
+### Fixed
+
+#### @agentforge/core — Timeout Resource Cleanup
+- Fixed `timeout()` to clear scheduled `setTimeout` handles after `Promise.race` settles, preventing stale timers and avoiding delayed rejected callbacks after successful tool completion
+
+### Published
+- All packages published to npm registry at version 0.15.6:
+  - @agentforge/core@0.15.6
+  - @agentforge/skills@0.15.6
+  - @agentforge/patterns@0.15.6
+  - @agentforge/tools@0.15.6
+  - @agentforge/testing@0.15.6
+  - @agentforge/cli@0.15.6
+
 ## [0.15.5] - 2026-03-11
 
 ### Added
