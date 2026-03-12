@@ -794,7 +794,7 @@
 **Priority:** P2 (Medium)
 **Estimate:** 2 hours
 **Dependencies:** ST-08001
-**Status:** In Progress (branch: `codex/chore/st-08004-test-example-typing-policy`, 2026-03-12)
+**Status:** In Progress (PR #62, branch: `codex/chore/st-08004-test-example-typing-policy`, 2026-03-12)
 
 **Acceptance criteria:**
 - [ ] Policy documented for when `any` is acceptable in tests/examples vs when `unknown`/specific types are required

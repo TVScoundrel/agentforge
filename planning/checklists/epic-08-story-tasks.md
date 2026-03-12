@@ -119,7 +119,8 @@
 ### Checklist
 - [x] Create branch `chore/st-08004-test-example-typing-policy`
   - Created as `codex/chore/st-08004-test-example-typing-policy` (workspace branch-prefix policy)
-- [ ] Create draft PR with story ID in title
+- [x] Create draft PR with story ID in title
+  - PR #62: https://github.com/TVScoundrel/agentforge/pull/62
 - [ ] Define and document policy for acceptable `any` usage in tests/examples vs required `unknown`/specific typing
 - [ ] Update ESLint configuration/scoping if needed so policy is explicit and enforceable
 - [ ] Remove low-effort explicit-`any` warnings in tests/examples while preserving readability

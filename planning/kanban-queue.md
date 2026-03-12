@@ -23,6 +23,7 @@ _No stories currently ready_
 - [ ] ST-08004 Test/Example Typing Policy and Targeted Cleanup
   - Checklist: `planning/checklists/epic-08-story-tasks.md` (`## ST-08004: Test/Example Typing Policy and Targeted Cleanup`)
   - Branch: `codex/chore/st-08004-test-example-typing-policy`
+  - PR: https://github.com/TVScoundrel/agentforge/pull/62
   - Dependencies: ST-08001 (merged)
 
 ---
