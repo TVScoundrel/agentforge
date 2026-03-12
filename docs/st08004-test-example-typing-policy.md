@@ -24,7 +24,7 @@ Updated root ESLint config (`eslint.config.js`) to make test/example policy expl
 
 ### Files updated
 - `packages/core/tests/langgraph/builders/subgraph.test.ts`
-  - Replaced broad `as any` edge casts with `unknown`-based casts.
+  - Replaced `START/END as any` edge casts with string node IDs `__start__`/`__end__` (the conventional LangGraph start/end node names used in this repo).
 - `packages/cli/tests/utils/package-manager.test.ts`
   - Replaced `any`-typed mock parameters with `string`.
   - Replaced repeated `{} as any`/`{ stdout: ... } as any` mocks with typed helper:
