@@ -12,7 +12,7 @@
 - [x] Replace explicit `any`-based contracts in `packages/core/src/tools/composition.ts` with generic/`unknown`-based boundaries
 - [x] Refactor composition helpers where needed to keep responsibilities isolated and readable
 - [x] Add/update focused tests for composition flows (sequential, parallel, conditional, retry, timeout, cache)
-  - `pnpm test --run packages/core/tests/tools/composition.test.ts` -> 8 passed
+  - `pnpm test --run packages/core/tests/tools/composition.test.ts` -> 9 passed
 - [x] Record explicit-`any` warning deltas for touched files in story docs
   - Recorded in `docs/st09001-core-tool-composition-contracts.md` (`13 -> 0`, overall `385 -> 372`)
 - [x] Add or update story documentation at `docs/st09001-core-tool-composition-contracts.md` (or document why not required)
