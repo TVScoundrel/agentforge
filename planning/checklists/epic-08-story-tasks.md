@@ -142,4 +142,5 @@
   - `deb505c` docs(st-08004): finalize validation and move story to in-review
 - [x] Mark PR Ready only after all story tasks are complete
   - PR #62 marked ready: https://github.com/TVScoundrel/agentforge/pull/62
-- [ ] Wait for merge; do not merge directly from local branch
+- [x] Wait for merge; do not merge directly from local branch
+  - Merged via PR #62 on 2026-03-12

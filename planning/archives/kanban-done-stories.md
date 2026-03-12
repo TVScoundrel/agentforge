@@ -2,7 +2,7 @@
 
 **Purpose:** Track completed and merged stories for the Relational Database Access Tool project.
 
-**Last Updated:** 2026-03-11
+**Last Updated:** 2026-03-12
 
 ---
 
@@ -254,6 +254,13 @@
 - **Epic:** EP-08 (Type Safety Hardening and `no-explicit-any` Debt Burn-Down)
 - **Estimate:** 4 hours
 - **Outcome:** Reduced explicit-`any` usage across targeted tools/patterns runtime hotspots, added/updated focused multi-agent and neo4j tests, and documented compatibility decisions and warning deltas in `docs/st08003-tools-patterns-type-hardening.md`.
+
+### ST-08004: Test/Example Typing Policy and Targeted Cleanup
+- **Merged:** 2026-03-12
+- **PR:** https://github.com/TVScoundrel/agentforge/pull/62
+- **Epic:** EP-08 (Type Safety Hardening and `no-explicit-any` Debt Burn-Down)
+- **Estimate:** 2 hours
+- **Outcome:** Added explicit test/example typing policy and ESLint scoping for `no-explicit-any`, reduced low-effort test/example warnings in targeted hotspots, and documented before/after deltas and rationale in `docs/st08004-test-example-typing-policy.md`.
 
 ---
 
