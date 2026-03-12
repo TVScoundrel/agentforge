@@ -56,3 +56,8 @@ These can be reduced further in follow-up cleanup slices without broad behavior 
   - Result: `2` files passed, `37` tests passed.
 - `pnpm exec eslint packages/core/tests/langgraph/builders/subgraph.test.ts packages/cli/tests/utils/package-manager.test.ts`
   - No `no-explicit-any` warnings in touched files.
+- `pnpm test --run`
+  - Result: `146` passed, `16` skipped test files (`162` total)
+  - Result: `2076` passed, `286` skipped tests (`2362` total)
+- `pnpm lint`
+  - Result: exit code `0` (warnings-only, no lint errors)

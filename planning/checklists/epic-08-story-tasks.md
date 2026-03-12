@@ -132,8 +132,15 @@
 - [x] Add or update story documentation at `docs/st08004-test-example-typing-policy.md` (or document why not required)
 - [x] Assess test impact; add/update automated tests when needed, or document why tests are not required
   - Ran focused touched-area tests for updated files (37 passed)
-- [ ] Run full test suite before finalizing the PR and record results
-- [ ] Run lint (`pnpm lint`) before finalizing the PR and record results
-- [ ] Commit completed checklist items as logical commits and push updates
-- [ ] Mark PR Ready only after all story tasks are complete
+- [x] Run full test suite before finalizing the PR and record results
+  - `pnpm test --run` -> `146 passed | 16 skipped` files; `2076 passed | 286 skipped` tests
+- [x] Run lint (`pnpm lint`) before finalizing the PR and record results
+  - `pnpm lint` -> exit `0`; warnings only (`0` errors)
+- [x] Commit completed checklist items as logical commits and push updates
+  - `8d1d88f` chore(st-08004): start story execution and move to in-progress
+  - `4668ad0` chore(st-08004): record draft pr and tracker links
+  - `59f5d0b` refactor(st-08004): apply test typing policy and reduce any hotspots
+  - Plus finalization commit for in-review transition and checklist completion
+- [x] Mark PR Ready only after all story tasks are complete
+  - PR #62 marked ready: https://github.com/TVScoundrel/agentforge/pull/62
 - [ ] Wait for merge; do not merge directly from local branch
