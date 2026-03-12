@@ -794,6 +794,7 @@
 **Priority:** P2 (Medium)
 **Estimate:** 2 hours
 **Dependencies:** ST-08001
+**Status:** In Review (PR #62, 2026-03-12)
 
 **Acceptance criteria:**
 - [ ] Policy documented for when `any` is acceptable in tests/examples vs when `unknown`/specific types are required
