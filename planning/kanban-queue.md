@@ -4,17 +4,20 @@
 
 ## Queue Status Summary
 
-- **Ready:** 0 stories
+- **Ready:** 1 story
 - **In Progress:** 0 stories
 - **In Review:** 0 stories
 - **Blocked:** 0 stories
-- **Backlog:** 0 stories
+- **Backlog:** 4 stories
 
 ---
 
 ## Ready
 
-_No stories currently ready_
+- **ST-09001: Harden Core Tool Composition Contracts** (EP-09, P1, 3h)
+  - Branch: `fix/st-09001-core-tool-composition-contracts`
+  - Dependencies: ST-08004 (complete)
+  - Scope: `packages/core/src/tools/composition.ts` typed contract hardening + focused tests
 
 ---
 
@@ -38,7 +41,18 @@ _No stories currently blocked_
 
 ## Backlog
 
-_No stories currently in backlog_
+- **ST-09002: Tighten LangChain Converter Runtime Boundary** (EP-09, P1, 3h)
+  - Dependencies: ST-08004 (complete)
+  - Scope: `packages/core/src/langchain/converter.ts` boundary hardening and SRP split
+- **ST-09003: Strengthen LangGraph State Utility Typing** (EP-09, P2, 3h)
+  - Dependencies: ST-08004 (complete)
+  - Scope: `packages/core/src/langgraph/state.ts` generics and reducer/default typing hardening
+- **ST-09004: Refine Observability Payload Contracts** (EP-09, P2, 4h)
+  - Dependencies: ST-09003
+  - Scope: `packages/core/src/langgraph/observability/logger.ts` + `packages/core/src/monitoring/alerts.ts`
+- **ST-09005: Harden Patterns ReAct Node and Shared Agent Builder Types** (EP-09, P2, 4h)
+  - Dependencies: ST-08004 (complete)
+  - Scope: `packages/patterns/src/react/nodes.ts` + `packages/patterns/src/shared/agent-builder.ts`
 
 ---
 
@@ -86,3 +100,5 @@ _No stories currently in backlog_
 - Epic 07 (Extract Skills into Dedicated Package) — all 6 stories merged; epic complete
 - Epic 08 (Type Safety Hardening and `no-explicit-any` Debt Burn-Down) created in Fix Mode on 2026-03-06
 - ST-08001, ST-08002, ST-08003, and ST-08004 merged (PR #59, PR #60, PR #61, PR #62); Epic 08 complete
+- Epic 09 (SOLID Micro-Refactors and Type Boundary Hardening) planned on 2026-03-12
+- ST-09001 moved to Ready; ST-09002 through ST-09005 queued in Backlog for daily execution

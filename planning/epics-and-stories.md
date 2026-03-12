@@ -111,6 +111,19 @@
 
 ---
 
+### EP-09: SOLID Micro-Refactors and Type Boundary Hardening
+**Capability:** Deliver small, daily, behavior-preserving refactors that improve SRP/ISP boundaries and remove high-value explicit `any` usage in runtime code.
+
+**Outcomes:**
+- Core extension points expose narrower, generic-first contracts instead of broad `any` payloads
+- Cross-package utility modules become easier to test and reason about through extracted helpers and clearer responsibilities
+- Explicit-`any` warnings continue trending down from the current `385` `src/**` baseline without regressions
+- Story slices are intentionally small (1 day each) so quality improvements can ship continuously
+
+**Stories:** ST-09001 through ST-09005
+
+---
+
 ## Stories
 
 ### Epic 01: Core Database Connection Management
@@ -805,15 +818,102 @@
 
 ---
 
+### Epic 09: SOLID Micro-Refactors and Type Boundary Hardening
+
+#### ST-09001: Harden Core Tool Composition Contracts
+**User story:** As a framework developer, I want typed composition contracts in core so that chained tool workflows are easier to extend safely.
+
+**Priority:** P1 (High)
+**Estimate:** 3 hours
+**Dependencies:** ST-08004
+
+**Acceptance criteria:**
+- [ ] `packages/core/src/tools/composition.ts` replaces broad `any`-based public contracts with generic input/output types (`unknown` where runtime-erased)
+- [ ] Composition helpers (`sequential`, `parallel`, `conditional`, `composeTool`, `retry`, `timeout`, `cache`) are split into clearer typed boundaries where needed (SRP-focused extraction allowed)
+- [ ] Behavior remains backward compatible for existing call sites in `core` tests
+- [ ] Focused tests are added/updated for composition behavior and type-sensitive edge cases
+- [ ] Explicit-`any` warnings in touched files are reduced and recorded in story documentation
+- [ ] Add or update story documentation at `docs/st09001-core-tool-composition-contracts.md`
+
+---
+
+#### ST-09002: Tighten LangChain Converter Runtime Boundary
+**User story:** As a maintainer, I want the LangChain converter layer to use explicit runtime-erased boundaries so integrations remain flexible without leaking unsafe `any` contracts.
+
+**Priority:** P1 (High)
+**Estimate:** 3 hours
+**Dependencies:** ST-08004
+
+**Acceptance criteria:**
+- [ ] `packages/core/src/langchain/converter.ts` removes avoidable explicit `any` from exported signatures in favor of generics/`unknown` + narrowing
+- [ ] Schema conversion and tool-result stringification responsibilities are separated for readability and maintainability (SRP)
+- [ ] Public API behavior remains unchanged (`toLangChainTool`, `toLangChainTools`, `getToolJsonSchema`, `getToolDescription`)
+- [ ] Focused tests cover object/primitive/string output serialization and schema extraction behavior
+- [ ] Explicit-`any` warnings in touched files are reduced and recorded in story documentation
+- [ ] Add or update story documentation at `docs/st09002-langchain-converter-boundary-hardening.md`
+
+---
+
+#### ST-09003: Strengthen LangGraph State Utility Typing
+**User story:** As a pattern author, I want typed state utility contracts so reducers, defaults, and validation helpers are easier to compose safely.
+
+**Priority:** P2 (Medium)
+**Estimate:** 3 hours
+**Dependencies:** ST-08004
+
+**Acceptance criteria:**
+- [ ] `packages/core/src/langgraph/state.ts` removes avoidable explicit `any` from `StateChannelConfig`, `createStateAnnotation`, `validateState`, and `mergeState`
+- [ ] Generic inference preserves current developer ergonomics while improving compile-time checks for channel reducer/default compatibility
+- [ ] Runtime behavior for state creation/merge/validation remains unchanged for existing tests
+- [ ] Focused tests are added/updated for reducer application, default factories, and schema validation edge cases
+- [ ] Explicit-`any` warnings in touched files are reduced and recorded in story documentation
+- [ ] Add or update story documentation at `docs/st09003-langgraph-state-utility-typing.md`
+
+---
+
+#### ST-09004: Refine Observability Payload Contracts
+**User story:** As an operator, I want observability payloads to use stable JSON-compatible contracts so logs and alerts are predictable across integrations.
+
+**Priority:** P2 (Medium)
+**Estimate:** 4 hours
+**Dependencies:** ST-09003
+
+**Acceptance criteria:**
+- [ ] `packages/core/src/langgraph/observability/logger.ts` and `packages/core/src/monitoring/alerts.ts` use shared JSON-safe payload types instead of broad `Record<string, any>`
+- [ ] Optional extraction introduces a reusable observability payload type module to avoid repeated ad-hoc contracts (DRY + SRP)
+- [ ] Logging and alert behavior remain backward compatible for current runtime usage
+- [ ] Focused tests are added/updated for log formatting and alert rule execution with typed payloads
+- [ ] Explicit-`any` warnings in touched files are reduced and recorded in story documentation
+- [ ] Add or update story documentation at `docs/st09004-observability-payload-contracts.md`
+
+---
+
+#### ST-09005: Harden Patterns ReAct Node and Shared Agent Builder Types
+**User story:** As a pattern consumer, I want safer ReAct/agent-builder state boundaries so custom workflows are easier to implement without unsafe casts.
+
+**Priority:** P2 (Medium)
+**Estimate:** 4 hours
+**Dependencies:** ST-08004
+
+**Acceptance criteria:**
+- [ ] `packages/patterns/src/react/nodes.ts` and `packages/patterns/src/shared/agent-builder.ts` reduce explicit `any` in state/message/condition handling
+- [ ] Message normalization and state access helpers are extracted where useful to reduce node-function complexity (SRP)
+- [ ] Public API and runtime behavior for ReAct and shared builder flows remain backward compatible
+- [ ] Focused tests are added/updated for conditional routing and message construction behavior
+- [ ] Explicit-`any` warnings in touched files are reduced and recorded in story documentation
+- [ ] Add or update story documentation at `docs/st09005-patterns-react-builder-typing.md`
+
+---
+
 ## Story Summary
 
-**Total Stories:** 36
+**Total Stories:** 41
 **By Priority:**
 - P0 (Critical): 17 stories
-- P1 (High): 14 stories
-- P2 (Medium): 5 stories
+- P1 (High): 16 stories
+- P2 (Medium): 8 stories
 
-**Total Estimated Effort:** ~147 hours (18.4 working days)
+**Total Estimated Effort:** ~164 hours (20.5 working days)
 
 **Dependency Chain:**
 1. Phase 1 (Foundation): ST-01001 → ST-01002 → ST-01003 → ST-01004
@@ -824,3 +924,4 @@
 6. Phase 6 (Agent Skills): ST-06001 → ST-06002 → ST-06003 → ST-06004 → ST-06005 → ST-06006
 7. Phase 7 (Skills Extraction): ST-07001 → ST-07002 → [ST-07003, ST-07004 parallel] → ST-07005; ST-07001 → ST-07006 (independent)
 8. Phase 8 (Type Safety Hardening): ST-08001 → [ST-08002, ST-08003, ST-08004 parallel]
+9. Phase 9 (SOLID Micro-Refactors): ST-09001 (Ready) → [ST-09002, ST-09003, ST-09005 parallel] → ST-09004
