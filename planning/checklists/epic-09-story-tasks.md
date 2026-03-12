@@ -5,7 +5,8 @@
 **Branch:** `fix/st-09001-core-tool-composition-contracts`
 
 ### Checklist
-- [ ] Create branch `fix/st-09001-core-tool-composition-contracts`
+- [x] Create branch `fix/st-09001-core-tool-composition-contracts`
+  - Created as `codex/fix/st-09001-core-tool-composition-contracts` (workspace branch-prefix policy)
 - [ ] Create draft PR with story ID in title
 - [ ] Replace explicit `any`-based contracts in `packages/core/src/tools/composition.ts` with generic/`unknown`-based boundaries
 - [ ] Refactor composition helpers where needed to keep responsibilities isolated and readable

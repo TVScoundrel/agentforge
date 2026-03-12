@@ -4,8 +4,8 @@
 
 ## Queue Status Summary
 
-- **Ready:** 1 story
-- **In Progress:** 0 stories
+- **Ready:** 0 stories
+- **In Progress:** 1 story
 - **In Review:** 0 stories
 - **Blocked:** 0 stories
 - **Backlog:** 4 stories
@@ -14,16 +14,16 @@
 
 ## Ready
 
-- **ST-09001: Harden Core Tool Composition Contracts** (EP-09, P1, 3h)
-  - Branch: `fix/st-09001-core-tool-composition-contracts`
-  - Dependencies: ST-08004 (complete)
-  - Scope: `packages/core/src/tools/composition.ts` typed contract hardening + focused tests
+_No stories currently ready_
 
 ---
 
 ## In Progress
 
-_No stories currently in progress_
+- **ST-09001: Harden Core Tool Composition Contracts** (EP-09, P1, 3h)
+  - Branch: `fix/st-09001-core-tool-composition-contracts`
+  - Dependencies: ST-08004 (complete)
+  - Scope: `packages/core/src/tools/composition.ts` typed contract hardening + focused tests
 
 ---
 
