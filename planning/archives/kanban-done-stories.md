@@ -262,6 +262,13 @@
 - **Estimate:** 2 hours
 - **Outcome:** Added explicit test/example typing policy and ESLint scoping for `no-explicit-any`, reduced low-effort test/example warnings in targeted hotspots, and documented before/after deltas and rationale in `docs/st08004-test-example-typing-policy.md`.
 
+### ST-09001: Harden Core Tool Composition Contracts
+- **Merged:** 2026-03-12
+- **PR:** https://github.com/TVScoundrel/agentforge/pull/63
+- **Epic:** EP-09 (SOLID Micro-Refactors and Type Boundary Hardening)
+- **Estimate:** 3 hours
+- **Outcome:** Reworked core tool composition utilities to replace broad `any` contracts with generic `ComposedTool<TInput, TOutput>` and `unknown` boundaries, added focused helpers for conditional-step detection/error normalization/retry-delay calculation, fixed timeout cleanup to clear scheduled handles after `Promise.race` settles, and added focused composition tests plus story documentation. Reduced explicit-`any` warnings in `packages/core/src/tools/composition.ts` from 13 to 0 and improved the workspace `src/**` baseline from 385 to 372.
+
 ---
 
 ## Archive Format

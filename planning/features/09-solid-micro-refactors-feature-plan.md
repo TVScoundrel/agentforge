@@ -1,9 +1,9 @@
 # Feature Plan: SOLID Micro-Refactors and Type Boundary Hardening
 
 **Epic Range:** EP-09 through EP-09
-**Status:** In Review
+**Status:** In Progress
 **Last Updated:** 2026-03-12
-**Active Story:** ST-09001 (In Review)
+**Active Story:** ST-09002 (Ready)
 
 ---
 
@@ -33,17 +33,17 @@
 
 Current `@typescript-eslint/no-explicit-any` baseline check (`pnpm lint:explicit-any:baseline`, 2026-03-12):
 
-- Total: `385` warnings (`src/**`)
-- By package: `core 189`, `tools 70`, `testing 51`, `patterns 50`, `cli 25`
+- Total: `372` warnings (`src/**`)
+- By package: `core 176`, `tools 70`, `testing 51`, `patterns 50`, `cli 25`
 
 Top runtime hotspots informing this feature slice:
 
 1. `packages/core/src/langchain/converter.ts` (15)
 2. `packages/core/src/langgraph/observability/logger.ts` (15)
 3. `packages/core/src/langgraph/state.ts` (13)
-4. `packages/core/src/tools/composition.ts` (13)
-5. `packages/patterns/src/react/nodes.ts` (10)
-6. `packages/patterns/src/shared/agent-builder.ts` (9)
+4. `packages/patterns/src/react/nodes.ts` (10)
+5. `packages/patterns/src/shared/agent-builder.ts` (9)
+6. `packages/core/src/monitoring/alerts.ts` (5)
 
 ---
 

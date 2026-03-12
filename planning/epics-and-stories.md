@@ -826,7 +826,7 @@
 **Priority:** P1 (High)
 **Estimate:** 3 hours
 **Dependencies:** ST-08004
-**Status:** In Review (PR #63)
+**Status:** Merged (PR #63, 2026-03-12)
 
 **Acceptance criteria:**
 - [ ] `packages/core/src/tools/composition.ts` replaces broad `any`-based public contracts with generic input/output types (`unknown` where runtime-erased)
@@ -925,4 +925,4 @@
 6. Phase 6 (Agent Skills): ST-06001 → ST-06002 → ST-06003 → ST-06004 → ST-06005 → ST-06006
 7. Phase 7 (Skills Extraction): ST-07001 → ST-07002 → [ST-07003, ST-07004 parallel] → ST-07005; ST-07001 → ST-07006 (independent)
 8. Phase 8 (Type Safety Hardening): ST-08001 → [ST-08002, ST-08003, ST-08004 parallel]
-9. Phase 9 (SOLID Micro-Refactors): ST-09001 (Ready) → [ST-09002, ST-09003, ST-09005 parallel] → ST-09004
+9. Phase 9 (SOLID Micro-Refactors): ST-09001 (Merged) → [ST-09002, ST-09003, ST-09005 ready] → ST-09004
