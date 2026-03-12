@@ -15,6 +15,10 @@ import { execa } from 'execa';
 vi.mock('fs-extra');
 vi.mock('execa');
 
+type ExecaResult = Awaited<ReturnType<typeof execa>>;
+
+const execaResult = (stdout = ''): ExecaResult => ({ stdout } as unknown as ExecaResult);
+
 describe('Package Manager Utils', () => {
   beforeEach(() => {
     vi.clearAllMocks();
@@ -22,7 +26,7 @@ describe('Package Manager Utils', () => {
 
   describe('detectPackageManager', () => {
     it('should detect pnpm from lock file', async () => {
-      vi.mocked(fs.pathExists).mockImplementation(async (path: any) => {
+      vi.mocked(fs.pathExists).mockImplementation(async (path: string) => {
         return path.includes('pnpm-lock.yaml');
       });
 
@@ -31,7 +35,7 @@ describe('Package Manager Utils', () => {
     });
 
     it('should detect yarn from lock file', async () => {
-      vi.mocked(fs.pathExists).mockImplementation(async (path: any) => {
+      vi.mocked(fs.pathExists).mockImplementation(async (path: string) => {
         return path.includes('yarn.lock');
       });
 
@@ -40,7 +44,7 @@ describe('Package Manager Utils', () => {
     });
 
     it('should detect npm from lock file', async () => {
-      vi.mocked(fs.pathExists).mockImplementation(async (path: any) => {
+      vi.mocked(fs.pathExists).mockImplementation(async (path: string) => {
         return path.includes('package-lock.json');
       });
 
@@ -50,7 +54,7 @@ describe('Package Manager Utils', () => {
 
     it('should detect pnpm from availability', async () => {
       vi.mocked(fs.pathExists).mockResolvedValue(false);
-      vi.mocked(execa).mockResolvedValueOnce({ stdout: '8.0.0' } as any);
+      vi.mocked(execa).mockResolvedValueOnce(execaResult('8.0.0'));
 
       const pm = await detectPackageManager('/test');
       expect(pm).toBe('pnpm');
@@ -60,7 +64,7 @@ describe('Package Manager Utils', () => {
       vi.mocked(fs.pathExists).mockResolvedValue(false);
       vi.mocked(execa)
         .mockRejectedValueOnce(new Error('pnpm not found'))
-        .mockResolvedValueOnce({ stdout: '1.22.0' } as any);
+        .mockResolvedValueOnce(execaResult('1.22.0'));
 
       const pm = await detectPackageManager('/test');
       expect(pm).toBe('yarn');
@@ -105,7 +109,7 @@ describe('Package Manager Utils', () => {
 
   describe('installDependencies', () => {
     it('should install dependencies with npm', async () => {
-      vi.mocked(execa).mockResolvedValueOnce({} as any);
+      vi.mocked(execa).mockResolvedValueOnce(execaResult());
 
       await installDependencies('/test', 'npm');
 
@@ -116,7 +120,7 @@ describe('Package Manager Utils', () => {
     });
 
     it('should install dependencies with pnpm', async () => {
-      vi.mocked(execa).mockResolvedValueOnce({} as any);
+      vi.mocked(execa).mockResolvedValueOnce(execaResult());
 
       await installDependencies('/test', 'pnpm');
 
@@ -127,7 +131,7 @@ describe('Package Manager Utils', () => {
     });
 
     it('should install dependencies with yarn', async () => {
-      vi.mocked(execa).mockResolvedValueOnce({} as any);
+      vi.mocked(execa).mockResolvedValueOnce(execaResult());
 
       await installDependencies('/test', 'yarn');
 
@@ -138,7 +142,7 @@ describe('Package Manager Utils', () => {
     });
 
     it('should default to pnpm', async () => {
-      vi.mocked(execa).mockResolvedValueOnce({} as any);
+      vi.mocked(execa).mockResolvedValueOnce(execaResult());
 
       await installDependencies('/test');
 
@@ -152,7 +156,7 @@ describe('Package Manager Utils', () => {
   describe('addDependency', () => {
     it('should add production dependency with npm', async () => {
       vi.mocked(fs.pathExists).mockResolvedValue(false);
-      vi.mocked(execa).mockResolvedValue({} as any);
+      vi.mocked(execa).mockResolvedValue(execaResult());
 
       await addDependency('/test', 'lodash', { packageManager: 'npm' });
 
@@ -164,7 +168,7 @@ describe('Package Manager Utils', () => {
 
     it('should add dev dependency with npm', async () => {
       vi.mocked(fs.pathExists).mockResolvedValue(false);
-      vi.mocked(execa).mockResolvedValue({} as any);
+      vi.mocked(execa).mockResolvedValue(execaResult());
 
       await addDependency('/test', 'vitest', { packageManager: 'npm', dev: true });
 
@@ -176,7 +180,7 @@ describe('Package Manager Utils', () => {
 
     it('should add production dependency with pnpm', async () => {
       vi.mocked(fs.pathExists).mockResolvedValue(false);
-      vi.mocked(execa).mockResolvedValue({} as any);
+      vi.mocked(execa).mockResolvedValue(execaResult());
 
       await addDependency('/test', 'lodash', { packageManager: 'pnpm' });
 
@@ -188,7 +192,7 @@ describe('Package Manager Utils', () => {
 
     it('should add dev dependency with pnpm', async () => {
       vi.mocked(fs.pathExists).mockResolvedValue(false);
-      vi.mocked(execa).mockResolvedValue({} as any);
+      vi.mocked(execa).mockResolvedValue(execaResult());
 
       await addDependency('/test', 'vitest', { packageManager: 'pnpm', dev: true });
 
@@ -200,7 +204,7 @@ describe('Package Manager Utils', () => {
 
     it('should add production dependency with yarn', async () => {
       vi.mocked(fs.pathExists).mockResolvedValue(false);
-      vi.mocked(execa).mockResolvedValue({} as any);
+      vi.mocked(execa).mockResolvedValue(execaResult());
 
       await addDependency('/test', 'lodash', { packageManager: 'yarn' });
 
@@ -212,7 +216,7 @@ describe('Package Manager Utils', () => {
 
     it('should add dev dependency with yarn', async () => {
       vi.mocked(fs.pathExists).mockResolvedValue(false);
-      vi.mocked(execa).mockResolvedValue({} as any);
+      vi.mocked(execa).mockResolvedValue(execaResult());
 
       await addDependency('/test', 'vitest', { packageManager: 'yarn', dev: true });
 
@@ -223,10 +227,10 @@ describe('Package Manager Utils', () => {
     });
 
     it('should auto-detect package manager', async () => {
-      vi.mocked(fs.pathExists).mockImplementation(async (path: any) => {
+      vi.mocked(fs.pathExists).mockImplementation(async (path: string) => {
         return path.includes('pnpm-lock.yaml');
       });
-      vi.mocked(execa).mockResolvedValue({} as any);
+      vi.mocked(execa).mockResolvedValue(execaResult());
 
       await addDependency('/test', 'lodash');
 
@@ -239,7 +243,7 @@ describe('Package Manager Utils', () => {
 
   describe('runScript', () => {
     it('should run script with npm', async () => {
-      vi.mocked(execa).mockResolvedValueOnce({} as any);
+      vi.mocked(execa).mockResolvedValueOnce(execaResult());
 
       await runScript('/test', 'build', 'npm');
 
@@ -250,7 +254,7 @@ describe('Package Manager Utils', () => {
     });
 
     it('should run script with pnpm', async () => {
-      vi.mocked(execa).mockResolvedValueOnce({} as any);
+      vi.mocked(execa).mockResolvedValueOnce(execaResult());
 
       await runScript('/test', 'build', 'pnpm');
 
@@ -261,7 +265,7 @@ describe('Package Manager Utils', () => {
     });
 
     it('should run script with yarn', async () => {
-      vi.mocked(execa).mockResolvedValueOnce({} as any);
+      vi.mocked(execa).mockResolvedValueOnce(execaResult());
 
       await runScript('/test', 'test', 'yarn');
 
@@ -272,7 +276,7 @@ describe('Package Manager Utils', () => {
     });
 
     it('should default to pnpm', async () => {
-      vi.mocked(execa).mockResolvedValueOnce({} as any);
+      vi.mocked(execa).mockResolvedValueOnce(execaResult());
 
       await runScript('/test', 'lint');
 
@@ -285,7 +289,7 @@ describe('Package Manager Utils', () => {
 
   describe('publishPackage', () => {
     it('should publish with default options', async () => {
-      vi.mocked(execa).mockResolvedValueOnce({} as any);
+      vi.mocked(execa).mockResolvedValueOnce(execaResult());
 
       await publishPackage('/test');
 
@@ -296,7 +300,7 @@ describe('Package Manager Utils', () => {
     });
 
     it('should publish with custom tag', async () => {
-      vi.mocked(execa).mockResolvedValueOnce({} as any);
+      vi.mocked(execa).mockResolvedValueOnce(execaResult());
 
       await publishPackage('/test', { tag: 'beta' });
 
@@ -307,7 +311,7 @@ describe('Package Manager Utils', () => {
     });
 
     it('should publish with restricted access', async () => {
-      vi.mocked(execa).mockResolvedValueOnce({} as any);
+      vi.mocked(execa).mockResolvedValueOnce(execaResult());
 
       await publishPackage('/test', { access: 'restricted' });
 
@@ -318,7 +322,7 @@ describe('Package Manager Utils', () => {
     });
 
     it('should run dry-run publish', async () => {
-      vi.mocked(execa).mockResolvedValueOnce({} as any);
+      vi.mocked(execa).mockResolvedValueOnce(execaResult());
 
       await publishPackage('/test', { dryRun: true });
 
@@ -329,7 +333,7 @@ describe('Package Manager Utils', () => {
     });
 
     it('should publish with all options', async () => {
-      vi.mocked(execa).mockResolvedValueOnce({} as any);
+      vi.mocked(execa).mockResolvedValueOnce(execaResult());
 
       await publishPackage('/test', {
         tag: 'next',
@@ -344,4 +348,3 @@ describe('Package Manager Utils', () => {
     });
   });
 });
-

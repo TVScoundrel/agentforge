@@ -22,5 +22,17 @@ export default tseslint.config(
       '@typescript-eslint/no-unused-vars': ['warn', { argsIgnorePattern: '^_' }],
       'no-console': 'off',
     },
+  },
+  {
+    files: [
+      '**/tests/**/*.{ts,tsx,js,mjs,cjs}',
+      '**/__tests__/**/*.{ts,tsx,js,mjs,cjs}',
+      '**/examples/**/*.{ts,tsx,js,mjs,cjs}',
+      '**/templates/**/*.{ts,tsx,js,mjs,cjs}',
+    ],
+    rules: {
+      // Tests/examples frequently use variadic mock signatures; keep visibility while reducing noise.
+      '@typescript-eslint/no-explicit-any': ['warn', { ignoreRestArgs: true }],
+    },
   }
 );

@@ -121,12 +121,17 @@
   - Created as `codex/chore/st-08004-test-example-typing-policy` (workspace branch-prefix policy)
 - [x] Create draft PR with story ID in title
   - PR #62: https://github.com/TVScoundrel/agentforge/pull/62
-- [ ] Define and document policy for acceptable `any` usage in tests/examples vs required `unknown`/specific typing
-- [ ] Update ESLint configuration/scoping if needed so policy is explicit and enforceable
-- [ ] Remove low-effort explicit-`any` warnings in tests/examples while preserving readability
-- [ ] Capture lint output deltas and rationale for any remaining intentional `any` usage
-- [ ] Add or update story documentation at `docs/st08004-test-example-typing-policy.md` (or document why not required)
-- [ ] Assess test impact; add/update automated tests when needed, or document why tests are not required
+- [x] Define and document policy for acceptable `any` usage in tests/examples vs required `unknown`/specific typing
+  - Policy documented in `docs/st08004-test-example-typing-policy.md`
+- [x] Update ESLint configuration/scoping if needed so policy is explicit and enforceable
+  - Added test/example/template scoped `no-explicit-any` rule override in root `eslint.config.js`
+- [x] Remove low-effort explicit-`any` warnings in tests/examples while preserving readability
+  - Cleaned hotspots in `packages/core/tests/langgraph/builders/subgraph.test.ts` and `packages/cli/tests/utils/package-manager.test.ts`
+- [x] Capture lint output deltas and rationale for any remaining intentional `any` usage
+  - Recorded in `docs/st08004-test-example-typing-policy.md` (`358 -> 283`, delta `-75`)
+- [x] Add or update story documentation at `docs/st08004-test-example-typing-policy.md` (or document why not required)
+- [x] Assess test impact; add/update automated tests when needed, or document why tests are not required
+  - Ran focused touched-area tests for updated files (37 passed)
 - [ ] Run full test suite before finalizing the PR and record results
 - [ ] Run lint (`pnpm lint`) before finalizing the PR and record results
 - [ ] Commit completed checklist items as logical commits and push updates
