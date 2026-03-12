@@ -11,6 +11,7 @@ Refactored core tool composition utilities to remove explicit `any` from public 
 | `packages/core/src/tools/composition.ts` | Replaced broad `any` signatures with generic `ComposedTool<TInput, TOutput>` and typed config contracts (`ConditionalConfig`, `ComposeToolConfig`) |
 | `packages/core/src/tools/composition.ts` | Added focused helper functions (`isConditionalStep`, `calculateRetryDelay`, `toError`) to separate workflow orchestration from utility concerns |
 | `packages/core/src/tools/composition.ts` | Added invalid retry-option guard (`maxAttempts` must be an integer `>= 1`) to fail fast for misconfiguration |
+| `packages/core/src/tools/composition.ts` | Updated `timeout()` to clear scheduled timeout handles after `Promise.race` settles, preventing stale timers when tools complete successfully |
 | `packages/core/tests/tools/composition.test.ts` | Added 8 focused tests for `sequential`, `parallel`, `conditional`, `composeTool`, `retry`, `timeout`, and `cache` behavior |
 
 ## Explicit `any` Warning Delta
@@ -34,7 +35,7 @@ Refactored core tool composition utilities to remove explicit `any` from public 
 ## Validation
 
 - `pnpm exec eslint packages/core/src/tools/composition.ts packages/core/tests/tools/composition.test.ts`
-- `pnpm test --run packages/core/tests/tools/composition.test.ts`
+- `pnpm test --run packages/core/tests/tools/composition.test.ts` (updated to 9 focused tests after timeout cleanup regression guard)
 - `pnpm lint:explicit-any:baseline`
 - `pnpm test --run` -> `147 passed | 16 skipped` files; `2084 passed | 286 skipped` tests
 - `pnpm lint` -> exit `0`; warnings only (`0` errors)

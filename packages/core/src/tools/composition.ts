@@ -191,14 +191,21 @@ export function timeout<TInput = unknown, TOutput = unknown>(
     name: `timeout(${tool.name})`,
     description: `${tool.description} (with ${ms}ms timeout)`,
     invoke: async (input: TInput): Promise<TOutput> => {
-      const timeoutPromise = new Promise<never>((_, reject) =>
-        setTimeout(() => reject(new Error(`Tool ${tool.name} timed out after ${ms}ms`)), ms)
-      );
+      let timer: ReturnType<typeof setTimeout> | undefined;
 
-      return Promise.race([
-        tool.invoke(input),
-        timeoutPromise,
-      ]);
+      const timeoutPromise = new Promise<never>((_, reject) => {
+        timer = setTimeout(() => {
+          reject(new Error(`Tool ${tool.name} timed out after ${ms}ms`));
+        }, ms);
+      });
+
+      try {
+        return await Promise.race([tool.invoke(input), timeoutPromise]);
+      } finally {
+        if (timer !== undefined) {
+          clearTimeout(timer);
+        }
+      }
     },
   };
 }

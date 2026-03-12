@@ -162,6 +162,26 @@ describe('tool composition utilities', () => {
     );
   });
 
+  it('clears timeout timer when tool completes before deadline', async () => {
+    vi.useFakeTimers();
+
+    const fastTool: ComposedTool<string, string> = {
+      name: 'fast',
+      description: 'Fast tool',
+      invoke: async (input) =>
+        new Promise((resolve) => {
+          setTimeout(() => resolve(`done:${input}`), 5);
+        }),
+    };
+
+    const composed = timeout(fastTool, 50);
+    const promise = composed.invoke('job');
+
+    await vi.advanceTimersByTimeAsync(5);
+    await expect(promise).resolves.toBe('done:job');
+    expect(vi.getTimerCount()).toBe(0);
+  });
+
   it('fails with a timeout error when execution exceeds limit', async () => {
     vi.useFakeTimers();
 
