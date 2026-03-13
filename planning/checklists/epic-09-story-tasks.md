@@ -99,7 +99,8 @@
   - `a369e64` fix(st-09003): preserve declared reducer update types
 - [x] Mark PR Ready only after all story tasks are complete
   - PR #65 marked ready: https://github.com/TVScoundrel/agentforge/pull/65
-- [ ] Wait for merge; do not merge directly from local branch
+- [x] Wait for merge; do not merge directly from local branch
+  - Merged via PR #65 on 2026-03-13
 
 ---
 

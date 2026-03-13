@@ -276,6 +276,13 @@
 - **Estimate:** 3 hours
 - **Outcome:** Hardened the LangChain converter boundary by replacing exported `any`-based signatures with generic/runtime-erased contracts, extracting focused helpers for tool-result serialization and JSON-schema extraction, and adding edge-case tests for array and `null` outputs. Reduced explicit-`any` warnings in `packages/core/src/langchain/converter.ts` from 15 to 0 and improved the workspace `src/**` baseline from 372 to 357.
 
+### ST-09003: Strengthen LangGraph State Utility Typing
+- **Merged:** 2026-03-13
+- **PR:** https://github.com/TVScoundrel/agentforge/pull/65 (commit 91b9465)
+- **Epic:** EP-09 (SOLID Micro-Refactors and Type Boundary Hardening)
+- **Estimate:** 3 hours
+- **Outcome:** Hardened the LangGraph state utility surface by removing explicit `any` from state-channel helpers, preserving config-derived `State` and `Update` inference, and enforcing reducer/update compatibility at the config boundary. Added focused inference and reducer-update regression coverage, recorded explicit-`any` warning deltas in story documentation, and completed full validation before merge.
+
 ---
 
 ## Archive Format
