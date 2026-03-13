@@ -96,6 +96,7 @@
   - `abc515a` docs(st-09003): record state utility typing progress
   - `a4effac` docs(st-09003): record state utility validation progress
   - `f9d2eda` fix(st-09003): enforce state config compatibility
+  - `a369e64` fix(st-09003): preserve declared reducer update types
 - [x] Mark PR Ready only after all story tasks are complete
   - PR #65 marked ready: https://github.com/TVScoundrel/agentforge/pull/65
 - [ ] Wait for merge; do not merge directly from local branch
