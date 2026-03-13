@@ -74,18 +74,31 @@
 **Branch:** `fix/st-09003-langgraph-state-utility-typing`
 
 ### Checklist
-- [ ] Create branch `fix/st-09003-langgraph-state-utility-typing`
-- [ ] Create draft PR with story ID in title
-- [ ] Reduce explicit `any` usage in `packages/core/src/langgraph/state.ts` for channel config and helper APIs
-- [ ] Preserve or improve generic inference for reducer/default/schema combinations
-- [ ] Add/update focused tests for state validation, default factories, and reducer merge behavior
-- [ ] Record explicit-`any` warning deltas for touched files in story docs
-- [ ] Add or update story documentation at `docs/st09003-langgraph-state-utility-typing.md` (or document why not required)
-- [ ] Assess test impact; add/update automated tests when needed, or document why tests are not required
-- [ ] Run full test suite before finalizing the PR and record results
-- [ ] Run lint (`pnpm lint`) before finalizing the PR and record results
-- [ ] Commit completed checklist items as logical commits and push updates
-- [ ] Mark PR Ready only after all story tasks are complete
+- [x] Create branch `fix/st-09003-langgraph-state-utility-typing`
+  - Created as `codex/fix/st-09003-langgraph-state-utility-typing` (workspace branch-prefix policy)
+- [x] Create draft PR with story ID in title
+  - PR #65: https://github.com/TVScoundrel/agentforge/pull/65
+- [x] Reduce explicit `any` usage in `packages/core/src/langgraph/state.ts` for channel config and helper APIs
+- [x] Preserve or improve generic inference for reducer/default/schema combinations
+- [x] Add/update focused tests for state validation, default factories, and reducer merge behavior
+  - `pnpm test --run packages/core/tests/langgraph/state.test.ts packages/core/tests/langgraph/integration.test.ts` -> `25 passed`
+- [x] Record explicit-`any` warning deltas for touched files in story docs
+  - Recorded in `docs/st09003-langgraph-state-utility-typing.md` (`state.ts 13 -> 0`; baseline `357 -> 344`)
+- [x] Add or update story documentation at `docs/st09003-langgraph-state-utility-typing.md` (or document why not required)
+- [x] Assess test impact; add/update automated tests when needed, or document why tests are not required
+  - Added focused inference and reducer fixture updates in `packages/core/tests/langgraph/state.test.ts` and `packages/core/tests/langgraph/integration.test.ts`
+- [x] Run full test suite before finalizing the PR and record results
+  - `pnpm test --run` -> `147 passed | 16 skipped` files; `2088 passed | 286 skipped` tests
+- [x] Run lint (`pnpm lint`) before finalizing the PR and record results
+  - `pnpm lint` -> exit `0`; warnings only (`0` errors)
+- [x] Commit completed checklist items as logical commits and push updates
+  - `f533eeb` refactor(st-09003): harden langgraph state utility typing
+  - `abc515a` docs(st-09003): record state utility typing progress
+  - `a4effac` docs(st-09003): record state utility validation progress
+  - `f9d2eda` fix(st-09003): enforce state config compatibility
+  - `a369e64` fix(st-09003): preserve declared reducer update types
+- [x] Mark PR Ready only after all story tasks are complete
+  - PR #65 marked ready: https://github.com/TVScoundrel/agentforge/pull/65
 - [ ] Wait for merge; do not merge directly from local branch
 
 ---

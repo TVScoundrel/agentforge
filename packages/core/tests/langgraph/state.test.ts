@@ -8,6 +8,15 @@ import {
   type StateChannelConfig,
 } from '../../src/langgraph/state.js';
 
+type EventRecord = {
+  type: string;
+  data: unknown;
+};
+
+type IncrementUpdate = {
+  delta: number;
+};
+
 describe('LangGraph State Utilities', () => {
   describe('createStateAnnotation', () => {
     it('should create annotation with simple channels', () => {
@@ -68,7 +77,7 @@ describe('LangGraph State Utilities', () => {
         // Reducer channel
         events: {
           schema: z.array(z.object({ type: z.string(), data: z.any() })),
-          reducer: (left: any[], right: any[]) => [...left, ...right],
+          reducer: (left: EventRecord[], right: EventRecord[]) => [...left, ...right],
           default: () => [],
         },
         // Simple channel with no schema
@@ -79,6 +88,55 @@ describe('LangGraph State Utilities', () => {
 
       expect(annotation).toBeDefined();
       expect(annotation.spec).toBeDefined();
+    });
+
+    it('should preserve inferred state and update shapes', () => {
+      const annotation = createStateAnnotation({
+        count: {
+          schema: z.number(),
+          default: () => 0,
+        },
+        events: {
+          schema: z.array(z.object({ type: z.string(), data: z.unknown() })),
+          reducer: (left: EventRecord[], right: EventRecord[]) => [...left, ...right],
+          default: () => [],
+        },
+      });
+
+      const initialState: typeof annotation.State = {
+        count: 1,
+        events: [{ type: 'created', data: { source: 'test' } }],
+      };
+
+      const update: typeof annotation.Update = {
+        count: 2,
+        events: [{ type: 'updated', data: { source: 'test' } }],
+      };
+
+      expect(annotation.spec.events).toBeDefined();
+      expect(initialState.count).toBe(1);
+      expect(update.events).toHaveLength(1);
+    });
+
+    it('should preserve explicit update types for pre-typed reducer configs', () => {
+      const config: {
+        count: StateChannelConfig<number, IncrementUpdate>;
+      } = {
+        count: {
+          reducer: (left: number, right: IncrementUpdate) => left + right.delta,
+          default: () => 0,
+        },
+      };
+
+      const annotation = createStateAnnotation(config);
+      const update: typeof annotation.Update = {
+        count: { delta: 2 },
+      };
+
+      const merged = mergeState({ count: 3 }, update, config);
+
+      expect(annotation.spec.count).toBeDefined();
+      expect(merged.count).toBe(5);
     });
   });
 
@@ -283,7 +341,7 @@ describe('LangGraph State Utilities', () => {
 
       // Create a simple workflow
       const workflow = new StateGraph(State)
-        .addNode('start', (state) => {
+        .addNode('start', (_state) => {
           // Node doesn't set status or shouldContinue
           return { messages: ['Started'] };
         })
@@ -447,4 +505,3 @@ describe('LangGraph State Utilities', () => {
     });
   });
 });
-

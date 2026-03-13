@@ -4,9 +4,9 @@
 
 ## Queue Status Summary
 
-- **Ready:** 2 stories
+- **Ready:** 1 story
 - **In Progress:** 0 stories
-- **In Review:** 0 stories
+- **In Review:** 1 story
 - **Blocked:** 0 stories
 - **Backlog:** 1 story
 
@@ -14,9 +14,6 @@
 
 ## Ready
 
-- **ST-09003: Strengthen LangGraph State Utility Typing** (EP-09, P2, 3h)
-  - Dependencies: ST-08004 (complete)
-  - Scope: `packages/core/src/langgraph/state.ts` generics and reducer/default typing hardening
 - **ST-09005: Harden Patterns ReAct Node and Shared Agent Builder Types** (EP-09, P2, 4h)
   - Dependencies: ST-08004 (complete)
   - Scope: `packages/patterns/src/react/nodes.ts` + `packages/patterns/src/shared/agent-builder.ts`
@@ -31,7 +28,10 @@ _No stories currently in progress_
 
 ## In Review
 
-_No stories currently in review_
+- **ST-09003: Strengthen LangGraph State Utility Typing** (EP-09, P2, 3h)
+  - PR: #65
+  - Dependencies: ST-08004 (complete)
+  - Scope: `packages/core/src/langgraph/state.ts` generics and reducer/default typing hardening
 
 ---
 
@@ -96,4 +96,4 @@ _No stories currently blocked_
 - Epic 09 (SOLID Micro-Refactors and Type Boundary Hardening) planned on 2026-03-12
 - ✅ ST-09001 complete - core tool composition contracts hardened (merged 2026-03-12)
 - ✅ ST-09002 complete - LangChain converter boundary hardened (merged 2026-03-13)
-- ST-09003 and ST-09005 remain Ready; ST-09004 remains in Backlog pending ST-09003 completion
+- ST-09003 is in review (PR #65); ST-09005 remains Ready; ST-09004 remains in Backlog pending ST-09003 completion
