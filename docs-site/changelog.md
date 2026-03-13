@@ -5,6 +5,34 @@ All notable changes to AgentForge will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.15.7] - 2026-03-13
+
+### Added
+
+#### @agentforge/core - Converter Edge-Case Coverage
+- Added focused LangChain converter tests in `packages/core/tests/langchain/converter.test.ts` covering array and `null` tool-output serialization alongside the existing object, primitive, string, and schema assertions
+
+### Changed
+
+#### @agentforge/core - LangChain Converter Runtime Boundary
+- Reworked `packages/core/src/langchain/converter.ts` to replace exported explicit-`any` signatures with generic or runtime-erased contracts
+- Split converter responsibilities with focused helpers for LangChain result stringification and JSON-schema extraction
+- Reduced explicit-`any` warnings in `packages/core/src/langchain/converter.ts` from `15` to `0`
+
+### Fixed
+
+#### @agentforge/core - LangChain Tool Conversion Safety
+- Preserved LangChain tool behavior while hardening schema extraction and result serialization boundaries, preventing unsafe `any` leakage from the converter layer without changing the public converter API
+
+### Published
+- All packages published to npm registry at version 0.15.7:
+  - @agentforge/core@0.15.7
+  - @agentforge/skills@0.15.7
+  - @agentforge/patterns@0.15.7
+  - @agentforge/tools@0.15.7
+  - @agentforge/testing@0.15.7
+  - @agentforge/cli@0.15.7
+
 ## [0.15.6] - 2026-03-12
 
 ### Added
