@@ -44,9 +44,22 @@ type StateChannelConfigLike = {
 
 type StateConfigMap = Record<string, StateChannelConfigLike>;
 
+type HasCustomUpdateType<TChannel extends StateChannelConfigLike> =
+  TChannel extends StateChannelConfig<infer TValue, infer TUpdate>
+    ? [TUpdate] extends [TValue]
+      ? [TValue] extends [TUpdate]
+        ? false
+        : true
+      : true
+    : false;
+
 type ValidStateChannel<TChannel extends StateChannelConfigLike> =
   TChannel extends StateChannelConfig<infer TValue, infer TUpdate>
-    ? TChannel & StateChannelConfig<TValue, TUpdate>
+    ? HasCustomUpdateType<TChannel> extends true
+      ? TChannel extends { reducer: (left: TValue, right: TUpdate) => TValue }
+        ? TChannel & StateChannelConfig<TValue, TUpdate>
+        : never
+      : TChannel & StateChannelConfig<TValue, TUpdate>
     : never;
 
 type ValidStateConfig<TConfig extends StateConfigMap> = {
@@ -60,9 +73,11 @@ type DeclaredChannelUpdate<TChannel extends StateChannelConfigLike> =
   TChannel extends StateChannelConfig<unknown, infer TUpdate> ? TUpdate : never;
 
 type ChannelUpdate<TChannel extends StateChannelConfigLike> =
-  TChannel extends { reducer: (left: never, right: never) => unknown }
+  HasCustomUpdateType<TChannel> extends true
     ? DeclaredChannelUpdate<TChannel>
-    : ChannelValue<TChannel>;
+    : TChannel extends { reducer: (left: never, right: never) => unknown }
+      ? DeclaredChannelUpdate<TChannel>
+      : ChannelValue<TChannel>;
 
 type StateShape<TConfig extends StateConfigMap> = {
   [K in keyof TConfig]: ChannelValue<TConfig[K]>;

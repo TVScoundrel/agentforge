@@ -13,6 +13,10 @@ type EventRecord = {
   data: unknown;
 };
 
+type IncrementUpdate = {
+  delta: number;
+};
+
 describe('LangGraph State Utilities', () => {
   describe('createStateAnnotation', () => {
     it('should create annotation with simple channels', () => {
@@ -112,6 +116,27 @@ describe('LangGraph State Utilities', () => {
       expect(annotation.spec.events).toBeDefined();
       expect(initialState.count).toBe(1);
       expect(update.events).toHaveLength(1);
+    });
+
+    it('should preserve explicit update types for pre-typed reducer configs', () => {
+      const config: {
+        count: StateChannelConfig<number, IncrementUpdate>;
+      } = {
+        count: {
+          reducer: (left: number, right: IncrementUpdate) => left + right.delta,
+          default: () => 0,
+        },
+      };
+
+      const annotation = createStateAnnotation(config);
+      const update: typeof annotation.Update = {
+        count: { delta: 2 },
+      };
+
+      const merged = mergeState({ count: 3 }, update, config);
+
+      expect(annotation.spec.count).toBeDefined();
+      expect(merged.count).toBe(5);
     });
   });
 
