@@ -6,7 +6,7 @@
 
 - **Ready:** 2 stories
 - **In Progress:** 0 stories
-- **In Review:** 1 story
+- **In Review:** 0 stories
 - **Blocked:** 0 stories
 - **Backlog:** 1 story
 
@@ -31,9 +31,7 @@ _No stories currently in progress_
 
 ## In Review
 
-- **ST-09002: Tighten LangChain Converter Runtime Boundary** (EP-09, P1, 3h)
-  - Dependencies: ST-08004 (complete)
-  - Scope: `packages/core/src/langchain/converter.ts` boundary hardening and SRP split
+_No stories currently in review_
 
 ---
 
@@ -97,4 +95,5 @@ _No stories currently blocked_
 - ST-08001, ST-08002, ST-08003, and ST-08004 merged (PR #59, PR #60, PR #61, PR #62); Epic 08 complete
 - Epic 09 (SOLID Micro-Refactors and Type Boundary Hardening) planned on 2026-03-12
 - ✅ ST-09001 complete - core tool composition contracts hardened (merged 2026-03-12)
-- ST-09002, ST-09003, and ST-09005 promoted to Ready after ST-09001 merge; ST-09004 remains in Backlog pending ST-09003 completion
+- ✅ ST-09002 complete - LangChain converter boundary hardened (merged 2026-03-13)
+- ST-09003 and ST-09005 remain Ready; ST-09004 remains in Backlog pending ST-09003 completion

@@ -2,7 +2,7 @@
 
 **Purpose:** Track completed and merged stories for the Relational Database Access Tool project.
 
-**Last Updated:** 2026-03-12
+**Last Updated:** 2026-03-13
 
 ---
 
@@ -268,6 +268,13 @@
 - **Epic:** EP-09 (SOLID Micro-Refactors and Type Boundary Hardening)
 - **Estimate:** 3 hours
 - **Outcome:** Reworked core tool composition utilities to replace broad `any` contracts with generic `ComposedTool<TInput, TOutput>` and `unknown` boundaries, added focused helpers for conditional-step detection/error normalization/retry-delay calculation, fixed timeout cleanup to clear scheduled handles after `Promise.race` settles, and added focused composition tests plus story documentation. Reduced explicit-`any` warnings in `packages/core/src/tools/composition.ts` from 13 to 0 and improved the workspace `src/**` baseline from 385 to 372.
+
+### ST-09002: Tighten LangChain Converter Runtime Boundary
+- **Merged:** 2026-03-13
+- **PR:** https://github.com/TVScoundrel/agentforge/pull/64 (commit 3339bf4)
+- **Epic:** EP-09 (SOLID Micro-Refactors and Type Boundary Hardening)
+- **Estimate:** 3 hours
+- **Outcome:** Hardened the LangChain converter boundary by replacing exported `any`-based signatures with generic/runtime-erased contracts, extracting focused helpers for tool-result serialization and JSON-schema extraction, and adding edge-case tests for array and `null` outputs. Reduced explicit-`any` warnings in `packages/core/src/langchain/converter.ts` from 15 to 0 and improved the workspace `src/**` baseline from 372 to 357.
 
 ---
 

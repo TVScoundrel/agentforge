@@ -3,7 +3,7 @@
 **Epic Range:** EP-09 through EP-09
 **Status:** In Progress
 **Last Updated:** 2026-03-13
-**Active Story:** ST-09002 (In Review)
+**Active Story:** ST-09003 (Ready)
 
 ---
 
@@ -31,19 +31,20 @@
 
 ## Current Hotspot Snapshot
 
-Current `@typescript-eslint/no-explicit-any` baseline check (`pnpm lint:explicit-any:baseline`, 2026-03-12):
+Current `@typescript-eslint/no-explicit-any` baseline check (`pnpm lint:explicit-any:baseline`, 2026-03-13):
 
-- Total: `372` warnings (`src/**`)
-- By package: `core 176`, `tools 70`, `testing 51`, `patterns 50`, `cli 25`
+- Total: `357` warnings (`src/**`)
+- By package: `core 161`, `tools 70`, `testing 51`, `patterns 50`, `cli 25`
 
 Top runtime hotspots informing this feature slice:
 
-1. `packages/core/src/langchain/converter.ts` (15)
-2. `packages/core/src/langgraph/observability/logger.ts` (15)
-3. `packages/core/src/langgraph/state.ts` (13)
-4. `packages/patterns/src/react/nodes.ts` (10)
-5. `packages/patterns/src/shared/agent-builder.ts` (9)
-6. `packages/core/src/monitoring/alerts.ts` (5)
+1. `packages/core/src/langgraph/observability/logger.ts` (15)
+2. `packages/core/src/langgraph/state.ts` (13)
+3. `packages/patterns/src/react/nodes.ts` (10)
+4. `packages/patterns/src/shared/agent-builder.ts` (9)
+5. `packages/core/src/monitoring/alerts.ts` (5)
+
+`ST-09002` removed `15` explicit-`any` warnings from `packages/core/src/langchain/converter.ts` and improved the `core` baseline from `176` to `161`.
 
 ---
 
