@@ -3,6 +3,11 @@ import { StateGraph } from '@langchain/langgraph';
 import { z } from 'zod';
 import { createStateAnnotation, validateState } from '../../src/langgraph/state.js';
 
+type IntegrationEvent = {
+  type: string;
+  timestamp: number;
+};
+
 describe('LangGraph Integration', () => {
   it('should work with StateGraph end-to-end', async () => {
     // Define state
@@ -22,12 +27,12 @@ describe('LangGraph Integration', () => {
     type State = typeof AgentState.State;
 
     // Define nodes
-    const node1 = (state: State) => ({
+    const node1 = (_state: State) => ({
       messages: ['node1'],
       stepCount: 1,
     });
 
-    const node2 = (state: State) => ({
+    const node2 = (_state: State) => ({
       messages: ['node2'],
       stepCount: 1,
     });
@@ -94,7 +99,7 @@ describe('LangGraph Integration', () => {
             timestamp: z.number(),
           })
         ),
-        reducer: (left: any[], right: any[]) => [...left, ...right],
+        reducer: (left: IntegrationEvent[], right: IntegrationEvent[]) => [...left, ...right],
         default: () => [],
       },
       counters: {
@@ -116,12 +121,12 @@ describe('LangGraph Integration', () => {
 
     type State = typeof AgentState.State;
 
-    const eventNode = (state: State) => ({
+    const eventNode = (_state: State) => ({
       events: [{ type: 'event1', timestamp: Date.now() }],
       counters: { event1: 1 },
     });
 
-    const anotherEventNode = (state: State) => ({
+    const anotherEventNode = (_state: State) => ({
       events: [{ type: 'event2', timestamp: Date.now() }],
       counters: { event2: 1, event1: 1 },
       metadata: { processed: true },
@@ -168,11 +173,11 @@ describe('LangGraph Integration', () => {
       return state.value > 5 ? 'high' : 'low';
     };
 
-    const highNode = (state: State) => ({
+    const highNode = (_state: State) => ({
       path: ['high'],
     });
 
-    const lowNode = (state: State) => ({
+    const lowNode = (_state: State) => ({
       path: ['low'],
     });
 
@@ -195,4 +200,3 @@ describe('LangGraph Integration', () => {
     expect(lowResult.path).toEqual(['low']);
   });
 });
-
