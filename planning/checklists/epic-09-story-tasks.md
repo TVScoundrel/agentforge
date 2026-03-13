@@ -95,6 +95,7 @@
   - `f533eeb` refactor(st-09003): harden langgraph state utility typing
   - `abc515a` docs(st-09003): record state utility typing progress
   - `a4effac` docs(st-09003): record state utility validation progress
+  - `f9d2eda` fix(st-09003): enforce state config compatibility
 - [x] Mark PR Ready only after all story tasks are complete
   - PR #65 marked ready: https://github.com/TVScoundrel/agentforge/pull/65
 - [ ] Wait for merge; do not merge directly from local branch
