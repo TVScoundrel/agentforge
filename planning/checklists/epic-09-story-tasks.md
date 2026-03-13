@@ -91,8 +91,12 @@
   - `pnpm test --run` -> `147 passed | 16 skipped` files; `2088 passed | 286 skipped` tests
 - [x] Run lint (`pnpm lint`) before finalizing the PR and record results
   - `pnpm lint` -> exit `0`; warnings only (`0` errors)
-- [ ] Commit completed checklist items as logical commits and push updates
-- [ ] Mark PR Ready only after all story tasks are complete
+- [x] Commit completed checklist items as logical commits and push updates
+  - `f533eeb` refactor(st-09003): harden langgraph state utility typing
+  - `abc515a` docs(st-09003): record state utility typing progress
+  - `a4effac` docs(st-09003): record state utility validation progress
+- [x] Mark PR Ready only after all story tasks are complete
+  - PR #65 marked ready: https://github.com/TVScoundrel/agentforge/pull/65
 - [ ] Wait for merge; do not merge directly from local branch
 
 ---
