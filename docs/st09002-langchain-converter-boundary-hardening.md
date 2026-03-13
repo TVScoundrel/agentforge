@@ -36,6 +36,8 @@ Refactored the LangChain converter boundary to replace explicit `any` contracts 
 - `pnpm exec eslint packages/core/src/langchain/converter.ts packages/core/tests/langchain/converter.test.ts`
 - `pnpm test --run packages/core/tests/langchain/converter.test.ts` -> `14 passed`
 - `pnpm lint:explicit-any:baseline`
+- `pnpm test --run` -> `147 passed | 16 skipped` files; `2087 passed | 286 skipped` tests
+- `pnpm lint` -> exit `0`; warnings only (`0` errors)
 
 ## Test Impact
 

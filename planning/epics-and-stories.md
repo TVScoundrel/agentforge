@@ -844,7 +844,7 @@
 **Priority:** P1 (High)
 **Estimate:** 3 hours
 **Dependencies:** ST-08004
-**Status:** In Progress (2026-03-13)
+**Status:** In Review (PR #64, 2026-03-13)
 
 **Acceptance criteria:**
 - [ ] `packages/core/src/langchain/converter.ts` removes avoidable explicit `any` from exported signatures in favor of generics/`unknown` + narrowing

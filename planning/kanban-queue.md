@@ -5,8 +5,8 @@
 ## Queue Status Summary
 
 - **Ready:** 2 stories
-- **In Progress:** 1 story
-- **In Review:** 0 stories
+- **In Progress:** 0 stories
+- **In Review:** 1 story
 - **Blocked:** 0 stories
 - **Backlog:** 1 story
 
@@ -25,15 +25,15 @@
 
 ## In Progress
 
-- **ST-09002: Tighten LangChain Converter Runtime Boundary** (EP-09, P1, 3h)
-  - Dependencies: ST-08004 (complete)
-  - Scope: `packages/core/src/langchain/converter.ts` boundary hardening and SRP split
+_No stories currently in progress_
 
 ---
 
 ## In Review
 
-_No stories currently in review_
+- **ST-09002: Tighten LangChain Converter Runtime Boundary** (EP-09, P1, 3h)
+  - Dependencies: ST-08004 (complete)
+  - Scope: `packages/core/src/langchain/converter.ts` boundary hardening and SRP split
 
 ---
 
