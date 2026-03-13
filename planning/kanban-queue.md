@@ -1,11 +1,11 @@
 # Kanban Queue: AgentForge
 
-**Last Updated:** 2026-03-12
+**Last Updated:** 2026-03-13
 
 ## Queue Status Summary
 
-- **Ready:** 3 stories
-- **In Progress:** 0 stories
+- **Ready:** 2 stories
+- **In Progress:** 1 story
 - **In Review:** 0 stories
 - **Blocked:** 0 stories
 - **Backlog:** 1 story
@@ -14,9 +14,6 @@
 
 ## Ready
 
-- **ST-09002: Tighten LangChain Converter Runtime Boundary** (EP-09, P1, 3h)
-  - Dependencies: ST-08004 (complete)
-  - Scope: `packages/core/src/langchain/converter.ts` boundary hardening and SRP split
 - **ST-09003: Strengthen LangGraph State Utility Typing** (EP-09, P2, 3h)
   - Dependencies: ST-08004 (complete)
   - Scope: `packages/core/src/langgraph/state.ts` generics and reducer/default typing hardening
@@ -28,7 +25,9 @@
 
 ## In Progress
 
-_No stories currently in progress_
+- **ST-09002: Tighten LangChain Converter Runtime Boundary** (EP-09, P1, 3h)
+  - Dependencies: ST-08004 (complete)
+  - Scope: `packages/core/src/langchain/converter.ts` boundary hardening and SRP split
 
 ---
 

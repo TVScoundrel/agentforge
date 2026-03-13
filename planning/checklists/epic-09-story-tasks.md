@@ -41,7 +41,8 @@
 **Branch:** `fix/st-09002-langchain-converter-boundary-hardening`
 
 ### Checklist
-- [ ] Create branch `fix/st-09002-langchain-converter-boundary-hardening`
+- [x] Create branch `fix/st-09002-langchain-converter-boundary-hardening`
+  - Created as `codex/fix/st-09002-langchain-converter-boundary-hardening` (workspace branch-prefix policy)
 - [ ] Create draft PR with story ID in title
 - [ ] Replace avoidable explicit `any` usage in `packages/core/src/langchain/converter.ts` with generic/`unknown` + narrowing
 - [ ] Separate schema-conversion and output-serialization responsibilities for clearer module boundaries
