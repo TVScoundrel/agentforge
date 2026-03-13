@@ -12,8 +12,60 @@
  */
 
 import { DynamicStructuredTool } from '@langchain/core/tools';
+import type { z } from 'zod';
 import { zodToJsonSchema } from 'zod-to-json-schema';
-import type { Tool } from '../tools/types.js';
+import type { Tool, ToolMetadata } from '../tools/types.js';
+
+type RuntimeSchema<TInput = unknown> = z.ZodSchema<TInput>;
+type JsonSchemaObject = Record<string, unknown>;
+
+interface LangChainConvertibleTool<TInput = unknown, TOutput = unknown> {
+  metadata: ToolMetadata;
+  schema: RuntimeSchema<TInput>;
+  invoke(input: TInput): Promise<TOutput>;
+}
+
+function serializeToolResult(result: unknown): string {
+  if (typeof result === 'string') {
+    return result;
+  }
+
+  if (typeof result === 'object' && result !== null) {
+    return JSON.stringify(result, null, 2);
+  }
+
+  return String(result);
+}
+
+function isJsonSchemaObject(value: unknown): value is JsonSchemaObject {
+  return typeof value === 'object' && value !== null && !Array.isArray(value);
+}
+
+function isJsonSchemaDefinitionMap(
+  value: unknown
+): value is Record<string, JsonSchemaObject> {
+  if (!isJsonSchemaObject(value)) {
+    return false;
+  }
+
+  return Object.values(value).every(isJsonSchemaObject);
+}
+
+function extractToolSchema(jsonSchema: unknown): JsonSchemaObject {
+  if (!isJsonSchemaObject(jsonSchema)) {
+    return {};
+  }
+
+  const ref = jsonSchema.$ref;
+  const definitions = jsonSchema.definitions;
+
+  if (typeof ref !== 'string' || !isJsonSchemaDefinitionMap(definitions)) {
+    return jsonSchema;
+  }
+
+  const refName = ref.replace('#/definitions/', '');
+  return definitions[refName] ?? jsonSchema;
+}
 
 /**
  * Convert an AgentForge tool to a LangChain DynamicStructuredTool
@@ -47,30 +99,14 @@ import type { Tool } from '../tools/types.js';
  * });
  * ```
  */
-export function toLangChainTool(
-  tool: Tool<any, any>
-): DynamicStructuredTool<any> {
-  return new DynamicStructuredTool<any>({
+export function toLangChainTool<TInput, TOutput>(
+  tool: Tool<TInput, TOutput>
+): DynamicStructuredTool<RuntimeSchema<TInput>, TInput, TInput, string> {
+  return new DynamicStructuredTool<RuntimeSchema<TInput>, TInput, TInput, string>({
     name: tool.metadata.name,
     description: tool.metadata.description,
-    schema: tool.schema as any,
-    func: async (input: any) => {
-      const result = await tool.invoke(input);
-
-      // LangChain tools must return strings
-      // Convert result to string if it's not already
-      if (typeof result === 'string') {
-        return result;
-      }
-
-      // For objects/arrays, return JSON string
-      if (typeof result === 'object' && result !== null) {
-        return JSON.stringify(result, null, 2);
-      }
-
-      // For primitives, convert to string
-      return String(result);
-    },
+    schema: tool.schema,
+    func: async (input) => serializeToolResult(await tool.invoke(input)),
   });
 }
 
@@ -92,8 +128,8 @@ export function toLangChainTool(
  * ```
  */
 export function toLangChainTools(
-  tools: Tool<any, any>[]
-): DynamicStructuredTool<any>[] {
+  tools: readonly LangChainConvertibleTool[]
+): DynamicStructuredTool[] {
   return tools.map(toLangChainTool);
 }
 
@@ -111,19 +147,15 @@ export function toLangChainTools(
  * console.log(JSON.stringify(schema, null, 2));
  * ```
  */
-export function getToolJsonSchema(tool: Tool<any, any>): Record<string, any> {
+export function getToolJsonSchema<TInput, TOutput>(
+  tool: Tool<TInput, TOutput>
+): JsonSchemaObject {
   const jsonSchema = zodToJsonSchema(tool.schema, {
     name: tool.metadata.name,
     $refStrategy: 'none', // Don't use $ref for nested schemas
-  }) as any; // Type assertion needed because zod-to-json-schema types are incomplete
+  });
 
-  // If the schema has a $ref and definitions, extract the actual schema
-  if (jsonSchema.$ref && jsonSchema.definitions) {
-    const refName = jsonSchema.$ref.replace('#/definitions/', '');
-    return jsonSchema.definitions[refName] || jsonSchema;
-  }
-
-  return jsonSchema;
+  return extractToolSchema(jsonSchema);
 }
 
 /**
@@ -146,7 +178,9 @@ export function getToolJsonSchema(tool: Tool<any, any>): Record<string, any> {
  * // ...
  * ```
  */
-export function getToolDescription(tool: Tool<any, any>): string {
+export function getToolDescription<TInput, TOutput>(
+  tool: Tool<TInput, TOutput>
+): string {
   const { metadata } = tool;
   const parts: string[] = [];
 
@@ -186,4 +220,3 @@ export function getToolDescription(tool: Tool<any, any>): string {
   
   return parts.join('\n');
 }
-

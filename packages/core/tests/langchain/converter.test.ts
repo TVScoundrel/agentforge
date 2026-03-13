@@ -78,6 +78,30 @@ describe('LangChain Integration', () => {
       expect(result).toBe('Hello, Alice!');
     });
 
+    it('should convert array results to JSON strings', async () => {
+      const tool = toolBuilder()
+        .name('list-users')
+        .description('List users')
+        .category(ToolCategory.UTILITY)
+        .schema(z.object({
+          team: z.string().describe('Team name'),
+        }))
+        .implement(async ({ team }) => [
+          { id: 1, team },
+          { id: 2, team },
+        ])
+        .build();
+
+      const langchainTool = toLangChainTool(tool);
+      const result = await langchainTool.invoke({ team: 'core' });
+
+      expect(typeof result).toBe('string');
+      expect(JSON.parse(result)).toEqual([
+        { id: 1, team: 'core' },
+        { id: 2, team: 'core' },
+      ]);
+    });
+
     it('should convert primitive results to strings', async () => {
       const tool = toolBuilder()
         .name('is-even')
@@ -93,6 +117,23 @@ describe('LangChain Integration', () => {
       const result = await langchainTool.invoke({ n: 4 });
       
       expect(result).toBe('true');
+    });
+
+    it('should stringify null results', async () => {
+      const tool = toolBuilder()
+        .name('lookup-optional')
+        .description('Return null when no value exists')
+        .category(ToolCategory.UTILITY)
+        .schema(z.object({
+          id: z.string().describe('Lookup identifier'),
+        }))
+        .implement(async () => null)
+        .build();
+
+      const langchainTool = toLangChainTool(tool);
+      const result = await langchainTool.invoke({ id: 'missing' });
+
+      expect(result).toBe('null');
     });
 
     it('should preserve tool schema', () => {
@@ -269,4 +310,3 @@ describe('LangChain Integration', () => {
     });
   });
 });
-
