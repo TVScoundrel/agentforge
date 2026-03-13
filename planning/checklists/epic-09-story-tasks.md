@@ -41,18 +41,29 @@
 **Branch:** `fix/st-09002-langchain-converter-boundary-hardening`
 
 ### Checklist
-- [ ] Create branch `fix/st-09002-langchain-converter-boundary-hardening`
-- [ ] Create draft PR with story ID in title
-- [ ] Replace avoidable explicit `any` usage in `packages/core/src/langchain/converter.ts` with generic/`unknown` + narrowing
-- [ ] Separate schema-conversion and output-serialization responsibilities for clearer module boundaries
-- [ ] Add/update focused tests for converter behavior and output serialization edge cases
-- [ ] Record explicit-`any` warning deltas for touched files in story docs
-- [ ] Add or update story documentation at `docs/st09002-langchain-converter-boundary-hardening.md` (or document why not required)
-- [ ] Assess test impact; add/update automated tests when needed, or document why tests are not required
-- [ ] Run full test suite before finalizing the PR and record results
-- [ ] Run lint (`pnpm lint`) before finalizing the PR and record results
-- [ ] Commit completed checklist items as logical commits and push updates
-- [ ] Mark PR Ready only after all story tasks are complete
+- [x] Create branch `fix/st-09002-langchain-converter-boundary-hardening`
+  - Created as `codex/fix/st-09002-langchain-converter-boundary-hardening` (workspace branch-prefix policy)
+- [x] Create draft PR with story ID in title
+  - PR #64: https://github.com/TVScoundrel/agentforge/pull/64
+- [x] Replace avoidable explicit `any` usage in `packages/core/src/langchain/converter.ts` with generic/`unknown` + narrowing
+- [x] Separate schema-conversion and output-serialization responsibilities for clearer module boundaries
+- [x] Add/update focused tests for converter behavior and output serialization edge cases
+  - `pnpm test --run packages/core/tests/langchain/converter.test.ts` -> `14 passed`
+- [x] Record explicit-`any` warning deltas for touched files in story docs
+  - Recorded in `docs/st09002-langchain-converter-boundary-hardening.md` (`15 -> 0`, overall `372 -> 357`)
+- [x] Add or update story documentation at `docs/st09002-langchain-converter-boundary-hardening.md` (or document why not required)
+- [x] Assess test impact; add/update automated tests when needed, or document why tests are not required
+  - Added focused converter serialization tests in `packages/core/tests/langchain/converter.test.ts`
+- [x] Run full test suite before finalizing the PR and record results
+  - `pnpm test --run` -> `147 passed | 16 skipped` files; `2087 passed | 286 skipped` tests
+- [x] Run lint (`pnpm lint`) before finalizing the PR and record results
+  - `pnpm lint` -> exit `0`; warnings only (`0` errors)
+- [x] Commit completed checklist items as logical commits and push updates
+  - `e33273d` refactor(st-09002): harden langchain converter boundary
+  - `9297d86` docs(st-09002): record converter boundary progress
+  - `b7d145f` docs(st-09002): record validation and move story to in-review
+- [x] Mark PR Ready only after all story tasks are complete
+  - PR #64 marked ready: https://github.com/TVScoundrel/agentforge/pull/64
 - [ ] Wait for merge; do not merge directly from local branch
 
 ---
