@@ -8,7 +8,7 @@
  */
 
 import { Annotation, type AnnotationRoot, type BaseChannel } from '@langchain/langgraph';
-import type { ZodType, ZodTypeDef } from 'zod';
+import type { ZodType, ZodTypeAny, ZodTypeDef, output as ZodOutput } from 'zod';
 
 /**
  * State channel configuration with optional Zod schema validation
@@ -36,7 +36,7 @@ export interface StateChannelConfig<T = unknown, U = T> {
 }
 
 type StateChannelConfigLike = {
-  schema?: ZodType<unknown, ZodTypeDef, unknown>;
+  schema?: ZodTypeAny;
   reducer?: (left: never, right: never) => unknown;
   default?: () => unknown;
   description?: string;
@@ -44,40 +44,68 @@ type StateChannelConfigLike = {
 
 type StateConfigMap = Record<string, StateChannelConfigLike>;
 
-type HasCustomUpdateType<TChannel extends StateChannelConfigLike> =
-  TChannel extends StateChannelConfig<infer TValue, infer TUpdate>
-    ? [TUpdate] extends [TValue]
-      ? [TValue] extends [TUpdate]
-        ? false
-        : true
-      : true
-    : false;
+type IsExact<TLeft, TRight> =
+  [TLeft] extends [TRight] ? ([TRight] extends [TLeft] ? true : false) : false;
+
+type HasReducer<TChannel extends StateChannelConfigLike> =
+  TChannel extends { reducer: (left: unknown, right: unknown) => unknown } ? true : false;
+
+type SchemaValue<TChannel extends StateChannelConfigLike> =
+  TChannel extends { schema: infer TSchema extends ZodTypeAny } ? ZodOutput<TSchema> : never;
+
+type DefaultValue<TChannel extends StateChannelConfigLike> =
+  TChannel extends { default: () => infer TValue } ? TValue : never;
+
+type ReducerValue<TChannel extends StateChannelConfigLike> =
+  TChannel extends { reducer: (left: infer TValue, right: unknown) => infer TResult }
+    ? IsExact<TValue, TResult> extends true
+      ? TValue
+      : never
+    : never;
+
+type ReducerUpdate<TChannel extends StateChannelConfigLike> =
+  TChannel extends { reducer: (left: unknown, right: infer TUpdate) => unknown } ? TUpdate : never;
+
+type ChannelValue<TChannel extends StateChannelConfigLike> =
+  HasReducer<TChannel> extends true
+    ? ReducerValue<TChannel>
+    : [SchemaValue<TChannel>] extends [never]
+      ? [DefaultValue<TChannel>] extends [never]
+        ? unknown
+        : DefaultValue<TChannel>
+      : SchemaValue<TChannel>;
+
+type ChannelUpdate<TChannel extends StateChannelConfigLike> =
+  HasReducer<TChannel> extends true ? ReducerUpdate<TChannel> : ChannelValue<TChannel>;
+
+type SchemaMatchesValue<TChannel extends StateChannelConfigLike> =
+  [SchemaValue<TChannel>] extends [never]
+    ? true
+    : [ChannelValue<TChannel>] extends [SchemaValue<TChannel>]
+      ? true
+      : false;
+
+type DefaultMatchesValue<TChannel extends StateChannelConfigLike> =
+  [DefaultValue<TChannel>] extends [never]
+    ? true
+    : [DefaultValue<TChannel>] extends [ChannelValue<TChannel>]
+      ? true
+      : false;
 
 type ValidStateChannel<TChannel extends StateChannelConfigLike> =
-  TChannel extends StateChannelConfig<infer TValue, infer TUpdate>
-    ? HasCustomUpdateType<TChannel> extends true
-      ? TChannel extends { reducer: (left: TValue, right: TUpdate) => TValue }
-        ? TChannel & StateChannelConfig<TValue, TUpdate>
+  HasReducer<TChannel> extends true
+    ? [ChannelValue<TChannel>] extends [never]
+      ? never
+      : SchemaMatchesValue<TChannel> extends true
+        ? DefaultMatchesValue<TChannel> extends true
+          ? TChannel
+          : never
         : never
-      : TChannel & StateChannelConfig<TValue, TUpdate>
-    : never;
+    : TChannel;
 
 type ValidStateConfig<TConfig extends StateConfigMap> = {
   [K in keyof TConfig]: ValidStateChannel<TConfig[K]>;
 };
-
-type ChannelValue<TChannel extends StateChannelConfigLike> =
-  TChannel extends StateChannelConfig<infer TValue, unknown> ? TValue : never;
-
-type DeclaredChannelUpdate<TChannel extends StateChannelConfigLike> =
-  TChannel extends StateChannelConfig<unknown, infer TUpdate> ? TUpdate : never;
-
-type ChannelUpdate<TChannel extends StateChannelConfigLike> =
-  HasCustomUpdateType<TChannel> extends true
-    ? DeclaredChannelUpdate<TChannel>
-    : TChannel extends { reducer: (left: never, right: never) => unknown }
-      ? DeclaredChannelUpdate<TChannel>
-      : ChannelValue<TChannel>;
 
 type StateShape<TConfig extends StateConfigMap> = {
   [K in keyof TConfig]: ChannelValue<TConfig[K]>;
@@ -210,7 +238,7 @@ function createChannel<TChannel extends StateChannelConfigLike>(
 export function createStateAnnotation<
   TConfig extends StateConfigMap
 >(
-  config: TConfig & ValidStateConfig<TConfig>
+  config: TConfig
 ): AnnotationRoot<StateAnnotationDefinition<TConfig>> {
   const stateDefinition = {} as StateAnnotationDefinition<TConfig>;
 
@@ -249,7 +277,7 @@ export function createStateAnnotation<
 export function validateState<
   TConfig extends StateConfigMap,
   TState extends Partial<Record<keyof TConfig, unknown>>,
->(state: TState, config: TConfig & ValidStateConfig<TConfig>): ValidatedState<TConfig, TState> {
+>(state: TState, config: TConfig): ValidatedState<TConfig, TState> {
   const validated = {} as Partial<StateShape<TConfig>>;
 
   for (const [key, channelConfig] of entriesOf(config)) {
@@ -299,7 +327,7 @@ export function validateState<
 export function mergeState<TConfig extends StateConfigMap>(
   currentState: Partial<StateShape<TConfig>>,
   update: StateUpdateShape<TConfig>,
-  config: TConfig & ValidStateConfig<TConfig>
+  config: TConfig
 ): Partial<StateShape<TConfig>> {
   const merged = { ...currentState };
 

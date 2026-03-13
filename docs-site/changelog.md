@@ -5,6 +5,35 @@ All notable changes to AgentForge will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.15.8] - 2026-03-13
+
+### Added
+
+#### @agentforge/core - State Typing Regression Coverage
+- Added focused LangGraph state tests in `packages/core/tests/langgraph/state.test.ts` and `packages/core/tests/langgraph/integration.test.ts` covering inferred `annotation.State` / `annotation.Update` shapes and pre-typed reducer update contracts
+
+### Changed
+
+#### @agentforge/core - LangGraph State Utility Typing
+- Reworked `packages/core/src/langgraph/state.ts` to derive state and update shapes from channel config instead of relying on exported explicit-`any` contracts
+- Preserved `createStateAnnotation()` inference while restoring downstream compatibility for reducer-free schema/default state channels
+- Reduced explicit-`any` warnings in `packages/core/src/langgraph/state.ts` from `13` to `0`
+
+### Fixed
+
+#### @agentforge/core - State Channel Contract Safety
+- Fixed typed reducer channels so explicitly declared update types remain intact for pre-typed configs
+- Fixed reducer-free schema-backed channels so exported `State` types no longer collapse to literal defaults or `never` during downstream DTS builds
+
+### Published
+- All packages published to npm registry at version 0.15.8:
+  - @agentforge/core@0.15.8
+  - @agentforge/skills@0.15.8
+  - @agentforge/patterns@0.15.8
+  - @agentforge/tools@0.15.8
+  - @agentforge/testing@0.15.8
+  - @agentforge/cli@0.15.8
+
 ## [0.15.7] - 2026-03-13
 
 ### Added
