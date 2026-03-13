@@ -44,6 +44,15 @@ type StateChannelConfigLike = {
 
 type StateConfigMap = Record<string, StateChannelConfigLike>;
 
+type ValidStateChannel<TChannel extends StateChannelConfigLike> =
+  TChannel extends StateChannelConfig<infer TValue, infer TUpdate>
+    ? TChannel & StateChannelConfig<TValue, TUpdate>
+    : never;
+
+type ValidStateConfig<TConfig extends StateConfigMap> = {
+  [K in keyof TConfig]: ValidStateChannel<TConfig[K]>;
+};
+
 type ChannelValue<TChannel extends StateChannelConfigLike> =
   TChannel extends StateChannelConfig<infer TValue, unknown> ? TValue : never;
 
@@ -186,7 +195,7 @@ function createChannel<TChannel extends StateChannelConfigLike>(
 export function createStateAnnotation<
   TConfig extends StateConfigMap
 >(
-  config: TConfig
+  config: TConfig & ValidStateConfig<TConfig>
 ): AnnotationRoot<StateAnnotationDefinition<TConfig>> {
   const stateDefinition = {} as StateAnnotationDefinition<TConfig>;
 
@@ -225,7 +234,7 @@ export function createStateAnnotation<
 export function validateState<
   TConfig extends StateConfigMap,
   TState extends Partial<Record<keyof TConfig, unknown>>,
->(state: TState, config: TConfig): ValidatedState<TConfig, TState> {
+>(state: TState, config: TConfig & ValidStateConfig<TConfig>): ValidatedState<TConfig, TState> {
   const validated = {} as Partial<StateShape<TConfig>>;
 
   for (const [key, channelConfig] of entriesOf(config)) {
@@ -275,7 +284,7 @@ export function validateState<
 export function mergeState<TConfig extends StateConfigMap>(
   currentState: Partial<StateShape<TConfig>>,
   update: StateUpdateShape<TConfig>,
-  config: TConfig
+  config: TConfig & ValidStateConfig<TConfig>
 ): Partial<StateShape<TConfig>> {
   const merged = { ...currentState };
 
