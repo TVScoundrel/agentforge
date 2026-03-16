@@ -4,7 +4,7 @@
  * Provides consistent, structured logging for LangGraph agents.
  */
 
-import type { JsonObject } from './payload.js';
+import type { JsonObject, JsonValue } from './payload.js';
 
 /**
  * Log levels
@@ -70,7 +70,7 @@ export interface LogEntry {
   message: string;
   timestamp?: string;
   context?: JsonObject;
-  data?: JsonObject;
+  data?: JsonValue;
 }
 
 /**
@@ -80,22 +80,22 @@ export interface Logger {
   /**
    * Log a debug message
    */
-  debug(message: string, data?: JsonObject): void;
+  debug(message: string, data?: JsonValue): void;
 
   /**
    * Log an info message
    */
-  info(message: string, data?: JsonObject): void;
+  info(message: string, data?: JsonValue): void;
 
   /**
    * Log a warning message
    */
-  warn(message: string, data?: JsonObject): void;
+  warn(message: string, data?: JsonValue): void;
 
   /**
    * Log an error message
    */
-  error(message: string, data?: JsonObject): void;
+  error(message: string, data?: JsonValue): void;
 
   /**
    * Check if debug logging is enabled
@@ -134,19 +134,19 @@ class LoggerImpl implements Logger {
     };
   }
 
-  debug(message: string, data?: JsonObject): void {
+  debug(message: string, data?: JsonValue): void {
     this.log(LogLevel.DEBUG, message, data);
   }
 
-  info(message: string, data?: JsonObject): void {
+  info(message: string, data?: JsonValue): void {
     this.log(LogLevel.INFO, message, data);
   }
 
-  warn(message: string, data?: JsonObject): void {
+  warn(message: string, data?: JsonValue): void {
     this.log(LogLevel.WARN, message, data);
   }
 
-  error(message: string, data?: JsonObject): void {
+  error(message: string, data?: JsonValue): void {
     this.log(LogLevel.ERROR, message, data);
   }
 
@@ -162,7 +162,7 @@ class LoggerImpl implements Logger {
     return new LoggerImpl(this.name, this.options, { ...this.context, ...context });
   }
 
-  private log(level: LogLevel, message: string, data?: JsonObject): void {
+  private log(level: LogLevel, message: string, data?: JsonValue): void {
     // Check if this log level should be output
     if (LOG_LEVEL_PRIORITY[level] < LOG_LEVEL_PRIORITY[this.options.level]) {
       return;
@@ -182,7 +182,7 @@ class LoggerImpl implements Logger {
       entry.context = this.context;
     }
 
-    if (data) {
+    if (data !== undefined) {
       entry.data = data;
     }
 
@@ -210,7 +210,7 @@ class LoggerImpl implements Logger {
       parts.push(`context=${JSON.stringify(entry.context)}`);
     }
 
-    if (entry.data) {
+    if (entry.data !== undefined) {
       parts.push(`data=${JSON.stringify(entry.data)}`);
     }
 

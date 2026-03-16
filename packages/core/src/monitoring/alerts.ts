@@ -59,6 +59,13 @@ function toRuleErrorPayload(ruleName: string, error: unknown): JsonObject {
   };
 }
 
+function toAlertDispatchErrorPayload(ruleName: string, error: unknown): JsonObject {
+  return {
+    stage: 'alert-dispatch',
+    ...toRuleErrorPayload(ruleName, error),
+  };
+}
+
 export class AlertManager<TMetrics extends JsonObject = JsonObject> {
   private lastAlertTime = new Map<string, number>();
   private monitorTimer?: NodeJS.Timeout;
@@ -132,7 +139,7 @@ export class AlertManager<TMetrics extends JsonObject = JsonObject> {
             message: rule.message || `Alert triggered: ${rule.name}`,
             data: { metrics },
           }).catch((error) => {
-            logger.error('Rule check failed', toRuleErrorPayload(rule.name, error));
+            logger.error('Alert dispatch failed', toAlertDispatchErrorPayload(rule.name, error));
           });
         }
       } catch (error) {

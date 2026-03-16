@@ -174,7 +174,14 @@ describe('Middleware Presets', () => {
       // Should not log input/output, but may log duration
       const calls = infoSpy.mock.calls;
       const hasInputLog = calls.some(call => call[0].includes('started'));
-      const hasOutputLog = calls.some(call => call[0].includes('completed') && call[1]?.result);
+      const hasOutputLog = calls.some((call) => {
+        if (!call[0].includes('completed')) {
+          return false;
+        }
+
+        const payload = call[1];
+        return typeof payload === 'object' && payload !== null && !Array.isArray(payload) && 'result' in payload;
+      });
 
       expect(hasInputLog).toBe(false);
       expect(hasOutputLog).toBe(false);
@@ -277,4 +284,3 @@ describe('Middleware Presets', () => {
     });
   });
 });
-

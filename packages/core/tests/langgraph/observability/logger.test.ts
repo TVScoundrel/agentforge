@@ -146,6 +146,23 @@ describe('Structured Logging', () => {
       expect(parsed.data).toEqual(payload);
     });
 
+    it('should accept primitive and array payloads', () => {
+      const stream = new CaptureStream();
+      const logger = createLogger('test', {
+        destination: stream,
+        format: 'json',
+      });
+
+      logger.info('Array payload', ['critical', 2, true]);
+      logger.info('Primitive payload', 0);
+
+      const first = JSON.parse(stream.output[0]);
+      const second = JSON.parse(stream.output[1]);
+
+      expect(first.data).toEqual(['critical', 2, true]);
+      expect(second.data).toBe(0);
+    });
+
     it('should include timestamps when configured', () => {
       const stream = new CaptureStream();
       const logger = createLogger('test', {

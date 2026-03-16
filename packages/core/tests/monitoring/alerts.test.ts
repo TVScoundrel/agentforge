@@ -100,7 +100,8 @@ describe('AlertManager', () => {
     manager.stop();
 
     const output = writeSpy.mock.calls.map(([chunk]) => String(chunk)).join('');
-    expect(output).toContain('Rule check failed');
+    expect(output).toContain('Alert dispatch failed');
+    expect(output).toContain('alert-dispatch');
     expect(output).toContain('callback failed');
   });
 
