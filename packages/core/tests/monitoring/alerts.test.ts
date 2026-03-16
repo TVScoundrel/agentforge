@@ -129,6 +129,43 @@ describe('AlertManager', () => {
     expect(output).toContain('callback failed');
   });
 
+  it('keeps monitoring after metrics collection throws', async () => {
+    const writeSpy = vi.spyOn(process.stdout, 'write').mockImplementation(() => true);
+    const onAlert = vi.fn();
+    let attempt = 0;
+
+    const manager = createAlertManager<{ queueDepth: number }>({
+      channels: {},
+      rules: [
+        {
+          name: 'queue-depth',
+          severity: 'warning',
+          channels: [],
+          condition: (metrics) => metrics.queueDepth > 5,
+        },
+      ],
+      onAlert,
+    });
+
+    manager.start(() => {
+      attempt += 1;
+      if (attempt === 1) {
+        throw new Error('metrics unavailable');
+      }
+
+      return { queueDepth: 6 };
+    }, 1000);
+
+    await vi.advanceTimersByTimeAsync(2000);
+    manager.stop();
+
+    const output = writeSpy.mock.calls.map(([chunk]) => String(chunk)).join('');
+    expect(output).toContain('Metrics collection failed');
+    expect(output).toContain('metrics-provider');
+    expect(output).toContain('metrics unavailable');
+    expect(onAlert).toHaveBeenCalledTimes(1);
+  });
+
   it('enforces built-in channel config requirements at compile time', () => {
     const channels = {
       opsEmail: {

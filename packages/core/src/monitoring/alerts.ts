@@ -118,6 +118,14 @@ function toAlertDispatchErrorPayload(ruleName: string, error: unknown): JsonObje
   };
 }
 
+function toMetricsProviderErrorPayload(error: unknown): JsonObject {
+  return {
+    stage: 'metrics-provider',
+    error: error instanceof Error ? error.message : String(error),
+    ...(error instanceof Error && error.stack ? { stack: error.stack } : {}),
+  };
+}
+
 export class AlertManager<
   TMetrics extends JsonObject = JsonObject,
   TChannels extends AlertChannelMap = Record<string, GenericAlertChannel>
@@ -136,8 +144,12 @@ export class AlertManager<
     this.running = true;
 
     this.monitorTimer = setInterval(() => {
-      const currentMetrics = metrics();
-      this.checkRules(currentMetrics);
+      try {
+        const currentMetrics = metrics();
+        this.checkRules(currentMetrics);
+      } catch (error) {
+        logger.error('Metrics collection failed', toMetricsProviderErrorPayload(error));
+      }
     }, interval);
   }
 
