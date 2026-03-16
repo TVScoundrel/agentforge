@@ -135,6 +135,7 @@
   - `0e9cb99` fix(st-09004): widen logger payloads and clarify alert dispatch errors
   - `65aa982` fix(st-09004): harden async alert callback and channel typing
   - `980b409` fix(st-09004): tighten alert channel validation
+  - `243d3a2` fix(st-09004): guard metrics provider failures
 - [x] Mark PR Ready only after all story tasks are complete
   - PR #66 marked ready: https://github.com/TVScoundrel/agentforge/pull/66
 - [ ] Wait for merge; do not merge directly from local branch
