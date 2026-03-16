@@ -53,6 +53,8 @@ describe('AlertManager', () => {
   });
 
   it('preserves explicit zero timestamps on direct alerts', async () => {
+    vi.setSystemTime(new Date('2025-01-01T00:00:00.000Z'));
+
     const onAlert = vi.fn();
     const manager = createAlertManager({
       channels: {},
@@ -132,7 +134,7 @@ describe('AlertManager', () => {
       opsEmail: {
         type: 'email' as const,
         config: {
-          to: 'ops@example.com',
+          to: ['ops@example.com', 'backup@example.com'],
         },
       },
       opsSlack: {
@@ -151,6 +153,51 @@ describe('AlertManager', () => {
 
     const manager = createAlertManager({
       channels,
+    });
+
+    createAlertManager({
+      channels: {
+        validCustom: {
+          type: 'pagerduty',
+          config: {
+            integrationKey: 'abc123',
+          },
+        },
+      },
+    });
+
+    // @ts-expect-error built-in email channels require string or string[] recipients
+    createAlertManager({
+      channels: {
+        invalidEmail: {
+          type: 'email',
+          config: {
+            to: [1],
+          },
+        },
+      },
+    });
+
+    // @ts-expect-error built-in slack channels require webhookUrl
+    createAlertManager({
+      channels: {
+        invalidSlack: {
+          type: 'slack',
+          config: {},
+        },
+      },
+    });
+
+    // @ts-expect-error built-in channel literals cannot bypass validation as custom channels
+    createAlertManager({
+      channels: {
+        invalidBuiltIn: {
+          type: 'email',
+          config: {
+            endpoint: 'audit://events',
+          },
+        },
+      },
     });
 
     expect(manager).toBeDefined();
