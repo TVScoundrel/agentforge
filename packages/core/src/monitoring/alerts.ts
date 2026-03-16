@@ -92,7 +92,7 @@ export class AlertManager<TMetrics extends JsonObject = JsonObject> {
     }
   }
 
-  async alert(alert: Alert<AlertCallbackData<TMetrics>>): Promise<void> {
+  alert(alert: Alert<AlertCallbackData<TMetrics>>): void {
     const fullAlert: Alert<AlertCallbackData<TMetrics>> = {
       ...alert,
       timestamp: alert.timestamp || Date.now(),
