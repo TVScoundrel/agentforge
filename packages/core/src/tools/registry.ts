@@ -461,7 +461,7 @@ export class ToolRegistry {
           logger.error('Event handler error', {
             event,
             error: error instanceof Error ? error.message : String(error),
-            stack: error instanceof Error ? error.stack : undefined
+            ...(error instanceof Error && error.stack ? { stack: error.stack } : {})
           });
         }
       });

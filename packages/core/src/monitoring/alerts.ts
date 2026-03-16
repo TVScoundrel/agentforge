@@ -31,10 +31,14 @@ export interface AlertRule<TMetrics extends JsonObject = JsonObject> {
   message?: string;
 }
 
+type AlertCallbackData<TMetrics extends JsonObject> = JsonObject & {
+  metrics?: TMetrics;
+};
+
 export interface AlertManagerOptions<TMetrics extends JsonObject = JsonObject> {
   channels: Record<string, AlertChannel>;
   rules?: AlertRule<TMetrics>[];
-  onAlert?: (alert: Alert) => void;
+  onAlert?: (alert: Alert<AlertCallbackData<TMetrics>>) => void;
 }
 
 type AlertSummary = Pick<Alert, 'name' | 'severity' | 'message'>;
@@ -51,7 +55,7 @@ function toRuleErrorPayload(ruleName: string, error: unknown): JsonObject {
   return {
     ruleName,
     error: error instanceof Error ? error.message : String(error),
-    stack: error instanceof Error ? error.stack : undefined,
+    ...(error instanceof Error && error.stack ? { stack: error.stack } : {}),
   };
 }
 
@@ -88,8 +92,8 @@ export class AlertManager<TMetrics extends JsonObject = JsonObject> {
     }
   }
 
-  async alert(alert: Alert): Promise<void> {
-    const fullAlert: Alert = {
+  async alert(alert: Alert<AlertCallbackData<TMetrics>>): Promise<void> {
+    const fullAlert: Alert<AlertCallbackData<TMetrics>> = {
       ...alert,
       timestamp: alert.timestamp || Date.now(),
     };
@@ -110,7 +114,7 @@ export class AlertManager<TMetrics extends JsonObject = JsonObject> {
       name: alert.name,
       severity: alert.severity,
       message: alert.message,
-      data: alert.data
+      ...(alert.data ? { data: alert.data } : {}),
     });
   }
 
@@ -149,7 +153,7 @@ export class AlertManager<TMetrics extends JsonObject = JsonObject> {
     return Date.now() - lastTime < rule.throttle;
   }
 
-  async sendToChannel(channelName: string, alert: Alert): Promise<void> {
+  async sendToChannel(channelName: string, alert: Alert<AlertCallbackData<TMetrics>>): Promise<void> {
     const channel = this.options.channels[channelName];
     if (!channel) {
       throw new Error(`Channel not found: ${channelName}`);
@@ -187,9 +191,8 @@ export class AlertManager<TMetrics extends JsonObject = JsonObject> {
     }
   }
 
-  getAlertHistory(name?: string, _limit = 100): Alert[] {
+  getAlertHistory(_name?: string, _limit = 100): Alert<AlertCallbackData<TMetrics>>[] {
     // In a real implementation, return from storage
-    void name;
     return [];
   }
 
