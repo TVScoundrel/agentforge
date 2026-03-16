@@ -71,11 +71,16 @@ type ValidatedAlertChannels<TChannels extends AlertChannelMap> = {
     : never;
 };
 
-export interface AlertRule<TMetrics extends JsonObject = JsonObject> {
+type AlertChannelName<TChannels extends AlertChannelMap> = keyof ValidatedAlertChannels<TChannels> & string;
+
+export interface AlertRule<
+  TMetrics extends JsonObject = JsonObject,
+  TChannelName extends string = string
+> {
   name: string;
   condition: (metrics: TMetrics) => boolean;
   severity: AlertSeverity;
-  channels: string[];
+  channels: TChannelName[];
   throttle?: number;
   message?: string;
 }
@@ -89,7 +94,7 @@ export interface AlertManagerOptions<
   TChannels extends AlertChannelMap = Record<string, GenericAlertChannel>
 > {
   channels: ValidatedAlertChannels<TChannels>;
-  rules?: AlertRule<TMetrics>[];
+  rules?: AlertRule<TMetrics, AlertChannelName<TChannels>>[];
   onAlert?: (alert: Alert<AlertCallbackData<TMetrics>>) => void | Promise<void>;
 }
 

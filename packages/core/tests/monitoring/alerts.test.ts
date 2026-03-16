@@ -237,6 +237,26 @@ describe('AlertManager', () => {
       },
     });
 
+    // @ts-expect-error rules can only reference declared channel keys
+    createAlertManager({
+      channels: {
+        opsEmail: {
+          type: 'email',
+          config: {
+            to: 'ops@example.com',
+          },
+        },
+      },
+      rules: [
+        {
+          name: 'missing-channel',
+          severity: 'warning',
+          channels: ['unknownChannel'],
+          condition: () => true,
+        },
+      ],
+    });
+
     expect(manager).toBeDefined();
   });
 
