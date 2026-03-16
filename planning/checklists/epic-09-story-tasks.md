@@ -132,6 +132,7 @@
   - `dd0ec34` chore(st-09004): finalize checklist and ready status
   - `de76d39` fix(st-09004): tighten json-safe observability payloads
   - `f28a7d2` fix(st-09004): preserve async alert api
+  - `0e9cb99` fix(st-09004): widen logger payloads and clarify alert dispatch errors
 - [x] Mark PR Ready only after all story tasks are complete
   - PR #66 marked ready: https://github.com/TVScoundrel/agentforge/pull/66
 - [ ] Wait for merge; do not merge directly from local branch
