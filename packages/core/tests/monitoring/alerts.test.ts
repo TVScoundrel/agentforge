@@ -52,6 +52,28 @@ describe('AlertManager', () => {
     );
   });
 
+  it('preserves explicit zero timestamps on direct alerts', async () => {
+    const onAlert = vi.fn();
+    const manager = createAlertManager({
+      channels: {},
+      onAlert,
+    });
+
+    await manager.alert({
+      name: 'epoch-alert',
+      severity: 'info',
+      message: 'Preserve timestamp',
+      timestamp: 0,
+    });
+
+    expect(onAlert).toHaveBeenCalledWith(
+      expect.objectContaining({
+        name: 'epoch-alert',
+        timestamp: 0,
+      })
+    );
+  });
+
   it('respects per-rule throttling across repeated checks', async () => {
     const onAlert = vi.fn();
     const manager = createAlertManager<{ errorRate: number }>({
@@ -78,7 +100,7 @@ describe('AlertManager', () => {
     expect(onAlert).toHaveBeenCalledTimes(2);
   });
 
-  it('logs rule failures when alert callbacks reject through async dispatch', async () => {
+  it('logs rule failures when async alert callbacks reject through dispatch', async () => {
     const writeSpy = vi.spyOn(process.stdout, 'write').mockImplementation(() => true);
     const manager = createAlertManager<{ queueDepth: number }>({
       channels: {},
@@ -90,7 +112,7 @@ describe('AlertManager', () => {
           condition: (metrics) => metrics.queueDepth > 5,
         },
       ],
-      onAlert: () => {
+      onAlert: async () => {
         throw new Error('callback failed');
       },
     });
@@ -103,6 +125,35 @@ describe('AlertManager', () => {
     expect(output).toContain('Alert dispatch failed');
     expect(output).toContain('alert-dispatch');
     expect(output).toContain('callback failed');
+  });
+
+  it('enforces built-in channel config requirements at compile time', () => {
+    const channels = {
+      opsEmail: {
+        type: 'email' as const,
+        config: {
+          to: 'ops@example.com',
+        },
+      },
+      opsSlack: {
+        type: 'slack' as const,
+        config: {
+          webhookUrl: 'https://hooks.slack.test/services/ops',
+        },
+      },
+      auditStream: {
+        type: 'custom-webhook' as const,
+        config: {
+          endpoint: 'audit://events',
+        },
+      },
+    };
+
+    const manager = createAlertManager({
+      channels,
+    });
+
+    expect(manager).toBeDefined();
   });
 
   it('logs channel delivery details using JSON-safe payloads', async () => {

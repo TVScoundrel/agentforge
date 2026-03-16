@@ -17,10 +17,45 @@ export interface Alert<TData extends JsonObject = JsonObject> {
   data?: TData;
 }
 
-export interface AlertChannel<TConfig extends JsonObject = JsonObject> {
-  type: string;
+type BuiltInAlertChannelType = 'email' | 'slack' | 'webhook';
+
+type EmailAlertChannelConfig = JsonObject & {
+  to: string;
+};
+
+type SlackAlertChannelConfig = JsonObject & {
+  webhookUrl: string;
+};
+
+type WebhookAlertChannelConfig = JsonObject & {
+  url: string;
+};
+
+export interface EmailAlertChannel {
+  type: 'email';
+  config: EmailAlertChannelConfig;
+}
+
+export interface SlackAlertChannel {
+  type: 'slack';
+  config: SlackAlertChannelConfig;
+}
+
+export interface WebhookAlertChannel {
+  type: 'webhook';
+  config: WebhookAlertChannelConfig;
+}
+
+export interface CustomAlertChannel<TType extends string = string, TConfig extends JsonObject = JsonObject> {
+  type: Exclude<TType, BuiltInAlertChannelType>;
   config: TConfig;
 }
+
+export type AlertChannel<TType extends string = string, TConfig extends JsonObject = JsonObject> =
+  | EmailAlertChannel
+  | SlackAlertChannel
+  | WebhookAlertChannel
+  | CustomAlertChannel<TType, TConfig>;
 
 export interface AlertRule<TMetrics extends JsonObject = JsonObject> {
   name: string;
@@ -38,7 +73,7 @@ type AlertCallbackData<TMetrics extends JsonObject> = JsonObject & {
 export interface AlertManagerOptions<TMetrics extends JsonObject = JsonObject> {
   channels: Record<string, AlertChannel>;
   rules?: AlertRule<TMetrics>[];
-  onAlert?: (alert: Alert<AlertCallbackData<TMetrics>>) => void;
+  onAlert?: (alert: Alert<AlertCallbackData<TMetrics>>) => void | Promise<void>;
 }
 
 type AlertSummary = Pick<Alert, 'name' | 'severity' | 'message'>;
@@ -102,7 +137,7 @@ export class AlertManager<TMetrics extends JsonObject = JsonObject> {
   async alert(alert: Alert<AlertCallbackData<TMetrics>>): Promise<void> {
     const fullAlert: Alert<AlertCallbackData<TMetrics>> = {
       ...alert,
-      timestamp: alert.timestamp || Date.now(),
+      timestamp: alert.timestamp ?? Date.now(),
     };
 
     // Check throttling
@@ -114,7 +149,7 @@ export class AlertManager<TMetrics extends JsonObject = JsonObject> {
     this.lastAlertTime.set(alert.name, Date.now());
 
     // Notify callback
-    this.options.onAlert?.(fullAlert);
+    await this.options.onAlert?.(fullAlert);
 
     // Log the alert
     logger.warn('Alert triggered', {
