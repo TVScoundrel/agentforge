@@ -92,7 +92,7 @@ export class AlertManager<TMetrics extends JsonObject = JsonObject> {
     }
   }
 
-  alert(alert: Alert<AlertCallbackData<TMetrics>>): void {
+  async alert(alert: Alert<AlertCallbackData<TMetrics>>): Promise<void> {
     const fullAlert: Alert<AlertCallbackData<TMetrics>> = {
       ...alert,
       timestamp: alert.timestamp || Date.now(),
@@ -126,11 +126,13 @@ export class AlertManager<TMetrics extends JsonObject = JsonObject> {
     for (const rule of this.options.rules) {
       try {
         if (rule.condition(metrics)) {
-          this.alert({
+          void this.alert({
             name: rule.name,
             severity: rule.severity,
             message: rule.message || `Alert triggered: ${rule.name}`,
             data: { metrics },
+          }).catch((error) => {
+            logger.error('Rule check failed', toRuleErrorPayload(rule.name, error));
           });
         }
       } catch (error) {

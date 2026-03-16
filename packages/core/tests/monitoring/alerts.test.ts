@@ -78,6 +78,32 @@ describe('AlertManager', () => {
     expect(onAlert).toHaveBeenCalledTimes(2);
   });
 
+  it('logs rule failures when alert callbacks reject through async dispatch', async () => {
+    const writeSpy = vi.spyOn(process.stdout, 'write').mockImplementation(() => true);
+    const manager = createAlertManager<{ queueDepth: number }>({
+      channels: {},
+      rules: [
+        {
+          name: 'queue-depth',
+          severity: 'warning',
+          channels: [],
+          condition: (metrics) => metrics.queueDepth > 5,
+        },
+      ],
+      onAlert: () => {
+        throw new Error('callback failed');
+      },
+    });
+
+    manager.start(() => ({ queueDepth: 6 }), 1000);
+    await vi.advanceTimersByTimeAsync(1000);
+    manager.stop();
+
+    const output = writeSpy.mock.calls.map(([chunk]) => String(chunk)).join('');
+    expect(output).toContain('Rule check failed');
+    expect(output).toContain('callback failed');
+  });
+
   it('logs channel delivery details using JSON-safe payloads', async () => {
     const writeSpy = vi.spyOn(process.stdout, 'write').mockImplementation(() => true);
     const manager = createAlertManager({
