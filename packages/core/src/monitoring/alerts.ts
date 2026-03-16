@@ -3,47 +3,66 @@
  */
 
 import { createLogger, LogLevel } from '../langgraph/observability/logger.js';
+import type { JsonObject } from '../langgraph/observability/payload.js';
 
 const logger = createLogger('agentforge:core:monitoring:alerts', { level: LogLevel.INFO });
 
 export type AlertSeverity = 'info' | 'warning' | 'error' | 'critical';
 
-export interface Alert {
+export interface Alert<TData extends JsonObject = JsonObject> {
   name: string;
   severity: AlertSeverity;
   message: string;
   timestamp?: number;
-  data?: Record<string, any>;
+  data?: TData;
 }
 
-export interface AlertChannel {
+export interface AlertChannel<TConfig extends JsonObject = JsonObject> {
   type: string;
-  config: Record<string, any>;
+  config: TConfig;
 }
 
-export interface AlertRule {
+export interface AlertRule<TMetrics extends JsonObject = JsonObject> {
   name: string;
-  condition: (metrics: any) => boolean;
+  condition: (metrics: TMetrics) => boolean;
   severity: AlertSeverity;
   channels: string[];
   throttle?: number;
   message?: string;
 }
 
-export interface AlertManagerOptions {
+export interface AlertManagerOptions<TMetrics extends JsonObject = JsonObject> {
   channels: Record<string, AlertChannel>;
-  rules?: AlertRule[];
+  rules?: AlertRule<TMetrics>[];
   onAlert?: (alert: Alert) => void;
 }
 
-export class AlertManager {
+type AlertSummary = Pick<Alert, 'name' | 'severity' | 'message'>;
+
+function toAlertSummary(alert: Alert): AlertSummary {
+  return {
+    name: alert.name,
+    severity: alert.severity,
+    message: alert.message,
+  };
+}
+
+function toRuleErrorPayload(ruleName: string, error: unknown): JsonObject {
+  return {
+    ruleName,
+    error: error instanceof Error ? error.message : String(error),
+    stack: error instanceof Error ? error.stack : undefined,
+  };
+}
+
+export class AlertManager<TMetrics extends JsonObject = JsonObject> {
   private lastAlertTime = new Map<string, number>();
   private monitorTimer?: NodeJS.Timeout;
   private running = false;
 
-  constructor(private options: AlertManagerOptions) {}
+  constructor(private options: AlertManagerOptions<TMetrics>) {}
 
-  start(metrics?: () => any, interval = 60000): void {
+  start(metrics?: () => TMetrics, interval = 60000): void {
     if (this.running || !metrics) {
       return;
     }
@@ -95,7 +114,7 @@ export class AlertManager {
     });
   }
 
-  private checkRules(metrics: any): void {
+  private checkRules(metrics: TMetrics): void {
     if (!this.options.rules) {
       return;
     }
@@ -111,11 +130,7 @@ export class AlertManager {
           });
         }
       } catch (error) {
-        logger.error('Rule check failed', {
-          ruleName: rule.name,
-          error: error instanceof Error ? error.message : String(error),
-          stack: error instanceof Error ? error.stack : undefined
-        });
+        logger.error('Rule check failed', toRuleErrorPayload(rule.name, error));
       }
     }
   }
@@ -146,34 +161,35 @@ export class AlertManager {
         logger.info('Alert sent to email', {
           channel: channelName,
           to: channel.config.to,
-          alert: { name: alert.name, severity: alert.severity, message: alert.message }
+          alert: toAlertSummary(alert)
         });
         break;
       case 'slack':
         logger.info('Alert sent to Slack', {
           channel: channelName,
           webhookUrl: channel.config.webhookUrl,
-          alert: { name: alert.name, severity: alert.severity, message: alert.message }
+          alert: toAlertSummary(alert)
         });
         break;
       case 'webhook':
         logger.info('Alert sent to webhook', {
           channel: channelName,
           url: channel.config.url,
-          alert: { name: alert.name, severity: alert.severity, message: alert.message }
+          alert: toAlertSummary(alert)
         });
         break;
       default:
         logger.info('Alert sent', {
           channel: channelName,
           channelType: channel.type,
-          alert: { name: alert.name, severity: alert.severity, message: alert.message }
+          alert: toAlertSummary(alert)
         });
     }
   }
 
-  getAlertHistory(name?: string, limit = 100): Alert[] {
+  getAlertHistory(name?: string, _limit = 100): Alert[] {
     // In a real implementation, return from storage
+    void name;
     return [];
   }
 
@@ -186,7 +202,8 @@ export class AlertManager {
   }
 }
 
-export function createAlertManager(options: AlertManagerOptions): AlertManager {
+export function createAlertManager<TMetrics extends JsonObject = JsonObject>(
+  options: AlertManagerOptions<TMetrics>
+): AlertManager<TMetrics> {
   return new AlertManager(options);
 }
-

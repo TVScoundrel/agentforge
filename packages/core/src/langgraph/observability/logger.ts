@@ -4,6 +4,8 @@
  * Provides consistent, structured logging for LangGraph agents.
  */
 
+import type { JsonObject } from './payload.js';
+
 /**
  * Log levels
  */
@@ -67,8 +69,8 @@ export interface LogEntry {
   name: string;
   message: string;
   timestamp?: string;
-  context?: Record<string, any>;
-  data?: Record<string, any>;
+  context?: JsonObject;
+  data?: JsonObject;
 }
 
 /**
@@ -78,22 +80,22 @@ export interface Logger {
   /**
    * Log a debug message
    */
-  debug(message: string, data?: Record<string, any>): void;
+  debug(message: string, data?: JsonObject): void;
 
   /**
    * Log an info message
    */
-  info(message: string, data?: Record<string, any>): void;
+  info(message: string, data?: JsonObject): void;
 
   /**
    * Log a warning message
    */
-  warn(message: string, data?: Record<string, any>): void;
+  warn(message: string, data?: JsonObject): void;
 
   /**
    * Log an error message
    */
-  error(message: string, data?: Record<string, any>): void;
+  error(message: string, data?: JsonObject): void;
 
   /**
    * Check if debug logging is enabled
@@ -109,7 +111,7 @@ export interface Logger {
   /**
    * Create a child logger with additional context
    */
-  withContext(context: Record<string, any>): Logger;
+  withContext(context: JsonObject): Logger;
 }
 
 /**
@@ -118,9 +120,9 @@ export interface Logger {
 class LoggerImpl implements Logger {
   private name: string;
   private options: Required<LoggerOptions>;
-  private context: Record<string, any>;
+  private context: JsonObject;
 
-  constructor(name: string, options: LoggerOptions = {}, context: Record<string, any> = {}) {
+  constructor(name: string, options: LoggerOptions = {}, context: JsonObject = {}) {
     this.name = name;
     this.context = context;
     this.options = {
@@ -132,19 +134,19 @@ class LoggerImpl implements Logger {
     };
   }
 
-  debug(message: string, data?: Record<string, any>): void {
+  debug(message: string, data?: JsonObject): void {
     this.log(LogLevel.DEBUG, message, data);
   }
 
-  info(message: string, data?: Record<string, any>): void {
+  info(message: string, data?: JsonObject): void {
     this.log(LogLevel.INFO, message, data);
   }
 
-  warn(message: string, data?: Record<string, any>): void {
+  warn(message: string, data?: JsonObject): void {
     this.log(LogLevel.WARN, message, data);
   }
 
-  error(message: string, data?: Record<string, any>): void {
+  error(message: string, data?: JsonObject): void {
     this.log(LogLevel.ERROR, message, data);
   }
 
@@ -156,11 +158,11 @@ class LoggerImpl implements Logger {
     return LOG_LEVEL_PRIORITY[level] >= LOG_LEVEL_PRIORITY[this.options.level];
   }
 
-  withContext(context: Record<string, any>): Logger {
+  withContext(context: JsonObject): Logger {
     return new LoggerImpl(this.name, this.options, { ...this.context, ...context });
   }
 
-  private log(level: LogLevel, message: string, data?: Record<string, any>): void {
+  private log(level: LogLevel, message: string, data?: JsonObject): void {
     // Check if this log level should be output
     if (LOG_LEVEL_PRIORITY[level] < LOG_LEVEL_PRIORITY[this.options.level]) {
       return;
@@ -250,4 +252,3 @@ class LoggerImpl implements Logger {
 export function createLogger(name: string, options?: LoggerOptions): Logger {
   return new LoggerImpl(name, options);
 }
-

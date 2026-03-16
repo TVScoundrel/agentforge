@@ -24,6 +24,7 @@ export {
   type LoggerOptions,
   type LogEntry,
 } from './logger.js';
+export type { JsonObject, JsonPrimitive, JsonValue } from './payload.js';
 
 // Metrics collection
 export {
@@ -44,4 +45,3 @@ export {
   type ErrorReporter,
   type ErrorReporterOptions,
 } from './errors.js';
-
