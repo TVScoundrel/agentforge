@@ -126,8 +126,11 @@
   - `pnpm test --run` -> `148 passed | 16 skipped` files; `2093 passed | 286 skipped` tests
 - [x] Run lint (`pnpm lint`) before finalizing the PR and record results
   - `pnpm lint` -> exit `0`; warnings only (`0` errors)
-- [ ] Commit completed checklist items as logical commits and push updates
-- [ ] Mark PR Ready only after all story tasks are complete
+- [x] Commit completed checklist items as logical commits and push updates
+  - `1e94121` refactor(st-09004): harden observability payload contracts
+  - `c5e3388` docs(st-09004): record observability payload validation
+- [x] Mark PR Ready only after all story tasks are complete
+  - PR #66 marked ready: https://github.com/TVScoundrel/agentforge/pull/66
 - [ ] Wait for merge; do not merge directly from local branch
 
 ---

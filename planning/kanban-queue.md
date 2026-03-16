@@ -1,12 +1,12 @@
 # Kanban Queue: AgentForge
 
-**Last Updated:** 2026-03-13
+**Last Updated:** 2026-03-16
 
 ## Queue Status Summary
 
-- **Ready:** 2 stories
+- **Ready:** 1 story
 - **In Progress:** 0 stories
-- **In Review:** 0 stories
+- **In Review:** 1 story
 - **Blocked:** 0 stories
 - **Backlog:** 0 stories
 
@@ -14,9 +14,6 @@
 
 ## Ready
 
-- **ST-09004: Refine Observability Payload Contracts** (EP-09, P2, 4h)
-  - Dependencies: ST-09003 (merged)
-  - Scope: `packages/core/src/langgraph/observability/logger.ts` + `packages/core/src/monitoring/alerts.ts`
 - **ST-09005: Harden Patterns ReAct Node and Shared Agent Builder Types** (EP-09, P2, 4h)
   - Dependencies: ST-08004 (complete)
   - Scope: `packages/patterns/src/react/nodes.ts` + `packages/patterns/src/shared/agent-builder.ts`
@@ -31,7 +28,11 @@ _No stories currently in progress_
 
 ## In Review
 
-_No stories currently in review_
+- **ST-09004: Refine Observability Payload Contracts** (EP-09, P2, 4h)
+  - Dependencies: ST-09003 (merged)
+  - Branch: `codex/fix/st-09004-observability-payload-contracts`
+  - PR #66: https://github.com/TVScoundrel/agentforge/pull/66
+  - Scope: `packages/core/src/langgraph/observability/logger.ts` + `packages/core/src/monitoring/alerts.ts`
 
 ---
 
@@ -95,4 +96,4 @@ _No stories currently in backlog_
 - ✅ ST-09001 complete - core tool composition contracts hardened (merged 2026-03-12)
 - ✅ ST-09002 complete - LangChain converter boundary hardened (merged 2026-03-13)
 - ✅ ST-09003 complete - LangGraph state utility typing strengthened (merged 2026-03-13)
-- ST-09004 and ST-09005 are Ready for execution
+- ST-09004 is in review on PR #66; ST-09005 remains Ready
