@@ -102,31 +102,28 @@ describe('AlertManager', () => {
     expect(onAlert).toHaveBeenCalledTimes(2);
   });
 
-  it('logs rule failures when async alert callbacks reject through dispatch', async () => {
+  it('logs callback failures without rejecting direct alerts', async () => {
     const writeSpy = vi.spyOn(process.stdout, 'write').mockImplementation(() => true);
-    const manager = createAlertManager<{ queueDepth: number }>({
+    const manager = createAlertManager({
       channels: {},
-      rules: [
-        {
-          name: 'queue-depth',
-          severity: 'warning',
-          channels: [],
-          condition: (metrics) => metrics.queueDepth > 5,
-        },
-      ],
       onAlert: async () => {
         throw new Error('callback failed');
       },
     });
 
-    manager.start(() => ({ queueDepth: 6 }), 1000);
-    await vi.advanceTimersByTimeAsync(1000);
-    manager.stop();
+    await expect(
+      manager.alert({
+        name: 'callback-failure',
+        severity: 'warning',
+        message: 'Callback failure should not reject alert()',
+      })
+    ).resolves.toBeUndefined();
 
     const output = writeSpy.mock.calls.map(([chunk]) => String(chunk)).join('');
-    expect(output).toContain('Alert dispatch failed');
-    expect(output).toContain('alert-dispatch');
+    expect(output).toContain('Alert callback failed');
+    expect(output).toContain('alert-callback');
     expect(output).toContain('callback failed');
+    expect(output).toContain('Alert triggered');
   });
 
   it('keeps monitoring after metrics collection throws', async () => {

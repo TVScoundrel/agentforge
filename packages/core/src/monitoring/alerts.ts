@@ -123,6 +123,14 @@ function toAlertDispatchErrorPayload(ruleName: string, error: unknown): JsonObje
   };
 }
 
+function toAlertCallbackErrorPayload(error: unknown): JsonObject {
+  return {
+    stage: 'alert-callback',
+    error: error instanceof Error ? error.message : String(error),
+    ...(error instanceof Error && error.stack ? { stack: error.stack } : {}),
+  };
+}
+
 function toMetricsProviderErrorPayload(error: unknown): JsonObject {
   return {
     stage: 'metrics-provider',
@@ -183,7 +191,11 @@ export class AlertManager<
 
     this.lastAlertTime.set(alert.name, Date.now());
 
-    await this.options.onAlert?.(fullAlert);
+    try {
+      await this.options.onAlert?.(fullAlert);
+    } catch (error) {
+      logger.error('Alert callback failed', toAlertCallbackErrorPayload(error));
+    }
 
     logger.warn('Alert triggered', {
       name: alert.name,
