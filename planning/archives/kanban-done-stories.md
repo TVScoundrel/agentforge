@@ -2,7 +2,7 @@
 
 **Purpose:** Track completed and merged stories for the Relational Database Access Tool project.
 
-**Last Updated:** 2026-03-13
+**Last Updated:** 2026-03-17
 
 ---
 
@@ -282,6 +282,13 @@
 - **Epic:** EP-09 (SOLID Micro-Refactors and Type Boundary Hardening)
 - **Estimate:** 3 hours
 - **Outcome:** Hardened the LangGraph state utility surface by removing explicit `any` from state-channel helpers, preserving config-derived `State` and `Update` inference, and enforcing reducer/update compatibility at the config boundary. Added focused inference and reducer-update regression coverage, recorded explicit-`any` warning deltas in story documentation, and completed full validation before merge.
+
+### ST-09004: Refine Observability Payload Contracts
+- **Merged:** 2026-03-17
+- **PR:** https://github.com/TVScoundrel/agentforge/pull/66 (commit c20319f)
+- **Epic:** EP-09 (SOLID Micro-Refactors and Type Boundary Hardening)
+- **Estimate:** 4 hours
+- **Outcome:** Introduced shared JSON-safe payload contracts for core observability paths, hardened alert-manager typing across channel/rule/callback boundaries, and added focused regressions for logger payloads, callback failures, metrics-provider failures, and compile-time channel wiring. Reduced explicit-`any` warnings in the touched core observability files from 20 to 0 and improved the `core` baseline from 148 to 128.
 
 ---
 

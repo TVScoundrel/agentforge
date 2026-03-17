@@ -140,7 +140,8 @@
   - `5152968` fix(st-09004): isolate alert callback failures
 - [x] Mark PR Ready only after all story tasks are complete
   - PR #66 marked ready: https://github.com/TVScoundrel/agentforge/pull/66
-- [ ] Wait for merge; do not merge directly from local branch
+- [x] Wait for merge; do not merge directly from local branch
+  - Merged via PR #66 on 2026-03-17
 
 ---
 

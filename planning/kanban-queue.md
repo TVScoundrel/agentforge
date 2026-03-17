@@ -1,12 +1,12 @@
 # Kanban Queue: AgentForge
 
-**Last Updated:** 2026-03-16
+**Last Updated:** 2026-03-17
 
 ## Queue Status Summary
 
 - **Ready:** 1 story
 - **In Progress:** 0 stories
-- **In Review:** 1 story
+- **In Review:** 0 stories
 - **Blocked:** 0 stories
 - **Backlog:** 0 stories
 
@@ -28,11 +28,7 @@ _No stories currently in progress_
 
 ## In Review
 
-- **ST-09004: Refine Observability Payload Contracts** (EP-09, P2, 4h)
-  - Dependencies: ST-09003 (merged)
-  - Branch: `codex/fix/st-09004-observability-payload-contracts`
-  - PR #66: https://github.com/TVScoundrel/agentforge/pull/66
-  - Scope: `packages/core/src/langgraph/observability/logger.ts` + `packages/core/src/monitoring/alerts.ts`
+_No stories currently in review_
 
 ---
 
@@ -96,4 +92,5 @@ _No stories currently in backlog_
 - ✅ ST-09001 complete - core tool composition contracts hardened (merged 2026-03-12)
 - ✅ ST-09002 complete - LangChain converter boundary hardened (merged 2026-03-13)
 - ✅ ST-09003 complete - LangGraph state utility typing strengthened (merged 2026-03-13)
-- ST-09004 is in review on PR #66; ST-09005 remains Ready
+- ✅ ST-09004 complete - observability payload contracts hardened (merged 2026-03-17)
+- ST-09005 remains Ready
