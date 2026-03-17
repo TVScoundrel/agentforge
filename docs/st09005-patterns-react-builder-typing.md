@@ -40,6 +40,8 @@ Refactored the ReAct node helpers and shared agent-builder utility to remove bro
 - `pnpm exec tsc -p packages/patterns/tsconfig.json --noEmit`
 - `pnpm test --run packages/patterns/tests/react/nodes.test.ts packages/patterns/tests/shared/agent-builder.test.ts` -> `13 passed`
 - `pnpm lint:explicit-any:baseline`
+- `pnpm test --run` -> `149 passed | 16 skipped` files; `2102 passed | 286 skipped` tests
+- `pnpm lint` -> exit `0`; warnings only (`0` errors)
 
 ## Test Impact
 
