@@ -150,14 +150,19 @@
 **Branch:** `fix/st-09005-patterns-react-builder-typing`
 
 ### Checklist
-- [ ] Create branch `fix/st-09005-patterns-react-builder-typing`
-- [ ] Create draft PR with story ID in title
-- [ ] Reduce explicit `any` usage in `packages/patterns/src/react/nodes.ts` and `packages/patterns/src/shared/agent-builder.ts`
-- [ ] Extract focused helper(s) for message normalization/state access where it improves SRP and readability
-- [ ] Add/update focused tests for conditional routing and tool-message construction behavior
-- [ ] Record explicit-`any` warning deltas for touched files in story docs
-- [ ] Add or update story documentation at `docs/st09005-patterns-react-builder-typing.md` (or document why not required)
-- [ ] Assess test impact; add/update automated tests when needed, or document why tests are not required
+- [x] Create branch `fix/st-09005-patterns-react-builder-typing`
+  - Created as `codex/fix/st-09005-patterns-react-builder-typing` (workspace branch-prefix policy)
+- [x] Create draft PR with story ID in title
+  - PR #67: https://github.com/TVScoundrel/agentforge/pull/67
+- [x] Reduce explicit `any` usage in `packages/patterns/src/react/nodes.ts` and `packages/patterns/src/shared/agent-builder.ts`
+- [x] Extract focused helper(s) for message normalization/state access where it improves SRP and readability
+- [x] Add/update focused tests for conditional routing and tool-message construction behavior
+  - `pnpm test --run packages/patterns/tests/react/nodes.test.ts packages/patterns/tests/shared/agent-builder.test.ts` -> `13 passed`
+- [x] Record explicit-`any` warning deltas for touched files in story docs
+  - Recorded in `docs/st09005-patterns-react-builder-typing.md` (`nodes.ts 10 -> 0`, `agent-builder.ts 9 -> 0`, baseline `324 -> 305`)
+- [x] Add or update story documentation at `docs/st09005-patterns-react-builder-typing.md` (or document why not required)
+- [x] Assess test impact; add/update automated tests when needed, or document why tests are not required
+  - Added focused coverage in `packages/patterns/tests/react/nodes.test.ts` and `packages/patterns/tests/shared/agent-builder.test.ts`
 - [ ] Run full test suite before finalizing the PR and record results
 - [ ] Run lint (`pnpm lint`) before finalizing the PR and record results
 - [ ] Commit completed checklist items as logical commits and push updates
