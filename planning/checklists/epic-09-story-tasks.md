@@ -167,6 +167,10 @@
   - `pnpm test --run` -> `149 passed | 16 skipped` files; `2102 passed | 286 skipped` tests
 - [x] Run lint (`pnpm lint`) before finalizing the PR and record results
   - `pnpm lint` -> exit `0`; warnings only (`0` errors)
-- [ ] Commit completed checklist items as logical commits and push updates
-- [ ] Mark PR Ready only after all story tasks are complete
+- [x] Commit completed checklist items as logical commits and push updates
+  - `119eec6` refactor(st-09005): harden react node and builder typing
+  - `1a2353a` docs(st-09005): record react builder typing progress
+  - `d608445` docs(st-09005): record validation and move story to in-review
+- [x] Mark PR Ready only after all story tasks are complete
+  - PR #67 marked ready: https://github.com/TVScoundrel/agentforge/pull/67
 - [ ] Wait for merge; do not merge directly from local branch
