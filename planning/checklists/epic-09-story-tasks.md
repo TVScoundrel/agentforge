@@ -137,6 +137,7 @@
   - `980b409` fix(st-09004): tighten alert channel validation
   - `243d3a2` fix(st-09004): guard metrics provider failures
   - `4087073` fix(st-09004): type alert rules against declared channels
+  - `5152968` fix(st-09004): isolate alert callback failures
 - [x] Mark PR Ready only after all story tasks are complete
   - PR #66 marked ready: https://github.com/TVScoundrel/agentforge/pull/66
 - [ ] Wait for merge; do not merge directly from local branch
