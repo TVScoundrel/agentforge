@@ -81,7 +81,7 @@ export class ManagedTool<TContext = any, TInput = any, TOutput = any> {
           logger.error('Cleanup failed', {
             toolName: this.name,
             error: err instanceof Error ? err.message : String(err),
-            stack: err instanceof Error ? err.stack : undefined
+            ...(err instanceof Error && err.stack ? { stack: err.stack } : {})
           })
         );
       });
@@ -260,4 +260,3 @@ export function createManagedTool<TContext = any, TInput = any, TOutput = any>(
 ): ManagedTool<TContext, TInput, TOutput> {
   return new ManagedTool(config);
 }
-

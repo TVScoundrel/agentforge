@@ -106,21 +106,40 @@
 
 ## ST-09004: Refine Observability Payload Contracts
 
-**Branch:** `fix/st-09004-observability-payload-contracts`
+**Branch:** `codex/fix/st-09004-observability-payload-contracts`
 
 ### Checklist
-- [ ] Create branch `fix/st-09004-observability-payload-contracts`
-- [ ] Create draft PR with story ID in title
-- [ ] Introduce shared JSON-safe payload contract(s) for observability code paths
-- [ ] Reduce explicit `any` usage in `packages/core/src/langgraph/observability/logger.ts` and `packages/core/src/monitoring/alerts.ts`
-- [ ] Add/update focused tests for typed payload formatting and alert rule execution behavior
-- [ ] Record explicit-`any` warning deltas for touched files in story docs
-- [ ] Add or update story documentation at `docs/st09004-observability-payload-contracts.md` (or document why not required)
-- [ ] Assess test impact; add/update automated tests when needed, or document why tests are not required
-- [ ] Run full test suite before finalizing the PR and record results
-- [ ] Run lint (`pnpm lint`) before finalizing the PR and record results
-- [ ] Commit completed checklist items as logical commits and push updates
-- [ ] Mark PR Ready only after all story tasks are complete
+- [x] Create branch `fix/st-09004-observability-payload-contracts`
+  - Created as `codex/fix/st-09004-observability-payload-contracts` (workspace branch-prefix policy)
+- [x] Create draft PR with story ID in title
+  - PR #66: https://github.com/TVScoundrel/agentforge/pull/66
+- [x] Introduce shared JSON-safe payload contract(s) for observability code paths
+- [x] Reduce explicit `any` usage in `packages/core/src/langgraph/observability/logger.ts` and `packages/core/src/monitoring/alerts.ts`
+- [x] Add/update focused tests for typed payload formatting and alert rule execution behavior
+  - `pnpm test --run packages/core/tests/langgraph/observability/logger.test.ts packages/core/tests/monitoring/alerts.test.ts` -> `22 passed`
+- [x] Record explicit-`any` warning deltas for touched files in story docs
+  - Recorded in `docs/st09004-observability-payload-contracts.md` (`logger.ts 15 -> 0`, `alerts.ts 5 -> 0`, baseline `344 -> 324`)
+- [x] Add or update story documentation at `docs/st09004-observability-payload-contracts.md` (or document why not required)
+- [x] Assess test impact; add/update automated tests when needed, or document why tests are not required
+  - Added focused observability and alert-manager tests in `packages/core/tests/langgraph/observability/logger.test.ts` and `packages/core/tests/monitoring/alerts.test.ts`
+- [x] Run full test suite before finalizing the PR and record results
+  - `pnpm test --run` -> `148 passed | 16 skipped` files; `2093 passed | 286 skipped` tests
+- [x] Run lint (`pnpm lint`) before finalizing the PR and record results
+  - `pnpm lint` -> exit `0`; warnings only (`0` errors)
+- [x] Commit completed checklist items as logical commits and push updates
+  - `1e94121` refactor(st-09004): harden observability payload contracts
+  - `c5e3388` docs(st-09004): record observability payload validation
+  - `dd0ec34` chore(st-09004): finalize checklist and ready status
+  - `de76d39` fix(st-09004): tighten json-safe observability payloads
+  - `f28a7d2` fix(st-09004): preserve async alert api
+  - `0e9cb99` fix(st-09004): widen logger payloads and clarify alert dispatch errors
+  - `65aa982` fix(st-09004): harden async alert callback and channel typing
+  - `980b409` fix(st-09004): tighten alert channel validation
+  - `243d3a2` fix(st-09004): guard metrics provider failures
+  - `4087073` fix(st-09004): type alert rules against declared channels
+  - `5152968` fix(st-09004): isolate alert callback failures
+- [x] Mark PR Ready only after all story tasks are complete
+  - PR #66 marked ready: https://github.com/TVScoundrel/agentforge/pull/66
 - [ ] Wait for merge; do not merge directly from local branch
 
 ---

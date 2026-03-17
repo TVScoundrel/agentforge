@@ -6,7 +6,11 @@ import { createLogger, LogLevel } from '../../../src/langgraph/observability/log
 class CaptureStream extends Writable {
   public output: string[] = [];
 
-  _write(chunk: any, encoding: string, callback: () => void): void {
+  _write(
+    chunk: string | Uint8Array,
+    _encoding: BufferEncoding,
+    callback: (error?: Error | null) => void
+  ): void {
     this.output.push(chunk.toString());
     callback();
   }
@@ -119,6 +123,46 @@ describe('Structured Logging', () => {
       expect(parsed.data).toEqual({ key: 'value' });
     });
 
+    it('should preserve nested JSON-safe payloads in JSON output', () => {
+      const stream = new CaptureStream();
+      const logger = createLogger('test', {
+        destination: stream,
+        format: 'json',
+      });
+
+      const payload = {
+        requestId: 'req-123',
+        retryCount: 2,
+        tags: ['critical', 'latency'],
+        nested: {
+          ok: true,
+          durationMs: 125,
+        },
+      };
+
+      logger.info('Nested payload', payload);
+
+      const parsed = JSON.parse(stream.output[0]);
+      expect(parsed.data).toEqual(payload);
+    });
+
+    it('should accept primitive and array payloads', () => {
+      const stream = new CaptureStream();
+      const logger = createLogger('test', {
+        destination: stream,
+        format: 'json',
+      });
+
+      logger.info('Array payload', ['critical', 2, true]);
+      logger.info('Primitive payload', 0);
+
+      const first = JSON.parse(stream.output[0]);
+      const second = JSON.parse(stream.output[1]);
+
+      expect(first.data).toEqual(['critical', 2, true]);
+      expect(second.data).toBe(0);
+    });
+
     it('should include timestamps when configured', () => {
       const stream = new CaptureStream();
       const logger = createLogger('test', {
@@ -228,4 +272,3 @@ describe('Structured Logging', () => {
     });
   });
 });
-

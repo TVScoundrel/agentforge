@@ -3,47 +3,153 @@
  */
 
 import { createLogger, LogLevel } from '../langgraph/observability/logger.js';
+import type { JsonObject } from '../langgraph/observability/payload.js';
 
 const logger = createLogger('agentforge:core:monitoring:alerts', { level: LogLevel.INFO });
 
 export type AlertSeverity = 'info' | 'warning' | 'error' | 'critical';
 
-export interface Alert {
+export interface Alert<TData extends JsonObject = JsonObject> {
   name: string;
   severity: AlertSeverity;
   message: string;
   timestamp?: number;
-  data?: Record<string, any>;
+  data?: TData;
 }
 
-export interface AlertChannel {
-  type: string;
-  config: Record<string, any>;
+type BuiltInAlertChannelType = 'email' | 'slack' | 'webhook';
+
+type EmailAlertChannelConfig = JsonObject & {
+  to: string | string[];
+};
+
+type SlackAlertChannelConfig = JsonObject & {
+  webhookUrl: string;
+};
+
+type WebhookAlertChannelConfig = JsonObject & {
+  url: string;
+};
+
+export interface EmailAlertChannel {
+  type: 'email';
+  config: EmailAlertChannelConfig;
 }
 
-export interface AlertRule {
+export interface SlackAlertChannel {
+  type: 'slack';
+  config: SlackAlertChannelConfig;
+}
+
+export interface WebhookAlertChannel {
+  type: 'webhook';
+  config: WebhookAlertChannelConfig;
+}
+
+export interface GenericAlertChannel<TType extends string = string, TConfig extends JsonObject = JsonObject> {
+  type: TType;
+  config: TConfig;
+}
+
+export type CustomAlertChannel<TType extends string = string, TConfig extends JsonObject = JsonObject> =
+  GenericAlertChannel<Exclude<TType, BuiltInAlertChannelType>, TConfig>;
+
+export type AlertChannel<TType extends string = string, TConfig extends JsonObject = JsonObject> =
+  TType extends 'email'
+    ? EmailAlertChannel
+    : TType extends 'slack'
+      ? SlackAlertChannel
+      : TType extends 'webhook'
+        ? WebhookAlertChannel
+        : GenericAlertChannel<TType, TConfig>;
+
+type AlertChannelMap = Record<string, GenericAlertChannel>;
+
+type ValidatedAlertChannels<TChannels extends AlertChannelMap> = {
+  [TName in keyof TChannels]: TChannels[TName] extends GenericAlertChannel<infer TType, infer TConfig>
+    ? AlertChannel<TType, TConfig>
+    : never;
+};
+
+type AlertChannelName<TChannels extends AlertChannelMap> = keyof ValidatedAlertChannels<TChannels> & string;
+
+export interface AlertRule<
+  TMetrics extends JsonObject = JsonObject,
+  TChannelName extends string = string
+> {
   name: string;
-  condition: (metrics: any) => boolean;
+  condition: (metrics: TMetrics) => boolean;
   severity: AlertSeverity;
-  channels: string[];
+  channels: TChannelName[];
   throttle?: number;
   message?: string;
 }
 
-export interface AlertManagerOptions {
-  channels: Record<string, AlertChannel>;
-  rules?: AlertRule[];
-  onAlert?: (alert: Alert) => void;
+type AlertCallbackData<TMetrics extends JsonObject> = JsonObject & {
+  metrics?: TMetrics;
+};
+
+export interface AlertManagerOptions<
+  TMetrics extends JsonObject = JsonObject,
+  TChannels extends AlertChannelMap = Record<string, GenericAlertChannel>
+> {
+  channels: ValidatedAlertChannels<TChannels>;
+  rules?: AlertRule<TMetrics, AlertChannelName<TChannels>>[];
+  onAlert?: (alert: Alert<AlertCallbackData<TMetrics>>) => void | Promise<void>;
 }
 
-export class AlertManager {
+type AlertSummary = Pick<Alert, 'name' | 'severity' | 'message'>;
+
+function toAlertSummary(alert: Alert): AlertSummary {
+  return {
+    name: alert.name,
+    severity: alert.severity,
+    message: alert.message,
+  };
+}
+
+function toRuleErrorPayload(ruleName: string, error: unknown): JsonObject {
+  return {
+    ruleName,
+    error: error instanceof Error ? error.message : String(error),
+    ...(error instanceof Error && error.stack ? { stack: error.stack } : {}),
+  };
+}
+
+function toAlertDispatchErrorPayload(ruleName: string, error: unknown): JsonObject {
+  return {
+    stage: 'alert-dispatch',
+    ...toRuleErrorPayload(ruleName, error),
+  };
+}
+
+function toAlertCallbackErrorPayload(error: unknown): JsonObject {
+  return {
+    stage: 'alert-callback',
+    error: error instanceof Error ? error.message : String(error),
+    ...(error instanceof Error && error.stack ? { stack: error.stack } : {}),
+  };
+}
+
+function toMetricsProviderErrorPayload(error: unknown): JsonObject {
+  return {
+    stage: 'metrics-provider',
+    error: error instanceof Error ? error.message : String(error),
+    ...(error instanceof Error && error.stack ? { stack: error.stack } : {}),
+  };
+}
+
+export class AlertManager<
+  TMetrics extends JsonObject = JsonObject,
+  TChannels extends AlertChannelMap = Record<string, GenericAlertChannel>
+> {
   private lastAlertTime = new Map<string, number>();
   private monitorTimer?: NodeJS.Timeout;
   private running = false;
 
-  constructor(private options: AlertManagerOptions) {}
+  constructor(private options: AlertManagerOptions<TMetrics, TChannels>) {}
 
-  start(metrics?: () => any, interval = 60000): void {
+  start(metrics?: () => TMetrics, interval = 60000): void {
     if (this.running || !metrics) {
       return;
     }
@@ -51,8 +157,12 @@ export class AlertManager {
     this.running = true;
 
     this.monitorTimer = setInterval(() => {
-      const currentMetrics = metrics();
-      this.checkRules(currentMetrics);
+      try {
+        const currentMetrics = metrics();
+        this.checkRules(currentMetrics);
+      } catch (error) {
+        logger.error('Metrics collection failed', toMetricsProviderErrorPayload(error));
+      }
     }, interval);
   }
 
@@ -69,33 +179,33 @@ export class AlertManager {
     }
   }
 
-  async alert(alert: Alert): Promise<void> {
-    const fullAlert: Alert = {
+  async alert(alert: Alert<AlertCallbackData<TMetrics>>): Promise<void> {
+    const fullAlert: Alert<AlertCallbackData<TMetrics>> = {
       ...alert,
-      timestamp: alert.timestamp || Date.now(),
+      timestamp: alert.timestamp ?? Date.now(),
     };
 
-    // Check throttling
     if (this.isThrottled(alert.name)) {
       return;
     }
 
-    // Update last alert time
     this.lastAlertTime.set(alert.name, Date.now());
 
-    // Notify callback
-    this.options.onAlert?.(fullAlert);
+    try {
+      await this.options.onAlert?.(fullAlert);
+    } catch (error) {
+      logger.error('Alert callback failed', toAlertCallbackErrorPayload(error));
+    }
 
-    // Log the alert
     logger.warn('Alert triggered', {
       name: alert.name,
       severity: alert.severity,
       message: alert.message,
-      data: alert.data
+      ...(alert.data ? { data: alert.data } : {}),
     });
   }
 
-  private checkRules(metrics: any): void {
+  private checkRules(metrics: TMetrics): void {
     if (!this.options.rules) {
       return;
     }
@@ -103,19 +213,17 @@ export class AlertManager {
     for (const rule of this.options.rules) {
       try {
         if (rule.condition(metrics)) {
-          this.alert({
+          void this.alert({
             name: rule.name,
             severity: rule.severity,
             message: rule.message || `Alert triggered: ${rule.name}`,
             data: { metrics },
+          }).catch((error) => {
+            logger.error('Alert dispatch failed', toAlertDispatchErrorPayload(rule.name, error));
           });
         }
       } catch (error) {
-        logger.error('Rule check failed', {
-          ruleName: rule.name,
-          error: error instanceof Error ? error.message : String(error),
-          stack: error instanceof Error ? error.stack : undefined
-        });
+        logger.error('Rule check failed', toRuleErrorPayload(rule.name, error));
       }
     }
   }
@@ -134,46 +242,44 @@ export class AlertManager {
     return Date.now() - lastTime < rule.throttle;
   }
 
-  async sendToChannel(channelName: string, alert: Alert): Promise<void> {
+  async sendToChannel(channelName: keyof TChannels & string, alert: Alert<AlertCallbackData<TMetrics>>): Promise<void> {
     const channel = this.options.channels[channelName];
     if (!channel) {
       throw new Error(`Channel not found: ${channelName}`);
     }
 
-    // In a real implementation, send to the actual channel
     switch (channel.type) {
       case 'email':
         logger.info('Alert sent to email', {
           channel: channelName,
           to: channel.config.to,
-          alert: { name: alert.name, severity: alert.severity, message: alert.message }
+          alert: toAlertSummary(alert),
         });
         break;
       case 'slack':
         logger.info('Alert sent to Slack', {
           channel: channelName,
           webhookUrl: channel.config.webhookUrl,
-          alert: { name: alert.name, severity: alert.severity, message: alert.message }
+          alert: toAlertSummary(alert),
         });
         break;
       case 'webhook':
         logger.info('Alert sent to webhook', {
           channel: channelName,
           url: channel.config.url,
-          alert: { name: alert.name, severity: alert.severity, message: alert.message }
+          alert: toAlertSummary(alert),
         });
         break;
       default:
         logger.info('Alert sent', {
           channel: channelName,
           channelType: channel.type,
-          alert: { name: alert.name, severity: alert.severity, message: alert.message }
+          alert: toAlertSummary(alert),
         });
     }
   }
 
-  getAlertHistory(name?: string, limit = 100): Alert[] {
-    // In a real implementation, return from storage
+  getAlertHistory(_name?: string, _limit = 100): Alert<AlertCallbackData<TMetrics>>[] {
     return [];
   }
 
@@ -186,7 +292,11 @@ export class AlertManager {
   }
 }
 
-export function createAlertManager(options: AlertManagerOptions): AlertManager {
+export function createAlertManager<
+  TMetrics extends JsonObject = JsonObject,
+  TChannels extends AlertChannelMap = Record<string, GenericAlertChannel>
+>(
+  options: AlertManagerOptions<TMetrics, TChannels>
+): AlertManager<TMetrics, TChannels> {
   return new AlertManager(options);
 }
-

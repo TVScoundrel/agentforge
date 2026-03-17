@@ -160,7 +160,7 @@ export const withLogging: MiddlewareFactory<any, LoggingOptions> = <State>(
         if (logErrors) {
           logger.error(`Node execution failed (${duration}ms)`, {
             error: err.message,
-            stack: err.stack,
+            ...(err.stack ? { stack: err.stack } : {}),
           });
         }
 
@@ -174,4 +174,3 @@ export const withLogging: MiddlewareFactory<any, LoggingOptions> = <State>(
     };
   };
 };
-
