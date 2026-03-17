@@ -123,7 +123,7 @@ export class SkillRegistry {
         });
         logger.warn('Skipping invalid skill', {
           skillPath: candidate.skillPath,
-          error: result.error,
+          ...(result.error ? { error: result.error } : {}),
         });
         continue;
       }
@@ -354,7 +354,9 @@ export class SkillRegistry {
       logger.debug('Skill prompt generation produced empty result', {
         totalDiscovered: this.size(),
         filterApplied: !!(options?.skills && options.skills.length > 0),
-        maxCap: this.config.maxDiscoveredSkills,
+        ...(this.config.maxDiscoveredSkills !== undefined
+          ? { maxCap: this.config.maxDiscoveredSkills }
+          : {}),
       });
       return '';
     }
@@ -380,7 +382,9 @@ export class SkillRegistry {
       skillCount: skills.length,
       totalDiscovered: this.size(),
       filterApplied: !!(options?.skills && options.skills.length > 0),
-      maxCap: this.config.maxDiscoveredSkills,
+      ...(this.config.maxDiscoveredSkills !== undefined
+        ? { maxCap: this.config.maxDiscoveredSkills }
+        : {}),
       estimatedTokens,
       xmlLength: xml.length,
     });
@@ -440,7 +444,7 @@ export class SkillRegistry {
           logger.error('Skill event handler error', {
             event,
             error: error instanceof Error ? error.message : String(error),
-            stack: error instanceof Error ? error.stack : undefined,
+            ...(error instanceof Error && error.stack ? { stack: error.stack } : {}),
           });
         }
       });

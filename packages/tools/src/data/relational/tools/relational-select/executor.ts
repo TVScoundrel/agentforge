@@ -75,8 +75,8 @@ export async function executeSelect(
           vendor: input.vendor,
           table: input.table,
           chunkSize: streamOptions.chunkSize ?? DEFAULT_CHUNK_SIZE,
-          maxRows: streamOptions.maxRows,
-          sampleSize: streamOptions.sampleSize,
+          ...(streamOptions.maxRows !== undefined ? { maxRows: streamOptions.maxRows } : {}),
+          ...(streamOptions.sampleSize !== undefined ? { sampleSize: streamOptions.sampleSize } : {}),
         });
       }
 

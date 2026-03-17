@@ -79,7 +79,7 @@ class Neo4jConnectionPool {
       const errorMessage = `Failed to connect to Neo4j: ${error instanceof Error ? error.message : 'Unknown error'}`;
       logger.error('Neo4j connectivity verification failed', {
         error: error instanceof Error ? error.message : 'Unknown error',
-        uri: this.config?.uri,
+        ...(this.config?.uri ? { uri: this.config.uri } : {}),
       });
       throw new Error(errorMessage);
     }

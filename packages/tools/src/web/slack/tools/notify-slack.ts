@@ -53,8 +53,8 @@ export function createNotifySlackTool(
       });
 
       logger.info('notify-slack result', {
-        channel: result.channel,
-        timestamp: result.ts,
+        ...(result.channel ? { channel: result.channel } : {}),
+        ...(result.ts ? { timestamp: result.ts } : {}),
         mentions: mentions.length,
       });
 
@@ -68,4 +68,3 @@ export function createNotifySlackTool(
     })
     .build();
 }
-

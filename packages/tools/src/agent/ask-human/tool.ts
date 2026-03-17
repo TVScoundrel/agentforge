@@ -86,7 +86,19 @@ export function createAskHumanTool() {
       // Use LangGraph's interrupt to pause execution
       // This will save the request to the checkpoint and pause the graph
       // The application can then resume with the human's response
-      logger.debug('About to call interrupt()', { humanRequest });
+      logger.debug('About to call interrupt()', {
+        humanRequest: {
+          id: humanRequest.id,
+          question: humanRequest.question,
+          priority: humanRequest.priority,
+          createdAt: humanRequest.createdAt,
+          timeout: humanRequest.timeout,
+          status: humanRequest.status,
+          ...(humanRequest.context ? { hasContext: true } : {}),
+          ...(humanRequest.defaultResponse ? { defaultResponse: humanRequest.defaultResponse } : {}),
+          ...(humanRequest.suggestions ? { suggestions: humanRequest.suggestions } : {}),
+        },
+      });
 
       let response;
       try {
@@ -94,7 +106,9 @@ export function createAskHumanTool() {
         logger.debug('interrupt() returned successfully', { response, responseType: typeof response });
       } catch (error) {
         logger.debug('interrupt() threw error (expected for GraphInterrupt)', {
-          errorType: error?.constructor?.name,
+          ...(error && typeof error === 'object' && 'constructor' in error
+            ? { errorType: error.constructor?.name }
+            : {}),
           error: error instanceof Error ? error.message : String(error)
         });
         throw error; // Re-throw to let the node handle it
@@ -140,4 +154,3 @@ export function createAskHumanTool() {
  * ```
  */
 export const askHumanTool = createAskHumanTool();
-

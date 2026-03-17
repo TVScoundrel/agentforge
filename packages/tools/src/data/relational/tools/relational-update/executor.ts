@@ -262,7 +262,7 @@ export async function executeUpdate(
     vendor: input.vendor,
     table: input.table,
     hasWhere: !!input.where?.length,
-    allowFullTableUpdate: input.allowFullTableUpdate,
+    ...(input.allowFullTableUpdate !== undefined ? { allowFullTableUpdate: input.allowFullTableUpdate } : {}),
     hasOptimisticLock: !!input.optimisticLock,
     operationCount: input.operations?.length ?? 0,
     batchModeEnabled: !!input.batch?.enabled,

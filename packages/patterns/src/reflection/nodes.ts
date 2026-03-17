@@ -209,7 +209,7 @@ export function createReflectorNode(config: ReflectorConfig) {
 
       reflectorLogger.info('Reflection complete', {
         attempt: state.iteration,
-        score: reflection.score,
+        ...(reflection.score !== undefined ? { score: reflection.score } : {}),
         meetsStandards: reflection.meetsStandards,
         issueCount: reflection.issues.length,
         suggestionCount: reflection.suggestions.length,
@@ -263,7 +263,7 @@ export function createReviserNode(config: ReviserConfig) {
 
       reviserLogger.debug('Revising response', {
         attempt: state.iteration,
-        previousScore: lastReflection.score,
+        ...(lastReflection.score !== undefined ? { previousScore: lastReflection.score } : {}),
         issueCount: lastReflection.issues.length,
         suggestionCount: lastReflection.suggestions.length
       });
@@ -310,7 +310,7 @@ export function createReviserNode(config: ReviserConfig) {
       reviserLogger.info('Revision complete', {
         attempt: state.iteration,
         revisionLength: content.length,
-        basedOnScore: lastReflection.score,
+        ...(lastReflection.score !== undefined ? { basedOnScore: lastReflection.score } : {}),
         duration: Date.now() - startTime
       });
 
@@ -348,4 +348,3 @@ export function createFinisherNode() {
     };
   };
 }
-

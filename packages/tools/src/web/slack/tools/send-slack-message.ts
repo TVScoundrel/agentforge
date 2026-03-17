@@ -45,8 +45,8 @@ export function createSendSlackMessageTool(
         });
 
         logger.info('send-slack-message result', {
-          channel: result.channel,
-          timestamp: result.ts,
+          ...(result.channel ? { channel: result.channel } : {}),
+          ...(result.ts ? { timestamp: result.ts } : {}),
           messageLength: message.length,
           success: true,
         });
@@ -68,4 +68,3 @@ export function createSendSlackMessageTool(
     })
     .build();
 }
-

@@ -231,8 +231,10 @@ export function wrapReActAgent(
 
       logger.debug('Invoking ReAct agent with worker-specific config', {
         workerId,
-        parentThreadId: runnableConfig?.configurable?.thread_id,
-        workerThreadId,
+        ...(runnableConfig?.configurable?.thread_id !== undefined
+          ? { parentThreadId: String(runnableConfig.configurable.thread_id) }
+          : {}),
+        ...(workerThreadId ? { workerThreadId } : {}),
         hasConfig: !!workerConfig
       });
 

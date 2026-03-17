@@ -196,7 +196,7 @@ export function createMultiAgentSystem(config: MultiAgentSystemConfig): MultiAge
   const supervisorRouter: MultiAgentRouter = (state: MultiAgentStateType) => {
     logger.debug('Supervisor router executing', {
       status: state.status,
-      currentAgent: state.currentAgent,
+      ...(state.currentAgent ? { currentAgent: state.currentAgent } : {}),
       iteration: state.iteration
     });
 

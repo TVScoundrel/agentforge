@@ -29,7 +29,10 @@ export function createArchiveConfluencePageTool(
       reason: z.string().optional().describe("Optional reason for archiving (for audit trail)"),
     }))
     .implement(async ({ page_id, reason }) => {
-      logger.info('archive-confluence-page called', { page_id, reason });
+      logger.info('archive-confluence-page called', {
+        page_id,
+        ...(reason ? { reason } : {}),
+      });
 
       try {
         const { ATLASSIAN_SITE_URL } = getAuth();
@@ -100,4 +103,3 @@ export function createArchiveConfluencePageTool(
     })
     .build();
 }
-

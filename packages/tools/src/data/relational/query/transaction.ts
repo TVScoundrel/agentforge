@@ -357,8 +357,8 @@ export async function withTransaction<T>(
   logger.debug('Starting transaction', {
     transactionId,
     vendor,
-    isolationLevel: resolvedOptions.isolationLevel,
-    timeoutMs: resolvedOptions.timeoutMs,
+    ...(resolvedOptions.isolationLevel ? { isolationLevel: resolvedOptions.isolationLevel } : {}),
+    ...(resolvedOptions.timeoutMs !== undefined ? { timeoutMs: resolvedOptions.timeoutMs } : {}),
   });
 
   return manager.executeInConnection(async (executeQuery) => {

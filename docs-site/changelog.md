@@ -5,6 +5,37 @@ All notable changes to AgentForge will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.15.9] - 2026-03-17
+
+### Added
+
+#### @agentforge/core - Observability Payload Coverage
+- Added shared JSON-safe payload contracts in `packages/core/src/langgraph/observability/payload.ts`
+- Added focused observability and alert-manager regressions in `packages/core/tests/langgraph/observability/logger.test.ts` and `packages/core/tests/monitoring/alerts.test.ts`
+
+### Changed
+
+#### @agentforge/core - Observability Boundary Hardening
+- Reworked `packages/core/src/langgraph/observability/logger.ts` and `packages/core/src/monitoring/alerts.ts` to use typed JSON-safe payload contracts instead of broad ad-hoc structures
+- Strengthened alert channel and rule wiring so built-in channel configs and rule channel references are validated against declared channel keys
+- Reduced explicit-`any` warnings in the touched core observability files from `20` to `0`
+
+### Fixed
+
+#### @agentforge/core - Alert Runtime Resilience
+- Fixed async alert callback failures so they are logged without rejecting `alert()` callers or suppressing the main alert log
+- Fixed metrics-provider failures in interval monitoring so thrown reads are logged and monitoring continues on later ticks
+- Fixed logger payload handling so JSON-safe primitives, arrays, and falsy values are preserved instead of being dropped
+
+### Published
+- All packages published to npm registry at version 0.15.9:
+  - @agentforge/core@0.15.9
+  - @agentforge/skills@0.15.9
+  - @agentforge/patterns@0.15.9
+  - @agentforge/tools@0.15.9
+  - @agentforge/testing@0.15.9
+  - @agentforge/cli@0.15.9
+
 ## [0.15.8] - 2026-03-13
 
 ### Added

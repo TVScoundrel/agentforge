@@ -88,7 +88,7 @@ export function createPlannerNode(config: PlannerConfig) {
       plannerLogger.info('Plan created', {
         stepCount: plan.steps.length,
         goal: plan.goal.substring(0, 100),
-        confidence: plan.confidence,
+        ...(plan.confidence !== undefined ? { confidence: plan.confidence } : {}),
         duration: Date.now() - startTime
       });
 
@@ -205,7 +205,12 @@ export function createExecutorNode(config: ExecutorConfig) {
               executorLogger.info('Duplicate step execution prevented', {
                 stepId: currentStep.id,
                 toolName: currentStep.tool,
-                arguments: currentStep.args,
+                ...(currentStep.args
+                  ? {
+                    argumentKeys: Object.keys(currentStep.args),
+                    argumentCount: Object.keys(currentStep.args).length
+                  }
+                  : {}),
                 iteration,
                 cacheHit: true
               });
@@ -251,7 +256,7 @@ export function createExecutorNode(config: ExecutorConfig) {
 
         executorLogger.warn('Step execution failed', {
           stepId: currentStep.id,
-          toolName: currentStep.tool,
+          ...(currentStep.tool ? { toolName: currentStep.tool } : {}),
           error,
           iteration
         });
@@ -368,7 +373,7 @@ export function createReplannerNode(config: ReplannerConfig) {
       if (decision.shouldReplan) {
         replannerLogger.info('Replanning triggered', {
           reason: decision.reason,
-          newGoal: decision.newGoal?.substring(0, 100),
+          ...(decision.newGoal ? { newGoal: decision.newGoal.substring(0, 100) } : {}),
           duration: Date.now() - startTime
         });
 
@@ -428,4 +433,3 @@ export function createFinisherNode() {
     };
   };
 }
-

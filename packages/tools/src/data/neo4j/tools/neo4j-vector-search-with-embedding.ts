@@ -52,8 +52,8 @@ export function createNeo4jVectorSearchWithEmbeddingTool() {
       logger.debug('Performing vector search with embedding', {
         queryTextLength: input.queryText.length,
         indexName: input.indexName,
-        limit: input.limit,
-        model: input.model,
+        ...(input.limit !== undefined ? { limit: input.limit } : {}),
+        ...(input.model ? { model: input.model } : {}),
       });
 
       try {
@@ -146,4 +146,3 @@ export function createNeo4jVectorSearchWithEmbeddingTool() {
     })
     .build();
 }
-

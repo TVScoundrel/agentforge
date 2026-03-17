@@ -221,7 +221,7 @@ export function createSupervisorNode(config: SupervisorConfig) {
     } catch (error) {
       logger.error('Supervisor node error', {
         error: error instanceof Error ? error.message : String(error),
-        stack: error instanceof Error ? error.stack : undefined,
+        ...(error instanceof Error && error.stack ? { stack: error.stack } : {}),
         iteration: state.iteration
       });
       return {
@@ -620,7 +620,7 @@ Please synthesize these results into a comprehensive response that addresses the
     } catch (error) {
       logger.error('Aggregator node error', {
         error: error instanceof Error ? error.message : String(error),
-        stack: error instanceof Error ? error.stack : undefined,
+        ...(error instanceof Error && error.stack ? { stack: error.stack } : {}),
         completedTasks: state.completedTasks.length
       });
       return {

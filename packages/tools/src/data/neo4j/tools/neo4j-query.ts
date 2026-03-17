@@ -39,7 +39,7 @@ export function createNeo4jQueryTool() {
       logger.debug('Executing Neo4j query', {
         cypherPreview: input.cypher.substring(0, 100),
         parameterCount: Object.keys(input.parameters || {}).length,
-        database: input.database,
+        ...(input.database ? { database: input.database } : {}),
       });
 
       try {
@@ -98,4 +98,3 @@ export function createNeo4jQueryTool() {
     })
     .build();
 }
-

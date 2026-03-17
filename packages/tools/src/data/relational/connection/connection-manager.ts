@@ -500,9 +500,13 @@ export class ConnectionManager extends EventEmitter implements DatabaseConnectio
     logger.debug('Creating PostgreSQL connection pool', {
       vendor: this.vendor,
       poolConfig: {
-        max: connectionConfig.max,
-        idleTimeoutMillis: connectionConfig.idleTimeoutMillis,
-        connectionTimeoutMillis: connectionConfig.connectionTimeoutMillis,
+        ...(connectionConfig.max !== undefined ? { max: connectionConfig.max } : {}),
+        ...(connectionConfig.idleTimeoutMillis !== undefined
+          ? { idleTimeoutMillis: connectionConfig.idleTimeoutMillis }
+          : {}),
+        ...(connectionConfig.connectionTimeoutMillis !== undefined
+          ? { connectionTimeoutMillis: connectionConfig.connectionTimeoutMillis }
+          : {}),
       }
     });
 
@@ -548,9 +552,13 @@ export class ConnectionManager extends EventEmitter implements DatabaseConnectio
       logger.debug('Creating MySQL connection pool', {
         vendor: this.vendor,
         poolConfig: {
-          connectionLimit: connectionConfig.connectionLimit,
-          acquireTimeout: connectionConfig.acquireTimeout,
-          idleTimeout: connectionConfig.idleTimeout,
+          ...(connectionConfig.connectionLimit !== undefined
+            ? { connectionLimit: connectionConfig.connectionLimit }
+            : {}),
+          ...(connectionConfig.acquireTimeout !== undefined
+            ? { acquireTimeout: connectionConfig.acquireTimeout }
+            : {}),
+          ...(connectionConfig.idleTimeout !== undefined ? { idleTimeout: connectionConfig.idleTimeout } : {}),
         }
       });
     }
@@ -586,7 +594,15 @@ export class ConnectionManager extends EventEmitter implements DatabaseConnectio
       validatePoolConfig(this.config.connection.pool);
       logger.debug('SQLite pool configuration provided but not applied (SQLite uses single connection)', {
         vendor: this.vendor,
-        poolConfig: this.config.connection.pool,
+        poolConfig: {
+          ...(this.config.connection.pool.max !== undefined ? { max: this.config.connection.pool.max } : {}),
+          ...(this.config.connection.pool.idleTimeoutMillis !== undefined
+            ? { idleTimeoutMillis: this.config.connection.pool.idleTimeoutMillis }
+            : {}),
+          ...(this.config.connection.pool.acquireTimeoutMillis !== undefined
+            ? { acquireTimeoutMillis: this.config.connection.pool.acquireTimeoutMillis }
+            : {}),
+        },
       });
     }
 

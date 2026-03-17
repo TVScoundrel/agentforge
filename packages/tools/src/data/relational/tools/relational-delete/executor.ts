@@ -262,8 +262,8 @@ export async function executeDelete(
     vendor: input.vendor,
     table: input.table,
     hasWhere: !!input.where?.length,
-    allowFullTableDelete: input.allowFullTableDelete,
-    cascade: input.cascade,
+    ...(input.allowFullTableDelete !== undefined ? { allowFullTableDelete: input.allowFullTableDelete } : {}),
+    ...(input.cascade !== undefined ? { cascade: input.cascade } : {}),
     softDelete: !!input.softDelete,
     operationCount: input.operations?.length ?? 0,
     batchModeEnabled: !!input.batch?.enabled,
@@ -289,7 +289,7 @@ export async function executeDelete(
       rowCount: result.rowCount,
       executionTime,
       softDelete: result.softDeleted,
-      cascade: input.cascade,
+      ...(input.cascade !== undefined ? { cascade: input.cascade } : {}),
       batchMode: !!result.batch,
       partialSuccess: result.batch?.partialSuccess ?? false,
     });
@@ -306,7 +306,7 @@ export async function executeDelete(
       table: input.table,
       error: error instanceof Error ? error.message : String(error),
       executionTime,
-      cascade: input.cascade,
+      ...(input.cascade !== undefined ? { cascade: input.cascade } : {}),
       softDelete: !!input.softDelete,
     });
 
