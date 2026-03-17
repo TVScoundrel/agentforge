@@ -5,13 +5,22 @@ import {
   createObservationNode,
 } from '../../src/react/nodes.js';
 import { toolBuilder, ToolCategory } from '@agentforge/core';
-import { createMockLLM } from '@agentforge/testing';
-import { AIMessage } from '@langchain/core/messages';
+import { AIMessage, SystemMessage, ToolMessage } from '@langchain/core/messages';
+import type { BaseChatModel } from '@langchain/core/language_models/chat_models';
 import { z } from 'zod';
 import type { ReActStateType } from '../../src/react/state.js';
 
+type MockReasoningResponse = {
+  content: string;
+  tool_calls?: Array<{
+    id?: string;
+    name: string;
+    args?: Record<string, unknown>;
+  }>;
+};
+
 // Helper to create mock LLM with custom response
-function createMockChatModel(mockResponse?: any) {
+function createMockChatModel(mockResponse?: MockReasoningResponse): BaseChatModel {
   const response = mockResponse || {
     content: 'I need to use a tool',
     tool_calls: [
@@ -23,9 +32,11 @@ function createMockChatModel(mockResponse?: any) {
     ],
   };
 
-  return createMockLLM({
-    responseGenerator: () => new AIMessage(response),
-  });
+  const invoke = vi.fn().mockResolvedValue(new AIMessage(response));
+  return {
+    bindTools: vi.fn().mockReturnThis(),
+    invoke,
+  } as unknown as BaseChatModel;
 }
 
 describe('ReAct Nodes', () => {
@@ -40,7 +51,7 @@ describe('ReAct Nodes', () => {
 
   describe('createReasoningNode', () => {
     it('should generate thoughts and tool calls', async () => {
-      const mockLLM = createMockChatModel() as any;
+      const mockLLM = createMockChatModel();
       const reasoningNode = createReasoningNode(mockLLM, [testTool], 'System prompt', 10, false);
 
       const initialState: ReActStateType = {
@@ -66,7 +77,7 @@ describe('ReAct Nodes', () => {
       const mockLLM = createMockChatModel({
         content: 'Final answer',
         tool_calls: [],
-      }) as any;
+      });
 
       const reasoningNode = createReasoningNode(mockLLM, [testTool], 'System prompt', 10, false);
 
@@ -88,7 +99,7 @@ describe('ReAct Nodes', () => {
     });
 
     it('should respect max iterations', async () => {
-      const mockLLM = createMockChatModel() as any;
+      const mockLLM = createMockChatModel();
       const reasoningNode = createReasoningNode(mockLLM, [testTool], 'System prompt', 5, false);
 
       const initialState: ReActStateType = {
@@ -105,6 +116,50 @@ describe('ReAct Nodes', () => {
       const result = await reasoningNode(initialState);
 
       expect(result.shouldContinue).toBe(false);
+    });
+
+    it('should normalize tool messages and append scratchpad context', async () => {
+      const invoke = vi.fn().mockResolvedValue(new AIMessage('Final answer'));
+      const mockLLM = {
+        bindTools: vi.fn().mockReturnThis(),
+        invoke,
+      } as unknown as BaseChatModel;
+
+      const reasoningNode = createReasoningNode(mockLLM, [testTool], 'System prompt', 10, false);
+
+      await reasoningNode({
+        messages: [
+          { role: 'user', content: 'Hello' },
+          {
+            role: 'tool',
+            content: 'Tool output',
+            name: 'test-tool',
+            tool_call_id: 'call_123',
+          },
+        ],
+        thoughts: [],
+        actions: [],
+        observations: [],
+        scratchpad: [
+          {
+            step: 1,
+            thought: 'Need more context',
+            action: 'test-tool({"input":"hello"})',
+            observation: 'Tool output',
+          },
+        ],
+        iteration: 0,
+        shouldContinue: true,
+        response: undefined,
+      });
+
+      expect(invoke).toHaveBeenCalledTimes(1);
+
+      const [messages] = invoke.mock.calls[0] as [unknown[]];
+      expect(messages[2]).toBeInstanceOf(ToolMessage);
+      expect((messages[2] as ToolMessage).tool_call_id).toBe('call_123');
+      expect(messages[3]).toBeInstanceOf(SystemMessage);
+      expect(String((messages[3] as SystemMessage).content)).toContain('Previous steps');
     });
   });
 
@@ -312,6 +367,37 @@ describe('ReAct Nodes', () => {
       expect(result.scratchpad![0].observation).toContain('Error: Tool failed');
       expect(result.messages![0].content).toContain('Error: Tool failed');
     });
+
+    it('should stringify structured observations and preserve tool names', async () => {
+      const observationNode = createObservationNode(false, true);
+
+      const result = await observationNode({
+        messages: [],
+        thoughts: [{ content: 'Inspect the structured result' }],
+        actions: [
+          {
+            id: 'call_json',
+            name: 'test-tool',
+            arguments: { input: 'json' },
+            timestamp: Date.now(),
+          },
+        ],
+        observations: [
+          {
+            toolCallId: 'call_json',
+            result: { ok: true, count: 2 },
+            timestamp: Date.now(),
+          },
+        ],
+        scratchpad: [],
+        iteration: 1,
+        shouldContinue: true,
+        response: undefined,
+      });
+
+      expect(result.messages?.[0].name).toBe('test-tool');
+      expect(result.messages?.[0].content).toContain('"ok": true');
+      expect(result.scratchpad?.[0].observation).toContain('"count":2');
+    });
   });
 });
-
