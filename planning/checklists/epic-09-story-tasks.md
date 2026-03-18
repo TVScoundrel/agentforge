@@ -205,8 +205,12 @@
   - `pnpm test --run` -> `149 passed | 16 skipped` files; `2104 passed | 286 skipped` tests
 - [x] Run lint (`pnpm lint`) before finalizing the PR and record results
   - `pnpm lint` -> exit `0`; warnings only (`0` errors)
-- [ ] Commit completed checklist items as logical commits and push updates
-- [ ] Mark PR Ready only after all story tasks are complete
+- [x] Commit completed checklist items as logical commits and push updates
+  - `8c67908` refactor(st-09006): split react node responsibilities
+  - `b40df7e` docs(st-09006): record modularization progress
+  - `e6a39b4` docs(st-09006): record validation and move story to in-review
+- [x] Mark PR Ready only after all story tasks are complete
+  - PR #68 marked ready: https://github.com/TVScoundrel/agentforge/pull/68
 - [ ] Wait for merge; do not merge directly from local branch
 
 ---
