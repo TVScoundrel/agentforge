@@ -8,8 +8,8 @@ Refactored the ReAct node helpers and shared agent-builder utility to remove bro
 
 | File | Change |
 |------|--------|
-| `packages/patterns/src/react/nodes.ts` | Replaced ad hoc `any` casts with typed message/state helpers for conversation normalization, tool-call extraction, observation formatting, and scratchpad summaries |
-| `packages/patterns/src/shared/agent-builder.ts` | Reworked the shared builder contracts around config-derived state, update, node-name, and routing generics instead of `any`-typed node/state/condition boundaries |
+| `packages/patterns/src/react/nodes.ts` | Replaced ad hoc `any` casts with typed message/state helpers for conversation normalization, tool-call extraction, observation formatting, scratchpad summaries, and invalid tool-message fallback handling |
+| `packages/patterns/src/shared/agent-builder.ts` | Reworked the shared builder contracts around config-derived state, update, node-name, and routing generics instead of `any`-typed node/state/condition boundaries while keeping the schema constructor type-checked |
 | `packages/patterns/tests/react/nodes.test.ts` | Added focused ReAct coverage for tool-message normalization, scratchpad context injection, and structured observation formatting while removing test-local `any` usage |
 | `packages/patterns/tests/shared/agent-builder.test.ts` | Added focused shared-builder coverage for mapped conditional routing and direct workflow termination via `END` |
 

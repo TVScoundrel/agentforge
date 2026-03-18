@@ -60,9 +60,16 @@ function normalizeConversationMessage(message: Message): SupportedConversationMe
     case 'system':
       return new SystemMessage(message.content);
     case 'tool':
+      if (!message.tool_call_id) {
+        reasoningLogger.warn(
+          'Tool message missing tool_call_id; falling back to human message',
+          message.name ? { name: message.name } : undefined
+        );
+        return new HumanMessage(message.content);
+      }
       return new ToolMessage({
         content: message.content,
-        tool_call_id: message.tool_call_id ?? '',
+        tool_call_id: message.tool_call_id,
         name: message.name,
       });
     default:

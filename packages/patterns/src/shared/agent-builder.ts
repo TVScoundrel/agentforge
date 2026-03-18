@@ -8,23 +8,34 @@
  */
 
 import { StateGraph, END, type BaseCheckpointSaver } from '@langchain/langgraph';
-import type { ExtractStateType, ExtractUpdateType } from '@langchain/langgraph';
+import type { ExtractStateType, ExtractUpdateType, StateDefinitionInit } from '@langchain/langgraph';
 
-type AgentStateSchema = unknown;
+type AgentStateSchema = StateDefinitionInit;
 type AgentRoute = string;
-type AgentNodeOutput<TUpdate> = TUpdate extends object
-  ? TUpdate & Record<string, unknown>
-  : TUpdate;
-type AgentGraph<
+type AgentState<TStateSchema extends AgentStateSchema> = ExtractStateType<TStateSchema>;
+type AgentUpdate<TStateSchema extends AgentStateSchema> = ExtractUpdateType<
   TStateSchema,
-  TState,
-  TUpdate,
+  AgentState<TStateSchema>
+>;
+type AgentGraph<
+  TStateSchema extends AgentStateSchema,
   TNodeName extends string,
-> = ReturnType<StateGraph<TStateSchema, TState, TUpdate, TNodeName>['compile']>;
+> = ReturnType<
+  StateGraph<TStateSchema, AgentState<TStateSchema>, AgentUpdate<TStateSchema>, TNodeName>['compile']
+>;
 
 export type AgentNodeFn<TState, TUpdate> = (
   state: TState
-) => Promise<AgentNodeOutput<TUpdate>> | AgentNodeOutput<TUpdate>;
+) => Promise<TUpdate> | TUpdate;
+
+type LangGraphNodeFn<TState, TUpdate> = (
+  state: TState
+) => Promise<TUpdate extends object ? TUpdate & Record<string, unknown> : TUpdate>
+  | (TUpdate extends object ? TUpdate & Record<string, unknown> : TUpdate);
+
+type StateGraphConstructor = new <TStateSchema extends AgentStateSchema>(
+  state: TStateSchema
+) => StateGraph<TStateSchema>;
 
 /**
  * Node definition for agent builder
@@ -70,22 +81,20 @@ export interface ConditionalEdge<
  * Configuration for building a LangGraph agent
  */
 export interface AgentBuilderConfig<
-  TStateSchema = AgentStateSchema,
-  TState = ExtractStateType<TStateSchema>,
-  TUpdate = ExtractUpdateType<TStateSchema, TState>,
+  TStateSchema extends AgentStateSchema = AgentStateSchema,
   TNodeName extends string = string,
   TRoute extends string = AgentRoute,
 > {
   /** State annotation (created with createStateAnnotation) */
   state: TStateSchema;
   /** List of nodes to add to the graph */
-  nodes: Array<NodeDefinition<TState, TUpdate, TNodeName>>;
+  nodes: Array<NodeDefinition<AgentState<TStateSchema>, AgentUpdate<TStateSchema>, TNodeName>>;
   /** Entry point node name (where the graph starts) */
   entryPoint: TNodeName;
   /** Simple edges (unconditional transitions) */
   edges?: Array<SimpleEdge<TNodeName>>;
   /** Conditional edges (routing logic) */
-  conditionalEdges?: Array<ConditionalEdge<TState, TNodeName, TRoute>>;
+  conditionalEdges?: Array<ConditionalEdge<AgentState<TStateSchema>, TNodeName, TRoute>>;
   /** Optional checkpointer for persistence and human-in-the-loop */
   checkpointer?: BaseCheckpointSaver | true;
 }
@@ -149,14 +158,12 @@ export interface AgentBuilderConfig<
  * ```
  */
 export function buildAgent<
-  TStateSchema = AgentStateSchema,
-  TState = ExtractStateType<TStateSchema>,
-  TUpdate = ExtractUpdateType<TStateSchema, TState>,
+  TStateSchema extends AgentStateSchema = AgentStateSchema,
   TNodeName extends string = string,
   TRoute extends string = AgentRoute,
 >(
-  config: AgentBuilderConfig<TStateSchema, TState, TUpdate, TNodeName, TRoute>
-): AgentGraph<TStateSchema, TState, TUpdate, TNodeName> {
+  config: AgentBuilderConfig<TStateSchema, TNodeName, TRoute>
+): AgentGraph<TStateSchema, TNodeName> {
   const {
     state,
     nodes,
@@ -167,32 +174,47 @@ export function buildAgent<
   } = config;
 
   // Create the workflow
-  const workflow = new StateGraph<TStateSchema, TState, TUpdate, TNodeName>(
-    state as never
-  );
+  const StateGraphCtor = StateGraph as unknown as StateGraphConstructor;
+  const workflow = new StateGraphCtor(state);
+  const dynamicWorkflow = workflow as unknown as {
+    addNode: (
+      name: TNodeName,
+      fn: LangGraphNodeFn<AgentState<TStateSchema>, AgentUpdate<TStateSchema>>
+    ) => void;
+    addEdge: (from: TNodeName | '__start__', to: TNodeName | typeof END) => void;
+    addConditionalEdges: (
+      from: TNodeName,
+      condition: (state: AgentState<TStateSchema>) => TRoute | typeof END | TRoute[],
+      mapping?: Record<string, TNodeName | typeof END>
+    ) => void;
+    compile: (config?: { checkpointer?: BaseCheckpointSaver | true }) => unknown;
+  };
 
   // Add all nodes
   for (const { name, fn } of nodes) {
-    workflow.addNode(name, fn);
+    dynamicWorkflow.addNode(name, fn as LangGraphNodeFn<AgentState<TStateSchema>, AgentUpdate<TStateSchema>>);
   }
 
   // Set entry point
-  workflow.addEdge('__start__', entryPoint);
+  dynamicWorkflow.addEdge('__start__', entryPoint);
 
   // Add simple edges
   for (const edge of edges) {
-    workflow.addEdge(edge.from, edge.to);
+    dynamicWorkflow.addEdge(edge.from, edge.to);
   }
 
   // Add conditional edges
   for (const edge of conditionalEdges) {
     if (edge.mapping) {
-      workflow.addConditionalEdges(edge.from, edge.condition, edge.mapping);
+      dynamicWorkflow.addConditionalEdges(edge.from, edge.condition, edge.mapping);
     } else {
-      workflow.addConditionalEdges(edge.from, edge.condition);
+      dynamicWorkflow.addConditionalEdges(edge.from, edge.condition);
     }
   }
 
   // Compile with checkpointer if provided
-  return workflow.compile(checkpointer ? { checkpointer } : undefined);
+  return dynamicWorkflow.compile(checkpointer ? { checkpointer } : undefined) as unknown as AgentGraph<
+    TStateSchema,
+    TNodeName
+  >;
 }

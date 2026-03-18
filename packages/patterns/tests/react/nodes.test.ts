@@ -161,6 +161,39 @@ describe('ReAct Nodes', () => {
       expect(messages[3]).toBeInstanceOf(SystemMessage);
       expect(String((messages[3] as SystemMessage).content)).toContain('Previous steps');
     });
+
+    it('should fall back to a human message when tool_call_id is missing', async () => {
+      const invoke = vi.fn().mockResolvedValue(new AIMessage('Final answer'));
+      const mockLLM = {
+        bindTools: vi.fn().mockReturnThis(),
+        invoke,
+      } as unknown as BaseChatModel;
+
+      const reasoningNode = createReasoningNode(mockLLM, [testTool], 'System prompt', 10, false);
+
+      await reasoningNode({
+        messages: [
+          {
+            role: 'tool',
+            content: 'Detached tool output',
+            name: 'test-tool',
+          },
+        ],
+        thoughts: [],
+        actions: [],
+        observations: [],
+        scratchpad: [],
+        iteration: 0,
+        shouldContinue: true,
+        response: undefined,
+      });
+
+      const [messages] = invoke.mock.calls[0] as [unknown[]];
+      expect(messages[1]).not.toBeInstanceOf(ToolMessage);
+      expect((messages[1] as AIMessage | SystemMessage | ToolMessage | { content: string }).content).toBe(
+        'Detached tool output'
+      );
+    });
   });
 
   describe('createActionNode', () => {
