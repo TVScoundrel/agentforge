@@ -12,7 +12,7 @@ import {
   ToolMessage,
   type BaseMessage,
 } from '@langchain/core/messages';
-import { type Tool, toLangChainTools } from '@agentforge/core';
+import { type JsonValue, type Tool, toLangChainTools } from '@agentforge/core';
 import type {
   Message,
   ReActStateType,
@@ -33,6 +33,7 @@ import { handleNodeError } from '../shared/error-handling.js';
 const reasoningLogger = createPatternLogger('agentforge:patterns:react:reasoning');
 const actionLogger = createPatternLogger('agentforge:patterns:react:action');
 const observationLogger = createPatternLogger('agentforge:patterns:react:observation');
+type PatternLogger = typeof reasoningLogger;
 
 type SupportedConversationMessage =
   | HumanMessage
@@ -141,6 +142,17 @@ function getLatestThought(thoughts: Thought[]): string {
   return thoughts[thoughts.length - 1]?.content ?? '';
 }
 
+function debugIfVerbose(
+  logger: PatternLogger,
+  verbose: boolean,
+  message: string,
+  data?: JsonValue
+): void {
+  if (verbose) {
+    logger.debug(message, data);
+  }
+}
+
 /**
  * Create a reasoning node that generates thoughts and decides on actions
  *
@@ -155,7 +167,7 @@ export function createReasoningNode(
   tools: Tool[],
   systemPrompt: string,
   maxIterations: number,
-  _verbose: boolean = false
+  verbose: boolean = false
 ) {
   // Bind tools to the LLM
   const langchainTools = toLangChainTools(tools);
@@ -165,7 +177,7 @@ export function createReasoningNode(
     const currentIteration = state.iteration || 0;
     const startTime = Date.now();
 
-    reasoningLogger.debug('Reasoning iteration started', {
+    debugIfVerbose(reasoningLogger, verbose, 'Reasoning iteration started', {
       iteration: currentIteration + 1,
       maxIterations,
       observationCount: state.observations.length,
@@ -215,7 +227,7 @@ export function createReasoningNode(
  */
 export function createActionNode(
   tools: Tool[],
-  _verbose: boolean = false,
+  verbose: boolean = false,
   enableDeduplication: boolean = true
 ) {
   // Create a map for quick tool lookup
@@ -227,7 +239,7 @@ export function createActionNode(
     const iteration = state.iteration || 0;
     const startTime = Date.now();
 
-    actionLogger.debug('Action node started', {
+    debugIfVerbose(actionLogger, verbose, 'Action node started', {
       actionCount: actions.length,
       iteration,
       cacheEnabled: enableDeduplication
@@ -254,7 +266,7 @@ export function createActionNode(
       }
 
       if (cacheSize > 0) {
-        actionLogger.debug('Deduplication cache built', {
+        debugIfVerbose(actionLogger, verbose, 'Deduplication cache built', {
           cacheSize,
           totalObservations: allObservations.length
         });
@@ -270,7 +282,7 @@ export function createActionNode(
       // Skip actions that already have observations (already processed)
       const existingObservation = allObservations.find(obs => obs.toolCallId === action.id);
       if (existingObservation) {
-        actionLogger.debug('Skipping already-processed action', {
+        debugIfVerbose(actionLogger, verbose, 'Skipping already-processed action', {
           toolName: action.name,
           toolCallId: action.id,
           iteration
@@ -326,7 +338,7 @@ export function createActionNode(
 
         toolsExecuted++;
 
-        actionLogger.debug('Tool executed successfully', {
+        debugIfVerbose(actionLogger, verbose, 'Tool executed successfully', {
           toolName: action.name,
           executionTime,
           iteration
@@ -347,7 +359,7 @@ export function createActionNode(
         }
       } catch (error) {
         // Handle error with proper GraphInterrupt detection
-        const errorMessage = handleNodeError(error, `action:${action.name}`, false);
+        const errorMessage = handleNodeError(error, `action:${action.name}`, verbose);
 
         actionLogger.error('Tool execution failed', {
           toolName: action.name,
@@ -387,7 +399,7 @@ export function createActionNode(
  * @param returnIntermediateSteps - Whether to populate the scratchpad with intermediate steps
  */
 export function createObservationNode(
-  _verbose: boolean = false,
+  verbose: boolean = false,
   returnIntermediateSteps: boolean = false
 ) {
   return async (state: ReActStateType) => {
@@ -396,7 +408,7 @@ export function createObservationNode(
     const actions = state.actions;
     const iteration = state.iteration || 0;
 
-    observationLogger.debug('Processing observations', {
+    debugIfVerbose(observationLogger, verbose, 'Processing observations', {
       observationCount: observations.length,
       iteration
     });
@@ -423,7 +435,7 @@ export function createObservationNode(
       timestamp: Date.now(),
     }] : [];
 
-    observationLogger.debug('Observation node complete', {
+    debugIfVerbose(observationLogger, verbose, 'Observation node complete', {
       iteration,
       scratchpadUpdated: returnIntermediateSteps,
       messageCount: observationMessages.length
