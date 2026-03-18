@@ -2,7 +2,7 @@
 
 **Purpose:** Track completed and merged stories for the Relational Database Access Tool project.
 
-**Last Updated:** 2026-03-17
+**Last Updated:** 2026-03-18
 
 ---
 
@@ -289,6 +289,13 @@
 - **Epic:** EP-09 (SOLID Micro-Refactors and Type Boundary Hardening)
 - **Estimate:** 4 hours
 - **Outcome:** Introduced shared JSON-safe payload contracts for core observability paths, hardened alert-manager typing across channel/rule/callback boundaries, and added focused regressions for logger payloads, callback failures, metrics-provider failures, and compile-time channel wiring. Reduced explicit-`any` warnings in the touched core observability files from 20 to 0 and improved the `core` baseline from 148 to 128.
+
+### ST-09005: Harden Patterns ReAct Node and Shared Agent Builder Types
+- **Merged:** 2026-03-18
+- **PR:** https://github.com/TVScoundrel/agentforge/pull/67 (commit 8d85e43)
+- **Epic:** EP-09 (SOLID Micro-Refactors and Type Boundary Hardening)
+- **Estimate:** 4 hours
+- **Outcome:** Hardened the ReAct node and shared agent-builder typing surface by replacing broad `any`-driven boundaries with typed helpers and config-derived generics, restoring `verbose` debug gating, tightening conditional route mappings, and normalizing observation result serialization. Added focused regressions for tool-message fallback, builder routing, and undefined observation handling, and reduced the workspace explicit-`any` baseline from 324 to 305 while improving the `patterns` baseline from 50 to 31.
 
 ---
 

@@ -178,7 +178,8 @@
   - `2bb0250` fix(st-09005): normalize undefined observation results
 - [x] Mark PR Ready only after all story tasks are complete
   - PR #67 marked ready: https://github.com/TVScoundrel/agentforge/pull/67
-- [ ] Wait for merge; do not merge directly from local branch
+- [x] Wait for merge; do not merge directly from local branch
+  - Merged via PR #67 on 2026-03-18
 
 ---
 
