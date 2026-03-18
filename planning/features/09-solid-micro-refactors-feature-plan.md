@@ -2,7 +2,7 @@
 
 **Epic Range:** EP-09 through EP-09
 **Status:** In Progress
-**Last Updated:** 2026-03-17
+**Last Updated:** 2026-03-18
 **Active Story:** ST-09005 (In Review)
 
 ---
@@ -44,6 +44,11 @@ Top runtime hotspots informing this feature slice:
 4. `packages/tools/src/agent/ask-human/tool.ts` (8)
 5. `packages/patterns/src/plan-execute/agent.ts` (4)
 
+Follow-on modularization candidates:
+
+- `packages/patterns/src/react/nodes.ts` is still `437` lines long, so a dedicated SRP-focused split remains worthwhile even as the explicit-`any` hotspot is being reduced.
+- After the runtime split, `packages/patterns/tests/react/nodes.test.ts` should be reshaped to match the final module boundaries so reasoning/action/observation tests stay maintainable.
+
 `ST-09002` removed `15` explicit-`any` warnings from `packages/core/src/langchain/converter.ts` and improved the `core` baseline from `176` to `161`.
 `ST-09003` removed `13` explicit-`any` warnings from `packages/core/src/langgraph/state.ts` and improved the `core` baseline from `161` to `148`.
 `ST-09004` removed `20` explicit-`any` warnings from `packages/core/src/langgraph/observability/logger.ts` and `packages/core/src/monitoring/alerts.ts`, improving the `core` baseline from `148` to `128`.
@@ -67,7 +72,7 @@ Top runtime hotspots informing this feature slice:
 
 ## Story Coverage by Epic
 
-- EP-09: ST-09001, ST-09002, ST-09003, ST-09004, ST-09005
+- EP-09: ST-09001, ST-09002, ST-09003, ST-09004, ST-09005, ST-09006, ST-09007
 
 ---
 
@@ -82,7 +87,7 @@ Top runtime hotspots informing this feature slice:
 
 ## Related Planning Documents
 
-- `planning/epics-and-stories.md` (EP-09 and ST-09001 through ST-09005)
+- `planning/epics-and-stories.md` (EP-09 and ST-09001 through ST-09007)
 - `planning/checklists/epic-09-story-tasks.md`
 - `planning/kanban-queue.md`
 - `scripts/no-explicit-any-baseline.json`

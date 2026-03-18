@@ -1,6 +1,6 @@
 # Kanban Queue: AgentForge
 
-**Last Updated:** 2026-03-17
+**Last Updated:** 2026-03-18
 
 ## Queue Status Summary
 
@@ -8,7 +8,7 @@
 - **In Progress:** 0 stories
 - **In Review:** 1 story
 - **Blocked:** 0 stories
-- **Backlog:** 0 stories
+- **Backlog:** 2 stories
 
 ---
 
@@ -42,7 +42,12 @@ _No stories currently blocked_
 
 ## Backlog
 
-_No stories currently in backlog_
+- **ST-09006: Modularize ReAct Node Responsibilities** (EP-09, P2, 4h)
+  - Dependencies: ST-09005 (ready)
+  - Scope: modularize `packages/patterns/src/react/nodes.ts` while preserving the current public entry point
+- **ST-09007: Modularize ReAct Node Test Suite** (EP-09, P2, 4h)
+  - Dependencies: ST-09006
+  - Scope: align `packages/patterns/tests/react/nodes.test.ts` with the modularized ReAct node layout
 
 ---
 
@@ -96,3 +101,5 @@ _No stories currently in backlog_
 - ✅ ST-09003 complete - LangGraph state utility typing strengthened (merged 2026-03-13)
 - ✅ ST-09004 complete - observability payload contracts hardened (merged 2026-03-17)
 - ST-09005 is in review on PR #67
+- ST-09006 is queued behind ST-09005 to avoid stacking another large `react/nodes.ts` refactor onto the current ready story
+- ST-09007 follows ST-09006 so the test layout can mirror the final runtime module boundaries instead of guessing them early

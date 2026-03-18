@@ -120,7 +120,7 @@
 - Explicit-`any` warnings continue trending down from the current `385` `src/**` baseline without regressions
 - Story slices are intentionally small (1 day each) so quality improvements can ship continuously
 
-**Stories:** ST-09001 through ST-09005
+**Stories:** ST-09001 through ST-09007
 
 ---
 
@@ -910,15 +910,49 @@
 
 ---
 
+#### ST-09006: Modularize ReAct Node Responsibilities
+**User story:** As a patterns maintainer, I want the ReAct node implementation split into smaller modules so reasoning, action, and observation flows are easier to review and extend safely.
+
+**Priority:** P2 (Medium)
+**Estimate:** 4 hours
+**Dependencies:** ST-09005
+
+**Acceptance criteria:**
+- [ ] `packages/patterns/src/react/nodes.ts` is decomposed into smaller internal modules or helpers with clearer responsibility boundaries, reducing the size and complexity of the entry module
+- [ ] Public exports and runtime behavior remain backward compatible for `createReasoningNode`, `createActionNode`, and `createObservationNode`
+- [ ] Extracted modules make message normalization, action execution support, and observation formatting easier to test independently or through focused node coverage
+- [ ] Focused tests are added or updated for the modularized reasoning/action/observation paths
+- [ ] Touched files do not regress on explicit-`any` warning counts and the outcome is recorded in story documentation
+- [ ] Add or update story documentation at `docs/st09006-react-node-modularization.md`
+
+---
+
+#### ST-09007: Modularize ReAct Node Test Suite
+**User story:** As a patterns maintainer, I want the ReAct node test suite organized around the modular node structure so reasoning, action, and observation behavior stay easy to extend and review.
+
+**Priority:** P2 (Medium)
+**Estimate:** 4 hours
+**Dependencies:** ST-09006
+
+**Acceptance criteria:**
+- [ ] `packages/patterns/tests/react/nodes.test.ts` is reorganized into smaller test modules or helper layers that mirror the modularized ReAct node responsibilities
+- [ ] The public test entry point remains easy to run and preserves current coverage for `createReasoningNode`, `createActionNode`, and `createObservationNode`
+- [ ] Shared test fixtures/helpers are extracted where they reduce duplication without obscuring intent
+- [ ] Focused tests continue covering tool-message construction, action execution behavior, and observation formatting after the test split
+- [ ] Touched files do not regress on explicit-`any` warning counts and the outcome is recorded in story documentation
+- [ ] Add or update story documentation at `docs/st09007-react-node-test-modularization.md`
+
+---
+
 ## Story Summary
 
-**Total Stories:** 41
+**Total Stories:** 43
 **By Priority:**
 - P0 (Critical): 17 stories
 - P1 (High): 16 stories
-- P2 (Medium): 8 stories
+- P2 (Medium): 10 stories
 
-**Total Estimated Effort:** ~164 hours (20.5 working days)
+**Total Estimated Effort:** ~172 hours (21.5 working days)
 
 **Dependency Chain:**
 1. Phase 1 (Foundation): ST-01001 → ST-01002 → ST-01003 → ST-01004
@@ -929,4 +963,4 @@
 6. Phase 6 (Agent Skills): ST-06001 → ST-06002 → ST-06003 → ST-06004 → ST-06005 → ST-06006
 7. Phase 7 (Skills Extraction): ST-07001 → ST-07002 → [ST-07003, ST-07004 parallel] → ST-07005; ST-07001 → ST-07006 (independent)
 8. Phase 8 (Type Safety Hardening): ST-08001 → [ST-08002, ST-08003, ST-08004 parallel]
-9. Phase 9 (SOLID Micro-Refactors): ST-09001 (Merged) → ST-09002 (Merged) → ST-09003 (Merged) → ST-09004 (Merged) → ST-09005 (In Review)
+9. Phase 9 (SOLID Micro-Refactors): ST-09001 (Merged) → ST-09002 (Merged) → ST-09003 (Merged) → ST-09004 (Merged) → ST-09005 (In Review) → ST-09006 (Backlog) → ST-09007 (Backlog)
