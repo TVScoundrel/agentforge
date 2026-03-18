@@ -172,6 +172,8 @@
   - `1a2353a` docs(st-09005): record react builder typing progress
   - `d608445` docs(st-09005): record validation and move story to in-review
   - `f02d050` fix(st-09005): tighten builder schema and tool message validation
+  - `7b7d14f` chore(st-09005): append review-fix commit record
+  - `5952ef7` fix(st-09005): restore verbose debug gating
 - [x] Mark PR Ready only after all story tasks are complete
   - PR #67 marked ready: https://github.com/TVScoundrel/agentforge/pull/67
 - [ ] Wait for merge; do not merge directly from local branch
