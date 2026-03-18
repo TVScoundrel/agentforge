@@ -211,6 +211,7 @@
   - `e6a39b4` docs(st-09006): record validation and move story to in-review
   - `38e4ae9` fix(st-09006): harden react node serialization and cache lookups
   - `404f908` fix(st-09006): guard react node argument serialization paths
+  - `0833e36` fix(st-09006): default scratchpad step for missing iteration
 - [x] Mark PR Ready only after all story tasks are complete
   - PR #68 marked ready: https://github.com/TVScoundrel/agentforge/pull/68
 - [ ] Wait for merge; do not merge directly from local branch
