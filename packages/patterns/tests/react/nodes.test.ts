@@ -463,5 +463,36 @@ describe('ReAct Nodes', () => {
       expect(result.messages?.[0].content).toBe('undefined');
       expect(result.scratchpad?.[0].observation).toContain('undefined');
     });
+
+    it('should fall back to String(result) when JSON serialization throws', async () => {
+      const observationNode = createObservationNode(false, true);
+
+      const result = await observationNode({
+        messages: [],
+        thoughts: [{ content: 'Inspect bigint output' }],
+        actions: [
+          {
+            id: 'call_bigint',
+            name: 'test-tool',
+            arguments: { input: 'bigint' },
+            timestamp: Date.now(),
+          },
+        ],
+        observations: [
+          {
+            toolCallId: 'call_bigint',
+            result: 1n,
+            timestamp: Date.now(),
+          },
+        ],
+        scratchpad: [],
+        iteration: 1,
+        shouldContinue: true,
+        response: undefined,
+      });
+
+      expect(result.messages?.[0].content).toBe('1');
+      expect(result.scratchpad?.[0].observation).toContain('1');
+    });
   });
 });

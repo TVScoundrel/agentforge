@@ -36,11 +36,15 @@ export function createActionNode(
     const recentActions = actions.slice(-10);
     const observations: ToolResult[] = [];
     const executionCache = new Map<string, ToolResult>();
+    const actionsById = new Map(actions.map((action) => [action.id, action]));
+    const observedToolCallIds = new Set(
+      allObservations.map((observation) => observation.toolCallId)
+    );
     let cacheSize = 0;
 
     if (enableDeduplication) {
       for (const observation of allObservations) {
-        const correspondingAction = actions.find((action) => action.id === observation.toolCallId);
+        const correspondingAction = actionsById.get(observation.toolCallId);
         if (correspondingAction) {
           const cacheKey = generateToolCallCacheKey(
             correspondingAction.name,
@@ -63,8 +67,7 @@ export function createActionNode(
     let toolsExecuted = 0;
 
     for (const action of recentActions) {
-      const existingObservation = allObservations.find((observation) => observation.toolCallId === action.id);
-      if (existingObservation) {
+      if (observedToolCallIds.has(action.id)) {
         debugIfVerbose(actionLogger, verbose, 'Skipping already-processed action', {
           toolName: action.name,
           toolCallId: action.id,

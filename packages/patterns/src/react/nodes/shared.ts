@@ -125,8 +125,12 @@ export function stringifyObservationResult(result: unknown, space?: number): str
     return result;
   }
 
-  const stringified = JSON.stringify(result, null, space);
-  return stringified ?? String(result);
+  try {
+    const stringified = JSON.stringify(result, null, space);
+    return stringified ?? String(result);
+  } catch {
+    return String(result);
+  }
 }
 
 export function getLatestThought(thoughts: Thought[]): string {
