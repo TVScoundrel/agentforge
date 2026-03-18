@@ -185,7 +185,7 @@
 
 ## ST-09006: Modularize ReAct Node Responsibilities
 
-**Branch:** `refactor/st-09006-react-node-modularization`
+**Branch:** `codex/refactor/st-09006-react-node-modularization`
 
 ### Checklist
 - [x] Create branch `refactor/st-09006-react-node-modularization`

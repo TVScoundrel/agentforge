@@ -98,7 +98,7 @@ export function createActionNode(
 
           actionLogger.info('Duplicate tool call prevented', {
             toolName: action.name,
-            arguments: action.arguments,
+            argumentKeys: Object.keys(action.arguments),
             iteration,
             cacheHit: true,
           });
