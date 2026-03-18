@@ -4,8 +4,8 @@
 
 ## Queue Status Summary
 
-- **Ready:** 1 story
-- **In Progress:** 0 stories
+- **Ready:** 0 stories
+- **In Progress:** 1 story
 - **In Review:** 0 stories
 - **Blocked:** 0 stories
 - **Backlog:** 1 story
@@ -14,15 +14,17 @@
 
 ## Ready
 
-- **ST-09006: Modularize ReAct Node Responsibilities** (EP-09, P2, 4h)
-  - Dependencies: ST-09005 (merged)
-  - Scope: modularize `packages/patterns/src/react/nodes.ts` while preserving the current public entry point
+_No stories currently ready_
 
 ---
 
 ## In Progress
 
-_No stories currently in progress_
+- **ST-09006: Modularize ReAct Node Responsibilities** (EP-09, P2, 4h)
+  - Dependencies: ST-09005 (merged)
+  - Branch: `codex/refactor/st-09006-react-node-modularization`
+  - PR #68: https://github.com/TVScoundrel/agentforge/pull/68
+  - Scope: modularize `packages/patterns/src/react/nodes.ts` while preserving the current public entry point
 
 ---
 
@@ -96,5 +98,5 @@ _No stories currently blocked_
 - ✅ ST-09003 complete - LangGraph state utility typing strengthened (merged 2026-03-13)
 - ✅ ST-09004 complete - observability payload contracts hardened (merged 2026-03-17)
 - ✅ ST-09005 complete - ReAct node and shared builder typing hardened (merged 2026-03-18)
-- ST-09006 is now ready after ST-09005 merged
+- ST-09006 is in progress on branch `codex/refactor/st-09006-react-node-modularization`
 - ST-09007 remains in backlog until ST-09006 is merged so the test layout can mirror the final runtime module boundaries

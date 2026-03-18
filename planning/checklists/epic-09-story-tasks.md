@@ -188,8 +188,10 @@
 **Branch:** `refactor/st-09006-react-node-modularization`
 
 ### Checklist
-- [ ] Create branch `refactor/st-09006-react-node-modularization`
-- [ ] Create draft PR with story ID in title
+- [x] Create branch `refactor/st-09006-react-node-modularization`
+  - Created as `codex/refactor/st-09006-react-node-modularization` (workspace branch-prefix policy)
+- [x] Create draft PR with story ID in title
+  - PR #68: https://github.com/TVScoundrel/agentforge/pull/68
 - [ ] Split `packages/patterns/src/react/nodes.ts` into smaller internal modules or helpers with clear reasoning/action/observation responsibilities
 - [ ] Keep `packages/patterns/src/react/nodes.ts` as the stable public entry point while preserving current exports and runtime behavior
 - [ ] Add/update focused tests for modularized reasoning, action execution support, and observation formatting flows
