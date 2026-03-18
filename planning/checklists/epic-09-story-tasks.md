@@ -215,7 +215,8 @@
   - `8cc11bd` fix(st-09006): harden duplicate log payloads and branch docs
 - [x] Mark PR Ready only after all story tasks are complete
   - PR #68 marked ready: https://github.com/TVScoundrel/agentforge/pull/68
-- [ ] Wait for merge; do not merge directly from local branch
+- [x] Wait for merge; do not merge directly from local branch
+  - Merged via PR #68 on 2026-03-18
 
 ---
 

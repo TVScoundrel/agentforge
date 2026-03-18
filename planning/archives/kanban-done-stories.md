@@ -297,6 +297,13 @@
 - **Estimate:** 4 hours
 - **Outcome:** Hardened the ReAct node and shared agent-builder typing surface by replacing broad `any`-driven boundaries with typed helpers and config-derived generics, restoring `verbose` debug gating, tightening conditional route mappings, and normalizing observation result serialization. Added focused regressions for tool-message fallback, builder routing, and undefined observation handling, and reduced the workspace explicit-`any` baseline from 324 to 305 while improving the `patterns` baseline from 50 to 31.
 
+### ST-09006: Modularize ReAct Node Responsibilities
+- **Merged:** 2026-03-18
+- **PR:** https://github.com/TVScoundrel/agentforge/pull/68
+- **Epic:** EP-09 (SOLID Micro-Refactors and Type Boundary Hardening)
+- **Estimate:** 4 hours
+- **Outcome:** Split the ReAct runtime implementation into focused `shared`, `reasoning`, `action`, and `observation` modules while keeping the public `packages/patterns/src/react/nodes.ts` entry point stable. Added regressions for serialization edge cases, deduplication fallback behavior, and missing-iteration scratchpad handling without regressing the explicit-`any` baseline.
+
 ---
 
 ## Archive Format

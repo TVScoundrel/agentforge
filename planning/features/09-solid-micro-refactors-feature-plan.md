@@ -3,7 +3,7 @@
 **Epic Range:** EP-09 through EP-09
 **Status:** In Progress
 **Last Updated:** 2026-03-18
-**Active Story:** ST-09006 (In Review)
+**Active Story:** ST-09007 (Ready)
 
 ---
 
@@ -38,21 +38,22 @@ Current `@typescript-eslint/no-explicit-any` baseline check (`pnpm lint:explicit
 
 Top runtime hotspots informing this feature slice:
 
-1. `packages/patterns/src/react/nodes.ts` (10)
-2. `packages/core/src/langgraph/builders/parallel.ts` (9)
-3. `packages/patterns/src/shared/agent-builder.ts` (9)
-4. `packages/tools/src/agent/ask-human/tool.ts` (8)
-5. `packages/patterns/src/plan-execute/agent.ts` (4)
+1. `packages/core/src/langgraph/builders/parallel.ts` (9)
+2. `packages/patterns/src/shared/agent-builder.ts` (9)
+3. `packages/tools/src/agent/ask-human/tool.ts` (8)
+4. `packages/patterns/src/plan-execute/agent.ts` (4)
+5. `packages/patterns/tests/react/nodes.test.ts` (test modularization follow-up)
 
 Follow-on modularization candidates:
 
-- `packages/patterns/src/react/nodes.ts` is still `437` lines long, so a dedicated SRP-focused split remains worthwhile even as the explicit-`any` hotspot is being reduced.
-- After the runtime split, `packages/patterns/tests/react/nodes.test.ts` should be reshaped to match the final module boundaries so reasoning/action/observation tests stay maintainable.
+- `ST-09006` completed the runtime split, so the next structural follow-up is the ReAct node test suite.
+- `packages/patterns/tests/react/nodes.test.ts` should now be reshaped to match the final runtime module boundaries so reasoning/action/observation tests stay maintainable.
 
 `ST-09002` removed `15` explicit-`any` warnings from `packages/core/src/langchain/converter.ts` and improved the `core` baseline from `176` to `161`.
 `ST-09003` removed `13` explicit-`any` warnings from `packages/core/src/langgraph/state.ts` and improved the `core` baseline from `161` to `148`.
 `ST-09004` removed `20` explicit-`any` warnings from `packages/core/src/langgraph/observability/logger.ts` and `packages/core/src/monitoring/alerts.ts`, improving the `core` baseline from `148` to `128`.
 `ST-09005` removed `19` explicit-`any` warnings from `packages/patterns/src/react/nodes.ts` and `packages/patterns/src/shared/agent-builder.ts`, improving the workspace baseline from `324` to `305` and the `patterns` baseline from `50` to `31`.
+`ST-09006` completed the ReAct runtime modularization without regressing the explicit-`any` baseline, leaving `ST-09007` as the next maintainability-focused follow-up for the ReAct test surface.
 
 ---
 
