@@ -185,21 +185,36 @@
 
 ## ST-09006: Modularize ReAct Node Responsibilities
 
-**Branch:** `refactor/st-09006-react-node-modularization`
+**Branch:** `codex/refactor/st-09006-react-node-modularization`
 
 ### Checklist
-- [ ] Create branch `refactor/st-09006-react-node-modularization`
-- [ ] Create draft PR with story ID in title
-- [ ] Split `packages/patterns/src/react/nodes.ts` into smaller internal modules or helpers with clear reasoning/action/observation responsibilities
-- [ ] Keep `packages/patterns/src/react/nodes.ts` as the stable public entry point while preserving current exports and runtime behavior
-- [ ] Add/update focused tests for modularized reasoning, action execution support, and observation formatting flows
-- [ ] Record touched-file explicit-`any` results and before/after module layout in story docs
-- [ ] Add or update story documentation at `docs/st09006-react-node-modularization.md` (or document why not required)
-- [ ] Assess test impact; add/update automated tests when needed, or document why tests are not required
-- [ ] Run full test suite before finalizing the PR and record results
-- [ ] Run lint (`pnpm lint`) before finalizing the PR and record results
-- [ ] Commit completed checklist items as logical commits and push updates
-- [ ] Mark PR Ready only after all story tasks are complete
+- [x] Create branch `refactor/st-09006-react-node-modularization`
+  - Created as `codex/refactor/st-09006-react-node-modularization` (workspace branch-prefix policy)
+- [x] Create draft PR with story ID in title
+  - PR #68: https://github.com/TVScoundrel/agentforge/pull/68
+- [x] Split `packages/patterns/src/react/nodes.ts` into smaller internal modules or helpers with clear reasoning/action/observation responsibilities
+- [x] Keep `packages/patterns/src/react/nodes.ts` as the stable public entry point while preserving current exports and runtime behavior
+- [x] Add/update focused tests for modularized reasoning, action execution support, and observation formatting flows
+  - `pnpm test --run packages/patterns/tests/react/nodes.test.ts packages/patterns/tests/react/deduplication.test.ts packages/patterns/tests/react/agent.test.ts` -> `31 passed`
+- [x] Record touched-file explicit-`any` results and before/after module layout in story docs
+  - Recorded in `docs/st09006-react-node-modularization.md` (`nodes.ts 454 -> 9` lines; baseline holds at `305`, `patterns 31`)
+- [x] Add or update story documentation at `docs/st09006-react-node-modularization.md` (or document why not required)
+- [x] Assess test impact; add/update automated tests when needed, or document why tests are not required
+  - Existing ReAct public-entry tests were re-run against `nodes.ts`, `deduplication`, and `agent` coverage after the module split
+- [x] Run full test suite before finalizing the PR and record results
+  - `pnpm test --run` -> `149 passed | 16 skipped` files; `2104 passed | 286 skipped` tests
+- [x] Run lint (`pnpm lint`) before finalizing the PR and record results
+  - `pnpm lint` -> exit `0`; warnings only (`0` errors)
+- [x] Commit completed checklist items as logical commits and push updates
+  - `8c67908` refactor(st-09006): split react node responsibilities
+  - `b40df7e` docs(st-09006): record modularization progress
+  - `e6a39b4` docs(st-09006): record validation and move story to in-review
+  - `38e4ae9` fix(st-09006): harden react node serialization and cache lookups
+  - `404f908` fix(st-09006): guard react node argument serialization paths
+  - `0833e36` fix(st-09006): default scratchpad step for missing iteration
+  - `8cc11bd` fix(st-09006): harden duplicate log payloads and branch docs
+- [x] Mark PR Ready only after all story tasks are complete
+  - PR #68 marked ready: https://github.com/TVScoundrel/agentforge/pull/68
 - [ ] Wait for merge; do not merge directly from local branch
 
 ---

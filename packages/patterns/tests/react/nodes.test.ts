@@ -49,6 +49,14 @@ describe('ReAct Nodes', () => {
     .implement(async ({ input }) => `Result: ${input}`)
     .build();
 
+  const bigintTool = toolBuilder()
+    .name('bigint-tool')
+    .description('A test tool for bigint input')
+    .category(ToolCategory.UTILITY)
+    .schema(z.object({ input: z.bigint().describe('Input') }))
+    .implement(async ({ input }) => `BigInt: ${String(input)}`)
+    .build();
+
   describe('createReasoningNode', () => {
     it('should generate thoughts and tool calls', async () => {
       const mockLLM = createMockChatModel();
@@ -291,6 +299,33 @@ describe('ReAct Nodes', () => {
       expect(result.observations!.length).toBe(1);
       expect(result.observations![0].error).toBe('Tool execution failed');
     });
+
+    it('should execute actions when dedup cache key serialization fails', async () => {
+      const actionNode = createActionNode([bigintTool], false, true);
+
+      const result = await actionNode({
+        messages: [],
+        thoughts: [],
+        actions: [
+          {
+            id: 'call_bigint_action',
+            name: 'bigint-tool',
+            arguments: { input: 1n },
+            timestamp: Date.now(),
+          },
+        ],
+        observations: [],
+        scratchpad: [],
+        iteration: 1,
+        shouldContinue: true,
+        response: undefined,
+      });
+
+      expect(result.observations).toBeDefined();
+      expect(result.observations).toHaveLength(1);
+      expect(result.observations?.[0].result).toBe('BigInt: 1');
+      expect(result.observations?.[0].isDuplicate).toBeUndefined();
+    });
   });
 
   describe('createObservationNode', () => {
@@ -462,6 +497,98 @@ describe('ReAct Nodes', () => {
 
       expect(result.messages?.[0].content).toBe('undefined');
       expect(result.scratchpad?.[0].observation).toContain('undefined');
+    });
+
+    it('should fall back to String(result) when JSON serialization throws', async () => {
+      const observationNode = createObservationNode(false, true);
+
+      const result = await observationNode({
+        messages: [],
+        thoughts: [{ content: 'Inspect bigint output' }],
+        actions: [
+          {
+            id: 'call_bigint',
+            name: 'test-tool',
+            arguments: { input: 'bigint' },
+            timestamp: Date.now(),
+          },
+        ],
+        observations: [
+          {
+            toolCallId: 'call_bigint',
+            result: 1n,
+            timestamp: Date.now(),
+          },
+        ],
+        scratchpad: [],
+        iteration: 1,
+        shouldContinue: true,
+        response: undefined,
+      });
+
+      expect(result.messages?.[0].content).toBe('1');
+      expect(result.scratchpad?.[0].observation).toContain('1');
+    });
+
+    it('should stringify action arguments safely when scratchpad formatting sees bigint input', async () => {
+      const observationNode = createObservationNode(false, true);
+
+      const result = await observationNode({
+        messages: [],
+        thoughts: [{ content: 'Inspect bigint action input' }],
+        actions: [
+          {
+            id: 'call_bigint_args',
+            name: 'bigint-tool',
+            arguments: { input: 1n },
+            timestamp: Date.now(),
+          },
+        ],
+        observations: [
+          {
+            toolCallId: 'call_bigint_args',
+            result: 'BigInt: 1',
+            timestamp: Date.now(),
+          },
+        ],
+        scratchpad: [],
+        iteration: 1,
+        shouldContinue: true,
+        response: undefined,
+      });
+
+      expect(result.scratchpad?.[0].action).toContain('bigint-tool');
+      expect(result.scratchpad?.[0].action).toContain('[object Object]');
+    });
+
+    it('should default scratchpad step to 0 when iteration is unset', async () => {
+      const observationNode = createObservationNode(false, true);
+
+      const result = await observationNode({
+        messages: [],
+        thoughts: [{ content: 'Recover missing iteration' }],
+        actions: [
+          {
+            id: 'call_missing_iteration',
+            name: 'test-tool',
+            arguments: { input: 'hello' },
+            timestamp: Date.now(),
+          },
+        ],
+        observations: [
+          {
+            toolCallId: 'call_missing_iteration',
+            result: 'Result: hello',
+            timestamp: Date.now(),
+          },
+        ],
+        scratchpad: [],
+        iteration: undefined,
+        shouldContinue: true,
+        response: undefined,
+      });
+
+      expect(result.scratchpad?.[0].step).toBe(0);
     });
   });
 });
