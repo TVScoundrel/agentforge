@@ -4,9 +4,9 @@
 
 ## Queue Status Summary
 
-- **Ready:** 1 story
+- **Ready:** 0 stories
 - **In Progress:** 0 stories
-- **In Review:** 0 stories
+- **In Review:** 1 story
 - **Blocked:** 0 stories
 - **Backlog:** 2 stories
 
@@ -14,9 +14,7 @@
 
 ## Ready
 
-- **ST-09005: Harden Patterns ReAct Node and Shared Agent Builder Types** (EP-09, P2, 4h)
-  - Dependencies: ST-08004 (complete)
-  - Scope: `packages/patterns/src/react/nodes.ts` + `packages/patterns/src/shared/agent-builder.ts`
+_No stories currently ready_
 
 ---
 
@@ -28,7 +26,11 @@ _No stories currently in progress_
 
 ## In Review
 
-_No stories currently in review_
+- **ST-09005: Harden Patterns ReAct Node and Shared Agent Builder Types** (EP-09, P2, 4h)
+  - Dependencies: ST-08004 (complete)
+  - Branch: `codex/fix/st-09005-patterns-react-builder-typing`
+  - PR #67: https://github.com/TVScoundrel/agentforge/pull/67
+  - Scope: `packages/patterns/src/react/nodes.ts` + `packages/patterns/src/shared/agent-builder.ts`
 
 ---
 
@@ -98,6 +100,6 @@ _No stories currently blocked_
 - ✅ ST-09002 complete - LangChain converter boundary hardened (merged 2026-03-13)
 - ✅ ST-09003 complete - LangGraph state utility typing strengthened (merged 2026-03-13)
 - ✅ ST-09004 complete - observability payload contracts hardened (merged 2026-03-17)
-- ST-09005 remains Ready
+- ST-09005 is in review on PR #67
 - ST-09006 is queued behind ST-09005 to avoid stacking another large `react/nodes.ts` refactor onto the current ready story
 - ST-09007 follows ST-09006 so the test layout can mirror the final runtime module boundaries instead of guessing them early

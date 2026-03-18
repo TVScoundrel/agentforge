@@ -898,6 +898,7 @@
 **Priority:** P2 (Medium)
 **Estimate:** 4 hours
 **Dependencies:** ST-08004
+**Status:** In Review (PR #67, 2026-03-17)
 
 **Acceptance criteria:**
 - [ ] `packages/patterns/src/react/nodes.ts` and `packages/patterns/src/shared/agent-builder.ts` reduce explicit `any` in state/message/condition handling

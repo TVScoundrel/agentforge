@@ -5,10 +5,23 @@
  */
 
 import type { BaseChatModel } from '@langchain/core/language_models/chat_models';
-import { HumanMessage, AIMessage, SystemMessage, ToolMessage } from '@langchain/core/messages';
-import { type Tool, toLangChainTools } from '@agentforge/core';
-import type { ReActStateType, ToolCall, ToolResult } from './state.js';
-import { formatToolsForPrompt, formatScratchpad, formatThoughts } from './prompts.js';
+import {
+  HumanMessage,
+  AIMessage,
+  SystemMessage,
+  ToolMessage,
+  type BaseMessage,
+} from '@langchain/core/messages';
+import { type JsonValue, type Tool, toLangChainTools } from '@agentforge/core';
+import type {
+  Message,
+  ReActStateType,
+  ScratchpadEntry,
+  Thought,
+  ToolCall,
+  ToolResult,
+} from './state.js';
+import { formatScratchpad } from './prompts.js';
 import {
   generateToolCallCacheKey,
   createPatternLogger,
@@ -20,6 +33,130 @@ import { handleNodeError } from '../shared/error-handling.js';
 const reasoningLogger = createPatternLogger('agentforge:patterns:react:reasoning');
 const actionLogger = createPatternLogger('agentforge:patterns:react:action');
 const observationLogger = createPatternLogger('agentforge:patterns:react:observation');
+type PatternLogger = typeof reasoningLogger;
+
+type SupportedConversationMessage =
+  | HumanMessage
+  | AIMessage
+  | SystemMessage
+  | ToolMessage;
+
+type LlmToolCall = {
+  id?: string;
+  name: string;
+  args?: Record<string, unknown>;
+};
+
+type LlmResponseWithToolCalls = {
+  content: unknown;
+  tool_calls?: LlmToolCall[];
+};
+
+function normalizeConversationMessage(message: Message): SupportedConversationMessage {
+  switch (message.role) {
+    case 'user':
+      return new HumanMessage(message.content);
+    case 'assistant':
+      return new AIMessage(message.content);
+    case 'system':
+      return new SystemMessage(message.content);
+    case 'tool':
+      if (!message.tool_call_id) {
+        reasoningLogger.warn(
+          'Tool message missing tool_call_id; falling back to human message',
+          message.name ? { name: message.name } : undefined
+        );
+        return new HumanMessage(message.content);
+      }
+      return new ToolMessage({
+        content: message.content,
+        tool_call_id: message.tool_call_id,
+        name: message.name,
+      });
+    default:
+      return new HumanMessage(message.content);
+  }
+}
+
+function buildReasoningMessages(
+  systemPrompt: string,
+  stateMessages: Message[],
+  scratchpad: ScratchpadEntry[]
+): BaseMessage[] {
+  const messages: BaseMessage[] = [
+    new SystemMessage(systemPrompt),
+    ...stateMessages.map(normalizeConversationMessage),
+  ];
+
+  if (scratchpad.length > 0) {
+    messages.push(new SystemMessage(`Previous steps:\n${formatScratchpad(scratchpad)}`));
+  }
+
+  return messages;
+}
+
+function extractToolCalls(response: LlmResponseWithToolCalls): ToolCall[] {
+  if (!response.tool_calls || response.tool_calls.length === 0) {
+    return [];
+  }
+
+  return response.tool_calls.map((toolCall) => ({
+    id: toolCall.id || `call_${Date.now()}_${Math.random()}`,
+    name: toolCall.name,
+    arguments: toolCall.args ?? {},
+    timestamp: Date.now(),
+  }));
+}
+
+function formatObservationContent(observation: ToolResult): string {
+  if (observation.error) {
+    return `Error: ${observation.error}`;
+  }
+
+  return stringifyObservationResult(observation.result, 2);
+}
+
+function formatActionSummary(actions: ToolCall[]): string {
+  return actions
+    .map((action) => `${action.name}(${JSON.stringify(action.arguments)})`)
+    .join(', ');
+}
+
+function formatObservationSummary(observations: ToolResult[]): string {
+  return observations
+    .map((observation) => {
+      if (observation.error) {
+        return `Error: ${observation.error}`;
+      }
+
+      return stringifyObservationResult(observation.result);
+    })
+    .join('; ');
+}
+
+function stringifyObservationResult(result: unknown, space?: number): string {
+  if (typeof result === 'string') {
+    return result;
+  }
+
+  const stringified = JSON.stringify(result, null, space);
+  return stringified ?? String(result);
+}
+
+function getLatestThought(thoughts: Thought[]): string {
+  return thoughts[thoughts.length - 1]?.content ?? '';
+}
+
+function debugIfVerbose(
+  logger: PatternLogger,
+  verbose: boolean,
+  message: string,
+  data?: JsonValue
+): void {
+  if (verbose) {
+    logger.debug(message, data);
+  }
+}
 
 /**
  * Create a reasoning node that generates thoughts and decides on actions
@@ -42,61 +179,25 @@ export function createReasoningNode(
   const llmWithTools = llm.bindTools ? llm.bindTools(langchainTools) : llm;
 
   return async (state: ReActStateType) => {
-    const currentIteration = (state.iteration as number) || 0;
+    const currentIteration = state.iteration || 0;
     const startTime = Date.now();
 
-    reasoningLogger.debug('Reasoning iteration started', {
+    debugIfVerbose(reasoningLogger, verbose, 'Reasoning iteration started', {
       iteration: currentIteration + 1,
       maxIterations,
-      observationCount: (state.observations as any[])?.length || 0,
-      hasActions: !!(state.actions as any[])?.length
+      observationCount: state.observations.length,
+      hasActions: state.actions.length > 0
     });
 
     // Build messages for the LLM
-    const stateMessages = (state.messages as any[]) || [];
-    const messages = [
-      new SystemMessage(systemPrompt),
-      ...stateMessages.map((msg: any) => {
-        if (msg.role === 'user') return new HumanMessage(msg.content);
-        if (msg.role === 'assistant') return new AIMessage(msg.content);
-        if (msg.role === 'system') return new SystemMessage(msg.content);
-        if (msg.role === 'tool') {
-          // Properly handle tool messages with tool_call_id
-          return new ToolMessage({
-            content: msg.content,
-            tool_call_id: msg.tool_call_id,
-            name: msg.name,
-          });
-        }
-        return new HumanMessage(msg.content); // fallback
-      }),
-    ];
-
-    // Add context about current state
-    const scratchpad = (state.scratchpad as any[]) || [];
-    if (scratchpad.length > 0) {
-      const scratchpadText = formatScratchpad(scratchpad);
-      messages.push(new SystemMessage(`Previous steps:\n${scratchpadText}`));
-    }
+    const messages = buildReasoningMessages(systemPrompt, state.messages, state.scratchpad);
 
     // Invoke the LLM
     const response = await llmWithTools.invoke(messages);
 
     // Extract thought and tool calls
     const thought = typeof response.content === 'string' ? response.content : '';
-    const toolCalls: ToolCall[] = [];
-
-    // Check if the response has tool calls
-    if (response.tool_calls && response.tool_calls.length > 0) {
-      for (const toolCall of response.tool_calls) {
-        toolCalls.push({
-          id: toolCall.id || `call_${Date.now()}_${Math.random()}`,
-          name: toolCall.name,
-          arguments: toolCall.args || {},
-          timestamp: Date.now(),
-        });
-      }
-    }
+    const toolCalls = extractToolCalls(response as LlmResponseWithToolCalls);
 
     // Determine if we should continue
     const shouldContinue = toolCalls.length > 0 && currentIteration + 1 < maxIterations;
@@ -138,12 +239,12 @@ export function createActionNode(
   const toolMap = new Map(tools.map((tool) => [tool.metadata.name, tool]));
 
   return async (state: ReActStateType) => {
-    const actions = (state.actions as ToolCall[]) || [];
-    const allObservations = (state.observations as ToolResult[]) || [];
-    const iteration = (state.iteration as number) || 0;
+    const actions = state.actions;
+    const allObservations = state.observations;
+    const iteration = state.iteration || 0;
     const startTime = Date.now();
 
-    actionLogger.debug('Action node started', {
+    debugIfVerbose(actionLogger, verbose, 'Action node started', {
       actionCount: actions.length,
       iteration,
       cacheEnabled: enableDeduplication
@@ -170,7 +271,7 @@ export function createActionNode(
       }
 
       if (cacheSize > 0) {
-        actionLogger.debug('Deduplication cache built', {
+        debugIfVerbose(actionLogger, verbose, 'Deduplication cache built', {
           cacheSize,
           totalObservations: allObservations.length
         });
@@ -186,7 +287,7 @@ export function createActionNode(
       // Skip actions that already have observations (already processed)
       const existingObservation = allObservations.find(obs => obs.toolCallId === action.id);
       if (existingObservation) {
-        actionLogger.debug('Skipping already-processed action', {
+        debugIfVerbose(actionLogger, verbose, 'Skipping already-processed action', {
           toolName: action.name,
           toolCallId: action.id,
           iteration
@@ -242,7 +343,7 @@ export function createActionNode(
 
         toolsExecuted++;
 
-        actionLogger.debug('Tool executed successfully', {
+        debugIfVerbose(actionLogger, verbose, 'Tool executed successfully', {
           toolName: action.name,
           executionTime,
           iteration
@@ -263,7 +364,7 @@ export function createActionNode(
         }
       } catch (error) {
         // Handle error with proper GraphInterrupt detection
-        const errorMessage = handleNodeError(error, `action:${action.name}`, false);
+        const errorMessage = handleNodeError(error, `action:${action.name}`, verbose);
 
         actionLogger.error('Tool execution failed', {
           toolName: action.name,
@@ -307,12 +408,12 @@ export function createObservationNode(
   returnIntermediateSteps: boolean = false
 ) {
   return async (state: ReActStateType) => {
-    const observations = (state.observations as ToolResult[]) || [];
-    const thoughts = (state.thoughts as any[]) || [];
-    const actions = (state.actions as ToolCall[]) || [];
-    const iteration = (state.iteration as number) || 0;
+    const observations = state.observations;
+    const thoughts = state.thoughts;
+    const actions = state.actions;
+    const iteration = state.iteration || 0;
 
-    observationLogger.debug('Processing observations', {
+    debugIfVerbose(observationLogger, verbose, 'Processing observations', {
       observationCount: observations.length,
       iteration
     });
@@ -320,42 +421,26 @@ export function createObservationNode(
     // Get the most recent observations
     const recentObservations = observations.slice(-10);
     const latestActions = actions.slice(-10);
+    const actionNamesById = new Map(latestActions.map((action) => [action.id, action.name]));
 
     // Add observation results as messages
-    const observationMessages = recentObservations.map((obs: any) => {
-      const content = obs.error
-        ? `Error: ${obs.error}`
-        : typeof obs.result === 'string'
-        ? obs.result
-        : JSON.stringify(obs.result, null, 2);
-
-      return {
+    const observationMessages = recentObservations.map((observation) => ({
         role: 'tool' as const,
-        content,
-        name: latestActions.find((a: any) => a.id === obs.toolCallId)?.name,
-        tool_call_id: obs.toolCallId, // Include tool_call_id for proper ToolMessage construction
-      };
-    });
+        content: formatObservationContent(observation),
+        name: actionNamesById.get(observation.toolCallId),
+        tool_call_id: observation.toolCallId,
+      }));
 
     // Only populate scratchpad if returnIntermediateSteps is enabled
     const scratchpadEntries = returnIntermediateSteps ? [{
-      step: state.iteration as number,
-      thought: thoughts[thoughts.length - 1]?.content || '',
-      action: latestActions.map((a: any) => `${a.name}(${JSON.stringify(a.arguments)})`).join(', '),
-      observation: recentObservations
-        .map((obs: any) => {
-          if (obs.error) {
-            return `Error: ${obs.error}`;
-          }
-          return typeof obs.result === 'string'
-            ? obs.result
-            : JSON.stringify(obs.result);
-        })
-        .join('; '),
+      step: state.iteration,
+      thought: getLatestThought(thoughts),
+      action: formatActionSummary(latestActions),
+      observation: formatObservationSummary(recentObservations),
       timestamp: Date.now(),
     }] : [];
 
-    observationLogger.debug('Observation node complete', {
+    debugIfVerbose(observationLogger, verbose, 'Observation node complete', {
       iteration,
       scratchpadUpdated: returnIntermediateSteps,
       messageCount: observationMessages.length
@@ -367,4 +452,3 @@ export function createObservationNode(
     };
   };
 }
-
