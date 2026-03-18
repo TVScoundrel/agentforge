@@ -163,3 +163,46 @@
 - [ ] Commit completed checklist items as logical commits and push updates
 - [ ] Mark PR Ready only after all story tasks are complete
 - [ ] Wait for merge; do not merge directly from local branch
+
+---
+
+## ST-09006: Modularize ReAct Node Responsibilities
+
+**Branch:** `refactor/st-09006-react-node-modularization`
+
+### Checklist
+- [ ] Create branch `refactor/st-09006-react-node-modularization`
+- [ ] Create draft PR with story ID in title
+- [ ] Split `packages/patterns/src/react/nodes.ts` into smaller internal modules or helpers with clear reasoning/action/observation responsibilities
+- [ ] Keep `packages/patterns/src/react/nodes.ts` as the stable public entry point while preserving current exports and runtime behavior
+- [ ] Add/update focused tests for modularized reasoning, action execution support, and observation formatting flows
+- [ ] Record touched-file explicit-`any` results and before/after module layout in story docs
+- [ ] Add or update story documentation at `docs/st09006-react-node-modularization.md` (or document why not required)
+- [ ] Assess test impact; add/update automated tests when needed, or document why tests are not required
+- [ ] Run full test suite before finalizing the PR and record results
+- [ ] Run lint (`pnpm lint`) before finalizing the PR and record results
+- [ ] Commit completed checklist items as logical commits and push updates
+- [ ] Mark PR Ready only after all story tasks are complete
+- [ ] Wait for merge; do not merge directly from local branch
+
+---
+
+## ST-09007: Modularize ReAct Node Test Suite
+
+**Branch:** `refactor/st-09007-react-node-test-modularization`
+
+### Checklist
+- [ ] Create branch `refactor/st-09007-react-node-test-modularization`
+- [ ] Create draft PR with story ID in title
+- [ ] Reorganize `packages/patterns/tests/react/nodes.test.ts` into smaller test modules or helper layers that mirror the modularized ReAct node responsibilities
+- [ ] Keep the ReAct node test surface easy to run while preserving current behavior coverage
+- [ ] Extract shared test fixtures/helpers where they reduce duplication without obscuring intent
+- [ ] Add/update focused tests for modularized reasoning, action execution, and observation formatting flows
+- [ ] Record touched-file explicit-`any` results and before/after test layout in story docs
+- [ ] Add or update story documentation at `docs/st09007-react-node-test-modularization.md` (or document why not required)
+- [ ] Assess test impact; add/update automated tests when needed, or document why tests are not required
+- [ ] Run full test suite before finalizing the PR and record results
+- [ ] Run lint (`pnpm lint`) before finalizing the PR and record results
+- [ ] Commit completed checklist items as logical commits and push updates
+- [ ] Mark PR Ready only after all story tasks are complete
+- [ ] Wait for merge; do not merge directly from local branch
