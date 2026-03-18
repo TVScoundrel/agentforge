@@ -432,5 +432,36 @@ describe('ReAct Nodes', () => {
       expect(result.messages?.[0].content).toContain('"ok": true');
       expect(result.scratchpad?.[0].observation).toContain('"count":2');
     });
+
+    it('should preserve undefined observation results as strings in messages and scratchpad', async () => {
+      const observationNode = createObservationNode(false, true);
+
+      const result = await observationNode({
+        messages: [],
+        thoughts: [{ content: 'Inspect missing tool output' }],
+        actions: [
+          {
+            id: 'call_undefined',
+            name: 'test-tool',
+            arguments: { input: 'undefined' },
+            timestamp: Date.now(),
+          },
+        ],
+        observations: [
+          {
+            toolCallId: 'call_undefined',
+            result: undefined,
+            timestamp: Date.now(),
+          },
+        ],
+        scratchpad: [],
+        iteration: 1,
+        shouldContinue: true,
+        response: undefined,
+      });
+
+      expect(result.messages?.[0].content).toBe('undefined');
+      expect(result.scratchpad?.[0].observation).toContain('undefined');
+    });
   });
 });

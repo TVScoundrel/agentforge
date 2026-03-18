@@ -113,9 +113,7 @@ function formatObservationContent(observation: ToolResult): string {
     return `Error: ${observation.error}`;
   }
 
-  return typeof observation.result === 'string'
-    ? observation.result
-    : JSON.stringify(observation.result, null, 2);
+  return stringifyObservationResult(observation.result, 2);
 }
 
 function formatActionSummary(actions: ToolCall[]): string {
@@ -131,11 +129,18 @@ function formatObservationSummary(observations: ToolResult[]): string {
         return `Error: ${observation.error}`;
       }
 
-      return typeof observation.result === 'string'
-        ? observation.result
-        : JSON.stringify(observation.result);
+      return stringifyObservationResult(observation.result);
     })
     .join('; ');
+}
+
+function stringifyObservationResult(result: unknown, space?: number): string {
+  if (typeof result === 'string') {
+    return result;
+  }
+
+  const stringified = JSON.stringify(result, null, space);
+  return stringified ?? String(result);
 }
 
 function getLatestThought(thoughts: Thought[]): string {
