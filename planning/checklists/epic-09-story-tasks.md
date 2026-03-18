@@ -175,6 +175,7 @@
   - `7b7d14f` chore(st-09005): append review-fix commit record
   - `5952ef7` fix(st-09005): restore verbose debug gating
   - `bedc74a` fix(st-09005): tighten conditional route mapping types
+  - `2bb0250` fix(st-09005): normalize undefined observation results
 - [x] Mark PR Ready only after all story tasks are complete
   - PR #67 marked ready: https://github.com/TVScoundrel/agentforge/pull/67
 - [ ] Wait for merge; do not merge directly from local branch
