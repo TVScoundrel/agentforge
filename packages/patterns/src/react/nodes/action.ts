@@ -21,6 +21,17 @@ export function createActionNode(
 ) {
   const toolMap = new Map(tools.map((tool) => [tool.metadata.name, tool]));
 
+  function buildCacheKey(toolName: string, args: unknown): string | undefined {
+    try {
+      return generateToolCallCacheKey(toolName, args);
+    } catch {
+      debugIfVerbose(actionLogger, verbose, 'Skipping deduplication for unserializable tool call', {
+        toolName,
+      });
+      return undefined;
+    }
+  }
+
   return async (state: ReActStateType) => {
     const actions = state.actions;
     const allObservations = state.observations;
@@ -46,12 +57,14 @@ export function createActionNode(
       for (const observation of allObservations) {
         const correspondingAction = actionsById.get(observation.toolCallId);
         if (correspondingAction) {
-          const cacheKey = generateToolCallCacheKey(
+          const cacheKey = buildCacheKey(
             correspondingAction.name,
             correspondingAction.arguments
           );
-          executionCache.set(cacheKey, observation);
-          cacheSize++;
+          if (cacheKey) {
+            executionCache.set(cacheKey, observation);
+            cacheSize++;
+          }
         }
       }
 
@@ -77,8 +90,8 @@ export function createActionNode(
       }
 
       if (enableDeduplication) {
-        const cacheKey = generateToolCallCacheKey(action.name, action.arguments);
-        const cachedResult = executionCache.get(cacheKey);
+        const cacheKey = buildCacheKey(action.name, action.arguments);
+        const cachedResult = cacheKey ? executionCache.get(cacheKey) : undefined;
 
         if (cachedResult) {
           duplicatesSkipped++;
@@ -134,8 +147,10 @@ export function createActionNode(
         observations.push(observation);
 
         if (enableDeduplication) {
-          const cacheKey = generateToolCallCacheKey(action.name, action.arguments);
-          executionCache.set(cacheKey, observation);
+          const cacheKey = buildCacheKey(action.name, action.arguments);
+          if (cacheKey) {
+            executionCache.set(cacheKey, observation);
+          }
         }
       } catch (error) {
         const errorMessage = handleNodeError(error, `action:${action.name}`, verbose);

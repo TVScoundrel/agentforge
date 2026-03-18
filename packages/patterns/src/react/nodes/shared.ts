@@ -104,7 +104,7 @@ export function formatObservationContent(observation: ToolResult): string {
 
 export function formatActionSummary(actions: ToolCall[]): string {
   return actions
-    .map((action) => `${action.name}(${JSON.stringify(action.arguments)})`)
+    .map((action) => `${action.name}(${stringifyActionArguments(action.arguments)})`)
     .join(', ');
 }
 
@@ -131,6 +131,10 @@ export function stringifyObservationResult(result: unknown, space?: number): str
   } catch {
     return String(result);
   }
+}
+
+export function stringifyActionArguments(arguments_: unknown): string {
+  return stringifyObservationResult(arguments_);
 }
 
 export function getLatestThought(thoughts: Thought[]): string {

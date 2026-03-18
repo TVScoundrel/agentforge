@@ -2,21 +2,21 @@
 
 ## Summary
 
-This story modularizes the ReAct node implementation while keeping `packages/patterns/src/react/nodes.ts` as the stable public entry point. The previous `454`-line entry module is now a `9`-line export surface backed by focused internal modules for reasoning, action, observation, and shared serialization/logging helpers.
+This story modularizes the ReAct node implementation while keeping `packages/patterns/src/react/nodes.ts` as the stable public entry point. The previous monolithic entry module is now a thin export surface backed by focused internal modules for reasoning, action, observation, and shared serialization/logging helpers.
 
 ## Module Layout
 
 ### Before
 
-- `packages/patterns/src/react/nodes.ts` - `454` lines
+- `packages/patterns/src/react/nodes.ts` contained the full public entry point plus reasoning, action, observation, and shared helper logic in one file
 
 ### After
 
-- `packages/patterns/src/react/nodes.ts` - `9` lines
-- `packages/patterns/src/react/nodes/shared.ts` - `145` lines
-- `packages/patterns/src/react/nodes/reasoning.ts` - `66` lines
-- `packages/patterns/src/react/nodes/action.ts` - `172` lines
-- `packages/patterns/src/react/nodes/observation.ts` - `66` lines
+- `packages/patterns/src/react/nodes.ts` is a thin public export surface
+- `packages/patterns/src/react/nodes/shared.ts` holds shared serialization, logging, and message-normalization helpers
+- `packages/patterns/src/react/nodes/reasoning.ts` owns reasoning-node behavior
+- `packages/patterns/src/react/nodes/action.ts` owns tool execution and deduplication behavior
+- `packages/patterns/src/react/nodes/observation.ts` owns observation formatting and scratchpad updates
 
 ## Compatibility Notes
 
