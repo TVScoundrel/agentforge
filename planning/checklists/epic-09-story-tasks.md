@@ -171,6 +171,7 @@
   - `119eec6` refactor(st-09005): harden react node and builder typing
   - `1a2353a` docs(st-09005): record react builder typing progress
   - `d608445` docs(st-09005): record validation and move story to in-review
+  - `f02d050` fix(st-09005): tighten builder schema and tool message validation
 - [x] Mark PR Ready only after all story tasks are complete
   - PR #67 marked ready: https://github.com/TVScoundrel/agentforge/pull/67
 - [ ] Wait for merge; do not merge directly from local branch
