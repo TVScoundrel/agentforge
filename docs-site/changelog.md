@@ -5,6 +5,37 @@ All notable changes to AgentForge will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.15.10] - 2026-03-18
+
+### Added
+
+#### @agentforge/patterns - ReAct and Builder Regression Coverage
+- Added focused regressions in `packages/patterns/tests/react/nodes.test.ts` covering tool-message fallback, structured and undefined observation serialization, and scratchpad context handling
+- Added focused shared-builder coverage in `packages/patterns/tests/shared/agent-builder.test.ts` for mapped conditional routes, direct `END` termination, and compile-time route-mapping validation
+
+### Changed
+
+#### @agentforge/patterns - ReAct Node and Agent Builder Typing
+- Reworked `packages/patterns/src/react/nodes.ts` and `packages/patterns/src/shared/agent-builder.ts` to replace broad `any`-driven boundaries with typed helpers and config-derived generics
+- Reduced explicit-`any` warnings in the touched patterns files from `19` to `0`, improving the workspace baseline from `324` to `305` and the `patterns` baseline from `50` to `31`
+
+### Fixed
+
+#### @agentforge/patterns - ReAct Runtime Safety
+- Fixed tool-role message normalization so missing `tool_call_id` values fall back safely instead of producing invalid `ToolMessage` instances
+- Fixed `verbose` handling across ReAct nodes so debug logging is once again gated by the public `verbose` option
+- Fixed observation formatting so `undefined` tool results always serialize to strings and remain visible in tool messages and scratchpad summaries
+- Fixed shared builder conditional edge mappings so route keys are checked against the declared route union at compile time
+
+### Published
+- All packages published to npm registry at version 0.15.10:
+  - @agentforge/core@0.15.10
+  - @agentforge/skills@0.15.10
+  - @agentforge/patterns@0.15.10
+  - @agentforge/tools@0.15.10
+  - @agentforge/testing@0.15.10
+  - @agentforge/cli@0.15.10
+
 ## [0.15.9] - 2026-03-17
 
 ### Added
