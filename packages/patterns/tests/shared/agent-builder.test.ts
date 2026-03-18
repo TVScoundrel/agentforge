@@ -30,6 +30,16 @@ const TestAgentState = createStateAnnotation({
 
 type TestAgentStateType = typeof TestAgentState.State;
 
+const validRouteMapping = {
+  continue: 'step',
+  end: END,
+} satisfies Partial<Record<TestAgentStateType['routeTo'], 'step' | typeof END>>;
+
+// @ts-expect-error invalid route keys should be rejected by ConditionalEdge.mapping
+const invalidRouteMapping = {
+  continnue: 'step',
+} satisfies Partial<Record<TestAgentStateType['routeTo'], 'step' | typeof END>>;
+
 describe('buildAgent', () => {
   it('should follow mapped conditional routes through the configured nodes', async () => {
     const agent = buildAgent({
@@ -62,13 +72,12 @@ describe('buildAgent', () => {
         {
           from: 'decide',
           condition: (state: TestAgentStateType) => state.routeTo,
-          mapping: {
-            continue: 'step',
-            end: END,
-          },
+          mapping: validRouteMapping,
         },
       ],
     });
+
+    expect(invalidRouteMapping).toBeDefined();
 
     const result = await agent.invoke({
       routeTo: 'continue',

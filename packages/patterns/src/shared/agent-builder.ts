@@ -74,7 +74,7 @@ export interface ConditionalEdge<
   /** Routing function that returns the next node name */
   condition: (state: TState) => TRoute | typeof END | TRoute[];
   /** Optional mapping of condition results to node names */
-  mapping?: Record<string, TNodeName | typeof END>;
+  mapping?: Partial<Record<TRoute, TNodeName | typeof END>>;
 }
 
 /**
@@ -185,7 +185,7 @@ export function buildAgent<
     addConditionalEdges: (
       from: TNodeName,
       condition: (state: AgentState<TStateSchema>) => TRoute | typeof END | TRoute[],
-      mapping?: Record<string, TNodeName | typeof END>
+      mapping?: Partial<Record<TRoute, TNodeName | typeof END>>
     ) => void;
     compile: (config?: { checkpointer?: BaseCheckpointSaver | true }) => unknown;
   };
