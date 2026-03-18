@@ -209,6 +209,7 @@
   - `8c67908` refactor(st-09006): split react node responsibilities
   - `b40df7e` docs(st-09006): record modularization progress
   - `e6a39b4` docs(st-09006): record validation and move story to in-review
+  - `38e4ae9` fix(st-09006): harden react node serialization and cache lookups
 - [x] Mark PR Ready only after all story tasks are complete
   - PR #68 marked ready: https://github.com/TVScoundrel/agentforge/pull/68
 - [ ] Wait for merge; do not merge directly from local branch
