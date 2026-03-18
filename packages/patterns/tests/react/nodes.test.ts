@@ -560,5 +560,35 @@ describe('ReAct Nodes', () => {
       expect(result.scratchpad?.[0].action).toContain('bigint-tool');
       expect(result.scratchpad?.[0].action).toContain('[object Object]');
     });
+
+    it('should default scratchpad step to 0 when iteration is unset', async () => {
+      const observationNode = createObservationNode(false, true);
+
+      const result = await observationNode({
+        messages: [],
+        thoughts: [{ content: 'Recover missing iteration' }],
+        actions: [
+          {
+            id: 'call_missing_iteration',
+            name: 'test-tool',
+            arguments: { input: 'hello' },
+            timestamp: Date.now(),
+          },
+        ],
+        observations: [
+          {
+            toolCallId: 'call_missing_iteration',
+            result: 'Result: hello',
+            timestamp: Date.now(),
+          },
+        ],
+        scratchpad: [],
+        iteration: undefined,
+        shouldContinue: true,
+        response: undefined,
+      });
+
+      expect(result.scratchpad?.[0].step).toBe(0);
+    });
   });
 });

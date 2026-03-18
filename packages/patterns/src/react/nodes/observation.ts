@@ -43,7 +43,7 @@ export function createObservationNode(
     const scratchpadEntries = returnIntermediateSteps
       ? [
           {
-            step: state.iteration,
+            step: iteration,
             thought: getLatestThought(thoughts),
             action: formatActionSummary(latestActions),
             observation: formatObservationSummary(recentObservations),
