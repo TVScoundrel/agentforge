@@ -36,3 +36,8 @@ This story modularizes the ReAct node implementation while keeping `packages/pat
 - `pnpm exec tsc -p packages/patterns/tsconfig.json --noEmit`
 - `pnpm test --run packages/patterns/tests/react/nodes.test.ts packages/patterns/tests/react/deduplication.test.ts packages/patterns/tests/react/agent.test.ts`
 - `pnpm lint:explicit-any:baseline`
+
+## Full Validation
+
+- `pnpm test --run` -> `149 passed | 16 skipped` files; `2104 passed | 286 skipped` tests
+- `pnpm lint` -> exit `0`; warnings only (`0` errors)
