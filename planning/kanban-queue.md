@@ -4,8 +4,8 @@
 
 ## Queue Status Summary
 
-- **Ready:** 1 story
-- **In Progress:** 0 stories
+- **Ready:** 0 stories
+- **In Progress:** 1 story
 - **In Review:** 0 stories
 - **Blocked:** 0 stories
 - **Backlog:** 0 stories
@@ -14,15 +14,16 @@
 
 ## Ready
 
-- **ST-09007: Modularize ReAct Node Test Suite** (EP-09, P2, 4h)
-  - Dependencies: ST-09006 (merged)
-  - Scope: align `packages/patterns/tests/react/nodes.test.ts` with the modularized ReAct node layout
+_No stories currently ready_
 
 ---
 
 ## In Progress
 
-_No stories currently in progress_
+- **ST-09007: Modularize ReAct Node Test Suite** (EP-09, P2, 4h)
+  - Dependencies: ST-09006 (merged)
+  - Branch: `codex/refactor/st-09007-react-node-test-modularization`
+  - Scope: align `packages/patterns/tests/react/nodes.test.ts` with the modularized ReAct node layout
 
 ---
 
@@ -95,4 +96,4 @@ _No stories currently in backlog_
 - ✅ ST-09004 complete - observability payload contracts hardened (merged 2026-03-17)
 - ✅ ST-09005 complete - ReAct node and shared builder typing hardened (merged 2026-03-18)
 - ✅ ST-09006 complete - ReAct node modularization merged (PR #68, 2026-03-18)
-- ST-09007 is now ready because ST-09006 is merged and the test layout can mirror the final runtime module boundaries
+- ST-09007 is now in progress on `codex/refactor/st-09007-react-node-test-modularization`

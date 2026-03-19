@@ -225,7 +225,8 @@
 **Branch:** `refactor/st-09007-react-node-test-modularization`
 
 ### Checklist
-- [ ] Create branch `refactor/st-09007-react-node-test-modularization`
+- [x] Create branch `refactor/st-09007-react-node-test-modularization`
+  - Created as `codex/refactor/st-09007-react-node-test-modularization` (workspace branch-prefix policy)
 - [ ] Create draft PR with story ID in title
 - [ ] Reorganize `packages/patterns/tests/react/nodes.test.ts` into smaller test modules or helper layers that mirror the modularized ReAct node responsibilities
 - [ ] Keep the ReAct node test surface easy to run while preserving current behavior coverage
