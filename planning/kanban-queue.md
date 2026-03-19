@@ -6,7 +6,6 @@
 
 - **Ready:** 0 stories
 - **In Progress:** 0 stories
-- **In Review:** 0 stories
 - **In Review:** 1 story
 - **Blocked:** 0 stories
 - **Backlog:** 0 stories
