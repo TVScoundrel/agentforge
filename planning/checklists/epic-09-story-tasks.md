@@ -248,5 +248,7 @@
 - [x] Commit completed checklist items as logical commits and push updates
   - `20ac1e0` refactor(st-09007): split react node test suites
   - `8731357` docs(st-09007): record test modularization progress
-- [ ] Mark PR Ready only after all story tasks are complete
+- `168ab83` docs(st-09007): record validation and move story to in-review
+- [x] Mark PR Ready only after all story tasks are complete
+  - PR #69 will be marked ready after the final tracker-sync push
 - [ ] Wait for merge; do not merge directly from local branch
