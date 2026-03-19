@@ -249,6 +249,7 @@
   - `20ac1e0` refactor(st-09007): split react node test suites
   - `8731357` docs(st-09007): record test modularization progress
   - `168ab83` docs(st-09007): record validation and move story to in-review
+  - `92a4dd2` fix(st-09007): repair review tracker formatting
 - [x] Mark PR Ready only after all story tasks are complete
   - PR #69 marked ready: https://github.com/TVScoundrel/agentforge/pull/69
 - [ ] Wait for merge; do not merge directly from local branch
