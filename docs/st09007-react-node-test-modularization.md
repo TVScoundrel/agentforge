@@ -21,7 +21,7 @@ This story reorganizes the ReAct node test surface to mirror the runtime split i
 ## Compatibility Notes
 
 - Running `packages/patterns/tests/react/nodes.test.ts` still executes the full ReAct node test surface
-- The extracted suites continue testing the public `createReasoningNode`, `createActionNode`, and `createObservationNode` factories from `../../src/react/nodes.js`
+- The extracted suites continue testing the public `createReasoningNode`, `createActionNode`, and `createObservationNode` factories from `../../../src/react/nodes.js`
 - Existing serialization and iteration regressions remain covered after the split
 
 ## Explicit `any` Notes

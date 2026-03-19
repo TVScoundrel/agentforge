@@ -222,7 +222,7 @@
 
 ## ST-09007: Modularize ReAct Node Test Suite
 
-**Branch:** `refactor/st-09007-react-node-test-modularization`
+**Branch:** `codex/refactor/st-09007-react-node-test-modularization`
 
 ### Checklist
 - [x] Create branch `refactor/st-09007-react-node-test-modularization`
