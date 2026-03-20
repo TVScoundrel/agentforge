@@ -130,8 +130,6 @@ describe('ReAct Nodes: reasoning', () => {
 
     const [messages] = invoke.mock.calls[0] as [unknown[]];
     expect(messages[1]).toBeInstanceOf(HumanMessage);
-    expect(
-      (messages[1] as AIMessage | SystemMessage | ToolMessage | { content: string }).content
-    ).toBe('Detached tool output');
+    expect(String((messages[1] as HumanMessage).content)).toBe('Detached tool output');
   });
 });

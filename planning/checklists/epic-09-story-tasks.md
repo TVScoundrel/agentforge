@@ -225,7 +225,7 @@
 **Branch:** `codex/refactor/st-09007-react-node-test-modularization`
 
 ### Checklist
-- [x] Create branch `refactor/st-09007-react-node-test-modularization`
+- [x] Create branch `codex/refactor/st-09007-react-node-test-modularization`
   - Created as `codex/refactor/st-09007-react-node-test-modularization` (workspace branch-prefix policy)
 - [x] Create draft PR with story ID in title
   - PR #69: https://github.com/TVScoundrel/agentforge/pull/69
