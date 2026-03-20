@@ -8,15 +8,15 @@ This story reorganizes the ReAct node test surface to mirror the runtime split i
 
 ### Before
 
-- `packages/patterns/tests/react/nodes.test.ts` contained all ReAct node coverage in one `594`-line file
+- `packages/patterns/tests/react/nodes.test.ts` contained the full ReAct node test surface in one file
 
 ### After
 
-- `packages/patterns/tests/react/nodes.test.ts` is a `3`-line public entry point
-- `packages/patterns/tests/react/nodes/helpers.ts` (`64` lines) holds shared mock-model, tool, and base-state helpers
-- `packages/patterns/tests/react/nodes/reasoning.ts` (`137` lines) covers reasoning-node behavior
-- `packages/patterns/tests/react/nodes/action.ts` (`103` lines) covers action-node behavior
-- `packages/patterns/tests/react/nodes/observation.ts` (`241` lines) covers observation-node behavior
+- `packages/patterns/tests/react/nodes.test.ts` is a small public entry point
+- `packages/patterns/tests/react/nodes/helpers.ts` holds shared mock-model, tool, and base-state helpers
+- `packages/patterns/tests/react/nodes/reasoning.ts` covers reasoning-node behavior
+- `packages/patterns/tests/react/nodes/action.ts` covers action-node behavior
+- `packages/patterns/tests/react/nodes/observation.ts` covers observation-node behavior
 
 ## Compatibility Notes
 
