@@ -50,15 +50,27 @@ export const bigintTool = toolBuilder()
 export function createBaseState(
   overrides: Partial<ReActStateType> = {}
 ): ReActStateType {
+  const {
+    messages,
+    thoughts,
+    actions,
+    observations,
+    scratchpad,
+    iteration,
+    shouldContinue,
+    response,
+    ...rest
+  } = overrides;
+
   return {
-    messages: [],
-    thoughts: [],
-    actions: [],
-    observations: [],
-    scratchpad: [],
-    iteration: 0,
-    shouldContinue: true,
-    response: undefined,
-    ...overrides,
+    messages: messages ?? [],
+    thoughts: thoughts ?? [],
+    actions: actions ?? [],
+    observations: observations ?? [],
+    scratchpad: scratchpad ?? [],
+    iteration: iteration ?? 0,
+    shouldContinue: shouldContinue ?? true,
+    response: response ?? undefined,
+    ...rest,
   };
 }

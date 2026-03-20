@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { createObservationNode } from '../../../src/react/nodes.js';
+import type { ReActStateType } from '../../../src/react/state.js';
 import { createBaseState } from './helpers.js';
 
 describe('ReAct Nodes: observation', () => {
@@ -213,9 +214,8 @@ describe('ReAct Nodes: observation', () => {
 
   it('defaults scratchpad step to 0 when iteration is unset', async () => {
     const observationNode = createObservationNode(false, true);
-
-    const result = await observationNode(
-      createBaseState({
+    const invalidRuntimeState = {
+      ...createBaseState({
         thoughts: [{ content: 'Recover missing iteration' }],
         actions: [
           {
@@ -232,9 +232,11 @@ describe('ReAct Nodes: observation', () => {
             timestamp: Date.now(),
           },
         ],
-        iteration: undefined,
-      })
-    );
+      }),
+      iteration: undefined,
+    } as unknown as ReActStateType;
+
+    const result = await observationNode(invalidRuntimeState);
 
     expect(result.scratchpad?.[0].step).toBe(0);
   });
