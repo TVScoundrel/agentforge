@@ -222,20 +222,39 @@
 
 ## ST-09007: Modularize ReAct Node Test Suite
 
-**Branch:** `refactor/st-09007-react-node-test-modularization`
+**Branch:** `codex/refactor/st-09007-react-node-test-modularization`
 
 ### Checklist
-- [ ] Create branch `refactor/st-09007-react-node-test-modularization`
-- [ ] Create draft PR with story ID in title
-- [ ] Reorganize `packages/patterns/tests/react/nodes.test.ts` into smaller test modules or helper layers that mirror the modularized ReAct node responsibilities
-- [ ] Keep the ReAct node test surface easy to run while preserving current behavior coverage
-- [ ] Extract shared test fixtures/helpers where they reduce duplication without obscuring intent
-- [ ] Add/update focused tests for modularized reasoning, action execution, and observation formatting flows
-- [ ] Record touched-file explicit-`any` results and before/after test layout in story docs
-- [ ] Add or update story documentation at `docs/st09007-react-node-test-modularization.md` (or document why not required)
-- [ ] Assess test impact; add/update automated tests when needed, or document why tests are not required
-- [ ] Run full test suite before finalizing the PR and record results
-- [ ] Run lint (`pnpm lint`) before finalizing the PR and record results
-- [ ] Commit completed checklist items as logical commits and push updates
-- [ ] Mark PR Ready only after all story tasks are complete
+- [x] Create branch `codex/refactor/st-09007-react-node-test-modularization`
+  - Created as `codex/refactor/st-09007-react-node-test-modularization` (workspace branch-prefix policy)
+- [x] Create draft PR with story ID in title
+  - PR #69: https://github.com/TVScoundrel/agentforge/pull/69
+- [x] Reorganize `packages/patterns/tests/react/nodes.test.ts` into smaller test modules or helper layers that mirror the modularized ReAct node responsibilities
+- [x] Keep the ReAct node test surface easy to run while preserving current behavior coverage
+  - `packages/patterns/tests/react/nodes.test.ts` now remains the single public entrypoint and imports the focused suite modules
+- [x] Extract shared test fixtures/helpers where they reduce duplication without obscuring intent
+  - Extracted shared helpers into `packages/patterns/tests/react/nodes/helpers.ts`
+- [x] Add/update focused tests for modularized reasoning, action execution, and observation formatting flows
+  - `pnpm test --run packages/patterns/tests/react/nodes.test.ts packages/patterns/tests/react/deduplication.test.ts packages/patterns/tests/react/agent.test.ts` -> `35 passed`
+- [x] Record touched-file explicit-`any` results and before/after test layout in story docs
+  - Recorded in `docs/st09007-react-node-test-modularization.md` (`nodes.test.ts 594 -> 3` lines; baseline remains `305/496`, `patterns 31/82`)
+- [x] Add or update story documentation at `docs/st09007-react-node-test-modularization.md` (or document why not required)
+- [x] Assess test impact; add/update automated tests when needed, or document why tests are not required
+  - The split keeps all existing reasoning/action/observation coverage under the public test entrypoint and preserves recent serialization/iteration regressions
+- [x] Run full test suite before finalizing the PR and record results
+  - `pnpm test --run` -> `149 passed | 16 skipped` files; `2108 passed | 286 skipped` tests
+- [x] Run lint (`pnpm lint`) before finalizing the PR and record results
+  - `pnpm lint` -> exit `0`; warnings only (`0` errors)
+- [x] Commit completed checklist items as logical commits and push updates
+  - `20ac1e0` refactor(st-09007): split react node test suites
+  - `8731357` docs(st-09007): record test modularization progress
+  - `168ab83` docs(st-09007): record validation and move story to in-review
+  - `92a4dd2` fix(st-09007): repair review tracker formatting
+  - `631f28a` test(st-09007): assert human fallback for missing tool call id
+  - `ed6608d` docs(st-09007): align test doc and branch references
+  - `ae08aaa` test(st-09007): normalize base state helper defaults
+  - `c819c87` docs(st-09007): remove brittle test layout line counts
+  - `e3a8c21` fix(st-09007): tighten human fallback assertion and branch label
+- [x] Mark PR Ready only after all story tasks are complete
+  - PR #69 marked ready: https://github.com/TVScoundrel/agentforge/pull/69
 - [ ] Wait for merge; do not merge directly from local branch
