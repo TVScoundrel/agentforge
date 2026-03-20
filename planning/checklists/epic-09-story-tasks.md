@@ -254,6 +254,7 @@
   - `ed6608d` docs(st-09007): align test doc and branch references
   - `ae08aaa` test(st-09007): normalize base state helper defaults
   - `c819c87` docs(st-09007): remove brittle test layout line counts
+  - `e3a8c21` fix(st-09007): tighten human fallback assertion and branch label
 - [x] Mark PR Ready only after all story tasks are complete
   - PR #69 marked ready: https://github.com/TVScoundrel/agentforge/pull/69
 - [ ] Wait for merge; do not merge directly from local branch
