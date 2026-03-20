@@ -5,6 +5,35 @@ All notable changes to AgentForge will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.15.11] - 2026-03-20
+
+### Added
+
+#### Release Automation - Published Package Smoke Verification
+- Added `scripts/smoke-test-published-packages.sh` to verify that all published `@agentforge/*` packages can be installed from npm after release
+- Added release verification coverage for library package loading, `@agentforge/testing` usage inside Vitest, and `@agentforge/cli` command execution
+
+### Changed
+
+#### Release Process - Stronger Publish Verification
+- Updated `scripts/publish.sh` to fail fast when npm reports a version different from the intended release version
+- Updated `scripts/publish.sh` to run published package smoke tests automatically after version verification so release validation covers installability as well as metadata
+
+### Fixed
+
+#### @agentforge/cli - Help Command Exit Handling
+- Fixed `agentforge --help` so Commander help output no longer exits through the error path with `Error: (outputHelp)`
+- Added CLI regression coverage in `packages/cli/tests/index.test.ts` to keep help and version exits from regressing
+
+### Published
+- All packages published to npm registry at version 0.15.11:
+  - @agentforge/core@0.15.11
+  - @agentforge/skills@0.15.11
+  - @agentforge/patterns@0.15.11
+  - @agentforge/tools@0.15.11
+  - @agentforge/testing@0.15.11
+  - @agentforge/cli@0.15.11
+
 ## [0.15.10] - 2026-03-18
 
 ### Added
