@@ -129,23 +129,30 @@ echo ""
 print_step "Verifying published versions..."
 echo ""
 
+RELEASE_VERSION=""
+
 for package in "${PACKAGES[@]}"; do
     if [ -d "$package" ]; then
         PACKAGE_NAME=$(node -e "console.log(require('./$package/package.json').name)")
+        PACKAGE_VERSION=$(node -e "console.log(require('./$package/package.json').version)")
         NPM_VERSION=$(npm view "$PACKAGE_NAME" version 2>/dev/null || echo "not found")
         
-        if [ "$NPM_VERSION" != "not found" ]; then
+        if [ "$NPM_VERSION" = "$PACKAGE_VERSION" ]; then
             print_success "$PACKAGE_NAME@$NPM_VERSION"
+            RELEASE_VERSION="$PACKAGE_VERSION"
         else
-            print_error "$PACKAGE_NAME - not found on npm"
+            print_error "$PACKAGE_NAME expected $PACKAGE_VERSION but found $NPM_VERSION"
+            exit 1
         fi
     fi
 done
 
 echo ""
+print_step "Running published package smoke tests..."
+./scripts/smoke-test-published-packages.sh "$RELEASE_VERSION"
+echo ""
 print_success "Release complete! 🎉"
 echo ""
 print_step "Next steps:"
 echo "  - Verify packages on npm: https://www.npmjs.com/org/agentforge"
-echo "  - Test installation: npx @agentforge/cli@latest create test-project"
 echo "  - Create GitHub release: ./scripts/create-github-release.sh <version>"

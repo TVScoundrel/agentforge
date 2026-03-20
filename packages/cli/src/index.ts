@@ -133,12 +133,29 @@ tool
 // Error handling
 program.exitOverride();
 
+function isCommanderExit(error: unknown): error is { code?: unknown; exitCode?: unknown } {
+  return typeof error === 'object' && error !== null;
+}
+
+function isExpectedCommanderExit(error: unknown): boolean {
+  if (!isCommanderExit(error)) {
+    return false;
+  }
+
+  return (
+    error.exitCode === 0 ||
+    error.code === 'commander.help' ||
+    error.code === 'commander.helpDisplayed' ||
+    error.code === 'commander.version'
+  );
+}
+
 export async function run() {
   try {
     await program.parseAsync(process.argv);
-  } catch (error: any) {
-    if (error.code !== 'commander.help' && error.code !== 'commander.version') {
-      console.error(chalk.red('Error:'), error.message);
+  } catch (error: unknown) {
+    if (!isExpectedCommanderExit(error)) {
+      console.error(chalk.red('Error:'), error instanceof Error ? error.message : String(error));
       process.exit(1);
     }
   }
@@ -146,4 +163,3 @@ export async function run() {
 
 // Export for testing
 export { program };
-
