@@ -257,4 +257,5 @@
   - `e3a8c21` fix(st-09007): tighten human fallback assertion and branch label
 - [x] Mark PR Ready only after all story tasks are complete
   - PR #69 marked ready: https://github.com/TVScoundrel/agentforge/pull/69
-- [ ] Wait for merge; do not merge directly from local branch
+- [x] Wait for merge; do not merge directly from local branch
+  - Merged via PR #69 on 2026-03-20

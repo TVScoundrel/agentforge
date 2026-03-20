@@ -1,9 +1,9 @@
 # Feature Plan: SOLID Micro-Refactors and Type Boundary Hardening
 
 **Epic Range:** EP-09 through EP-09
-**Status:** In Progress
-**Last Updated:** 2026-03-19
-**Active Story:** ST-09007 (In Review)
+**Status:** Completed
+**Last Updated:** 2026-03-20
+**Active Story:** None
 
 ---
 
@@ -53,7 +53,7 @@ Follow-on modularization candidates:
 `ST-09003` removed `13` explicit-`any` warnings from `packages/core/src/langgraph/state.ts` and improved the `core` baseline from `161` to `148`.
 `ST-09004` removed `20` explicit-`any` warnings from `packages/core/src/langgraph/observability/logger.ts` and `packages/core/src/monitoring/alerts.ts`, improving the `core` baseline from `148` to `128`.
 `ST-09005` removed `19` explicit-`any` warnings from `packages/patterns/src/react/nodes.ts` and `packages/patterns/src/shared/agent-builder.ts`, improving the workspace baseline from `324` to `305` and the `patterns` baseline from `50` to `31`.
-`ST-09006` completed the ReAct runtime modularization without regressing the explicit-`any` baseline, leaving `ST-09007` as the next maintainability-focused follow-up for the ReAct test surface.
+`ST-09006` completed the ReAct runtime modularization without regressing the explicit-`any` baseline, and `ST-09007` completed the matching test-suite modularization follow-up.
 
 ---
 

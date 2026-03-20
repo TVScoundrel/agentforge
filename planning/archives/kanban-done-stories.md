@@ -304,6 +304,13 @@
 - **Estimate:** 4 hours
 - **Outcome:** Split the ReAct runtime implementation into focused `shared`, `reasoning`, `action`, and `observation` modules while keeping the public `packages/patterns/src/react/nodes.ts` entry point stable. Added regressions for serialization edge cases, deduplication fallback behavior, and missing-iteration scratchpad handling without regressing the explicit-`any` baseline.
 
+### ST-09007: Modularize ReAct Node Test Suite
+- **Merged:** 2026-03-20
+- **PR:** https://github.com/TVScoundrel/agentforge/pull/69
+- **Epic:** EP-09 (SOLID Micro-Refactors and Type Boundary Hardening)
+- **Estimate:** 4 hours
+- **Outcome:** Split the ReAct node test surface into focused reasoning, action, and observation suites behind a thin public entrypoint, extracted shared test helpers, and preserved regression coverage for serialization and missing-iteration edge cases without regressing the explicit-`any` baseline.
+
 ---
 
 ## Archive Format
