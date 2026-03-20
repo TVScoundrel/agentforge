@@ -252,6 +252,7 @@
   - `92a4dd2` fix(st-09007): repair review tracker formatting
   - `631f28a` test(st-09007): assert human fallback for missing tool call id
   - `ed6608d` docs(st-09007): align test doc and branch references
+  - `ae08aaa` test(st-09007): normalize base state helper defaults
 - [x] Mark PR Ready only after all story tasks are complete
   - PR #69 marked ready: https://github.com/TVScoundrel/agentforge/pull/69
 - [ ] Wait for merge; do not merge directly from local branch
