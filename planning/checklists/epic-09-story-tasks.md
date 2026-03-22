@@ -267,14 +267,21 @@
 **Branch:** `fix/st-09008-parallel-workflow-builder-typing`
 
 ### Checklist
-- [ ] Create branch `fix/st-09008-parallel-workflow-builder-typing`
-- [ ] Create draft PR with story ID in title
-- [ ] Remove avoidable `any` and `@ts-expect-error` usage from `packages/core/src/langgraph/builders/parallel.ts`
-- [ ] Preserve current fan-out/fan-in runtime behavior while tightening state schema, node registration, and edge wiring contracts
-- [ ] Add/update focused tests for duplicate-node validation, auto start/end wiring, and aggregate fan-in behavior
-- [ ] Record explicit-`any` warning deltas for touched files in story docs
-- [ ] Add or update story documentation at `docs/st09008-parallel-workflow-builder-typing.md` (or document why not required)
-- [ ] Assess test impact; add/update automated tests when needed, or document why tests are not required
+- [x] Create branch `fix/st-09008-parallel-workflow-builder-typing`
+  - Created as `codex/fix/st-09008-parallel-workflow-builder-typing` (workspace branch-prefix policy)
+- [x] Create draft PR with story ID in title
+  - Draft PR #70: https://github.com/TVScoundrel/agentforge/pull/70
+- [x] Remove avoidable `any` and `@ts-expect-error` usage from `packages/core/src/langgraph/builders/parallel.ts`
+  - Replaced `any` schema input with `AnnotationRoot`/`StateDefinition` generics and removed `@ts-expect-error`/`as any` edge wiring
+- [x] Preserve current fan-out/fan-in runtime behavior while tightening state schema, node registration, and edge wiring contracts
+  - Verified via focused typecheck/tests plus direct edge assertions for parallel fan-out, aggregate fan-in, and `autoStartEnd: false`
+- [x] Add/update focused tests for duplicate-node validation, auto start/end wiring, and aggregate fan-in behavior
+  - Updated `packages/core/tests/langgraph/builders/parallel.test.ts` to cover direct edge wiring and aggregate fan-in contracts
+- [x] Record explicit-`any` warning deltas for touched files in story docs
+  - `packages/core/src/langgraph/builders/parallel.ts`: `11 -> 0`; baseline `304 -> 295`, `core 128 -> 119`
+- [x] Add or update story documentation at `docs/st09008-parallel-workflow-builder-typing.md` (or document why not required)
+- [x] Assess test impact; add/update automated tests when needed, or document why tests are not required
+  - Focused test coverage updated in `packages/core/tests/langgraph/builders/parallel.test.ts`
 - [ ] Run full test suite before finalizing the PR and record results
 - [ ] Run lint (`pnpm lint`) before finalizing the PR and record results
 - [ ] Commit completed checklist items as logical commits and push updates

@@ -4,8 +4,8 @@
 
 ## Queue Status Summary
 
-- **Ready:** 1 story
-- **In Progress:** 0 stories
+- **Ready:** 0 stories
+- **In Progress:** 1 story
 - **In Review:** 0 stories
 - **Blocked:** 0 stories
 - **Backlog:** 4 stories
@@ -14,17 +14,17 @@
 
 ## Ready
 
-- `ST-09008` - Harden Parallel Workflow Builder Typing
-  - Epic: `EP-09`
-  - Priority: `P1`
-  - Estimate: `3h`
-  - Rationale: `packages/core/src/langgraph/builders/parallel.ts` is still a high-value `any`/`@ts-expect-error` hotspot and is a clean next daily slice
+_No stories currently ready_
 
 ---
 
 ## In Progress
 
-_No stories currently in progress_
+- `ST-09008` - Harden Parallel Workflow Builder Typing
+  - Epic: `EP-09`
+  - Priority: `P1`
+  - Branch: `codex/fix/st-09008-parallel-workflow-builder-typing`
+  - Focus: remove avoidable `any`/`@ts-expect-error` usage from `packages/core/src/langgraph/builders/parallel.ts` without changing fan-out/fan-in behavior
 
 ---
 
