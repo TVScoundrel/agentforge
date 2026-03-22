@@ -10,7 +10,7 @@ Refined the parallel workflow builder to use LangGraph annotation types at the p
 |------|--------|
 | `packages/core/src/langgraph/builders/parallel.ts` | Replaced `any`-typed state schema input with `AnnotationRoot`/`StateDefinition`-driven generics, derived node state directly from the schema, and tightened parallel/aggregate node update contracts without a permissive index signature |
 | `packages/core/src/langgraph/builders/parallel.ts` | Removed `@ts-expect-error` node registration and `as any` edge wiring, using direct `START`/`END` edges and a localized `addNode()` interop cast instead |
-| `packages/core/src/langgraph/builders/parallel.ts` | Removed the unused `ParallelWorkflowOptions.name` field so the options surface matches actual builder behavior |
+| `packages/core/src/langgraph/builders/parallel.ts` | Kept `ParallelWorkflowOptions.name` as a deprecated compatibility-only no-op so the public API does not type-break before a major release |
 | `packages/core/tests/langgraph/builders/parallel.test.ts` | Added direct edge assertions for fan-out/fan-in wiring and `autoStartEnd: false`, while preserving duplicate-name and aggregate execution coverage |
 
 ## Explicit `any` Warning Delta
@@ -31,6 +31,7 @@ Refined the parallel workflow builder to use LangGraph annotation types at the p
 - Parallel fan-out/fan-in runtime behavior is unchanged for both direct parallel execution and optional aggregation nodes.
 - `autoStartEnd` continues to control whether `START`/`END` edges are added automatically; the new tests now assert that wiring directly.
 - LangGraph still requires a widened node-action shape internally. That interop is now isolated to the `addNode()` call site instead of leaking into the exported builder API.
+- `ParallelWorkflowOptions.name` remains accepted for backward compatibility, but it is still a no-op and documented as deprecated for a future major release.
 
 ## Validation
 

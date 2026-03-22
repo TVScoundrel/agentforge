@@ -62,6 +62,13 @@ export interface ParallelWorkflowOptions {
    * @default true
    */
   autoStartEnd?: boolean;
+
+  /**
+   * Compatibility-only no-op retained to avoid a public type break.
+   *
+   * @deprecated This option is currently unused and will be removed in a future major release.
+   */
+  name?: string;
 }
 
 /**
