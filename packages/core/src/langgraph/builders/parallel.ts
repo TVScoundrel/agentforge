@@ -8,12 +8,14 @@
  */
 
 import { StateGraph, END, START } from '@langchain/langgraph';
-import type { StateGraphArgs } from '@langchain/langgraph';
+import type { AnnotationRoot, StateDefinition, UpdateType } from '@langchain/langgraph';
+
+type ParallelNodeResult<State> = Partial<State> & Record<string, unknown>;
 
 /**
  * Configuration for a parallel node
  */
-export interface ParallelNode<State> {
+export interface ParallelNode<State, Update extends Record<string, unknown> = ParallelNodeResult<State>> {
   /**
    * Unique name for the node
    */
@@ -22,7 +24,7 @@ export interface ParallelNode<State> {
   /**
    * The node function that processes the state
    */
-  node: (state: State) => State | Promise<State> | Partial<State> | Promise<Partial<State>>;
+  node: (state: State) => Update | Promise<Update>;
 
   /**
    * Optional description of what this node does
@@ -33,7 +35,7 @@ export interface ParallelNode<State> {
 /**
  * Configuration for an aggregation node that combines parallel results
  */
-export interface AggregateNode<State> {
+export interface AggregateNode<State, Update extends Record<string, unknown> = ParallelNodeResult<State>> {
   /**
    * Name for the aggregation node
    */
@@ -42,7 +44,7 @@ export interface AggregateNode<State> {
   /**
    * The aggregation function that combines results from parallel nodes
    */
-  node: (state: State) => State | Promise<State> | Partial<State> | Promise<Partial<State>>;
+  node: (state: State) => Update | Promise<Update>;
 
   /**
    * Optional description
@@ -69,16 +71,16 @@ export interface ParallelWorkflowOptions {
 /**
  * Configuration for a parallel workflow
  */
-export interface ParallelWorkflowConfig<State> {
+export interface ParallelWorkflowConfig<State, Update extends Record<string, unknown> = ParallelNodeResult<State>> {
   /**
    * Nodes that execute in parallel
    */
-  parallel: ParallelNode<State>[];
+  parallel: ParallelNode<State, Update>[];
 
   /**
    * Optional aggregation node that runs after all parallel nodes complete
    */
-  aggregate?: AggregateNode<State>;
+  aggregate?: AggregateNode<State, Update>;
 }
 
 /**
@@ -108,13 +110,17 @@ export interface ParallelWorkflowConfig<State> {
  * @param options - Optional configuration
  * @returns A configured StateGraph ready to compile
  */
-export function createParallelWorkflow<State>(
-  stateSchema: any,
-  config: ParallelWorkflowConfig<State>,
+export function createParallelWorkflow<
+  State,
+  SD extends StateDefinition = StateDefinition,
+  Update extends Record<string, unknown> = UpdateType<SD> & Record<string, unknown>
+>(
+  stateSchema: AnnotationRoot<SD>,
+  config: ParallelWorkflowConfig<State, Update>,
   options: ParallelWorkflowOptions = {}
-): StateGraph<State> {
+): StateGraph<AnnotationRoot<SD>, State, Update, string> {
   const { parallel, aggregate } = config;
-  const { autoStartEnd = true, name } = options;
+  const { autoStartEnd = true } = options;
 
   if (parallel.length === 0) {
     throw new Error('Parallel workflow must have at least one parallel node');
@@ -134,24 +140,25 @@ export function createParallelWorkflow<State>(
   }
 
   // Create the graph
-  const graph = new StateGraph<State>(stateSchema);
+  const graph = new StateGraph<AnnotationRoot<SD>, State, Update, string>(stateSchema);
+  type GraphNodeAction = Parameters<typeof graph.addNode>[1];
 
   // Add all parallel nodes
   for (const { name: nodeName, node } of parallel) {
-    // @ts-expect-error - LangGraph's complex generic types don't infer well here
-    graph.addNode(nodeName, node);
+    // LangGraph's addNode() overloads widen update objects internally. Keep that
+    // interop localized here rather than weakening the public workflow types.
+    graph.addNode(nodeName, node as unknown as GraphNodeAction);
   }
 
   // Add aggregation node if provided
   if (aggregate) {
-    // @ts-expect-error - LangGraph's complex generic types don't infer well here
-    graph.addNode(aggregate.name, aggregate.node);
+    graph.addNode(aggregate.name, aggregate.node as unknown as GraphNodeAction);
   }
 
   // Connect START to all parallel nodes (fan-out)
   if (autoStartEnd) {
     for (const { name: nodeName } of parallel) {
-      graph.addEdge(START as any, nodeName as any);
+      graph.addEdge(START, nodeName);
     }
   }
 
@@ -159,20 +166,19 @@ export function createParallelWorkflow<State>(
   if (aggregate) {
     // All parallel nodes connect to aggregation
     for (const { name: nodeName } of parallel) {
-      graph.addEdge(nodeName as any, aggregate.name as any);
+      graph.addEdge(nodeName, aggregate.name);
     }
 
     // Aggregation connects to END
     if (autoStartEnd) {
-      graph.addEdge(aggregate.name as any, END as any);
+      graph.addEdge(aggregate.name, END);
     }
   } else if (autoStartEnd) {
     // No aggregation, connect all parallel nodes to END
     for (const { name: nodeName } of parallel) {
-      graph.addEdge(nodeName as any, END as any);
+      graph.addEdge(nodeName, END);
     }
   }
 
   return graph;
 }
-
