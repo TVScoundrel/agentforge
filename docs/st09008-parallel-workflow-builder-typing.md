@@ -8,7 +8,7 @@ Refined the parallel workflow builder to use LangGraph annotation types at the p
 
 | File | Change |
 |------|--------|
-| `packages/core/src/langgraph/builders/parallel.ts` | Replaced `any`-typed state schema input with `AnnotationRoot`/`StateDefinition`-driven generics, derived node state directly from the schema, and tightened parallel/aggregate node update contracts |
+| `packages/core/src/langgraph/builders/parallel.ts` | Replaced `any`-typed state schema input with `AnnotationRoot`/`StateDefinition`-driven generics, derived node state directly from the schema, and tightened parallel/aggregate node update contracts without a permissive index signature |
 | `packages/core/src/langgraph/builders/parallel.ts` | Removed `@ts-expect-error` node registration and `as any` edge wiring, using direct `START`/`END` edges and a localized `addNode()` interop cast instead |
 | `packages/core/src/langgraph/builders/parallel.ts` | Removed the unused `ParallelWorkflowOptions.name` field so the options surface matches actual builder behavior |
 | `packages/core/tests/langgraph/builders/parallel.test.ts` | Added direct edge assertions for fan-out/fan-in wiring and `autoStartEnd: false`, while preserving duplicate-name and aggregate execution coverage |
@@ -17,7 +17,7 @@ Refined the parallel workflow builder to use LangGraph annotation types at the p
 
 ### Story scope hotspot
 
-- `packages/core/src/langgraph/builders/parallel.ts`: `11 -> 0` (`-11`)
+- `packages/core/src/langgraph/builders/parallel.ts`: `9 -> 0` (`-9`)
 
 ### Baseline gate snapshot
 

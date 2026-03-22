@@ -278,7 +278,7 @@
 - [x] Add/update focused tests for duplicate-node validation, auto start/end wiring, and aggregate fan-in behavior
   - Updated `packages/core/tests/langgraph/builders/parallel.test.ts` to cover direct edge wiring and aggregate fan-in contracts
 - [x] Record explicit-`any` warning deltas for touched files in story docs
-  - `packages/core/src/langgraph/builders/parallel.ts`: `11 -> 0`; baseline `304 -> 295`, `core 128 -> 119`
+  - `packages/core/src/langgraph/builders/parallel.ts`: `9 -> 0`; baseline `304 -> 295`, `core 128 -> 119`
 - [x] Add or update story documentation at `docs/st09008-parallel-workflow-builder-typing.md` (or document why not required)
 - [x] Assess test impact; add/update automated tests when needed, or document why tests are not required
   - Focused test coverage updated in `packages/core/tests/langgraph/builders/parallel.test.ts`

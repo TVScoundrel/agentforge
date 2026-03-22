@@ -11,12 +11,12 @@ import { StateGraph, END, START } from '@langchain/langgraph';
 import type { AnnotationRoot, StateDefinition, UpdateType } from '@langchain/langgraph';
 
 type ParallelWorkflowState<SD extends StateDefinition> = AnnotationRoot<SD>['State'];
-type ParallelNodeResult<State> = Partial<State> & Record<string, unknown>;
+type ParallelNodeResult<State> = Partial<State>;
 
 /**
  * Configuration for a parallel node
  */
-export interface ParallelNode<State, Update extends Record<string, unknown> = ParallelNodeResult<State>> {
+export interface ParallelNode<State, Update = ParallelNodeResult<State>> {
   /**
    * Unique name for the node
    */
@@ -36,7 +36,7 @@ export interface ParallelNode<State, Update extends Record<string, unknown> = Pa
 /**
  * Configuration for an aggregation node that combines parallel results
  */
-export interface AggregateNode<State, Update extends Record<string, unknown> = ParallelNodeResult<State>> {
+export interface AggregateNode<State, Update = ParallelNodeResult<State>> {
   /**
    * Name for the aggregation node
    */
@@ -67,7 +67,7 @@ export interface ParallelWorkflowOptions {
 /**
  * Configuration for a parallel workflow
  */
-export interface ParallelWorkflowConfig<State, Update extends Record<string, unknown> = ParallelNodeResult<State>> {
+export interface ParallelWorkflowConfig<State, Update = ParallelNodeResult<State>> {
   /**
    * Nodes that execute in parallel
    */
@@ -108,7 +108,7 @@ export interface ParallelWorkflowConfig<State, Update extends Record<string, unk
  */
 export function createParallelWorkflow<
   SD extends StateDefinition = StateDefinition,
-  Update extends Record<string, unknown> = UpdateType<SD> & Record<string, unknown>
+  Update extends UpdateType<SD> = UpdateType<SD>
 >(
   stateSchema: AnnotationRoot<SD>,
   config: ParallelWorkflowConfig<ParallelWorkflowState<SD>, Update>,
