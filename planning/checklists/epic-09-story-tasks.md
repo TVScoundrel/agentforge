@@ -292,6 +292,7 @@
   - `2fa17b8` docs(st-09008): record validation and move story to in-review
   - `d4b2b18` fix(st-09008): derive parallel workflow state from schema
   - `182f525` fix(st-09008): tighten parallel update contracts
+  - `65a9c50` fix(st-09008): restore deprecated parallel name option
 - [x] Mark PR Ready only after all story tasks are complete
   - PR #70 marked ready: https://github.com/TVScoundrel/agentforge/pull/70
 - [ ] Wait for merge; do not merge directly from local branch
