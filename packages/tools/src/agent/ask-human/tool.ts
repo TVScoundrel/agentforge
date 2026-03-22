@@ -153,7 +153,7 @@ export function createAskHumanTool() {
         },
       });
 
-      let response;
+      let response: unknown;
       try {
         response = interrupt(humanRequest);
         logger.debug('interrupt() returned successfully', {
