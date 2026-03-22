@@ -158,7 +158,8 @@ export function createAskHumanTool() {
         response = interrupt(humanRequest);
         logger.debug('interrupt() returned successfully', {
           responseType: typeof response,
-          ...(typeof response === 'string' ? { response } : {}),
+          hasResponse: response != null,
+          ...(typeof response === 'string' ? { responseLength: response.length } : {}),
         });
       } catch (error) {
         logger.debug('interrupt() threw error (expected for GraphInterrupt)', {
