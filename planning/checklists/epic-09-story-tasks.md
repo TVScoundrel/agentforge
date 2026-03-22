@@ -295,7 +295,8 @@
   - `65a9c50` fix(st-09008): restore deprecated parallel name option
 - [x] Mark PR Ready only after all story tasks are complete
   - PR #70 marked ready: https://github.com/TVScoundrel/agentforge/pull/70
-- [ ] Wait for merge; do not merge directly from local branch
+- [x] Wait for merge; do not merge directly from local branch
+  - Merged via PR #70 on 2026-03-22
 
 ---
 

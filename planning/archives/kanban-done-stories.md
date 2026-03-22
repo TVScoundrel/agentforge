@@ -311,6 +311,13 @@
 - **Estimate:** 4 hours
 - **Outcome:** Split the ReAct node test surface into focused reasoning, action, and observation suites behind a thin public entrypoint, extracted shared test helpers, and preserved regression coverage for serialization and missing-iteration edge cases without regressing the explicit-`any` baseline.
 
+### ST-09008: Harden Parallel Workflow Builder Typing
+- **Merged:** 2026-03-22
+- **PR:** https://github.com/TVScoundrel/agentforge/pull/70
+- **Epic:** EP-09 (SOLID Micro-Refactors and Type Boundary Hardening)
+- **Estimate:** 3 hours
+- **Outcome:** Hardened the `createParallelWorkflow()` public typing surface around schema-derived state and update contracts, removed avoidable builder `any`/`@ts-expect-error` usage, preserved backward compatibility for the deprecated `name` option, and added focused edge-wiring regressions while improving the workspace explicit-`any` baseline from 304 to 295.
+
 ---
 
 ## Archive Format

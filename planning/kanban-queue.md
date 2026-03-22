@@ -4,9 +4,9 @@
 
 ## Queue Status Summary
 
-- **Ready:** 0 stories
+- **Ready:** 1 story
 - **In Progress:** 0 stories
-- **In Review:** 1 story
+- **In Review:** 0 stories
 - **Blocked:** 0 stories
 - **Backlog:** 4 stories
 
@@ -14,7 +14,10 @@
 
 ## Ready
 
-_No stories currently ready_
+- `ST-09009` - Tighten Ask-Human Interrupt Boundary
+  - Epic: `EP-09`
+  - Priority: `P1`
+  - Rationale: `packages/tools/src/agent/ask-human/tool.ts` still relies on broad interrupt import/response casts
 
 ---
 
@@ -26,11 +29,7 @@ _No stories currently in progress_
 
 ## In Review
 
-- `ST-09008` - Harden Parallel Workflow Builder Typing
-  - Epic: `EP-09`
-  - PR: `#70`
-  - Branch: `codex/fix/st-09008-parallel-workflow-builder-typing`
-  - Validation: focused `tsc`/`eslint`/parallel builder tests plus full `pnpm test --run` and `pnpm lint`
+_No stories currently in review_
 
 ---
 
@@ -42,9 +41,6 @@ _No stories currently blocked_
 
 ## Backlog
 
-- `ST-09009` - Tighten Ask-Human Interrupt Boundary
-  - Depends on: `ST-09008`
-  - Rationale: `packages/tools/src/agent/ask-human/tool.ts` still relies on broad interrupt import/response casts
 - `ST-09010` - Strengthen Plan-Execute Agent Routing Typing
   - Depends on: `ST-09009`
   - Rationale: `packages/patterns/src/plan-execute/agent.ts` still uses route and compile `as any` bridges
@@ -109,5 +105,6 @@ _No stories currently blocked_
 - ✅ ST-09005 complete - ReAct node and shared builder typing hardened (merged 2026-03-18)
 - ✅ ST-09006 complete - ReAct node modularization merged (PR #68, 2026-03-18)
 - ✅ ST-09007 complete - ReAct node test modularization merged (PR #69, 2026-03-20)
+- ✅ ST-09008 complete - parallel workflow builder typing hardened (PR #70, 2026-03-22)
 - Epic 09 (SOLID Micro-Refactors and Type Boundary Hardening) was expanded on 2026-03-22 with low-hanging follow-on stories ST-09008 through ST-09012
 - Current measured `no-explicit-any` baseline is `295` warnings (`cli 24`, `core 119`, `patterns 31`, `testing 51`, `tools 70`)
