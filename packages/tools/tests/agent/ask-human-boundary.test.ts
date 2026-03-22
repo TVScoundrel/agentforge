@@ -71,6 +71,21 @@ describe('askHuman Tool - interrupt boundary', () => {
     expect(result.metadata.timedOut).toBe(false);
   });
 
+  it('maps null interrupt resume values to an empty response string', async () => {
+    const interrupt = vi.fn().mockReturnValue(null);
+    vi.doMock('@langchain/langgraph', () => ({ interrupt }));
+
+    const { createAskHumanTool } = await loadAskHumanToolModule();
+    const tool = createAskHumanTool();
+
+    const result = await tool.invoke({
+      question: 'Should I continue?',
+    });
+
+    expect(result.response).toBe('');
+    expect(result.metadata.timedOut).toBe(false);
+  });
+
   it('uses the default response when the timeout elapses', async () => {
     const interrupt = vi.fn().mockReturnValue('late human answer');
     vi.doMock('@langchain/langgraph', () => ({ interrupt }));
