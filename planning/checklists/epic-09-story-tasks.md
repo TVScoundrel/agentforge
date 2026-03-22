@@ -264,21 +264,37 @@
 
 ## ST-09008: Harden Parallel Workflow Builder Typing
 
-**Branch:** `fix/st-09008-parallel-workflow-builder-typing`
+**Branch:** `codex/fix/st-09008-parallel-workflow-builder-typing`
 
 ### Checklist
-- [ ] Create branch `fix/st-09008-parallel-workflow-builder-typing`
-- [ ] Create draft PR with story ID in title
-- [ ] Remove avoidable `any` and `@ts-expect-error` usage from `packages/core/src/langgraph/builders/parallel.ts`
-- [ ] Preserve current fan-out/fan-in runtime behavior while tightening state schema, node registration, and edge wiring contracts
-- [ ] Add/update focused tests for duplicate-node validation, auto start/end wiring, and aggregate fan-in behavior
-- [ ] Record explicit-`any` warning deltas for touched files in story docs
-- [ ] Add or update story documentation at `docs/st09008-parallel-workflow-builder-typing.md` (or document why not required)
-- [ ] Assess test impact; add/update automated tests when needed, or document why tests are not required
-- [ ] Run full test suite before finalizing the PR and record results
-- [ ] Run lint (`pnpm lint`) before finalizing the PR and record results
-- [ ] Commit completed checklist items as logical commits and push updates
-- [ ] Mark PR Ready only after all story tasks are complete
+- [x] Create branch `fix/st-09008-parallel-workflow-builder-typing`
+  - Created as `codex/fix/st-09008-parallel-workflow-builder-typing` (workspace branch-prefix policy)
+- [x] Create draft PR with story ID in title
+  - Draft PR #70: https://github.com/TVScoundrel/agentforge/pull/70
+- [x] Remove avoidable `any` and `@ts-expect-error` usage from `packages/core/src/langgraph/builders/parallel.ts`
+  - Replaced `any` schema input with `AnnotationRoot`/`StateDefinition` generics and removed `@ts-expect-error`/`as any` edge wiring
+- [x] Preserve current fan-out/fan-in runtime behavior while tightening state schema, node registration, and edge wiring contracts
+  - Verified via focused typecheck/tests plus direct edge assertions for parallel fan-out, aggregate fan-in, and `autoStartEnd: false`
+- [x] Add/update focused tests for duplicate-node validation, auto start/end wiring, and aggregate fan-in behavior
+  - Updated `packages/core/tests/langgraph/builders/parallel.test.ts` to cover direct edge wiring and aggregate fan-in contracts
+- [x] Record explicit-`any` warning deltas for touched files in story docs
+  - `packages/core/src/langgraph/builders/parallel.ts`: `9 -> 0`; baseline `304 -> 295`, `core 128 -> 119`
+- [x] Add or update story documentation at `docs/st09008-parallel-workflow-builder-typing.md` (or document why not required)
+- [x] Assess test impact; add/update automated tests when needed, or document why tests are not required
+  - Focused test coverage updated in `packages/core/tests/langgraph/builders/parallel.test.ts`
+- [x] Run full test suite before finalizing the PR and record results
+  - `pnpm test --run` -> `150 passed | 16 skipped` files; `2110 passed | 286 skipped` tests
+- [x] Run lint (`pnpm lint`) before finalizing the PR and record results
+  - `pnpm lint` -> exit `0`; warnings only (`0` errors)
+- [x] Commit completed checklist items as logical commits and push updates
+  - `cb664a3` refactor(st-09008): harden parallel workflow builder typing
+  - `ff6ea5e` docs(st-09008): record parallel builder typing progress
+  - `2fa17b8` docs(st-09008): record validation and move story to in-review
+  - `d4b2b18` fix(st-09008): derive parallel workflow state from schema
+  - `182f525` fix(st-09008): tighten parallel update contracts
+  - `65a9c50` fix(st-09008): restore deprecated parallel name option
+- [x] Mark PR Ready only after all story tasks are complete
+  - PR #70 marked ready: https://github.com/TVScoundrel/agentforge/pull/70
 - [ ] Wait for merge; do not merge directly from local branch
 
 ---

@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { Annotation } from '@langchain/langgraph';
+import { Annotation, END, START } from '@langchain/langgraph';
 import { createParallelWorkflow } from '../../../src/langgraph/builders/parallel';
 
 describe('Parallel Workflow Builder', () => {
@@ -14,30 +14,27 @@ describe('Parallel Workflow Builder', () => {
       default: () => 0,
     }),
   });
-
-  type State = typeof TestState.State;
-
   describe('createParallelWorkflow', () => {
     it('should execute multiple nodes in parallel', async () => {
-      const workflow = createParallelWorkflow<State>(TestState, {
+      const workflow = createParallelWorkflow(TestState, {
         parallel: [
           {
             name: 'task1',
-            node: async (state) => {
+            node: async (_state) => {
               await new Promise((resolve) => setTimeout(resolve, 10));
               return { results: ['task1'], count: 1 };
             },
           },
           {
             name: 'task2',
-            node: async (state) => {
+            node: async (_state) => {
               await new Promise((resolve) => setTimeout(resolve, 10));
               return { results: ['task2'], count: 1 };
             },
           },
           {
             name: 'task3',
-            node: async (state) => {
+            node: async (_state) => {
               await new Promise((resolve) => setTimeout(resolve, 10));
               return { results: ['task3'], count: 1 };
             },
@@ -60,20 +57,20 @@ describe('Parallel Workflow Builder', () => {
     });
 
     it('should support aggregation node after parallel execution', async () => {
-      const workflow = createParallelWorkflow<State>(TestState, {
+      const workflow = createParallelWorkflow(TestState, {
         parallel: [
           {
             name: 'fetch1',
-            node: (state) => ({ results: ['data1'], count: 1 }),
+            node: (_state) => ({ results: ['data1'], count: 1 }),
           },
           {
             name: 'fetch2',
-            node: (state) => ({ results: ['data2'], count: 1 }),
+            node: (_state) => ({ results: ['data2'], count: 1 }),
           },
         ],
         aggregate: {
           name: 'combine',
-          node: (state) => ({
+          node: (_state) => ({
             results: ['combined'],
             count: 1,
           }),
@@ -95,7 +92,7 @@ describe('Parallel Workflow Builder', () => {
 
     it('should throw error for empty parallel node list', () => {
       expect(() => {
-        createParallelWorkflow<State>(TestState, {
+        createParallelWorkflow(TestState, {
           parallel: [],
         });
       }).toThrow('Parallel workflow must have at least one parallel node');
@@ -103,7 +100,7 @@ describe('Parallel Workflow Builder', () => {
 
     it('should throw error for duplicate node names in parallel nodes', () => {
       expect(() => {
-        createParallelWorkflow<State>(TestState, {
+        createParallelWorkflow(TestState, {
           parallel: [
             { name: 'duplicate', node: (state) => state },
             { name: 'duplicate', node: (state) => state },
@@ -114,7 +111,7 @@ describe('Parallel Workflow Builder', () => {
 
     it('should throw error if aggregate node name conflicts with parallel node', () => {
       expect(() => {
-        createParallelWorkflow<State>(TestState, {
+        createParallelWorkflow(TestState, {
           parallel: [
             { name: 'task1', node: (state) => state },
             { name: 'task2', node: (state) => state },
@@ -127,47 +124,78 @@ describe('Parallel Workflow Builder', () => {
       }).toThrow('Duplicate node name: task1');
     });
 
-    it('should work without autoStartEnd', async () => {
-      const workflow = createParallelWorkflow<State>(
+    it('should wire fan-out and fan-in edges when autoStartEnd is enabled', () => {
+      const workflow = createParallelWorkflow(TestState, {
+        parallel: [
+          {
+            name: 'task1',
+            node: (_state) => ({ results: ['task1'], count: 1 }),
+          },
+          {
+            name: 'task2',
+            node: (_state) => ({ results: ['task2'], count: 1 }),
+          },
+        ],
+        aggregate: {
+          name: 'combine',
+          node: (_state) => ({ results: ['combined'], count: 1 }),
+        },
+      });
+
+      expect(workflow.edges).toEqual(
+        new Set([
+          [START, 'task1'],
+          [START, 'task2'],
+          ['task1', 'combine'],
+          ['task2', 'combine'],
+          ['combine', END],
+        ])
+      );
+    });
+
+    it('should omit START and END edges when autoStartEnd is disabled', () => {
+      const workflow = createParallelWorkflow(
         TestState,
         {
           parallel: [
             {
               name: 'task1',
-              node: (state) => ({ results: ['task1'], count: 1 }),
+              node: (_state) => ({ results: ['task1'], count: 1 }),
             },
             {
               name: 'task2',
-              node: (state) => ({ results: ['task2'], count: 1 }),
+              node: (_state) => ({ results: ['task2'], count: 1 }),
             },
           ],
+          aggregate: {
+            name: 'combine',
+            node: (_state) => ({ results: ['combined'], count: 1 }),
+          },
         },
-        { autoStartEnd: true }
+        { autoStartEnd: false }
       );
 
-      const app = workflow.compile();
-      const result = await app.invoke({
-        results: [],
-        count: 0,
-      });
-
-      expect(result.results).toHaveLength(2);
-      expect(result.count).toBe(2);
+      expect(workflow.edges).toEqual(
+        new Set([
+          ['task1', 'combine'],
+          ['task2', 'combine'],
+        ])
+      );
     });
 
     it('should handle parallel nodes with different execution times', async () => {
-      const workflow = createParallelWorkflow<State>(TestState, {
+      const workflow = createParallelWorkflow(TestState, {
         parallel: [
           {
             name: 'fast',
-            node: async (state) => {
+            node: async (_state) => {
               await new Promise((resolve) => setTimeout(resolve, 5));
               return { results: ['fast'], count: 1 };
             },
           },
           {
             name: 'slow',
-            node: async (state) => {
+            node: async (_state) => {
               await new Promise((resolve) => setTimeout(resolve, 50));
               return { results: ['slow'], count: 1 };
             },
@@ -190,4 +218,3 @@ describe('Parallel Workflow Builder', () => {
     });
   });
 });
-

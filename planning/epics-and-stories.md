@@ -953,7 +953,7 @@
 **Priority:** P1 (High)
 **Estimate:** 3 hours
 **Dependencies:** ST-09007
-**Status:** Ready
+**Status:** In Review
 
 **Acceptance criteria:**
 - [ ] `packages/core/src/langgraph/builders/parallel.ts` removes avoidable `any` and `@ts-expect-error` usage around state schema, node registration, and edge wiring

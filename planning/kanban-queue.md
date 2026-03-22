@@ -4,9 +4,9 @@
 
 ## Queue Status Summary
 
-- **Ready:** 1 story
+- **Ready:** 0 stories
 - **In Progress:** 0 stories
-- **In Review:** 0 stories
+- **In Review:** 1 story
 - **Blocked:** 0 stories
 - **Backlog:** 4 stories
 
@@ -14,11 +14,7 @@
 
 ## Ready
 
-- `ST-09008` - Harden Parallel Workflow Builder Typing
-  - Epic: `EP-09`
-  - Priority: `P1`
-  - Estimate: `3h`
-  - Rationale: `packages/core/src/langgraph/builders/parallel.ts` is still a high-value `any`/`@ts-expect-error` hotspot and is a clean next daily slice
+_No stories currently ready_
 
 ---
 
@@ -30,7 +26,11 @@ _No stories currently in progress_
 
 ## In Review
 
-_No stories currently in review_
+- `ST-09008` - Harden Parallel Workflow Builder Typing
+  - Epic: `EP-09`
+  - PR: `#70`
+  - Branch: `codex/fix/st-09008-parallel-workflow-builder-typing`
+  - Validation: focused `tsc`/`eslint`/parallel builder tests plus full `pnpm test --run` and `pnpm lint`
 
 ---
 
@@ -50,7 +50,7 @@ _No stories currently blocked_
   - Rationale: `packages/patterns/src/plan-execute/agent.ts` still uses route and compile `as any` bridges
 - `ST-09011` - Tighten Explicit-`any` Baseline Caps
   - Depends on: `ST-09010`
-  - Rationale: the committed baseline still allows `496` warnings while the current measured count is `304`
+  - Rationale: the committed baseline still allows `496` warnings while the current measured count is `295`
 - `ST-09012` - Remove Package Export-Map Build Warnings
   - Depends on: `ST-09011`
   - Rationale: `skills`, `tools`, and `testing` package metadata still emit easy-to-fix `exports.types` ordering warnings during build
@@ -110,4 +110,4 @@ _No stories currently blocked_
 - ✅ ST-09006 complete - ReAct node modularization merged (PR #68, 2026-03-18)
 - ✅ ST-09007 complete - ReAct node test modularization merged (PR #69, 2026-03-20)
 - Epic 09 (SOLID Micro-Refactors and Type Boundary Hardening) was expanded on 2026-03-22 with low-hanging follow-on stories ST-09008 through ST-09012
-- Current measured `no-explicit-any` baseline is `304` warnings (`cli 24`, `core 128`, `patterns 31`, `testing 51`, `tools 70`)
+- Current measured `no-explicit-any` baseline is `295` warnings (`cli 24`, `core 119`, `patterns 31`, `testing 51`, `tools 70`)
