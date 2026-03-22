@@ -4,26 +4,27 @@
 
 ## Queue Status Summary
 
-- **Ready:** 1 story
-- **In Progress:** 0 stories
+- **Ready:** 0 stories
+- **In Progress:** 1 story
 - **In Review:** 0 stories
 - **Blocked:** 0 stories
 - **Backlog:** 4 stories
 
 ---
 
-## Ready
+## In Progress
 
 - `ST-09009` - Tighten Ask-Human Interrupt Boundary
   - Epic: `EP-09`
   - Priority: `P1`
-  - Rationale: `packages/tools/src/agent/ask-human/tool.ts` still relies on broad interrupt import/response casts
+  - Branch: `codex/fix/st-09009-ask-human-interrupt-boundary-hardening`
+  - Progress: ask-human interrupt loading/response normalization hardened; focused boundary tests added
 
 ---
 
-## In Progress
+## Ready
 
-_No stories currently in progress_
+_No stories currently ready_
 
 ---
 
@@ -46,7 +47,7 @@ _No stories currently blocked_
   - Rationale: `packages/patterns/src/plan-execute/agent.ts` still uses route and compile `as any` bridges
 - `ST-09011` - Tighten Explicit-`any` Baseline Caps
   - Depends on: `ST-09010`
-  - Rationale: the committed baseline still allows `496` warnings while the current measured count is `295`
+  - Rationale: the committed baseline still allows `496` warnings while the current measured count is `292`
 - `ST-09012` - Remove Package Export-Map Build Warnings
   - Depends on: `ST-09011`
   - Rationale: `skills`, `tools`, and `testing` package metadata still emit easy-to-fix `exports.types` ordering warnings during build
@@ -107,4 +108,4 @@ _No stories currently blocked_
 - ✅ ST-09007 complete - ReAct node test modularization merged (PR #69, 2026-03-20)
 - ✅ ST-09008 complete - parallel workflow builder typing hardened (PR #70, 2026-03-22)
 - Epic 09 (SOLID Micro-Refactors and Type Boundary Hardening) was expanded on 2026-03-22 with low-hanging follow-on stories ST-09008 through ST-09012
-- Current measured `no-explicit-any` baseline is `295` warnings (`cli 24`, `core 119`, `patterns 31`, `testing 51`, `tools 70`)
+- Current measured `no-explicit-any` baseline is `292` warnings (`cli 24`, `core 119`, `patterns 31`, `testing 51`, `tools 67`)
