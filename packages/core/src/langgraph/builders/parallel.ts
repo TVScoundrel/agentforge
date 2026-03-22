@@ -10,6 +10,7 @@
 import { StateGraph, END, START } from '@langchain/langgraph';
 import type { AnnotationRoot, StateDefinition, UpdateType } from '@langchain/langgraph';
 
+type ParallelWorkflowState<SD extends StateDefinition> = AnnotationRoot<SD>['State'];
 type ParallelNodeResult<State> = Partial<State> & Record<string, unknown>;
 
 /**
@@ -61,11 +62,6 @@ export interface ParallelWorkflowOptions {
    * @default true
    */
   autoStartEnd?: boolean;
-
-  /**
-   * Custom name for the workflow (for debugging)
-   */
-  name?: string;
 }
 
 /**
@@ -111,14 +107,13 @@ export interface ParallelWorkflowConfig<State, Update extends Record<string, unk
  * @returns A configured StateGraph ready to compile
  */
 export function createParallelWorkflow<
-  State,
   SD extends StateDefinition = StateDefinition,
   Update extends Record<string, unknown> = UpdateType<SD> & Record<string, unknown>
 >(
   stateSchema: AnnotationRoot<SD>,
-  config: ParallelWorkflowConfig<State, Update>,
+  config: ParallelWorkflowConfig<ParallelWorkflowState<SD>, Update>,
   options: ParallelWorkflowOptions = {}
-): StateGraph<AnnotationRoot<SD>, State, Update, string> {
+): StateGraph<AnnotationRoot<SD>, ParallelWorkflowState<SD>, Update, string> {
   const { parallel, aggregate } = config;
   const { autoStartEnd = true } = options;
 
@@ -140,7 +135,7 @@ export function createParallelWorkflow<
   }
 
   // Create the graph
-  const graph = new StateGraph<AnnotationRoot<SD>, State, Update, string>(stateSchema);
+  const graph = new StateGraph<AnnotationRoot<SD>, ParallelWorkflowState<SD>, Update, string>(stateSchema);
   type GraphNodeAction = Parameters<typeof graph.addNode>[1];
 
   // Add all parallel nodes

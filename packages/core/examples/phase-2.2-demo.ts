@@ -72,7 +72,7 @@ console.log('Result:', sequentialResult);
 // Example 2: Parallel Workflow
 console.log('\n=== Example 2: Parallel Workflow ===\n');
 
-const parallelWorkflow = createParallelWorkflow<State>(AgentState, {
+const parallelWorkflow = createParallelWorkflow(AgentState, {
   parallel: [
     {
       name: 'fetch_news',
@@ -161,4 +161,3 @@ const result = await timedNode({ messages: [], data: {}, errors: [] });
 console.log('Result:', result);
 
 console.log('\n=== All examples completed! ===\n');
-

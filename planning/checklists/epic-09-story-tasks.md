@@ -264,7 +264,7 @@
 
 ## ST-09008: Harden Parallel Workflow Builder Typing
 
-**Branch:** `fix/st-09008-parallel-workflow-builder-typing`
+**Branch:** `codex/fix/st-09008-parallel-workflow-builder-typing`
 
 ### Checklist
 - [x] Create branch `fix/st-09008-parallel-workflow-builder-typing`

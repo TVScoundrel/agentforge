@@ -14,12 +14,9 @@ describe('Parallel Workflow Builder', () => {
       default: () => 0,
     }),
   });
-
-  type State = typeof TestState.State;
-
   describe('createParallelWorkflow', () => {
     it('should execute multiple nodes in parallel', async () => {
-      const workflow = createParallelWorkflow<State>(TestState, {
+      const workflow = createParallelWorkflow(TestState, {
         parallel: [
           {
             name: 'task1',
@@ -60,7 +57,7 @@ describe('Parallel Workflow Builder', () => {
     });
 
     it('should support aggregation node after parallel execution', async () => {
-      const workflow = createParallelWorkflow<State>(TestState, {
+      const workflow = createParallelWorkflow(TestState, {
         parallel: [
           {
             name: 'fetch1',
@@ -95,7 +92,7 @@ describe('Parallel Workflow Builder', () => {
 
     it('should throw error for empty parallel node list', () => {
       expect(() => {
-        createParallelWorkflow<State>(TestState, {
+        createParallelWorkflow(TestState, {
           parallel: [],
         });
       }).toThrow('Parallel workflow must have at least one parallel node');
@@ -103,7 +100,7 @@ describe('Parallel Workflow Builder', () => {
 
     it('should throw error for duplicate node names in parallel nodes', () => {
       expect(() => {
-        createParallelWorkflow<State>(TestState, {
+        createParallelWorkflow(TestState, {
           parallel: [
             { name: 'duplicate', node: (state) => state },
             { name: 'duplicate', node: (state) => state },
@@ -114,7 +111,7 @@ describe('Parallel Workflow Builder', () => {
 
     it('should throw error if aggregate node name conflicts with parallel node', () => {
       expect(() => {
-        createParallelWorkflow<State>(TestState, {
+        createParallelWorkflow(TestState, {
           parallel: [
             { name: 'task1', node: (state) => state },
             { name: 'task2', node: (state) => state },
@@ -128,7 +125,7 @@ describe('Parallel Workflow Builder', () => {
     });
 
     it('should wire fan-out and fan-in edges when autoStartEnd is enabled', () => {
-      const workflow = createParallelWorkflow<State>(TestState, {
+      const workflow = createParallelWorkflow(TestState, {
         parallel: [
           {
             name: 'task1',
@@ -157,7 +154,7 @@ describe('Parallel Workflow Builder', () => {
     });
 
     it('should omit START and END edges when autoStartEnd is disabled', () => {
-      const workflow = createParallelWorkflow<State>(
+      const workflow = createParallelWorkflow(
         TestState,
         {
           parallel: [
@@ -187,7 +184,7 @@ describe('Parallel Workflow Builder', () => {
     });
 
     it('should handle parallel nodes with different execution times', async () => {
-      const workflow = createParallelWorkflow<State>(TestState, {
+      const workflow = createParallelWorkflow(TestState, {
         parallel: [
           {
             name: 'fast',
