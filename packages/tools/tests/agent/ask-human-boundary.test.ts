@@ -91,4 +91,40 @@ describe('askHuman Tool - interrupt boundary', () => {
     expect(result.metadata.duration).toBe(1_500);
     expect(result.metadata.timedOut).toBe(true);
   });
+
+  it('honors an empty-string default response when the timeout elapses', async () => {
+    const interrupt = vi.fn().mockReturnValue('late human answer');
+    vi.doMock('@langchain/langgraph', () => ({ interrupt }));
+    vi.spyOn(Date, 'now')
+      .mockReturnValueOnce(5_000)
+      .mockReturnValueOnce(7_000);
+
+    const { createAskHumanTool } = await loadAskHumanToolModule();
+    const tool = createAskHumanTool();
+
+    const result = await tool.invoke({
+      question: 'Approve blank response?',
+      timeout: 1_000,
+      defaultResponse: '',
+    });
+
+    expect(result.response).toBe('');
+    expect(result.metadata.timedOut).toBe(true);
+  });
+
+  it('rejects non-string interrupt resume values with a compatibility error', async () => {
+    const interrupt = vi.fn().mockReturnValue({ answer: 'not-a-string' });
+    vi.doMock('@langchain/langgraph', () => ({ interrupt }));
+
+    const { createAskHumanTool } = await loadAskHumanToolModule();
+    const tool = createAskHumanTool();
+
+    await expect(
+      tool.invoke({
+        question: 'Should I continue?',
+      })
+    ).rejects.toThrow(
+      'askHuman tool expected LangGraph interrupt() to resume with a string response. Received object.'
+    );
+  });
 });

@@ -322,6 +322,7 @@
 Implementation notes:
 - `fec8ad1` `fix(st-09009): harden ask-human interrupt boundary`
 - `d1f5dd2` `docs(st-09009): record ask-human boundary progress`
+- `fix(st-09009):` pending review-fix commit for logger namespace, timeout default handling, non-string resume regression, and Phase 9 status sync
 - Draft PR #71: https://github.com/TVScoundrel/agentforge/pull/71
 - Focused validation passed:
   - `pnpm exec tsc -p packages/tools/tsconfig.json --noEmit`

@@ -10,7 +10,7 @@ import { randomUUID } from 'crypto';
 // Create logger for askHuman tool
 // Log level can be controlled via LOG_LEVEL environment variable
 const logLevel = (process.env.LOG_LEVEL?.toLowerCase() as LogLevel) || LogLevel.INFO;
-const logger = createLogger('askHuman', { level: logLevel });
+const logger = createLogger('agentforge:tools:agent:ask-human', { level: logLevel });
 
 type HumanInterruptRequest = Pick<
   AskHumanInput,
@@ -177,9 +177,10 @@ export function createAskHumanTool() {
       const timedOut = validatedInput.timeout > 0 && duration >= validatedInput.timeout;
 
       // If timeout occurred and we have a default response, use it
-      const finalResponse = timedOut && validatedInput.defaultResponse
-        ? validatedInput.defaultResponse
-        : normalizeInterruptResponse(response);
+      const finalResponse =
+        timedOut && validatedInput.defaultResponse !== undefined
+          ? validatedInput.defaultResponse
+          : normalizeInterruptResponse(response);
 
       return {
         response: finalResponse,
