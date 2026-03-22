@@ -5,32 +5,32 @@
 ## Queue Status Summary
 
 - **Ready:** 0 stories
-- **In Progress:** 1 story
-- **In Review:** 0 stories
+- **In Progress:** 0 stories
+- **In Review:** 1 story
 - **Blocked:** 0 stories
 - **Backlog:** 4 stories
 
 ---
 
-## In Progress
+## In Review
 
 - `ST-09009` - Tighten Ask-Human Interrupt Boundary
   - Epic: `EP-09`
   - Priority: `P1`
-  - Branch: `codex/fix/st-09009-ask-human-interrupt-boundary-hardening`
-  - Progress: ask-human interrupt loading/response normalization hardened; focused boundary tests added
+  - PR: `#71`
+  - Progress: ask-human interrupt loading/response normalization hardened; full suite and lint completed
+
+---
+
+## In Progress
+
+_No stories currently in progress_
 
 ---
 
 ## Ready
 
 _No stories currently ready_
-
----
-
-## In Review
-
-_No stories currently in review_
 
 ---
 
