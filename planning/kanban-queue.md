@@ -1,20 +1,24 @@
 # Kanban Queue: AgentForge
 
-**Last Updated:** 2026-03-20
+**Last Updated:** 2026-03-22
 
 ## Queue Status Summary
 
-- **Ready:** 0 stories
+- **Ready:** 1 story
 - **In Progress:** 0 stories
 - **In Review:** 0 stories
 - **Blocked:** 0 stories
-- **Backlog:** 0 stories
+- **Backlog:** 4 stories
 
 ---
 
 ## Ready
 
-_No stories currently ready_
+- `ST-09008` - Harden Parallel Workflow Builder Typing
+  - Epic: `EP-09`
+  - Priority: `P1`
+  - Estimate: `3h`
+  - Rationale: `packages/core/src/langgraph/builders/parallel.ts` is still a high-value `any`/`@ts-expect-error` hotspot and is a clean next daily slice
 
 ---
 
@@ -38,7 +42,18 @@ _No stories currently blocked_
 
 ## Backlog
 
-_No stories currently in backlog_
+- `ST-09009` - Tighten Ask-Human Interrupt Boundary
+  - Depends on: `ST-09008`
+  - Rationale: `packages/tools/src/agent/ask-human/tool.ts` still relies on broad interrupt import/response casts
+- `ST-09010` - Strengthen Plan-Execute Agent Routing Typing
+  - Depends on: `ST-09009`
+  - Rationale: `packages/patterns/src/plan-execute/agent.ts` still uses route and compile `as any` bridges
+- `ST-09011` - Tighten Explicit-`any` Baseline Caps
+  - Depends on: `ST-09010`
+  - Rationale: the committed baseline still allows `496` warnings while the current measured count is `304`
+- `ST-09012` - Remove Package Export-Map Build Warnings
+  - Depends on: `ST-09011`
+  - Rationale: `skills`, `tools`, and `testing` package metadata still emit easy-to-fix `exports.types` ordering warnings during build
 
 ---
 
@@ -94,4 +109,5 @@ _No stories currently in backlog_
 - ✅ ST-09005 complete - ReAct node and shared builder typing hardened (merged 2026-03-18)
 - ✅ ST-09006 complete - ReAct node modularization merged (PR #68, 2026-03-18)
 - ✅ ST-09007 complete - ReAct node test modularization merged (PR #69, 2026-03-20)
-- Epic 09 (SOLID Micro-Refactors and Type Boundary Hardening) is now complete - all 7 stories merged
+- Epic 09 (SOLID Micro-Refactors and Type Boundary Hardening) was expanded on 2026-03-22 with low-hanging follow-on stories ST-09008 through ST-09012
+- Current measured `no-explicit-any` baseline is `304` warnings (`cli 24`, `core 128`, `patterns 31`, `testing 51`, `tools 70`)

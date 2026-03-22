@@ -119,8 +119,9 @@
 - Cross-package utility modules become easier to test and reason about through extracted helpers and clearer responsibilities
 - Explicit-`any` warnings continue trending down from the current `385` `src/**` baseline without regressions
 - Story slices are intentionally small (1 day each) so quality improvements can ship continuously
+- Lightweight quality-gate follow-ups keep release/build feedback tight by reducing stale warning caps and easy package metadata warnings
 
-**Stories:** ST-09001 through ST-09007
+**Stories:** ST-09001 through ST-09012
 
 ---
 
@@ -946,15 +947,100 @@
 
 ---
 
+#### ST-09008: Harden Parallel Workflow Builder Typing
+**User story:** As a LangGraph workflow author, I want the parallel workflow builder to use stronger schema and edge typing so fan-out/fan-in workflows are easier to compose without unsafe casts.
+
+**Priority:** P1 (High)
+**Estimate:** 3 hours
+**Dependencies:** ST-09007
+**Status:** Ready
+
+**Acceptance criteria:**
+- [ ] `packages/core/src/langgraph/builders/parallel.ts` removes avoidable `any` and `@ts-expect-error` usage around state schema, node registration, and edge wiring
+- [ ] Builder contracts preserve current runtime behavior for parallel nodes and optional aggregation nodes
+- [ ] Focused tests are added or updated for duplicate-node validation, auto start/end wiring, and aggregate fan-in behavior
+- [ ] Explicit-`any` warning changes for touched files are recorded in story documentation
+- [ ] Add or update story documentation at `docs/st09008-parallel-workflow-builder-typing.md`
+
+---
+
+#### ST-09009: Tighten Ask-Human Interrupt Boundary
+**User story:** As an agent developer, I want the ask-human tool to use a safer LangGraph interrupt boundary so human-in-the-loop pauses do not rely on broad dynamic casts.
+
+**Priority:** P1 (High)
+**Estimate:** 3 hours
+**Dependencies:** ST-09008
+**Status:** Backlog
+
+**Acceptance criteria:**
+- [ ] `packages/tools/src/agent/ask-human/tool.ts` removes avoidable `any` usage around dynamic LangGraph import and interrupt handling
+- [ ] Interrupt availability and compatibility checks produce clear errors without weakening the public `AskHumanOutput` contract
+- [ ] Focused tests are added or updated for missing LangGraph dependency handling, interrupt response handling, and timeout/default-response behavior
+- [ ] Explicit-`any` warning changes for touched files are recorded in story documentation
+- [ ] Add or update story documentation at `docs/st09009-ask-human-interrupt-boundary-hardening.md`
+
+---
+
+#### ST-09010: Strengthen Plan-Execute Agent Routing Typing
+**User story:** As a patterns maintainer, I want plan-execute routing and compile boundaries to be strongly typed so the agent factory no longer depends on broad route and compile casts.
+
+**Priority:** P2 (Medium)
+**Estimate:** 3 hours
+**Dependencies:** ST-09009
+**Status:** Backlog
+
+**Acceptance criteria:**
+- [ ] `packages/patterns/src/plan-execute/agent.ts` removes avoidable `as any` usage in conditional routing and compile return handling
+- [ ] Route typing continues to support planner, executor, replanner, finisher, and terminal error flows without runtime behavior changes
+- [ ] Focused tests are added or updated for executor/replanner route decisions and compiled agent invocation behavior
+- [ ] Explicit-`any` warning changes for touched files are recorded in story documentation
+- [ ] Add or update story documentation at `docs/st09010-plan-execute-routing-typing.md`
+
+---
+
+#### ST-09011: Tighten Explicit-`any` Baseline Caps
+**User story:** As a maintainer, I want the explicit-`any` baseline caps tightened to the current improved counts so the no-regression guard reflects the actual warning floor instead of stale historical limits.
+
+**Priority:** P1 (High)
+**Estimate:** 2 hours
+**Dependencies:** ST-09010
+**Status:** Backlog
+
+**Acceptance criteria:**
+- [ ] `scripts/no-explicit-any-baseline.json` is updated to the current post-EP-09 warning totals and per-package caps
+- [ ] Baseline verification continues to pass locally and in CI with the tightened numbers
+- [ ] Story docs record the before/after cap values and the command output used to derive them
+- [ ] No source files regress warning counts as part of the baseline-tightening story
+- [ ] Add or update story documentation at `docs/st09011-explicit-any-baseline-tightening.md`
+
+---
+
+#### ST-09012: Remove Package Export-Map Build Warnings
+**User story:** As a release maintainer, I want package export-map metadata cleaned up so routine builds stop emitting avoidable package.json condition-order warnings.
+
+**Priority:** P2 (Medium)
+**Estimate:** 2 hours
+**Dependencies:** ST-09011
+**Status:** Backlog
+
+**Acceptance criteria:**
+- [ ] `packages/skills/package.json`, `packages/tools/package.json`, and `packages/testing/package.json` no longer emit the current `"types" condition will never be used` build warnings
+- [ ] Export-map cleanup preserves published import/require/types resolution for consumers
+- [ ] Focused validation covers package builds and a smoke-level resolution check for the touched packages
+- [ ] Story docs capture the exact warnings removed and any package-metadata rationale
+- [ ] Add or update story documentation at `docs/st09012-package-export-map-warning-cleanup.md`
+
+---
+
 ## Story Summary
 
-**Total Stories:** 43
+**Total Stories:** 48
 **By Priority:**
 - P0 (Critical): 17 stories
-- P1 (High): 16 stories
-- P2 (Medium): 10 stories
+- P1 (High): 19 stories
+- P2 (Medium): 12 stories
 
-**Total Estimated Effort:** ~172 hours (21.5 working days)
+**Total Estimated Effort:** ~185 hours (23.1 working days)
 
 **Dependency Chain:**
 1. Phase 1 (Foundation): ST-01001 → ST-01002 → ST-01003 → ST-01004
@@ -965,4 +1051,4 @@
 6. Phase 6 (Agent Skills): ST-06001 → ST-06002 → ST-06003 → ST-06004 → ST-06005 → ST-06006
 7. Phase 7 (Skills Extraction): ST-07001 → ST-07002 → [ST-07003, ST-07004 parallel] → ST-07005; ST-07001 → ST-07006 (independent)
 8. Phase 8 (Type Safety Hardening): ST-08001 → [ST-08002, ST-08003, ST-08004 parallel]
-9. Phase 9 (SOLID Micro-Refactors): ST-09001 (Merged) → ST-09002 (Merged) → ST-09003 (Merged) → ST-09004 (Merged) → ST-09005 (Merged) → ST-09006 (Merged) → ST-09007 (Merged)
+9. Phase 9 (SOLID Micro-Refactors): ST-09001 (Merged) → ST-09002 (Merged) → ST-09003 (Merged) → ST-09004 (Merged) → ST-09005 (Merged) → ST-09006 (Merged) → ST-09007 (Merged) → ST-09008 (Ready) → ST-09009 (Backlog) → ST-09010 (Backlog) → ST-09011 (Backlog) → ST-09012 (Backlog)

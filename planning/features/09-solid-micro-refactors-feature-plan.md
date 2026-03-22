@@ -1,9 +1,9 @@
 # Feature Plan: SOLID Micro-Refactors and Type Boundary Hardening
 
 **Epic Range:** EP-09 through EP-09
-**Status:** Completed
-**Last Updated:** 2026-03-20
-**Active Story:** None
+**Status:** In Progress
+**Last Updated:** 2026-03-22
+**Active Story:** ST-09008 (Ready)
 
 ---
 
@@ -20,7 +20,8 @@
 - Incremental daily stories can be completed in one working day each
 - High-leverage explicit-`any` hotspots in runtime code are reduced with no API regressions
 - Modules with mixed responsibilities are split into clearer boundaries where practical
-- The explicit-`any` baseline continues to trend down from current `385` warnings in `packages/**/src/**/*.ts`
+- The explicit-`any` baseline continues to trend down while the committed no-regression cap is tightened to match actual improvements
+- Release/build feedback becomes quieter and more actionable by removing easy package metadata warnings
 
 **Business Value:**
 - Improves maintainability and reviewability of the framework without large risky rewrites
@@ -31,29 +32,26 @@
 
 ## Current Hotspot Snapshot
 
-Current `@typescript-eslint/no-explicit-any` baseline check (`pnpm lint:explicit-any:baseline`, 2026-03-16):
+Current `@typescript-eslint/no-explicit-any` baseline check (`pnpm lint:explicit-any:baseline`, 2026-03-22):
 
-- Total: `324` warnings (`src/**`)
-- By package: `core 128`, `tools 70`, `testing 51`, `patterns 50`, `cli 25`
+- Total: `304` warnings (`src/**`)
+- By package: `core 128`, `tools 70`, `testing 51`, `patterns 31`, `cli 24`
 
 Top runtime hotspots informing this feature slice:
 
 1. `packages/core/src/langgraph/builders/parallel.ts` (9)
-2. `packages/patterns/src/shared/agent-builder.ts` (9)
-3. `packages/tools/src/agent/ask-human/tool.ts` (8)
-4. `packages/patterns/src/plan-execute/agent.ts` (4)
-5. `packages/patterns/tests/react/nodes.test.ts` (test modularization follow-up)
+2. `packages/tools/src/agent/ask-human/tool.ts` (8)
+3. `packages/patterns/src/plan-execute/agent.ts` (4)
+4. `scripts/no-explicit-any-baseline.json` still allows the pre-EP-09 cap of `496` total warnings despite the current `304`
+5. `packages/skills/package.json`, `packages/tools/package.json`, and `packages/testing/package.json` still emit `exports.types` ordering warnings during `pnpm build`
 
-Follow-on modularization candidates:
+Recent improvement snapshot:
 
-- `ST-09006` completed the runtime split, so the next structural follow-up is the ReAct node test suite.
-- `packages/patterns/tests/react/nodes.test.ts` should now be reshaped to match the final runtime module boundaries so reasoning/action/observation tests stay maintainable.
-
-`ST-09002` removed `15` explicit-`any` warnings from `packages/core/src/langchain/converter.ts` and improved the `core` baseline from `176` to `161`.
-`ST-09003` removed `13` explicit-`any` warnings from `packages/core/src/langgraph/state.ts` and improved the `core` baseline from `161` to `148`.
-`ST-09004` removed `20` explicit-`any` warnings from `packages/core/src/langgraph/observability/logger.ts` and `packages/core/src/monitoring/alerts.ts`, improving the `core` baseline from `148` to `128`.
-`ST-09005` removed `19` explicit-`any` warnings from `packages/patterns/src/react/nodes.ts` and `packages/patterns/src/shared/agent-builder.ts`, improving the workspace baseline from `324` to `305` and the `patterns` baseline from `50` to `31`.
-`ST-09006` completed the ReAct runtime modularization without regressing the explicit-`any` baseline, and `ST-09007` completed the matching test-suite modularization follow-up.
+- `ST-09002` removed `15` explicit-`any` warnings from `packages/core/src/langchain/converter.ts` and improved the `core` baseline from `176` to `161`.
+- `ST-09003` removed `13` explicit-`any` warnings from `packages/core/src/langgraph/state.ts` and improved the `core` baseline from `161` to `148`.
+- `ST-09004` removed `20` explicit-`any` warnings from `packages/core/src/langgraph/observability/logger.ts` and `packages/core/src/monitoring/alerts.ts`, improving the `core` baseline from `148` to `128`.
+- `ST-09005` removed `19` explicit-`any` warnings from `packages/patterns/src/react/nodes.ts` and `packages/patterns/src/shared/agent-builder.ts`, improving the workspace baseline from `324` to `305` and the `patterns` baseline from `50` to `31`.
+- The current baseline check now reports `304` warnings total and `cli 24`, so the committed caps are stale and worth tightening in a follow-up story.
 
 ---
 
@@ -61,9 +59,11 @@ Follow-on modularization candidates:
 
 ### In Scope
 - Runtime code hardening in `@agentforge/core` and `@agentforge/patterns`
+- Targeted runtime code hardening in `@agentforge/tools`
 - SOLID-oriented refactors that keep behavior unchanged while tightening contracts
 - Focused test updates for touched modules
 - Story-level documentation with before/after warning deltas
+- Small quality-gate follow-ups that keep lint/build/release verification aligned with the current codebase
 
 ### Out of Scope
 - Broad API redesigns that require breaking changes
@@ -74,7 +74,7 @@ Follow-on modularization candidates:
 
 ## Story Coverage by Epic
 
-- EP-09: ST-09001, ST-09002, ST-09003, ST-09004, ST-09005, ST-09006, ST-09007
+- EP-09: ST-09001, ST-09002, ST-09003, ST-09004, ST-09005, ST-09006, ST-09007, ST-09008, ST-09009, ST-09010, ST-09011, ST-09012
 
 ---
 
@@ -84,12 +84,13 @@ Follow-on modularization candidates:
 - Record warning deltas per story and avoid regressions against the global baseline gate
 - Keep stories mergeable independently to support daily execution cadence
 - Preserve public API compatibility unless explicitly called out in story documentation
+- Treat build/release warning cleanup as complete only when `pnpm build` output is cleaner and documented
 
 ---
 
 ## Related Planning Documents
 
-- `planning/epics-and-stories.md` (EP-09 and ST-09001 through ST-09007)
+- `planning/epics-and-stories.md` (EP-09 and ST-09001 through ST-09012)
 - `planning/checklists/epic-09-story-tasks.md`
 - `planning/kanban-queue.md`
 - `scripts/no-explicit-any-baseline.json`

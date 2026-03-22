@@ -259,3 +259,107 @@
   - PR #69 marked ready: https://github.com/TVScoundrel/agentforge/pull/69
 - [x] Wait for merge; do not merge directly from local branch
   - Merged via PR #69 on 2026-03-20
+
+---
+
+## ST-09008: Harden Parallel Workflow Builder Typing
+
+**Branch:** `fix/st-09008-parallel-workflow-builder-typing`
+
+### Checklist
+- [ ] Create branch `fix/st-09008-parallel-workflow-builder-typing`
+- [ ] Create draft PR with story ID in title
+- [ ] Remove avoidable `any` and `@ts-expect-error` usage from `packages/core/src/langgraph/builders/parallel.ts`
+- [ ] Preserve current fan-out/fan-in runtime behavior while tightening state schema, node registration, and edge wiring contracts
+- [ ] Add/update focused tests for duplicate-node validation, auto start/end wiring, and aggregate fan-in behavior
+- [ ] Record explicit-`any` warning deltas for touched files in story docs
+- [ ] Add or update story documentation at `docs/st09008-parallel-workflow-builder-typing.md` (or document why not required)
+- [ ] Assess test impact; add/update automated tests when needed, or document why tests are not required
+- [ ] Run full test suite before finalizing the PR and record results
+- [ ] Run lint (`pnpm lint`) before finalizing the PR and record results
+- [ ] Commit completed checklist items as logical commits and push updates
+- [ ] Mark PR Ready only after all story tasks are complete
+- [ ] Wait for merge; do not merge directly from local branch
+
+---
+
+## ST-09009: Tighten Ask-Human Interrupt Boundary
+
+**Branch:** `fix/st-09009-ask-human-interrupt-boundary-hardening`
+
+### Checklist
+- [ ] Create branch `fix/st-09009-ask-human-interrupt-boundary-hardening`
+- [ ] Create draft PR with story ID in title
+- [ ] Remove avoidable `any` usage from `packages/tools/src/agent/ask-human/tool.ts` around dynamic LangGraph import and interrupt handling
+- [ ] Preserve current ask-human runtime behavior while improving interrupt availability and compatibility checks
+- [ ] Add/update focused tests for missing LangGraph dependency handling, interrupt responses, and timeout/default-response behavior
+- [ ] Record explicit-`any` warning deltas for touched files in story docs
+- [ ] Add or update story documentation at `docs/st09009-ask-human-interrupt-boundary-hardening.md` (or document why not required)
+- [ ] Assess test impact; add/update automated tests when needed, or document why tests are not required
+- [ ] Run full test suite before finalizing the PR and record results
+- [ ] Run lint (`pnpm lint`) before finalizing the PR and record results
+- [ ] Commit completed checklist items as logical commits and push updates
+- [ ] Mark PR Ready only after all story tasks are complete
+- [ ] Wait for merge; do not merge directly from local branch
+
+---
+
+## ST-09010: Strengthen Plan-Execute Agent Routing Typing
+
+**Branch:** `fix/st-09010-plan-execute-routing-typing`
+
+### Checklist
+- [ ] Create branch `fix/st-09010-plan-execute-routing-typing`
+- [ ] Create draft PR with story ID in title
+- [ ] Remove avoidable `as any` usage from `packages/patterns/src/plan-execute/agent.ts` around route callbacks and compile return handling
+- [ ] Preserve current planner/executor/replanner/finisher routing behavior while tightening route typing
+- [ ] Add/update focused tests for executor/replanner route decisions and compiled agent invocation behavior
+- [ ] Record explicit-`any` warning deltas for touched files in story docs
+- [ ] Add or update story documentation at `docs/st09010-plan-execute-routing-typing.md` (or document why not required)
+- [ ] Assess test impact; add/update automated tests when needed, or document why tests are not required
+- [ ] Run full test suite before finalizing the PR and record results
+- [ ] Run lint (`pnpm lint`) before finalizing the PR and record results
+- [ ] Commit completed checklist items as logical commits and push updates
+- [ ] Mark PR Ready only after all story tasks are complete
+- [ ] Wait for merge; do not merge directly from local branch
+
+---
+
+## ST-09011: Tighten Explicit-`any` Baseline Caps
+
+**Branch:** `chore/st-09011-explicit-any-baseline-tightening`
+
+### Checklist
+- [ ] Create branch `chore/st-09011-explicit-any-baseline-tightening`
+- [ ] Create draft PR with story ID in title
+- [ ] Update `scripts/no-explicit-any-baseline.json` to the current improved total and per-package warning caps
+- [ ] Verify `pnpm lint:explicit-any:baseline` passes locally with the tightened counts and record the command output
+- [ ] Record before/after baseline cap values and rationale in story docs
+- [ ] Add or update story documentation at `docs/st09011-explicit-any-baseline-tightening.md` (or document why not required)
+- [ ] Assess test impact; add/update automated tests when needed, or document why tests are not required
+- [ ] Run full test suite before finalizing the PR and record results
+- [ ] Run lint (`pnpm lint`) before finalizing the PR and record results
+- [ ] Commit completed checklist items as logical commits and push updates
+- [ ] Mark PR Ready only after all story tasks are complete
+- [ ] Wait for merge; do not merge directly from local branch
+
+---
+
+## ST-09012: Remove Package Export-Map Build Warnings
+
+**Branch:** `fix/st-09012-package-export-map-warning-cleanup`
+
+### Checklist
+- [ ] Create branch `fix/st-09012-package-export-map-warning-cleanup`
+- [ ] Create draft PR with story ID in title
+- [ ] Remove the current `exports.types` ordering build warnings from `packages/skills/package.json`, `packages/tools/package.json`, and `packages/testing/package.json`
+- [ ] Preserve published import/require/types resolution behavior for the touched packages
+- [ ] Add/update focused validation for package builds and smoke-level resolution checks
+- [ ] Record removed warnings and package-metadata rationale in story docs
+- [ ] Add or update story documentation at `docs/st09012-package-export-map-warning-cleanup.md` (or document why not required)
+- [ ] Assess test impact; add/update automated tests when needed, or document why tests are not required
+- [ ] Run full test suite before finalizing the PR and record results
+- [ ] Run lint (`pnpm lint`) before finalizing the PR and record results
+- [ ] Commit completed checklist items as logical commits and push updates
+- [ ] Mark PR Ready only after all story tasks are complete
+- [ ] Wait for merge; do not merge directly from local branch
