@@ -12,6 +12,80 @@ import { randomUUID } from 'crypto';
 const logLevel = (process.env.LOG_LEVEL?.toLowerCase() as LogLevel) || LogLevel.INFO;
 const logger = createLogger('askHuman', { level: logLevel });
 
+type HumanInterruptRequest = Pick<
+  AskHumanInput,
+  'question' | 'context' | 'priority' | 'timeout' | 'defaultResponse' | 'suggestions'
+> & {
+  id: string;
+  createdAt: number;
+  status: 'pending';
+};
+
+type InterruptFunction = (value: HumanInterruptRequest) => unknown;
+
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return typeof value === 'object' && value !== null;
+}
+
+function resolveInterrupt(module: unknown): InterruptFunction | undefined {
+  if (!isRecord(module)) {
+    return undefined;
+  }
+
+  const candidate = module.interrupt;
+  return typeof candidate === 'function' ? candidate as InterruptFunction : undefined;
+}
+
+function isMissingLangGraphDependency(error: unknown): boolean {
+  if (!(error instanceof Error)) {
+    return false;
+  }
+
+  return (
+    error.message.includes("Cannot find package '@langchain/langgraph'") ||
+    error.message.includes("Cannot find module '@langchain/langgraph'") ||
+    error.message.includes('Failed to resolve module specifier "@langchain/langgraph"')
+  );
+}
+
+async function loadInterrupt(): Promise<InterruptFunction> {
+  try {
+    const interrupt = resolveInterrupt(await import('@langchain/langgraph'));
+    if (!interrupt) {
+      throw new Error(
+        'interrupt function not found in @langchain/langgraph. ' +
+        'Make sure you are using a compatible version of LangGraph.'
+      );
+    }
+
+    return interrupt;
+  } catch (error) {
+    if (isMissingLangGraphDependency(error)) {
+      throw new Error(
+        'askHuman tool requires @langchain/langgraph to be installed. ' +
+        'Install it with: npm install @langchain/langgraph'
+      );
+    }
+
+    throw error;
+  }
+}
+
+function normalizeInterruptResponse(response: unknown): string {
+  if (response == null) {
+    return '';
+  }
+
+  if (typeof response === 'string') {
+    return response;
+  }
+
+  throw new Error(
+    'askHuman tool expected LangGraph interrupt() to resume with a string response. ' +
+    `Received ${typeof response}.`
+  );
+}
+
 /**
  * Create the askHuman tool
  * 
@@ -44,34 +118,13 @@ export function createAskHumanTool() {
     .category(ToolCategory.UTILITY)
     .schema(AskHumanInputSchema)
     .implement(async (input): Promise<AskHumanOutput> => {
-      // Type assertion after Zod validation
-      const validatedInput = input as AskHumanInput;
+      const validatedInput = AskHumanInputSchema.parse(input);
       const requestId = randomUUID();
       const requestedAt = Date.now();
-
-      // Import interrupt dynamically to avoid circular dependencies
-      // and to allow this tool to work even if LangGraph is not installed
-      let interrupt: ((value: any) => any) | undefined;
-      
-      try {
-        const langgraph = await import('@langchain/langgraph');
-        interrupt = (langgraph as any).interrupt;
-      } catch (error) {
-        throw new Error(
-          'askHuman tool requires @langchain/langgraph to be installed. ' +
-          'Install it with: npm install @langchain/langgraph'
-        );
-      }
-
-      if (!interrupt) {
-        throw new Error(
-          'interrupt function not found in @langchain/langgraph. ' +
-          'Make sure you are using a compatible version of LangGraph.'
-        );
-      }
+      const interrupt = await loadInterrupt();
 
       // Create the human request object
-      const humanRequest = {
+      const humanRequest: HumanInterruptRequest = {
         id: requestId,
         question: validatedInput.question,
         context: validatedInput.context,
@@ -80,7 +133,7 @@ export function createAskHumanTool() {
         timeout: validatedInput.timeout,
         defaultResponse: validatedInput.defaultResponse,
         suggestions: validatedInput.suggestions,
-        status: 'pending' as const,
+        status: 'pending',
       };
 
       // Use LangGraph's interrupt to pause execution
@@ -103,7 +156,10 @@ export function createAskHumanTool() {
       let response;
       try {
         response = interrupt(humanRequest);
-        logger.debug('interrupt() returned successfully', { response, responseType: typeof response });
+        logger.debug('interrupt() returned successfully', {
+          responseType: typeof response,
+          ...(typeof response === 'string' ? { response } : {}),
+        });
       } catch (error) {
         logger.debug('interrupt() threw error (expected for GraphInterrupt)', {
           ...(error && typeof error === 'object' && 'constructor' in error
@@ -123,7 +179,7 @@ export function createAskHumanTool() {
       // If timeout occurred and we have a default response, use it
       const finalResponse = timedOut && validatedInput.defaultResponse
         ? validatedInput.defaultResponse
-        : (response || '');
+        : normalizeInterruptResponse(response);
 
       return {
         response: finalResponse,
