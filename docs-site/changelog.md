@@ -5,6 +5,37 @@ All notable changes to AgentForge will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.15.12] - 2026-03-22
+
+### Added
+
+#### @agentforge/core - Parallel Builder Regression Coverage
+- Added direct edge-wiring assertions in `packages/core/tests/langgraph/builders/parallel.test.ts` for fan-out, aggregate fan-in, and `autoStartEnd: false`
+- Added story documentation in `docs/st09008-parallel-workflow-builder-typing.md` covering the builder hardening, validation, and warning-delta snapshot
+
+### Changed
+
+#### @agentforge/core - Parallel Workflow Builder Typing
+- Reworked `packages/core/src/langgraph/builders/parallel.ts` to derive workflow state directly from the provided LangGraph annotation schema
+- Tightened parallel and aggregate node update contracts to preserve excess-property checking while keeping LangGraph widening localized to the `addNode()` interop boundary
+- Preserved backward compatibility for `ParallelWorkflowOptions.name` by retaining it as a deprecated no-op until a future major release
+
+### Fixed
+
+#### @agentforge/core - Parallel Builder Type Safety
+- Removed avoidable `any`, `@ts-expect-error`, and `START`/`END` edge casts from the parallel workflow builder surface
+- Fixed the public builder typing so schema, state, and update shapes cannot drift independently at call sites
+- Reduced the workspace explicit-`any` baseline from `304` to `295`, improving the `core` package from `128` to `119`
+
+### Published
+- All packages published to npm registry at version 0.15.12:
+  - @agentforge/core@0.15.12
+  - @agentforge/skills@0.15.12
+  - @agentforge/patterns@0.15.12
+  - @agentforge/tools@0.15.12
+  - @agentforge/testing@0.15.12
+  - @agentforge/cli@0.15.12
+
 ## [0.15.11] - 2026-03-20
 
 ### Added
