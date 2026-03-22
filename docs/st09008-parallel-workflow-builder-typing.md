@@ -37,6 +37,8 @@ Refined the parallel workflow builder to use LangGraph annotation types at the p
 - `pnpm exec eslint packages/core/src/langgraph/builders/parallel.ts packages/core/tests/langgraph/builders/parallel.test.ts`
 - `pnpm test --run packages/core/tests/langgraph/builders/parallel.test.ts` -> `8 passed`
 - `pnpm lint:explicit-any:baseline`
+- `pnpm test --run` -> `150 passed | 16 skipped` files; `2110 passed | 286 skipped` tests
+- `pnpm lint` -> exit `0`; warnings only (`0` errors)
 
 ## Test Impact
 

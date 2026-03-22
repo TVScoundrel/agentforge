@@ -282,8 +282,10 @@
 - [x] Add or update story documentation at `docs/st09008-parallel-workflow-builder-typing.md` (or document why not required)
 - [x] Assess test impact; add/update automated tests when needed, or document why tests are not required
   - Focused test coverage updated in `packages/core/tests/langgraph/builders/parallel.test.ts`
-- [ ] Run full test suite before finalizing the PR and record results
-- [ ] Run lint (`pnpm lint`) before finalizing the PR and record results
+- [x] Run full test suite before finalizing the PR and record results
+  - `pnpm test --run` -> `150 passed | 16 skipped` files; `2110 passed | 286 skipped` tests
+- [x] Run lint (`pnpm lint`) before finalizing the PR and record results
+  - `pnpm lint` -> exit `0`; warnings only (`0` errors)
 - [ ] Commit completed checklist items as logical commits and push updates
 - [ ] Mark PR Ready only after all story tasks are complete
 - [ ] Wait for merge; do not merge directly from local branch
