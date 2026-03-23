@@ -11,9 +11,9 @@ Cleaned up package export-map condition ordering in the published `@agentforge/s
 | `packages/skills/package.json` | Reordered the root export conditions to put `types` before `import` and `require`, matching Node package condition precedence and eliminating the build warning. |
 | `packages/tools/package.json` | Reordered the root export conditions to put `types` before `import` and `require`, preserving the same runtime entrypoints while removing the metadata warning. |
 | `packages/testing/package.json` | Reordered the root export conditions to put `types` before `import` and `require`, preserving the same runtime/test entrypoints while removing the metadata warning. |
-| `planning/kanban-queue.md` | Moved ST-09012 from `Ready` to `In Progress` during execution. |
-| `planning/epics-and-stories.md` | Updated ST-09012 status from `Ready` to `In Progress`. |
-| `planning/features/09-solid-micro-refactors-feature-plan.md` | Updated the EP-09 active-story marker from `Ready` to `In Progress`. |
+| `planning/kanban-queue.md` | Moved ST-09012 from `Ready` to `In Review` during execution. |
+| `planning/epics-and-stories.md` | Updated ST-09012 status from `Ready` to `In Review`. |
+| `planning/features/09-solid-micro-refactors-feature-plan.md` | Updated the EP-09 active-story marker from `Ready` to `In Review`. |
 
 ## Warning Removed
 
