@@ -5,8 +5,8 @@
 ## Queue Status Summary
 
 - **Ready:** 0 stories
-- **In Progress:** 1 story
-- **In Review:** 0 stories
+- **In Progress:** 0 stories
+- **In Review:** 1 story
 - **Blocked:** 0 stories
 - **Backlog:** 3 stories
 
@@ -20,16 +20,16 @@ _No stories currently ready_
 
 ## In Review
 
-_No stories currently in review_
+- `ST-09010` - Strengthen Plan-Execute Agent Routing Typing
+  - Epic: `EP-09`
+  - Priority: `P2`
+  - Rationale: `packages/patterns/src/plan-execute/agent.ts` now uses typed route maps and focused replanner route coverage instead of route/compile `as any` bridges
 
 ---
 
 ## In Progress
 
-- `ST-09010` - Strengthen Plan-Execute Agent Routing Typing
-  - Epic: `EP-09`
-  - Priority: `P2`
-  - Rationale: replacing route/compile `as any` bridges in `packages/patterns/src/plan-execute/agent.ts` with typed LangGraph wiring and focused route coverage
+_No stories currently in progress_
 
 ---
 
@@ -43,7 +43,7 @@ _No stories currently blocked_
 
 - `ST-09011` - Tighten Explicit-`any` Baseline Caps
   - Depends on: `ST-09010`
-  - Rationale: the committed baseline still allows `496` warnings while the current measured count is `292`
+  - Rationale: the committed baseline still allows `496` warnings while the current measured count is `289`
 - `ST-09012` - Remove Package Export-Map Build Warnings
   - Depends on: `ST-09011`
   - Rationale: `skills`, `tools`, and `testing` package metadata still emit easy-to-fix `exports.types` ordering warnings during build

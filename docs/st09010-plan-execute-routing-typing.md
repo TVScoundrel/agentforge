@@ -25,12 +25,22 @@ pnpm exec tsc -p packages/patterns/tsconfig.json --noEmit
 pnpm exec eslint packages/patterns/src/plan-execute/agent.ts packages/patterns/tests/plan-execute/agent.test.ts
 pnpm test --run packages/patterns/tests/plan-execute/agent.test.ts packages/patterns/tests/plan-execute/integration.test.ts
 pnpm lint:explicit-any:baseline
+pnpm test --run
+pnpm lint
 ```
 
 Focused test result:
 - `2` files passed
 - `8` tests passed
 
+Full-suite result:
+- `152` files passed, `16` skipped
+- `2119` tests passed, `286` skipped
+
+Lint result:
+- `pnpm lint` exited `0`
+- Existing workspace warnings remain outside this story's touched file set
+
 ## Status
 
-Implementation in progress on `codex/fix/st-09010-plan-execute-routing-typing`.
+Ready for review on `codex/fix/st-09010-plan-execute-routing-typing`.
