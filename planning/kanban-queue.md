@@ -4,8 +4,8 @@
 
 ## Queue Status Summary
 
-- **Ready:** 1 story
-- **In Progress:** 0 stories
+- **Ready:** 0 stories
+- **In Progress:** 1 story
 - **In Review:** 0 stories
 - **Blocked:** 0 stories
 - **Backlog:** 3 stories
@@ -14,10 +14,7 @@
 
 ## Ready
 
-- `ST-09010` - Strengthen Plan-Execute Agent Routing Typing
-  - Epic: `EP-09`
-  - Priority: `P2`
-  - Rationale: `packages/patterns/src/plan-execute/agent.ts` still uses route and compile `as any` bridges
+_No stories currently ready_
 
 ---
 
@@ -29,7 +26,10 @@ _No stories currently in review_
 
 ## In Progress
 
-_No stories currently in progress_
+- `ST-09010` - Strengthen Plan-Execute Agent Routing Typing
+  - Epic: `EP-09`
+  - Priority: `P2`
+  - Rationale: replacing route/compile `as any` bridges in `packages/patterns/src/plan-execute/agent.ts` with typed LangGraph wiring and focused route coverage
 
 ---
 

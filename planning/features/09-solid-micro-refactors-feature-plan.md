@@ -3,7 +3,7 @@
 **Epic Range:** EP-09 through EP-09
 **Status:** In Progress
 **Last Updated:** 2026-03-23
-**Active Story:** ST-09010 (Ready)
+**Active Story:** ST-09010 (In Progress)
 
 ---
 
@@ -40,7 +40,7 @@ Current `@typescript-eslint/no-explicit-any` baseline check (`pnpm lint:explicit
 Top runtime hotspots informing this feature slice:
 
 1. `packages/tools/src/agent/ask-human/tool.ts` (5)
-2. `packages/patterns/src/plan-execute/agent.ts` (4)
+2. `packages/patterns/src/plan-execute/agent.ts` (3)
 3. `scripts/no-explicit-any-baseline.json` still allows the pre-EP-09 cap of `496` total warnings despite the current `292`
 4. `packages/skills/package.json`, `packages/tools/package.json`, and `packages/testing/package.json` still emit `exports.types` ordering warnings during `pnpm build`
 
@@ -52,6 +52,7 @@ Recent improvement snapshot:
 - `ST-09005` removed `19` explicit-`any` warnings from `packages/patterns/src/react/nodes.ts` and `packages/patterns/src/shared/agent-builder.ts`, improving the workspace baseline from `324` to `305` and the `patterns` baseline from `50` to `31`.
 - `ST-09008` reduced explicit-`any` warnings in `packages/core/src/langgraph/builders/parallel.ts`, improving the workspace baseline from `304` to `295` and the `core` baseline from `128` to `119`.
 - `ST-09009` has reduced explicit-`any` warnings in `packages/tools/src/agent/ask-human/tool.ts` from `3` to `0` so far, improving the workspace baseline from `295` to `292` and the `tools` baseline from `70` to `67`.
+- `ST-09010` has reduced explicit-`any` warnings in `packages/patterns/src/plan-execute/agent.ts` from `3` to `0` so far, improving the workspace baseline from `292` to `289` and the `patterns` baseline from `31` to `28`.
 - The current baseline check now reports `292` warnings total and `cli 24`, so the committed caps are stale and worth tightening in a follow-up story.
 
 ---

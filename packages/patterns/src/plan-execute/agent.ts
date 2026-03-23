@@ -11,6 +11,20 @@ import { PlanExecuteState, type PlanExecuteStateType } from './state.js';
 import { createPlannerNode, createExecutorNode, createReplannerNode, createFinisherNode } from './nodes.js';
 import type { PlanExecuteAgentConfig, PlanExecuteRoute } from './types.js';
 
+const executorRouteMap = {
+  execute: 'executor',
+  replan: 'replanner',
+  finish: 'finisher',
+  error: END,
+} as const satisfies Record<PlanExecuteRoute, 'executor' | 'replanner' | 'finisher' | typeof END>;
+
+const replannerRouteMap = {
+  replan: 'planner',
+  execute: 'executor',
+  error: END,
+  finish: END,
+} as const satisfies Record<PlanExecuteRoute, 'planner' | 'executor' | typeof END>;
+
 /**
  * Create a Plan-and-Execute agent
  *
@@ -76,7 +90,6 @@ export function createPlanExecuteAgent(config: PlanExecuteAgentConfig) {
     executor,
     replanner,
     maxIterations = 5,
-    verbose = false,
     checkpointer,
   } = config;
 
@@ -88,7 +101,7 @@ export function createPlanExecuteAgent(config: PlanExecuteAgentConfig) {
   // Create a no-op replanner if not configured
   const replannerNode = replanner
     ? createReplannerNode(replanner)
-    : async (state: PlanExecuteStateType) => ({ status: 'executing' as const });
+    : async () => ({ status: 'executing' as const });
 
   // Create the graph
   const workflow = new StateGraph(PlanExecuteState)
@@ -156,13 +169,8 @@ export function createPlanExecuteAgent(config: PlanExecuteAgentConfig) {
   // Add conditional edges from executor
   workflow.addConditionalEdges(
     'executor',
-    routeAfterExecutor as any,
-    {
-      execute: 'executor', // Loop back to execute next step
-      replan: 'replanner',
-      finish: 'finisher',
-      error: END,
-    }
+    routeAfterExecutor,
+    executorRouteMap
   );
 
   // Add edge from finisher to END
@@ -171,15 +179,10 @@ export function createPlanExecuteAgent(config: PlanExecuteAgentConfig) {
   // Add conditional edges from replanner
   workflow.addConditionalEdges(
     'replanner',
-    routeAfterReplanner as any,
-    {
-      replan: 'planner',
-      execute: 'executor',
-      error: END,
-      finish: END,
-    }
+    routeAfterReplanner,
+    replannerRouteMap
   );
 
   // Compile with checkpointer if provided
-  return workflow.compile(checkpointer ? { checkpointer } : undefined) as any;
+  return workflow.compile(checkpointer ? { checkpointer } : undefined);
 }
