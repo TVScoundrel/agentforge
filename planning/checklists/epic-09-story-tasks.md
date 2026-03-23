@@ -390,7 +390,7 @@ Implementation notes:
 - [x] Run lint (`pnpm lint`) before finalizing the PR and record results
 - [x] Commit completed checklist items as logical commits and push updates
 - [x] Mark PR Ready only after all story tasks are complete
-- [ ] Wait for merge; do not merge directly from local branch
+- [x] Wait for merge; do not merge directly from local branch
 
 Implementation notes:
 - `40e6417` `chore(st-09011): tighten explicit-any baseline caps`
@@ -403,15 +403,16 @@ Implementation notes:
   - `pnpm test --run` -> `152 passed | 16 skipped` files; `2119 passed | 286 skipped` tests
   - `pnpm lint` -> exit `0` (warnings only)
 - PR #73 marked ready after final tracker/body refresh
+- Merged via PR #73 on 2026-03-23 (merge commit `90c93df`)
 
 ---
 
 ## ST-09012: Remove Package Export-Map Build Warnings
 
-**Branch:** `fix/st-09012-package-export-map-warning-cleanup`
+**Branch:** `codex/fix/st-09012-package-export-map-warning-cleanup`
 
 ### Checklist
-- [ ] Create branch `fix/st-09012-package-export-map-warning-cleanup`
+- [ ] Create branch `codex/fix/st-09012-package-export-map-warning-cleanup`
 - [ ] Create draft PR with story ID in title
 - [ ] Remove the current `exports.types` ordering build warnings from `packages/skills/package.json`, `packages/tools/package.json`, and `packages/testing/package.json`
 - [ ] Preserve published import/require/types resolution behavior for the touched packages

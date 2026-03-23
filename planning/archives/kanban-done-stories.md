@@ -8,6 +8,13 @@
 
 ## Completed Stories
 
+### ST-09011: Tighten Explicit-`any` Baseline Caps
+- **Merged:** 2026-03-23
+- **PR:** https://github.com/TVScoundrel/agentforge/pull/73 (commit 90c93df)
+- **Epic:** EP-09 (SOLID Micro-Refactors and Type Boundary Hardening)
+- **Estimate:** 2 hours
+- **Outcome:** Tightened the committed `scripts/no-explicit-any-baseline.json` caps from the stale `496` total allowance down to the current measured `289`, aligned each package cap with the latest workspace floor, and validated the updated no-regression gate with baseline, lint, and full-suite checks.
+
 ### ST-09010: Strengthen Plan-Execute Agent Routing Typing
 - **Merged:** 2026-03-23
 - **PR:** https://github.com/TVScoundrel/agentforge/pull/72 (commit e19c63a)

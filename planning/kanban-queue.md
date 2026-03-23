@@ -4,26 +4,26 @@
 
 ## Queue Status Summary
 
-- **Ready:** 0 stories
+- **Ready:** 1 story
 - **In Progress:** 0 stories
-- **In Review:** 1 story
+- **In Review:** 0 stories
 - **Blocked:** 0 stories
-- **Backlog:** 1 story
+- **Backlog:** 0 stories
 
 ---
 
 ## Ready
 
-_No stories currently ready_
+- `ST-09012` - Remove Package Export-Map Build Warnings
+  - Epic: `EP-09`
+  - Priority: `P2`
+  - Rationale: baseline tightening is merged, so the remaining low-effort release-quality cleanup can move straight into execution
 
 ---
 
 ## In Review
 
-- `ST-09011` - Tighten Explicit-`any` Baseline Caps
-  - Epic: `EP-09`
-  - Priority: `P1`
-  - Rationale: the committed baseline now matches the measured `289` warning floor and is ready for review before unblocking the export-map cleanup story
+_No stories currently in review_
 
 ---
 
@@ -41,9 +41,7 @@ _No stories currently blocked_
 
 ## Backlog
 
-- `ST-09012` - Remove Package Export-Map Build Warnings
-  - Depends on: `ST-09011`
-  - Rationale: `skills`, `tools`, and `testing` package metadata still emit easy-to-fix `exports.types` ordering warnings during build
+_No stories currently in backlog_
 
 ---
 
@@ -102,5 +100,6 @@ _No stories currently blocked_
 - ✅ ST-09008 complete - parallel workflow builder typing hardened (PR #70, 2026-03-22)
 - ✅ ST-09009 complete - ask-human interrupt boundary hardened (PR #71, 2026-03-23)
 - ✅ ST-09010 complete - plan-execute agent routing typing strengthened (PR #72, 2026-03-23)
+- ✅ ST-09011 complete - explicit-`any` baseline caps tightened (PR #73, 2026-03-23)
 - Epic 09 (SOLID Micro-Refactors and Type Boundary Hardening) was expanded on 2026-03-22 with low-hanging follow-on stories ST-09008 through ST-09012
 - Current measured `no-explicit-any` baseline is `289` warnings (`cli 24`, `core 119`, `patterns 28`, `testing 51`, `tools 67`)
