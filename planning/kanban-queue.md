@@ -4,26 +4,26 @@
 
 ## Queue Status Summary
 
-- **Ready:** 1 story
+- **Ready:** 0 stories
 - **In Progress:** 0 stories
-- **In Review:** 0 stories
+- **In Review:** 1 story
 - **Blocked:** 0 stories
-- **Backlog:** 3 stories
+- **Backlog:** 1 story
 
 ---
 
 ## Ready
 
-- `ST-09011` - Tighten Explicit-`any` Baseline Caps
-  - Epic: `EP-09`
-  - Priority: `P1`
-  - Rationale: the committed baseline still allows `496` warnings while the current measured count is `289`
+_No stories currently ready_
 
 ---
 
 ## In Review
 
-_No stories currently in review_
+- `ST-09011` - Tighten Explicit-`any` Baseline Caps
+  - Epic: `EP-09`
+  - Priority: `P1`
+  - Rationale: the committed baseline now matches the measured `289` warning floor and is ready for review before unblocking the export-map cleanup story
 
 ---
 
