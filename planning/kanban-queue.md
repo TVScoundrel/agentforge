@@ -4,9 +4,9 @@
 
 ## Queue Status Summary
 
-- **Ready:** 0 stories
+- **Ready:** 1 story
 - **In Progress:** 0 stories
-- **In Review:** 1 story
+- **In Review:** 0 stories
 - **Blocked:** 0 stories
 - **Backlog:** 3 stories
 
@@ -14,16 +14,16 @@
 
 ## Ready
 
-_No stories currently ready_
+- `ST-09011` - Tighten Explicit-`any` Baseline Caps
+  - Epic: `EP-09`
+  - Priority: `P1`
+  - Rationale: the committed baseline still allows `496` warnings while the current measured count is `289`
 
 ---
 
 ## In Review
 
-- `ST-09010` - Strengthen Plan-Execute Agent Routing Typing
-  - Epic: `EP-09`
-  - Priority: `P2`
-  - Rationale: `packages/patterns/src/plan-execute/agent.ts` now uses typed route maps and focused replanner route coverage instead of route/compile `as any` bridges
+_No stories currently in review_
 
 ---
 
@@ -41,9 +41,6 @@ _No stories currently blocked_
 
 ## Backlog
 
-- `ST-09011` - Tighten Explicit-`any` Baseline Caps
-  - Depends on: `ST-09010`
-  - Rationale: the committed baseline still allows `496` warnings while the current measured count is `289`
 - `ST-09012` - Remove Package Export-Map Build Warnings
   - Depends on: `ST-09011`
   - Rationale: `skills`, `tools`, and `testing` package metadata still emit easy-to-fix `exports.types` ordering warnings during build
@@ -104,5 +101,6 @@ _No stories currently blocked_
 - ✅ ST-09007 complete - ReAct node test modularization merged (PR #69, 2026-03-20)
 - ✅ ST-09008 complete - parallel workflow builder typing hardened (PR #70, 2026-03-22)
 - ✅ ST-09009 complete - ask-human interrupt boundary hardened (PR #71, 2026-03-23)
+- ✅ ST-09010 complete - plan-execute agent routing typing strengthened (PR #72, 2026-03-23)
 - Epic 09 (SOLID Micro-Refactors and Type Boundary Hardening) was expanded on 2026-03-22 with low-hanging follow-on stories ST-09008 through ST-09012
-- Current measured `no-explicit-any` baseline is `292` warnings (`cli 24`, `core 119`, `patterns 31`, `testing 51`, `tools 67`)
+- Current measured `no-explicit-any` baseline is `289` warnings (`cli 24`, `core 119`, `patterns 28`, `testing 51`, `tools 67`)

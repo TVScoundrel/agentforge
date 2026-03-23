@@ -355,7 +355,7 @@ Implementation notes:
 - [x] Run lint (`pnpm lint`) before finalizing the PR and record results
 - [x] Commit completed checklist items as logical commits and push updates
 - [x] Mark PR Ready only after all story tasks are complete
-- [ ] Wait for merge; do not merge directly from local branch
+- [x] Wait for merge; do not merge directly from local branch
 
 Implementation notes:
 - `12b06fe` `refactor(st-09010): tighten plan-execute routing typing`
@@ -370,6 +370,7 @@ Implementation notes:
   - `pnpm lint` -> exit `0` (warnings only)
 - PR #72 marked ready after final tracker/body refresh
 - Review fix applied after PR feedback
+- Merged via PR #72 on 2026-03-23
 
 ---
 

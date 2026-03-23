@@ -2,11 +2,18 @@
 
 **Purpose:** Track completed and merged stories for the Relational Database Access Tool project.
 
-**Last Updated:** 2026-03-18
+**Last Updated:** 2026-03-23
 
 ---
 
 ## Completed Stories
+
+### ST-09010: Strengthen Plan-Execute Agent Routing Typing
+- **Merged:** 2026-03-23
+- **PR:** https://github.com/TVScoundrel/agentforge/pull/72 (commit e19c63a)
+- **Epic:** EP-09 (SOLID Micro-Refactors and Type Boundary Hardening)
+- **Estimate:** 3 hours
+- **Outcome:** Removed the avoidable `as any` route and compile bridges from the plan-execute agent factory, added focused route-flow coverage for both replanner outcomes, documented the warning delta, and reduced the workspace explicit-`any` baseline from `292` to `289` (`patterns 31` -> `28`).
 
 ### ST-01001: Setup Drizzle ORM Dependencies and Project Structure
 - **Merged:** 2026-02-17
