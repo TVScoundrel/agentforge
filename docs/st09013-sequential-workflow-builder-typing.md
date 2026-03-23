@@ -10,8 +10,9 @@ Refined the sequential workflow builder to derive state and update typing direct
 |------|--------|
 | `packages/core/src/langgraph/builders/sequential.ts` | Replaced the broad `any`-typed schema input with `AnnotationRoot`/`StateDefinition`-driven generics, deriving workflow state from the supplied schema instead of a free state parameter |
 | `packages/core/src/langgraph/builders/sequential.ts` | Removed `START`/`END` `as any` edge wiring and localized the remaining LangGraph `addNode()` widening to one `GraphNodeAction` interop seam |
-| `packages/core/src/langgraph/builders/sequential.ts` | Kept `SequentialWorkflowOptions.name` as a deprecated compatibility-only no-op, removed the deprecated explicit-state overload, and enforced real LangGraph `Annotation.Root(...)` schemas in the builder contract |
-| `packages/core/tests/langgraph/builders/sequential.test.ts` | Added direct edge assertions for sequential wiring, `autoStartEnd: false`, schema-derived type inference coverage, and a runtime regression for rejecting non-annotation schemas |
+| `packages/core/src/langgraph/builders/sequential.ts` | Kept `SequentialWorkflowOptions.name` as a deprecated compatibility-only no-op, removed the deprecated explicit-state overload, and bound both state and update typing directly to the supplied LangGraph schema |
+| `packages/core/src/langgraph/builders/sequential.ts` | Hardened the runtime schema guard so only real `Annotation.Root(...)`-shaped objects pass the validation step before graph construction |
+| `packages/core/tests/langgraph/builders/sequential.test.ts` | Added direct edge assertions for sequential wiring, `autoStartEnd: false`, schema-derived type inference coverage, and runtime regressions for rejecting non-annotation and fake-`spec` schemas |
 | `packages/core/src/langgraph/builders/sequential.typecheck.ts` | Added a source-included type-level regression file so normal core `typecheck` covers schema-derived inference and locks in that explicit state generics are rejected |
 
 ## Explicit `any` Warning Delta
@@ -34,6 +35,7 @@ Refined the sequential workflow builder to derive state and update typing direct
 - LangGraph still widens node registration internally. That interop is now isolated to the `addNode()` call site instead of leaking into the public builder API.
 - `SequentialWorkflowOptions.name` remains accepted for backward compatibility, but it is still a no-op and documented as deprecated for a future major release.
 - `createSequentialWorkflow<MyState>(...)` is no longer supported; callers must rely on schema-derived inference from a real LangGraph `Annotation.Root(...)` schema.
+- The builder no longer exposes a fallback where state or update types can drift away from the supplied schema; both are now derived from `Annotation.Root(...)`.
 - Non-LangGraph schema objects now fail with a clear runtime error before `StateGraph` construction instead of failing later with a less targeted crash.
 - A dedicated source-included type-level regression file covers the compile-time inference path under the normal core `typecheck` command without pulling the entire legacy test tree into this story.
 
@@ -41,7 +43,7 @@ Refined the sequential workflow builder to derive state and update typing direct
 
 - `pnpm --filter @agentforge/core typecheck`
 - `pnpm exec eslint packages/core/src/langgraph/builders/sequential.ts packages/core/src/langgraph/builders/sequential.typecheck.ts packages/core/tests/langgraph/builders/sequential.test.ts`
-- `pnpm test --run packages/core/tests/langgraph/builders/sequential.test.ts` -> `13 passed`
+- `pnpm test --run packages/core/tests/langgraph/builders/sequential.test.ts` -> `14 passed`
 - `pnpm lint:explicit-any:baseline`
 - `pnpm test --run` -> `152 passed | 16 skipped` files; `2123 passed | 286 skipped` tests
 - `pnpm lint` -> exit `0`; warnings only (`0` errors)

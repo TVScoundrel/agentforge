@@ -149,6 +149,17 @@ describe('Sequential Workflow Builder', () => {
       }).toThrow('Sequential workflow requires a LangGraph Annotation.Root schema');
     });
 
+    it('should reject schema-like objects with invalid spec payloads', () => {
+      expect(() => {
+        createSequentialWorkflow({ spec: {} } as never, [
+          {
+            name: 'invalid',
+            node: () => ({ messages: ['invalid'], count: 1 }),
+          },
+        ]);
+      }).toThrow('Sequential workflow requires a LangGraph Annotation.Root schema');
+    });
+
     it('should wire sequential edges when autoStartEnd is enabled', () => {
       const workflow = createSequentialWorkflow(
         TestState,

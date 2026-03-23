@@ -13,11 +13,6 @@ import type { AnnotationRoot, StateDefinition, UpdateType } from '@langchain/lan
 
 type SequentialWorkflowState<SD extends StateDefinition> = AnnotationRoot<SD>['State'];
 type SequentialNodeResult<State> = Partial<State>;
-type SequentialWorkflowUpdate<SD extends StateDefinition, State> = [State] extends [
-  SequentialWorkflowState<SD>,
-]
-  ? UpdateType<SD>
-  : SequentialNodeResult<State>;
 type SequentialWorkflowGraph<SD extends StateDefinition, State, Update> = StateGraph<
   AnnotationRoot<SD>,
   State,
@@ -96,13 +91,12 @@ export function createSequentialWorkflow<
 ): SequentialWorkflowGraph<SD, SequentialWorkflowState<SD>, Update>;
 export function createSequentialWorkflow<
   SD extends StateDefinition = StateDefinition,
-  State = SequentialWorkflowState<SD>,
-  Update = SequentialWorkflowUpdate<SD, State>
+  Update extends UpdateType<SD> = UpdateType<SD>
 >(
   stateSchema: AnnotationRoot<SD>,
-  nodes: SequentialNode<State, Update>[],
+  nodes: SequentialNode<SequentialWorkflowState<SD>, Update>[],
   options: SequentialWorkflowOptions = {}
-): SequentialWorkflowGraph<SD, State, Update> {
+): SequentialWorkflowGraph<SD, SequentialWorkflowState<SD>, Update> {
   const { autoStartEnd = true } = options;
 
   if (nodes.length === 0) {
@@ -123,7 +117,12 @@ export function createSequentialWorkflow<
   }
 
   // Create the graph
-  const graph = new StateGraph<AnnotationRoot<SD>, State, Update, string>(stateSchema);
+  const graph = new StateGraph<
+    AnnotationRoot<SD>,
+    SequentialWorkflowState<SD>,
+    Update,
+    string
+  >(stateSchema);
   type GraphNodeAction = Parameters<typeof graph.addNode>[1];
 
   // Add all nodes
@@ -152,8 +151,40 @@ export function createSequentialWorkflow<
   return graph;
 }
 
-function hasAnnotationRootSpec(stateSchema: unknown): stateSchema is { spec: object } {
-  return typeof stateSchema === 'object' && stateSchema !== null && 'spec' in stateSchema;
+function isPlainObject(value: unknown): value is Record<string, unknown> {
+  if (typeof value !== 'object' || value === null) {
+    return false;
+  }
+
+  const proto = Object.getPrototypeOf(value);
+  return proto === Object.prototype || proto === null;
+}
+
+function hasAnnotationRootSpec(
+  stateSchema: unknown
+): stateSchema is { spec: Record<string, { lg_is_channel: unknown }> } {
+  if (
+    typeof stateSchema !== 'object' ||
+    stateSchema === null ||
+    !('lc_graph_name' in stateSchema) ||
+    typeof stateSchema.lc_graph_name !== 'string' ||
+    !('spec' in stateSchema)
+  ) {
+    return false;
+  }
+
+  const spec = (stateSchema as { spec?: unknown }).spec;
+  if (!isPlainObject(spec)) {
+    return false;
+  }
+
+  if (Object.keys(spec).length === 0) {
+    return false;
+  }
+
+  return Object.values(spec).every(
+    (value) => typeof value === 'object' && value !== null && 'lg_is_channel' in value
+  );
 }
 
 /**
