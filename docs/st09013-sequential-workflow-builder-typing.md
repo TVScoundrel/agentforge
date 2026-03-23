@@ -12,6 +12,7 @@ Refined the sequential workflow builder to derive state and update typing direct
 | `packages/core/src/langgraph/builders/sequential.ts` | Removed `START`/`END` `as any` edge wiring and localized the remaining LangGraph `addNode()` widening to one `GraphNodeAction` interop seam |
 | `packages/core/src/langgraph/builders/sequential.ts` | Kept `SequentialWorkflowOptions.name` as a deprecated compatibility-only no-op, removed the deprecated explicit-state overload, and bound both state and update typing directly to the supplied LangGraph schema |
 | `packages/core/src/langgraph/builders/sequential.ts` | Wrapped `StateGraph` construction so invalid runtime schema inputs are rethrown as a targeted `Annotation.Root(...)` contract error with the original failure attached as `cause` |
+| `packages/core/examples/phase-2.2-demo.ts` | Updated the sequential workflow example to rely on schema-derived inference instead of the removed explicit state generic |
 | `packages/core/tests/langgraph/builders/sequential.test.ts` | Added direct edge assertions for sequential wiring, `autoStartEnd: false`, schema-derived type inference coverage, and runtime regressions for rejecting non-annotation and fake-`spec` schemas |
 | `packages/core/src/langgraph/builders/sequential.typecheck.ts` | Added a source-included type-level regression file so normal core `typecheck` covers schema-derived inference and locks in that explicit state generics are rejected |
 
