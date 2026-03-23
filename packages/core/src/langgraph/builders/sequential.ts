@@ -112,17 +112,17 @@ export function createSequentialWorkflow<
     nodeNames.add(node.name);
   }
 
-  if (!hasAnnotationRootSpec(stateSchema)) {
-    throw new Error('Sequential workflow requires a LangGraph Annotation.Root schema');
-  }
-
   // Create the graph
-  const graph = new StateGraph<
-    AnnotationRoot<SD>,
-    SequentialWorkflowState<SD>,
-    Update,
-    string
-  >(stateSchema);
+  let graph: StateGraph<AnnotationRoot<SD>, SequentialWorkflowState<SD>, Update, string>;
+  try {
+    graph = new StateGraph<AnnotationRoot<SD>, SequentialWorkflowState<SD>, Update, string>(
+      stateSchema
+    );
+  } catch (error) {
+    throw new Error('Sequential workflow requires a LangGraph Annotation.Root schema', {
+      cause: error,
+    });
+  }
   type GraphNodeAction = Parameters<typeof graph.addNode>[1];
 
   // Add all nodes
@@ -150,43 +150,6 @@ export function createSequentialWorkflow<
 
   return graph;
 }
-
-function isPlainObject(value: unknown): value is Record<string, unknown> {
-  if (typeof value !== 'object' || value === null) {
-    return false;
-  }
-
-  const proto = Object.getPrototypeOf(value);
-  return proto === Object.prototype || proto === null;
-}
-
-function hasAnnotationRootSpec(
-  stateSchema: unknown
-): stateSchema is { spec: Record<string, { lg_is_channel: unknown }> } {
-  if (
-    typeof stateSchema !== 'object' ||
-    stateSchema === null ||
-    !('lc_graph_name' in stateSchema) ||
-    typeof stateSchema.lc_graph_name !== 'string' ||
-    !('spec' in stateSchema)
-  ) {
-    return false;
-  }
-
-  const spec = (stateSchema as { spec?: unknown }).spec;
-  if (!isPlainObject(spec)) {
-    return false;
-  }
-
-  if (Object.keys(spec).length === 0) {
-    return false;
-  }
-
-  return Object.values(spec).every(
-    (value) => typeof value === 'object' && value !== null && 'lg_is_channel' in value
-  );
-}
-
 /**
  * Creates a sequential workflow builder with a fluent API.
  *

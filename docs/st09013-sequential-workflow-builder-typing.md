@@ -11,7 +11,7 @@ Refined the sequential workflow builder to derive state and update typing direct
 | `packages/core/src/langgraph/builders/sequential.ts` | Replaced the broad `any`-typed schema input with `AnnotationRoot`/`StateDefinition`-driven generics, deriving workflow state from the supplied schema instead of a free state parameter |
 | `packages/core/src/langgraph/builders/sequential.ts` | Removed `START`/`END` `as any` edge wiring and localized the remaining LangGraph `addNode()` widening to one `GraphNodeAction` interop seam |
 | `packages/core/src/langgraph/builders/sequential.ts` | Kept `SequentialWorkflowOptions.name` as a deprecated compatibility-only no-op, removed the deprecated explicit-state overload, and bound both state and update typing directly to the supplied LangGraph schema |
-| `packages/core/src/langgraph/builders/sequential.ts` | Hardened the runtime schema guard so only real `Annotation.Root(...)`-shaped objects pass the validation step before graph construction |
+| `packages/core/src/langgraph/builders/sequential.ts` | Wrapped `StateGraph` construction so invalid runtime schema inputs are rethrown as a targeted `Annotation.Root(...)` contract error with the original failure attached as `cause` |
 | `packages/core/tests/langgraph/builders/sequential.test.ts` | Added direct edge assertions for sequential wiring, `autoStartEnd: false`, schema-derived type inference coverage, and runtime regressions for rejecting non-annotation and fake-`spec` schemas |
 | `packages/core/src/langgraph/builders/sequential.typecheck.ts` | Added a source-included type-level regression file so normal core `typecheck` covers schema-derived inference and locks in that explicit state generics are rejected |
 
@@ -36,7 +36,7 @@ Refined the sequential workflow builder to derive state and update typing direct
 - `SequentialWorkflowOptions.name` remains accepted for backward compatibility, but it is still a no-op and documented as deprecated for a future major release.
 - `createSequentialWorkflow<MyState>(...)` is no longer supported; callers must rely on schema-derived inference from a real LangGraph `Annotation.Root(...)` schema.
 - The builder no longer exposes a fallback where state or update types can drift away from the supplied schema; both are now derived from `Annotation.Root(...)`.
-- Non-LangGraph schema objects now fail with a clear runtime error before `StateGraph` construction instead of failing later with a less targeted crash.
+- Non-LangGraph schema objects now fail with a clear targeted error at graph construction time, while preserving the original LangGraph failure as `cause`.
 - A dedicated source-included type-level regression file covers the compile-time inference path under the normal core `typecheck` command without pulling the entire legacy test tree into this story.
 
 ## Validation
