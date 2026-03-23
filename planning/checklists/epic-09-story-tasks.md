@@ -424,7 +424,7 @@ Implementation notes:
 - [x] Run lint (`pnpm lint`) before finalizing the PR and record results
 - [x] Commit completed checklist items as logical commits and push updates
 - [x] Mark PR Ready only after all story tasks are complete
-- [ ] Wait for merge; do not merge directly from local branch
+- [x] Wait for merge; do not merge directly from local branch
 
 Implementation notes:
 - Branch created from `main` on 2026-03-23: `codex/fix/st-09012-package-export-map-warning-cleanup`
@@ -444,3 +444,6 @@ Implementation notes:
 - Review fix: `75e4935` `docs(st-09012): align review-state tracker wording`
 - Review fix: pending terminology clarification for `types` resolution wording
 - Review fix: pending `pnpm exec vitest` wording alignment in story doc validation list
+- Review fix: `f74c82f` `docs(st-09012): clarify types export resolution wording`
+- Review fix: `cf6b99e` `docs(st-09012): align vitest command wording`
+- Merged via PR #74 on 2026-03-23 (merge commit `42447ab`)

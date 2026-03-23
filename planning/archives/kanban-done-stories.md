@@ -8,6 +8,13 @@
 
 ## Completed Stories
 
+### ST-09012: Remove Package Export-Map Build Warnings
+- **Merged:** 2026-03-23
+- **PR:** https://github.com/TVScoundrel/agentforge/pull/74 (commit 42447ab)
+- **Epic:** EP-09 (SOLID Micro-Refactors and Type Boundary Hardening)
+- **Estimate:** 2 hours
+- **Outcome:** Reordered the root `exports` condition keys in `@agentforge/skills`, `@agentforge/tools`, and `@agentforge/testing` so `types` is evaluated before `import` and `require`, eliminating the repeated `exports.types` build warning while preserving the same published runtime and declaration entrypoints.
+
 ### ST-09011: Tighten Explicit-`any` Baseline Caps
 - **Merged:** 2026-03-23
 - **PR:** https://github.com/TVScoundrel/agentforge/pull/73 (commit 90c93df)

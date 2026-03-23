@@ -6,7 +6,7 @@
 
 - **Ready:** 0 stories
 - **In Progress:** 0 stories
-- **In Review:** 1 story
+- **In Review:** 0 stories
 - **Blocked:** 0 stories
 - **Backlog:** 0 stories
 
@@ -20,10 +20,7 @@ _No stories currently ready_
 
 ## In Review
 
-- `ST-09012` - Remove Package Export-Map Build Warnings
-  - Epic: `EP-09`
-  - Priority: `P2`
-  - Rationale: export-map cleanup is implemented and validated, and is ready for review before concluding the EP-09 follow-on cleanup slice
+_No stories currently in review_
 
 ---
 
@@ -101,5 +98,7 @@ _No stories currently in backlog_
 - ✅ ST-09009 complete - ask-human interrupt boundary hardened (PR #71, 2026-03-23)
 - ✅ ST-09010 complete - plan-execute agent routing typing strengthened (PR #72, 2026-03-23)
 - ✅ ST-09011 complete - explicit-`any` baseline caps tightened (PR #73, 2026-03-23)
+- ✅ ST-09012 complete - package export-map build warnings removed (PR #74, 2026-03-23)
 - Epic 09 (SOLID Micro-Refactors and Type Boundary Hardening) was expanded on 2026-03-22 with low-hanging follow-on stories ST-09008 through ST-09012
+- Epic 09 (SOLID Micro-Refactors and Type Boundary Hardening) is now complete - all 12 stories merged
 - Current measured `no-explicit-any` baseline is `289` warnings (`cli 24`, `core 119`, `patterns 28`, `testing 51`, `tools 67`)
