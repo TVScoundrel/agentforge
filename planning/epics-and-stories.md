@@ -1021,7 +1021,7 @@
 **Priority:** P2 (Medium)
 **Estimate:** 2 hours
 **Dependencies:** ST-09011
-**Status:** In Progress
+**Status:** In Review
 
 **Acceptance criteria:**
 - [ ] `packages/skills/package.json`, `packages/tools/package.json`, and `packages/testing/package.json` no longer emit the current `"types" condition will never be used` build warnings

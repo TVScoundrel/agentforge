@@ -413,18 +413,31 @@ Implementation notes:
 
 ### Checklist
 - [x] Create branch `codex/fix/st-09012-package-export-map-warning-cleanup`
-- [ ] Create draft PR with story ID in title
-- [ ] Remove the current `exports.types` ordering build warnings from `packages/skills/package.json`, `packages/tools/package.json`, and `packages/testing/package.json`
-- [ ] Preserve published import/require/types resolution behavior for the touched packages
-- [ ] Add/update focused validation for package builds and smoke-level resolution checks
-- [ ] Record removed warnings and package-metadata rationale in story docs
-- [ ] Add or update story documentation at `docs/st09012-package-export-map-warning-cleanup.md` (or document why not required)
-- [ ] Assess test impact; add/update automated tests when needed, or document why tests are not required
-- [ ] Run full test suite before finalizing the PR and record results
-- [ ] Run lint (`pnpm lint`) before finalizing the PR and record results
-- [ ] Commit completed checklist items as logical commits and push updates
-- [ ] Mark PR Ready only after all story tasks are complete
+- [x] Create draft PR with story ID in title
+- [x] Remove the current `exports.types` ordering build warnings from `packages/skills/package.json`, `packages/tools/package.json`, and `packages/testing/package.json`
+- [x] Preserve published import/require/types resolution behavior for the touched packages
+- [x] Add/update focused validation for package builds and smoke-level resolution checks
+- [x] Record removed warnings and package-metadata rationale in story docs
+- [x] Add or update story documentation at `docs/st09012-package-export-map-warning-cleanup.md` (or document why not required)
+- [x] Assess test impact; add/update automated tests when needed, or document why tests are not required
+- [x] Run full test suite before finalizing the PR and record results
+- [x] Run lint (`pnpm lint`) before finalizing the PR and record results
+- [x] Commit completed checklist items as logical commits and push updates
+- [x] Mark PR Ready only after all story tasks are complete
 - [ ] Wait for merge; do not merge directly from local branch
 
 Implementation notes:
 - Branch created from `main` on 2026-03-23: `codex/fix/st-09012-package-export-map-warning-cleanup`
+- Draft PR #74: https://github.com/TVScoundrel/agentforge/pull/74
+- Focused validation passed:
+  - `pnpm --filter @agentforge/skills build`
+  - `pnpm --filter @agentforge/tools build`
+  - `pnpm --filter @agentforge/testing build`
+  - CJS/ESM smoke imports passed for `@agentforge/skills` and `@agentforge/tools`
+  - `pnpm exec tsc --module nodenext --moduleResolution nodenext --target es2022 --skipLibCheck --noEmit <temp>/index.ts`
+  - disposable Vitest smoke test passed for `@agentforge/testing`
+- Test impact: no committed automated tests were added because this story only changes package metadata ordering; focused build and consumer-entrypoint smoke checks cover the regression surface more directly than repository test additions
+- Full validation passed:
+  - `pnpm test --run` -> `152 passed | 16 skipped` files; `2119 passed | 286 skipped` tests
+  - `pnpm lint` -> exit `0` (warnings only)
+- PR #74 marked ready after final tracker/body refresh
