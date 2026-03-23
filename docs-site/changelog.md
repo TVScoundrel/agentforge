@@ -5,6 +5,35 @@ All notable changes to AgentForge will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.16.0] - 2026-03-23
+
+### Added
+
+#### @agentforge/core - Sequential Builder Typecheck and Runtime Regression Coverage
+- Added source-included typecheck coverage in `packages/core/src/langgraph/builders/sequential.typecheck.ts` to lock in schema-derived sequential workflow typing
+- Added focused sequential builder regressions in `packages/core/tests/langgraph/builders/sequential.test.ts` for invalid runtime schemas and the tightened builder contract
+
+### Changed
+
+#### @agentforge/core - Sequential Workflow Builder Contract
+- Tightened `createSequentialWorkflow(...)` in `packages/core/src/langgraph/builders/sequential.ts` so the exported type surface now requires a real LangGraph `Annotation.Root(...)` schema
+- Removed the legacy explicit state-generic call pattern and aligned the Phase 2.2 example with schema-derived inference
+
+### Fixed
+
+#### @agentforge/core - Sequential Workflow Schema Validation
+- Replaced the old permissive schema typing and fragile runtime shape checks with constructor-backed validation that rethrows an explicit compatibility error for invalid sequential schemas
+- Removed the remaining explicit-`any` seams in the sequential builder and reduced the workspace baseline from `289` to `281`, improving the `core` package from `119` to `111`
+
+### Published
+- All packages published to npm registry at version 0.16.0:
+  - @agentforge/core@0.16.0
+  - @agentforge/skills@0.16.0
+  - @agentforge/patterns@0.16.0
+  - @agentforge/tools@0.16.0
+  - @agentforge/testing@0.16.0
+  - @agentforge/cli@0.16.0
+
 ## [0.15.15] - 2026-03-23
 
 ### Changed
