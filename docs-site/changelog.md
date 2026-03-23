@@ -5,6 +5,35 @@ All notable changes to AgentForge will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.15.14] - 2026-03-23
+
+### Added
+
+#### @agentforge/patterns - Plan-Execute Route Regression Coverage
+- Added focused route-flow tests in `packages/patterns/tests/plan-execute/agent.test.ts` covering both replanner outcomes: continue execution and trigger a fresh planning pass
+- Added story documentation in `docs/st09010-plan-execute-routing-typing.md` covering the route hardening, validation, and warning-delta snapshot
+
+### Changed
+
+#### @agentforge/patterns - Plan-Execute Agent Routing Typing
+- Reworked `packages/patterns/src/plan-execute/agent.ts` to replace inline conditional-edge casts with typed route maps
+- Preserved planner, executor, replanner, finisher, and terminal error routing behavior while letting the compiled LangGraph return type flow without a manual cast
+
+### Fixed
+
+#### @agentforge/patterns - Plan-Execute Type Boundary Safety
+- Removed the avoidable `any` bridges from the plan-execute route and compile boundary
+- Reduced the workspace explicit-`any` baseline from `292` to `289`, improving the `patterns` package from `31` to `28`
+
+### Published
+- All packages published to npm registry at version 0.15.14:
+  - @agentforge/core@0.15.14
+  - @agentforge/skills@0.15.14
+  - @agentforge/patterns@0.15.14
+  - @agentforge/tools@0.15.14
+  - @agentforge/testing@0.15.14
+  - @agentforge/cli@0.15.14
+
 ## [0.15.13] - 2026-03-23
 
 ### Added
