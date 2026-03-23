@@ -317,7 +317,7 @@
 - [x] Run lint (`pnpm lint`) before finalizing the PR and record results
 - [x] Commit completed checklist items as logical commits and push updates
 - [x] Mark PR Ready only after all story tasks are complete
-- [ ] Wait for merge; do not merge directly from local branch
+- [x] Wait for merge; do not merge directly from local branch
 
 Implementation notes:
 - `fec8ad1` `fix(st-09009): harden ask-human interrupt boundary`
@@ -334,6 +334,7 @@ Implementation notes:
   - `pnpm test --run` -> `151 passed | 16 skipped` files; `2114 passed | 286 skipped` tests
   - `pnpm lint` -> exit `0` (warnings only)
 - PR #71 marked ready after final tracker/body refresh
+- Merged via PR #71 on 2026-03-23
 
 ---
 

@@ -1,36 +1,35 @@
 # Kanban Queue: AgentForge
 
-**Last Updated:** 2026-03-22
+**Last Updated:** 2026-03-23
 
 ## Queue Status Summary
 
-- **Ready:** 0 stories
+- **Ready:** 1 story
 - **In Progress:** 0 stories
-- **In Review:** 1 story
+- **In Review:** 0 stories
 - **Blocked:** 0 stories
-- **Backlog:** 4 stories
+- **Backlog:** 3 stories
+
+---
+
+## Ready
+
+- `ST-09010` - Strengthen Plan-Execute Agent Routing Typing
+  - Epic: `EP-09`
+  - Priority: `P2`
+  - Rationale: `packages/patterns/src/plan-execute/agent.ts` still uses route and compile `as any` bridges
 
 ---
 
 ## In Review
 
-- `ST-09009` - Tighten Ask-Human Interrupt Boundary
-  - Epic: `EP-09`
-  - Priority: `P1`
-  - PR: `#71`
-  - Progress: ask-human interrupt loading/response normalization hardened; full suite and lint completed
+_No stories currently in review_
 
 ---
 
 ## In Progress
 
 _No stories currently in progress_
-
----
-
-## Ready
-
-_No stories currently ready_
 
 ---
 
@@ -42,9 +41,6 @@ _No stories currently blocked_
 
 ## Backlog
 
-- `ST-09010` - Strengthen Plan-Execute Agent Routing Typing
-  - Depends on: `ST-09009`
-  - Rationale: `packages/patterns/src/plan-execute/agent.ts` still uses route and compile `as any` bridges
 - `ST-09011` - Tighten Explicit-`any` Baseline Caps
   - Depends on: `ST-09010`
   - Rationale: the committed baseline still allows `496` warnings while the current measured count is `292`
@@ -107,5 +103,6 @@ _No stories currently blocked_
 - ✅ ST-09006 complete - ReAct node modularization merged (PR #68, 2026-03-18)
 - ✅ ST-09007 complete - ReAct node test modularization merged (PR #69, 2026-03-20)
 - ✅ ST-09008 complete - parallel workflow builder typing hardened (PR #70, 2026-03-22)
+- ✅ ST-09009 complete - ask-human interrupt boundary hardened (PR #71, 2026-03-23)
 - Epic 09 (SOLID Micro-Refactors and Type Boundary Hardening) was expanded on 2026-03-22 with low-hanging follow-on stories ST-09008 through ST-09012
 - Current measured `no-explicit-any` baseline is `292` warnings (`cli 24`, `core 119`, `patterns 31`, `testing 51`, `tools 67`)

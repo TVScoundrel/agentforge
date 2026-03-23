@@ -318,6 +318,13 @@
 - **Estimate:** 3 hours
 - **Outcome:** Hardened the `createParallelWorkflow()` public typing surface around schema-derived state and update contracts, removed avoidable builder `any`/`@ts-expect-error` usage, preserved backward compatibility for the deprecated `name` option, and added focused edge-wiring regressions while improving the workspace explicit-`any` baseline from 304 to 295.
 
+### ST-09009: Tighten Ask-Human Interrupt Boundary
+- **Merged:** 2026-03-23
+- **PR:** https://github.com/TVScoundrel/agentforge/pull/71
+- **Epic:** EP-09 (SOLID Micro-Refactors and Type Boundary Hardening)
+- **Estimate:** 3 hours
+- **Outcome:** Hardened the ask-human tool’s LangGraph interrupt boundary by replacing broad interrupt import/response casts with typed `unknown` guards, preserving clear compatibility errors, and adding focused regressions for missing dependencies, timeout/default handling, non-string resumes, and nullish resumes. Improved the workspace explicit-`any` baseline from 295 to 292 and the `tools` baseline from 70 to 67.
+
 ---
 
 ## Archive Format
