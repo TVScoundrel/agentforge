@@ -4,17 +4,19 @@
 
 ## Queue Status Summary
 
-- **Ready:** 0 stories
+- **Ready:** 3 stories
 - **In Progress:** 0 stories
 - **In Review:** 0 stories
 - **Blocked:** 0 stories
-- **Backlog:** 0 stories
+- **Backlog:** 3 stories
 
 ---
 
 ## Ready
 
-_No stories currently ready_
+- `ST-09013` - Harden Sequential Workflow Builder Typing
+- `ST-09016` - Harden Monitoring Audit and Health Payload Types
+- `ST-09017` - Centralize CLI Command Error Handling
 
 ---
 
@@ -38,7 +40,12 @@ _No stories currently blocked_
 
 ## Backlog
 
-_No stories currently in backlog_
+- `ST-09014` - Tighten Plan-Execute Shared Type Boundaries
+  - Depends on `ST-09013`
+- `ST-09015` - Modularize Multi-Agent Node Responsibilities
+  - Depends on `ST-09014`
+- `ST-09018` - Harden Testing Assertion and State Builder Helpers
+  - Depends on `ST-09016`
 
 ---
 
@@ -100,5 +107,5 @@ _No stories currently in backlog_
 - ✅ ST-09011 complete - explicit-`any` baseline caps tightened (PR #73, 2026-03-23)
 - ✅ ST-09012 complete - package export-map build warnings removed (PR #74, 2026-03-23)
 - Epic 09 (SOLID Micro-Refactors and Type Boundary Hardening) was expanded on 2026-03-22 with low-hanging follow-on stories ST-09008 through ST-09012
-- Epic 09 (SOLID Micro-Refactors and Type Boundary Hardening) is now complete - all 12 stories merged
+- Epic 09 (SOLID Micro-Refactors and Type Boundary Hardening) was expanded again on 2026-03-23 with daily hardening stories ST-09013 through ST-09018
 - Current measured `no-explicit-any` baseline is `289` warnings (`cli 24`, `core 119`, `patterns 28`, `testing 51`, `tools 67`)

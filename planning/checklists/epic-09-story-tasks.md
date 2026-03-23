@@ -447,3 +447,130 @@ Implementation notes:
 - Review fix: `f74c82f` `docs(st-09012): clarify types export resolution wording`
 - Review fix: `cf6b99e` `docs(st-09012): align vitest command wording`
 - Merged via PR #74 on 2026-03-23 (merge commit `42447ab`)
+
+---
+
+## ST-09013: Harden Sequential Workflow Builder Typing
+
+**Branch:** `fix/st-09013-sequential-workflow-builder-typing`
+
+### Checklist
+- [ ] Create branch `fix/st-09013-sequential-workflow-builder-typing`
+- [ ] Create draft PR with story ID in title
+- [ ] Remove avoidable `any` usage from `packages/core/src/langgraph/builders/sequential.ts` around schema, state, and edge wiring
+- [ ] Preserve current sequential runtime behavior while deriving state/update typing from the supplied schema
+- [ ] Add/update focused tests for start/intermediate/end edge wiring and schema-derived workflow typing behavior
+- [ ] Record explicit-`any` warning deltas for touched files in story docs
+- [ ] Add or update story documentation at `docs/st09013-sequential-workflow-builder-typing.md` (or document why not required)
+- [ ] Assess test impact; add/update automated tests when needed, or document why tests are not required
+- [ ] Run full test suite before finalizing the PR and record results
+- [ ] Run lint (`pnpm lint`) before finalizing the PR and record results
+- [ ] Commit completed checklist items as logical commits and push updates
+- [ ] Mark PR Ready only after all story tasks are complete
+- [ ] Wait for merge; do not merge directly from local branch
+
+---
+
+## ST-09014: Tighten Plan-Execute Shared Type Boundaries
+
+**Branch:** `fix/st-09014-plan-execute-shared-type-boundaries`
+
+### Checklist
+- [ ] Create branch `fix/st-09014-plan-execute-shared-type-boundaries`
+- [ ] Create draft PR with story ID in title
+- [ ] Remove broad tool/schema `any` boundaries from `packages/patterns/src/plan-execute/types.ts` and adjacent shared contracts as needed
+- [ ] Preserve current planner/executor/replanner compatibility while tightening shared type inference
+- [ ] Add/update focused tests for type-driven plan-execute configuration and execution flows
+- [ ] Record explicit-`any` warning deltas for touched files in story docs
+- [ ] Add or update story documentation at `docs/st09014-plan-execute-shared-type-boundaries.md` (or document why not required)
+- [ ] Assess test impact; add/update automated tests when needed, or document why tests are not required
+- [ ] Run full test suite before finalizing the PR and record results
+- [ ] Run lint (`pnpm lint`) before finalizing the PR and record results
+- [ ] Commit completed checklist items as logical commits and push updates
+- [ ] Mark PR Ready only after all story tasks are complete
+- [ ] Wait for merge; do not merge directly from local branch
+
+---
+
+## ST-09015: Modularize Multi-Agent Node Responsibilities
+
+**Branch:** `refactor/st-09015-multi-agent-node-modularization`
+
+### Checklist
+- [ ] Create branch `refactor/st-09015-multi-agent-node-modularization`
+- [ ] Create draft PR with story ID in title
+- [ ] Split `packages/patterns/src/multi-agent/nodes.ts` into smaller modules or helper layers that mirror major node responsibilities
+- [ ] Preserve the public multi-agent node entrypoint and current runtime behavior after the split
+- [ ] Extract shared helpers where they reduce duplication without obscuring routing and handoff flow
+- [ ] Add/update focused tests for coordinator routing, handoff behavior, and node-level error handling
+- [ ] Record explicit-`any` warning deltas for touched files in story docs
+- [ ] Add or update story documentation at `docs/st09015-multi-agent-node-modularization.md` (or document why not required)
+- [ ] Assess test impact; add/update automated tests when needed, or document why tests are not required
+- [ ] Run full test suite before finalizing the PR and record results
+- [ ] Run lint (`pnpm lint`) before finalizing the PR and record results
+- [ ] Commit completed checklist items as logical commits and push updates
+- [ ] Mark PR Ready only after all story tasks are complete
+- [ ] Wait for merge; do not merge directly from local branch
+
+---
+
+## ST-09016: Harden Monitoring Audit and Health Payload Types
+
+**Branch:** `fix/st-09016-monitoring-payload-type-hardening`
+
+### Checklist
+- [ ] Create branch `fix/st-09016-monitoring-payload-type-hardening`
+- [ ] Create draft PR with story ID in title
+- [ ] Replace broad payload `any` fields in `packages/core/src/monitoring/audit.ts` and `packages/core/src/monitoring/health.ts` with safer contracts
+- [ ] Preserve current monitoring runtime behavior and public compatibility while tightening audit/health payload typing
+- [ ] Add/update focused tests for audit event serialization and health metadata handling
+- [ ] Record explicit-`any` warning deltas for touched files in story docs
+- [ ] Add or update story documentation at `docs/st09016-monitoring-payload-type-hardening.md` (or document why not required)
+- [ ] Assess test impact; add/update automated tests when needed, or document why tests are not required
+- [ ] Run full test suite before finalizing the PR and record results
+- [ ] Run lint (`pnpm lint`) before finalizing the PR and record results
+- [ ] Commit completed checklist items as logical commits and push updates
+- [ ] Mark PR Ready only after all story tasks are complete
+- [ ] Wait for merge; do not merge directly from local branch
+
+---
+
+## ST-09017: Centralize CLI Command Error Handling
+
+**Branch:** `refactor/st-09017-cli-error-handling-centralization`
+
+### Checklist
+- [ ] Create branch `refactor/st-09017-cli-error-handling-centralization`
+- [ ] Create draft PR with story ID in title
+- [ ] Consolidate repeated command-level error formatting and exit handling in `packages/cli/src/commands/**`
+- [ ] Preserve current CLI user-visible behavior and exit codes while reducing repetitive `catch (error: any)` usage
+- [ ] Add/update focused tests for shared command error handling where the existing CLI test surface supports it
+- [ ] Record explicit-`any` warning deltas for touched files in story docs
+- [ ] Add or update story documentation at `docs/st09017-cli-error-handling-centralization.md` (or document why not required)
+- [ ] Assess test impact; add/update automated tests when needed, or document why tests are not required
+- [ ] Run full test suite before finalizing the PR and record results
+- [ ] Run lint (`pnpm lint`) before finalizing the PR and record results
+- [ ] Commit completed checklist items as logical commits and push updates
+- [ ] Mark PR Ready only after all story tasks are complete
+- [ ] Wait for merge; do not merge directly from local branch
+
+---
+
+## ST-09018: Harden Testing Assertion and State Builder Helpers
+
+**Branch:** `fix/st-09018-testing-helper-type-hardening`
+
+### Checklist
+- [ ] Create branch `fix/st-09018-testing-helper-type-hardening`
+- [ ] Create draft PR with story ID in title
+- [ ] Replace broad `any`-based helper signatures in `packages/testing/src/helpers/assertions.ts` and `packages/testing/src/helpers/state-builder.ts` with safer generic or unknown-first contracts
+- [ ] Preserve practical helper ergonomics for common agent/message/state test setup flows
+- [ ] Add/update focused tests for touched helper behavior and contract expectations
+- [ ] Record explicit-`any` warning deltas for touched files in story docs
+- [ ] Add or update story documentation at `docs/st09018-testing-helper-type-hardening.md` (or document why not required)
+- [ ] Assess test impact; add/update automated tests when needed, or document why tests are not required
+- [ ] Run full test suite before finalizing the PR and record results
+- [ ] Run lint (`pnpm lint`) before finalizing the PR and record results
+- [ ] Commit completed checklist items as logical commits and push updates
+- [ ] Mark PR Ready only after all story tasks are complete
+- [ ] Wait for merge; do not merge directly from local branch

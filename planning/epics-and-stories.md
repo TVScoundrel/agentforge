@@ -121,7 +121,7 @@
 - Story slices are intentionally small (1 day each) so quality improvements can ship continuously
 - Lightweight quality-gate follow-ups keep release/build feedback tight by reducing stale warning caps and easy package metadata warnings
 
-**Stories:** ST-09001 through ST-09012
+**Stories:** ST-09001 through ST-09018
 
 ---
 
@@ -1032,15 +1032,121 @@
 
 ---
 
+#### ST-09013: Harden Sequential Workflow Builder Typing
+**User story:** As a LangGraph workflow author, I want the sequential workflow builder to use schema-derived state and safer edge typing so linear workflows no longer depend on broad casts.
+
+**Priority:** P1 (High)
+**Estimate:** 3 hours
+**Dependencies:** ST-09012
+**Status:** Ready
+
+**Acceptance criteria:**
+- [ ] `packages/core/src/langgraph/builders/sequential.ts` removes avoidable `any` usage around `stateSchema`, `START`/`END`, and node-edge wiring
+- [ ] State and update typing derive from the supplied schema instead of a free broad state boundary
+- [ ] Current sequential runtime behavior is preserved for start, intermediate, and terminal edges
+- [ ] Focused tests are added or updated for edge wiring and schema-derived workflow typing behavior
+- [ ] Explicit-`any` warning changes for touched files are recorded in story documentation
+- [ ] Add or update story documentation at `docs/st09013-sequential-workflow-builder-typing.md`
+
+---
+
+#### ST-09014: Tighten Plan-Execute Shared Type Boundaries
+**User story:** As a patterns maintainer, I want the shared plan-execute type contracts to stop leaking broad tool and schema boundaries so downstream agents inherit tighter inference by default.
+
+**Priority:** P1 (High)
+**Estimate:** 3 hours
+**Dependencies:** ST-09013
+**Status:** Backlog
+
+**Acceptance criteria:**
+- [ ] `packages/patterns/src/plan-execute/types.ts` removes the current `Tool<any, any>[]` style boundaries and replaces them with safer generic or erased runtime contracts
+- [ ] Shared plan, execution, and step result types remain compatible with current planner, executor, and replanner flows
+- [ ] Any touched schema helpers preserve current runtime validation behavior while reducing broad `any` usage
+- [ ] Focused tests are added or updated for type-driven plan-execute configuration and execution flows
+- [ ] Explicit-`any` warning changes for touched files are recorded in story documentation
+- [ ] Add or update story documentation at `docs/st09014-plan-execute-shared-type-boundaries.md`
+
+---
+
+#### ST-09015: Modularize Multi-Agent Node Responsibilities
+**User story:** As a patterns maintainer, I want the multi-agent node module split into smaller responsibility-focused units so routing, handoff, and coordinator behavior are easier to review and extend.
+
+**Priority:** P2 (Medium)
+**Estimate:** 4 hours
+**Dependencies:** ST-09014
+**Status:** Backlog
+
+**Acceptance criteria:**
+- [ ] `packages/patterns/src/multi-agent/nodes.ts` is split into smaller modules or helper layers that mirror the major node responsibilities
+- [ ] The public multi-agent node entrypoint remains stable and preserves current runtime behavior
+- [ ] Shared helpers are extracted where they reduce duplication without obscuring control flow
+- [ ] Focused tests are added or updated for coordinator routing, handoff behavior, and node-level error handling after the split
+- [ ] Touched files do not regress on explicit-`any` warning counts and the outcome is recorded in story documentation
+- [ ] Add or update story documentation at `docs/st09015-multi-agent-node-modularization.md`
+
+---
+
+#### ST-09016: Harden Monitoring Audit and Health Payload Types
+**User story:** As a maintainer, I want monitoring audit and health payload contracts tightened so observability helpers stop relying on broad payload `any` values.
+
+**Priority:** P1 (High)
+**Estimate:** 3 hours
+**Dependencies:** ST-09012
+**Status:** Ready
+
+**Acceptance criteria:**
+- [ ] `packages/core/src/monitoring/audit.ts` and `packages/core/src/monitoring/health.ts` replace broad `any` payload fields with safer JSON-safe or domain-specific contracts
+- [ ] Monitoring APIs preserve current runtime behavior and public compatibility where possible
+- [ ] Focused tests are added or updated for audit event serialization and health-check metadata handling
+- [ ] Explicit-`any` warning changes for touched files are recorded in story documentation
+- [ ] Add or update story documentation at `docs/st09016-monitoring-payload-type-hardening.md`
+
+---
+
+#### ST-09017: Centralize CLI Command Error Handling
+**User story:** As a CLI maintainer, I want repeated command-level error handling consolidated so command modules stay DRY and stop relying on repetitive `catch (error: any)` blocks.
+
+**Priority:** P2 (Medium)
+**Estimate:** 3 hours
+**Dependencies:** ST-09012
+**Status:** Ready
+
+**Acceptance criteria:**
+- [ ] Repeated command-level error formatting/exit handling in `packages/cli/src/commands/**` is consolidated behind a shared helper or wrapper
+- [ ] Touched CLI commands preserve current user-visible behavior and exit codes
+- [ ] The refactor reduces avoidable `catch (error: any)` usage in touched command files
+- [ ] Focused tests are added or updated for shared error handling where the current test surface supports it
+- [ ] Explicit-`any` warning changes for touched files are recorded in story documentation
+- [ ] Add or update story documentation at `docs/st09017-cli-error-handling-centralization.md`
+
+---
+
+#### ST-09018: Harden Testing Assertion and State Builder Helpers
+**User story:** As a framework contributor, I want the shared testing helpers to expose tighter generic contracts so test utilities stop teaching consumers to lean on broad `any`-based state builders.
+
+**Priority:** P2 (Medium)
+**Estimate:** 3 hours
+**Dependencies:** ST-09016
+**Status:** Backlog
+
+**Acceptance criteria:**
+- [ ] `packages/testing/src/helpers/assertions.ts` and `packages/testing/src/helpers/state-builder.ts` replace broad `any`-based helper signatures with safer generic or unknown-first contracts
+- [ ] Shared test helper ergonomics remain practical for common agent/message/state test setup flows
+- [ ] Focused tests are added or updated for touched helper behavior and contract expectations
+- [ ] Explicit-`any` warning changes for touched files are recorded in story documentation
+- [ ] Add or update story documentation at `docs/st09018-testing-helper-type-hardening.md`
+
+---
+
 ## Story Summary
 
-**Total Stories:** 48
+**Total Stories:** 54
 **By Priority:**
 - P0 (Critical): 17 stories
-- P1 (High): 19 stories
-- P2 (Medium): 12 stories
+- P1 (High): 22 stories
+- P2 (Medium): 15 stories
 
-**Total Estimated Effort:** ~185 hours (23.1 working days)
+**Total Estimated Effort:** ~204 hours (25.5 working days)
 
 **Dependency Chain:**
 1. Phase 1 (Foundation): ST-01001 → ST-01002 → ST-01003 → ST-01004
@@ -1051,4 +1157,4 @@
 6. Phase 6 (Agent Skills): ST-06001 → ST-06002 → ST-06003 → ST-06004 → ST-06005 → ST-06006
 7. Phase 7 (Skills Extraction): ST-07001 → ST-07002 → [ST-07003, ST-07004 parallel] → ST-07005; ST-07001 → ST-07006 (independent)
 8. Phase 8 (Type Safety Hardening): ST-08001 → [ST-08002, ST-08003, ST-08004 parallel]
-9. Phase 9 (SOLID Micro-Refactors): ST-09001 (Merged) → ST-09002 (Merged) → ST-09003 (Merged) → ST-09004 (Merged) → ST-09005 (Merged) → ST-09006 (Merged) → ST-09007 (Merged) → ST-09008 (Merged) → ST-09009 (Merged) → ST-09010 (Merged) → ST-09011 (Merged) → ST-09012 (Merged)
+9. Phase 9 (SOLID Micro-Refactors): ST-09001 (Merged) → ST-09002 (Merged) → ST-09003 (Merged) → ST-09004 (Merged) → ST-09005 (Merged) → ST-09006 (Merged) → ST-09007 (Merged) → ST-09008 (Merged) → ST-09009 (Merged) → ST-09010 (Merged) → ST-09011 (Merged) → ST-09012 (Merged) → [ST-09013 (Ready), ST-09016 (Ready), ST-09017 (Ready)]; ST-09013 → ST-09014 → ST-09015; ST-09016 → ST-09018
