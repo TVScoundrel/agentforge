@@ -38,7 +38,7 @@ pnpm --filter @agentforge/testing build
 node <temp>/runtime.cjs
 node <temp>/runtime.mjs
 pnpm exec tsc --module nodenext --moduleResolution nodenext --target es2022 --skipLibCheck --noEmit <temp>/index.ts
-vitest run --config <temp>/vitest.config.ts
+pnpm exec vitest run --config <temp>/vitest.config.ts
 ```
 
 Focused validation results:

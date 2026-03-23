@@ -443,3 +443,4 @@ Implementation notes:
 - PR #74 marked ready after final tracker/body refresh
 - Review fix: `75e4935` `docs(st-09012): align review-state tracker wording`
 - Review fix: pending terminology clarification for `types` resolution wording
+- Review fix: pending `pnpm exec vitest` wording alignment in story doc validation list
