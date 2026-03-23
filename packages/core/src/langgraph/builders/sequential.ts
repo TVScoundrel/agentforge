@@ -98,11 +98,14 @@ export function createSequentialWorkflow<
 /**
  * @deprecated Prefer schema-derived inference instead of explicitly providing a state generic.
  */
-export function createSequentialWorkflow<State>(
+export function createSequentialWorkflow<
+  State,
+  SD extends StateDefinition = StateDefinition
+>(
   stateSchema: SequentialWorkflowSchema<State>,
   nodes: SequentialNode<State>[],
   options?: SequentialWorkflowOptions
-): SequentialWorkflowGraph<StateDefinition, State, SequentialNodeResult<State>>;
+): SequentialWorkflowGraph<SD, State, SequentialNodeResult<State>>;
 export function createSequentialWorkflow<
   SD extends StateDefinition = StateDefinition,
   State = SequentialWorkflowState<SD>,
@@ -125,6 +128,10 @@ export function createSequentialWorkflow<
       throw new Error(`Duplicate node name: ${node.name}`);
     }
     nodeNames.add(node.name);
+  }
+
+  if (!hasAnnotationRootSpec(stateSchema)) {
+    throw new Error('Sequential workflow requires a LangGraph Annotation.Root schema');
   }
 
   // Create the graph
@@ -157,6 +164,12 @@ export function createSequentialWorkflow<
   }
 
   return graph;
+}
+
+function hasAnnotationRootSpec<State>(
+  stateSchema: SequentialWorkflowSchema<State>
+): stateSchema is SequentialWorkflowSchema<State> & { spec: object } {
+  return typeof stateSchema === 'object' && stateSchema !== null && 'spec' in stateSchema;
 }
 
 /**
