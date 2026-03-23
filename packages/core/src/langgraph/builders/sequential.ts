@@ -13,6 +13,18 @@ import type { AnnotationRoot, StateDefinition, UpdateType } from '@langchain/lan
 
 type SequentialWorkflowState<SD extends StateDefinition> = AnnotationRoot<SD>['State'];
 type SequentialNodeResult<State> = Partial<State>;
+type SequentialWorkflowUpdate<SD extends StateDefinition, State> = [State] extends [
+  SequentialWorkflowState<SD>,
+]
+  ? UpdateType<SD>
+  : SequentialNodeResult<State>;
+type SequentialWorkflowSchema<State> = { State: State };
+type SequentialWorkflowGraph<SD extends StateDefinition, State, Update> = StateGraph<
+  AnnotationRoot<SD>,
+  State,
+  Update,
+  string
+>;
 
 /**
  * Configuration for a node in a sequential workflow
@@ -76,13 +88,30 @@ export interface SequentialWorkflowOptions {
  * @returns A configured StateGraph ready to compile
  */
 export function createSequentialWorkflow<
-  SD extends StateDefinition = StateDefinition,
-  Update extends UpdateType<SD> = UpdateType<SD>
+  SD extends StateDefinition,
+  Update extends UpdateType<SD>
 >(
   stateSchema: AnnotationRoot<SD>,
   nodes: SequentialNode<SequentialWorkflowState<SD>, Update>[],
+  options?: SequentialWorkflowOptions
+): SequentialWorkflowGraph<SD, SequentialWorkflowState<SD>, Update>;
+/**
+ * @deprecated Prefer schema-derived inference instead of explicitly providing a state generic.
+ */
+export function createSequentialWorkflow<State>(
+  stateSchema: SequentialWorkflowSchema<State>,
+  nodes: SequentialNode<State>[],
+  options?: SequentialWorkflowOptions
+): SequentialWorkflowGraph<StateDefinition, State, SequentialNodeResult<State>>;
+export function createSequentialWorkflow<
+  SD extends StateDefinition = StateDefinition,
+  State = SequentialWorkflowState<SD>,
+  Update = SequentialWorkflowUpdate<SD, State>
+>(
+  stateSchema: SequentialWorkflowSchema<State>,
+  nodes: SequentialNode<State, Update>[],
   options: SequentialWorkflowOptions = {}
-): StateGraph<AnnotationRoot<SD>, SequentialWorkflowState<SD>, Update, string> {
+): SequentialWorkflowGraph<SD, State, Update> {
   const { autoStartEnd = true } = options;
 
   if (nodes.length === 0) {
@@ -99,7 +128,9 @@ export function createSequentialWorkflow<
   }
 
   // Create the graph
-  const graph = new StateGraph<AnnotationRoot<SD>, SequentialWorkflowState<SD>, Update, string>(stateSchema);
+  const graph = new StateGraph<AnnotationRoot<SD>, State, Update, string>(
+    stateSchema as AnnotationRoot<SD>
+  );
   type GraphNodeAction = Parameters<typeof graph.addNode>[1];
 
   // Add all nodes
@@ -183,7 +214,7 @@ export function sequentialBuilder<
      * Build the StateGraph
      */
     build(): StateGraph<AnnotationRoot<SD>, State, Update, string> {
-      return createSequentialWorkflow<SD, Update>(stateSchema, nodes, options);
+      return createSequentialWorkflow(stateSchema, nodes, options);
     },
   };
 }

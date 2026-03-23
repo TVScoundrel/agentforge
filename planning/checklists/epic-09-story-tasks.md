@@ -477,9 +477,11 @@ Implementation notes:
 - [x] Commit completed checklist items as logical commits and push updates
   - `e48144c` `refactor(st-09013): harden sequential workflow builder typing`
   - `9257799` `docs(st-09013): record validation and move story to in-review`
+  - `c214b95` `chore(st-09013): finalize checklist and ready status`
 - [x] Mark PR Ready only after all story tasks are complete
   - PR #75 marked ready: https://github.com/TVScoundrel/agentforge/pull/75
 - [ ] Wait for merge; do not merge directly from local branch
+  - Pending merge for PR #75; story remains in review until merged
 
 ---
 

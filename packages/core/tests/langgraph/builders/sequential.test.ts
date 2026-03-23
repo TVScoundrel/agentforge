@@ -138,6 +138,29 @@ describe('Sequential Workflow Builder', () => {
       expect(result.count).toBe(2);
     });
 
+    it('should preserve the legacy explicit state generic call pattern', async () => {
+      const workflow = createSequentialWorkflow<typeof TestState.State>(
+        TestState,
+        [
+          {
+            name: 'legacy',
+            node: (state) => ({
+              messages: [`legacy:${state.count}`],
+            }),
+          },
+        ]
+      );
+
+      const app = workflow.compile();
+      const result = await app.invoke({
+        messages: [],
+        count: 4,
+      });
+
+      expect(result.messages).toEqual(['legacy:4']);
+      expect(result.count).toBe(4);
+    });
+
     it('should wire sequential edges when autoStartEnd is enabled', () => {
       const workflow = createSequentialWorkflow(
         TestState,
