@@ -4,9 +4,9 @@
 
 ## Queue Status Summary
 
-- **Ready:** 3 stories
+- **Ready:** 2 stories
 - **In Progress:** 0 stories
-- **In Review:** 0 stories
+- **In Review:** 1 story
 - **Blocked:** 0 stories
 - **Backlog:** 13 stories
 
@@ -14,7 +14,6 @@
 
 ## Ready
 
-- `ST-09013` - Harden Sequential Workflow Builder Typing
 - `ST-09016` - Harden Monitoring Audit and Health Payload Types
 - `ST-09017` - Centralize CLI Command Error Handling
 
@@ -22,7 +21,7 @@
 
 ## In Review
 
-_No stories currently in review_
+- `ST-09013` - Harden Sequential Workflow Builder Typing
 
 ---
 

@@ -1038,7 +1038,7 @@
 **Priority:** P1 (High)
 **Estimate:** 3 hours
 **Dependencies:** ST-09012
-**Status:** Ready
+**Status:** In Review
 
 **Acceptance criteria:**
 - [ ] `packages/core/src/langgraph/builders/sequential.ts` removes avoidable `any` usage around `stateSchema`, `START`/`END`, and node-edge wiring
@@ -1327,4 +1327,4 @@
 6. Phase 6 (Agent Skills): ST-06001 → ST-06002 → ST-06003 → ST-06004 → ST-06005 → ST-06006
 7. Phase 7 (Skills Extraction): ST-07001 → ST-07002 → [ST-07003, ST-07004 parallel] → ST-07005; ST-07001 → ST-07006 (independent)
 8. Phase 8 (Type Safety Hardening): ST-08001 → [ST-08002, ST-08003, ST-08004 parallel]
-9. Phase 9 (SOLID Micro-Refactors): ST-09001 (Merged) → ST-09002 (Merged) → ST-09003 (Merged) → ST-09004 (Merged) → ST-09005 (Merged) → ST-09006 (Merged) → ST-09007 (Merged) → ST-09008 (Merged) → ST-09009 (Merged) → ST-09010 (Merged) → ST-09011 (Merged) → ST-09012 (Merged) → [ST-09013 (Ready), ST-09016 (Ready), ST-09017 (Ready)]; ST-09013 → ST-09014 → ST-09015; ST-09016 → ST-09018; ST-09025 → ST-09026; ST-09027 → ST-09028; [ST-09019, ST-09020, ST-09021, ST-09022, ST-09023] remain independently queueable after ST-09012; ST-09024 follows the ask-human/interrupt hardening slice after ST-09009
+9. Phase 9 (SOLID Micro-Refactors): ST-09001 (Merged) → ST-09002 (Merged) → ST-09003 (Merged) → ST-09004 (Merged) → ST-09005 (Merged) → ST-09006 (Merged) → ST-09007 (Merged) → ST-09008 (Merged) → ST-09009 (Merged) → ST-09010 (Merged) → ST-09011 (Merged) → ST-09012 (Merged) → [ST-09013 (In Review), ST-09016 (Ready), ST-09017 (Ready)]; ST-09013 → ST-09014 → ST-09015; ST-09016 → ST-09018; ST-09025 → ST-09026; ST-09027 → ST-09028; [ST-09019, ST-09020, ST-09021, ST-09022, ST-09023] remain independently queueable after ST-09012; ST-09024 follows the ask-human/interrupt hardening slice after ST-09009

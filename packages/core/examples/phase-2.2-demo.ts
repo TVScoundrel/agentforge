@@ -13,6 +13,7 @@ import {
   withRetry,
   withErrorHandler,
   withTimeout,
+  type SequentialNode,
 } from '../src/langgraph/index.js';
 
 // Define state
@@ -36,29 +37,31 @@ type State = typeof AgentState.State;
 // Example 1: Sequential Workflow
 console.log('\n=== Example 1: Sequential Workflow ===\n');
 
-const sequentialWorkflow = createSequentialWorkflow<State>(AgentState, [
+const sequentialNodes: SequentialNode<State>[] = [
   {
     name: 'step1',
-    node: (state) => {
+    node: (_state) => {
       console.log('Step 1: Fetching data...');
       return { messages: ['Fetched data'], data: { fetched: true } };
     },
   },
   {
     name: 'step2',
-    node: (state) => {
+    node: (_state) => {
       console.log('Step 2: Processing data...');
       return { messages: ['Processed data'], data: { processed: true } };
     },
   },
   {
     name: 'step3',
-    node: (state) => {
+    node: (_state) => {
       console.log('Step 3: Saving results...');
       return { messages: ['Saved results'], data: { saved: true } };
     },
   },
-]);
+];
+
+const sequentialWorkflow = createSequentialWorkflow(AgentState, sequentialNodes);
 
 const sequentialApp = sequentialWorkflow.compile();
 const sequentialResult = await sequentialApp.invoke({
@@ -119,7 +122,7 @@ console.log('\n=== Example 3: Error Handling Patterns ===\n');
 
 // Flaky node that fails sometimes
 let attempts = 0;
-const flakyNode = (state: State) => {
+const flakyNode = (_state: State): Partial<State> => {
   attempts++;
   console.log(`Attempt ${attempts}...`);
   if (attempts < 3) {

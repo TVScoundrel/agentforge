@@ -455,19 +455,39 @@ Implementation notes:
 **Branch:** `fix/st-09013-sequential-workflow-builder-typing`
 
 ### Checklist
-- [ ] Create branch `fix/st-09013-sequential-workflow-builder-typing`
-- [ ] Create draft PR with story ID in title
-- [ ] Remove avoidable `any` usage from `packages/core/src/langgraph/builders/sequential.ts` around schema, state, and edge wiring
-- [ ] Preserve current sequential runtime behavior while deriving state/update typing from the supplied schema
-- [ ] Add/update focused tests for start/intermediate/end edge wiring and schema-derived workflow typing behavior
-- [ ] Record explicit-`any` warning deltas for touched files in story docs
-- [ ] Add or update story documentation at `docs/st09013-sequential-workflow-builder-typing.md` (or document why not required)
-- [ ] Assess test impact; add/update automated tests when needed, or document why tests are not required
-- [ ] Run full test suite before finalizing the PR and record results
-- [ ] Run lint (`pnpm lint`) before finalizing the PR and record results
-- [ ] Commit completed checklist items as logical commits and push updates
-- [ ] Mark PR Ready only after all story tasks are complete
+- [x] Create branch `fix/st-09013-sequential-workflow-builder-typing`
+  - Created as `codex/fix/st-09013-sequential-workflow-builder-typing` (workspace branch-prefix policy)
+- [x] Create draft PR with story ID in title
+  - Draft PR #75: https://github.com/TVScoundrel/agentforge/pull/75
+- [x] Remove avoidable `any` usage from `packages/core/src/langgraph/builders/sequential.ts` around schema, state, and edge wiring
+  - Replaced the broad schema/state generics with `AnnotationRoot`/`StateDefinition`/`UpdateType`-driven typing and removed `START`/`END` `as any` edges
+- [x] Preserve current sequential runtime behavior while deriving state/update typing from the supplied schema
+  - Sequential execution order, `autoStartEnd`, and the public `name` option remain compatible; only the localized `addNode()` interop cast remains
+- [x] Add/update focused tests for start/intermediate/end edge wiring and schema-derived workflow typing behavior
+  - `packages/core/tests/langgraph/builders/sequential.test.ts` now covers schema-driven inference plus direct edge assertions for `autoStartEnd: true|false`
+- [x] Record explicit-`any` warning deltas for touched files in story docs
+  - Recorded in `docs/st09013-sequential-workflow-builder-typing.md` (`packages/core/src/langgraph/builders/sequential.ts`: `8 -> 0`; baseline `289 -> 281`, `core 119 -> 111`)
+- [x] Add or update story documentation at `docs/st09013-sequential-workflow-builder-typing.md` (or document why not required)
+- [x] Assess test impact; add/update automated tests when needed, or document why tests are not required
+  - Expanded automated coverage in `packages/core/tests/langgraph/builders/sequential.test.ts`; no manual-only gap remains for the changed surface
+- [x] Run full test suite before finalizing the PR and record results
+  - `pnpm test --run` -> `152 passed | 16 skipped` files; `2123 passed | 286 skipped` tests
+- [x] Run lint (`pnpm lint`) before finalizing the PR and record results
+  - `pnpm lint` -> exit `0`; warnings only (`0` errors)
+- [x] Commit completed checklist items as logical commits and push updates
+  - `e48144c` `refactor(st-09013): harden sequential workflow builder typing`
+  - `9257799` `docs(st-09013): record validation and move story to in-review`
+  - `c214b95` `chore(st-09013): finalize checklist and ready status`
+- [x] Mark PR Ready only after all story tasks are complete
+  - PR #75 marked ready: https://github.com/TVScoundrel/agentforge/pull/75
 - [ ] Wait for merge; do not merge directly from local branch
+  - Pending merge for PR #75; story remains in review until merged
+  - Review fix: `dc65894` `fix(st-09013): preserve sequential builder compatibility typing`
+  - Review fix: `d24eeeb` `fix(st-09013): guard legacy sequential schema compatibility`
+  - Review fix: `99ffe35` `fix(st-09013): remove legacy sequential state overload`
+  - Review fix: `2ec4f9a` `fix(st-09013): bind sequential workflow typing to schema`
+  - Review fix: `a45bfdb` `fix(st-09013): rethrow invalid sequential schema errors`
+  - Review fix: `cc3f75b` `fix(st-09013): update sequential builder example usage`
 
 ---
 

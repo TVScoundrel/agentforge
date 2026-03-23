@@ -9,12 +9,21 @@
  */
 
 import { StateGraph, END, START } from '@langchain/langgraph';
-import type { StateGraphArgs } from '@langchain/langgraph';
+import type { AnnotationRoot, StateDefinition, UpdateType } from '@langchain/langgraph';
+
+type SequentialWorkflowState<SD extends StateDefinition> = AnnotationRoot<SD>['State'];
+type SequentialNodeResult<State> = Partial<State>;
+type SequentialWorkflowGraph<SD extends StateDefinition, State, Update> = StateGraph<
+  AnnotationRoot<SD>,
+  State,
+  Update,
+  string
+>;
 
 /**
  * Configuration for a node in a sequential workflow
  */
-export interface SequentialNode<State> {
+export interface SequentialNode<State, Update = SequentialNodeResult<State>> {
   /**
    * Unique name for the node
    */
@@ -23,7 +32,7 @@ export interface SequentialNode<State> {
   /**
    * The node function that processes the state
    */
-  node: (state: State) => State | Promise<State> | Partial<State> | Promise<Partial<State>>;
+  node: (state: State) => Update | Promise<Update>;
 
   /**
    * Optional description of what this node does
@@ -42,7 +51,9 @@ export interface SequentialWorkflowOptions {
   autoStartEnd?: boolean;
 
   /**
-   * Custom name for the workflow (for debugging)
+   * Compatibility-only no-op retained to avoid a public type break.
+   *
+   * @deprecated This option is currently unused and will be removed in a future major release.
    */
   name?: string;
 }
@@ -70,12 +81,23 @@ export interface SequentialWorkflowOptions {
  * @param options - Optional configuration
  * @returns A configured StateGraph ready to compile
  */
-export function createSequentialWorkflow<State>(
-  stateSchema: any,
-  nodes: SequentialNode<State>[],
+export function createSequentialWorkflow<
+  SD extends StateDefinition,
+  Update extends UpdateType<SD>
+>(
+  stateSchema: AnnotationRoot<SD>,
+  nodes: SequentialNode<SequentialWorkflowState<SD>, Update>[],
+  options?: SequentialWorkflowOptions
+): SequentialWorkflowGraph<SD, SequentialWorkflowState<SD>, Update>;
+export function createSequentialWorkflow<
+  SD extends StateDefinition = StateDefinition,
+  Update extends UpdateType<SD> = UpdateType<SD>
+>(
+  stateSchema: AnnotationRoot<SD>,
+  nodes: SequentialNode<SequentialWorkflowState<SD>, Update>[],
   options: SequentialWorkflowOptions = {}
-): StateGraph<State> {
-  const { autoStartEnd = true, name } = options;
+): SequentialWorkflowGraph<SD, SequentialWorkflowState<SD>, Update> {
+  const { autoStartEnd = true } = options;
 
   if (nodes.length === 0) {
     throw new Error('Sequential workflow must have at least one node');
@@ -91,33 +113,43 @@ export function createSequentialWorkflow<State>(
   }
 
   // Create the graph
-  const graph = new StateGraph<State>(stateSchema);
+  let graph: StateGraph<AnnotationRoot<SD>, SequentialWorkflowState<SD>, Update, string>;
+  try {
+    graph = new StateGraph<AnnotationRoot<SD>, SequentialWorkflowState<SD>, Update, string>(
+      stateSchema
+    );
+  } catch (error) {
+    throw new Error('Sequential workflow requires a LangGraph Annotation.Root schema', {
+      cause: error,
+    });
+  }
+  type GraphNodeAction = Parameters<typeof graph.addNode>[1];
 
   // Add all nodes
   for (const { name: nodeName, node } of nodes) {
-    // @ts-expect-error - LangGraph's complex generic types don't infer well here
-    graph.addNode(nodeName, node);
+    // LangGraph's addNode() overloads widen update objects internally. Keep that
+    // interop localized here rather than weakening the public workflow types.
+    graph.addNode(nodeName, node as unknown as GraphNodeAction);
   }
 
   // Chain nodes together with edges
   if (autoStartEnd) {
     // Connect START to first node
-    graph.addEdge(START as any, nodes[0].name as any);
+    graph.addEdge(START, nodes[0].name);
   }
 
   // Connect each node to the next
   for (let i = 0; i < nodes.length - 1; i++) {
-    graph.addEdge(nodes[i].name as any, nodes[i + 1].name as any);
+    graph.addEdge(nodes[i].name, nodes[i + 1].name);
   }
 
   if (autoStartEnd) {
     // Connect last node to END
-    graph.addEdge(nodes[nodes.length - 1].name as any, END as any);
+    graph.addEdge(nodes[nodes.length - 1].name, END);
   }
 
   return graph;
 }
-
 /**
  * Creates a sequential workflow builder with a fluent API.
  *
@@ -138,10 +170,14 @@ export function createSequentialWorkflow<State>(
  * @param stateSchema - The state annotation for the graph
  * @returns A fluent builder for sequential workflows
  */
-export function sequentialBuilder<State>(
-  stateSchema: any
+export function sequentialBuilder<
+  SD extends StateDefinition = StateDefinition,
+  Update extends UpdateType<SD> = UpdateType<SD>
+>(
+  stateSchema: AnnotationRoot<SD>
 ) {
-  const nodes: SequentialNode<State>[] = [];
+  type State = SequentialWorkflowState<SD>;
+  const nodes: SequentialNode<State, Update>[] = [];
   let options: SequentialWorkflowOptions = {};
 
   return {
@@ -150,7 +186,7 @@ export function sequentialBuilder<State>(
      */
     addNode(
       name: string,
-      node: (state: State) => State | Promise<State> | Partial<State> | Promise<Partial<State>>,
+      node: (state: State) => Update | Promise<Update>,
       description?: string
     ) {
       nodes.push({ name, node, description });
@@ -168,9 +204,8 @@ export function sequentialBuilder<State>(
     /**
      * Build the StateGraph
      */
-    build(): StateGraph<State> {
+    build(): StateGraph<AnnotationRoot<SD>, State, Update, string> {
       return createSequentialWorkflow(stateSchema, nodes, options);
     },
   };
 }
-
