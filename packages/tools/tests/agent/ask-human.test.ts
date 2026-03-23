@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach, afterEach } from 'vitest';
+import { describe, it, expect } from 'vitest';
 import { createAskHumanTool, askHumanTool } from '../../src/agent/ask-human/tool.js';
 import type { AskHumanInput } from '../../src/agent/ask-human/types.js';
 
@@ -133,4 +133,3 @@ describe('askHuman Tool', () => {
     });
   });
 });
-

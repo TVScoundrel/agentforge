@@ -302,22 +302,38 @@
 
 ## ST-09009: Tighten Ask-Human Interrupt Boundary
 
-**Branch:** `fix/st-09009-ask-human-interrupt-boundary-hardening`
+**Branch:** `codex/fix/st-09009-ask-human-interrupt-boundary-hardening`
 
 ### Checklist
-- [ ] Create branch `fix/st-09009-ask-human-interrupt-boundary-hardening`
-- [ ] Create draft PR with story ID in title
-- [ ] Remove avoidable `any` usage from `packages/tools/src/agent/ask-human/tool.ts` around dynamic LangGraph import and interrupt handling
-- [ ] Preserve current ask-human runtime behavior while improving interrupt availability and compatibility checks
-- [ ] Add/update focused tests for missing LangGraph dependency handling, interrupt responses, and timeout/default-response behavior
-- [ ] Record explicit-`any` warning deltas for touched files in story docs
-- [ ] Add or update story documentation at `docs/st09009-ask-human-interrupt-boundary-hardening.md` (or document why not required)
-- [ ] Assess test impact; add/update automated tests when needed, or document why tests are not required
-- [ ] Run full test suite before finalizing the PR and record results
-- [ ] Run lint (`pnpm lint`) before finalizing the PR and record results
-- [ ] Commit completed checklist items as logical commits and push updates
-- [ ] Mark PR Ready only after all story tasks are complete
+- [x] Create branch `codex/fix/st-09009-ask-human-interrupt-boundary-hardening`
+- [x] Create draft PR with story ID in title
+- [x] Remove avoidable `any` usage from `packages/tools/src/agent/ask-human/tool.ts` around dynamic LangGraph import and interrupt handling
+- [x] Preserve current ask-human runtime behavior while improving interrupt availability and compatibility checks
+- [x] Add/update focused tests for missing LangGraph dependency handling, interrupt responses, and timeout/default-response behavior
+- [x] Record explicit-`any` warning deltas for touched files in story docs
+- [x] Add or update story documentation at `docs/st09009-ask-human-interrupt-boundary-hardening.md` (or document why not required)
+- [x] Assess test impact; add/update automated tests when needed, or document why tests are not required
+- [x] Run full test suite before finalizing the PR and record results
+- [x] Run lint (`pnpm lint`) before finalizing the PR and record results
+- [x] Commit completed checklist items as logical commits and push updates
+- [x] Mark PR Ready only after all story tasks are complete
 - [ ] Wait for merge; do not merge directly from local branch
+
+Implementation notes:
+- `fec8ad1` `fix(st-09009): harden ask-human interrupt boundary`
+- `d1f5dd2` `docs(st-09009): record ask-human boundary progress`
+- `6d8ca5a` `fix(st-09009): tighten ask-human review fixes`
+- `f3b7e10` `fix(st-09009): type interrupt response boundary`
+- `300e610` `test(st-09009): cover nullish interrupt resumes`
+- Draft PR #71: https://github.com/TVScoundrel/agentforge/pull/71
+- Focused validation passed:
+  - `pnpm exec tsc -p packages/tools/tsconfig.json --noEmit`
+  - `pnpm exec eslint packages/tools/src/agent/ask-human/tool.ts packages/tools/tests/agent/ask-human-boundary.test.ts packages/tools/tests/agent/ask-human.test.ts`
+  - `pnpm test --run packages/tools/tests/agent/ask-human.test.ts packages/tools/tests/agent/ask-human-boundary.test.ts packages/tools/tests/agent/ask-human-react.integration.test.ts packages/tools/tests/agent/ask-human-plan-execute.integration.test.ts`
+- Full validation passed:
+  - `pnpm test --run` -> `151 passed | 16 skipped` files; `2114 passed | 286 skipped` tests
+  - `pnpm lint` -> exit `0` (warnings only)
+- PR #71 marked ready after final tracker/body refresh
 
 ---
 
