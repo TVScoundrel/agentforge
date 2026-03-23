@@ -29,7 +29,9 @@ const inferredWorkflow = createSequentialWorkflow(TestState, [
   },
 ]);
 
-const legacyWorkflow = createSequentialWorkflow<typeof TestState.State>(TestState, [
+// Legacy explicit state generics are no longer supported. State now derives from the schema.
+// @ts-expect-error Explicit state generics should be rejected in favor of schema-derived inference.
+createSequentialWorkflow<typeof TestState.State>(TestState, [
   {
     name: 'legacy',
     node: (state) => ({
@@ -41,10 +43,6 @@ const legacyWorkflow = createSequentialWorkflow<typeof TestState.State>(TestStat
 type InferredStateMatchesSchema = Assert<
   IsEqual<ExtractGraphState<typeof inferredWorkflow>, typeof TestState.State>
 >;
-type LegacyStateMatchesSchema = Assert<
-  IsEqual<ExtractGraphState<typeof legacyWorkflow>, typeof TestState.State>
->;
-export type SequentialBuilderTypeChecks = [InferredStateMatchesSchema, LegacyStateMatchesSchema];
+export type SequentialBuilderTypeChecks = [InferredStateMatchesSchema];
 
 void inferredWorkflow;
-void legacyWorkflow;

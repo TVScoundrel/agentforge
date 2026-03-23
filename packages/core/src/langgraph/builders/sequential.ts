@@ -18,7 +18,6 @@ type SequentialWorkflowUpdate<SD extends StateDefinition, State> = [State] exten
 ]
   ? UpdateType<SD>
   : SequentialNodeResult<State>;
-type SequentialWorkflowSchema<State> = { State: State };
 type SequentialWorkflowGraph<SD extends StateDefinition, State, Update> = StateGraph<
   AnnotationRoot<SD>,
   State,
@@ -95,23 +94,12 @@ export function createSequentialWorkflow<
   nodes: SequentialNode<SequentialWorkflowState<SD>, Update>[],
   options?: SequentialWorkflowOptions
 ): SequentialWorkflowGraph<SD, SequentialWorkflowState<SD>, Update>;
-/**
- * @deprecated Prefer schema-derived inference instead of explicitly providing a state generic.
- */
-export function createSequentialWorkflow<
-  State,
-  SD extends StateDefinition = StateDefinition
->(
-  stateSchema: SequentialWorkflowSchema<State>,
-  nodes: SequentialNode<State>[],
-  options?: SequentialWorkflowOptions
-): SequentialWorkflowGraph<SD, State, SequentialNodeResult<State>>;
 export function createSequentialWorkflow<
   SD extends StateDefinition = StateDefinition,
   State = SequentialWorkflowState<SD>,
   Update = SequentialWorkflowUpdate<SD, State>
 >(
-  stateSchema: SequentialWorkflowSchema<State>,
+  stateSchema: AnnotationRoot<SD>,
   nodes: SequentialNode<State, Update>[],
   options: SequentialWorkflowOptions = {}
 ): SequentialWorkflowGraph<SD, State, Update> {
@@ -135,9 +123,7 @@ export function createSequentialWorkflow<
   }
 
   // Create the graph
-  const graph = new StateGraph<AnnotationRoot<SD>, State, Update, string>(
-    stateSchema as AnnotationRoot<SD>
-  );
+  const graph = new StateGraph<AnnotationRoot<SD>, State, Update, string>(stateSchema);
   type GraphNodeAction = Parameters<typeof graph.addNode>[1];
 
   // Add all nodes
@@ -166,9 +152,7 @@ export function createSequentialWorkflow<
   return graph;
 }
 
-function hasAnnotationRootSpec<State>(
-  stateSchema: SequentialWorkflowSchema<State>
-): stateSchema is SequentialWorkflowSchema<State> & { spec: object } {
+function hasAnnotationRootSpec(stateSchema: unknown): stateSchema is { spec: object } {
   return typeof stateSchema === 'object' && stateSchema !== null && 'spec' in stateSchema;
 }
 

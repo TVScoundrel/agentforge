@@ -138,27 +138,15 @@ describe('Sequential Workflow Builder', () => {
       expect(result.count).toBe(2);
     });
 
-    it('should preserve the legacy explicit state generic call pattern', async () => {
-      const workflow = createSequentialWorkflow<typeof TestState.State>(
-        TestState,
-        [
+    it('should reject non-annotation schemas at runtime', () => {
+      expect(() => {
+        createSequentialWorkflow({ State: { messages: [], count: 0 } } as never, [
           {
-            name: 'legacy',
-            node: (state) => ({
-              messages: [`legacy:${state.count}`],
-            }),
+            name: 'invalid',
+            node: () => ({ messages: ['invalid'], count: 1 }),
           },
-        ]
-      );
-
-      const app = workflow.compile();
-      const result = await app.invoke({
-        messages: [],
-        count: 4,
-      });
-
-      expect(result.messages).toEqual(['legacy:4']);
-      expect(result.count).toBe(4);
+        ]);
+      }).toThrow('Sequential workflow requires a LangGraph Annotation.Root schema');
     });
 
     it('should wire sequential edges when autoStartEnd is enabled', () => {
