@@ -402,6 +402,7 @@ Implementation notes:
 - Full validation passed:
   - `pnpm test --run` -> `152 passed | 16 skipped` files; `2119 passed | 286 skipped` tests
   - `pnpm lint` -> exit `0` (warnings only)
+- PR #73 marked ready after final tracker/body refresh
 
 ---
 
