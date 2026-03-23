@@ -482,6 +482,7 @@ Implementation notes:
   - PR #75 marked ready: https://github.com/TVScoundrel/agentforge/pull/75
 - [ ] Wait for merge; do not merge directly from local branch
   - Pending merge for PR #75; story remains in review until merged
+  - Review fix: `dc65894` `fix(st-09013): preserve sequential builder compatibility typing`
 
 ---
 
