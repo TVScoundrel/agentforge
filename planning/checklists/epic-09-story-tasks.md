@@ -485,6 +485,7 @@ Implementation notes:
   - Review fix: `dc65894` `fix(st-09013): preserve sequential builder compatibility typing`
   - Review fix: `d24eeeb` `fix(st-09013): guard legacy sequential schema compatibility`
   - Review fix: `99ffe35` `fix(st-09013): remove legacy sequential state overload`
+  - Review fix: `2ec4f9a` `fix(st-09013): bind sequential workflow typing to schema`
 
 ---
 
