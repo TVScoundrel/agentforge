@@ -343,7 +343,7 @@ Implementation notes:
 **Branch:** `codex/fix/st-09010-plan-execute-routing-typing`
 
 ### Checklist
-- [x] Create branch `fix/st-09010-plan-execute-routing-typing`
+- [x] Create branch `codex/fix/st-09010-plan-execute-routing-typing`
 - [x] Create draft PR with story ID in title
 - [x] Remove avoidable `as any` usage from `packages/patterns/src/plan-execute/agent.ts` around route callbacks and compile return handling
 - [x] Preserve current planner/executor/replanner/finisher routing behavior while tightening route typing
@@ -369,6 +369,7 @@ Implementation notes:
   - `pnpm test --run` -> `152 passed | 16 skipped` files; `2119 passed | 286 skipped` tests
   - `pnpm lint` -> exit `0` (warnings only)
 - PR #72 marked ready after final tracker/body refresh
+- Review fix applied after PR feedback
 
 ---
 
