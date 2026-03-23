@@ -27,11 +27,21 @@ Tightened the committed `@typescript-eslint/no-explicit-any` baseline caps so th
 
 ```bash
 pnpm lint:explicit-any:baseline
+pnpm test --run
+pnpm lint
 ```
 
 Baseline result:
 - `289/289` warnings
 - `cli 24/24`, `core 119/119`, `patterns 28/28`, `skills 0/0`, `testing 51/51`, `tools 67/67`
+
+Full-suite result:
+- `152` files passed, `16` skipped
+- `2119` tests passed, `286` skipped
+
+Lint result:
+- `pnpm lint` exited `0`
+- Existing workspace warnings remain outside this story's touched baseline file
 
 ## Test Impact
 
@@ -39,4 +49,4 @@ No source runtime behavior changed. This story tightens a lint-baseline data fil
 
 ## Status
 
-Implementation in progress on `codex/chore/st-09011-explicit-any-baseline-tightening`.
+Ready for review on `codex/chore/st-09011-explicit-any-baseline-tightening`.

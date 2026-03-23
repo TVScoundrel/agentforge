@@ -380,22 +380,28 @@ Implementation notes:
 
 ### Checklist
 - [x] Create branch `codex/chore/st-09011-explicit-any-baseline-tightening`
-- [ ] Create draft PR with story ID in title
+- [x] Create draft PR with story ID in title
 - [x] Update `scripts/no-explicit-any-baseline.json` to the current improved total and per-package warning caps
 - [x] Verify `pnpm lint:explicit-any:baseline` passes locally with the tightened counts and record the command output
 - [x] Record before/after baseline cap values and rationale in story docs
 - [x] Add or update story documentation at `docs/st09011-explicit-any-baseline-tightening.md` (or document why not required)
 - [x] Assess test impact; add/update automated tests when needed, or document why tests are not required
-- [ ] Run full test suite before finalizing the PR and record results
-- [ ] Run lint (`pnpm lint`) before finalizing the PR and record results
-- [ ] Commit completed checklist items as logical commits and push updates
-- [ ] Mark PR Ready only after all story tasks are complete
+- [x] Run full test suite before finalizing the PR and record results
+- [x] Run lint (`pnpm lint`) before finalizing the PR and record results
+- [x] Commit completed checklist items as logical commits and push updates
+- [x] Mark PR Ready only after all story tasks are complete
 - [ ] Wait for merge; do not merge directly from local branch
 
 Implementation notes:
+- `40e6417` `chore(st-09011): tighten explicit-any baseline caps`
+- Draft PR #73: https://github.com/TVScoundrel/agentforge/pull/73
 - Focused validation passed:
   - `pnpm lint:explicit-any:baseline` -> `289/289` warnings
   - Per-package caps: `cli 24/24`, `core 119/119`, `patterns 28/28`, `skills 0/0`, `testing 51/51`, `tools 67/67`
+- Test impact: no new automated tests were added because this story only tightens the existing lint-baseline data file; coverage comes from the baseline command plus full-suite/lint verification
+- Full validation passed:
+  - `pnpm test --run` -> `152 passed | 16 skipped` files; `2119 passed | 286 skipped` tests
+  - `pnpm lint` -> exit `0` (warnings only)
 
 ---
 
