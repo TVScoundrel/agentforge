@@ -8,6 +8,13 @@
 
 ## Completed Stories
 
+### ST-09013: Harden Sequential Workflow Builder Typing
+- **Merged:** 2026-03-23
+- **PR:** https://github.com/TVScoundrel/agentforge/pull/75 (commit cabf341)
+- **Epic:** EP-09 (SOLID Micro-Refactors and Type Boundary Hardening)
+- **Estimate:** 3 hours
+- **Outcome:** Hardened the sequential workflow builder around schema-derived `Annotation.Root(...)` typing, removed the old explicit state-generic call pattern, added source-included typecheck coverage and runtime invalid-schema regressions, and updated the Phase 2.2 example to the tightened API.
+
 ### ST-09012: Remove Package Export-Map Build Warnings
 - **Merged:** 2026-03-23
 - **PR:** https://github.com/TVScoundrel/agentforge/pull/74 (commit 42447ab)

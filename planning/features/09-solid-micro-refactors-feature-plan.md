@@ -3,7 +3,7 @@
 **Epic Range:** EP-09 through EP-09
 **Status:** In Progress
 **Last Updated:** 2026-03-23
-**Active Story:** ST-09013 (In Review)
+**Active Story:** ST-09014 (Ready)
 
 ---
 
@@ -59,7 +59,8 @@ Recent improvement snapshot:
 - `ST-09010` has reduced explicit-`any` warnings in `packages/patterns/src/plan-execute/agent.ts` from `3` to `0`, improving the workspace baseline from `292` to `289` and the `patterns` baseline from `31` to `28`.
 - `ST-09011` tightened the committed explicit-`any` baseline caps from `496` to the current measured `289`, aligning the no-regression gate with the post-EP-09 warning floor.
 - `ST-09012` removed the remaining `exports.types` ordering warnings from `@agentforge/skills`, `@agentforge/tools`, and `@agentforge/testing`, quieting the routine build output without changing published entrypoint targets.
-- `EP-09` remains open as the daily hardening stream, with the next follow-on slice targeting sequential builder typing, plan-execute shared contracts, monitoring payloads, CLI error handling, testing helpers, and multi-agent modularization.
+- `ST-09013` merged with an intentional breaking tightening to the sequential workflow builder contract: explicit state generics were removed, and downstream callers must rely on schema-derived inference from `Annotation.Root(...)`.
+- `EP-09` remains open as the daily hardening stream, with the next follow-on slice targeting plan-execute shared contracts, monitoring payloads, CLI error handling, testing helpers, and multi-agent modularization.
 - A second follow-on slice is now queued for prompt loading, reflection routing, streaming websocket contracts, shared deduplication helpers, core tool builder typing, interrupt contracts, and split-out registry/connection-manager modularization.
 
 ---

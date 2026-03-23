@@ -480,14 +480,14 @@ Implementation notes:
   - `c214b95` `chore(st-09013): finalize checklist and ready status`
 - [x] Mark PR Ready only after all story tasks are complete
   - PR #75 marked ready: https://github.com/TVScoundrel/agentforge/pull/75
-- [ ] Wait for merge; do not merge directly from local branch
-  - Pending merge for PR #75; story remains in review until merged
+- [x] Wait for merge; do not merge directly from local branch
   - Review fix: `dc65894` `fix(st-09013): preserve sequential builder compatibility typing`
   - Review fix: `d24eeeb` `fix(st-09013): guard legacy sequential schema compatibility`
   - Review fix: `99ffe35` `fix(st-09013): remove legacy sequential state overload`
   - Review fix: `2ec4f9a` `fix(st-09013): bind sequential workflow typing to schema`
   - Review fix: `a45bfdb` `fix(st-09013): rethrow invalid sequential schema errors`
   - Review fix: `cc3f75b` `fix(st-09013): update sequential builder example usage`
+  - Merged via PR #75 on 2026-03-23 (merge commit `cabf341`)
 
 ---
 
