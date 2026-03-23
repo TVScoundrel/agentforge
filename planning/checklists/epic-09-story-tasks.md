@@ -474,8 +474,11 @@ Implementation notes:
   - `pnpm test --run` -> `152 passed | 16 skipped` files; `2123 passed | 286 skipped` tests
 - [x] Run lint (`pnpm lint`) before finalizing the PR and record results
   - `pnpm lint` -> exit `0`; warnings only (`0` errors)
-- [ ] Commit completed checklist items as logical commits and push updates
-- [ ] Mark PR Ready only after all story tasks are complete
+- [x] Commit completed checklist items as logical commits and push updates
+  - `e48144c` `refactor(st-09013): harden sequential workflow builder typing`
+  - `9257799` `docs(st-09013): record validation and move story to in-review`
+- [x] Mark PR Ready only after all story tasks are complete
+  - PR #75 marked ready: https://github.com/TVScoundrel/agentforge/pull/75
 - [ ] Wait for merge; do not merge directly from local branch
 
 ---
