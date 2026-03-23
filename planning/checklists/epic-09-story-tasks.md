@@ -441,3 +441,4 @@ Implementation notes:
   - `pnpm test --run` -> `152 passed | 16 skipped` files; `2119 passed | 286 skipped` tests
   - `pnpm lint` -> exit `0` (warnings only)
 - PR #74 marked ready after final tracker/body refresh
+- Review fix: `75e4935` `docs(st-09012): align review-state tracker wording`
