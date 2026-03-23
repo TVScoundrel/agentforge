@@ -1,14 +1,14 @@
 {
   "ruleId": "@typescript-eslint/no-explicit-any",
   "target": "packages/**/src/**/*.ts",
-  "generatedAt": "2026-03-06",
-  "maxWarnings": 496,
+  "generatedAt": "2026-03-23",
+  "maxWarnings": 289,
   "byPackage": {
-    "core": 256,
-    "tools": 82,
-    "patterns": 82,
+    "core": 119,
+    "tools": 67,
+    "patterns": 28,
     "testing": 51,
-    "cli": 25,
+    "cli": 24,
     "skills": 0
   }
 }

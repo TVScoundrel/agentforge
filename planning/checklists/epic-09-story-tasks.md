@@ -376,21 +376,26 @@ Implementation notes:
 
 ## ST-09011: Tighten Explicit-`any` Baseline Caps
 
-**Branch:** `chore/st-09011-explicit-any-baseline-tightening`
+**Branch:** `codex/chore/st-09011-explicit-any-baseline-tightening`
 
 ### Checklist
-- [ ] Create branch `chore/st-09011-explicit-any-baseline-tightening`
+- [x] Create branch `codex/chore/st-09011-explicit-any-baseline-tightening`
 - [ ] Create draft PR with story ID in title
-- [ ] Update `scripts/no-explicit-any-baseline.json` to the current improved total and per-package warning caps
-- [ ] Verify `pnpm lint:explicit-any:baseline` passes locally with the tightened counts and record the command output
-- [ ] Record before/after baseline cap values and rationale in story docs
-- [ ] Add or update story documentation at `docs/st09011-explicit-any-baseline-tightening.md` (or document why not required)
-- [ ] Assess test impact; add/update automated tests when needed, or document why tests are not required
+- [x] Update `scripts/no-explicit-any-baseline.json` to the current improved total and per-package warning caps
+- [x] Verify `pnpm lint:explicit-any:baseline` passes locally with the tightened counts and record the command output
+- [x] Record before/after baseline cap values and rationale in story docs
+- [x] Add or update story documentation at `docs/st09011-explicit-any-baseline-tightening.md` (or document why not required)
+- [x] Assess test impact; add/update automated tests when needed, or document why tests are not required
 - [ ] Run full test suite before finalizing the PR and record results
 - [ ] Run lint (`pnpm lint`) before finalizing the PR and record results
 - [ ] Commit completed checklist items as logical commits and push updates
 - [ ] Mark PR Ready only after all story tasks are complete
 - [ ] Wait for merge; do not merge directly from local branch
+
+Implementation notes:
+- Focused validation passed:
+  - `pnpm lint:explicit-any:baseline` -> `289/289` warnings
+  - Per-package caps: `cli 24/24`, `core 119/119`, `patterns 28/28`, `skills 0/0`, `testing 51/51`, `tools 67/67`
 
 ---
 

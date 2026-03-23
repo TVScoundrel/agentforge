@@ -4,8 +4,8 @@
 
 ## Queue Status Summary
 
-- **Ready:** 1 story
-- **In Progress:** 0 stories
+- **Ready:** 0 stories
+- **In Progress:** 1 story
 - **In Review:** 0 stories
 - **Blocked:** 0 stories
 - **Backlog:** 3 stories
@@ -14,10 +14,7 @@
 
 ## Ready
 
-- `ST-09011` - Tighten Explicit-`any` Baseline Caps
-  - Epic: `EP-09`
-  - Priority: `P1`
-  - Rationale: the committed baseline still allows `496` warnings while the current measured count is `289`
+_No stories currently ready_
 
 ---
 
@@ -29,7 +26,10 @@ _No stories currently in review_
 
 ## In Progress
 
-_No stories currently in progress_
+- `ST-09011` - Tighten Explicit-`any` Baseline Caps
+  - Epic: `EP-09`
+  - Priority: `P1`
+  - Rationale: aligning the committed `no-explicit-any` guard with the measured `289` warning floor so regressions fail immediately
 
 ---
 
