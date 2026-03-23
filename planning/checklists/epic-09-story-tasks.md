@@ -483,6 +483,7 @@ Implementation notes:
 - [ ] Wait for merge; do not merge directly from local branch
   - Pending merge for PR #75; story remains in review until merged
   - Review fix: `dc65894` `fix(st-09013): preserve sequential builder compatibility typing`
+  - Review fix: `d24eeeb` `fix(st-09013): guard legacy sequential schema compatibility`
 
 ---
 
