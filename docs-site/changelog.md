@@ -5,6 +5,36 @@ All notable changes to AgentForge will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.15.13] - 2026-03-23
+
+### Added
+
+#### @agentforge/tools - Ask-Human Boundary Regression Coverage
+- Added focused boundary tests in `packages/tools/tests/agent/ask-human-boundary.test.ts` for missing LangGraph dependency handling, missing `interrupt` export compatibility, timeout/default fallback, non-string resume rejection, and nullish resume handling
+- Added story documentation in `docs/st09009-ask-human-interrupt-boundary-hardening.md` covering the interrupt-boundary hardening, validation, and warning-delta snapshot
+
+### Changed
+
+#### @agentforge/tools - Ask-Human Interrupt Boundary
+- Reworked `packages/tools/src/agent/ask-human/tool.ts` to resolve LangGraph `interrupt()` through `unknown`-guarded helpers instead of broad dynamic `any` casts
+- Preserved current ask-human runtime behavior while making dependency/version compatibility failures explicit and keeping `AskHumanOutput.response` normalized to a string
+- Updated debug logging to avoid recording raw human responses while still surfacing non-sensitive response metadata
+
+### Fixed
+
+#### @agentforge/tools - Ask-Human Type and Timeout Safety
+- Fixed the timeout/default-response branch so empty-string defaults are honored when explicitly configured
+- Removed the remaining explicit-`any` usage from the ask-human interrupt boundary and reduced the workspace baseline from `295` to `292`, improving the `tools` package from `70` to `67`
+
+### Published
+- All packages published to npm registry at version 0.15.13:
+  - @agentforge/core@0.15.13
+  - @agentforge/skills@0.15.13
+  - @agentforge/patterns@0.15.13
+  - @agentforge/tools@0.15.13
+  - @agentforge/testing@0.15.13
+  - @agentforge/cli@0.15.13
+
 ## [0.15.12] - 2026-03-22
 
 ### Added
