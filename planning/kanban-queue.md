@@ -4,8 +4,8 @@
 
 ## Queue Status Summary
 
-- **Ready:** 1 story
-- **In Progress:** 0 stories
+- **Ready:** 0 stories
+- **In Progress:** 1 story
 - **In Review:** 0 stories
 - **Blocked:** 0 stories
 - **Backlog:** 0 stories
@@ -14,10 +14,7 @@
 
 ## Ready
 
-- `ST-09012` - Remove Package Export-Map Build Warnings
-  - Epic: `EP-09`
-  - Priority: `P2`
-  - Rationale: baseline tightening is merged, so the remaining low-effort release-quality cleanup can move straight into execution
+_No stories currently ready_
 
 ---
 
@@ -29,7 +26,10 @@ _No stories currently in review_
 
 ## In Progress
 
-_No stories currently in progress_
+- `ST-09012` - Remove Package Export-Map Build Warnings
+  - Epic: `EP-09`
+  - Priority: `P2`
+  - Rationale: export-map cleanup is active to remove the remaining easy package metadata warnings from routine builds
 
 ---
 

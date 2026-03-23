@@ -412,7 +412,7 @@ Implementation notes:
 **Branch:** `codex/fix/st-09012-package-export-map-warning-cleanup`
 
 ### Checklist
-- [ ] Create branch `codex/fix/st-09012-package-export-map-warning-cleanup`
+- [x] Create branch `codex/fix/st-09012-package-export-map-warning-cleanup`
 - [ ] Create draft PR with story ID in title
 - [ ] Remove the current `exports.types` ordering build warnings from `packages/skills/package.json`, `packages/tools/package.json`, and `packages/testing/package.json`
 - [ ] Preserve published import/require/types resolution behavior for the touched packages
@@ -425,3 +425,6 @@ Implementation notes:
 - [ ] Commit completed checklist items as logical commits and push updates
 - [ ] Mark PR Ready only after all story tasks are complete
 - [ ] Wait for merge; do not merge directly from local branch
+
+Implementation notes:
+- Branch created from `main` on 2026-03-23: `codex/fix/st-09012-package-export-map-warning-cleanup`
