@@ -8,7 +8,7 @@
 - **In Progress:** 0 stories
 - **In Review:** 1 story
 - **Blocked:** 0 stories
-- **Backlog:** 3 stories
+- **Backlog:** 1 story
 
 ---
 

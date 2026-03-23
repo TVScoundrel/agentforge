@@ -9,9 +9,9 @@ Tightened the committed `@typescript-eslint/no-explicit-any` baseline caps so th
 | File | Change |
 |------|--------|
 | `scripts/no-explicit-any-baseline.json` | Updated the total `maxWarnings` cap from `496` to `289`, refreshed per-package caps to the current measured counts, and stamped the baseline snapshot date to `2026-03-23`. |
-| `planning/kanban-queue.md` | Moved ST-09011 into active execution while tightening the queue rationale around baseline enforcement. |
-| `planning/epics-and-stories.md` | Updated ST-09011 status and phase-chain sequencing to reflect active execution. |
-| `planning/features/09-solid-micro-refactors-feature-plan.md` | Updated the EP-09 active-story marker while the baseline-tightening work is in progress. |
+| `planning/kanban-queue.md` | Moved ST-09011 from `Ready` to `In Review` and aligned the queue summary counts with the actual sections. |
+| `planning/epics-and-stories.md` | Updated ST-09011 status and phase-chain sequencing to reflect review-ready state. |
+| `planning/features/09-solid-micro-refactors-feature-plan.md` | Updated the EP-09 active-story marker from `Ready` to `In Review` for the review-ready baseline-tightening work. |
 
 ## Baseline Cap Delta
 
