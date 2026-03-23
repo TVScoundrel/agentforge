@@ -5,6 +5,29 @@ All notable changes to AgentForge will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.15.15] - 2026-03-23
+
+### Changed
+
+#### Published Package Metadata - Export Map Condition Ordering
+- Reordered the root `exports` condition keys in `@agentforge/skills`, `@agentforge/tools`, and `@agentforge/testing` so `types` is evaluated before `import` and `require`
+- Preserved the same published runtime and declaration entrypoints while aligning the package metadata with TypeScript/tooling conditional-resolution expectations
+
+### Fixed
+
+#### Published Package Metadata - Build Warning Cleanup
+- Removed the repeated `"types" condition will never be used` warning from routine builds for `@agentforge/skills`, `@agentforge/tools`, and `@agentforge/testing`
+- Verified the touched package entrypoints through focused CJS/ESM import checks plus a Vitest-context smoke test for `@agentforge/testing`
+
+### Published
+- All packages published to npm registry at version 0.15.15:
+  - @agentforge/core@0.15.15
+  - @agentforge/skills@0.15.15
+  - @agentforge/patterns@0.15.15
+  - @agentforge/tools@0.15.15
+  - @agentforge/testing@0.15.15
+  - @agentforge/cli@0.15.15
+
 ## [0.15.14] - 2026-03-23
 
 ### Added
