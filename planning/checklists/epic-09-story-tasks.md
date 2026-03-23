@@ -574,3 +574,213 @@ Implementation notes:
 - [ ] Commit completed checklist items as logical commits and push updates
 - [ ] Mark PR Ready only after all story tasks are complete
 - [ ] Wait for merge; do not merge directly from local branch
+
+---
+
+## ST-09019: Harden Reflection Agent Routing Typing
+
+**Branch:** `fix/st-09019-reflection-agent-routing-typing`
+
+### Checklist
+- [ ] Create branch `fix/st-09019-reflection-agent-routing-typing`
+- [ ] Create draft PR with story ID in title
+- [ ] Remove avoidable route/compile `as any` usage from `packages/patterns/src/reflection/agent.ts`
+- [ ] Preserve current reflection generator/reflector/reviser/completion routing behavior while tightening route typing
+- [ ] Add/update focused tests for route decisions and compiled agent invocation behavior
+- [ ] Record explicit-`any` warning deltas for touched files in story docs
+- [ ] Add or update story documentation at `docs/st09019-reflection-agent-routing-typing.md` (or document why not required)
+- [ ] Assess test impact; add/update automated tests when needed, or document why tests are not required
+- [ ] Run full test suite before finalizing the PR and record results
+- [ ] Run lint (`pnpm lint`) before finalizing the PR and record results
+- [ ] Commit completed checklist items as logical commits and push updates
+- [ ] Mark PR Ready only after all story tasks are complete
+- [ ] Wait for merge; do not merge directly from local branch
+
+---
+
+## ST-09020: Tighten Prompt Loader Variable Contracts
+
+**Branch:** `fix/st-09020-prompt-loader-variable-contracts`
+
+### Checklist
+- [ ] Create branch `fix/st-09020-prompt-loader-variable-contracts`
+- [ ] Create draft PR with story ID in title
+- [ ] Replace broad variable-map `any` usage in `packages/core/src/prompt-loader/index.ts` with safer contracts
+- [ ] Preserve current sanitize/render/load behavior for trusted and untrusted variables
+- [ ] Add/update focused tests for variable rendering, escaping, and fallback behavior
+- [ ] Record explicit-`any` warning deltas for touched files in story docs
+- [ ] Add or update story documentation at `docs/st09020-prompt-loader-variable-contracts.md` (or document why not required)
+- [ ] Assess test impact; add/update automated tests when needed, or document why tests are not required
+- [ ] Run full test suite before finalizing the PR and record results
+- [ ] Run lint (`pnpm lint`) before finalizing the PR and record results
+- [ ] Commit completed checklist items as logical commits and push updates
+- [ ] Mark PR Ready only after all story tasks are complete
+- [ ] Wait for merge; do not merge directly from local branch
+
+---
+
+## ST-09021: Harden Streaming WebSocket and Message Contracts
+
+**Branch:** `fix/st-09021-streaming-websocket-contracts`
+
+### Checklist
+- [ ] Create branch `fix/st-09021-streaming-websocket-contracts`
+- [ ] Create draft PR with story ID in title
+- [ ] Replace broad socket/message/data `any` boundaries in `packages/core/src/streaming/websocket.ts` and adjacent streaming types
+- [ ] Preserve current WebSocket handler, send, parse, and broadcast behavior
+- [ ] Add/update focused tests for message parsing, error handling, and broadcast behavior
+- [ ] Record explicit-`any` warning deltas for touched files in story docs
+- [ ] Add or update story documentation at `docs/st09021-streaming-websocket-contracts.md` (or document why not required)
+- [ ] Assess test impact; add/update automated tests when needed, or document why tests are not required
+- [ ] Run full test suite before finalizing the PR and record results
+- [ ] Run lint (`pnpm lint`) before finalizing the PR and record results
+- [ ] Commit completed checklist items as logical commits and push updates
+- [ ] Mark PR Ready only after all story tasks are complete
+- [ ] Wait for merge; do not merge directly from local branch
+
+---
+
+## ST-09022: Harden Shared Deduplication Utility Contracts
+
+**Branch:** `fix/st-09022-shared-deduplication-contracts`
+
+### Checklist
+- [ ] Create branch `fix/st-09022-shared-deduplication-contracts`
+- [ ] Create draft PR with story ID in title
+- [ ] Replace broad normalization and cache-key `any` boundaries in `packages/patterns/src/shared/deduplication.ts`
+- [ ] Preserve current deduplication metrics, cache-key generation, and logging behavior
+- [ ] Add/update focused tests for normalization, cache-key generation, and metrics helpers
+- [ ] Record explicit-`any` warning deltas for touched files in story docs
+- [ ] Add or update story documentation at `docs/st09022-shared-deduplication-contracts.md` (or document why not required)
+- [ ] Assess test impact; add/update automated tests when needed, or document why tests are not required
+- [ ] Run full test suite before finalizing the PR and record results
+- [ ] Run lint (`pnpm lint`) before finalizing the PR and record results
+- [ ] Commit completed checklist items as logical commits and push updates
+- [ ] Mark PR Ready only after all story tasks are complete
+- [ ] Wait for merge; do not merge directly from local branch
+
+---
+
+## ST-09023: Tighten Core Tool Builder Fluent Typing
+
+**Branch:** `fix/st-09023-tool-builder-fluent-typing`
+
+### Checklist
+- [ ] Create branch `fix/st-09023-tool-builder-fluent-typing`
+- [ ] Create draft PR with story ID in title
+- [ ] Remove avoidable `(this as any)` seams from `packages/core/src/tools/builder.ts`
+- [ ] Preserve current fluent builder ergonomics and built-tool behavior
+- [ ] Add/update focused tests for schema/invoke chaining and built tool execution behavior
+- [ ] Record explicit-`any` warning deltas for touched files in story docs
+- [ ] Add or update story documentation at `docs/st09023-tool-builder-fluent-typing.md` (or document why not required)
+- [ ] Assess test impact; add/update automated tests when needed, or document why tests are not required
+- [ ] Run full test suite before finalizing the PR and record results
+- [ ] Run lint (`pnpm lint`) before finalizing the PR and record results
+- [ ] Commit completed checklist items as logical commits and push updates
+- [ ] Mark PR Ready only after all story tasks are complete
+- [ ] Wait for merge; do not merge directly from local branch
+
+---
+
+## ST-09024: Tighten LangGraph Interrupt Type Contracts
+
+**Branch:** `fix/st-09024-langgraph-interrupt-type-contracts`
+
+### Checklist
+- [ ] Create branch `fix/st-09024-langgraph-interrupt-type-contracts`
+- [ ] Create draft PR with story ID in title
+- [ ] Replace broad payload boundaries in `packages/core/src/langgraph/interrupts/types.ts` with safer interrupt/resume contracts
+- [ ] Preserve current human-request, approval, custom interrupt, and resume-command compatibility
+- [ ] Add/update focused tests for touched interrupt type helpers or adjacent runtime consumers as needed
+- [ ] Record explicit-`any` warning deltas for touched files in story docs
+- [ ] Add or update story documentation at `docs/st09024-langgraph-interrupt-type-contracts.md` (or document why not required)
+- [ ] Assess test impact; add/update automated tests when needed, or document why tests are not required
+- [ ] Run full test suite before finalizing the PR and record results
+- [ ] Run lint (`pnpm lint`) before finalizing the PR and record results
+- [ ] Commit completed checklist items as logical commits and push updates
+- [ ] Mark PR Ready only after all story tasks are complete
+- [ ] Wait for merge; do not merge directly from local branch
+
+---
+
+## ST-09025: Extract Tool Registry Collection and Search Operations
+
+**Branch:** `refactor/st-09025-tool-registry-collection-search-extraction`
+
+### Checklist
+- [ ] Create branch `refactor/st-09025-tool-registry-collection-search-extraction`
+- [ ] Create draft PR with story ID in title
+- [ ] Extract collection and search responsibilities from `packages/core/src/tools/registry.ts`
+- [ ] Preserve current `getAll`, category/tag filter, and text-search behavior
+- [ ] Add/update focused tests for extracted collection and search behavior
+- [ ] Record explicit-`any` warning deltas for touched files in story docs
+- [ ] Add or update story documentation at `docs/st09025-tool-registry-collection-search-extraction.md` (or document why not required)
+- [ ] Assess test impact; add/update automated tests when needed, or document why tests are not required
+- [ ] Run full test suite before finalizing the PR and record results
+- [ ] Run lint (`pnpm lint`) before finalizing the PR and record results
+- [ ] Commit completed checklist items as logical commits and push updates
+- [ ] Mark PR Ready only after all story tasks are complete
+- [ ] Wait for merge; do not merge directly from local branch
+
+---
+
+## ST-09026: Modularize Tool Registry Prompt Rendering and Event Paths
+
+**Branch:** `refactor/st-09026-tool-registry-prompt-event-modularization`
+
+### Checklist
+- [ ] Create branch `refactor/st-09026-tool-registry-prompt-event-modularization`
+- [ ] Create draft PR with story ID in title
+- [ ] Extract prompt-rendering and event-emission responsibilities from `packages/core/src/tools/registry.ts`
+- [ ] Preserve current prompt-generation, LangChain conversion, and registry event behavior
+- [ ] Add/update focused tests for prompt rendering and event behavior after the split
+- [ ] Record explicit-`any` warning deltas for touched files in story docs
+- [ ] Add or update story documentation at `docs/st09026-tool-registry-prompt-event-modularization.md` (or document why not required)
+- [ ] Assess test impact; add/update automated tests when needed, or document why tests are not required
+- [ ] Run full test suite before finalizing the PR and record results
+- [ ] Run lint (`pnpm lint`) before finalizing the PR and record results
+- [ ] Commit completed checklist items as logical commits and push updates
+- [ ] Mark PR Ready only after all story tasks are complete
+- [ ] Wait for merge; do not merge directly from local branch
+
+---
+
+## ST-09027: Extract Connection Manager Vendor Initialization Adapters
+
+**Branch:** `refactor/st-09027-connection-manager-vendor-initialization-extraction`
+
+### Checklist
+- [ ] Create branch `refactor/st-09027-connection-manager-vendor-initialization-extraction`
+- [ ] Create draft PR with story ID in title
+- [ ] Extract PostgreSQL/MySQL/SQLite initialization and pool-configuration logic from `packages/tools/src/data/relational/connection/connection-manager.ts`
+- [ ] Preserve current vendor initialization behavior and validation
+- [ ] Add/update focused tests for vendor initialization and pool configuration behavior
+- [ ] Record explicit-`any` warning deltas for touched files in story docs
+- [ ] Add or update story documentation at `docs/st09027-connection-manager-vendor-initialization-extraction.md` (or document why not required)
+- [ ] Assess test impact; add/update automated tests when needed, or document why tests are not required
+- [ ] Run full test suite before finalizing the PR and record results
+- [ ] Run lint (`pnpm lint`) before finalizing the PR and record results
+- [ ] Commit completed checklist items as logical commits and push updates
+- [ ] Mark PR Ready only after all story tasks are complete
+- [ ] Wait for merge; do not merge directly from local branch
+
+---
+
+## ST-09028: Modularize Connection Manager Lifecycle and Reconnection Control
+
+**Branch:** `refactor/st-09028-connection-manager-lifecycle-modularization`
+
+### Checklist
+- [ ] Create branch `refactor/st-09028-connection-manager-lifecycle-modularization`
+- [ ] Create draft PR with story ID in title
+- [ ] Extract lifecycle and reconnection orchestration from `packages/tools/src/data/relational/connection/connection-manager.ts`
+- [ ] Preserve current connect/initialize/disconnect/close/reconnection behavior
+- [ ] Add/update focused tests for cancellation, reconnection scheduling, and lifecycle cleanup behavior
+- [ ] Record explicit-`any` warning deltas for touched files in story docs
+- [ ] Add or update story documentation at `docs/st09028-connection-manager-lifecycle-modularization.md` (or document why not required)
+- [ ] Assess test impact; add/update automated tests when needed, or document why tests are not required
+- [ ] Run full test suite before finalizing the PR and record results
+- [ ] Run lint (`pnpm lint`) before finalizing the PR and record results
+- [ ] Commit completed checklist items as logical commits and push updates
+- [ ] Mark PR Ready only after all story tasks are complete
+- [ ] Wait for merge; do not merge directly from local branch

@@ -45,6 +45,8 @@ Top runtime hotspots informing this feature slice:
 4. `packages/core/src/monitoring/audit.ts` and `packages/core/src/monitoring/health.ts` still expose broad payload `any` fields in released monitoring contracts
 5. `packages/cli/src/commands/**` still repeat command-level `catch (error: any)` handling in multiple entrypoints
 6. `packages/testing/src/helpers/assertions.ts` and `packages/testing/src/helpers/state-builder.ts` still concentrate a large share of the remaining `testing` package `any` warnings
+7. `packages/core/src/prompt-loader/index.ts`, `packages/core/src/streaming/websocket.ts`, and `packages/patterns/src/reflection/agent.ts` form the next small runtime boundary-hardening slice
+8. `packages/core/src/tools/registry.ts` and `packages/tools/src/data/relational/connection/connection-manager.ts` remain larger SRP targets that need multi-story decomposition rather than one oversized cleanup
 
 Recent improvement snapshot:
 
@@ -58,6 +60,7 @@ Recent improvement snapshot:
 - `ST-09011` tightened the committed explicit-`any` baseline caps from `496` to the current measured `289`, aligning the no-regression gate with the post-EP-09 warning floor.
 - `ST-09012` removed the remaining `exports.types` ordering warnings from `@agentforge/skills`, `@agentforge/tools`, and `@agentforge/testing`, quieting the routine build output without changing published entrypoint targets.
 - `EP-09` remains open as the daily hardening stream, with the next follow-on slice targeting sequential builder typing, plan-execute shared contracts, monitoring payloads, CLI error handling, testing helpers, and multi-agent modularization.
+- A second follow-on slice is now queued for prompt loading, reflection routing, streaming websocket contracts, shared deduplication helpers, core tool builder typing, interrupt contracts, and split-out registry/connection-manager modularization.
 
 ---
 
@@ -80,7 +83,7 @@ Recent improvement snapshot:
 
 ## Story Coverage by Epic
 
-- EP-09: ST-09001, ST-09002, ST-09003, ST-09004, ST-09005, ST-09006, ST-09007, ST-09008, ST-09009, ST-09010, ST-09011, ST-09012, ST-09013, ST-09014, ST-09015, ST-09016, ST-09017, ST-09018
+- EP-09: ST-09001, ST-09002, ST-09003, ST-09004, ST-09005, ST-09006, ST-09007, ST-09008, ST-09009, ST-09010, ST-09011, ST-09012, ST-09013, ST-09014, ST-09015, ST-09016, ST-09017, ST-09018, ST-09019, ST-09020, ST-09021, ST-09022, ST-09023, ST-09024, ST-09025, ST-09026, ST-09027, ST-09028
 
 ---
 
@@ -96,7 +99,7 @@ Recent improvement snapshot:
 
 ## Related Planning Documents
 
-- `planning/epics-and-stories.md` (EP-09 and ST-09001 through ST-09018)
+- `planning/epics-and-stories.md` (EP-09 and ST-09001 through ST-09028)
 - `planning/checklists/epic-09-story-tasks.md`
 - `planning/kanban-queue.md`
 - `scripts/no-explicit-any-baseline.json`

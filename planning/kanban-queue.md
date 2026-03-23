@@ -8,7 +8,7 @@
 - **In Progress:** 0 stories
 - **In Review:** 0 stories
 - **Blocked:** 0 stories
-- **Backlog:** 3 stories
+- **Backlog:** 13 stories
 
 ---
 
@@ -46,6 +46,19 @@ _No stories currently blocked_
   - Depends on `ST-09014`
 - `ST-09018` - Harden Testing Assertion and State Builder Helpers
   - Depends on `ST-09016`
+- `ST-09019` - Harden Reflection Agent Routing Typing
+- `ST-09020` - Tighten Prompt Loader Variable Contracts
+- `ST-09021` - Harden Streaming WebSocket and Message Contracts
+- `ST-09022` - Harden Shared Deduplication Utility Contracts
+- `ST-09023` - Tighten Core Tool Builder Fluent Typing
+- `ST-09024` - Tighten LangGraph Interrupt Type Contracts
+  - Depends on `ST-09009`
+- `ST-09025` - Extract Tool Registry Collection and Search Operations
+- `ST-09026` - Modularize Tool Registry Prompt Rendering and Event Paths
+  - Depends on `ST-09025`
+- `ST-09027` - Extract Connection Manager Vendor Initialization Adapters
+- `ST-09028` - Modularize Connection Manager Lifecycle and Reconnection Control
+  - Depends on `ST-09027`
 
 ---
 
@@ -108,4 +121,5 @@ _No stories currently blocked_
 - ✅ ST-09012 complete - package export-map build warnings removed (PR #74, 2026-03-23)
 - Epic 09 (SOLID Micro-Refactors and Type Boundary Hardening) was expanded on 2026-03-22 with low-hanging follow-on stories ST-09008 through ST-09012
 - Epic 09 (SOLID Micro-Refactors and Type Boundary Hardening) was expanded again on 2026-03-23 with daily hardening stories ST-09013 through ST-09018
+- Epic 09 (SOLID Micro-Refactors and Type Boundary Hardening) was expanded a third time on 2026-03-23 with daily hardening stories ST-09019 through ST-09028
 - Current measured `no-explicit-any` baseline is `289` warnings (`cli 24`, `core 119`, `patterns 28`, `testing 51`, `tools 67`)

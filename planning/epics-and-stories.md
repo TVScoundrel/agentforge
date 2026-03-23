@@ -121,7 +121,7 @@
 - Story slices are intentionally small (1 day each) so quality improvements can ship continuously
 - Lightweight quality-gate follow-ups keep release/build feedback tight by reducing stale warning caps and easy package metadata warnings
 
-**Stories:** ST-09001 through ST-09018
+**Stories:** ST-09001 through ST-09028
 
 ---
 
@@ -1138,15 +1138,185 @@
 
 ---
 
+#### ST-09019: Harden Reflection Agent Routing Typing
+**User story:** As a patterns maintainer, I want the reflection agent routing and compile boundaries strongly typed so the workflow no longer depends on broad route and compile casts.
+
+**Priority:** P1 (High)
+**Estimate:** 3 hours
+**Dependencies:** ST-09012
+**Status:** Backlog
+
+**Acceptance criteria:**
+- [ ] `packages/patterns/src/reflection/agent.ts` removes avoidable `as any` usage around conditional routing and compile return handling
+- [ ] Reflection generator, reflector, reviser, and completion flows preserve current runtime behavior
+- [ ] Focused tests are added or updated for route decisions and compiled agent invocation behavior
+- [ ] Explicit-`any` warning changes for touched files are recorded in story documentation
+- [ ] Add or update story documentation at `docs/st09019-reflection-agent-routing-typing.md`
+
+---
+
+#### ST-09020: Tighten Prompt Loader Variable Contracts
+**User story:** As a framework consumer, I want the prompt loader to distinguish trusted and untrusted variable contracts more safely so template rendering no longer relies on broad `any` variable maps.
+
+**Priority:** P1 (High)
+**Estimate:** 3 hours
+**Dependencies:** ST-09012
+**Status:** Backlog
+
+**Acceptance criteria:**
+- [ ] `packages/core/src/prompt-loader/index.ts` replaces broad variable-map `any` usage with safer unknown-first or JSON-safe contracts
+- [ ] `sanitizeValue`, `renderTemplate`, and `loadPrompt` preserve current rendering behavior and escaping guarantees
+- [ ] Focused tests are added or updated for trusted/untrusted variable rendering and fallback behavior
+- [ ] Explicit-`any` warning changes for touched files are recorded in story documentation
+- [ ] Add or update story documentation at `docs/st09020-prompt-loader-variable-contracts.md`
+
+---
+
+#### ST-09021: Harden Streaming WebSocket and Message Contracts
+**User story:** As a streaming integrator, I want the WebSocket helpers to expose typed message and socket boundaries so realtime handlers do not rely on broad `any` payloads.
+
+**Priority:** P1 (High)
+**Estimate:** 3 hours
+**Dependencies:** ST-09012
+**Status:** Backlog
+
+**Acceptance criteria:**
+- [ ] `packages/core/src/streaming/websocket.ts` and adjacent streaming types replace broad `ws`, `message`, and `data` `any` boundaries with safer contracts
+- [ ] Current WebSocket handler, send, and broadcast behavior is preserved
+- [ ] Focused tests are added or updated for message parsing, error handling, and broadcast behavior
+- [ ] Explicit-`any` warning changes for touched files are recorded in story documentation
+- [ ] Add or update story documentation at `docs/st09021-streaming-websocket-contracts.md`
+
+---
+
+#### ST-09022: Harden Shared Deduplication Utility Contracts
+**User story:** As a patterns maintainer, I want the shared deduplication utilities to use safer normalization and cache-key contracts so shared action-dedup behavior stops depending on broad `any` arguments.
+
+**Priority:** P1 (High)
+**Estimate:** 3 hours
+**Dependencies:** ST-09012
+**Status:** Backlog
+
+**Acceptance criteria:**
+- [ ] `packages/patterns/src/shared/deduplication.ts` replaces broad `any` normalization and cache-key boundaries with safer unknown-first contracts
+- [ ] Deduplication metrics, cache-key generation, and logging helpers preserve current runtime behavior
+- [ ] Focused tests are added or updated for normalization, cache-key generation, and metrics helpers
+- [ ] Explicit-`any` warning changes for touched files are recorded in story documentation
+- [ ] Add or update story documentation at `docs/st09022-shared-deduplication-contracts.md`
+
+---
+
+#### ST-09023: Tighten Core Tool Builder Fluent Typing
+**User story:** As a tool author, I want the fluent tool builder to preserve stronger generic contracts through chaining so builder internals stop depending on `(this as any)` seams.
+
+**Priority:** P1 (High)
+**Estimate:** 4 hours
+**Dependencies:** ST-09012
+**Status:** Backlog
+
+**Acceptance criteria:**
+- [ ] `packages/core/src/tools/builder.ts` removes avoidable `(this as any)` usage in schema and invoke builder stages
+- [ ] Fluent builder chaining preserves current ergonomics and output behavior for built tools
+- [ ] Focused tests are added or updated for schema/invoke chaining and built tool execution behavior
+- [ ] Explicit-`any` warning changes for touched files are recorded in story documentation
+- [ ] Add or update story documentation at `docs/st09023-tool-builder-fluent-typing.md`
+
+---
+
+#### ST-09024: Tighten LangGraph Interrupt Type Contracts
+**User story:** As a human-in-the-loop workflow author, I want the shared interrupt contracts to be more precise so interrupt payloads and resume commands carry clearer type guarantees.
+
+**Priority:** P2 (Medium)
+**Estimate:** 3 hours
+**Dependencies:** ST-09009
+**Status:** Backlog
+
+**Acceptance criteria:**
+- [ ] `packages/core/src/langgraph/interrupts/types.ts` replaces avoidable broad payload boundaries with safer domain-specific contracts
+- [ ] Human-request, approval, custom interrupt, and resume command flows preserve current compatibility
+- [ ] Focused tests are added or updated for touched interrupt type helpers or adjacent runtime consumers as needed
+- [ ] Explicit-`any` warning changes for touched files are recorded in story documentation
+- [ ] Add or update story documentation at `docs/st09024-langgraph-interrupt-type-contracts.md`
+
+---
+
+#### ST-09025: Extract Tool Registry Collection and Search Operations
+**User story:** As a core maintainer, I want the tool registry collection and search concerns extracted from the large registry class so lookup behavior is easier to maintain and test.
+
+**Priority:** P2 (Medium)
+**Estimate:** 4 hours
+**Dependencies:** ST-09012
+**Status:** Backlog
+
+**Acceptance criteria:**
+- [ ] `packages/core/src/tools/registry.ts` extracts collection/search responsibilities such as list, category/tag filtering, and text search into clearer helpers or modules
+- [ ] Public registry lookup behavior remains unchanged for `getAll`, `getByCategory`, `getByTag`, and `search`
+- [ ] Focused tests are added or updated for extracted collection and search behavior
+- [ ] Touched files do not regress on explicit-`any` warning counts and the outcome is recorded in story documentation
+- [ ] Add or update story documentation at `docs/st09025-tool-registry-collection-search-extraction.md`
+
+---
+
+#### ST-09026: Modularize Tool Registry Prompt Rendering and Event Paths
+**User story:** As a core maintainer, I want the tool registry prompt-generation and event-emission paths separated from basic storage operations so the registry class stops carrying too many responsibilities.
+
+**Priority:** P2 (Medium)
+**Estimate:** 4 hours
+**Dependencies:** ST-09025
+**Status:** Backlog
+
+**Acceptance criteria:**
+- [ ] `packages/core/src/tools/registry.ts` extracts prompt-rendering and event-emission responsibilities into clearer helpers or modules
+- [ ] `generatePrompt`, LangChain conversion, and registry event behavior preserve current runtime output
+- [ ] Focused tests are added or updated for prompt rendering and registry event behavior after the split
+- [ ] Touched files do not regress on explicit-`any` warning counts and the outcome is recorded in story documentation
+- [ ] Add or update story documentation at `docs/st09026-tool-registry-prompt-event-modularization.md`
+
+---
+
+#### ST-09027: Extract Connection Manager Vendor Initialization Adapters
+**User story:** As a tools maintainer, I want the relational connection manager's vendor-specific initialization paths separated from lifecycle orchestration so the module becomes easier to review and extend.
+
+**Priority:** P2 (Medium)
+**Estimate:** 4 hours
+**Dependencies:** ST-09012
+**Status:** Backlog
+
+**Acceptance criteria:**
+- [ ] `packages/tools/src/data/relational/connection/connection-manager.ts` extracts PostgreSQL, MySQL, and SQLite initialization/pool-configuration logic into clearer helpers or modules
+- [ ] Vendor-specific connection setup preserves current runtime behavior and validation
+- [ ] Focused tests are added or updated for vendor initialization and pool configuration behavior
+- [ ] Touched files do not regress on explicit-`any` warning counts and the outcome is recorded in story documentation
+- [ ] Add or update story documentation at `docs/st09027-connection-manager-vendor-initialization-extraction.md`
+
+---
+
+#### ST-09028: Modularize Connection Manager Lifecycle and Reconnection Control
+**User story:** As a tools maintainer, I want the relational connection manager lifecycle and reconnection control flow split into clearer responsibility boundaries so connection orchestration is easier to reason about.
+
+**Priority:** P2 (Medium)
+**Estimate:** 4 hours
+**Dependencies:** ST-09027
+**Status:** Backlog
+
+**Acceptance criteria:**
+- [ ] `packages/tools/src/data/relational/connection/connection-manager.ts` extracts lifecycle/reconnection concerns such as state transitions, cancellation, reconnection scheduling, and close/dispose orchestration into clearer helpers or modules
+- [ ] Public connection lifecycle behavior remains unchanged for connect, initialize, disconnect, close, and reconnection flows
+- [ ] Focused tests are added or updated for cancellation, reconnection scheduling, and lifecycle cleanup behavior
+- [ ] Touched files do not regress on explicit-`any` warning counts and the outcome is recorded in story documentation
+- [ ] Add or update story documentation at `docs/st09028-connection-manager-lifecycle-modularization.md`
+
+---
+
 ## Story Summary
 
-**Total Stories:** 54
+**Total Stories:** 64
 **By Priority:**
 - P0 (Critical): 17 stories
-- P1 (High): 22 stories
-- P2 (Medium): 15 stories
+- P1 (High): 27 stories
+- P2 (Medium): 20 stories
 
-**Total Estimated Effort:** ~204 hours (25.5 working days)
+**Total Estimated Effort:** ~239 hours (29.9 working days)
 
 **Dependency Chain:**
 1. Phase 1 (Foundation): ST-01001 → ST-01002 → ST-01003 → ST-01004
@@ -1157,4 +1327,4 @@
 6. Phase 6 (Agent Skills): ST-06001 → ST-06002 → ST-06003 → ST-06004 → ST-06005 → ST-06006
 7. Phase 7 (Skills Extraction): ST-07001 → ST-07002 → [ST-07003, ST-07004 parallel] → ST-07005; ST-07001 → ST-07006 (independent)
 8. Phase 8 (Type Safety Hardening): ST-08001 → [ST-08002, ST-08003, ST-08004 parallel]
-9. Phase 9 (SOLID Micro-Refactors): ST-09001 (Merged) → ST-09002 (Merged) → ST-09003 (Merged) → ST-09004 (Merged) → ST-09005 (Merged) → ST-09006 (Merged) → ST-09007 (Merged) → ST-09008 (Merged) → ST-09009 (Merged) → ST-09010 (Merged) → ST-09011 (Merged) → ST-09012 (Merged) → [ST-09013 (Ready), ST-09016 (Ready), ST-09017 (Ready)]; ST-09013 → ST-09014 → ST-09015; ST-09016 → ST-09018
+9. Phase 9 (SOLID Micro-Refactors): ST-09001 (Merged) → ST-09002 (Merged) → ST-09003 (Merged) → ST-09004 (Merged) → ST-09005 (Merged) → ST-09006 (Merged) → ST-09007 (Merged) → ST-09008 (Merged) → ST-09009 (Merged) → ST-09010 (Merged) → ST-09011 (Merged) → ST-09012 (Merged) → [ST-09013 (Ready), ST-09016 (Ready), ST-09017 (Ready)]; ST-09013 → ST-09014 → ST-09015; ST-09016 → ST-09018; ST-09025 → ST-09026; ST-09027 → ST-09028; [ST-09019, ST-09020, ST-09021, ST-09022, ST-09023] remain independently queueable after ST-09012; ST-09024 follows the ask-human/interrupt hardening slice after ST-09009
