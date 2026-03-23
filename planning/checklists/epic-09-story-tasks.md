@@ -340,22 +340,36 @@ Implementation notes:
 
 ## ST-09010: Strengthen Plan-Execute Agent Routing Typing
 
-**Branch:** `fix/st-09010-plan-execute-routing-typing`
+**Branch:** `codex/fix/st-09010-plan-execute-routing-typing`
 
 ### Checklist
-- [ ] Create branch `fix/st-09010-plan-execute-routing-typing`
-- [ ] Create draft PR with story ID in title
-- [ ] Remove avoidable `as any` usage from `packages/patterns/src/plan-execute/agent.ts` around route callbacks and compile return handling
-- [ ] Preserve current planner/executor/replanner/finisher routing behavior while tightening route typing
-- [ ] Add/update focused tests for executor/replanner route decisions and compiled agent invocation behavior
-- [ ] Record explicit-`any` warning deltas for touched files in story docs
-- [ ] Add or update story documentation at `docs/st09010-plan-execute-routing-typing.md` (or document why not required)
-- [ ] Assess test impact; add/update automated tests when needed, or document why tests are not required
-- [ ] Run full test suite before finalizing the PR and record results
-- [ ] Run lint (`pnpm lint`) before finalizing the PR and record results
-- [ ] Commit completed checklist items as logical commits and push updates
-- [ ] Mark PR Ready only after all story tasks are complete
+- [x] Create branch `codex/fix/st-09010-plan-execute-routing-typing`
+- [x] Create draft PR with story ID in title
+- [x] Remove avoidable `as any` usage from `packages/patterns/src/plan-execute/agent.ts` around route callbacks and compile return handling
+- [x] Preserve current planner/executor/replanner/finisher routing behavior while tightening route typing
+- [x] Add/update focused tests for executor/replanner route decisions and compiled agent invocation behavior
+- [x] Record explicit-`any` warning deltas for touched files in story docs
+- [x] Add or update story documentation at `docs/st09010-plan-execute-routing-typing.md` (or document why not required)
+- [x] Assess test impact; add/update automated tests when needed, or document why tests are not required
+- [x] Run full test suite before finalizing the PR and record results
+- [x] Run lint (`pnpm lint`) before finalizing the PR and record results
+- [x] Commit completed checklist items as logical commits and push updates
+- [x] Mark PR Ready only after all story tasks are complete
 - [ ] Wait for merge; do not merge directly from local branch
+
+Implementation notes:
+- `12b06fe` `refactor(st-09010): tighten plan-execute routing typing`
+- Draft PR #72: https://github.com/TVScoundrel/agentforge/pull/72
+- Focused validation passed:
+  - `pnpm exec tsc -p packages/patterns/tsconfig.json --noEmit`
+  - `pnpm exec eslint packages/patterns/src/plan-execute/agent.ts packages/patterns/tests/plan-execute/agent.test.ts`
+  - `pnpm test --run packages/patterns/tests/plan-execute/agent.test.ts packages/patterns/tests/plan-execute/integration.test.ts`
+  - `pnpm lint:explicit-any:baseline`
+- Full validation passed:
+  - `pnpm test --run` -> `152 passed | 16 skipped` files; `2119 passed | 286 skipped` tests
+  - `pnpm lint` -> exit `0` (warnings only)
+- PR #72 marked ready after final tracker/body refresh
+- Review fix applied after PR feedback
 
 ---
 
