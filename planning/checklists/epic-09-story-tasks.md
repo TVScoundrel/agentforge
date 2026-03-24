@@ -521,6 +521,10 @@ Implementation notes:
 - [x] Mark PR Ready only after all story tasks are complete
   - `84e499d` `docs(st-09014): record validation and move story to in-review`
   - PR #76 marked ready: https://github.com/TVScoundrel/agentforge/pull/76
+- [x] Review fixes applied on the active PR branch
+  - `9d1ea7c` `fix(st-09014): clean touched plan-execute warnings`
+  - `9915726` `chore(st-09014): add plan-execute node modularization follow-up`
+  - Pending latest review-fix commit for bound invocation and typecheck fixture validity
 - [ ] Wait for merge; do not merge directly from local branch
 
 ---

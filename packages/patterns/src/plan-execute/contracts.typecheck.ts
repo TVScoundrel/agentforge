@@ -15,7 +15,7 @@ const searchTool = toolBuilder()
   .name('search-tool')
   .description('Search for documents')
   .category(ToolCategory.WEB)
-  .schema(z.object({ query: z.string() }))
+  .schema(z.object({ query: z.string().describe('Search query to execute') }))
   .implement(async ({ query }) => `result:${query}`)
   .build();
 

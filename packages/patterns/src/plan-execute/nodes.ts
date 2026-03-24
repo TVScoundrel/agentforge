@@ -30,7 +30,9 @@ const executorLogger = createPatternLogger('agentforge:patterns:plan-execute:exe
 const replannerLogger = createPatternLogger('agentforge:patterns:plan-execute:replanner');
 
 function invokePlanExecuteTool(tool: PlanExecuteTool, args: PlanStepArguments): Promise<PlanStepResult> {
-  return (tool.invoke as (input: PlanStepArguments) => Promise<PlanStepResult>)(args);
+  return (
+    tool.invoke as (this: PlanExecuteTool, input: PlanStepArguments) => Promise<PlanStepResult>
+  ).call(tool, args);
 }
 
 /**
