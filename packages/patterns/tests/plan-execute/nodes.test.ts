@@ -21,8 +21,11 @@ async function importNodesWithMockedPatternLoggers() {
   const plannerLogger = createMockPatternLogger();
   const executorLogger = createMockPatternLogger();
   const replannerLogger = createMockPatternLogger();
-  const loggers = [plannerLogger, executorLogger, replannerLogger];
-  let index = 0;
+  const loggersByName = new Map([
+    ['agentforge:patterns:plan-execute:planner', plannerLogger],
+    ['agentforge:patterns:plan-execute:executor', executorLogger],
+    ['agentforge:patterns:plan-execute:replanner', replannerLogger],
+  ]);
 
   vi.doMock('../../src/shared/deduplication.js', async () => {
     const actual = await vi.importActual<typeof import('../../src/shared/deduplication.js')>(
@@ -31,7 +34,7 @@ async function importNodesWithMockedPatternLoggers() {
 
     return {
       ...actual,
-      createPatternLogger: vi.fn(() => loggers[index++] ?? createMockPatternLogger()),
+      createPatternLogger: vi.fn((name: string) => loggersByName.get(name) ?? createMockPatternLogger()),
     };
   });
 
