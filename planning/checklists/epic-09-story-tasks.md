@@ -527,6 +527,7 @@ Implementation notes:
   - `d057c3c` `fix(st-09014): preserve bound tool invocation and valid typecheck fixture`
   - `3787bf1` `fix(st-09014): warn on unsupported plan-execute options`
   - `e6e03f2` `fix(st-09014): restore plan-execute warning spies and trim brittle docs`
+  - Pending latest review-fix commit for kanban cleanup and baseline note refresh
 - [ ] Wait for merge; do not merge directly from local branch
 
 ---
