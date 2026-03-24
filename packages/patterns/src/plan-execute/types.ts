@@ -85,9 +85,9 @@ export interface ReplannerConfig {
   model: BaseChatModel;
 
   /**
-   * Confidence threshold for replanning (0-1)
-   * If confidence is below this, trigger replanning
-   * Currently unsupported and ignored by the runtime replanner node.
+   * Intended confidence threshold for replanning (0-1).
+   * This is a forward-compatibility option and is currently ignored by the runtime replanner node.
+   * Future versions may use this to decide when to trigger replanning.
    */
   replanThreshold?: number;
 
