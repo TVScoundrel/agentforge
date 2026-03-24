@@ -8,14 +8,13 @@
 
 import { HumanMessage, SystemMessage } from '@langchain/core/messages';
 import type { PlanExecuteStateType } from './state.js';
-import type { PlannerConfig, ExecutorConfig, ReplannerConfig } from './types.js';
-import type { Plan, CompletedStep, PlanStep } from './schemas.js';
+import type { PlannerConfig, ExecutorConfig, ReplannerConfig, PlanExecuteTool } from './types.js';
+import type { Plan, CompletedStep, PlanStepArguments, PlanStepResult } from './schemas.js';
 import {
   DEFAULT_PLANNER_SYSTEM_PROMPT,
   DEFAULT_REPLANNER_SYSTEM_PROMPT,
   PLANNING_PROMPT_TEMPLATE,
   REPLANNING_PROMPT_TEMPLATE,
-  TOOL_DESCRIPTIONS_TEMPLATE,
   COMPLETED_STEP_TEMPLATE,
   REMAINING_STEP_TEMPLATE,
 } from './prompts.js';
@@ -29,6 +28,10 @@ import { handleNodeError } from '../shared/error-handling.js';
 const plannerLogger = createPatternLogger('agentforge:patterns:plan-execute:planner');
 const executorLogger = createPatternLogger('agentforge:patterns:plan-execute:executor');
 const replannerLogger = createPatternLogger('agentforge:patterns:plan-execute:replanner');
+
+function invokePlanExecuteTool(tool: PlanExecuteTool, args: PlanStepArguments): Promise<PlanStepResult> {
+  return tool.invoke.call(tool, args);
+}
 
 /**
  * Create a planner node that generates a multi-step plan
@@ -119,10 +122,20 @@ export function createExecutorNode(config: ExecutorConfig) {
   const {
     tools,
     model,
-    parallel = false,
+    parallel,
     stepTimeout = 30000,
     enableDeduplication = true,
   } = config;
+
+  if (typeof model !== 'undefined') {
+    executorLogger.warn('ExecutorConfig.model is currently unsupported and will be ignored');
+  }
+
+  if (typeof parallel !== 'undefined') {
+    executorLogger.warn('ExecutorConfig.parallel is currently unsupported and will be ignored', {
+      parallel,
+    });
+  }
 
   return async (state: PlanExecuteStateType): Promise<Partial<PlanExecuteStateType>> => {
     const { plan, currentStepIndex = 0, pastSteps = [], iteration = 0 } = state;
@@ -184,7 +197,7 @@ export function createExecutorNode(config: ExecutorConfig) {
       }
 
       // Execute the step
-      let result: any;
+      let result: PlanStepResult;
       let success = true;
       let error: string | undefined;
       let isDuplicate = false;
@@ -226,14 +239,22 @@ export function createExecutorNode(config: ExecutorConfig) {
 
             // Execute with timeout
             const startTime = Date.now();
-            const timeoutPromise = new Promise((_, reject) =>
-              setTimeout(() => reject(new Error('Step execution timeout')), stepTimeout)
-            );
+            let timeoutId: ReturnType<typeof setTimeout> | undefined;
 
-            result = await Promise.race([
-              tool.invoke(currentStep.args || {}),
-              timeoutPromise,
-            ]);
+            try {
+              const timeoutPromise = new Promise<never>((_, reject) => {
+                timeoutId = setTimeout(() => reject(new Error('Step execution timeout')), stepTimeout);
+              });
+
+              result = await Promise.race([
+                invokePlanExecuteTool(tool, currentStep.args || {}),
+                timeoutPromise,
+              ]);
+            } finally {
+              if (timeoutId !== undefined) {
+                clearTimeout(timeoutId);
+              }
+            }
 
             const executionTime = Date.now() - startTime;
 
@@ -305,9 +326,15 @@ export function createExecutorNode(config: ExecutorConfig) {
 export function createReplannerNode(config: ReplannerConfig) {
   const {
     model,
-    replanThreshold = 0.7,
+    replanThreshold,
     systemPrompt = DEFAULT_REPLANNER_SYSTEM_PROMPT,
   } = config;
+
+  if (typeof replanThreshold !== 'undefined') {
+    replannerLogger.warn('ReplannerConfig.replanThreshold is currently unsupported and will be ignored', {
+      replanThreshold,
+    });
+  }
 
   return async (state: PlanExecuteStateType): Promise<Partial<PlanExecuteStateType>> => {
     const startTime = Date.now();

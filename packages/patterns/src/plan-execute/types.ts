@@ -8,8 +8,14 @@
 
 import type { BaseChatModel } from '@langchain/core/language_models/chat_models';
 import type { BaseCheckpointSaver } from '@langchain/langgraph';
-import type { Tool } from '@agentforge/core';
+import type { ToolMetadata } from '@agentforge/core';
 import type { PlanExecuteStateType } from './state.js';
+import type { PlanStepArguments, PlanStepResult } from './schemas.js';
+
+export interface PlanExecuteTool {
+  metadata: ToolMetadata;
+  invoke(input: PlanStepArguments): Promise<PlanStepResult>;
+}
 
 /**
  * Configuration for the planner node
@@ -39,19 +45,21 @@ export interface PlannerConfig {
 /**
  * Configuration for the executor node
  */
-export interface ExecutorConfig {
+export interface ExecutorConfig<TTool extends PlanExecuteTool = PlanExecuteTool> {
   /**
    * Available tools for execution
    */
-  tools: Tool<any, any>[];
+  tools: readonly TTool[];
 
   /**
-   * Optional language model for sub-tasks
+   * Optional language model for sub-tasks.
+   * Currently unsupported and ignored by the runtime executor node.
    */
   model?: BaseChatModel;
 
   /**
-   * Enable parallel execution of independent steps
+   * Enable parallel execution of independent steps.
+   * Currently unsupported and ignored by the runtime executor node.
    */
   parallel?: boolean;
 
@@ -77,8 +85,9 @@ export interface ReplannerConfig {
   model: BaseChatModel;
 
   /**
-   * Confidence threshold for replanning (0-1)
-   * If confidence is below this, trigger replanning
+   * Intended confidence threshold for replanning (0-1).
+   * This is a forward-compatibility option and is currently ignored by the runtime replanner node.
+   * Future versions may use this to decide when to trigger replanning.
    */
   replanThreshold?: number;
 
@@ -91,7 +100,7 @@ export interface ReplannerConfig {
 /**
  * Configuration for creating a Plan-Execute agent
  */
-export interface PlanExecuteAgentConfig {
+export interface PlanExecuteAgentConfig<TTool extends PlanExecuteTool = PlanExecuteTool> {
   /**
    * Planner configuration
    */
@@ -100,7 +109,7 @@ export interface PlanExecuteAgentConfig {
   /**
    * Executor configuration
    */
-  executor: ExecutorConfig;
+  executor: ExecutorConfig<TTool>;
 
   /**
    * Optional replanner configuration
@@ -156,4 +165,3 @@ export type PlanExecuteRoute = 'execute' | 'replan' | 'finish' | 'error';
  * Router function type
  */
 export type PlanExecuteRouter = (state: PlanExecuteStateType) => PlanExecuteRoute;
-

@@ -1,24 +1,27 @@
 # Kanban Queue: AgentForge
 
-**Last Updated:** 2026-03-23
+**Last Updated:** 2026-03-24
 
 ## Queue Status Summary
 
-- **Ready:** 3 stories
+- **Ready:** 2 stories
 - **In Progress:** 0 stories
-- **In Review:** 0 stories
+- **In Review:** 1 story
 - **Blocked:** 0 stories
-- **Backlog:** 12 stories
+- **Backlog:** 13 stories
 
 ---
 
 ## Ready
 
-- `ST-09014` - Tighten Plan-Execute Shared Type Boundaries
 - `ST-09016` - Harden Monitoring Audit and Health Payload Types
 - `ST-09017` - Centralize CLI Command Error Handling
 
 ---
+
+## In Review
+
+- `ST-09014` - Tighten Plan-Execute Shared Type Boundaries
 
 ---
 
@@ -53,6 +56,8 @@ _No stories currently blocked_
 - `ST-09027` - Extract Connection Manager Vendor Initialization Adapters
 - `ST-09028` - Modularize Connection Manager Lifecycle and Reconnection Control
   - Depends on `ST-09027`
+- `ST-09029` - Modularize Plan-Execute Node Responsibilities
+  - Depends on `ST-09014`
 
 ---
 
@@ -117,4 +122,5 @@ _No stories currently blocked_
 - Epic 09 (SOLID Micro-Refactors and Type Boundary Hardening) was expanded on 2026-03-22 with low-hanging follow-on stories ST-09008 through ST-09012
 - Epic 09 (SOLID Micro-Refactors and Type Boundary Hardening) was expanded again on 2026-03-23 with daily hardening stories ST-09013 through ST-09018
 - Epic 09 (SOLID Micro-Refactors and Type Boundary Hardening) was expanded a third time on 2026-03-23 with daily hardening stories ST-09019 through ST-09028
-- Current measured `no-explicit-any` baseline is `289` warnings (`cli 24`, `core 119`, `patterns 28`, `testing 51`, `tools 67`)
+- Epic 09 (SOLID Micro-Refactors and Type Boundary Hardening) was expanded a fourth time on 2026-03-24 with the plan-execute node modularization follow-up story ST-09029
+- Current measured `no-explicit-any` baseline is `278` warnings (`cli 24`, `core 119`, `patterns 25`, `testing 51`, `tools 67`)

@@ -9,6 +9,9 @@
 
 import { z } from 'zod';
 
+export type PlanStepArguments = Record<string, unknown>;
+export type PlanStepResult = unknown;
+
 /**
  * Schema for a single step in the plan
  */
@@ -36,7 +39,7 @@ export const PlanStepSchema = z.object({
   /**
    * Optional arguments for the tool
    */
-  args: z.record(z.any()).optional().describe('Arguments to pass to the tool'),
+  args: z.record(z.string(), z.unknown()).optional().describe('Arguments to pass to the tool'),
 });
 
 export type PlanStep = z.infer<typeof PlanStepSchema>;
@@ -53,7 +56,7 @@ export const CompletedStepSchema = z.object({
   /**
    * The result of executing the step
    */
-  result: z.any().describe('The result of executing the step'),
+  result: z.unknown().describe('The result of executing the step'),
 
   /**
    * Whether the step succeeded
@@ -141,4 +144,3 @@ export type ExecutionStatus = z.infer<typeof ExecutionStatusSchema>;
 export {
   PlanStepSchema as default,
 };
-

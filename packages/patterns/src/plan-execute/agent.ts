@@ -9,7 +9,7 @@
 import { StateGraph, END } from '@langchain/langgraph';
 import { PlanExecuteState, type PlanExecuteStateType } from './state.js';
 import { createPlannerNode, createExecutorNode, createReplannerNode, createFinisherNode } from './nodes.js';
-import type { PlanExecuteAgentConfig, PlanExecuteRoute } from './types.js';
+import type { PlanExecuteAgentConfig, PlanExecuteRoute, PlanExecuteTool } from './types.js';
 
 const executorRouteMap = {
   execute: 'executor',
@@ -46,12 +46,10 @@ const replannerRouteMap = {
  *     maxSteps: 5
  *   },
  *   executor: {
- *     tools: [searchTool, calculatorTool],
- *     parallel: false
+ *     tools: [searchTool, calculatorTool]
  *   },
  *   replanner: {
- *     model: new ChatOpenAI({ model: 'gpt-4' }),
- *     replanThreshold: 0.7
+ *     model: new ChatOpenAI({ model: 'gpt-4' })
  *   }
  * });
  *
@@ -84,7 +82,9 @@ const replannerRouteMap = {
  * );
  * ```
  */
-export function createPlanExecuteAgent(config: PlanExecuteAgentConfig) {
+export function createPlanExecuteAgent<TTool extends PlanExecuteTool = PlanExecuteTool>(
+  config: PlanExecuteAgentConfig<TTool>
+) {
   const {
     planner,
     executor,

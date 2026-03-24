@@ -496,18 +496,42 @@ Implementation notes:
 **Branch:** `fix/st-09014-plan-execute-shared-type-boundaries`
 
 ### Checklist
-- [ ] Create branch `fix/st-09014-plan-execute-shared-type-boundaries`
-- [ ] Create draft PR with story ID in title
-- [ ] Remove broad tool/schema `any` boundaries from `packages/patterns/src/plan-execute/types.ts` and adjacent shared contracts as needed
-- [ ] Preserve current planner/executor/replanner compatibility while tightening shared type inference
-- [ ] Add/update focused tests for type-driven plan-execute configuration and execution flows
-- [ ] Record explicit-`any` warning deltas for touched files in story docs
-- [ ] Add or update story documentation at `docs/st09014-plan-execute-shared-type-boundaries.md` (or document why not required)
-- [ ] Assess test impact; add/update automated tests when needed, or document why tests are not required
-- [ ] Run full test suite before finalizing the PR and record results
-- [ ] Run lint (`pnpm lint`) before finalizing the PR and record results
-- [ ] Commit completed checklist items as logical commits and push updates
-- [ ] Mark PR Ready only after all story tasks are complete
+- [x] Create branch `fix/st-09014-plan-execute-shared-type-boundaries`
+  - Created as `codex/fix/st-09014-plan-execute-shared-type-boundaries` (workspace branch-prefix policy)
+- [x] Create draft PR with story ID in title
+  - Draft PR #76: https://github.com/TVScoundrel/agentforge/pull/76
+- [x] Remove broad tool/schema `any` boundaries from `packages/patterns/src/plan-execute/types.ts` and adjacent shared contracts as needed
+  - Replaced `Tool<any, any>[]` with the exported `PlanExecuteTool` runtime contract, generic executor/agent config typing, `PlanStepArguments`/`PlanStepResult` aliases, and a single executor-side invocation seam
+- [x] Preserve current planner/executor/replanner compatibility while tightening shared type inference
+  - Planner, executor, replanner, and finisher runtime flows remain unchanged; only the shared type surfaces and schema helper typings were narrowed
+- [x] Add/update focused tests for type-driven plan-execute configuration and execution flows
+  - Added `packages/patterns/src/plan-execute/contracts.typecheck.ts` for source-included config inference coverage and expanded `packages/patterns/tests/plan-execute/state.test.ts` for schema compatibility
+- [x] Record explicit-`any` warning deltas for touched files in story docs
+  - Recorded in `docs/st09014-plan-execute-shared-type-boundaries.md` (`types.ts`: `1 -> 0`, `nodes.ts`: `1 -> 0`; baseline `289 -> 278`, `patterns 28 -> 25`)
+- [x] Add or update story documentation at `docs/st09014-plan-execute-shared-type-boundaries.md` (or document why not required)
+- [x] Assess test impact; add/update automated tests when needed, or document why tests are not required
+  - Added focused automated coverage; no manual-only gap remains for the changed surface
+- [x] Run full test suite before finalizing the PR and record results
+  - `pnpm test --run` -> `152 passed | 16 skipped` files; `2126 passed | 286 skipped` tests
+- [x] Run lint (`pnpm lint`) before finalizing the PR and record results
+  - `pnpm lint` -> exit `0`; warnings only (`0` errors)
+- [x] Commit completed checklist items as logical commits and push updates
+  - `f5caf74` `refactor(st-09014): tighten plan-execute shared contracts`
+  - `a3168aa` `docs(st-09014): record plan-execute contract progress`
+- [x] Mark PR Ready only after all story tasks are complete
+  - `84e499d` `docs(st-09014): record validation and move story to in-review`
+  - PR #76 marked ready: https://github.com/TVScoundrel/agentforge/pull/76
+- [x] Review fixes applied on the active PR branch
+  - `9d1ea7c` `fix(st-09014): clean touched plan-execute warnings`
+  - `9915726` `chore(st-09014): add plan-execute node modularization follow-up`
+  - `d057c3c` `fix(st-09014): preserve bound tool invocation and valid typecheck fixture`
+  - `3787bf1` `fix(st-09014): warn on unsupported plan-execute options`
+  - `e6e03f2` `fix(st-09014): restore plan-execute warning spies and trim brittle docs`
+  - `c18df1a` `docs(st-09014): clean kanban separators and baseline note`
+  - `350a2bc` `fix(st-09014): make plan-execute tool boundary callable`
+  - `224514d` `fix(st-09014): clear executor step timeout handles`
+  - `17cd270` `docs(st-09014): align replanner threshold contract notes`
+  - `a781d91` `test(st-09014): stabilize logger-mock lookup by name`
 - [ ] Wait for merge; do not merge directly from local branch
 
 ---
@@ -798,6 +822,28 @@ Implementation notes:
 - [ ] Add/update focused tests for cancellation, reconnection scheduling, and lifecycle cleanup behavior
 - [ ] Record explicit-`any` warning deltas for touched files in story docs
 - [ ] Add or update story documentation at `docs/st09028-connection-manager-lifecycle-modularization.md` (or document why not required)
+- [ ] Assess test impact; add/update automated tests when needed, or document why tests are not required
+- [ ] Run full test suite before finalizing the PR and record results
+- [ ] Run lint (`pnpm lint`) before finalizing the PR and record results
+- [ ] Commit completed checklist items as logical commits and push updates
+- [ ] Mark PR Ready only after all story tasks are complete
+- [ ] Wait for merge; do not merge directly from local branch
+
+---
+
+## ST-09029: Modularize Plan-Execute Node Responsibilities
+
+**Branch:** `refactor/st-09029-plan-execute-node-modularization`
+
+### Checklist
+- [ ] Create branch `refactor/st-09029-plan-execute-node-modularization`
+- [ ] Create draft PR with story ID in title
+- [ ] Split `packages/patterns/src/plan-execute/nodes.ts` into planner, executor, replanner, and finisher modules or focused helpers
+- [ ] Preserve the public plan-execute node entrypoint and current runtime behavior
+- [ ] Extract shared helpers where they reduce duplication without obscuring control flow
+- [ ] Add/update focused tests for planning, execution, replanning, and node-level error handling
+- [ ] Record explicit-`any` warning deltas for touched files in story docs
+- [ ] Add or update story documentation at `docs/st09029-plan-execute-node-modularization.md` (or document why not required)
 - [ ] Assess test impact; add/update automated tests when needed, or document why tests are not required
 - [ ] Run full test suite before finalizing the PR and record results
 - [ ] Run lint (`pnpm lint`) before finalizing the PR and record results
