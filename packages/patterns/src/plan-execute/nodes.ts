@@ -9,13 +9,12 @@
 import { HumanMessage, SystemMessage } from '@langchain/core/messages';
 import type { PlanExecuteStateType } from './state.js';
 import type { PlannerConfig, ExecutorConfig, ReplannerConfig, PlanExecuteTool } from './types.js';
-import type { Plan, CompletedStep, PlanStep, PlanStepArguments, PlanStepResult } from './schemas.js';
+import type { Plan, CompletedStep, PlanStepArguments, PlanStepResult } from './schemas.js';
 import {
   DEFAULT_PLANNER_SYSTEM_PROMPT,
   DEFAULT_REPLANNER_SYSTEM_PROMPT,
   PLANNING_PROMPT_TEMPLATE,
   REPLANNING_PROMPT_TEMPLATE,
-  TOOL_DESCRIPTIONS_TEMPLATE,
   COMPLETED_STEP_TEMPLATE,
   REMAINING_STEP_TEMPLATE,
 } from './prompts.js';
@@ -122,8 +121,6 @@ export function createPlannerNode(config: PlannerConfig) {
 export function createExecutorNode(config: ExecutorConfig) {
   const {
     tools,
-    model,
-    parallel = false,
     stepTimeout = 30000,
     enableDeduplication = true,
   } = config;
@@ -309,7 +306,6 @@ export function createExecutorNode(config: ExecutorConfig) {
 export function createReplannerNode(config: ReplannerConfig) {
   const {
     model,
-    replanThreshold = 0.7,
     systemPrompt = DEFAULT_REPLANNER_SYSTEM_PROMPT,
   } = config;
 

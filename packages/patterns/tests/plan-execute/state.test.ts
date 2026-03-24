@@ -2,7 +2,6 @@ import { describe, it, expect } from 'vitest';
 import {
   PlanExecuteState,
   PlanExecuteStateConfig,
-  type PlanExecuteStateType,
 } from '../../src/plan-execute/state.js';
 import {
   PlanStepSchema,
