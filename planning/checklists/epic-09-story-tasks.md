@@ -526,6 +526,7 @@ Implementation notes:
   - `9915726` `chore(st-09014): add plan-execute node modularization follow-up`
   - `d057c3c` `fix(st-09014): preserve bound tool invocation and valid typecheck fixture`
   - `3787bf1` `fix(st-09014): warn on unsupported plan-execute options`
+  - Pending latest review-fix commit for plan-execute test spy restoration and brittle doc cleanup
 - [ ] Wait for merge; do not merge directly from local branch
 
 ---

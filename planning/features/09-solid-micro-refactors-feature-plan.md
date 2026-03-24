@@ -47,7 +47,7 @@ Top runtime hotspots informing this feature slice:
 6. `packages/testing/src/helpers/assertions.ts` and `packages/testing/src/helpers/state-builder.ts` still concentrate a large share of the remaining `testing` package `any` warnings
 7. `packages/core/src/prompt-loader/index.ts`, `packages/core/src/streaming/websocket.ts`, and `packages/patterns/src/reflection/agent.ts` form the next small runtime boundary-hardening slice
 8. `packages/core/src/tools/registry.ts` and `packages/tools/src/data/relational/connection/connection-manager.ts` remain larger SRP targets that need multi-story decomposition rather than one oversized cleanup
-9. `packages/patterns/src/plan-execute/nodes.ts` is now `435` lines and has become the next plan-execute modularization target after the ST-09014 shared contract cleanup
+9. `packages/patterns/src/plan-execute/nodes.ts` has grown into a larger mixed-responsibility module and has become the next plan-execute modularization target after the ST-09014 shared contract cleanup
 
 Recent improvement snapshot:
 

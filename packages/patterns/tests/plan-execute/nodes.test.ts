@@ -132,17 +132,20 @@ describe('Plan-Execute Nodes', () => {
 
     it('should warn when unsupported executor options are provided', () => {
       const writeSpy = vi.spyOn(process.stdout, 'write').mockImplementation(() => true);
+      try {
+        createExecutorNode({
+          tools: [calculatorTool],
+          model: createMockPlannerLLM() as any,
+          parallel: true,
+        });
 
-      createExecutorNode({
-        tools: [calculatorTool],
-        model: createMockPlannerLLM() as any,
-        parallel: true,
-      });
-
-      const output = writeSpy.mock.calls.map(([chunk]) => String(chunk)).join('');
-      expect(output).toContain('ExecutorConfig.model is currently unsupported and will be ignored');
-      expect(output).toContain('ExecutorConfig.parallel is currently unsupported and will be ignored');
-      expect(output).toContain('"parallel":true');
+        const output = writeSpy.mock.calls.map(([chunk]) => String(chunk)).join('');
+        expect(output).toContain('ExecutorConfig.model is currently unsupported and will be ignored');
+        expect(output).toContain('ExecutorConfig.parallel is currently unsupported and will be ignored');
+        expect(output).toContain('"parallel":true');
+      } finally {
+        writeSpy.mockRestore();
+      }
     });
 
     it('should execute a step with a tool', async () => {
@@ -270,15 +273,18 @@ describe('Plan-Execute Nodes', () => {
 
     it('should warn when replanThreshold is provided', () => {
       const writeSpy = vi.spyOn(process.stdout, 'write').mockImplementation(() => true);
+      try {
+        createReplannerNode({
+          model: createMockReplannerLLM() as any,
+          replanThreshold: 0.7,
+        });
 
-      createReplannerNode({
-        model: createMockReplannerLLM() as any,
-        replanThreshold: 0.7,
-      });
-
-      const output = writeSpy.mock.calls.map(([chunk]) => String(chunk)).join('');
-      expect(output).toContain('ReplannerConfig.replanThreshold is currently unsupported and will be ignored');
-      expect(output).toContain('"replanThreshold":0.7');
+        const output = writeSpy.mock.calls.map(([chunk]) => String(chunk)).join('');
+        expect(output).toContain('ReplannerConfig.replanThreshold is currently unsupported and will be ignored');
+        expect(output).toContain('"replanThreshold":0.7');
+      } finally {
+        writeSpy.mockRestore();
+      }
     });
 
     it('should decide to continue with current plan', async () => {
