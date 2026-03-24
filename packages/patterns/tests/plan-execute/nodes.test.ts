@@ -6,6 +6,48 @@ import { toolBuilder, ToolCategory } from '@agentforge/core';
 import { createMockLLM } from '@agentforge/testing';
 import { z } from 'zod';
 
+function createMockPatternLogger() {
+  return {
+    debug: vi.fn(),
+    info: vi.fn(),
+    warn: vi.fn(),
+    error: vi.fn(),
+  };
+}
+
+async function importNodesWithMockedPatternLoggers() {
+  vi.resetModules();
+
+  const plannerLogger = createMockPatternLogger();
+  const executorLogger = createMockPatternLogger();
+  const replannerLogger = createMockPatternLogger();
+  const loggers = [plannerLogger, executorLogger, replannerLogger];
+  let index = 0;
+
+  vi.doMock('../../src/shared/deduplication.js', async () => {
+    const actual = await vi.importActual<typeof import('../../src/shared/deduplication.js')>(
+      '../../src/shared/deduplication.js'
+    );
+
+    return {
+      ...actual,
+      createPatternLogger: vi.fn(() => loggers[index++] ?? createMockPatternLogger()),
+    };
+  });
+
+  const nodesModule = await import('../../src/plan-execute/nodes.js');
+
+  vi.doUnmock('../../src/shared/deduplication.js');
+  vi.resetModules();
+
+  return {
+    createExecutorNode: nodesModule.createExecutorNode,
+    createReplannerNode: nodesModule.createReplannerNode,
+    executorWarn: executorLogger.warn,
+    replannerWarn: replannerLogger.warn,
+  };
+}
+
 // Helper to create mock planner LLM
 function createMockPlannerLLM() {
   return createMockLLM({
@@ -131,21 +173,21 @@ describe('Plan-Execute Nodes', () => {
     });
 
     it('should warn when unsupported executor options are provided', () => {
-      const writeSpy = vi.spyOn(process.stdout, 'write').mockImplementation(() => true);
-      try {
-        createExecutorNode({
+      return importNodesWithMockedPatternLoggers().then(({ createExecutorNode: createExecutorNodeWithMocks, executorWarn }) => {
+        createExecutorNodeWithMocks({
           tools: [calculatorTool],
           model: createMockPlannerLLM() as any,
           parallel: true,
         });
 
-        const output = writeSpy.mock.calls.map(([chunk]) => String(chunk)).join('');
-        expect(output).toContain('ExecutorConfig.model is currently unsupported and will be ignored');
-        expect(output).toContain('ExecutorConfig.parallel is currently unsupported and will be ignored');
-        expect(output).toContain('"parallel":true');
-      } finally {
-        writeSpy.mockRestore();
-      }
+        expect(executorWarn).toHaveBeenCalledWith(
+          'ExecutorConfig.model is currently unsupported and will be ignored'
+        );
+        expect(executorWarn).toHaveBeenCalledWith(
+          'ExecutorConfig.parallel is currently unsupported and will be ignored',
+          { parallel: true }
+        );
+      });
     });
 
     it('should execute a step with a tool', async () => {
@@ -272,19 +314,17 @@ describe('Plan-Execute Nodes', () => {
     });
 
     it('should warn when replanThreshold is provided', () => {
-      const writeSpy = vi.spyOn(process.stdout, 'write').mockImplementation(() => true);
-      try {
-        createReplannerNode({
+      return importNodesWithMockedPatternLoggers().then(({ createReplannerNode: createReplannerNodeWithMocks, replannerWarn }) => {
+        createReplannerNodeWithMocks({
           model: createMockReplannerLLM() as any,
           replanThreshold: 0.7,
         });
 
-        const output = writeSpy.mock.calls.map(([chunk]) => String(chunk)).join('');
-        expect(output).toContain('ReplannerConfig.replanThreshold is currently unsupported and will be ignored');
-        expect(output).toContain('"replanThreshold":0.7');
-      } finally {
-        writeSpy.mockRestore();
-      }
+        expect(replannerWarn).toHaveBeenCalledWith(
+          'ReplannerConfig.replanThreshold is currently unsupported and will be ignored',
+          { replanThreshold: 0.7 }
+        );
+      });
     });
 
     it('should decide to continue with current plan', async () => {

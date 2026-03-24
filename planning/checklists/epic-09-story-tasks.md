@@ -528,6 +528,7 @@ Implementation notes:
   - `3787bf1` `fix(st-09014): warn on unsupported plan-execute options`
   - `e6e03f2` `fix(st-09014): restore plan-execute warning spies and trim brittle docs`
   - `c18df1a` `docs(st-09014): clean kanban separators and baseline note`
+  - Pending latest review-fix commit for callable tool boundary and logger-mocked warning tests
 - [ ] Wait for merge; do not merge directly from local branch
 
 ---

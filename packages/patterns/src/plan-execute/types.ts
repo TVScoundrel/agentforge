@@ -8,12 +8,13 @@
 
 import type { BaseChatModel } from '@langchain/core/language_models/chat_models';
 import type { BaseCheckpointSaver } from '@langchain/langgraph';
-import type { Tool, ToolMetadata } from '@agentforge/core';
+import type { ToolMetadata } from '@agentforge/core';
 import type { PlanExecuteStateType } from './state.js';
+import type { PlanStepArguments, PlanStepResult } from './schemas.js';
 
 export interface PlanExecuteTool {
   metadata: ToolMetadata;
-  invoke: Tool<never, unknown>['invoke'];
+  invoke(input: PlanStepArguments): Promise<PlanStepResult>;
 }
 
 /**
