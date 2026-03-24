@@ -530,7 +530,7 @@ Implementation notes:
   - `c18df1a` `docs(st-09014): clean kanban separators and baseline note`
   - `350a2bc` `fix(st-09014): make plan-execute tool boundary callable`
   - `224514d` `fix(st-09014): clear executor step timeout handles`
-  - Pending latest review-fix commit for replanner threshold JSDoc alignment
+  - `17cd270` `docs(st-09014): align replanner threshold contract notes`
 - [ ] Wait for merge; do not merge directly from local branch
 
 ---
