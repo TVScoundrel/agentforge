@@ -496,7 +496,8 @@ Implementation notes:
 **Branch:** `fix/st-09014-plan-execute-shared-type-boundaries`
 
 ### Checklist
-- [ ] Create branch `fix/st-09014-plan-execute-shared-type-boundaries`
+- [x] Create branch `fix/st-09014-plan-execute-shared-type-boundaries`
+  - Created as `codex/fix/st-09014-plan-execute-shared-type-boundaries` (workspace branch-prefix policy)
 - [ ] Create draft PR with story ID in title
 - [ ] Remove broad tool/schema `any` boundaries from `packages/patterns/src/plan-execute/types.ts` and adjacent shared contracts as needed
 - [ ] Preserve current planner/executor/replanner compatibility while tightening shared type inference

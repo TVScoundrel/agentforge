@@ -1056,7 +1056,7 @@
 **Priority:** P1 (High)
 **Estimate:** 3 hours
 **Dependencies:** ST-09013
-**Status:** Backlog
+**Status:** In Progress
 
 **Acceptance criteria:**
 - [ ] `packages/patterns/src/plan-execute/types.ts` removes the current `Tool<any, any>[]` style boundaries and replaces them with safer generic or erased runtime contracts
