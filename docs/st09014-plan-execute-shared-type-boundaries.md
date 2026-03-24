@@ -41,7 +41,10 @@ Tightened the shared plan-execute contracts so the exported executor/agent confi
 - `pnpm exec tsc -p packages/patterns/tsconfig.json --noEmit`
 - `pnpm exec eslint packages/patterns/src/plan-execute/agent.ts packages/patterns/src/plan-execute/types.ts packages/patterns/src/plan-execute/nodes.ts packages/patterns/src/plan-execute/schemas.ts packages/patterns/src/plan-execute/contracts.typecheck.ts packages/patterns/tests/plan-execute/agent.test.ts packages/patterns/tests/plan-execute/state.test.ts`
 - `pnpm test --run packages/patterns/tests/plan-execute/agent.test.ts packages/patterns/tests/plan-execute/state.test.ts packages/patterns/tests/plan-execute/integration.test.ts` -> `19 passed`
+- `pnpm lint:explicit-any:baseline`
+- `pnpm test --run` -> `152 passed | 16 skipped` files; `2126 passed | 286 skipped` tests
+- `pnpm lint` -> exit `0`; warnings only (`0` errors)
 
 ## Test Impact
 
-Expanded focused automated coverage for type-driven plan-execute configuration and schema compatibility. Full-suite and lint validation remain pending until the story is finalized.
+Expanded focused automated coverage for type-driven plan-execute configuration and schema compatibility. The story also passed full-suite and workspace lint validation before review handoff.
