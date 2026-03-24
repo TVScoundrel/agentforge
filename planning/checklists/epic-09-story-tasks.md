@@ -518,7 +518,9 @@ Implementation notes:
 - [x] Commit completed checklist items as logical commits and push updates
   - `f5caf74` `refactor(st-09014): tighten plan-execute shared contracts`
   - `a3168aa` `docs(st-09014): record plan-execute contract progress`
-- [ ] Mark PR Ready only after all story tasks are complete
+- [x] Mark PR Ready only after all story tasks are complete
+  - `84e499d` `docs(st-09014): record validation and move story to in-review`
+  - PR #76 marked ready: https://github.com/TVScoundrel/agentforge/pull/76
 - [ ] Wait for merge; do not merge directly from local branch
 
 ---
