@@ -239,14 +239,22 @@ export function createExecutorNode(config: ExecutorConfig) {
 
             // Execute with timeout
             const startTime = Date.now();
-            const timeoutPromise = new Promise((_, reject) =>
-              setTimeout(() => reject(new Error('Step execution timeout')), stepTimeout)
-            );
+            let timeoutId: ReturnType<typeof setTimeout> | undefined;
 
-            result = await Promise.race([
-              invokePlanExecuteTool(tool, currentStep.args || {}),
-              timeoutPromise,
-            ]);
+            try {
+              const timeoutPromise = new Promise<never>((_, reject) => {
+                timeoutId = setTimeout(() => reject(new Error('Step execution timeout')), stepTimeout);
+              });
+
+              result = await Promise.race([
+                invokePlanExecuteTool(tool, currentStep.args || {}),
+                timeoutPromise,
+              ]);
+            } finally {
+              if (timeoutId !== undefined) {
+                clearTimeout(timeoutId);
+              }
+            }
 
             const executionTime = Date.now() - startTime;
 

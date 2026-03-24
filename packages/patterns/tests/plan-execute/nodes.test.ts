@@ -214,6 +214,34 @@ describe('Plan-Execute Nodes', () => {
       expect(result.currentStepIndex).toBe(1);
     });
 
+    it('should clear step timeout after successful execution', async () => {
+      const clearTimeoutSpy = vi.spyOn(globalThis, 'clearTimeout');
+
+      try {
+        const executor = createExecutorNode({ tools: [calculatorTool], stepTimeout: 1000 });
+
+        const state: Partial<PlanExecuteStateType> = {
+          plan: {
+            steps: [
+              { id: 'step-1', description: 'Add numbers', tool: 'calculator', args: { a: 5, b: 3 } },
+            ],
+            goal: 'Calculate',
+            createdAt: new Date().toISOString(),
+          },
+          currentStepIndex: 0,
+          pastSteps: [],
+          status: 'executing',
+        };
+
+        const result = await executor(state as PlanExecuteStateType);
+
+        expect(result.pastSteps?.[0].success).toBe(true);
+        expect(clearTimeoutSpy).toHaveBeenCalledTimes(1);
+      } finally {
+        clearTimeoutSpy.mockRestore();
+      }
+    });
+
     it('should handle tool not found', async () => {
       const executor = createExecutorNode({ tools: [calculatorTool] });
 
