@@ -2,11 +2,18 @@
 
 **Purpose:** Track completed and merged stories for the Relational Database Access Tool project.
 
-**Last Updated:** 2026-03-23
+**Last Updated:** 2026-03-25
 
 ---
 
 ## Completed Stories
+
+### ST-09014: Tighten Plan-Execute Shared Type Boundaries
+- **Merged:** 2026-03-24
+- **PR:** https://github.com/TVScoundrel/agentforge/pull/76 (commit 5913b74)
+- **Epic:** EP-09 (SOLID Micro-Refactors and Type Boundary Hardening)
+- **Estimate:** 3 hours
+- **Outcome:** Replaced broad `Tool<any, any>[]`-style plan-execute boundaries with the exported `PlanExecuteTool` contract plus generic executor/agent config typing, moved step argument/result contracts to `unknown`-based schema helpers, added source-included typecheck coverage, and recorded the follow-on modularization story `ST-09029` for the still-large `nodes.ts` module.
 
 ### ST-09013: Harden Sequential Workflow Builder Typing
 - **Merged:** 2026-03-23

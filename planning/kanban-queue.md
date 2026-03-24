@@ -1,27 +1,29 @@
 # Kanban Queue: AgentForge
 
-**Last Updated:** 2026-03-24
+**Last Updated:** 2026-03-25
 
 ## Queue Status Summary
 
-- **Ready:** 2 stories
+- **Ready:** 4 stories
 - **In Progress:** 0 stories
-- **In Review:** 1 story
+- **In Review:** 0 stories
 - **Blocked:** 0 stories
-- **Backlog:** 13 stories
+- **Backlog:** 11 stories
 
 ---
 
 ## Ready
 
+- `ST-09015` - Modularize Multi-Agent Node Responsibilities
 - `ST-09016` - Harden Monitoring Audit and Health Payload Types
 - `ST-09017` - Centralize CLI Command Error Handling
+- `ST-09029` - Modularize Plan-Execute Node Responsibilities
 
 ---
 
 ## In Review
 
-- `ST-09014` - Tighten Plan-Execute Shared Type Boundaries
+_No stories currently in review_
 
 ---
 
@@ -39,8 +41,6 @@ _No stories currently blocked_
 
 ## Backlog
 
-- `ST-09015` - Modularize Multi-Agent Node Responsibilities
-  - Depends on `ST-09014`
 - `ST-09018` - Harden Testing Assertion and State Builder Helpers
   - Depends on `ST-09016`
 - `ST-09019` - Harden Reflection Agent Routing Typing
@@ -56,8 +56,6 @@ _No stories currently blocked_
 - `ST-09027` - Extract Connection Manager Vendor Initialization Adapters
 - `ST-09028` - Modularize Connection Manager Lifecycle and Reconnection Control
   - Depends on `ST-09027`
-- `ST-09029` - Modularize Plan-Execute Node Responsibilities
-  - Depends on `ST-09014`
 
 ---
 
@@ -119,6 +117,7 @@ _No stories currently blocked_
 - ✅ ST-09011 complete - explicit-`any` baseline caps tightened (PR #73, 2026-03-23)
 - ✅ ST-09012 complete - package export-map build warnings removed (PR #74, 2026-03-23)
 - ✅ ST-09013 complete - sequential workflow builder typing hardened with schema-only inference and intentional breaking type tightening (PR #75, 2026-03-23)
+- ✅ ST-09014 complete - plan-execute shared type boundaries tightened (PR #76, 2026-03-24)
 - Epic 09 (SOLID Micro-Refactors and Type Boundary Hardening) was expanded on 2026-03-22 with low-hanging follow-on stories ST-09008 through ST-09012
 - Epic 09 (SOLID Micro-Refactors and Type Boundary Hardening) was expanded again on 2026-03-23 with daily hardening stories ST-09013 through ST-09018
 - Epic 09 (SOLID Micro-Refactors and Type Boundary Hardening) was expanded a third time on 2026-03-23 with daily hardening stories ST-09019 through ST-09028

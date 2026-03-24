@@ -532,7 +532,8 @@ Implementation notes:
   - `224514d` `fix(st-09014): clear executor step timeout handles`
   - `17cd270` `docs(st-09014): align replanner threshold contract notes`
   - `a781d91` `test(st-09014): stabilize logger-mock lookup by name`
-- [ ] Wait for merge; do not merge directly from local branch
+- [x] Wait for merge; do not merge directly from local branch
+  - Merged via PR #76 on 2026-03-24 (merge commit `5913b74`)
 
 ---
 
