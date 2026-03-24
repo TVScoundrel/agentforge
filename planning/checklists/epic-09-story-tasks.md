@@ -525,7 +525,7 @@ Implementation notes:
   - `9d1ea7c` `fix(st-09014): clean touched plan-execute warnings`
   - `9915726` `chore(st-09014): add plan-execute node modularization follow-up`
   - `d057c3c` `fix(st-09014): preserve bound tool invocation and valid typecheck fixture`
-  - Pending latest review-fix commit for unsupported executor/replanner option handling
+  - `3787bf1` `fix(st-09014): warn on unsupported plan-execute options`
 - [ ] Wait for merge; do not merge directly from local branch
 
 ---
