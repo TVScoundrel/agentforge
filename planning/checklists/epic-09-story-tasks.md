@@ -529,7 +529,7 @@ Implementation notes:
   - `e6e03f2` `fix(st-09014): restore plan-execute warning spies and trim brittle docs`
   - `c18df1a` `docs(st-09014): clean kanban separators and baseline note`
   - `350a2bc` `fix(st-09014): make plan-execute tool boundary callable`
-  - Pending latest review-fix commit for executor timeout cleanup
+  - `224514d` `fix(st-09014): clear executor step timeout handles`
 - [ ] Wait for merge; do not merge directly from local branch
 
 ---
