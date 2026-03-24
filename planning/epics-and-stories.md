@@ -121,7 +121,7 @@
 - Story slices are intentionally small (1 day each) so quality improvements can ship continuously
 - Lightweight quality-gate follow-ups keep release/build feedback tight by reducing stale warning caps and easy package metadata warnings
 
-**Stories:** ST-09001 through ST-09028
+**Stories:** ST-09001 through ST-09029
 
 ---
 
@@ -1308,15 +1308,33 @@
 
 ---
 
+#### ST-09029: Modularize Plan-Execute Node Responsibilities
+**User story:** As a patterns maintainer, I want the plan-execute node layer split into clearer responsibility boundaries so planning, execution, replanning, and finishing logic are easier to reason about and evolve independently.
+
+**Priority:** P2 (Medium)
+**Estimate:** 4 hours
+**Dependencies:** ST-09014
+**Status:** Backlog
+
+**Acceptance criteria:**
+- [ ] `packages/patterns/src/plan-execute/nodes.ts` is split into smaller modules or helper layers that separate planner, executor, replanner, and finisher responsibilities
+- [ ] The public plan-execute node entrypoint remains stable and preserves current runtime behavior
+- [ ] Shared helpers are extracted where they reduce duplication without obscuring the control flow
+- [ ] Focused tests are added or updated for planning, execution, replanning, and node-level error handling after the split
+- [ ] Touched files do not regress on explicit-`any` warning counts and the outcome is recorded in story documentation
+- [ ] Add or update story documentation at `docs/st09029-plan-execute-node-modularization.md`
+
+---
+
 ## Story Summary
 
-**Total Stories:** 64
+**Total Stories:** 65
 **By Priority:**
 - P0 (Critical): 17 stories
 - P1 (High): 27 stories
-- P2 (Medium): 20 stories
+- P2 (Medium): 21 stories
 
-**Total Estimated Effort:** ~239 hours (29.9 working days)
+**Total Estimated Effort:** ~243 hours (30.4 working days)
 
 **Dependency Chain:**
 1. Phase 1 (Foundation): ST-01001 → ST-01002 → ST-01003 → ST-01004
@@ -1327,4 +1345,4 @@
 6. Phase 6 (Agent Skills): ST-06001 → ST-06002 → ST-06003 → ST-06004 → ST-06005 → ST-06006
 7. Phase 7 (Skills Extraction): ST-07001 → ST-07002 → [ST-07003, ST-07004 parallel] → ST-07005; ST-07001 → ST-07006 (independent)
 8. Phase 8 (Type Safety Hardening): ST-08001 → [ST-08002, ST-08003, ST-08004 parallel]
-9. Phase 9 (SOLID Micro-Refactors): ST-09001 (Merged) → ST-09002 (Merged) → ST-09003 (Merged) → ST-09004 (Merged) → ST-09005 (Merged) → ST-09006 (Merged) → ST-09007 (Merged) → ST-09008 (Merged) → ST-09009 (Merged) → ST-09010 (Merged) → ST-09011 (Merged) → ST-09012 (Merged) → ST-09013 (Merged) → [ST-09014 (In Review), ST-09016 (Ready), ST-09017 (Ready)]; ST-09014 → ST-09015; ST-09016 → ST-09018; ST-09025 → ST-09026; ST-09027 → ST-09028; [ST-09019, ST-09020, ST-09021, ST-09022, ST-09023] remain independently queueable after ST-09012; ST-09024 follows the ask-human/interrupt hardening slice after ST-09009
+9. Phase 9 (SOLID Micro-Refactors): ST-09001 (Merged) → ST-09002 (Merged) → ST-09003 (Merged) → ST-09004 (Merged) → ST-09005 (Merged) → ST-09006 (Merged) → ST-09007 (Merged) → ST-09008 (Merged) → ST-09009 (Merged) → ST-09010 (Merged) → ST-09011 (Merged) → ST-09012 (Merged) → ST-09013 (Merged) → [ST-09014 (In Review), ST-09016 (Ready), ST-09017 (Ready)]; ST-09014 → ST-09015; ST-09014 → ST-09029; ST-09016 → ST-09018; ST-09025 → ST-09026; ST-09027 → ST-09028; [ST-09019, ST-09020, ST-09021, ST-09022, ST-09023] remain independently queueable after ST-09012; ST-09024 follows the ask-human/interrupt hardening slice after ST-09009

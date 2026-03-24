@@ -817,3 +817,25 @@ Implementation notes:
 - [ ] Commit completed checklist items as logical commits and push updates
 - [ ] Mark PR Ready only after all story tasks are complete
 - [ ] Wait for merge; do not merge directly from local branch
+
+---
+
+## ST-09029: Modularize Plan-Execute Node Responsibilities
+
+**Branch:** `refactor/st-09029-plan-execute-node-modularization`
+
+### Checklist
+- [ ] Create branch `refactor/st-09029-plan-execute-node-modularization`
+- [ ] Create draft PR with story ID in title
+- [ ] Split `packages/patterns/src/plan-execute/nodes.ts` into planner, executor, replanner, and finisher modules or focused helpers
+- [ ] Preserve the public plan-execute node entrypoint and current runtime behavior
+- [ ] Extract shared helpers where they reduce duplication without obscuring control flow
+- [ ] Add/update focused tests for planning, execution, replanning, and node-level error handling
+- [ ] Record explicit-`any` warning deltas for touched files in story docs
+- [ ] Add or update story documentation at `docs/st09029-plan-execute-node-modularization.md` (or document why not required)
+- [ ] Assess test impact; add/update automated tests when needed, or document why tests are not required
+- [ ] Run full test suite before finalizing the PR and record results
+- [ ] Run lint (`pnpm lint`) before finalizing the PR and record results
+- [ ] Commit completed checklist items as logical commits and push updates
+- [ ] Mark PR Ready only after all story tasks are complete
+- [ ] Wait for merge; do not merge directly from local branch
