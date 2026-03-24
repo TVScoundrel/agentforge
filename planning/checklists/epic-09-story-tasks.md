@@ -531,7 +531,7 @@ Implementation notes:
   - `350a2bc` `fix(st-09014): make plan-execute tool boundary callable`
   - `224514d` `fix(st-09014): clear executor step timeout handles`
   - `17cd270` `docs(st-09014): align replanner threshold contract notes`
-  - Pending latest review-fix commit for stable name-based logger mocks
+  - `a781d91` `test(st-09014): stabilize logger-mock lookup by name`
 - [ ] Wait for merge; do not merge directly from local branch
 
 ---
