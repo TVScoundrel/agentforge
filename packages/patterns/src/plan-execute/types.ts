@@ -8,8 +8,13 @@
 
 import type { BaseChatModel } from '@langchain/core/language_models/chat_models';
 import type { BaseCheckpointSaver } from '@langchain/langgraph';
-import type { Tool } from '@agentforge/core';
+import type { Tool, ToolMetadata } from '@agentforge/core';
 import type { PlanExecuteStateType } from './state.js';
+
+export interface PlanExecuteTool {
+  metadata: ToolMetadata;
+  invoke: Tool<never, unknown>['invoke'];
+}
 
 /**
  * Configuration for the planner node
@@ -39,11 +44,11 @@ export interface PlannerConfig {
 /**
  * Configuration for the executor node
  */
-export interface ExecutorConfig {
+export interface ExecutorConfig<TTool extends PlanExecuteTool = PlanExecuteTool> {
   /**
    * Available tools for execution
    */
-  tools: Tool<any, any>[];
+  tools: readonly TTool[];
 
   /**
    * Optional language model for sub-tasks
@@ -91,7 +96,7 @@ export interface ReplannerConfig {
 /**
  * Configuration for creating a Plan-Execute agent
  */
-export interface PlanExecuteAgentConfig {
+export interface PlanExecuteAgentConfig<TTool extends PlanExecuteTool = PlanExecuteTool> {
   /**
    * Planner configuration
    */
@@ -100,7 +105,7 @@ export interface PlanExecuteAgentConfig {
   /**
    * Executor configuration
    */
-  executor: ExecutorConfig;
+  executor: ExecutorConfig<TTool>;
 
   /**
    * Optional replanner configuration
@@ -156,4 +161,3 @@ export type PlanExecuteRoute = 'execute' | 'replan' | 'finish' | 'error';
  * Router function type
  */
 export type PlanExecuteRouter = (state: PlanExecuteStateType) => PlanExecuteRoute;
-

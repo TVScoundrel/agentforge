@@ -8,8 +8,8 @@
 
 import { HumanMessage, SystemMessage } from '@langchain/core/messages';
 import type { PlanExecuteStateType } from './state.js';
-import type { PlannerConfig, ExecutorConfig, ReplannerConfig } from './types.js';
-import type { Plan, CompletedStep, PlanStep } from './schemas.js';
+import type { PlannerConfig, ExecutorConfig, ReplannerConfig, PlanExecuteTool } from './types.js';
+import type { Plan, CompletedStep, PlanStep, PlanStepArguments, PlanStepResult } from './schemas.js';
 import {
   DEFAULT_PLANNER_SYSTEM_PROMPT,
   DEFAULT_REPLANNER_SYSTEM_PROMPT,
@@ -29,6 +29,10 @@ import { handleNodeError } from '../shared/error-handling.js';
 const plannerLogger = createPatternLogger('agentforge:patterns:plan-execute:planner');
 const executorLogger = createPatternLogger('agentforge:patterns:plan-execute:executor');
 const replannerLogger = createPatternLogger('agentforge:patterns:plan-execute:replanner');
+
+function invokePlanExecuteTool(tool: PlanExecuteTool, args: PlanStepArguments): Promise<PlanStepResult> {
+  return (tool.invoke as (input: PlanStepArguments) => Promise<PlanStepResult>)(args);
+}
 
 /**
  * Create a planner node that generates a multi-step plan
@@ -184,7 +188,7 @@ export function createExecutorNode(config: ExecutorConfig) {
       }
 
       // Execute the step
-      let result: any;
+      let result: PlanStepResult;
       let success = true;
       let error: string | undefined;
       let isDuplicate = false;
@@ -231,7 +235,7 @@ export function createExecutorNode(config: ExecutorConfig) {
             );
 
             result = await Promise.race([
-              tool.invoke(currentStep.args || {}),
+              invokePlanExecuteTool(tool, currentStep.args || {}),
               timeoutPromise,
             ]);
 

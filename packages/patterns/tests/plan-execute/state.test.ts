@@ -87,6 +87,31 @@ describe('Plan-Execute State', () => {
       expect(result.success).toBe(true);
     });
 
+    it('should preserve flexible argument and result validation without any-typed schemas', () => {
+      const validStep = {
+        id: 'step-3',
+        description: 'Use nested tool arguments',
+        tool: 'search',
+        args: {
+          query: 'test',
+          options: {
+            filters: ['recent', 'relevant'],
+            limit: 5,
+          },
+        },
+      };
+
+      const validCompletedStep = {
+        step: validStep,
+        result: ['summary', { score: 0.9 }, null],
+        success: true,
+        timestamp: new Date().toISOString(),
+      };
+
+      expect(PlanStepSchema.safeParse(validStep).success).toBe(true);
+      expect(CompletedStepSchema.safeParse(validCompletedStep).success).toBe(true);
+    });
+
     it('should validate Plan schema', () => {
       const validPlan = {
         steps: [
@@ -142,4 +167,3 @@ describe('Plan-Execute State', () => {
     });
   });
 });
-

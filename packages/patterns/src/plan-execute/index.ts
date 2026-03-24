@@ -30,6 +30,7 @@ export type {
   ExecutorConfig,
   ReplannerConfig,
   PlanExecuteAgentConfig,
+  PlanExecuteTool,
   PlanExecuteNode,
   PlanExecuteRoute,
   PlanExecuteRouter,
@@ -43,7 +44,9 @@ export {
   ReplanDecisionSchema,
   ExecutionStatusSchema,
   type PlanStep,
+  type PlanStepArguments,
   type CompletedStep,
+  type PlanStepResult,
   type Plan,
   type ReplanDecision,
   type ExecutionStatus,
@@ -56,4 +59,3 @@ export {
   PLANNING_PROMPT_TEMPLATE,
   REPLANNING_PROMPT_TEMPLATE,
 } from './prompts.js';
-
