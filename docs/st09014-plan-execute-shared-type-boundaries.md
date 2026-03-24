@@ -35,11 +35,13 @@ Tightened the shared plan-execute contracts so the exported executor/agent confi
 - Tool execution still works with the existing `toolBuilder()` output. The runtime erasure is now expressed explicitly via the exported `PlanExecuteTool` contract instead of `any`.
 - Step arguments and completed-step results remain runtime-flexible because the Zod schemas still accept arbitrary values; the TypeScript surface is now `unknown`-based instead of `any`-based.
 - The new `contracts.typecheck.ts` file keeps the plan-execute config inference under the normal patterns package `typecheck` command, without relying on test-only files.
+- `ExecutorConfig.model`, `ExecutorConfig.parallel`, and `ReplannerConfig.replanThreshold` remain in the public config surface for now, but the runtime nodes explicitly warn that those options are currently unsupported and ignored.
 
 ## Validation
 
 - `pnpm exec tsc -p packages/patterns/tsconfig.json --noEmit`
 - `pnpm exec eslint packages/patterns/src/plan-execute/agent.ts packages/patterns/src/plan-execute/types.ts packages/patterns/src/plan-execute/nodes.ts packages/patterns/src/plan-execute/schemas.ts packages/patterns/src/plan-execute/contracts.typecheck.ts packages/patterns/tests/plan-execute/agent.test.ts packages/patterns/tests/plan-execute/state.test.ts`
+- `pnpm exec eslint packages/patterns/src/plan-execute/agent.ts packages/patterns/src/plan-execute/types.ts packages/patterns/src/plan-execute/nodes.ts packages/patterns/src/plan-execute/schemas.ts packages/patterns/src/plan-execute/contracts.typecheck.ts packages/patterns/tests/plan-execute/agent.test.ts packages/patterns/tests/plan-execute/state.test.ts packages/patterns/tests/plan-execute/nodes.test.ts`
 - `pnpm test --run packages/patterns/tests/plan-execute/agent.test.ts packages/patterns/tests/plan-execute/state.test.ts packages/patterns/tests/plan-execute/integration.test.ts` -> `19 passed`
 - `pnpm lint:explicit-any:baseline`
 - `pnpm test --run` -> `152 passed | 16 skipped` files; `2126 passed | 286 skipped` tests

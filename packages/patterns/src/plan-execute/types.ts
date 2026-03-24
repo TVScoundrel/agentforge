@@ -51,12 +51,14 @@ export interface ExecutorConfig<TTool extends PlanExecuteTool = PlanExecuteTool>
   tools: readonly TTool[];
 
   /**
-   * Optional language model for sub-tasks
+   * Optional language model for sub-tasks.
+   * Currently unsupported and ignored by the runtime executor node.
    */
   model?: BaseChatModel;
 
   /**
-   * Enable parallel execution of independent steps
+   * Enable parallel execution of independent steps.
+   * Currently unsupported and ignored by the runtime executor node.
    */
   parallel?: boolean;
 
@@ -84,6 +86,7 @@ export interface ReplannerConfig {
   /**
    * Confidence threshold for replanning (0-1)
    * If confidence is below this, trigger replanning
+   * Currently unsupported and ignored by the runtime replanner node.
    */
   replanThreshold?: number;
 

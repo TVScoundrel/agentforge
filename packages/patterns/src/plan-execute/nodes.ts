@@ -123,9 +123,21 @@ export function createPlannerNode(config: PlannerConfig) {
 export function createExecutorNode(config: ExecutorConfig) {
   const {
     tools,
+    model,
+    parallel,
     stepTimeout = 30000,
     enableDeduplication = true,
   } = config;
+
+  if (typeof model !== 'undefined') {
+    executorLogger.warn('ExecutorConfig.model is currently unsupported and will be ignored');
+  }
+
+  if (typeof parallel !== 'undefined') {
+    executorLogger.warn('ExecutorConfig.parallel is currently unsupported and will be ignored', {
+      parallel,
+    });
+  }
 
   return async (state: PlanExecuteStateType): Promise<Partial<PlanExecuteStateType>> => {
     const { plan, currentStepIndex = 0, pastSteps = [], iteration = 0 } = state;
@@ -308,8 +320,15 @@ export function createExecutorNode(config: ExecutorConfig) {
 export function createReplannerNode(config: ReplannerConfig) {
   const {
     model,
+    replanThreshold,
     systemPrompt = DEFAULT_REPLANNER_SYSTEM_PROMPT,
   } = config;
+
+  if (typeof replanThreshold !== 'undefined') {
+    replannerLogger.warn('ReplannerConfig.replanThreshold is currently unsupported and will be ignored', {
+      replanThreshold,
+    });
+  }
 
   return async (state: PlanExecuteStateType): Promise<Partial<PlanExecuteStateType>> => {
     const startTime = Date.now();

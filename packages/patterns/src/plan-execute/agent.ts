@@ -46,12 +46,10 @@ const replannerRouteMap = {
  *     maxSteps: 5
  *   },
  *   executor: {
- *     tools: [searchTool, calculatorTool],
- *     parallel: false
+ *     tools: [searchTool, calculatorTool]
  *   },
  *   replanner: {
- *     model: new ChatOpenAI({ model: 'gpt-4' }),
- *     replanThreshold: 0.7
+ *     model: new ChatOpenAI({ model: 'gpt-4' })
  *   }
  * });
  *

@@ -130,6 +130,21 @@ describe('Plan-Execute Nodes', () => {
       expect(typeof executor).toBe('function');
     });
 
+    it('should warn when unsupported executor options are provided', () => {
+      const writeSpy = vi.spyOn(process.stdout, 'write').mockImplementation(() => true);
+
+      createExecutorNode({
+        tools: [calculatorTool],
+        model: createMockPlannerLLM() as any,
+        parallel: true,
+      });
+
+      const output = writeSpy.mock.calls.map(([chunk]) => String(chunk)).join('');
+      expect(output).toContain('ExecutorConfig.model is currently unsupported and will be ignored');
+      expect(output).toContain('ExecutorConfig.parallel is currently unsupported and will be ignored');
+      expect(output).toContain('"parallel":true');
+    });
+
     it('should execute a step with a tool', async () => {
       const executor = createExecutorNode({ tools: [calculatorTool] });
 
@@ -253,6 +268,19 @@ describe('Plan-Execute Nodes', () => {
       expect(typeof replanner).toBe('function');
     });
 
+    it('should warn when replanThreshold is provided', () => {
+      const writeSpy = vi.spyOn(process.stdout, 'write').mockImplementation(() => true);
+
+      createReplannerNode({
+        model: createMockReplannerLLM() as any,
+        replanThreshold: 0.7,
+      });
+
+      const output = writeSpy.mock.calls.map(([chunk]) => String(chunk)).join('');
+      expect(output).toContain('ReplannerConfig.replanThreshold is currently unsupported and will be ignored');
+      expect(output).toContain('"replanThreshold":0.7');
+    });
+
     it('should decide to continue with current plan', async () => {
       const llm = createMockReplannerLLM(false) as any;
       const replanner = createReplannerNode({ model: llm });
@@ -330,4 +358,3 @@ describe('Plan-Execute Nodes', () => {
     });
   });
 });
-
