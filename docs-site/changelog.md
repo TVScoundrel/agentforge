@@ -5,6 +5,36 @@ All notable changes to AgentForge will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.16.1] - 2026-03-25
+
+### Added
+
+#### @agentforge/patterns - Plan-Execute Type and Runtime Regression Coverage
+- Added source-included contract regression coverage in `packages/patterns/src/plan-execute/contracts.typecheck.ts` to lock in concrete tool preservation through `ExecutorConfig` and `PlanExecuteAgentConfig`
+- Added focused plan-execute regression coverage in `packages/patterns/tests/plan-execute/state.test.ts` and `packages/patterns/tests/plan-execute/nodes.test.ts` for schema compatibility, unsupported-option warnings, and executor timeout cleanup
+
+### Changed
+
+#### @agentforge/patterns - Plan-Execute Shared Contract Boundaries
+- Reworked `packages/patterns/src/plan-execute/types.ts`, `schemas.ts`, and `agent.ts` to replace broad `Tool<any, any>[]`-style boundaries with the exported `PlanExecuteTool` contract plus generic executor and agent config typing
+- Preserved planner, executor, replanner, and finisher runtime behavior while tightening the public type surface and documenting unsupported forward-compatibility options explicitly
+
+### Fixed
+
+#### @agentforge/patterns - Plan-Execute Invocation and Timeout Safety
+- Fixed the executor tool invocation seam so bound tool methods preserve `this` correctly and the exported tool boundary remains callable without the old `never`-typed parameter confusion
+- Fixed executor timeout cleanup so successful steps clear their pending timeout handles instead of leaving timers alive until `stepTimeout` elapses
+- Reduced the workspace explicit-`any` baseline from `289` to `278`, improving the `patterns` package from `28` to `25`
+
+### Published
+- All packages published to npm registry at version 0.16.1:
+  - @agentforge/core@0.16.1
+  - @agentforge/skills@0.16.1
+  - @agentforge/patterns@0.16.1
+  - @agentforge/tools@0.16.1
+  - @agentforge/testing@0.16.1
+  - @agentforge/cli@0.16.1
+
 ## [0.16.0] - 2026-03-23
 
 ### Added
