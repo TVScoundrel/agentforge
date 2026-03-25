@@ -539,22 +539,41 @@ Implementation notes:
 
 ## ST-09015: Modularize Multi-Agent Node Responsibilities
 
-**Branch:** `refactor/st-09015-multi-agent-node-modularization`
+**Branch:** `codex/refactor/st-09015-multi-agent-node-modularization`
 
 ### Checklist
-- [ ] Create branch `refactor/st-09015-multi-agent-node-modularization`
-- [ ] Create draft PR with story ID in title
-- [ ] Split `packages/patterns/src/multi-agent/nodes.ts` into smaller modules or helper layers that mirror major node responsibilities
-- [ ] Preserve the public multi-agent node entrypoint and current runtime behavior after the split
-- [ ] Extract shared helpers where they reduce duplication without obscuring routing and handoff flow
-- [ ] Add/update focused tests for coordinator routing, handoff behavior, and node-level error handling
-- [ ] Record explicit-`any` warning deltas for touched files in story docs
-- [ ] Add or update story documentation at `docs/st09015-multi-agent-node-modularization.md` (or document why not required)
-- [ ] Assess test impact; add/update automated tests when needed, or document why tests are not required
-- [ ] Run full test suite before finalizing the PR and record results
-- [ ] Run lint (`pnpm lint`) before finalizing the PR and record results
-- [ ] Commit completed checklist items as logical commits and push updates
-- [ ] Mark PR Ready only after all story tasks are complete
+- [x] Create branch `codex/refactor/st-09015-multi-agent-node-modularization`
+- [x] Create draft PR with story ID in title
+  - Draft PR #77: https://github.com/TVScoundrel/agentforge/pull/77
+- [x] Split `packages/patterns/src/multi-agent/nodes.ts` into smaller modules or helper layers that mirror major node responsibilities
+  - Split the implementation into `nodes/supervisor.ts`, `nodes/worker.ts`, `nodes/aggregator.ts`, and `nodes/shared.ts`
+- [x] Preserve the public multi-agent node entrypoint and current runtime behavior after the split
+  - `packages/patterns/src/multi-agent/nodes.ts` remains the stable public export surface and focused multi-agent tests still exercise the public entrypoint
+- [x] Extract shared helpers where they reduce duplication without obscuring routing and handoff flow
+  - Shared helpers now centralize ID generation, assignment lookup, tool conversion, and content serialization without moving routing decisions out of the supervisor module
+- [x] Add/update focused tests for coordinator routing, handoff behavior, and node-level error handling
+  - Updated `packages/patterns/tests/multi-agent/nodes.test.ts` and added a worker handoff-state preservation regression while preserving coordinator and error-path coverage
+- [x] Record explicit-`any` warning deltas for touched files in story docs
+  - Recorded in `docs/st09015-multi-agent-node-modularization.md` (`nodes.ts`: `2 -> 0`; baseline `278 -> 276`, `patterns 25 -> 23`)
+- [x] Add or update story documentation at `docs/st09015-multi-agent-node-modularization.md` (or document why not required)
+- [x] Assess test impact; add/update automated tests when needed, or document why tests are not required
+  - Added focused automated coverage; no manual-only gap remains for the changed surface
+- [x] Run full test suite before finalizing the PR and record results
+  - `pnpm test --run` -> `152 passed | 16 skipped` files; `2130 passed | 286 skipped` tests
+- [x] Run lint (`pnpm lint`) before finalizing the PR and record results
+  - `pnpm lint` -> exit `0`; warnings only (`0` errors)
+- [x] Commit completed checklist items as logical commits and push updates
+  - `6ee3aa1` `refactor(st-09015): split multi-agent node responsibilities`
+  - `9c7ce17` `docs(st-09015): record multi-agent modularization progress`
+- [x] Mark PR Ready only after all story tasks are complete
+  - PR #77 marked ready: https://github.com/TVScoundrel/agentforge/pull/77
+- [x] Review fixes applied on the active PR branch
+  - `367ee55` `fix(st-09015): remove sensitive multi-agent log previews`
+  - `1863fa8` `fix(st-09015): remove multi-agent debug content previews`
+  - `5d68246` `docs(st-09015): restore public multi-agent node contracts`
+  - `e6fd074` `fix(st-09015): harden worker workload guards`
+  - `e9b7d5c` `fix(st-09015): rethrow multi-agent graph interrupts`
+  - `963fc60` `fix(st-09015): fail on invalid multi-agent model content`
 - [ ] Wait for merge; do not merge directly from local branch
 
 ---

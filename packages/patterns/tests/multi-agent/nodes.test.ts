@@ -11,6 +11,8 @@ import {
 import type { MultiAgentStateType } from '../../src/multi-agent/state.js';
 import type { SupervisorConfig, WorkerConfig, AggregatorConfig } from '../../src/multi-agent/types.js';
 
+class GraphInterrupt extends Error {}
+
 describe('Multi-Agent Nodes', () => {
   const mockState: MultiAgentStateType = {
     input: 'Test task',
@@ -198,21 +200,6 @@ describe('Multi-Agent Nodes', () => {
         strategy: 'round-robin',
       };
 
-      // Mock a routing strategy that returns multiple target agents
-      const mockRoutingStrategy = {
-        name: 'test-parallel',
-        route: vi.fn().mockResolvedValue({
-          targetAgent: null,
-          targetAgents: ['worker1', 'worker2'],
-          reasoning: 'Parallel execution test',
-          confidence: 1.0,
-          strategy: 'test-parallel',
-          timestamp: Date.now(),
-        }),
-      };
-
-      // We need to test this by directly calling the supervisor with a mocked strategy
-      // For now, let's test the single assignment case thoroughly
       const node = createSupervisorNode(config);
 
       // First assignment
@@ -325,6 +312,106 @@ describe('Multi-Agent Nodes', () => {
 
       expect(executeFn).toHaveBeenCalledWith(stateWithAssignment, undefined);
       expect(result.completedTasks).toHaveLength(1);
+    });
+
+    it('should fail when model content serializes to undefined', async () => {
+      const model = {
+        invoke: vi.fn().mockResolvedValue({ content: undefined }),
+      };
+
+      const config: WorkerConfig = {
+        id: 'worker1',
+        capabilities: {
+          skills: ['skill1'],
+          tools: [],
+          available: true,
+          currentWorkload: 0,
+        },
+        model: model as unknown as WorkerConfig['model'],
+      };
+
+      const stateWithAssignment: MultiAgentStateType = {
+        ...mockState,
+        workers: {
+          ...mockState.workers,
+          worker1: {
+            ...mockState.workers.worker1,
+            currentWorkload: 1,
+          },
+        },
+        activeAssignments: [{
+          id: 'task1',
+          workerId: 'worker1',
+          task: 'Test task',
+          priority: 5,
+          assignedAt: Date.now(),
+        }],
+      };
+
+      const node = createWorkerNode(config);
+      const result = await node(stateWithAssignment);
+
+      expect(result.status).toBe('routing');
+      expect(result.completedTasks?.[0]?.error).toContain(
+        'Failed to serialize model content: JSON.stringify returned undefined'
+      );
+      expect(result.workers?.worker1.currentWorkload).toBe(0);
+    });
+
+    it('should preserve handoff updates returned by custom execution functions', async () => {
+      const handoff = {
+        from: 'worker1',
+        to: 'worker2',
+        reason: 'Needs worker2 specialization',
+        context: 'Escalated task',
+        timestamp: new Date().toISOString(),
+      };
+
+      const executeFn = vi.fn().mockResolvedValue({
+        handoffs: [handoff],
+        completedTasks: [{
+          assignmentId: 'task1',
+          workerId: 'worker1',
+          success: true,
+          result: 'Escalated to worker2',
+          completedAt: Date.now(),
+        }],
+      });
+
+      const config: WorkerConfig = {
+        id: 'worker1',
+        capabilities: {
+          skills: ['skill1'],
+          tools: [],
+          available: true,
+          currentWorkload: 0,
+        },
+        executeFn,
+      };
+
+      const stateWithAssignment: MultiAgentStateType = {
+        ...mockState,
+        workers: {
+          ...mockState.workers,
+          worker1: {
+            ...mockState.workers.worker1,
+            currentWorkload: 1,
+          },
+        },
+        activeAssignments: [{
+          id: 'task1',
+          workerId: 'worker1',
+          task: 'Test task',
+          priority: 5,
+          assignedAt: Date.now(),
+        }],
+      };
+
+      const node = createWorkerNode(config);
+      const result = await node(stateWithAssignment);
+
+      expect(result.handoffs).toEqual([handoff]);
+      expect(result.workers?.worker1.currentWorkload).toBe(0);
     });
 
     it('should return to supervisor if no assignment found', async () => {
@@ -836,6 +923,19 @@ describe('Multi-Agent Nodes', () => {
       expect(result.error).toContain('Worker nonexistent-worker not found in state.workers');
       expect(result.error).toContain('Available workers: worker1, worker2');
     });
+
+    it('should rethrow GraphInterrupt from custom routing', async () => {
+      const config: SupervisorConfig = {
+        strategy: 'rule-based',
+        routingFn: async () => {
+          throw new GraphInterrupt('Pause for human routing input');
+        },
+      };
+
+      const node = createSupervisorNode(config);
+
+      await expect(node(mockState)).rejects.toBeInstanceOf(GraphInterrupt);
+    });
   });
 
   describe('Load-Balanced Routing with Workload', () => {
@@ -1009,6 +1109,48 @@ describe('Multi-Agent Nodes', () => {
       expect(result.status).toBe('failed');
       expect(result.error).toBe('Aggregation failed');
     });
+
+    it('should fail when model content cannot be serialized', async () => {
+      const circular: Record<string, unknown> = {};
+      circular.self = circular;
+      const model = {
+        invoke: vi.fn().mockResolvedValue({ content: circular }),
+      };
+
+      const config: AggregatorConfig = {
+        model: model as AggregatorConfig['model'],
+      };
+
+      const stateWithResults: MultiAgentStateType = {
+        ...mockState,
+        completedTasks: [{
+          assignmentId: 'task1',
+          workerId: 'worker1',
+          success: true,
+          result: 'Result 1',
+          completedAt: Date.now(),
+        }],
+      };
+
+      const node = createAggregatorNode(config);
+      const result = await node(stateWithResults);
+
+      expect(result.status).toBe('failed');
+      expect(result.error).toContain('circular');
+    });
+
+    it('should rethrow GraphInterrupt from custom aggregation', async () => {
+      const aggregateFn = vi.fn().mockRejectedValue(
+        new GraphInterrupt('Pause for human aggregation input')
+      );
+
+      const config: AggregatorConfig = {
+        aggregateFn,
+      };
+
+      const node = createAggregatorNode(config);
+
+      await expect(node(mockState)).rejects.toBeInstanceOf(GraphInterrupt);
+    });
   });
 });
-
