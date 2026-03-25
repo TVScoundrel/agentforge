@@ -571,6 +571,7 @@ Implementation notes:
   - `367ee55` `fix(st-09015): remove sensitive multi-agent log previews`
   - `1863fa8` `fix(st-09015): remove multi-agent debug content previews`
   - `5d68246` `docs(st-09015): restore public multi-agent node contracts`
+  - `e6fd074` `fix(st-09015): harden worker workload guards`
 - [ ] Wait for merge; do not merge directly from local branch
 
 ---
