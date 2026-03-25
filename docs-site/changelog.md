@@ -5,6 +5,37 @@ All notable changes to AgentForge will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.16.2] - 2026-03-25
+
+### Added
+
+#### @agentforge/patterns - Multi-Agent Runtime Regression Coverage
+- Added focused multi-agent regressions in `packages/patterns/tests/multi-agent/nodes.test.ts` covering interrupt propagation from custom supervisor/aggregator logic plus invalid model-content handling for worker and aggregator model execution
+- Added story documentation in `docs/st09015-multi-agent-node-modularization.md` capturing the modular split, warning delta, and the follow-up hardening fixes landed during review
+
+### Changed
+
+#### @agentforge/patterns - Multi-Agent Node Modularization
+- Split `packages/patterns/src/multi-agent/nodes.ts` behind the stable public entrypoint into focused `nodes/supervisor.ts`, `nodes/worker.ts`, `nodes/aggregator.ts`, and `nodes/shared.ts` modules
+- Preserved the public node-creator API while restoring public JSDoc contracts on the split modules and keeping coordinator, handoff, and aggregation behavior stable
+
+### Fixed
+
+#### @agentforge/patterns - Multi-Agent Safety and Contract Hardening
+- Removed sensitive task/result/response preview logging from the multi-agent node runtime and kept only metadata-level logging
+- Hardened worker workload decrement paths against missing workers and partial custom execution results, and rethrew LangGraph `GraphInterrupt` correctly from supervisor and aggregator catch paths
+- Changed multi-agent model-content serialization to fail explicitly on `undefined` or non-serializable content instead of returning placeholder success text
+- Reduced the workspace explicit-`any` baseline from `278` to `276`, improving the `patterns` package from `25` to `23`
+
+### Published
+- All packages published to npm registry at version 0.16.2:
+  - @agentforge/core@0.16.2
+  - @agentforge/skills@0.16.2
+  - @agentforge/patterns@0.16.2
+  - @agentforge/tools@0.16.2
+  - @agentforge/testing@0.16.2
+  - @agentforge/cli@0.16.2
+
 ## [0.16.1] - 2026-03-25
 
 ### Added
