@@ -57,9 +57,7 @@ export function findCurrentAssignment(
 
 export function convertWorkerToolsForLangChain(tools: WorkerConfig['tools']) {
   const safeTools = tools ?? [];
-  return toLangChainTools(
-    safeTools as unknown as Parameters<typeof toLangChainTools>[0]
-  );
+  return toLangChainTools(safeTools);
 }
 
 export function serializeModelContent(content: unknown, fallback: string): string {

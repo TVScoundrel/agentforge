@@ -56,10 +56,10 @@ async function invokeWorkerModel(
     assignmentId: assignment.id,
     resultLength: result.length,
   });
-  logger.debug('Worker result preview', {
+  logger.debug('Worker result details', {
     workerId: config.id,
     assignmentId: assignment.id,
-    resultPreview: result.substring(0, 100),
+    resultLength: result.length,
   });
 
   const taskResult: TaskResult = {
@@ -196,10 +196,10 @@ export function createWorkerNode(config: WorkerConfig) {
         assignmentId: currentAssignment.id,
         taskLength: currentAssignment.task.length,
       });
-      logger.debug('Worker assignment task preview', {
+      logger.debug('Worker assignment details', {
         workerId: id,
         assignmentId: currentAssignment.id,
-        taskPreview: currentAssignment.task.substring(0, 100),
+        taskLength: currentAssignment.task.length,
       });
 
       let executionResult: Partial<MultiAgentStateType>;
