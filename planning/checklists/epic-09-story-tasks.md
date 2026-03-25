@@ -573,6 +573,7 @@ Implementation notes:
   - `5d68246` `docs(st-09015): restore public multi-agent node contracts`
   - `e6fd074` `fix(st-09015): harden worker workload guards`
   - `e9b7d5c` `fix(st-09015): rethrow multi-agent graph interrupts`
+  - `963fc60` `fix(st-09015): fail on invalid multi-agent model content`
 - [ ] Wait for merge; do not merge directly from local branch
 
 ---
