@@ -1,13 +1,18 @@
 import type { BaseChatModel } from '@langchain/core/language_models/chat_models';
 import type { MultiAgentStateType } from '../state.js';
 import type { WorkerConfig, WorkerExecutionConfig } from '../types.js';
-import type { AgentMessage, TaskAssignment, TaskResult } from '../schemas.js';
+import type {
+  AgentMessage,
+  TaskAssignment,
+  TaskResult,
+  WorkerCapabilities,
+} from '../schemas.js';
 import { isReActAgent, wrapReActAgent } from '../utils.js';
 import { handleNodeError } from '../../shared/error-handling.js';
 import {
   convertWorkerToolsForLangChain,
   createGeneratedId,
-  createWorkerMessages,
+  createPromptMessages,
   findCurrentAssignment,
   logger,
   serializeModelContent,
@@ -30,7 +35,7 @@ async function invokeWorkerModel(
   config: WorkerConfig,
   assignment: TaskAssignment
 ): Promise<TaskResultAndMessage> {
-  const messages = createWorkerMessages(
+  const messages = createPromptMessages(
     config.systemPrompt || buildDefaultSystemPrompt(config),
     assignment.task
   );
@@ -94,29 +99,89 @@ async function invokeWorkerModel(
 
 type TaskResultAndMessage = Pick<MultiAgentStateType, 'completedTasks' | 'messages'>;
 
+function getStateWorkerOrThrow(
+  state: MultiAgentStateType,
+  workerId: string
+): MultiAgentStateType['workers'][string] {
+  const currentWorker = state.workers[workerId];
+  if (!currentWorker) {
+    logger.error('Attempted to decrement workload for unknown worker', {
+      workerId,
+      availableWorkers: Object.keys(state.workers),
+    });
+    throw new Error(`Worker "${workerId}" not found when decrementing workload.`);
+  }
+
+  return currentWorker;
+}
+
+function resolvePreviousWorkload(
+  workerId: string,
+  currentWorker: WorkerCapabilities,
+  workerFromExecution?: WorkerCapabilities
+): number {
+  const workloadFromWorker = workerFromExecution?.currentWorkload;
+  if (typeof workloadFromWorker === 'number' && Number.isFinite(workloadFromWorker)) {
+    return workloadFromWorker;
+  }
+
+  if (
+    typeof currentWorker.currentWorkload === 'number' &&
+    Number.isFinite(currentWorker.currentWorkload)
+  ) {
+    return currentWorker.currentWorkload;
+  }
+
+  logger.error('Worker workload is not a valid number; cannot decrement', {
+    workerId,
+    workloadFromState: currentWorker.currentWorkload,
+    ...(typeof workloadFromWorker === 'number'
+      ? { workloadFromWorker }
+      : {}),
+  });
+  throw new Error(
+    `Worker "${workerId}" does not have a valid numeric currentWorkload to decrement.`
+  );
+}
+
 function mergeWorkersWithDecrement(
   state: MultiAgentStateType,
   workerId: string,
   executionResult: Partial<MultiAgentStateType>
 ): MultiAgentStateType['workers'] {
-  const currentWorker = state.workers[workerId];
+  const currentWorker = getStateWorkerOrThrow(state, workerId);
+  const executionResultWorkers = executionResult.workers || {};
   const baseWorkers = {
     ...state.workers,
-    ...(executionResult.workers || {}),
+    ...executionResultWorkers,
   };
-  const workerToUpdate = baseWorkers[workerId] || currentWorker;
+  const workerFromExecution = executionResultWorkers[workerId];
+  const previousWorkload = resolvePreviousWorkload(
+    workerId,
+    currentWorker,
+    workerFromExecution
+  );
+  const hasWorkerOverride =
+    typeof workerFromExecution === 'object' && workerFromExecution !== null;
+  const updatedWorker = hasWorkerOverride
+    ? {
+        ...currentWorker,
+        ...workerFromExecution,
+        currentWorkload: Math.max(0, previousWorkload - 1),
+      }
+    : {
+        ...currentWorker,
+        currentWorkload: Math.max(0, previousWorkload - 1),
+      };
 
   const updatedWorkers = {
     ...baseWorkers,
-    [workerId]: {
-      ...workerToUpdate,
-      currentWorkload: Math.max(0, workerToUpdate.currentWorkload - 1),
-    },
+    [workerId]: updatedWorker,
   };
 
   logger.debug('Worker workload decremented', {
     workerId,
-    previousWorkload: workerToUpdate.currentWorkload,
+    previousWorkload,
     newWorkload: updatedWorkers[workerId].currentWorkload,
     hadExecutionResultWorkers: !!executionResult.workers,
   });
@@ -128,18 +193,19 @@ function decrementWorkerOnError(
   state: MultiAgentStateType,
   workerId: string
 ): MultiAgentStateType['workers'] {
-  const currentWorker = state.workers[workerId];
+  const currentWorker = getStateWorkerOrThrow(state, workerId);
+  const previousWorkload = resolvePreviousWorkload(workerId, currentWorker);
   const updatedWorkers = {
     ...state.workers,
     [workerId]: {
       ...currentWorker,
-      currentWorkload: Math.max(0, currentWorker.currentWorkload - 1),
+      currentWorkload: Math.max(0, previousWorkload - 1),
     },
   };
 
   logger.debug('Worker workload decremented (error path)', {
     workerId,
-    previousWorkload: currentWorker.currentWorkload,
+    previousWorkload,
     newWorkload: updatedWorkers[workerId].currentWorkload,
   });
 
@@ -251,7 +317,21 @@ export function createWorkerNode(config: WorkerConfig) {
         error: errorMessage,
       });
 
-      const updatedWorkers = decrementWorkerOnError(state, id);
+      let updatedWorkers: MultiAgentStateType['workers'];
+      try {
+        updatedWorkers = decrementWorkerOnError(state, id);
+      } catch (workloadError) {
+        const workloadErrorMessage =
+          workloadError instanceof Error ? workloadError.message : String(workloadError);
+        logger.error('Worker error handling failed', {
+          workerId: id,
+          error: workloadErrorMessage,
+        });
+        return {
+          status: 'failed',
+          error: `${errorMessage}. ${workloadErrorMessage}`,
+        };
+      }
       const currentAssignment = state.activeAssignments.find(
         (assignment) => assignment.workerId === id
       );

@@ -1,6 +1,6 @@
 import type { AggregatorConfig } from '../types.js';
 import type { MultiAgentStateType } from '../state.js';
-import { createWorkerMessages, logger, serializeModelContent } from './shared.js';
+import { createPromptMessages, logger, serializeModelContent } from './shared.js';
 
 export const DEFAULT_AGGREGATOR_SYSTEM_PROMPT = `You are an aggregator agent responsible for combining results from multiple worker agents.
 
@@ -100,7 +100,7 @@ export function createAggregatorNode(config: AggregatorConfig = {}) {
         taskCount: state.completedTasks.length,
       });
 
-      const messages = createWorkerMessages(systemPrompt, createAggregationPrompt(state));
+      const messages = createPromptMessages(systemPrompt, createAggregationPrompt(state));
 
       logger.debug('Invoking aggregation LLM');
       const response = await model.invoke(messages);

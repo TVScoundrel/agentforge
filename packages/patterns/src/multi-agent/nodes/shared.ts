@@ -73,8 +73,10 @@ export function serializeModelContent(content: unknown, fallback: string): strin
   }
 }
 
-export function createWorkerMessages(systemPrompt: string, task: string) {
+export function createPromptMessages(systemPrompt: string, task: string) {
   return [new SystemMessage(systemPrompt), new HumanMessage(task)];
 }
+
+export const createWorkerMessages = createPromptMessages;
 
 export type WorkerTool = Tool<never, unknown>;
