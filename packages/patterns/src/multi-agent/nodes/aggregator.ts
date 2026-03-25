@@ -97,6 +97,9 @@ export function createAggregatorNode(config: AggregatorConfig = {}) {
 
       logger.info('Aggregation complete', {
         responseLength: aggregatedResponse.length,
+      });
+      logger.debug('Aggregation response preview', {
+        responseLength: aggregatedResponse.length,
         responsePreview: aggregatedResponse.substring(0, 100),
       });
 

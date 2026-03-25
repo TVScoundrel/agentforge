@@ -317,7 +317,7 @@ describe('Multi-Agent Nodes', () => {
         from: 'worker1',
         to: 'worker2',
         reason: 'Needs worker2 specialization',
-        task: 'Escalated task',
+        context: 'Escalated task',
         timestamp: new Date().toISOString(),
       };
 

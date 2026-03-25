@@ -55,6 +55,10 @@ async function invokeWorkerModel(
     workerId: config.id,
     assignmentId: assignment.id,
     resultLength: result.length,
+  });
+  logger.debug('Worker result preview', {
+    workerId: config.id,
+    assignmentId: assignment.id,
     resultPreview: result.substring(0, 100),
   });
 
@@ -191,6 +195,10 @@ export function createWorkerNode(config: WorkerConfig) {
         workerId: id,
         assignmentId: currentAssignment.id,
         taskLength: currentAssignment.task.length,
+      });
+      logger.debug('Worker assignment task preview', {
+        workerId: id,
+        assignmentId: currentAssignment.id,
         taskPreview: currentAssignment.task.substring(0, 100),
       });
 
