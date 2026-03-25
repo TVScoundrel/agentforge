@@ -572,6 +572,7 @@ Implementation notes:
   - `1863fa8` `fix(st-09015): remove multi-agent debug content previews`
   - `5d68246` `docs(st-09015): restore public multi-agent node contracts`
   - `e6fd074` `fix(st-09015): harden worker workload guards`
+  - `e9b7d5c` `fix(st-09015): rethrow multi-agent graph interrupts`
 - [ ] Wait for merge; do not merge directly from local branch
 
 ---
