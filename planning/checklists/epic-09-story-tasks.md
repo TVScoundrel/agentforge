@@ -569,6 +569,7 @@ Implementation notes:
   - PR #77 marked ready: https://github.com/TVScoundrel/agentforge/pull/77
 - [x] Review fixes applied on the active PR branch
   - `367ee55` `fix(st-09015): remove sensitive multi-agent log previews`
+  - `1863fa8` `fix(st-09015): remove multi-agent debug content previews`
 - [ ] Wait for merge; do not merge directly from local branch
 
 ---
