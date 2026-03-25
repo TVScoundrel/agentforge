@@ -198,21 +198,6 @@ describe('Multi-Agent Nodes', () => {
         strategy: 'round-robin',
       };
 
-      // Mock a routing strategy that returns multiple target agents
-      const mockRoutingStrategy = {
-        name: 'test-parallel',
-        route: vi.fn().mockResolvedValue({
-          targetAgent: null,
-          targetAgents: ['worker1', 'worker2'],
-          reasoning: 'Parallel execution test',
-          confidence: 1.0,
-          strategy: 'test-parallel',
-          timestamp: Date.now(),
-        }),
-      };
-
-      // We need to test this by directly calling the supervisor with a mocked strategy
-      // For now, let's test the single assignment case thoroughly
       const node = createSupervisorNode(config);
 
       // First assignment
@@ -325,6 +310,62 @@ describe('Multi-Agent Nodes', () => {
 
       expect(executeFn).toHaveBeenCalledWith(stateWithAssignment, undefined);
       expect(result.completedTasks).toHaveLength(1);
+    });
+
+    it('should preserve handoff updates returned by custom execution functions', async () => {
+      const handoff = {
+        from: 'worker1',
+        to: 'worker2',
+        reason: 'Needs worker2 specialization',
+        task: 'Escalated task',
+        timestamp: new Date().toISOString(),
+      };
+
+      const executeFn = vi.fn().mockResolvedValue({
+        handoffs: [handoff],
+        completedTasks: [{
+          assignmentId: 'task1',
+          workerId: 'worker1',
+          success: true,
+          result: 'Escalated to worker2',
+          completedAt: Date.now(),
+        }],
+      });
+
+      const config: WorkerConfig = {
+        id: 'worker1',
+        capabilities: {
+          skills: ['skill1'],
+          tools: [],
+          available: true,
+          currentWorkload: 0,
+        },
+        executeFn,
+      };
+
+      const stateWithAssignment: MultiAgentStateType = {
+        ...mockState,
+        workers: {
+          ...mockState.workers,
+          worker1: {
+            ...mockState.workers.worker1,
+            currentWorkload: 1,
+          },
+        },
+        activeAssignments: [{
+          id: 'task1',
+          workerId: 'worker1',
+          task: 'Test task',
+          priority: 5,
+          assignedAt: Date.now(),
+        }],
+      };
+
+      const node = createWorkerNode(config);
+      const result = await node(stateWithAssignment);
+
+      expect(result.handoffs).toEqual([handoff]);
+      expect(result.workers?.worker1.currentWorkload).toBe(0);
     });
 
     it('should return to supervisor if no assignment found', async () => {
@@ -1011,4 +1052,3 @@ describe('Multi-Agent Nodes', () => {
     });
   });
 });
-

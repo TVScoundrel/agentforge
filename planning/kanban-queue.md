@@ -4,8 +4,8 @@
 
 ## Queue Status Summary
 
-- **Ready:** 4 stories
-- **In Progress:** 0 stories
+- **Ready:** 3 stories
+- **In Progress:** 1 story
 - **In Review:** 0 stories
 - **Blocked:** 0 stories
 - **Backlog:** 11 stories
@@ -14,7 +14,6 @@
 
 ## Ready
 
-- `ST-09015` - Modularize Multi-Agent Node Responsibilities
 - `ST-09016` - Harden Monitoring Audit and Health Payload Types
 - `ST-09017` - Centralize CLI Command Error Handling
 - `ST-09029` - Modularize Plan-Execute Node Responsibilities
@@ -29,7 +28,7 @@ _No stories currently in review_
 
 ## In Progress
 
-_No stories currently in progress_
+- `ST-09015` - Modularize Multi-Agent Node Responsibilities
 
 ---
 

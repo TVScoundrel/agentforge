@@ -539,10 +539,10 @@ Implementation notes:
 
 ## ST-09015: Modularize Multi-Agent Node Responsibilities
 
-**Branch:** `refactor/st-09015-multi-agent-node-modularization`
+**Branch:** `codex/refactor/st-09015-multi-agent-node-modularization`
 
 ### Checklist
-- [ ] Create branch `refactor/st-09015-multi-agent-node-modularization`
+- [x] Create branch `codex/refactor/st-09015-multi-agent-node-modularization`
 - [ ] Create draft PR with story ID in title
 - [ ] Split `packages/patterns/src/multi-agent/nodes.ts` into smaller modules or helper layers that mirror major node responsibilities
 - [ ] Preserve the public multi-agent node entrypoint and current runtime behavior after the split
