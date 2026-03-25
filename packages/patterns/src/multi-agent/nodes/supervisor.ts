@@ -43,6 +43,16 @@ function incrementAssignedWorkerLoads(
   return updatedWorkers;
 }
 
+/**
+ * Creates the supervisor node for the multi-agent workflow.
+ *
+ * The supervisor owns orchestration concerns: it enforces `maxIterations`,
+ * chooses the next worker or workers through the configured routing strategy,
+ * increments framework-managed `currentWorkload` counters for each new
+ * assignment, and routes to the aggregator once all active assignments have
+ * completed. Routing strategies may return a single `targetAgent` or multiple
+ * `targetAgents` for parallel fan-out.
+ */
 export function createSupervisorNode(config: SupervisorConfig) {
   const { strategy, maxIterations = 10 } = config;
 

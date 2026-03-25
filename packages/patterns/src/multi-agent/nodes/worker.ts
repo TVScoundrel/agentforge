@@ -166,6 +166,17 @@ function createErrorTaskResult(
   };
 }
 
+/**
+ * Creates a worker node for the multi-agent workflow.
+ *
+ * Worker workload is framework-managed. The node decrements
+ * `state.workers[workerId].currentWorkload` after either a successful execution
+ * result or an error result, so custom `executeFn` implementations should not
+ * adjust workloads themselves. Custom execution results are merged into the
+ * returned partial state first, then the decremented worker snapshot is applied
+ * on top to keep handoff and worker state updates while preserving workload
+ * ownership inside the framework.
+ */
 export function createWorkerNode(config: WorkerConfig) {
   const { id, model, executeFn, agent } = config;
 

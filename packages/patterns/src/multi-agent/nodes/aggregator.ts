@@ -29,6 +29,17 @@ ${taskResults}
 Please synthesize these results into a comprehensive response that addresses the original query.`;
 }
 
+/**
+ * Creates the aggregator node for the multi-agent workflow.
+ *
+ * Aggregation precedence is:
+ * 1. `aggregateFn` when provided
+ * 2. `model`-based synthesis when no custom aggregator is configured
+ * 3. simple concatenation of successful worker results as a fallback
+ *
+ * The node always returns a partial state with `status: 'completed'` on
+ * success, or `status: 'failed'` plus an error message when aggregation fails.
+ */
 export function createAggregatorNode(config: AggregatorConfig = {}) {
   const {
     model,
