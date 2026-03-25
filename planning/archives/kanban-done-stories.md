@@ -8,6 +8,13 @@
 
 ## Completed Stories
 
+### ST-09015: Modularize Multi-Agent Node Responsibilities
+- **Merged:** 2026-03-25
+- **PR:** https://github.com/TVScoundrel/agentforge/pull/77 (commit 3d5ac9a)
+- **Epic:** EP-09 (SOLID Micro-Refactors and Type Boundary Hardening)
+- **Estimate:** 4 hours
+- **Outcome:** Split the multi-agent node runtime into focused supervisor, worker, aggregator, and shared helper modules behind the stable public entrypoint, preserved coordinator and handoff behavior, and folded in follow-up fixes for log redaction, public JSDoc contracts, worker workload invariants, GraphInterrupt propagation, and explicit failure on invalid model content.
+
 ### ST-09014: Tighten Plan-Execute Shared Type Boundaries
 - **Merged:** 2026-03-24
 - **PR:** https://github.com/TVScoundrel/agentforge/pull/76 (commit 5913b74)
