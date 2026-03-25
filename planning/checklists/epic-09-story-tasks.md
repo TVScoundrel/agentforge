@@ -567,6 +567,8 @@ Implementation notes:
   - `9c7ce17` `docs(st-09015): record multi-agent modularization progress`
 - [x] Mark PR Ready only after all story tasks are complete
   - PR #77 marked ready: https://github.com/TVScoundrel/agentforge/pull/77
+- [x] Review fixes applied on the active PR branch
+  - `367ee55` `fix(st-09015): remove sensitive multi-agent log previews`
 - [ ] Wait for merge; do not merge directly from local branch
 
 ---
