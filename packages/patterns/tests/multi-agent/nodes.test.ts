@@ -314,6 +314,50 @@ describe('Multi-Agent Nodes', () => {
       expect(result.completedTasks).toHaveLength(1);
     });
 
+    it('should fail when model content serializes to undefined', async () => {
+      const model = {
+        invoke: vi.fn().mockResolvedValue({ content: undefined }),
+      };
+
+      const config: WorkerConfig = {
+        id: 'worker1',
+        capabilities: {
+          skills: ['skill1'],
+          tools: [],
+          available: true,
+          currentWorkload: 0,
+        },
+        model: model as unknown as WorkerConfig['model'],
+      };
+
+      const stateWithAssignment: MultiAgentStateType = {
+        ...mockState,
+        workers: {
+          ...mockState.workers,
+          worker1: {
+            ...mockState.workers.worker1,
+            currentWorkload: 1,
+          },
+        },
+        activeAssignments: [{
+          id: 'task1',
+          workerId: 'worker1',
+          task: 'Test task',
+          priority: 5,
+          assignedAt: Date.now(),
+        }],
+      };
+
+      const node = createWorkerNode(config);
+      const result = await node(stateWithAssignment);
+
+      expect(result.status).toBe('routing');
+      expect(result.completedTasks?.[0]?.error).toContain(
+        'Failed to serialize model content: JSON.stringify returned undefined'
+      );
+      expect(result.workers?.worker1.currentWorkload).toBe(0);
+    });
+
     it('should preserve handoff updates returned by custom execution functions', async () => {
       const handoff = {
         from: 'worker1',
@@ -1064,6 +1108,35 @@ describe('Multi-Agent Nodes', () => {
 
       expect(result.status).toBe('failed');
       expect(result.error).toBe('Aggregation failed');
+    });
+
+    it('should fail when model content cannot be serialized', async () => {
+      const circular: Record<string, unknown> = {};
+      circular.self = circular;
+      const model = {
+        invoke: vi.fn().mockResolvedValue({ content: circular }),
+      };
+
+      const config: AggregatorConfig = {
+        model: model as AggregatorConfig['model'],
+      };
+
+      const stateWithResults: MultiAgentStateType = {
+        ...mockState,
+        completedTasks: [{
+          assignmentId: 'task1',
+          workerId: 'worker1',
+          success: true,
+          result: 'Result 1',
+          completedAt: Date.now(),
+        }],
+      };
+
+      const node = createAggregatorNode(config);
+      const result = await node(stateWithResults);
+
+      expect(result.status).toBe('failed');
+      expect(result.error).toContain('circular');
     });
 
     it('should rethrow GraphInterrupt from custom aggregation', async () => {

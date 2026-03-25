@@ -105,7 +105,7 @@ export function createAggregatorNode(config: AggregatorConfig = {}) {
 
       logger.debug('Invoking aggregation LLM');
       const response = await model.invoke(messages);
-      const aggregatedResponse = serializeModelContent(response.content, 'No response');
+      const aggregatedResponse = serializeModelContent(response.content);
 
       logger.info('Aggregation complete', {
         responseLength: aggregatedResponse.length,

@@ -54,7 +54,7 @@ async function invokeWorkerModel(
 
   logger.debug('Invoking LLM', { workerId: config.id });
   const response = await modelToUse.invoke(messages);
-  const result = serializeModelContent(response.content, 'No response');
+  const result = serializeModelContent(response.content);
 
   logger.info('Worker task completed', {
     workerId: config.id,

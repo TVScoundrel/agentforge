@@ -60,16 +60,35 @@ export function convertWorkerToolsForLangChain(tools: WorkerConfig['tools']) {
   return toLangChainTools(safeTools);
 }
 
-export function serializeModelContent(content: unknown, fallback: string): string {
+export function serializeModelContent(content: unknown): string {
   if (typeof content === 'string') {
     return content;
   }
 
   try {
     const serialized = JSON.stringify(content);
-    return typeof serialized === 'string' ? serialized : fallback;
-  } catch {
-    return fallback;
+    if (typeof serialized !== 'string') {
+      const error = new Error(
+        'Failed to serialize model content: JSON.stringify returned undefined'
+      );
+      logger.error('Model content serialization failed', {
+        errorMessage: error.message,
+        contentType: content === null ? 'null' : typeof content,
+      });
+      throw error;
+    }
+
+    return serialized;
+  } catch (error) {
+    const normalizedError =
+      error instanceof Error
+        ? error
+        : new Error('Unknown error during model content serialization');
+    logger.error('Model content serialization threw an error', {
+      errorMessage: normalizedError.message,
+      contentType: content === null ? 'null' : typeof content,
+    });
+    throw normalizedError;
   }
 }
 
