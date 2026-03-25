@@ -3,7 +3,7 @@
 **Epic Range:** EP-09 through EP-09
 **Status:** In Progress
 **Last Updated:** 2026-03-25
-**Active Story:** ST-09015 (In Progress)
+**Active Story:** ST-09015 (In Review)
 
 ---
 
@@ -41,7 +41,7 @@ Top runtime hotspots informing this feature slice:
 
 1. `packages/core/src/langgraph/builders/sequential.ts` still carries an easy schema/edge `any` boundary that mirrors the already-completed parallel builder cleanup
 2. `packages/patterns/src/plan-execute/types.ts` still exposes a small but high-leverage `Tool<any, any>[]` boundary in active EP-09 code
-3. `packages/patterns/src/multi-agent/nodes.ts` remains a large mixed-responsibility module (`632` lines) and is a clear modularization candidate
+3. `packages/patterns/src/multi-agent/nodes.ts` was the next large mixed-responsibility modularization target and is now in review after being split behind the stable public entrypoint
 4. `packages/core/src/monitoring/audit.ts` and `packages/core/src/monitoring/health.ts` still expose broad payload `any` fields in released monitoring contracts
 5. `packages/cli/src/commands/**` still repeat command-level `catch (error: any)` handling in multiple entrypoints
 6. `packages/testing/src/helpers/assertions.ts` and `packages/testing/src/helpers/state-builder.ts` still concentrate a large share of the remaining `testing` package `any` warnings
@@ -62,6 +62,7 @@ Recent improvement snapshot:
 - `ST-09012` removed the remaining `exports.types` ordering warnings from `@agentforge/skills`, `@agentforge/tools`, and `@agentforge/testing`, quieting the routine build output without changing published entrypoint targets.
 - `ST-09013` merged with an intentional breaking tightening to the sequential workflow builder contract: explicit state generics were removed, and downstream callers must rely on schema-derived inference from `Annotation.Root(...)`.
 - `ST-09014` merged after tightening the shared plan-execute tool and schema boundaries, lowering the workspace explicit-`any` baseline from `289` to `278` and the `patterns` package from `28` to `25`.
+- `ST-09015` moved to review after splitting the multi-agent node runtime into focused supervisor, worker, aggregator, and shared helper modules, lowering the workspace explicit-`any` baseline from `278` to `276` and the `patterns` package from `25` to `23`.
 - `EP-09` remains open as the daily hardening stream, with the next follow-on slice targeting monitoring payloads, CLI error handling, testing helpers, multi-agent modularization, and plan-execute node modularization.
 - A second follow-on slice is now queued for prompt loading, reflection routing, streaming websocket contracts, shared deduplication helpers, core tool builder typing, interrupt contracts, and split-out registry/connection-manager modularization.
 

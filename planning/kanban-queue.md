@@ -5,8 +5,8 @@
 ## Queue Status Summary
 
 - **Ready:** 3 stories
-- **In Progress:** 1 story
-- **In Review:** 0 stories
+- **In Progress:** 0 stories
+- **In Review:** 1 story
 - **Blocked:** 0 stories
 - **Backlog:** 11 stories
 
@@ -22,13 +22,13 @@
 
 ## In Review
 
-_No stories currently in review_
+- `ST-09015` - Modularize Multi-Agent Node Responsibilities
 
 ---
 
 ## In Progress
 
-- `ST-09015` - Modularize Multi-Agent Node Responsibilities
+_No stories currently in progress_
 
 ---
 
