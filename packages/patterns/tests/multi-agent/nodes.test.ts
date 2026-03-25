@@ -11,6 +11,8 @@ import {
 import type { MultiAgentStateType } from '../../src/multi-agent/state.js';
 import type { SupervisorConfig, WorkerConfig, AggregatorConfig } from '../../src/multi-agent/types.js';
 
+class GraphInterrupt extends Error {}
+
 describe('Multi-Agent Nodes', () => {
   const mockState: MultiAgentStateType = {
     input: 'Test task',
@@ -877,6 +879,19 @@ describe('Multi-Agent Nodes', () => {
       expect(result.error).toContain('Worker nonexistent-worker not found in state.workers');
       expect(result.error).toContain('Available workers: worker1, worker2');
     });
+
+    it('should rethrow GraphInterrupt from custom routing', async () => {
+      const config: SupervisorConfig = {
+        strategy: 'rule-based',
+        routingFn: async () => {
+          throw new GraphInterrupt('Pause for human routing input');
+        },
+      };
+
+      const node = createSupervisorNode(config);
+
+      await expect(node(mockState)).rejects.toBeInstanceOf(GraphInterrupt);
+    });
   });
 
   describe('Load-Balanced Routing with Workload', () => {
@@ -1049,6 +1064,20 @@ describe('Multi-Agent Nodes', () => {
 
       expect(result.status).toBe('failed');
       expect(result.error).toBe('Aggregation failed');
+    });
+
+    it('should rethrow GraphInterrupt from custom aggregation', async () => {
+      const aggregateFn = vi.fn().mockRejectedValue(
+        new GraphInterrupt('Pause for human aggregation input')
+      );
+
+      const config: AggregatorConfig = {
+        aggregateFn,
+      };
+
+      const node = createAggregatorNode(config);
+
+      await expect(node(mockState)).rejects.toBeInstanceOf(GraphInterrupt);
     });
   });
 });

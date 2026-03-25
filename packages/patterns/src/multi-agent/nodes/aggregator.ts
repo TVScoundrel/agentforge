@@ -1,5 +1,6 @@
 import type { AggregatorConfig } from '../types.js';
 import type { MultiAgentStateType } from '../state.js';
+import { handleNodeError } from '../../shared/error-handling.js';
 import { createPromptMessages, logger, serializeModelContent } from './shared.js';
 
 export const DEFAULT_AGGREGATOR_SYSTEM_PROMPT = `You are an aggregator agent responsible for combining results from multiple worker agents.
@@ -120,14 +121,15 @@ export function createAggregatorNode(config: AggregatorConfig = {}) {
         status: 'completed',
       };
     } catch (error) {
+      const errorMessage = handleNodeError(error, 'aggregator', false);
       logger.error('Aggregator node error', {
-        error: error instanceof Error ? error.message : String(error),
+        error: errorMessage,
         ...(error instanceof Error && error.stack ? { stack: error.stack } : {}),
         completedTasks: state.completedTasks.length,
       });
       return {
         status: 'failed',
-        error: error instanceof Error ? error.message : 'Unknown error in aggregator',
+        error: errorMessage,
       };
     }
   };

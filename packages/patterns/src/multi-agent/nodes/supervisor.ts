@@ -2,6 +2,7 @@ import type { MultiAgentStateType } from '../state.js';
 import type { SupervisorConfig } from '../types.js';
 import type { TaskAssignment } from '../schemas.js';
 import { getRoutingStrategy } from '../routing.js';
+import { handleNodeError } from '../../shared/error-handling.js';
 import {
   createAssignmentMessages,
   createTaskAssignments,
@@ -181,14 +182,15 @@ export function createSupervisorNode(config: SupervisorConfig) {
         iteration: 1,
       };
     } catch (error) {
+      const errorMessage = handleNodeError(error, 'supervisor', false);
       logger.error('Supervisor node error', {
-        error: error instanceof Error ? error.message : String(error),
+        error: errorMessage,
         ...(error instanceof Error && error.stack ? { stack: error.stack } : {}),
         iteration: state.iteration,
       });
       return {
         status: 'failed',
-        error: error instanceof Error ? error.message : 'Unknown error in supervisor',
+        error: errorMessage,
       };
     }
   };
