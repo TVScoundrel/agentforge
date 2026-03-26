@@ -146,11 +146,14 @@ describe('monitoring payload contracts', () => {
     });
 
     checker.start();
-    await vi.waitFor(() => {
-      const output = writeSpy.mock.calls.map(([chunk]) => String(chunk)).join('');
-      expect(output).toContain('Initial health check failed');
-      expect(output).toContain('startup failure');
-    });
-    checker.stop();
+    try {
+      await vi.waitFor(() => {
+        const output = writeSpy.mock.calls.map(([chunk]) => String(chunk)).join('');
+        expect(output).toContain('Initial health check failed');
+        expect(output).toContain('startup failure');
+      });
+    } finally {
+      checker.stop();
+    }
   });
 });
