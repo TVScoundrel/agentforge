@@ -581,21 +581,29 @@ Implementation notes:
 
 ## ST-09016: Harden Monitoring Audit and Health Payload Types
 
-**Branch:** `fix/st-09016-monitoring-payload-type-hardening`
+**Branch:** `codex/fix/st-09016-monitoring-payload-type-hardening`
 
 ### Checklist
-- [ ] Create branch `fix/st-09016-monitoring-payload-type-hardening`
-- [ ] Create draft PR with story ID in title
-- [ ] Replace broad payload `any` fields in `packages/core/src/monitoring/audit.ts` and `packages/core/src/monitoring/health.ts` with safer contracts
-- [ ] Preserve current monitoring runtime behavior and public compatibility while tightening audit/health payload typing
-- [ ] Add/update focused tests for audit event serialization and health metadata handling
-- [ ] Record explicit-`any` warning deltas for touched files in story docs
-- [ ] Add or update story documentation at `docs/st09016-monitoring-payload-type-hardening.md` (or document why not required)
-- [ ] Assess test impact; add/update automated tests when needed, or document why tests are not required
-- [ ] Run full test suite before finalizing the PR and record results
-- [ ] Run lint (`pnpm lint`) before finalizing the PR and record results
-- [ ] Commit completed checklist items as logical commits and push updates
-- [ ] Mark PR Ready only after all story tasks are complete
+- [x] Create branch `codex/fix/st-09016-monitoring-payload-type-hardening`
+- [x] Create draft PR with story ID in title
+  - PR #78 (draft): https://github.com/TVScoundrel/agentforge/pull/78
+- [x] Replace broad payload `any` fields in `packages/core/src/monitoring/audit.ts` and `packages/core/src/monitoring/health.ts` with safer contracts
+- [x] Preserve current monitoring runtime behavior and public compatibility while tightening audit/health payload typing
+- [x] Add/update focused tests for audit event serialization and health metadata handling
+- [x] Record explicit-`any` warning deltas for touched files in story docs
+- [x] Add or update story documentation at `docs/st09016-monitoring-payload-type-hardening.md` (or document why not required)
+- [x] Assess test impact; add/update automated tests when needed, or document why tests are not required
+- [x] Run full test suite before finalizing the PR and record results
+  - `pnpm test --run` -> `153 passed | 16 skipped` files; `2137 passed | 286 skipped` tests
+- [x] Run lint (`pnpm lint`) before finalizing the PR and record results
+  - `pnpm lint` -> exit `0`; warnings only (`0` errors)
+- [x] Commit completed checklist items as logical commits and push updates
+  - `c4d11f6` `fix(st-09016): harden monitoring payload contracts`
+  - `388e2be` `docs(st-09016): record validation and move story to in-review`
+- [x] Mark PR Ready only after all story tasks are complete
+  - PR #78 marked ready: https://github.com/TVScoundrel/agentforge/pull/78
+- [x] Review fixes applied on the active PR branch
+  - `a894d45` `fix(st-09016): preserve explicit falsy audit payloads`
 - [ ] Wait for merge; do not merge directly from local branch
 
 ---

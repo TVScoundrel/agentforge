@@ -2,15 +2,17 @@
  * Audit logging for compliance and tracking
  */
 
+import type { JsonObject, JsonValue } from '../langgraph/observability/payload.js';
+
 export interface AuditLogEntry {
   id?: string;
   userId: string;
   action: string;
   resource: string;
   timestamp?: number;
-  input?: any;
-  output?: any;
-  metadata?: Record<string, any>;
+  input?: JsonValue;
+  output?: JsonValue;
+  metadata?: JsonObject;
   success?: boolean;
   error?: string;
 }
@@ -28,7 +30,7 @@ export interface AuditLogQuery {
 export interface AuditLoggerOptions {
   storage?: {
     type: 'memory' | 'database' | 'file';
-    config?: Record<string, any>;
+    config?: JsonObject;
   };
   retention?: {
     days: number;
@@ -61,7 +63,7 @@ export class AuditLogger {
     const fullEntry: AuditLogEntry = {
       ...entry,
       id: this.generateId(),
-      timestamp: entry.timestamp || Date.now(),
+      timestamp: entry.timestamp ?? Date.now(),
       success: entry.success ?? true,
     };
 
@@ -75,11 +77,11 @@ export class AuditLogger {
       timestamp: fields.timestamp !== false ? fullEntry.timestamp : undefined,
     };
 
-    if (fields.input !== false && fullEntry.input) {
+    if (fields.input !== false && fullEntry.input !== undefined) {
       filteredEntry.input = fullEntry.input;
     }
 
-    if (fields.output !== false && fullEntry.output) {
+    if (fields.output !== false && fullEntry.output !== undefined) {
       filteredEntry.output = fullEntry.output;
     }
 
@@ -207,4 +209,3 @@ export class AuditLogger {
 export function createAuditLogger(options?: AuditLoggerOptions): AuditLogger {
   return new AuditLogger(options);
 }
-
