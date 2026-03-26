@@ -603,6 +603,7 @@ Implementation notes:
 - [x] Mark PR Ready only after all story tasks are complete
   - PR #78 marked ready: https://github.com/TVScoundrel/agentforge/pull/78
 - [x] Review fixes applied on the active PR branch
+  - `a894d45` `fix(st-09016): preserve explicit falsy audit payloads`
 - [ ] Wait for merge; do not merge directly from local branch
 
 ---

@@ -2,7 +2,10 @@
  * Health check system for production monitoring
  */
 
+import { createLogger, LogLevel } from '../langgraph/observability/logger.js';
 import type { JsonObject } from '../langgraph/observability/payload.js';
+
+const logger = createLogger('agentforge:core:monitoring:health', { level: LogLevel.INFO });
 
 export type HealthStatus = 'healthy' | 'unhealthy' | 'degraded';
 
@@ -54,13 +57,19 @@ export class HealthChecker {
 
     // Run initial check
     this.runChecks().catch((error) => {
-      console.error('Initial health check failed:', error);
+      logger.error('Initial health check failed', {
+        error: error instanceof Error ? error.message : String(error),
+        ...(error instanceof Error && error.stack ? { stack: error.stack } : {}),
+      });
     });
 
     // Schedule periodic checks
     this.checkTimer = setInterval(() => {
       this.runChecks().catch((error) => {
-        console.error('Health check failed:', error);
+        logger.error('Health check failed', {
+          error: error instanceof Error ? error.message : String(error),
+          ...(error instanceof Error && error.stack ? { stack: error.stack } : {}),
+        });
       });
     }, interval);
   }

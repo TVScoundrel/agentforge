@@ -63,7 +63,7 @@ export class AuditLogger {
     const fullEntry: AuditLogEntry = {
       ...entry,
       id: this.generateId(),
-      timestamp: entry.timestamp || Date.now(),
+      timestamp: entry.timestamp ?? Date.now(),
       success: entry.success ?? true,
     };
 
