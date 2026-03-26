@@ -5,6 +5,36 @@ All notable changes to AgentForge will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.16.3] - 2026-03-26
+
+### Added
+
+#### @agentforge/core - Monitoring Regression Coverage
+- Added focused monitoring regressions in `packages/core/tests/monitoring/audit-health.test.ts` covering JSON-safe audit payload preservation, explicit falsy payload retention, explicit zero timestamps, health metadata handling, `onCheckFail` propagation, and structured startup logger behavior
+- Added story documentation in `docs/st09016-monitoring-payload-type-hardening.md` capturing the monitoring contract scope, warning deltas, and validation record
+
+### Changed
+
+#### @agentforge/core - Monitoring Payload Contracts
+- Tightened `packages/core/src/monitoring/audit.ts` and `packages/core/src/monitoring/health.ts` to replace broad payload `any` fields with the shared JSON-safe observability contracts already used elsewhere in `@agentforge/core`
+- Preserved the existing monitoring runtime behavior for JSON-safe payloads while aligning the public audit and health metadata surfaces with the observability type boundary
+
+### Fixed
+
+#### @agentforge/core - Monitoring Payload and Logging Semantics
+- Fixed `AuditLogger` to preserve explicit falsy JSON payloads and explicit `0` timestamps instead of dropping or overwriting valid values through truthy defaults
+- Replaced `HealthChecker.start()` startup failure `console.error` calls with the shared structured logger and hardened the associated regression test cleanup so background intervals are always stopped
+- Reduced the workspace explicit-`any` baseline from `276` to `271`, improving the `core` package from `111` to `106`
+
+### Published
+- All packages published to npm registry at version 0.16.3:
+  - @agentforge/core@0.16.3
+  - @agentforge/skills@0.16.3
+  - @agentforge/patterns@0.16.3
+  - @agentforge/tools@0.16.3
+  - @agentforge/testing@0.16.3
+  - @agentforge/cli@0.16.3
+
 ## [0.16.2] - 2026-03-25
 
 ### Added
