@@ -585,16 +585,20 @@ Implementation notes:
 
 ### Checklist
 - [x] Create branch `codex/fix/st-09016-monitoring-payload-type-hardening`
-- [ ] Create draft PR with story ID in title
+- [x] Create draft PR with story ID in title
+  - PR #78 (draft): https://github.com/TVScoundrel/agentforge/pull/78
 - [x] Replace broad payload `any` fields in `packages/core/src/monitoring/audit.ts` and `packages/core/src/monitoring/health.ts` with safer contracts
 - [x] Preserve current monitoring runtime behavior and public compatibility while tightening audit/health payload typing
 - [x] Add/update focused tests for audit event serialization and health metadata handling
 - [x] Record explicit-`any` warning deltas for touched files in story docs
 - [x] Add or update story documentation at `docs/st09016-monitoring-payload-type-hardening.md` (or document why not required)
 - [x] Assess test impact; add/update automated tests when needed, or document why tests are not required
-- [ ] Run full test suite before finalizing the PR and record results
-- [ ] Run lint (`pnpm lint`) before finalizing the PR and record results
-- [ ] Commit completed checklist items as logical commits and push updates
+- [x] Run full test suite before finalizing the PR and record results
+  - `pnpm test --run` -> `153 passed | 16 skipped` files; `2137 passed | 286 skipped` tests
+- [x] Run lint (`pnpm lint`) before finalizing the PR and record results
+  - `pnpm lint` -> exit `0`; warnings only (`0` errors)
+- [x] Commit completed checklist items as logical commits and push updates
+  - `c4d11f6` `fix(st-09016): harden monitoring payload contracts`
 - [ ] Mark PR Ready only after all story tasks are complete
 - [ ] Wait for merge; do not merge directly from local branch
 

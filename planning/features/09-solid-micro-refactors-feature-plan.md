@@ -3,7 +3,7 @@
 **Epic Range:** EP-09 through EP-09
 **Status:** In Progress
 **Last Updated:** 2026-03-26
-**Active Story:** ST-09016 (In Progress)
+**Active Story:** ST-09016 (In Review)
 
 ---
 
@@ -63,7 +63,7 @@ Recent improvement snapshot:
 - `ST-09013` merged with an intentional breaking tightening to the sequential workflow builder contract: explicit state generics were removed, and downstream callers must rely on schema-derived inference from `Annotation.Root(...)`.
 - `ST-09014` merged after tightening the shared plan-execute tool and schema boundaries, lowering the workspace explicit-`any` baseline from `289` to `278` and the `patterns` package from `28` to `25`.
 - `ST-09015` merged after splitting the multi-agent node runtime into focused supervisor, worker, aggregator, and shared helper modules, lowering the workspace explicit-`any` baseline from `278` to `276` and the `patterns` package from `25` to `23`.
-- `ST-09016` is in progress after tightening the audit/health monitoring payload contracts, with the current focused delta at `276` to `271` workspace warnings and `111` to `106` in `core`.
+- `ST-09016` is in review after tightening the audit/health monitoring payload contracts, lowering the workspace explicit-`any` baseline from `276` to `271` and the `core` package from `111` to `106`.
 - `EP-09` remains open as the daily hardening stream, with the next follow-on slice targeting monitoring payloads, CLI error handling, testing helpers, multi-agent modularization, and plan-execute node modularization.
 - A second follow-on slice is now queued for prompt loading, reflection routing, streaming websocket contracts, shared deduplication helpers, core tool builder typing, interrupt contracts, and split-out registry/connection-manager modularization.
 

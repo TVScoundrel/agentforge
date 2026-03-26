@@ -37,7 +37,9 @@ Tightened the monitoring audit and health payload contracts so the public monito
 - `pnpm exec tsc -p packages/core/tsconfig.json --noEmit`
 - `pnpm exec eslint packages/core/src/monitoring/audit.ts packages/core/src/monitoring/health.ts packages/core/tests/monitoring/audit-health.test.ts`
 - `pnpm test --run packages/core/tests/monitoring/audit-health.test.ts packages/core/tests/monitoring/alerts.test.ts` -> `2 passed` files, `10 passed` tests
+- `pnpm test --run` -> `153 passed | 16 skipped` files; `2137 passed | 286 skipped` tests
+- `pnpm lint` -> exit `0`; warnings only (`0` errors)
 
 ## Test Impact
 
-Added focused automated coverage for audit payload preservation and health-check metadata handling. Full-suite and workspace lint validation will be recorded before the story is moved to review.
+Added focused automated coverage for audit payload preservation and health-check metadata handling, then validated the change through the full workspace test suite and lint pass. No manual-only gap remains for the changed surface.
