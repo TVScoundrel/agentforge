@@ -602,6 +602,7 @@ Implementation notes:
   - `388e2be` `docs(st-09016): record validation and move story to in-review`
 - [x] Mark PR Ready only after all story tasks are complete
   - PR #78 marked ready: https://github.com/TVScoundrel/agentforge/pull/78
+- [x] Review fixes applied on the active PR branch
 - [ ] Wait for merge; do not merge directly from local branch
 
 ---

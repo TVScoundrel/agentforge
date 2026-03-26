@@ -46,6 +46,29 @@ describe('monitoring payload contracts', () => {
     });
   });
 
+  it('preserves explicit falsy audit payloads', async () => {
+    const logger = createAuditLogger();
+
+    await logger.log({
+      userId: 'user-2',
+      action: 'sync',
+      resource: 'feature-flag',
+      input: 0,
+      output: false,
+      metadata: {
+        seen: null,
+      },
+    });
+
+    const [entry] = await logger.query();
+
+    expect(entry.input).toBe(0);
+    expect(entry.output).toBe(false);
+    expect(entry.metadata).toEqual({
+      seen: null,
+    });
+  });
+
   it('preserves JSON-safe metadata in health check results', async () => {
     const checker = createHealthChecker({
       checks: {

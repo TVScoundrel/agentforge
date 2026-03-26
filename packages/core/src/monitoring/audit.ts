@@ -77,11 +77,11 @@ export class AuditLogger {
       timestamp: fields.timestamp !== false ? fullEntry.timestamp : undefined,
     };
 
-    if (fields.input !== false && fullEntry.input) {
+    if (fields.input !== false && fullEntry.input !== undefined) {
       filteredEntry.input = fullEntry.input;
     }
 
-    if (fields.output !== false && fullEntry.output) {
+    if (fields.output !== false && fullEntry.output !== undefined) {
       filteredEntry.output = fullEntry.output;
     }
 
