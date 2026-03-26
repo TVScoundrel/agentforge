@@ -599,7 +599,9 @@ Implementation notes:
   - `pnpm lint` -> exit `0`; warnings only (`0` errors)
 - [x] Commit completed checklist items as logical commits and push updates
   - `c4d11f6` `fix(st-09016): harden monitoring payload contracts`
-- [ ] Mark PR Ready only after all story tasks are complete
+  - `388e2be` `docs(st-09016): record validation and move story to in-review`
+- [x] Mark PR Ready only after all story tasks are complete
+  - PR #78 marked ready: https://github.com/TVScoundrel/agentforge/pull/78
 - [ ] Wait for merge; do not merge directly from local branch
 
 ---
