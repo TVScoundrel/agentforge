@@ -4,24 +4,25 @@
 
 ## Queue Status Summary
 
-- **Ready:** 2 stories
+- **Ready:** 3 stories
 - **In Progress:** 0 stories
-- **In Review:** 1 story
+- **In Review:** 0 stories
 - **Blocked:** 0 stories
-- **Backlog:** 11 stories
+- **Backlog:** 10 stories
 
 ---
 
 ## Ready
 
 - `ST-09017` - Centralize CLI Command Error Handling
+- `ST-09018` - Harden Testing Assertion and State Builder Helpers
 - `ST-09029` - Modularize Plan-Execute Node Responsibilities
 
 ---
 
 ## In Review
 
-- `ST-09016` - Harden Monitoring Audit and Health Payload Types
+_No stories currently in review_
 
 ---
 
@@ -39,8 +40,6 @@ _No stories currently blocked_
 
 ## Backlog
 
-- `ST-09018` - Harden Testing Assertion and State Builder Helpers
-  - Depends on `ST-09016`
 - `ST-09019` - Harden Reflection Agent Routing Typing
 - `ST-09020` - Tighten Prompt Loader Variable Contracts
 - `ST-09021` - Harden Streaming WebSocket and Message Contracts
@@ -117,6 +116,7 @@ _No stories currently blocked_
 - ✅ ST-09013 complete - sequential workflow builder typing hardened with schema-only inference and intentional breaking type tightening (PR #75, 2026-03-23)
 - ✅ ST-09014 complete - plan-execute shared type boundaries tightened (PR #76, 2026-03-24)
 - ✅ ST-09015 complete - multi-agent node responsibilities modularized with follow-up hardening for logging, workload invariants, interrupts, and model-content serialization (PR #77, 2026-03-25)
+- ✅ ST-09016 complete - monitoring audit and health payload contracts hardened with follow-up fixes for falsy JSON payload preservation, structured startup logging, and timestamp semantics (PR #78, 2026-03-26)
 - Epic 09 (SOLID Micro-Refactors and Type Boundary Hardening) was expanded on 2026-03-22 with low-hanging follow-on stories ST-09008 through ST-09012
 - Epic 09 (SOLID Micro-Refactors and Type Boundary Hardening) was expanded again on 2026-03-23 with daily hardening stories ST-09013 through ST-09018
 - Epic 09 (SOLID Micro-Refactors and Type Boundary Hardening) was expanded a third time on 2026-03-23 with daily hardening stories ST-09019 through ST-09028

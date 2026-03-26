@@ -2,11 +2,18 @@
 
 **Purpose:** Track completed and merged stories for the Relational Database Access Tool project.
 
-**Last Updated:** 2026-03-25
+**Last Updated:** 2026-03-26
 
 ---
 
 ## Completed Stories
+
+### ST-09016: Harden Monitoring Audit and Health Payload Types
+- **Merged:** 2026-03-26
+- **PR:** https://github.com/TVScoundrel/agentforge/pull/78 (commit fe02e2b)
+- **Epic:** EP-09 (SOLID Micro-Refactors and Type Boundary Hardening)
+- **Estimate:** 3 hours
+- **Outcome:** Tightened the public monitoring audit and health payload contracts around shared JSON-safe observability types, added focused regression coverage for payload preservation and health-check error propagation, and folded in review fixes for falsy payload handling, structured health startup logging, explicit zero timestamps, and deterministic test cleanup.
 
 ### ST-09015: Modularize Multi-Agent Node Responsibilities
 - **Merged:** 2026-03-25

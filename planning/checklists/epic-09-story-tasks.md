@@ -604,7 +604,8 @@ Implementation notes:
   - PR #78 marked ready: https://github.com/TVScoundrel/agentforge/pull/78
 - [x] Review fixes applied on the active PR branch
   - `a894d45` `fix(st-09016): preserve explicit falsy audit payloads`
-- [ ] Wait for merge; do not merge directly from local branch
+- [x] Wait for merge; do not merge directly from local branch
+  - Merged via PR #78 on 2026-03-26 (merge commit `fe02e2b`)
 
 ---
 
