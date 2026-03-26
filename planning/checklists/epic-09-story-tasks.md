@@ -581,17 +581,17 @@ Implementation notes:
 
 ## ST-09016: Harden Monitoring Audit and Health Payload Types
 
-**Branch:** `fix/st-09016-monitoring-payload-type-hardening`
+**Branch:** `codex/fix/st-09016-monitoring-payload-type-hardening`
 
 ### Checklist
-- [ ] Create branch `fix/st-09016-monitoring-payload-type-hardening`
+- [x] Create branch `codex/fix/st-09016-monitoring-payload-type-hardening`
 - [ ] Create draft PR with story ID in title
-- [ ] Replace broad payload `any` fields in `packages/core/src/monitoring/audit.ts` and `packages/core/src/monitoring/health.ts` with safer contracts
-- [ ] Preserve current monitoring runtime behavior and public compatibility while tightening audit/health payload typing
-- [ ] Add/update focused tests for audit event serialization and health metadata handling
-- [ ] Record explicit-`any` warning deltas for touched files in story docs
-- [ ] Add or update story documentation at `docs/st09016-monitoring-payload-type-hardening.md` (or document why not required)
-- [ ] Assess test impact; add/update automated tests when needed, or document why tests are not required
+- [x] Replace broad payload `any` fields in `packages/core/src/monitoring/audit.ts` and `packages/core/src/monitoring/health.ts` with safer contracts
+- [x] Preserve current monitoring runtime behavior and public compatibility while tightening audit/health payload typing
+- [x] Add/update focused tests for audit event serialization and health metadata handling
+- [x] Record explicit-`any` warning deltas for touched files in story docs
+- [x] Add or update story documentation at `docs/st09016-monitoring-payload-type-hardening.md` (or document why not required)
+- [x] Assess test impact; add/update automated tests when needed, or document why tests are not required
 - [ ] Run full test suite before finalizing the PR and record results
 - [ ] Run lint (`pnpm lint`) before finalizing the PR and record results
 - [ ] Commit completed checklist items as logical commits and push updates

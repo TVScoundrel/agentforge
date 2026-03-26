@@ -2,15 +2,17 @@
  * Audit logging for compliance and tracking
  */
 
+import type { JsonObject, JsonValue } from '../langgraph/observability/payload.js';
+
 export interface AuditLogEntry {
   id?: string;
   userId: string;
   action: string;
   resource: string;
   timestamp?: number;
-  input?: any;
-  output?: any;
-  metadata?: Record<string, any>;
+  input?: JsonValue;
+  output?: JsonValue;
+  metadata?: JsonObject;
   success?: boolean;
   error?: string;
 }
@@ -28,7 +30,7 @@ export interface AuditLogQuery {
 export interface AuditLoggerOptions {
   storage?: {
     type: 'memory' | 'database' | 'file';
-    config?: Record<string, any>;
+    config?: JsonObject;
   };
   retention?: {
     days: number;
@@ -207,4 +209,3 @@ export class AuditLogger {
 export function createAuditLogger(options?: AuditLoggerOptions): AuditLogger {
   return new AuditLogger(options);
 }
-

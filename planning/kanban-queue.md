@@ -1,11 +1,11 @@
 # Kanban Queue: AgentForge
 
-**Last Updated:** 2026-03-25
+**Last Updated:** 2026-03-26
 
 ## Queue Status Summary
 
-- **Ready:** 3 stories
-- **In Progress:** 0 stories
+- **Ready:** 2 stories
+- **In Progress:** 1 story
 - **In Review:** 0 stories
 - **Blocked:** 0 stories
 - **Backlog:** 11 stories
@@ -14,7 +14,6 @@
 
 ## Ready
 
-- `ST-09016` - Harden Monitoring Audit and Health Payload Types
 - `ST-09017` - Centralize CLI Command Error Handling
 - `ST-09029` - Modularize Plan-Execute Node Responsibilities
 
@@ -28,7 +27,7 @@ _No stories currently in review_
 
 ## In Progress
 
-_No stories currently in progress_
+- `ST-09016` - Harden Monitoring Audit and Health Payload Types
 
 ---
 

@@ -2,6 +2,8 @@
  * Health check system for production monitoring
  */
 
+import type { JsonObject } from '../langgraph/observability/payload.js';
+
 export type HealthStatus = 'healthy' | 'unhealthy' | 'degraded';
 
 export interface HealthCheckResult {
@@ -11,7 +13,7 @@ export interface HealthCheckResult {
   error?: string;
   timestamp?: number;
   duration?: number;
-  metadata?: Record<string, any>;
+  metadata?: JsonObject;
 }
 
 export interface HealthCheck {
@@ -159,4 +161,3 @@ export class HealthChecker {
 export function createHealthChecker(options: HealthCheckerOptions): HealthChecker {
   return new HealthChecker(options);
 }
-
