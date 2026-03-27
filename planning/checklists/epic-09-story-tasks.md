@@ -634,6 +634,7 @@ Implementation notes:
   - PR #79 marked ready: https://github.com/TVScoundrel/agentforge/pull/79
 - [x] Review fixes applied on the active PR branch
   - `399d76d` `fix(st-09017): preserve cli error output ordering`
+  - `0f54f57` `fix(st-09017): fail publish spinner before npm guidance`
 - [ ] Wait for merge; do not merge directly from local branch
 
 ---
