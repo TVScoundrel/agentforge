@@ -5,6 +5,35 @@ All notable changes to AgentForge will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.16.4] - 2026-03-27
+
+### Added
+
+#### @agentforge/cli - Shared Command Error Helper Coverage
+- Added focused CLI helper coverage in `packages/cli/tests/utils/command-errors.test.ts` for unknown error normalization, prefixed messages, spinner failure handling, and caller-managed logging
+- Added story documentation in `docs/st09017-cli-error-handling-centralization.md` covering the command error boundary refactor, warning deltas, and review-fix history
+
+### Changed
+
+#### @agentforge/cli - Centralized Command Error Handling
+- Added `packages/cli/src/utils/command-errors.ts` and migrated the CLI command layer off repeated `catch (error: any)` plus `process.exit(1)` boilerplate
+- Preserved existing command-level behavior across build, dev, test, lint, create, tool, and agent commands while routing generic failure formatting and exit handling through the shared helper
+
+### Fixed
+
+#### @agentforge/cli - CLI Failure Output and Exit Contract
+- Restored command output ordering for missing test-file and deploy guidance paths, avoided duplicate or spinner-garbled publish errors, and tightened the shared error helper to a `never`-typed exit contract with deterministic test teardown
+- Reduced the workspace explicit-`any` baseline from `271` to `253`, improving the `cli` package from `24` to `6`
+
+### Published
+- All packages published to npm registry at version 0.16.4:
+  - @agentforge/core@0.16.4
+  - @agentforge/skills@0.16.4
+  - @agentforge/patterns@0.16.4
+  - @agentforge/tools@0.16.4
+  - @agentforge/testing@0.16.4
+  - @agentforge/cli@0.16.4
+
 ## [0.16.3] - 2026-03-26
 
 ### Added

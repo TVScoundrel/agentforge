@@ -1,6 +1,6 @@
 {
   "name": "@agentforge/skills",
-  "version": "0.16.3",
+  "version": "0.16.4",
   "description": "Composable skill system for building modular TypeScript AI agents: author skills, register capabilities, and compose behaviors.",
   "type": "module",
   "main": "./dist/index.js",
