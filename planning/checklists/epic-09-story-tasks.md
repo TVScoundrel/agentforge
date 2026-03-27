@@ -632,6 +632,8 @@ Implementation notes:
   - `ab45437` `docs(st-09017): record validation and move story to in-review`
 - [x] Mark PR Ready only after all story tasks are complete
   - PR #79 marked ready: https://github.com/TVScoundrel/agentforge/pull/79
+- [x] Review fixes applied on the active PR branch
+  - `399d76d` `fix(st-09017): preserve cli error output ordering`
 - [ ] Wait for merge; do not merge directly from local branch
 
 ---
