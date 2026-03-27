@@ -1,6 +1,7 @@
 import path from 'path';
 import chalk from 'chalk';
 import { logger } from '../../utils/logger.js';
+import { exitWithCommandError } from '../../utils/command-errors.js';
 import { runScript, detectPackageManager } from '../../utils/package-manager.js';
 import { pathExists } from '../../utils/fs.js';
 
@@ -20,9 +21,8 @@ export async function toolTestCommand(
 
     // Check if test file exists
     if (!(await pathExists(testFile))) {
-      logger.error(`Test file not found: ${testFile}`);
       logger.info(`Create tests with: ${chalk.cyan(`agentforge tool:create ${name} --test`)}`);
-      process.exit(1);
+      return exitWithCommandError(`Test file not found: ${testFile}`);
     }
 
     logger.info(`Testing tool: ${chalk.cyan(name)}`);
@@ -40,10 +40,7 @@ export async function toolTestCommand(
     await runScript(cwd, testCommand, packageManager);
 
     logger.succeedSpinner('Tests completed');
-  } catch (error: any) {
-    logger.failSpinner('Tests failed');
-    logger.error(error.message);
-    process.exit(1);
+  } catch (error: unknown) {
+    return exitWithCommandError(error, { spinnerFailureText: 'Tests failed' });
   }
 }
-

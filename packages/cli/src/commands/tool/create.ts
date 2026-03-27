@@ -1,6 +1,7 @@
 import path from 'path';
 import chalk from 'chalk';
 import { logger } from '../../utils/logger.js';
+import { exitWithCommandError } from '../../utils/command-errors.js';
 import { promptToolSetup } from '../../utils/prompts.js';
 import { writeFile, ensureDir, copyTemplate, getTemplatePath } from '../../utils/fs.js';
 
@@ -67,9 +68,8 @@ export async function toolCreateCommand(
         ];
 
     logger.list(nextSteps.filter(Boolean));
-  } catch (error: any) {
-    logger.error(`Failed to create tool: ${error.message}`);
-    process.exit(1);
+  } catch (error: unknown) {
+    return exitWithCommandError(error, { prefix: 'Failed to create tool' });
   }
 }
 
@@ -201,4 +201,3 @@ async function createMultiFileTool(
     logger.succeedSpinner('Test files removed');
   }
 }
-

@@ -1,4 +1,5 @@
 import { logger } from '../utils/logger.js';
+import { exitWithCommandError } from '../utils/command-errors.js';
 import { runScript, detectPackageManager } from '../utils/package-manager.js';
 
 interface LintOptions {
@@ -22,7 +23,7 @@ export async function lintCommand(options: LintOptions): Promise<void> {
     try {
       await runScript(cwd, options.fix ? 'lint:fix' : 'lint', packageManager);
       logger.succeedSpinner('Linting completed');
-    } catch (error) {
+    } catch {
       logger.failSpinner('Linting found issues');
       if (!options.fix) {
         logger.info('Run with --fix to automatically fix issues');
@@ -35,16 +36,14 @@ export async function lintCommand(options: LintOptions): Promise<void> {
       try {
         await runScript(cwd, 'format', packageManager);
         logger.succeedSpinner('Formatting completed');
-      } catch (error) {
+      } catch {
         logger.failSpinner('Formatting failed');
       }
     }
 
     logger.newLine();
     logger.success('✨ Code quality check completed!');
-  } catch (error: any) {
-    logger.error(error.message);
-    process.exit(1);
+  } catch (error: unknown) {
+    return exitWithCommandError(error);
   }
 }
-

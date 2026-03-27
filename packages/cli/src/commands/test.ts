@@ -1,4 +1,5 @@
 import { logger } from '../utils/logger.js';
+import { exitWithCommandError } from '../utils/command-errors.js';
 import { runScript, detectPackageManager } from '../utils/package-manager.js';
 
 interface TestOptions {
@@ -34,10 +35,7 @@ export async function testCommand(options: TestOptions): Promise<void> {
     await runScript(cwd, script, packageManager);
 
     logger.succeedSpinner('Tests completed');
-  } catch (error: any) {
-    logger.failSpinner('Tests failed');
-    logger.error(error.message);
-    process.exit(1);
+  } catch (error: unknown) {
+    return exitWithCommandError(error, { spinnerFailureText: 'Tests failed' });
   }
 }
-

@@ -2,6 +2,7 @@ import path from 'path';
 import fs from 'fs-extra';
 import chalk from 'chalk';
 import { logger } from '../../utils/logger.js';
+import { exitWithCommandError, getErrorMessage } from '../../utils/command-errors.js';
 import { runScript, detectPackageManager, publishPackage } from '../../utils/package-manager.js';
 
 interface ToolPublishOptions {
@@ -36,10 +37,11 @@ export async function toolPublishCommand(
       try {
         await runScript(toolPath, 'test', packageManager);
         logger.succeedSpinner('Tests passed');
-      } catch (error) {
-        logger.failSpinner('Tests failed');
-        logger.error('Cannot publish tool with failing tests');
-        process.exit(1);
+      } catch (error: unknown) {
+        return exitWithCommandError(error, {
+          spinnerFailureText: 'Tests failed',
+          message: 'Cannot publish tool with failing tests',
+        });
       }
     } else {
       logger.info('⚠️  Skipping tests (no test script found)');
@@ -51,9 +53,8 @@ export async function toolPublishCommand(
       try {
         await runScript(toolPath, 'build', packageManager);
         logger.succeedSpinner('Build completed');
-      } catch (error) {
-        logger.failSpinner('Build failed');
-        process.exit(1);
+      } catch (error: unknown) {
+        return exitWithCommandError(error, { spinnerFailureText: 'Build failed' });
       }
     } else {
       logger.info('⚠️  Skipping build (no build script found)');
@@ -73,24 +74,27 @@ export async function toolPublishCommand(
       } else {
         logger.succeedSpinner('Published to npm');
       }
-    } catch (error: any) {
-      logger.failSpinner('Publishing failed');
+    } catch (error: unknown) {
+      const errorMessage = getErrorMessage(error);
 
       // Provide helpful error messages for common issues
-      if (error.message.includes('ENEEDAUTH') || error.message.includes('E401')) {
+      if (errorMessage.includes('ENEEDAUTH') || errorMessage.includes('E401')) {
         logger.error('Not authenticated with npm');
         logger.info('Run: npm login');
-      } else if (error.message.includes('E403')) {
+      } else if (errorMessage.includes('E403')) {
         logger.error('Permission denied - you may not have access to publish this package');
         logger.info('Check package name and npm organization permissions');
-      } else if (error.message.includes('EPUBLISHCONFLICT') || error.message.includes('E409')) {
+      } else if (errorMessage.includes('EPUBLISHCONFLICT') || errorMessage.includes('E409')) {
         logger.error('Version already published');
         logger.info('Update the version in package.json before publishing');
       } else {
-        logger.error(error.message);
+        logger.error(errorMessage);
       }
 
-      process.exit(1);
+      return exitWithCommandError(error, {
+        spinnerFailureText: 'Publishing failed',
+        logError: false,
+      });
     }
 
     logger.newLine();
@@ -105,10 +109,8 @@ export async function toolPublishCommand(
       logger.info(`Published ${chalk.cyan(name)} with tag ${chalk.cyan(options.tag || 'latest')}`);
       logger.info('Users can now install with: npm install ' + name);
     }
-  } catch (error: any) {
-    logger.failSpinner('Publishing failed');
-    logger.error(error.message);
-    process.exit(1);
+  } catch (error: unknown) {
+    return exitWithCommandError(error, { spinnerFailureText: 'Publishing failed' });
   }
 }
 
@@ -116,6 +118,14 @@ interface ToolPathInfo {
   toolPath: string;
   hasTestScript: boolean;
   hasBuildScript: boolean;
+}
+
+interface ToolPackageJson {
+  name?: string;
+  scripts?: {
+    test?: string;
+    build?: string;
+  };
 }
 
 /**
@@ -191,7 +201,7 @@ async function resolveToolPath(name: string): Promise<ToolPathInfo> {
     'Providing a path to the tool package directory',
     'Have the tool in a standard location (./tools/<name>, ./packages/<name>)',
   ]);
-  process.exit(1);
+  return exitWithCommandError(`Could not find tool package: ${name}`);
 }
 
 /**
@@ -201,31 +211,27 @@ async function resolveToolPath(name: string): Promise<ToolPathInfo> {
 async function validateToolPath(toolPath: string, expectedName: string): Promise<ToolPathInfo> {
   // Check if directory exists
   if (!(await fs.pathExists(toolPath))) {
-    logger.error(`Tool directory not found: ${toolPath}`);
-    process.exit(1);
+    return exitWithCommandError(`Tool directory not found: ${toolPath}`);
   }
 
   // Check if package.json exists
   const packageJsonPath = path.join(toolPath, 'package.json');
   if (!(await fs.pathExists(packageJsonPath))) {
-    logger.error(`package.json not found in: ${toolPath}`);
     logger.info('Tool packages must have a package.json file');
-    process.exit(1);
+    return exitWithCommandError(`package.json not found in: ${toolPath}`);
   }
 
   // Read and validate package.json
-  let packageJson: any;
+  let packageJson: ToolPackageJson;
   try {
-    packageJson = await fs.readJson(packageJsonPath);
-  } catch (error: any) {
-    logger.error(`Failed to read package.json: ${error.message}`);
-    process.exit(1);
+    packageJson = (await fs.readJson(packageJsonPath)) as ToolPackageJson;
+  } catch (error: unknown) {
+    return exitWithCommandError(error, { prefix: 'Failed to read package.json' });
   }
 
   // Validate package name
   if (!packageJson.name) {
-    logger.error('package.json must have a "name" field');
-    process.exit(1);
+    return exitWithCommandError('package.json must have a "name" field');
   }
 
   // Warn if package name doesn't match expected name (but don't fail)
@@ -252,4 +258,3 @@ async function validateToolPath(toolPath: string, expectedName: string): Promise
     hasBuildScript,
   };
 }
-
