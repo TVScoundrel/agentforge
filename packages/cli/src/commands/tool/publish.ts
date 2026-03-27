@@ -201,7 +201,7 @@ async function resolveToolPath(name: string): Promise<ToolPathInfo> {
     'Providing a path to the tool package directory',
     'Have the tool in a standard location (./tools/<name>, ./packages/<name>)',
   ]);
-  return exitWithCommandError(`Could not find tool package: ${name}`);
+  return exitWithCommandError(`Could not find tool package: ${name}`, { logError: false });
 }
 
 /**

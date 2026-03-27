@@ -21,8 +21,9 @@ export async function toolTestCommand(
 
     // Check if test file exists
     if (!(await pathExists(testFile))) {
+      logger.error(`Test file not found: ${testFile}`);
       logger.info(`Create tests with: ${chalk.cyan(`agentforge tool:create ${name} --test`)}`);
-      return exitWithCommandError(`Test file not found: ${testFile}`);
+      return exitWithCommandError(`Test file not found: ${testFile}`, { logError: false });
     }
 
     logger.info(`Testing tool: ${chalk.cyan(name)}`);

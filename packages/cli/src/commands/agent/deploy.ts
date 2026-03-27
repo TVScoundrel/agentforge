@@ -20,6 +20,9 @@ export async function agentDeployCommand(
 
     // Agent deployment is complex and platform-specific
     // Users should use deployment templates or manual deployment
+    logger.error('Automated agent deployment is not yet implemented');
+    logger.newLine();
+
     logger.info(chalk.bold('Please use one of the following deployment methods:'));
     logger.newLine();
 
@@ -49,7 +52,9 @@ export async function agentDeployCommand(
     logger.info(chalk.dim('For detailed deployment guides, see:'));
     logger.info(chalk.dim('https://tvscoundrel.github.io/agentforge/guide/advanced/deployment'));
 
-    return exitWithCommandError('Automated agent deployment is not yet implemented');
+    return exitWithCommandError('Automated agent deployment is not yet implemented', {
+      logError: false,
+    });
   } catch (error: unknown) {
     return exitWithCommandError(error);
   }
