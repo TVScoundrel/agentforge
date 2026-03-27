@@ -6,7 +6,7 @@
 
 - **Ready:** 2 stories
 - **In Progress:** 0 stories
-- **In Review:** 1 story
+- **In Review:** 0 stories
 - **Blocked:** 0 stories
 - **Backlog:** 10 stories
 
@@ -21,7 +21,7 @@
 
 ## In Review
 
-- `ST-09017` - Centralize CLI Command Error Handling
+_No stories currently in review_
 
 ---
 
@@ -116,7 +116,7 @@ _No stories currently blocked_
 - ✅ ST-09014 complete - plan-execute shared type boundaries tightened (PR #76, 2026-03-24)
 - ✅ ST-09015 complete - multi-agent node responsibilities modularized with follow-up hardening for logging, workload invariants, interrupts, and model-content serialization (PR #77, 2026-03-25)
 - ✅ ST-09016 complete - monitoring audit and health payload contracts hardened with follow-up fixes for falsy JSON payload preservation, structured startup logging, and timestamp semantics (PR #78, 2026-03-26)
-- `ST-09017` moved to In Review on 2026-03-27 after centralizing CLI command error handling behind a shared helper and lowering the `cli` explicit-`any` baseline from `24` to `6`
+- ✅ ST-09017 complete - CLI command error handling centralized behind a shared helper with follow-up fixes for output ordering, spinner behavior, and `never`-typed exit plumbing (PR #79, 2026-03-27)
 - Epic 09 (SOLID Micro-Refactors and Type Boundary Hardening) was expanded on 2026-03-22 with low-hanging follow-on stories ST-09008 through ST-09012
 - Epic 09 (SOLID Micro-Refactors and Type Boundary Hardening) was expanded again on 2026-03-23 with daily hardening stories ST-09013 through ST-09018
 - Epic 09 (SOLID Micro-Refactors and Type Boundary Hardening) was expanded a third time on 2026-03-23 with daily hardening stories ST-09019 through ST-09028

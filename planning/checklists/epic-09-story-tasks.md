@@ -636,7 +636,8 @@ Implementation notes:
   - `399d76d` `fix(st-09017): preserve cli error output ordering`
   - `0f54f57` `fix(st-09017): fail publish spinner before npm guidance`
   - `f1aa02d` `fix(st-09017): tighten command error helper contract`
-- [ ] Wait for merge; do not merge directly from local branch
+- [x] Wait for merge; do not merge directly from local branch
+  - Merged via PR #79 on 2026-03-27 (merge commit `94d4d99`)
 
 ---
 

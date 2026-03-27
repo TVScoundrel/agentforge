@@ -2,11 +2,18 @@
 
 **Purpose:** Track completed and merged stories for the Relational Database Access Tool project.
 
-**Last Updated:** 2026-03-26
+**Last Updated:** 2026-03-27
 
 ---
 
 ## Completed Stories
+
+### ST-09017: Centralize CLI Command Error Handling
+- **Merged:** 2026-03-27
+- **PR:** https://github.com/TVScoundrel/agentforge/pull/79 (commit 94d4d99)
+- **Epic:** EP-09 (SOLID Micro-Refactors and Type Boundary Hardening)
+- **Estimate:** 3 hours
+- **Outcome:** Centralized repeated CLI command error handling behind a shared helper, migrated the CLI command layer off repetitive `catch (error: any)` plus `process.exit(1)` blocks, added focused helper coverage, and folded in review fixes for preserved output ordering, publish-spinner sequencing, and a `never`-typed exit contract with deterministic test teardown.
 
 ### ST-09016: Harden Monitoring Audit and Health Payload Types
 - **Merged:** 2026-03-26
