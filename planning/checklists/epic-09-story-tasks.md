@@ -635,6 +635,7 @@ Implementation notes:
 - [x] Review fixes applied on the active PR branch
   - `399d76d` `fix(st-09017): preserve cli error output ordering`
   - `0f54f57` `fix(st-09017): fail publish spinner before npm guidance`
+  - `f1aa02d` `fix(st-09017): tighten command error helper contract`
 - [ ] Wait for merge; do not merge directly from local branch
 
 ---
