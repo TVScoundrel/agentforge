@@ -28,10 +28,10 @@ export function getErrorMessage(error: unknown): string {
   return String(error);
 }
 
-export function exitWithCommandError<T = void>(
+export function exitWithCommandError(
   error: unknown,
   options: CommandFailureOptions = {}
-): T {
+): never {
   if (options.spinnerFailureText) {
     logger.failSpinner(options.spinnerFailureText);
   }
@@ -42,5 +42,4 @@ export function exitWithCommandError<T = void>(
   }
 
   process.exit(1);
-  return undefined as T;
 }

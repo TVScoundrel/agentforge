@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import {
   exitWithCommandError,
   getErrorMessage,
@@ -8,9 +8,15 @@ import * as logger from '../../src/utils/logger.js';
 vi.mock('../../src/utils/logger.js');
 
 describe('command-errors', () => {
+  let processExitSpy: ReturnType<typeof vi.spyOn>;
+
   beforeEach(() => {
     vi.clearAllMocks();
-    vi.spyOn(process, 'exit').mockImplementation(() => undefined as never);
+    processExitSpy = vi.spyOn(process, 'exit').mockImplementation(() => undefined as never);
+  });
+
+  afterEach(() => {
+    processExitSpy.mockRestore();
   });
 
   describe('getErrorMessage', () => {
