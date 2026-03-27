@@ -2,8 +2,8 @@
 
 **Epic Range:** EP-09 through EP-09
 **Status:** In Progress
-**Last Updated:** 2026-03-26
-**Active Story:** ST-09017 (Ready)
+**Last Updated:** 2026-03-27
+**Active Story:** ST-09017 (In Review)
 
 ---
 
@@ -32,17 +32,17 @@
 
 ## Current Hotspot Snapshot
 
-Current `@typescript-eslint/no-explicit-any` baseline check (`pnpm lint:explicit-any:baseline`, 2026-03-23):
+Current `@typescript-eslint/no-explicit-any` baseline check (`pnpm lint:explicit-any:baseline`, 2026-03-27):
 
-- Total: `289` warnings (`src/**`)
-- By package: `core 119`, `tools 67`, `testing 51`, `patterns 28`, `cli 24`
+- Total: `253` warnings (`src/**`)
+- By package: `core 106`, `tools 67`, `testing 51`, `patterns 23`, `cli 6`
 
 Top runtime hotspots informing this feature slice:
 
 1. `packages/core/src/langgraph/builders/sequential.ts` still carries an easy schema/edge `any` boundary that mirrors the already-completed parallel builder cleanup
 2. `packages/patterns/src/plan-execute/types.ts` still exposes a small but high-leverage `Tool<any, any>[]` boundary in active EP-09 code
 3. `packages/patterns/src/multi-agent/nodes.ts` was split behind the stable public entrypoint in `ST-09015`, with follow-up hardening landed for log redaction, workload invariants, interrupt propagation, and model-content serialization
-4. `packages/cli/src/commands/**` still repeat command-level `catch (error: any)` handling in multiple entrypoints
+4. `ST-09017` has centralized repeated CLI command-level `catch (error: any)` handling behind a shared helper and is now in review
 5. `packages/testing/src/helpers/assertions.ts` and `packages/testing/src/helpers/state-builder.ts` still concentrate a large share of the remaining `testing` package `any` warnings
 6. `packages/core/src/prompt-loader/index.ts`, `packages/core/src/streaming/websocket.ts`, and `packages/patterns/src/reflection/agent.ts` form the next small runtime boundary-hardening slice
 7. `packages/core/src/tools/registry.ts` and `packages/tools/src/data/relational/connection/connection-manager.ts` remain larger SRP targets that need multi-story decomposition rather than one oversized cleanup
@@ -63,7 +63,8 @@ Recent improvement snapshot:
 - `ST-09014` merged after tightening the shared plan-execute tool and schema boundaries, lowering the workspace explicit-`any` baseline from `289` to `278` and the `patterns` package from `28` to `25`.
 - `ST-09015` merged after splitting the multi-agent node runtime into focused supervisor, worker, aggregator, and shared helper modules, lowering the workspace explicit-`any` baseline from `278` to `276` and the `patterns` package from `25` to `23`.
 - `ST-09016` merged after tightening the audit/health monitoring payload contracts, lowering the workspace explicit-`any` baseline from `276` to `271` and the `core` package from `111` to `106`, with follow-up fixes for falsy JSON payload retention, structured startup logging, and explicit zero timestamps.
-- `EP-09` remains open as the daily hardening stream, with the next follow-on slice targeting monitoring payloads, CLI error handling, testing helpers, multi-agent modularization, and plan-execute node modularization.
+- `ST-09017` has moved to In Review after centralizing CLI command error handling, lowering the workspace explicit-`any` baseline from `271` to `253` and the `cli` package from `24` to `6`.
+- `EP-09` remains open as the daily hardening stream, with the next follow-on slice now centered on testing helper hardening, plan-execute node modularization, prompt-loading contracts, reflection routing, and the larger registry/connection-manager split work.
 - A second follow-on slice is now queued for prompt loading, reflection routing, streaming websocket contracts, shared deduplication helpers, core tool builder typing, interrupt contracts, and split-out registry/connection-manager modularization.
 
 ---

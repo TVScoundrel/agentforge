@@ -611,19 +611,19 @@ Implementation notes:
 
 ## ST-09017: Centralize CLI Command Error Handling
 
-**Branch:** `refactor/st-09017-cli-error-handling-centralization`
+**Branch:** `codex/refactor/st-09017-cli-error-handling-centralization`
 
 ### Checklist
-- [ ] Create branch `refactor/st-09017-cli-error-handling-centralization`
+- [x] Create branch `codex/refactor/st-09017-cli-error-handling-centralization`
 - [ ] Create draft PR with story ID in title
-- [ ] Consolidate repeated command-level error formatting and exit handling in `packages/cli/src/commands/**`
-- [ ] Preserve current CLI user-visible behavior and exit codes while reducing repetitive `catch (error: any)` usage
-- [ ] Add/update focused tests for shared command error handling where the existing CLI test surface supports it
-- [ ] Record explicit-`any` warning deltas for touched files in story docs
-- [ ] Add or update story documentation at `docs/st09017-cli-error-handling-centralization.md` (or document why not required)
-- [ ] Assess test impact; add/update automated tests when needed, or document why tests are not required
-- [ ] Run full test suite before finalizing the PR and record results
-- [ ] Run lint (`pnpm lint`) before finalizing the PR and record results
+- [x] Consolidate repeated command-level error formatting and exit handling in `packages/cli/src/commands/**`
+- [x] Preserve current CLI user-visible behavior and exit codes while reducing repetitive `catch (error: any)` usage
+- [x] Add/update focused tests for shared command error handling where the existing CLI test surface supports it
+- [x] Record explicit-`any` warning deltas for touched files in story docs
+- [x] Add or update story documentation at `docs/st09017-cli-error-handling-centralization.md` (or document why not required)
+- [x] Assess test impact; add/update automated tests when needed, or document why tests are not required
+- [x] Run full test suite before finalizing the PR and record results
+- [x] Run lint (`pnpm lint`) before finalizing the PR and record results
 - [ ] Commit completed checklist items as logical commits and push updates
 - [ ] Mark PR Ready only after all story tasks are complete
 - [ ] Wait for merge; do not merge directly from local branch
