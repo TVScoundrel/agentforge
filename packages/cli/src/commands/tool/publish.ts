@@ -76,6 +76,7 @@ export async function toolPublishCommand(
       }
     } catch (error: unknown) {
       const errorMessage = getErrorMessage(error);
+      logger.failSpinner('Publishing failed');
 
       // Provide helpful error messages for common issues
       if (errorMessage.includes('ENEEDAUTH') || errorMessage.includes('E401')) {
@@ -92,7 +93,6 @@ export async function toolPublishCommand(
       }
 
       return exitWithCommandError(error, {
-        spinnerFailureText: 'Publishing failed',
         logError: false,
       });
     }
