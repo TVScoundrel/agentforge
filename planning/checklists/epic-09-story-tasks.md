@@ -615,7 +615,8 @@ Implementation notes:
 
 ### Checklist
 - [x] Create branch `codex/refactor/st-09017-cli-error-handling-centralization`
-- [ ] Create draft PR with story ID in title
+- [x] Create draft PR with story ID in title
+  - PR #79 (draft): https://github.com/TVScoundrel/agentforge/pull/79
 - [x] Consolidate repeated command-level error formatting and exit handling in `packages/cli/src/commands/**`
 - [x] Preserve current CLI user-visible behavior and exit codes while reducing repetitive `catch (error: any)` usage
 - [x] Add/update focused tests for shared command error handling where the existing CLI test surface supports it
@@ -623,9 +624,14 @@ Implementation notes:
 - [x] Add or update story documentation at `docs/st09017-cli-error-handling-centralization.md` (or document why not required)
 - [x] Assess test impact; add/update automated tests when needed, or document why tests are not required
 - [x] Run full test suite before finalizing the PR and record results
+  - `pnpm test --run` -> `154 passed | 16 skipped` files; `2146 passed | 286 skipped` tests
 - [x] Run lint (`pnpm lint`) before finalizing the PR and record results
-- [ ] Commit completed checklist items as logical commits and push updates
-- [ ] Mark PR Ready only after all story tasks are complete
+  - `pnpm lint` -> exit `0`; warnings only (`0` errors)
+- [x] Commit completed checklist items as logical commits and push updates
+  - `af0dbac` `refactor(st-09017): centralize cli command error handling`
+  - `ab45437` `docs(st-09017): record validation and move story to in-review`
+- [x] Mark PR Ready only after all story tasks are complete
+  - PR #79 marked ready: https://github.com/TVScoundrel/agentforge/pull/79
 - [ ] Wait for merge; do not merge directly from local branch
 
 ---
