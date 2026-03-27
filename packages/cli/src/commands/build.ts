@@ -1,4 +1,5 @@
 import { logger } from '../utils/logger.js';
+import { exitWithCommandError } from '../utils/command-errors.js';
 import { runScript, detectPackageManager } from '../utils/package-manager.js';
 
 interface BuildOptions {
@@ -33,10 +34,7 @@ export async function buildCommand(options: BuildOptions): Promise<void> {
     logger.succeedSpinner('Build completed successfully');
     logger.newLine();
     logger.success('✨ Production build ready!');
-  } catch (error: any) {
-    logger.failSpinner('Build failed');
-    logger.error(error.message);
-    process.exit(1);
+  } catch (error: unknown) {
+    return exitWithCommandError(error, { spinnerFailureText: 'Build failed' });
   }
 }
-

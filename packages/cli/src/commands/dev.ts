@@ -1,4 +1,5 @@
 import { logger } from '../utils/logger.js';
+import { exitWithCommandError } from '../utils/command-errors.js';
 import { runScript, detectPackageManager } from '../utils/package-manager.js';
 
 interface DevOptions {
@@ -27,10 +28,9 @@ export async function devCommand(options: DevOptions): Promise<void> {
     await runScript(cwd, 'dev', packageManager);
 
     logger.succeedSpinner('Development server started');
-  } catch (error: any) {
-    logger.failSpinner('Failed to start development server');
-    logger.error(error.message);
-    process.exit(1);
+  } catch (error: unknown) {
+    return exitWithCommandError(error, {
+      spinnerFailureText: 'Failed to start development server',
+    });
   }
 }
-

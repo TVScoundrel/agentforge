@@ -1,6 +1,7 @@
 import path from 'path';
 import chalk from 'chalk';
 import { logger } from '../utils/logger.js';
+import { exitWithCommandError } from '../utils/command-errors.js';
 import { promptProjectSetup } from '../utils/prompts.js';
 import { copyTemplate, ensureDir, isEmptyDir, writeJson, readJson, getTemplatePath } from '../utils/fs.js';
 import { installDependencies, getRunCommand, type PackageManager } from '../utils/package-manager.js';
@@ -13,6 +14,12 @@ interface CreateOptions {
   git?: boolean;
 }
 
+interface ProjectPackageJson {
+  name?: string;
+  author?: string;
+  description?: string;
+}
+
 export async function createCommand(
   projectName: string,
   options: CreateOptions
@@ -22,16 +29,14 @@ export async function createCommand(
 
     // Validate project name
     if (!projectName) {
-      logger.error('Project name is required');
-      process.exit(1);
+      return exitWithCommandError('Project name is required');
     }
 
     const targetPath = path.join(process.cwd(), projectName);
 
     // Check if directory exists and is not empty
     if (!(await isEmptyDir(targetPath))) {
-      logger.error(`Directory ${projectName} already exists and is not empty`);
-      process.exit(1);
+      return exitWithCommandError(`Directory ${projectName} already exists and is not empty`);
     }
 
     // Prompt for project setup if not all options provided
@@ -68,7 +73,7 @@ export async function createCommand(
     // Update package.json
     logger.startSpinner('Updating package.json...');
     const packageJsonPath = path.join(targetPath, 'package.json');
-    const packageJson = await readJson<any>(packageJsonPath);
+    const packageJson = await readJson<ProjectPackageJson>(packageJsonPath);
     packageJson.name = answers.projectName;
     if (answers.author) {
       packageJson.author = answers.author;
@@ -85,7 +90,7 @@ export async function createCommand(
       try {
         await installDependencies(targetPath, answers.packageManager);
         logger.succeedSpinner('Dependencies installed');
-      } catch (error) {
+      } catch {
         logger.failSpinner('Failed to install dependencies');
         logger.warn('You can install them manually later');
       }
@@ -98,7 +103,7 @@ export async function createCommand(
         await initGitRepository(targetPath);
         await createInitialCommit(targetPath);
         logger.succeedSpinner('Git repository initialized');
-      } catch (error) {
+      } catch {
         logger.failSpinner('Failed to initialize git');
         logger.warn('You can initialize it manually later');
       }
@@ -117,9 +122,7 @@ export async function createCommand(
     ]);
     logger.newLine();
     logger.info('Happy coding! 🎉');
-  } catch (error: any) {
-    logger.error(`Failed to create project: ${error.message}`);
-    process.exit(1);
+  } catch (error: unknown) {
+    return exitWithCommandError(error, { prefix: 'Failed to create project' });
   }
 }
-

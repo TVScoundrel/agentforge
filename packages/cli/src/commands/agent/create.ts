@@ -1,6 +1,7 @@
 import path from 'path';
 import chalk from 'chalk';
 import { logger } from '../../utils/logger.js';
+import { exitWithCommandError } from '../../utils/command-errors.js';
 import { promptAgentSetup } from '../../utils/prompts.js';
 import { writeFile, ensureDir } from '../../utils/fs.js';
 
@@ -64,9 +65,8 @@ export async function agentCreateCommand(
         ? `Run ${chalk.cyan(`pnpm test tests/agents/${answers.name}.test.ts`)} to test your agent`
         : '',
     ].filter(Boolean));
-  } catch (error: any) {
-    logger.error(`Failed to create agent: ${error.message}`);
-    process.exit(1);
+  } catch (error: unknown) {
+    return exitWithCommandError(error, { prefix: 'Failed to create agent' });
   }
 }
 
@@ -182,4 +182,3 @@ describe('${capitalize(name)} ${pattern === 'multi-agent' ? 'System' : 'Agent'}'
 function capitalize(str: string): string {
   return str.charAt(0).toUpperCase() + str.slice(1);
 }
-

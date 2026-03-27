@@ -2,6 +2,7 @@ import path from 'path';
 import chalk from 'chalk';
 import inquirer from 'inquirer';
 import { logger } from '../../utils/logger.js';
+import { exitWithCommandError } from '../../utils/command-errors.js';
 import { copyTemplate, getTemplatePath } from '../../utils/fs.js';
 
 interface ReusableAgentCreateOptions {
@@ -106,9 +107,8 @@ export async function agentCreateReusableCommand(
 
     logger.newLine();
     logger.info(chalk.gray('💡 Tip: See examples/vertical-agents/ for reference implementations'));
-  } catch (error: any) {
-    logger.error(`Failed to create reusable agent: ${error.message}`);
-    process.exit(1);
+  } catch (error: unknown) {
+    return exitWithCommandError(error, { prefix: 'Failed to create reusable agent' });
   }
 }
 
@@ -129,4 +129,3 @@ function kebabToCamel(str: string): string {
   const pascal = kebabToPascal(str);
   return pascal.charAt(0).toLowerCase() + pascal.slice(1);
 }
-

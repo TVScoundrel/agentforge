@@ -1,6 +1,7 @@
 import path from 'path';
 import chalk from 'chalk';
 import { logger } from '../../utils/logger.js';
+import { exitWithCommandError } from '../../utils/command-errors.js';
 import { findFiles, readFile } from '../../utils/fs.js';
 
 interface AgentListOptions {
@@ -53,9 +54,8 @@ export async function agentListCommand(options: AgentListOptions): Promise<void>
       logger.newLine();
       logger.info(`Use ${chalk.cyan('--verbose')} for more details`);
     }
-  } catch (error: any) {
-    logger.error(`Failed to list agents: ${error.message}`);
-    process.exit(1);
+  } catch (error: unknown) {
+    return exitWithCommandError(error, { prefix: 'Failed to list agents' });
   }
 }
 
@@ -73,4 +73,3 @@ function extractDescription(content: string): string | null {
   const match = content.match(/\/\*\*\s*\n\s*\*\s*(.+?)\s*\n/);
   return match ? match[1] : null;
 }
-
