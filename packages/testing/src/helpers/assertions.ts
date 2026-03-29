@@ -2,6 +2,8 @@ import {
   AIMessage,
   BaseMessage,
   HumanMessage,
+} from '@langchain/core/messages';
+import type {
   SystemMessage,
 } from '@langchain/core/messages';
 import { expect } from 'vitest';
@@ -12,6 +14,20 @@ type ToolCall<TArgs = unknown> = {
   name: string;
   args: TArgs;
 };
+
+type MessageLike = {
+  content: unknown;
+  _getType: () => string;
+};
+
+function isMessageLike(value: unknown): value is MessageLike {
+  if (typeof value !== 'object' || value === null) {
+    return false;
+  }
+
+  const candidate = value as Partial<MessageLike>;
+  return 'content' in candidate && typeof candidate._getType === 'function';
+}
 
 /**
  * Assert that a value is a message of a specific type
@@ -26,14 +42,20 @@ export function assertIsMessage(
 ): asserts value is BaseMessage {
   expect(value).toBeDefined();
   expect(value).not.toBeNull();
-  expect(value).toBeInstanceOf(BaseMessage);
+  expect(typeof value).toBe('object');
 
-  if (type === 'human') {
-    expect(value).toBeInstanceOf(HumanMessage);
-  } else if (type === 'ai') {
-    expect(value).toBeInstanceOf(AIMessage);
-  } else if (type === 'system') {
-    expect(value).toBeInstanceOf(SystemMessage);
+  const samePackageMessage = value instanceof BaseMessage;
+  const structuralMessage = isMessageLike(value);
+
+  expect(samePackageMessage || structuralMessage).toBe(true);
+
+  const message = value as BaseMessage | MessageLike;
+  const messageType = message._getType();
+
+  expect(typeof messageType).toBe('string');
+
+  if (type) {
+    expect(messageType).toBe(type);
   }
 }
 

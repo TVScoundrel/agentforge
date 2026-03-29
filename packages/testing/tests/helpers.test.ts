@@ -27,6 +27,15 @@ describe('testing helpers', () => {
     expect(message).toBeInstanceOf(SystemMessage);
   });
 
+  it('assertIsMessage accepts structural message-like values for duplicate package copies', () => {
+    const message: unknown = {
+      content: 'System ready',
+      _getType: () => 'system',
+    };
+
+    expect(() => assertIsMessage(message, 'system')).not.toThrow();
+  });
+
   it('assertToolCalled matches typed tool arguments', () => {
     const toolCalls = [
       {
