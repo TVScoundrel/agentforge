@@ -5,6 +5,35 @@ All notable changes to AgentForge will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.16.5] - 2026-03-29
+
+### Added
+
+#### @agentforge/testing - Helper Contract Regression Coverage
+- Added source-included helper type regressions in `packages/testing/src/helpers/contracts.typecheck.ts` plus focused runtime coverage in `packages/testing/tests/helpers.test.ts`
+- Added story documentation in `docs/st09018-testing-helper-type-hardening.md` covering the helper boundary changes, explicit-`any` warning deltas, and review-fix history
+
+### Changed
+
+#### @agentforge/testing - Testing Helper Type Boundaries
+- Tightened `packages/testing/src/helpers/assertions.ts` and `packages/testing/src/helpers/state-builder.ts` around `unknown`-first and generic builder contracts, replacing broad `any` helper seams while preserving practical test ergonomics
+- Re-exported the new helper contract types from `packages/testing/src/index.ts` so downstream tests can consume the safer shared surfaces directly
+
+### Fixed
+
+#### @agentforge/testing - Testing Helper Compatibility and Defaults
+- Fixed planning-state helpers to support partial results without unsound casts, initialized empty conversation state so runtime output matches `MessageState`, and narrowed field-key assertions to keys the runtime can actually verify
+- Hardened shared message assertions for duplicate LangChain installs, broadened typed message coverage to include tool messages, and reduced the workspace explicit-`any` baseline from `253` to `233` while improving the `testing` package from `51` to `31`
+
+### Published
+- All packages published to npm registry at version 0.16.5:
+  - @agentforge/core@0.16.5
+  - @agentforge/skills@0.16.5
+  - @agentforge/patterns@0.16.5
+  - @agentforge/tools@0.16.5
+  - @agentforge/testing@0.16.5
+  - @agentforge/cli@0.16.5
+
 ## [0.16.4] - 2026-03-27
 
 ### Added
