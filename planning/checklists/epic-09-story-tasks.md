@@ -665,7 +665,7 @@ Implementation notes:
 - [x] Mark PR Ready only after all story tasks are complete
   - PR #80 marked ready: https://github.com/TVScoundrel/agentforge/pull/80
 - [x] Review fixes applied on the active PR branch
-  - `pending` current round: tighten `assertIsMessage(...)`, make planning helper results partial, and widen name-only `assertToolCalled(...)` support
+  - `8141fe3` `fix(st-09018): tighten helper review contracts`
 - [ ] Wait for merge; do not merge directly from local branch
 
 ---
