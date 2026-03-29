@@ -643,19 +643,22 @@ Implementation notes:
 
 ## ST-09018: Harden Testing Assertion and State Builder Helpers
 
-**Branch:** `fix/st-09018-testing-helper-type-hardening`
+**Branch:** `codex/fix/st-09018-testing-helper-type-hardening`
 
 ### Checklist
-- [ ] Create branch `fix/st-09018-testing-helper-type-hardening`
-- [ ] Create draft PR with story ID in title
-- [ ] Replace broad `any`-based helper signatures in `packages/testing/src/helpers/assertions.ts` and `packages/testing/src/helpers/state-builder.ts` with safer generic or unknown-first contracts
-- [ ] Preserve practical helper ergonomics for common agent/message/state test setup flows
-- [ ] Add/update focused tests for touched helper behavior and contract expectations
-- [ ] Record explicit-`any` warning deltas for touched files in story docs
-- [ ] Add or update story documentation at `docs/st09018-testing-helper-type-hardening.md` (or document why not required)
-- [ ] Assess test impact; add/update automated tests when needed, or document why tests are not required
-- [ ] Run full test suite before finalizing the PR and record results
-- [ ] Run lint (`pnpm lint`) before finalizing the PR and record results
+- [x] Create branch `fix/st-09018-testing-helper-type-hardening`
+- [x] Create draft PR with story ID in title
+  - Draft PR #80 created: https://github.com/TVScoundrel/agentforge/pull/80
+- [x] Replace broad `any`-based helper signatures in `packages/testing/src/helpers/assertions.ts` and `packages/testing/src/helpers/state-builder.ts` with safer generic or unknown-first contracts
+- [x] Preserve practical helper ergonomics for common agent/message/state test setup flows
+- [x] Add/update focused tests for touched helper behavior and contract expectations
+- [x] Record explicit-`any` warning deltas for touched files in story docs
+- [x] Add or update story documentation at `docs/st09018-testing-helper-type-hardening.md` (or document why not required)
+- [x] Assess test impact; add/update automated tests when needed, or document why tests are not required
+- [x] Run full test suite before finalizing the PR and record results
+  - `pnpm test --run` -> `155 passed | 16 skipped` files; `2151 passed | 286 skipped` tests
+- [x] Run lint (`pnpm lint`) before finalizing the PR and record results
+  - `pnpm lint` -> exit `0`; warnings only (`0` errors)
 - [ ] Commit completed checklist items as logical commits and push updates
 - [ ] Mark PR Ready only after all story tasks are complete
 - [ ] Wait for merge; do not merge directly from local branch
