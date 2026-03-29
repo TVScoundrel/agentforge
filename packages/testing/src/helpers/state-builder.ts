@@ -134,7 +134,8 @@ export function createStateBuilder<TState extends StateBuilderFields = StateBuil
  * Create a simple conversation state
  */
 export function createConversationState(messages: ReadonlyArray<string>): MessageState {
-  const builder = createStateBuilder<{ messages: BaseMessage[] }>();
+  const builder = createStateBuilder<{ messages: BaseMessage[] }>()
+    .set('messages', []);
 
   messages.forEach((msg, index) => {
     if (index % 2 === 0) {

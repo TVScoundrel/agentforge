@@ -6,6 +6,7 @@ import {
   assertStateHasFields,
   assertStateSnapshot,
   assertToolCalled,
+  createConversationState,
   createPlanningState,
   createReActState,
   createStateBuilder,
@@ -110,5 +111,9 @@ describe('testing helpers', () => {
     const state = createPlanningState<{ search: { hits: number } }>();
 
     expect(state.results).toEqual({});
+  });
+
+  it('createConversationState returns an empty messages array for empty input', () => {
+    expect(createConversationState([])).toEqual({ messages: [] });
   });
 });

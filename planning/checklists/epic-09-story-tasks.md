@@ -646,7 +646,7 @@ Implementation notes:
 **Branch:** `codex/fix/st-09018-testing-helper-type-hardening`
 
 ### Checklist
-- [x] Create branch `fix/st-09018-testing-helper-type-hardening`
+- [x] Create branch `codex/fix/st-09018-testing-helper-type-hardening`
 - [x] Create draft PR with story ID in title
   - Draft PR #80 created: https://github.com/TVScoundrel/agentforge/pull/80
 - [x] Replace broad `any`-based helper signatures in `packages/testing/src/helpers/assertions.ts` and `packages/testing/src/helpers/state-builder.ts` with safer generic or unknown-first contracts
