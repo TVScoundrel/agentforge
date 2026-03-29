@@ -27,6 +27,11 @@ const builtState = createStateBuilder<{
   .addHumanMessage('hello')
   .build();
 
+const keyedState = {
+  0: 'zero',
+  one: 1,
+};
+
 const reactState = createReActState<{ query: string }, number>({
   toolCalls: [{ name: 'search', args: { query: 'docs' } }],
   toolResults: [{ name: 'search', result: 2 }],
@@ -45,6 +50,7 @@ const unknownToolCallState = createReActState({
 });
 
 assertStateHasFields(builtState, ['iteration', 'metadata']);
+assertStateHasFields(keyedState, [0, 'one']);
 assertStateSnapshot(planningState, { currentStep: 0 });
 assertHasKeys(planningState, ['messages', 'plan', 'currentStep', 'results']);
 assertToolCalled(reactState.toolCalls, 'search', { query: 'docs' });

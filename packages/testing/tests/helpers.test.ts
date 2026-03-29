@@ -3,6 +3,7 @@ import { describe, expect, it } from 'vitest';
 import {
   assertHasKeys,
   assertIsMessage,
+  assertStateHasFields,
   assertStateSnapshot,
   assertToolCalled,
   createPlanningState,
@@ -62,6 +63,15 @@ describe('testing helpers', () => {
     expect(state.messages).toHaveLength(2);
     expect(state.messages?.[0]).toBeInstanceOf(HumanMessage);
     expect(state.messages?.[1]).toBeInstanceOf(AIMessage);
+  });
+
+  it('assertStateHasFields supports numeric keys without string coercion', () => {
+    const state = {
+      0: 'zero',
+      one: 1,
+    };
+
+    expect(() => assertStateHasFields(state, [0, 'one'])).not.toThrow();
   });
 
   it('createReActState preserves explicit falsy defaults and typed tool results', () => {

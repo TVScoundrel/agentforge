@@ -61,10 +61,10 @@ export function assertLastMessageContains(messages: BaseMessage[], content: stri
  */
 export function assertStateHasFields<TState extends object>(
   state: TState,
-  fields: ReadonlyArray<keyof TState>
+  fields: ReadonlyArray<keyof TState & (string | number)>
 ): void {
   fields.forEach((field) => {
-    expect(state).toHaveProperty(String(field));
+    expect(state).toHaveProperty(typeof field === 'number' ? [field] : field);
   });
 }
 
