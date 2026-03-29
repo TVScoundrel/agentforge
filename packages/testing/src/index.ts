@@ -50,6 +50,7 @@ export {
   assertInRange,
   assertIterationsWithinLimit,
   assertHasKeys,
+  type AssertedMessage,
 } from './helpers/assertions.js';
 
 // Fixtures

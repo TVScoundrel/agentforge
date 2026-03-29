@@ -3,9 +3,6 @@ import {
   BaseMessage,
   HumanMessage,
 } from '@langchain/core/messages';
-import type {
-  SystemMessage,
-} from '@langchain/core/messages';
 import { expect } from 'vitest';
 
 type MessageType = 'human' | 'ai' | 'system';
@@ -15,10 +12,14 @@ type ToolCall<TArgs = unknown> = {
   args: TArgs;
 };
 
-type MessageLike = {
+type MessageLike<TType extends MessageType = MessageType> = {
   content: unknown;
-  _getType: () => string;
+  _getType: () => TType;
 };
+
+export type AssertedMessage<TType extends MessageType = MessageType> =
+  | BaseMessage
+  | MessageLike<TType>;
 
 function isMessageLike(value: unknown): value is MessageLike {
   if (typeof value !== 'object' || value === null) {
@@ -32,10 +33,10 @@ function isMessageLike(value: unknown): value is MessageLike {
 /**
  * Assert that a value is a message of a specific type
  */
-export function assertIsMessage(value: unknown): asserts value is BaseMessage;
-export function assertIsMessage(value: unknown, type: 'human'): asserts value is HumanMessage;
-export function assertIsMessage(value: unknown, type: 'ai'): asserts value is AIMessage;
-export function assertIsMessage(value: unknown, type: 'system'): asserts value is SystemMessage;
+export function assertIsMessage(value: unknown): asserts value is AssertedMessage;
+export function assertIsMessage(value: unknown, type: 'human'): asserts value is AssertedMessage<'human'>;
+export function assertIsMessage(value: unknown, type: 'ai'): asserts value is AssertedMessage<'ai'>;
+export function assertIsMessage(value: unknown, type: 'system'): asserts value is AssertedMessage<'system'>;
 export function assertIsMessage(
   value: unknown,
   type?: MessageType,
@@ -49,7 +50,7 @@ export function assertIsMessage(
 
   expect(samePackageMessage || structuralMessage).toBe(true);
 
-  const message = value as BaseMessage | MessageLike;
+  const message = value as AssertedMessage;
   const messageType = message._getType();
 
   expect(typeof messageType).toBe('string');

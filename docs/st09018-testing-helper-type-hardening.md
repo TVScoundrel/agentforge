@@ -32,7 +32,7 @@ Tightened the shared `@agentforge/testing` assertion and state-builder helpers s
 
 - `createStateBuilder()` keeps the same fluent `set(...)` and `add*Message(...)` ergonomics; the contract is tighter, but common test setup flows remain unchanged.
 - `createReActState(...)` and `createPlanningState(...)` now preserve explicit falsy numeric inputs such as `0` instead of falling back through truthiness checks.
-- `assertIsMessage(...)` now uses a hybrid runtime check: same-package `BaseMessage` instances still pass directly, and duplicate-package LangChain messages are accepted through a structural `_getType()`/`content` fallback while plain `{ content: ... }` objects are still rejected.
+- `assertIsMessage(...)` now narrows to an honest public `AssertedMessage` contract instead of promising concrete local LangChain classes. Same-package `BaseMessage` instances still pass directly, and duplicate-package LangChain messages are accepted through a structural `_getType()`/`content` fallback while plain `{ content: ... }` objects are still rejected.
 - `createPlanningState(...)` now exposes `results` as `Partial<TResultMap>` so the default empty object is represented honestly at the type boundary.
 - `assertToolCalled(...)` now supports name-only assertions for tool-call collections whose `args` are typed as `unknown`, while preserving the stricter typed-args path when an expected arg shape is provided.
 - `assertStateHasFields(...)` now accepts only string/number keys, and numeric keys are asserted without string coercion.

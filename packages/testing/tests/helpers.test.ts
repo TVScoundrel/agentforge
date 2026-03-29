@@ -24,7 +24,7 @@ describe('testing helpers', () => {
 
     assertIsMessage(message, 'system');
 
-    expect(message).toBeInstanceOf(SystemMessage);
+    expect(message._getType()).toBe('system');
   });
 
   it('assertIsMessage accepts structural message-like values for duplicate package copies', () => {

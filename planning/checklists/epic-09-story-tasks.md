@@ -669,6 +669,7 @@ Implementation notes:
   - `e189e44` `fix(st-09018): narrow helper field key assertions`
   - `c02daf1` `fix(st-09018): initialize empty conversation state`
   - `0ca161a` `fix(st-09018): support cross-package message assertions`
+  - `pending` current round: narrow `assertIsMessage(...)` overloads to the honest structural/public assertion contract
 - [ ] Wait for merge; do not merge directly from local branch
 
 ---
