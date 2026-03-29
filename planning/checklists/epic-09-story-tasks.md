@@ -667,6 +667,7 @@ Implementation notes:
 - [x] Review fixes applied on the active PR branch
   - `8141fe3` `fix(st-09018): tighten helper review contracts`
   - `e189e44` `fix(st-09018): narrow helper field key assertions`
+  - `c02daf1` `fix(st-09018): initialize empty conversation state`
 - [ ] Wait for merge; do not merge directly from local branch
 
 ---
