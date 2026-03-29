@@ -29,6 +29,11 @@ export {
   createConversationState,
   createReActState,
   createPlanningState,
+  type PlanningStep,
+  type PlanningTestState,
+  type ReActTestState,
+  type TestToolCall,
+  type TestToolResult,
 } from './helpers/state-builder.js';
 
 export {
@@ -97,4 +102,3 @@ export {
   assertStateChanged,
   type SnapshotConfig,
 } from './runners/snapshot-testing.js';
-
