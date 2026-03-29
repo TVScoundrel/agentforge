@@ -5,19 +5,19 @@ import {
 } from '@langchain/core/messages';
 import { expect } from 'vitest';
 
-type MessageType = 'human' | 'ai' | 'system';
+type MessageType = 'human' | 'ai' | 'system' | 'tool';
 
 type ToolCall<TArgs = unknown> = {
   name: string;
   args: TArgs;
 };
 
-type MessageLike<TType extends MessageType = MessageType> = {
+type MessageLike<TType extends string = string> = {
   content: unknown;
   _getType: () => TType;
 };
 
-export type AssertedMessage<TType extends MessageType = MessageType> =
+export type AssertedMessage<TType extends string = string> =
   | BaseMessage
   | MessageLike<TType>;
 
@@ -37,10 +37,11 @@ export function assertIsMessage(value: unknown): asserts value is AssertedMessag
 export function assertIsMessage(value: unknown, type: 'human'): asserts value is AssertedMessage<'human'>;
 export function assertIsMessage(value: unknown, type: 'ai'): asserts value is AssertedMessage<'ai'>;
 export function assertIsMessage(value: unknown, type: 'system'): asserts value is AssertedMessage<'system'>;
+export function assertIsMessage(value: unknown, type: 'tool'): asserts value is AssertedMessage<'tool'>;
 export function assertIsMessage(
   value: unknown,
   type?: MessageType,
-): asserts value is BaseMessage {
+): asserts value is AssertedMessage {
   expect(value).toBeDefined();
   expect(value).not.toBeNull();
   expect(typeof value).toBe('object');

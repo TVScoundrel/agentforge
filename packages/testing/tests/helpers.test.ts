@@ -36,6 +36,15 @@ describe('testing helpers', () => {
     expect(() => assertIsMessage(message, 'system')).not.toThrow();
   });
 
+  it('assertIsMessage supports tool messages in the structural fallback contract', () => {
+    const message: unknown = {
+      content: 'tool output',
+      _getType: () => 'tool' as const,
+    };
+
+    expect(() => assertIsMessage(message, 'tool')).not.toThrow();
+  });
+
   it('assertToolCalled matches typed tool arguments', () => {
     const toolCalls = [
       {

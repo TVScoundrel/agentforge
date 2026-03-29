@@ -670,6 +670,7 @@ Implementation notes:
   - `c02daf1` `fix(st-09018): initialize empty conversation state`
   - `0ca161a` `fix(st-09018): support cross-package message assertions`
   - `a1612eb` `fix(st-09018): narrow asserted message typing`
+  - `pending` current round: widen `assertIsMessage(...)` message-type contract to include tool messages
 - [ ] Wait for merge; do not merge directly from local branch
 
 ---
