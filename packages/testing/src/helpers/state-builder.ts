@@ -36,7 +36,7 @@ export interface PlanningTestState<
   messages: BaseMessage[];
   plan: Array<PlanningStep<TStatus>>;
   currentStep: number;
-  results: TResultMap;
+  results: Partial<TResultMap>;
 }
 
 /**
@@ -177,6 +177,6 @@ export function createPlanningState<
     messages: config.messages ?? [],
     plan: config.plan ?? [],
     currentStep: config.currentStep ?? 0,
-    results: config.results ?? ({} as TResultMap),
+    results: config.results ?? {},
   };
 }

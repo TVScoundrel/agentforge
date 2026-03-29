@@ -8,7 +8,7 @@ import { expect } from 'vitest';
 
 type MessageType = 'human' | 'ai' | 'system';
 
-type ToolCall<TArgs extends Record<string, unknown> = Record<string, unknown>> = {
+type ToolCall<TArgs = unknown> = {
   name: string;
   args: TArgs;
 };
@@ -16,14 +16,17 @@ type ToolCall<TArgs extends Record<string, unknown> = Record<string, unknown>> =
 /**
  * Assert that a value is a message of a specific type
  */
+export function assertIsMessage(value: unknown): asserts value is BaseMessage;
+export function assertIsMessage(value: unknown, type: 'human'): asserts value is HumanMessage;
+export function assertIsMessage(value: unknown, type: 'ai'): asserts value is AIMessage;
+export function assertIsMessage(value: unknown, type: 'system'): asserts value is SystemMessage;
 export function assertIsMessage(
   value: unknown,
   type?: MessageType,
 ): asserts value is BaseMessage {
   expect(value).toBeDefined();
   expect(value).not.toBeNull();
-  expect(typeof value).toBe('object');
-  expect(value).toHaveProperty('content');
+  expect(value).toBeInstanceOf(BaseMessage);
 
   if (type === 'human') {
     expect(value).toBeInstanceOf(HumanMessage);
@@ -68,10 +71,19 @@ export function assertStateHasFields<TState extends object>(
 /**
  * Assert that a tool was called with specific arguments
  */
-export function assertToolCalled<TArgs extends Record<string, unknown> = Record<string, unknown>>(
+export function assertToolCalled(
+  toolCalls: ReadonlyArray<ToolCall>,
+  toolName: string,
+): void;
+export function assertToolCalled<TArgs extends Record<string, unknown>>(
   toolCalls: ReadonlyArray<ToolCall<TArgs>>,
   toolName: string,
-  args?: Partial<TArgs>
+  args: Partial<TArgs>,
+): void;
+export function assertToolCalled<TArgs>(
+  toolCalls: ReadonlyArray<ToolCall<TArgs>>,
+  toolName: string,
+  args?: Partial<Extract<TArgs, Record<string, unknown>>>,
 ): void {
   const call = toolCalls.find((tc) => tc.name === toolName);
   expect(call).toBeDefined();

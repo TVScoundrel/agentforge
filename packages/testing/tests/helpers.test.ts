@@ -11,6 +11,12 @@ import {
 } from '../src/index.js';
 
 describe('testing helpers', () => {
+  it('assertIsMessage rejects plain objects when no concrete message instance is provided', () => {
+    const candidate: unknown = { content: 'plain object' };
+
+    expect(() => assertIsMessage(candidate)).toThrow();
+  });
+
   it('assertIsMessage narrows system messages', () => {
     const message: unknown = new SystemMessage('System ready');
 
@@ -30,6 +36,17 @@ describe('testing helpers', () => {
     expect(() =>
       assertToolCalled(toolCalls, 'search', { query: 'agentforge docs' }),
     ).not.toThrow();
+  });
+
+  it('assertToolCalled supports name-only assertions for unknown args', () => {
+    const toolCalls = [
+      {
+        name: 'search',
+        args: 'opaque-payload' as unknown,
+      },
+    ];
+
+    expect(() => assertToolCalled(toolCalls, 'search')).not.toThrow();
   });
 
   it('StateBuilder preserves custom fields while adding messages ergonomically', () => {
@@ -77,5 +94,11 @@ describe('testing helpers', () => {
       },
     });
     assertHasKeys(state, ['messages', 'plan', 'currentStep', 'results']);
+  });
+
+  it('createPlanningState defaults results to an empty object', () => {
+    const state = createPlanningState<{ search: { hits: number } }>();
+
+    expect(state.results).toEqual({});
   });
 });

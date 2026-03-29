@@ -32,13 +32,16 @@ Tightened the shared `@agentforge/testing` assertion and state-builder helpers s
 
 - `createStateBuilder()` keeps the same fluent `set(...)` and `add*Message(...)` ergonomics; the contract is tighter, but common test setup flows remain unchanged.
 - `createReActState(...)` and `createPlanningState(...)` now preserve explicit falsy numeric inputs such as `0` instead of falling back through truthiness checks.
+- `assertIsMessage(...)` now proves an actual `BaseMessage` instance before narrowing, so plain `{ content: ... }` objects are no longer treated as valid LangChain messages.
+- `createPlanningState(...)` now exposes `results` as `Partial<TResultMap>` so the default empty object is represented honestly at the type boundary.
+- `assertToolCalled(...)` now supports name-only assertions for tool-call collections whose `args` are typed as `unknown`, while preserving the stricter typed-args path when an expected arg shape is provided.
 - The new exported helper types (`ReActTestState`, `PlanningTestState`, `TestToolCall`, `TestToolResult`, `PlanningStep`) are additive and keep the public package surface easy to consume from tests.
 
 ## Validation
 
 - `pnpm exec tsc -p packages/testing/tsconfig.json --noEmit`
 - `pnpm exec eslint packages/testing/src/helpers/assertions.ts packages/testing/src/helpers/state-builder.ts packages/testing/src/helpers/contracts.typecheck.ts packages/testing/src/index.ts packages/testing/tests/helpers.test.ts`
-- `pnpm test --run packages/testing/tests/helpers.test.ts` -> `1 passed` file, `5 passed` tests
+- `pnpm test --run packages/testing/tests/helpers.test.ts` -> `1 passed` file, `8 passed` tests
 - `pnpm lint:explicit-any:baseline --silent` -> `233/289` warnings, `testing 31/51`
 - `pnpm test --run` -> `155 passed | 16 skipped` files; `2151 passed | 286 skipped` tests
 - `pnpm lint` -> exit `0`; warnings only (`0` errors)

@@ -664,6 +664,8 @@ Implementation notes:
   - `2982e47` `docs(st-09018): record validation and move story to in-review`
 - [x] Mark PR Ready only after all story tasks are complete
   - PR #80 marked ready: https://github.com/TVScoundrel/agentforge/pull/80
+- [x] Review fixes applied on the active PR branch
+  - `pending` current round: tighten `assertIsMessage(...)`, make planning helper results partial, and widen name-only `assertToolCalled(...)` support
 - [ ] Wait for merge; do not merge directly from local branch
 
 ---

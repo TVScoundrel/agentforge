@@ -39,10 +39,16 @@ const planningState = createPlanningState<{ search: { hits: number } }>({
   },
 });
 
+const defaultPlanningState = createPlanningState<{ search: { hits: number } }>();
+const unknownToolCallState = createReActState({
+  toolCalls: [{ name: 'search', args: 'opaque' as unknown }],
+});
+
 assertStateHasFields(builtState, ['iteration', 'metadata']);
 assertStateSnapshot(planningState, { currentStep: 0 });
 assertHasKeys(planningState, ['messages', 'plan', 'currentStep', 'results']);
 assertToolCalled(reactState.toolCalls, 'search', { query: 'docs' });
+assertToolCalled(unknownToolCallState.toolCalls, 'search');
 
 type BuiltStateMessages = Assert<
   Equal<typeof builtState.messages, BaseMessage[] | undefined>
@@ -51,15 +57,21 @@ type ReactToolArgs = Assert<
   Equal<(typeof reactState.toolCalls)[number]['args'], { query: string }>
 >;
 type PlanningResults = Assert<
-  Equal<typeof planningState.results, { search: { hits: number } }>
+  Equal<typeof planningState.results, Partial<{ search: { hits: number } }>>
+>;
+type DefaultPlanningResults = Assert<
+  Equal<typeof defaultPlanningState.results, Partial<{ search: { hits: number } }>>
 >;
 
 export type TestingHelperTypeChecks = [
   BuiltStateMessages,
   ReactToolArgs,
   PlanningResults,
+  DefaultPlanningResults,
 ];
 
 void builtState;
 void reactState;
 void planningState;
+void defaultPlanningState;
+void unknownToolCallState;
