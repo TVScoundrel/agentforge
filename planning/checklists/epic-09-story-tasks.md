@@ -671,7 +671,9 @@ Implementation notes:
   - `0ca161a` `fix(st-09018): support cross-package message assertions`
   - `a1612eb` `fix(st-09018): narrow asserted message typing`
   - `2a5706d` `fix(st-09018): widen asserted message type coverage`
-- [ ] Wait for merge; do not merge directly from local branch
+- [x] Wait for merge; do not merge directly from local branch
+  - Merged via PR #80: https://github.com/TVScoundrel/agentforge/pull/80
+  - Merge commit: `7d195eb`
 
 ---
 

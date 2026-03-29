@@ -2,11 +2,18 @@
 
 **Purpose:** Track completed and merged stories for the Relational Database Access Tool project.
 
-**Last Updated:** 2026-03-27
+**Last Updated:** 2026-03-29
 
 ---
 
 ## Completed Stories
+
+### ST-09018: Harden Testing Assertion and State Builder Helpers
+- **Merged:** 2026-03-29
+- **PR:** https://github.com/TVScoundrel/agentforge/pull/80 (commit 7d195eb)
+- **Epic:** EP-09 (SOLID Micro-Refactors and Type Boundary Hardening)
+- **Estimate:** 3 hours
+- **Outcome:** Tightened the shared testing assertion and state-builder helper contracts around `unknown`-first and generic builder boundaries, added source-included typecheck coverage plus focused helper regressions, and folded in review fixes for partial planning results, field-key narrowing, empty conversation initialization, honest asserted-message typing, and cross-package message support.
 
 ### ST-09017: Centralize CLI Command Error Handling
 - **Merged:** 2026-03-27
