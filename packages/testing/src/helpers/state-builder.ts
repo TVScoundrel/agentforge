@@ -1,46 +1,91 @@
 import { BaseMessage, HumanMessage, AIMessage, SystemMessage } from '@langchain/core/messages';
 
+type StateBuilderFields = Record<string, unknown> & { messages?: BaseMessage[] };
+type MessageState = { messages: BaseMessage[] };
+type BuiltState<TState extends StateBuilderFields> = TState & Partial<MessageState>;
+
+export interface TestToolCall<TArgs = unknown> {
+  name: string;
+  args: TArgs;
+}
+
+export interface TestToolResult<TResult = string> {
+  name: string;
+  result: TResult;
+}
+
+export interface ReActTestState<TArgs = unknown, TResult = string> {
+  messages: BaseMessage[];
+  thoughts: string[];
+  toolCalls: Array<TestToolCall<TArgs>>;
+  toolResults: Array<TestToolResult<TResult>>;
+  scratchpad: string[];
+  iterations: number;
+  maxIterations: number;
+}
+
+export interface PlanningStep<TStatus extends string = string> {
+  step: string;
+  status: TStatus;
+}
+
+export interface PlanningTestState<
+  TResultMap extends Record<string, unknown> = Record<string, unknown>,
+  TStatus extends string = string,
+> extends StateBuilderFields {
+  messages: BaseMessage[];
+  plan: Array<PlanningStep<TStatus>>;
+  currentStep: number;
+  results: Partial<TResultMap>;
+}
+
 /**
  * Builder for creating test states
  */
-export class StateBuilder<T extends Record<string, any> = Record<string, any>> {
-  private state: Partial<T> = {};
-  
+export class StateBuilder<TState extends StateBuilderFields = StateBuilderFields> {
+  private state: Partial<TState> & Partial<MessageState> = {};
+
   /**
    * Set a field in the state
    */
-  set<K extends keyof T>(key: K, value: T[K]): this {
+  set<K extends keyof TState>(key: K, value: TState[K]): this {
     this.state[key] = value;
     return this;
   }
-  
+
   /**
    * Set multiple fields in the state
    */
-  setMany(fields: Partial<T>): this {
+  setMany(fields: Partial<TState>): this {
     Object.assign(this.state, fields);
     return this;
   }
-  
+
+  private ensureMessages(): BaseMessage[] {
+    if (!this.state.messages) {
+      const messages: BaseMessage[] = [];
+      this.state.messages = messages;
+    }
+
+    return this.state.messages;
+  }
+
   /**
    * Add a message to the messages array
    */
   addMessage(message: BaseMessage): this {
-    if (!(this.state as any).messages) {
-      (this.state as any).messages = [];
-    }
-    ((this.state as any).messages as BaseMessage[]).push(message);
+    this.ensureMessages().push(message);
     return this;
   }
-  
+
   /**
    * Add multiple messages
    */
-  addMessages(messages: BaseMessage[]): this {
+  addMessages(messages: ReadonlyArray<BaseMessage>): this {
     messages.forEach((msg) => this.addMessage(msg));
     return this;
   }
-  
+
   /**
    * Add a human message
    */
@@ -61,14 +106,14 @@ export class StateBuilder<T extends Record<string, any> = Record<string, any>> {
   addSystemMessage(content: string): this {
     return this.addMessage(new SystemMessage(content));
   }
-  
+
   /**
    * Build the state
    */
-  build(): T {
-    return this.state as T;
+  build(): BuiltState<TState> {
+    return this.state as BuiltState<TState>;
   }
-  
+
   /**
    * Reset the builder
    */
@@ -81,16 +126,17 @@ export class StateBuilder<T extends Record<string, any> = Record<string, any>> {
 /**
  * Create a state builder
  */
-export function createStateBuilder<T extends Record<string, any> = Record<string, any>>(): StateBuilder<T> {
-  return new StateBuilder<T>();
+export function createStateBuilder<TState extends StateBuilderFields = StateBuilderFields>(): StateBuilder<TState> {
+  return new StateBuilder<TState>();
 }
 
 /**
  * Create a simple conversation state
  */
-export function createConversationState(messages: string[]): { messages: BaseMessage[] } {
-  const builder = createStateBuilder<{ messages: BaseMessage[] }>();
-  
+export function createConversationState(messages: ReadonlyArray<string>): MessageState {
+  const builder = createStateBuilder<{ messages: BaseMessage[] }>()
+    .set('messages', []);
+
   messages.forEach((msg, index) => {
     if (index % 2 === 0) {
       builder.addHumanMessage(msg);
@@ -105,40 +151,33 @@ export function createConversationState(messages: string[]): { messages: BaseMes
 /**
  * Create a ReAct agent state
  */
-export function createReActState(config: {
-  messages?: BaseMessage[];
-  thoughts?: string[];
-  toolCalls?: Array<{ name: string; args: any }>;
-  toolResults?: Array<{ name: string; result: string }>;
-  scratchpad?: string[];
-  iterations?: number;
-  maxIterations?: number;
-} = {}): any {
+export function createReActState<TArgs = unknown, TResult = string>(
+  config: Partial<ReActTestState<TArgs, TResult>> = {},
+): ReActTestState<TArgs, TResult> {
   return {
-    messages: config.messages || [],
-    thoughts: config.thoughts || [],
-    toolCalls: config.toolCalls || [],
-    toolResults: config.toolResults || [],
-    scratchpad: config.scratchpad || [],
-    iterations: config.iterations || 0,
-    maxIterations: config.maxIterations || 10,
+    messages: config.messages ?? [],
+    thoughts: config.thoughts ?? [],
+    toolCalls: config.toolCalls ?? [],
+    toolResults: config.toolResults ?? [],
+    scratchpad: config.scratchpad ?? [],
+    iterations: config.iterations ?? 0,
+    maxIterations: config.maxIterations ?? 10,
   };
 }
 
 /**
  * Create a planning agent state
  */
-export function createPlanningState(config: {
-  messages?: BaseMessage[];
-  plan?: Array<{ step: string; status: string }>;
-  currentStep?: number;
-  results?: Record<string, any>;
-} = {}): any {
+export function createPlanningState<
+  TResultMap extends Record<string, unknown> = Record<string, unknown>,
+  TStatus extends string = string,
+>(
+  config: Partial<PlanningTestState<TResultMap, TStatus>> = {},
+): PlanningTestState<TResultMap, TStatus> {
   return {
-    messages: config.messages || [],
-    plan: config.plan || [],
-    currentStep: config.currentStep || 0,
-    results: config.results || {},
+    messages: config.messages ?? [],
+    plan: config.plan ?? [],
+    currentStep: config.currentStep ?? 0,
+    results: config.results ?? {},
   };
 }
-
