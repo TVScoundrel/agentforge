@@ -683,7 +683,8 @@ Implementation notes:
 
 ### Checklist
 - [x] Create branch `codex/fix/st-09019-reflection-agent-routing-typing`
-- [ ] Create draft PR with story ID in title
+- [x] Create draft PR with story ID in title
+  - Draft PR #81 created: https://github.com/TVScoundrel/agentforge/pull/81
 - [x] Remove avoidable route/compile `as any` usage from `packages/patterns/src/reflection/agent.ts`
 - [x] Preserve current reflection generator/reflector/reviser/completion routing behavior while tightening route typing
 - [x] Add/update focused tests for route decisions and compiled agent invocation behavior
@@ -696,7 +697,9 @@ Implementation notes:
   - `pnpm lint` -> exit `0`; warnings only (`0` errors)
 - [x] Commit completed checklist items as logical commits and push updates
   - `8553a62` `refactor(st-09019): tighten reflection routing typing`
-- [ ] Mark PR Ready only after all story tasks are complete
+  - `ac82aa4` `docs(st-09019): record validation and move story to in-review`
+- [x] Mark PR Ready only after all story tasks are complete
+  - PR #81 marked ready: https://github.com/TVScoundrel/agentforge/pull/81
 - [ ] Wait for merge; do not merge directly from local branch
 
 ---
