@@ -1,12 +1,12 @@
 # Kanban Queue: AgentForge
 
-**Last Updated:** 2026-03-29
+**Last Updated:** 2026-03-30
 
 ## Queue Status Summary
 
-- **Ready:** 5 stories
+- **Ready:** 4 stories
 - **In Progress:** 0 stories
-- **In Review:** 0 stories
+- **In Review:** 1 story
 - **Blocked:** 0 stories
 - **Backlog:** 6 stories
 
@@ -14,7 +14,6 @@
 
 ## Ready
 
-- `ST-09019` - Harden Reflection Agent Routing Typing
 - `ST-09020` - Tighten Prompt Loader Variable Contracts
 - `ST-09021` - Harden Streaming WebSocket and Message Contracts
 - `ST-09022` - Harden Shared Deduplication Utility Contracts
@@ -24,7 +23,7 @@
 
 ## In Review
 
-_No stories currently in review_
+- `ST-09019` - Harden Reflection Agent Routing Typing
 
 ---
 

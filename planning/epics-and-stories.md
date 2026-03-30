@@ -1144,7 +1144,7 @@
 **Priority:** P1 (High)
 **Estimate:** 3 hours
 **Dependencies:** ST-09012
-**Status:** Backlog
+**Status:** In Review
 
 **Acceptance criteria:**
 - [ ] `packages/patterns/src/reflection/agent.ts` removes avoidable `as any` usage around conditional routing and compile return handling
