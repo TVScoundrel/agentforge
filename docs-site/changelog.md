@@ -5,6 +5,34 @@ All notable changes to AgentForge will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.16.6] - 2026-03-31
+
+### Added
+
+#### @agentforge/patterns - Reflection Route Regression Coverage
+- Added focused reflection route coverage in `packages/patterns/tests/reflection/agent.test.ts` for direct finish when reflection already meets standards and finish after revision when max iterations are reached
+- Added story documentation in `docs/st09019-reflection-agent-routing-typing.md` covering the typed route-map changes, warning delta, and validation record
+
+### Changed
+
+#### @agentforge/patterns - Reflection Agent Routing Typing
+- Tightened `packages/patterns/src/reflection/agent.ts` by replacing conditional-edge `as any` casts with node-specific typed route maps and removing the compile-return cast
+- Preserved the reflection workflow behavior while aligning generator, reflector, and reviser transitions with direct compile inference
+
+### Fixed
+
+#### @agentforge/patterns - Reflection Type Boundary Cleanup
+- Removed the remaining explicit-`any` seams from the reflection agent factory, reducing the workspace explicit-`any` baseline from `233` to `229` and the `patterns` package from `23` to `19`
+
+### Published
+- All packages published to npm registry at version 0.16.6:
+  - @agentforge/core@0.16.6
+  - @agentforge/skills@0.16.6
+  - @agentforge/patterns@0.16.6
+  - @agentforge/tools@0.16.6
+  - @agentforge/testing@0.16.6
+  - @agentforge/cli@0.16.6
+
 ## [0.16.5] - 2026-03-29
 
 ### Added
