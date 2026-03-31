@@ -679,21 +679,27 @@ Implementation notes:
 
 ## ST-09019: Harden Reflection Agent Routing Typing
 
-**Branch:** `fix/st-09019-reflection-agent-routing-typing`
+**Branch:** `codex/fix/st-09019-reflection-agent-routing-typing`
 
 ### Checklist
-- [ ] Create branch `fix/st-09019-reflection-agent-routing-typing`
-- [ ] Create draft PR with story ID in title
-- [ ] Remove avoidable route/compile `as any` usage from `packages/patterns/src/reflection/agent.ts`
-- [ ] Preserve current reflection generator/reflector/reviser/completion routing behavior while tightening route typing
-- [ ] Add/update focused tests for route decisions and compiled agent invocation behavior
-- [ ] Record explicit-`any` warning deltas for touched files in story docs
-- [ ] Add or update story documentation at `docs/st09019-reflection-agent-routing-typing.md` (or document why not required)
-- [ ] Assess test impact; add/update automated tests when needed, or document why tests are not required
-- [ ] Run full test suite before finalizing the PR and record results
-- [ ] Run lint (`pnpm lint`) before finalizing the PR and record results
-- [ ] Commit completed checklist items as logical commits and push updates
-- [ ] Mark PR Ready only after all story tasks are complete
+- [x] Create branch `codex/fix/st-09019-reflection-agent-routing-typing`
+- [x] Create draft PR with story ID in title
+  - Draft PR #81 created: https://github.com/TVScoundrel/agentforge/pull/81
+- [x] Remove avoidable route/compile `as any` usage from `packages/patterns/src/reflection/agent.ts`
+- [x] Preserve current reflection generator/reflector/reviser/completion routing behavior while tightening route typing
+- [x] Add/update focused tests for route decisions and compiled agent invocation behavior
+- [x] Record explicit-`any` warning deltas for touched files in story docs
+- [x] Add or update story documentation at `docs/st09019-reflection-agent-routing-typing.md` (or document why not required)
+- [x] Assess test impact; add/update automated tests when needed, or document why tests are not required
+- [x] Run full test suite before finalizing the PR and record results
+  - `pnpm test --run` -> `156 passed | 16 skipped` files; `2160 passed | 286 skipped` tests
+- [x] Run lint (`pnpm lint`) before finalizing the PR and record results
+  - `pnpm lint` -> exit `0`; warnings only (`0` errors)
+- [x] Commit completed checklist items as logical commits and push updates
+  - `8553a62` `refactor(st-09019): tighten reflection routing typing`
+  - `ac82aa4` `docs(st-09019): record validation and move story to in-review`
+- [x] Mark PR Ready only after all story tasks are complete
+  - PR #81 marked ready: https://github.com/TVScoundrel/agentforge/pull/81
 - [ ] Wait for merge; do not merge directly from local branch
 
 ---

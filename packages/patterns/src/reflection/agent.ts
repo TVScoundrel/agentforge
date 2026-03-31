@@ -9,7 +9,28 @@
 import { StateGraph, END } from '@langchain/langgraph';
 import { ReflectionState, type ReflectionStateType } from './state.js';
 import { createGeneratorNode, createReflectorNode, createReviserNode, createFinisherNode } from './nodes.js';
-import type { ReflectionAgentConfig, ReflectionRoute } from './types.js';
+import type { ReflectionAgentConfig } from './types.js';
+
+type RouteAfterGenerator = 'reflect' | 'error';
+type RouteAfterReflector = 'revise' | 'finish' | 'error';
+type RouteAfterReviser = 'reflect' | 'finish' | 'error';
+
+const generatorRouteMap = {
+  reflect: 'reflector',
+  error: END,
+} as const satisfies Record<RouteAfterGenerator, 'reflector' | typeof END>;
+
+const reflectorRouteMap = {
+  revise: 'reviser',
+  finish: 'finisher',
+  error: END,
+} as const satisfies Record<RouteAfterReflector, 'reviser' | 'finisher' | typeof END>;
+
+const reviserRouteMap = {
+  reflect: 'reflector',
+  finish: 'finisher',
+  error: END,
+} as const satisfies Record<RouteAfterReviser, 'reflector' | 'finisher' | typeof END>;
 
 /**
  * Create a Reflection agent
@@ -89,14 +110,14 @@ export function createReflectionAgent(config: ReflectionAgentConfig) {
   const finisherNode = createFinisherNode();
 
   // Define routing logic
-  const routeAfterGenerator = (state: ReflectionStateType): ReflectionRoute => {
+  const routeAfterGenerator = (state: ReflectionStateType): RouteAfterGenerator => {
     if (state.status === 'failed') {
       return 'error';
     }
     return 'reflect';
   };
 
-  const routeAfterReflector = (state: ReflectionStateType): ReflectionRoute => {
+  const routeAfterReflector = (state: ReflectionStateType): RouteAfterReflector => {
     if (state.status === 'failed') {
       return 'error';
     }
@@ -113,7 +134,7 @@ export function createReflectionAgent(config: ReflectionAgentConfig) {
     return 'revise';
   };
 
-  const routeAfterReviser = (state: ReflectionStateType): ReflectionRoute => {
+  const routeAfterReviser = (state: ReflectionStateType): RouteAfterReviser => {
     if (state.status === 'failed') {
       return 'error';
     }
@@ -138,32 +159,21 @@ export function createReflectionAgent(config: ReflectionAgentConfig) {
     .addEdge('__start__', 'generator')
     .addConditionalEdges(
       'generator',
-      routeAfterGenerator as any,
-      {
-        reflect: 'reflector',
-        error: END,
-      }
+      routeAfterGenerator,
+      generatorRouteMap
     )
     .addConditionalEdges(
       'reflector',
-      routeAfterReflector as any,
-      {
-        revise: 'reviser',
-        finish: 'finisher',
-        error: END,
-      }
+      routeAfterReflector,
+      reflectorRouteMap
     )
     .addConditionalEdges(
       'reviser',
-      routeAfterReviser as any,
-      {
-        reflect: 'reflector',
-        finish: 'finisher',
-        error: END,
-      }
+      routeAfterReviser,
+      reviserRouteMap
     )
     .addEdge('finisher', END);
 
   // Compile with checkpointer if provided
-  return workflow.compile(checkpointer ? { checkpointer } : undefined) as any;
+  return workflow.compile(checkpointer ? { checkpointer } : undefined);
 }
