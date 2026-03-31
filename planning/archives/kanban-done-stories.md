@@ -2,11 +2,18 @@
 
 **Purpose:** Track completed and merged stories for the Relational Database Access Tool project.
 
-**Last Updated:** 2026-03-29
+**Last Updated:** 2026-03-31
 
 ---
 
 ## Completed Stories
+
+### ST-09019: Harden Reflection Agent Routing Typing
+- **Merged:** 2026-03-31
+- **PR:** https://github.com/TVScoundrel/agentforge/pull/81 (commit fd8f0ef)
+- **Epic:** EP-09 (SOLID Micro-Refactors and Type Boundary Hardening)
+- **Estimate:** 3 hours
+- **Outcome:** Tightened the reflection factory around node-specific typed route maps and direct compile inference, removed the remaining route and compile `as any` casts from the reflection agent boundary, and added focused route-behavior coverage for direct completion and max-iteration finishing.
 
 ### ST-09018: Harden Testing Assertion and State Builder Helpers
 - **Merged:** 2026-03-29

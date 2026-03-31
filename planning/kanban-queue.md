@@ -1,14 +1,14 @@
 # Kanban Queue: AgentForge
 
-**Last Updated:** 2026-03-30
+**Last Updated:** 2026-03-31
 
 ## Queue Status Summary
 
-- **Ready:** 4 stories
+- **Ready:** 5 stories
 - **In Progress:** 0 stories
-- **In Review:** 1 story
+- **In Review:** 0 stories
 - **Blocked:** 0 stories
-- **Backlog:** 6 stories
+- **Backlog:** 5 stories
 
 ---
 
@@ -17,13 +17,14 @@
 - `ST-09020` - Tighten Prompt Loader Variable Contracts
 - `ST-09021` - Harden Streaming WebSocket and Message Contracts
 - `ST-09022` - Harden Shared Deduplication Utility Contracts
+- `ST-09023` - Tighten Core Tool Builder Fluent Typing
 - `ST-09029` - Modularize Plan-Execute Node Responsibilities
 
 ---
 
 ## In Review
 
-- `ST-09019` - Harden Reflection Agent Routing Typing
+_No stories currently in review_
 
 ---
 
@@ -41,7 +42,6 @@ _No stories currently blocked_
 
 ## Backlog
 
-- `ST-09023` - Tighten Core Tool Builder Fluent Typing
 - `ST-09024` - Tighten LangGraph Interrupt Type Contracts
   - Depends on `ST-09009`
 - `ST-09025` - Extract Tool Registry Collection and Search Operations
@@ -116,6 +116,7 @@ _No stories currently blocked_
 - ✅ ST-09016 complete - monitoring audit and health payload contracts hardened with follow-up fixes for falsy JSON payload preservation, structured startup logging, and timestamp semantics (PR #78, 2026-03-26)
 - ✅ ST-09017 complete - CLI command error handling centralized behind a shared helper with follow-up fixes for output ordering, spinner behavior, and `never`-typed exit plumbing (PR #79, 2026-03-27)
 - ✅ ST-09018 complete - testing assertion and state-builder helper contracts hardened with follow-up fixes for partial planning results, field-key narrowing, empty conversation initialization, and cross-package message assertions (PR #80, 2026-03-29)
+- ✅ ST-09019 complete - reflection agent routing typing hardened by replacing route and compile casts with typed route maps plus focused factory route coverage (PR #81, 2026-03-31)
 - Epic 09 (SOLID Micro-Refactors and Type Boundary Hardening) was expanded on 2026-03-22 with low-hanging follow-on stories ST-09008 through ST-09012
 - Epic 09 (SOLID Micro-Refactors and Type Boundary Hardening) was expanded again on 2026-03-23 with daily hardening stories ST-09013 through ST-09018
 - Epic 09 (SOLID Micro-Refactors and Type Boundary Hardening) was expanded a third time on 2026-03-23 with daily hardening stories ST-09019 through ST-09028

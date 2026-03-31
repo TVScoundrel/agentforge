@@ -2,8 +2,8 @@
 
 **Epic Range:** EP-09 through EP-09
 **Status:** In Progress
-**Last Updated:** 2026-03-30
-**Active Story:** ST-09019 (In Review)
+**Last Updated:** 2026-03-31
+**Active Story:** ST-09020 (Ready)
 
 ---
 
@@ -32,10 +32,10 @@
 
 ## Current Hotspot Snapshot
 
-Current `@typescript-eslint/no-explicit-any` baseline check (`pnpm lint:explicit-any:baseline`, 2026-03-29):
+Current `@typescript-eslint/no-explicit-any` baseline check (`pnpm lint:explicit-any:baseline`, 2026-03-31):
 
-- Total: `233` warnings (`src/**`)
-- By package: `core 106`, `tools 67`, `testing 31`, `patterns 23`, `cli 6`
+- Total: `229` warnings (`src/**`)
+- By package: `core 106`, `tools 67`, `testing 31`, `patterns 19`, `cli 6`
 
 Top runtime hotspots informing this feature slice:
 
@@ -44,7 +44,7 @@ Top runtime hotspots informing this feature slice:
 3. `packages/patterns/src/multi-agent/nodes.ts` was split behind the stable public entrypoint in `ST-09015`, with follow-up hardening landed for log redaction, workload invariants, interrupt propagation, and model-content serialization
 4. `ST-09017` has centralized repeated CLI command-level `catch (error: any)` handling behind a shared helper and is now merged
 5. `ST-09018` has tightened `packages/testing/src/helpers/assertions.ts` and `packages/testing/src/helpers/state-builder.ts`, reducing the `testing` package warning floor from `51` to `31` and is now merged
-6. `packages/core/src/prompt-loader/index.ts`, `packages/core/src/streaming/websocket.ts`, and `packages/patterns/src/reflection/agent.ts` form the next small runtime boundary-hardening slice after the testing-helper cleanup
+6. `packages/core/src/prompt-loader/index.ts` and `packages/core/src/streaming/websocket.ts` now lead the next small runtime boundary-hardening slice after the reflection-routing cleanup
 7. `packages/core/src/tools/registry.ts` and `packages/tools/src/data/relational/connection/connection-manager.ts` remain larger SRP targets that need multi-story decomposition rather than one oversized cleanup
 8. `packages/patterns/src/plan-execute/nodes.ts` has grown into a larger mixed-responsibility module and has become the next plan-execute modularization target after the ST-09014 shared contract cleanup
 
@@ -65,7 +65,8 @@ Recent improvement snapshot:
 - `ST-09016` merged after tightening the audit/health monitoring payload contracts, lowering the workspace explicit-`any` baseline from `276` to `271` and the `core` package from `111` to `106`, with follow-up fixes for falsy JSON payload retention, structured startup logging, and explicit zero timestamps.
 - `ST-09017` merged after centralizing CLI command error handling, lowering the workspace explicit-`any` baseline from `271` to `253` and the `cli` package from `24` to `6`, with follow-up fixes for preserved output ordering, spinner sequencing, and a `never`-typed shared exit helper.
 - `ST-09018` merged after tightening the shared testing assertion and state-builder helpers, lowering the workspace explicit-`any` baseline from `253` to `233` and the `testing` package from `51` to `31` while adding focused runtime tests plus source-included type regressions.
-- `EP-09` remains open as the daily hardening stream, with the next follow-on slice now centered on reflection routing, prompt-loading contracts, streaming websocket boundaries, shared deduplication helpers, and the plan-execute node modularization follow-up.
+- `ST-09019` merged after tightening the reflection agent factory around typed route maps and direct compile inference, lowering the workspace explicit-`any` baseline from `233` to `229` and the `patterns` package from `23` to `19`.
+- `EP-09` remains open as the daily hardening stream, with the next follow-on slice now centered on prompt-loading contracts, streaming websocket boundaries, shared deduplication helpers, core tool builder typing, and the plan-execute node modularization follow-up.
 - A second follow-on slice is now queued for prompt loading, reflection routing, streaming websocket contracts, shared deduplication helpers, core tool builder typing, interrupt contracts, and split-out registry/connection-manager modularization.
 
 ---
