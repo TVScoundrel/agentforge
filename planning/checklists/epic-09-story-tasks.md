@@ -733,7 +733,9 @@ Implementation notes:
   - `b6ece8d` `docs(st-09020): document own-enumerable prompt compatibility`
 - [x] Mark PR Ready only after all story tasks are complete
   - PR #82 marked ready: https://github.com/TVScoundrel/agentforge/pull/82
-- [ ] Wait for merge; do not merge directly from local branch
+- [x] Wait for merge; do not merge directly from local branch
+  - Merged via PR #82: https://github.com/TVScoundrel/agentforge/pull/82
+  - Merge commit: `e84c425`
 
 ---
 

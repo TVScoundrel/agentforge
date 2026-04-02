@@ -3,7 +3,7 @@
 **Epic Range:** EP-09 through EP-09
 **Status:** In Progress
 **Last Updated:** 2026-04-02
-**Active Story:** ST-09020 (In Review)
+**Active Story:** ST-09021 (Ready)
 
 ---
 
@@ -66,7 +66,7 @@ Recent improvement snapshot:
 - `ST-09017` merged after centralizing CLI command error handling, lowering the workspace explicit-`any` baseline from `271` to `253` and the `cli` package from `24` to `6`, with follow-up fixes for preserved output ordering, spinner sequencing, and a `never`-typed shared exit helper.
 - `ST-09018` merged after tightening the shared testing assertion and state-builder helpers, lowering the workspace explicit-`any` baseline from `253` to `233` and the `testing` package from `51` to `31` while adding focused runtime tests plus source-included type regressions.
 - `ST-09019` merged after tightening the reflection agent factory around typed route maps and direct compile inference, lowering the workspace explicit-`any` baseline from `233` to `229` and the `patterns` package from `23` to `19`.
-- `ST-09020` is in review after tightening the prompt-loader variable contracts around unknown-first trusted/untrusted maps, lowering the workspace explicit-`any` baseline from `229` to `219` and the `core` package from `106` to `96`.
+- `ST-09020` merged after tightening the prompt-loader variable contracts around unknown-first trusted/untrusted maps, lowering the workspace explicit-`any` baseline from `229` to `219` and the `core` package from `106` to `96`, with follow-up fixes for null-prototype map handling, own-property option detection, and documented own-enumerable compatibility boundaries.
 - `EP-09` remains open as the daily hardening stream, with the next follow-on slice now centered on prompt-loading contracts, streaming websocket boundaries, shared deduplication helpers, core tool builder typing, and the plan-execute node modularization follow-up.
 - A second follow-on slice is now queued for prompt loading, reflection routing, streaming websocket contracts, shared deduplication helpers, core tool builder typing, interrupt contracts, and split-out registry/connection-manager modularization.
 

@@ -2,11 +2,18 @@
 
 **Purpose:** Track completed and merged stories for the Relational Database Access Tool project.
 
-**Last Updated:** 2026-03-31
+**Last Updated:** 2026-04-02
 
 ---
 
 ## Completed Stories
+
+### ST-09020: Tighten Prompt Loader Variable Contracts
+- **Merged:** 2026-04-02
+- **PR:** https://github.com/TVScoundrel/agentforge/pull/82 (commit e84c425)
+- **Epic:** EP-09 (SOLID Micro-Refactors and Type Boundary Hardening)
+- **Estimate:** 3 hours
+- **Outcome:** Tightened the prompt-loader variable boundary around unknown-first trusted and untrusted maps, preserved trusted-vs-untrusted rendering and plain-object fallback behavior, added focused prompt-loader regressions for malformed options and prompt-file rendering, and folded in review fixes for null-prototype map handling, own-property option detection, and documented own-enumerable compatibility boundaries.
 
 ### ST-09019: Harden Reflection Agent Routing Typing
 - **Merged:** 2026-03-31
