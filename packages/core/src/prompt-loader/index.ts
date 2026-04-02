@@ -47,7 +47,8 @@ function isPromptVariableMap(value: unknown): value is PromptVariableMap {
 function isRenderTemplateOptions(value: unknown): value is RenderTemplateOptions {
   return (
     isPromptVariableMap(value) &&
-    ('trustedVariables' in value || 'untrustedVariables' in value)
+    (Object.prototype.hasOwnProperty.call(value, 'trustedVariables') ||
+      Object.prototype.hasOwnProperty.call(value, 'untrustedVariables'))
   );
 }
 
