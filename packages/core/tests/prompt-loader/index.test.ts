@@ -139,6 +139,17 @@ describe('Prompt Injection Protection', () => {
 
       expect(result).toBe('Trusted: \nUntrusted: ');
     });
+
+    it('should only consider own enumerable properties from backwards-compatible plain objects', () => {
+      const template = 'Own: {{ownValue}}\nInherited: {{inheritedValue}}';
+      const inheritedSource = { inheritedValue: 'from prototype' };
+      const variables = Object.create(inheritedSource) as Record<string, unknown>;
+      variables.ownValue = 'from own property';
+
+      const result = renderTemplate(template, variables);
+
+      expect(result).toBe('Own: from own property\nInherited: ');
+    });
   });
 
   describe('renderTemplate - Conditional Blocks', () => {

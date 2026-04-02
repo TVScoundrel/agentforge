@@ -125,6 +125,8 @@ export function sanitizeValue(value: unknown): string {
  * SECURITY: Distinguishes between trusted and untrusted variables.
  * - Trusted variables (from config) are used as-is
  * - Untrusted variables (from user input) are sanitized
+ * - Only own enumerable properties are considered from provided variable maps
+ *   or backwards-compatible plain objects
  *
  * @param template - Template string with {{variable}} placeholders
  * @param options - Variables and security options
