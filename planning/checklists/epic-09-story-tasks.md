@@ -711,7 +711,7 @@ Implementation notes:
 **Branch:** `fix/st-09020-prompt-loader-variable-contracts`
 
 ### Checklist
-- [ ] Create branch `fix/st-09020-prompt-loader-variable-contracts`
+- [x] Create branch `fix/st-09020-prompt-loader-variable-contracts`
 - [ ] Create draft PR with story ID in title
 - [ ] Replace broad variable-map `any` usage in `packages/core/src/prompt-loader/index.ts` with safer contracts
 - [ ] Preserve current sanitize/render/load behavior for trusted and untrusted variables

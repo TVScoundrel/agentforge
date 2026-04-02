@@ -1,11 +1,11 @@
 # Kanban Queue: AgentForge
 
-**Last Updated:** 2026-03-31
+**Last Updated:** 2026-04-02
 
 ## Queue Status Summary
 
-- **Ready:** 5 stories
-- **In Progress:** 0 stories
+- **Ready:** 4 stories
+- **In Progress:** 1 story
 - **In Review:** 0 stories
 - **Blocked:** 0 stories
 - **Backlog:** 5 stories
@@ -14,7 +14,6 @@
 
 ## Ready
 
-- `ST-09020` - Tighten Prompt Loader Variable Contracts
 - `ST-09021` - Harden Streaming WebSocket and Message Contracts
 - `ST-09022` - Harden Shared Deduplication Utility Contracts
 - `ST-09023` - Tighten Core Tool Builder Fluent Typing
@@ -30,7 +29,7 @@ _No stories currently in review_
 
 ## In Progress
 
-_No stories currently in progress_
+- `ST-09020` - Tighten Prompt Loader Variable Contracts
 
 ---
 

@@ -16,6 +16,9 @@ import { join } from 'path';
  */
 const MAX_VARIABLE_LENGTH = 500;
 
+export type PromptVariableValue = unknown;
+export type PromptVariableMap = Record<string, PromptVariableValue>;
+
 /**
  * Options for rendering templates with security controls
  */
@@ -24,13 +27,48 @@ export interface RenderTemplateOptions {
    * Variables from trusted sources (config files, hardcoded values)
    * These will NOT be sanitized
    */
-  trustedVariables?: Record<string, any>;
+  trustedVariables?: PromptVariableMap;
   
   /**
    * Variables from untrusted sources (user input, API calls, databases)
    * These WILL be sanitized to prevent prompt injection
    */
-  untrustedVariables?: Record<string, any>;
+  untrustedVariables?: PromptVariableMap;
+}
+
+function isPromptVariableMap(value: unknown): value is PromptVariableMap {
+  return typeof value === 'object' && value !== null && !Array.isArray(value);
+}
+
+function isRenderTemplateOptions(value: unknown): value is RenderTemplateOptions {
+  return (
+    isPromptVariableMap(value) &&
+    ('trustedVariables' in value || 'untrustedVariables' in value)
+  );
+}
+
+function normalizeVariableMap(value: unknown): PromptVariableMap {
+  return isPromptVariableMap(value) ? value : {};
+}
+
+function sanitizeVariableMap(variables: PromptVariableMap): PromptVariableMap {
+  const sanitizedVariables: PromptVariableMap = {};
+
+  for (const [key, value] of Object.entries(variables)) {
+    sanitizedVariables[key] = sanitizeValue(value);
+  }
+
+  return sanitizedVariables;
+}
+
+function mergeVariableMaps(
+  baseVariables: PromptVariableMap,
+  overrideVariables: PromptVariableMap
+): PromptVariableMap {
+  return {
+    ...baseVariables,
+    ...overrideVariables,
+  };
 }
 
 /**
@@ -44,7 +82,7 @@ export interface RenderTemplateOptions {
  * @param value - The value to sanitize
  * @returns Sanitized string safe for use in prompts
  */
-export function sanitizeValue(value: any): string {
+export function sanitizeValue(value: unknown): string {
   if (value === undefined || value === null) return '';
   
   let sanitized = String(value);
@@ -112,39 +150,29 @@ export function sanitizeValue(value: any): string {
  */
 export function renderTemplate(
   template: string,
-  options: RenderTemplateOptions | Record<string, any>
+  options: RenderTemplateOptions | PromptVariableMap
 ): string {
   // Backwards compatibility: if options is a plain object without
   // trustedVariables/untrustedVariables, treat all as trusted
-  let rawVariables: Record<string, any>;
-  let sanitizedVariables: Record<string, any>;
+  let rawVariables: PromptVariableMap;
+  let sanitizedVariables: PromptVariableMap;
 
-  if ('trustedVariables' in options || 'untrustedVariables' in options) {
-    const opts = options as RenderTemplateOptions;
+  if (isRenderTemplateOptions(options)) {
+    const trustedVariables = normalizeVariableMap(options.trustedVariables);
+    const untrustedVariables = normalizeVariableMap(options.untrustedVariables);
 
     // Keep raw values for conditional evaluation
-    rawVariables = {
-      ...opts.trustedVariables,
-      ...opts.untrustedVariables,
-    };
-
-    // Sanitize untrusted variables for substitution
-    const sanitizedUntrusted: Record<string, any> = {};
-    if (opts.untrustedVariables) {
-      for (const [key, value] of Object.entries(opts.untrustedVariables)) {
-        sanitizedUntrusted[key] = sanitizeValue(value);
-      }
-    }
+    rawVariables = mergeVariableMaps(trustedVariables, untrustedVariables);
 
     // Merge: trusted variables are used as-is, untrusted are sanitized
-    sanitizedVariables = {
-      ...opts.trustedVariables,
-      ...sanitizedUntrusted,
-    };
+    sanitizedVariables = mergeVariableMaps(
+      trustedVariables,
+      sanitizeVariableMap(untrustedVariables)
+    );
   } else {
     // Backwards compatible: treat all as trusted
-    rawVariables = options as Record<string, any>;
-    sanitizedVariables = options as Record<string, any>;
+    rawVariables = normalizeVariableMap(options);
+    sanitizedVariables = rawVariables;
   }
 
   let result = template;
@@ -191,7 +219,7 @@ export function renderTemplate(
  */
 export function loadPrompt(
   promptName: string,
-  options: RenderTemplateOptions | Record<string, any> = {},
+  options: RenderTemplateOptions | PromptVariableMap = {},
   promptsDir?: string
 ): string {
   // Default to 'prompts' directory relative to caller
@@ -209,4 +237,3 @@ export function loadPrompt(
     );
   }
 }
-
