@@ -5,6 +5,35 @@ All notable changes to AgentForge will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.16.7] - 2026-04-02
+
+### Added
+
+#### @agentforge/core - Prompt Loader Regression Coverage
+- Added focused prompt-loader coverage in `packages/core/tests/prompt-loader/index.test.ts` for malformed option fallback, prompt-file rendering, prototype-pollution resistance, and own-enumerable plain-object compatibility
+- Added story documentation in `docs/st09020-prompt-loader-variable-contracts.md` covering the prompt-loader contract changes, warning delta, and review-fix history
+
+### Changed
+
+#### @agentforge/core - Prompt Loader Variable Contracts
+- Tightened `packages/core/src/prompt-loader/index.ts` by replacing broad variable-map `any` seams with unknown-first `PromptVariableMap` normalization helpers
+- Preserved trusted-vs-untrusted rendering behavior while keeping backwards-compatible plain-object call sites for `renderTemplate(...)` and `loadPrompt(...)`
+
+### Fixed
+
+#### @agentforge/core - Prompt Variable Map Hardening
+- Normalized trusted and untrusted variable maps onto null-prototype objects, switched prompt option detection to own-property checks, and documented that backwards-compatible plain variable objects are read through own enumerable properties only
+- Reduced the workspace explicit-`any` baseline from `229` to `219`, improving the `core` package from `106` to `96`
+
+### Published
+- All packages published to npm registry at version 0.16.7:
+  - @agentforge/core@0.16.7
+  - @agentforge/skills@0.16.7
+  - @agentforge/patterns@0.16.7
+  - @agentforge/tools@0.16.7
+  - @agentforge/testing@0.16.7
+  - @agentforge/cli@0.16.7
+
 ## [0.16.6] - 2026-03-31
 
 ### Added
