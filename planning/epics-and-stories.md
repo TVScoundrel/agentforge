@@ -1161,7 +1161,7 @@
 **Priority:** P1 (High)
 **Estimate:** 3 hours
 **Dependencies:** ST-09012
-**Status:** Ready
+**Status:** In Review
 
 **Acceptance criteria:**
 - [ ] `packages/core/src/prompt-loader/index.ts` replaces broad variable-map `any` usage with safer unknown-first or JSON-safe contracts

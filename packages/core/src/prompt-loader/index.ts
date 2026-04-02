@@ -16,6 +16,9 @@ import { join } from 'path';
  */
 const MAX_VARIABLE_LENGTH = 500;
 
+export type PromptVariableValue = unknown;
+export type PromptVariableMap = Record<string, PromptVariableValue>;
+
 /**
  * Options for rendering templates with security controls
  */
@@ -24,13 +27,58 @@ export interface RenderTemplateOptions {
    * Variables from trusted sources (config files, hardcoded values)
    * These will NOT be sanitized
    */
-  trustedVariables?: Record<string, any>;
+  trustedVariables?: PromptVariableMap;
   
   /**
    * Variables from untrusted sources (user input, API calls, databases)
    * These WILL be sanitized to prevent prompt injection
    */
-  untrustedVariables?: Record<string, any>;
+  untrustedVariables?: PromptVariableMap;
+}
+
+function createPromptVariableMap(): PromptVariableMap {
+  return Object.create(null) as PromptVariableMap;
+}
+
+function isPromptVariableMap(value: unknown): value is PromptVariableMap {
+  return typeof value === 'object' && value !== null && !Array.isArray(value);
+}
+
+function isRenderTemplateOptions(value: unknown): value is RenderTemplateOptions {
+  return (
+    isPromptVariableMap(value) &&
+    (Object.prototype.hasOwnProperty.call(value, 'trustedVariables') ||
+      Object.prototype.hasOwnProperty.call(value, 'untrustedVariables'))
+  );
+}
+
+function normalizeVariableMap(value: unknown): PromptVariableMap {
+  if (!isPromptVariableMap(value)) {
+    return createPromptVariableMap();
+  }
+
+  return Object.assign(createPromptVariableMap(), value);
+}
+
+function sanitizeVariableMap(variables: PromptVariableMap): PromptVariableMap {
+  const sanitizedVariables = createPromptVariableMap();
+
+  for (const [key, value] of Object.entries(variables)) {
+    sanitizedVariables[key] = sanitizeValue(value);
+  }
+
+  return sanitizedVariables;
+}
+
+function mergeVariableMaps(
+  baseVariables: PromptVariableMap,
+  overrideVariables: PromptVariableMap
+): PromptVariableMap {
+  return Object.assign(
+    createPromptVariableMap(),
+    baseVariables,
+    overrideVariables
+  );
 }
 
 /**
@@ -44,7 +92,7 @@ export interface RenderTemplateOptions {
  * @param value - The value to sanitize
  * @returns Sanitized string safe for use in prompts
  */
-export function sanitizeValue(value: any): string {
+export function sanitizeValue(value: unknown): string {
   if (value === undefined || value === null) return '';
   
   let sanitized = String(value);
@@ -77,6 +125,8 @@ export function sanitizeValue(value: any): string {
  * SECURITY: Distinguishes between trusted and untrusted variables.
  * - Trusted variables (from config) are used as-is
  * - Untrusted variables (from user input) are sanitized
+ * - Only own enumerable properties are considered from provided variable maps
+ *   or backwards-compatible plain objects
  *
  * @param template - Template string with {{variable}} placeholders
  * @param options - Variables and security options
@@ -112,39 +162,29 @@ export function sanitizeValue(value: any): string {
  */
 export function renderTemplate(
   template: string,
-  options: RenderTemplateOptions | Record<string, any>
+  options: RenderTemplateOptions | PromptVariableMap
 ): string {
   // Backwards compatibility: if options is a plain object without
   // trustedVariables/untrustedVariables, treat all as trusted
-  let rawVariables: Record<string, any>;
-  let sanitizedVariables: Record<string, any>;
+  let rawVariables: PromptVariableMap;
+  let sanitizedVariables: PromptVariableMap;
 
-  if ('trustedVariables' in options || 'untrustedVariables' in options) {
-    const opts = options as RenderTemplateOptions;
+  if (isRenderTemplateOptions(options)) {
+    const trustedVariables = normalizeVariableMap(options.trustedVariables);
+    const untrustedVariables = normalizeVariableMap(options.untrustedVariables);
 
     // Keep raw values for conditional evaluation
-    rawVariables = {
-      ...opts.trustedVariables,
-      ...opts.untrustedVariables,
-    };
-
-    // Sanitize untrusted variables for substitution
-    const sanitizedUntrusted: Record<string, any> = {};
-    if (opts.untrustedVariables) {
-      for (const [key, value] of Object.entries(opts.untrustedVariables)) {
-        sanitizedUntrusted[key] = sanitizeValue(value);
-      }
-    }
+    rawVariables = mergeVariableMaps(trustedVariables, untrustedVariables);
 
     // Merge: trusted variables are used as-is, untrusted are sanitized
-    sanitizedVariables = {
-      ...opts.trustedVariables,
-      ...sanitizedUntrusted,
-    };
+    sanitizedVariables = mergeVariableMaps(
+      trustedVariables,
+      sanitizeVariableMap(untrustedVariables)
+    );
   } else {
     // Backwards compatible: treat all as trusted
-    rawVariables = options as Record<string, any>;
-    sanitizedVariables = options as Record<string, any>;
+    rawVariables = normalizeVariableMap(options);
+    sanitizedVariables = rawVariables;
   }
 
   let result = template;
@@ -191,7 +231,7 @@ export function renderTemplate(
  */
 export function loadPrompt(
   promptName: string,
-  options: RenderTemplateOptions | Record<string, any> = {},
+  options: RenderTemplateOptions | PromptVariableMap = {},
   promptsDir?: string
 ): string {
   // Default to 'prompts' directory relative to caller
@@ -209,4 +249,3 @@ export function loadPrompt(
     );
   }
 }
-
