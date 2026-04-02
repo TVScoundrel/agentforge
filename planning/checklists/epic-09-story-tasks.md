@@ -712,16 +712,21 @@ Implementation notes:
 
 ### Checklist
 - [x] Create branch `fix/st-09020-prompt-loader-variable-contracts`
-- [ ] Create draft PR with story ID in title
-- [ ] Replace broad variable-map `any` usage in `packages/core/src/prompt-loader/index.ts` with safer contracts
-- [ ] Preserve current sanitize/render/load behavior for trusted and untrusted variables
-- [ ] Add/update focused tests for variable rendering, escaping, and fallback behavior
-- [ ] Record explicit-`any` warning deltas for touched files in story docs
-- [ ] Add or update story documentation at `docs/st09020-prompt-loader-variable-contracts.md` (or document why not required)
-- [ ] Assess test impact; add/update automated tests when needed, or document why tests are not required
-- [ ] Run full test suite before finalizing the PR and record results
-- [ ] Run lint (`pnpm lint`) before finalizing the PR and record results
-- [ ] Commit completed checklist items as logical commits and push updates
+- [x] Create draft PR with story ID in title
+  - Draft PR #82: https://github.com/TVScoundrel/agentforge/pull/82
+- [x] Replace broad variable-map `any` usage in `packages/core/src/prompt-loader/index.ts` with safer contracts
+- [x] Preserve current sanitize/render/load behavior for trusted and untrusted variables
+- [x] Add/update focused tests for variable rendering, escaping, and fallback behavior
+- [x] Record explicit-`any` warning deltas for touched files in story docs
+- [x] Add or update story documentation at `docs/st09020-prompt-loader-variable-contracts.md` (or document why not required)
+- [x] Assess test impact; add/update automated tests when needed, or document why tests are not required
+  - Added/updated automated tests in `packages/core/tests/prompt-loader/index.test.ts`
+- [x] Run full test suite before finalizing the PR and record results
+  - `pnpm test --run` -> `156 passed | 16 skipped` files; `2163 passed | 286 skipped` tests
+- [x] Run lint (`pnpm lint`) before finalizing the PR and record results
+  - `pnpm lint` -> exit `0`; warnings only
+- [x] Commit completed checklist items as logical commits and push updates
+  - `2415bf6` `fix(st-09020): tighten prompt loader variable contracts`
 - [ ] Mark PR Ready only after all story tasks are complete
 - [ ] Wait for merge; do not merge directly from local branch
 
