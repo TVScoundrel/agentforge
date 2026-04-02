@@ -36,6 +36,10 @@ export interface RenderTemplateOptions {
   untrustedVariables?: PromptVariableMap;
 }
 
+function createPromptVariableMap(): PromptVariableMap {
+  return Object.create(null) as PromptVariableMap;
+}
+
 function isPromptVariableMap(value: unknown): value is PromptVariableMap {
   return typeof value === 'object' && value !== null && !Array.isArray(value);
 }
@@ -48,11 +52,15 @@ function isRenderTemplateOptions(value: unknown): value is RenderTemplateOptions
 }
 
 function normalizeVariableMap(value: unknown): PromptVariableMap {
-  return isPromptVariableMap(value) ? value : {};
+  if (!isPromptVariableMap(value)) {
+    return createPromptVariableMap();
+  }
+
+  return Object.assign(createPromptVariableMap(), value);
 }
 
 function sanitizeVariableMap(variables: PromptVariableMap): PromptVariableMap {
-  const sanitizedVariables: PromptVariableMap = {};
+  const sanitizedVariables = createPromptVariableMap();
 
   for (const [key, value] of Object.entries(variables)) {
     sanitizedVariables[key] = sanitizeValue(value);
@@ -65,10 +73,11 @@ function mergeVariableMaps(
   baseVariables: PromptVariableMap,
   overrideVariables: PromptVariableMap
 ): PromptVariableMap {
-  return {
-    ...baseVariables,
-    ...overrideVariables,
-  };
+  return Object.assign(
+    createPromptVariableMap(),
+    baseVariables,
+    overrideVariables
+  );
 }
 
 /**
