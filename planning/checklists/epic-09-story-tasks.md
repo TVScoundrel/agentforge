@@ -729,7 +729,7 @@ Implementation notes:
   - `2415bf6` `fix(st-09020): tighten prompt loader variable contracts`
   - `3d0f75d` `docs(st-09020): record validation and move story to in-review`
   - `a23e829` `fix(st-09020): harden prompt variable map handling`
-  - pending review-fix commit for own-property prompt option detection
+  - `ae17ea5` `fix(st-09020): use own-property prompt option detection`
 - [x] Mark PR Ready only after all story tasks are complete
   - PR #82 marked ready: https://github.com/TVScoundrel/agentforge/pull/82
 - [ ] Wait for merge; do not merge directly from local branch
