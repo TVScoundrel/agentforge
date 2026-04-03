@@ -771,6 +771,7 @@ Implementation notes:
   - `pnpm test --run` -> `156 passed | 16 skipped` files; `2166 passed | 286 skipped` tests
   - `pnpm lint` -> exit `0`; warnings only
 - Review fix commit: `b83a17d` `fix(st-09021): tighten websocket review fixes`
+- Review fix commit: `7f53266` `fix(st-09021): soften heartbeat capability errors`
 
 ---
 
