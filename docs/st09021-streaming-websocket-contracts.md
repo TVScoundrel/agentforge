@@ -35,7 +35,7 @@ Remaining warnings in `packages/core/src/streaming/types.ts` are the pre-existin
 - Non-string message payloads are still forwarded unchanged to `onMessage(...)`; the callback boundary is now `unknown` instead of `any`.
 - `sendMessage(...)` and `broadcast(...)` still serialize the message once with `JSON.stringify(...)` and still send only when `readyState === 1`.
 - The WebSocket helper types now describe a minimal structural socket contract instead of `any`, which aligns with common Node server-side WebSocket libraries such as `ws` that provide `on(...)`, `send(...)`, and `readyState`; browser-native WebSockets require an adapter for that contract.
-- `ping()` and `terminate()` are now optional on the structural socket contract, but `heartbeat > 0` still requires a socket implementation that provides both methods; when they are missing, the handler reports the compatibility error through `onError(...)` and returns early.
+- `ping()` and `terminate()` are now optional on the structural socket contract, but `heartbeat > 0` still requires a socket implementation that provides both methods; when they are missing, the handler reports the compatibility error through `onError(...)`, closes the socket when possible, and returns early.
 - Close reasons are now typed as string-or-binary payloads rather than just `string`, matching the broader runtime behavior of WebSocket implementations without changing the forwarding behavior.
 
 ## Validation

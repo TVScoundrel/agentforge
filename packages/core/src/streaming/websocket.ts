@@ -36,6 +36,25 @@ function createHeartbeatCapabilityError(): Error {
   );
 }
 
+function closeIncompatibleHeartbeatSocket(socket: WebSocketConnection): void {
+  if (typeof socket.close === 'function') {
+    try {
+      socket.close();
+      return;
+    } catch {
+      // Ignore close errors after reporting the heartbeat compatibility issue.
+    }
+  }
+
+  if (typeof socket.terminate === 'function') {
+    try {
+      socket.terminate();
+    } catch {
+      // Ignore terminate errors after reporting the heartbeat compatibility issue.
+    }
+  }
+}
+
 /**
  * Create a WebSocket handler for bidirectional streaming
  *
@@ -82,6 +101,7 @@ export function createWebSocketHandler<
         if (onError) {
           onError(ws, createHeartbeatCapabilityError());
         }
+        closeIncompatibleHeartbeatSocket(socket);
         return;
       }
 

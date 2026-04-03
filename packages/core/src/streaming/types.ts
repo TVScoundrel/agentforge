@@ -168,27 +168,30 @@ export interface WebSocketConnection<
   ): void;
   /** Send string data */
   send(data: string): void;
+  /** Close gracefully when supported by the implementation */
+  close?(): void;
   /** Send ping when heartbeat support is available */
   ping?(): void;
   /** Force terminate socket when supported by the implementation */
   terminate?(): void;
 }
 
+type WebSocketConnectionTypeParts<TSocket extends WebSocketConnection> =
+  TSocket extends WebSocketConnection<infer TMessage, infer TCloseReason>
+    ? { message: TMessage; closeReason: TCloseReason }
+    : { message: WebSocketRawMessage; closeReason: WebSocketCloseReason };
+
 /**
  * Extract message payload type from a WebSocket-like connection
  */
 export type WebSocketMessageFor<TSocket extends WebSocketConnection> =
-  TSocket extends WebSocketConnection<infer TMessage>
-    ? TMessage
-    : WebSocketRawMessage;
+  WebSocketConnectionTypeParts<TSocket>['message'];
 
 /**
  * Extract close reason type from a WebSocket-like connection
  */
 export type WebSocketCloseReasonFor<TSocket extends WebSocketConnection> =
-  TSocket extends WebSocketConnection<WebSocketRawMessage, infer TCloseReason>
-    ? TCloseReason
-    : WebSocketCloseReason;
+  WebSocketConnectionTypeParts<TSocket>['closeReason'];
 
 /**
  * Minimal WebSocket-like send target used by send/broadcast helpers

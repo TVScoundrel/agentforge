@@ -30,6 +30,10 @@ class MockWebSocket implements WebSocketConnection<unknown, string> {
     // Mock send
   }
 
+  close = () => {
+    // Mock close
+  };
+
   ping = () => {
     // Mock ping
   };
@@ -203,6 +207,7 @@ describe('WebSocket Support', () => {
       const handler = createWebSocketHandler({ onConnect, onError, heartbeat: 1000 });
 
       const ws = new MockWebSocket();
+      const closeSpy = vi.spyOn(ws, 'close');
       Object.defineProperty(ws, 'ping', { value: undefined });
       Object.defineProperty(ws, 'terminate', { value: undefined });
       handler(ws);
@@ -215,6 +220,7 @@ describe('WebSocket Support', () => {
         })
       );
       expect(onConnect).not.toHaveBeenCalled();
+      expect(closeSpy).toHaveBeenCalled();
       expect(ws.handlers.message).toHaveLength(0);
       expect(ws.handlers.close).toHaveLength(0);
     });
