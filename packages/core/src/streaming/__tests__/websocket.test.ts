@@ -30,13 +30,13 @@ class MockWebSocket implements WebSocketConnection<unknown, string> {
     // Mock send
   }
 
-  ping() {
+  ping = () => {
     // Mock ping
-  }
+  };
 
-  terminate() {
+  terminate = () => {
     // Mock terminate
-  }
+  };
 
   emitPong() {
     for (const handler of this.handlers.pong) {
@@ -195,6 +195,28 @@ describe('WebSocket Support', () => {
       await new Promise((resolve) => setTimeout(resolve, 10));
 
       expect(onError).toHaveBeenCalledWith(ws, expect.objectContaining({ message: 'Message error' }));
+    });
+
+    it('should report heartbeat capability errors through onError and return early', () => {
+      const onConnect = vi.fn();
+      const onError = vi.fn();
+      const handler = createWebSocketHandler({ onConnect, onError, heartbeat: 1000 });
+
+      const ws = new MockWebSocket();
+      Object.defineProperty(ws, 'ping', { value: undefined });
+      Object.defineProperty(ws, 'terminate', { value: undefined });
+      handler(ws);
+
+      expect(onError).toHaveBeenCalledWith(
+        ws,
+        expect.objectContaining({
+          message:
+            'WebSocket heartbeat requires ping() and terminate() support on the provided socket',
+        })
+      );
+      expect(onConnect).not.toHaveBeenCalled();
+      expect(ws.handlers.message).toHaveLength(0);
+      expect(ws.handlers.close).toHaveLength(0);
     });
   });
 

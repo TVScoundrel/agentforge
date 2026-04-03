@@ -30,6 +30,12 @@ function normalizeThrownError(error: unknown): Error {
   return error instanceof Error ? error : new Error(String(error));
 }
 
+function createHeartbeatCapabilityError(): Error {
+  return new Error(
+    'WebSocket heartbeat requires ping() and terminate() support on the provided socket'
+  );
+}
+
 /**
  * Create a WebSocket handler for bidirectional streaming
  *
@@ -73,9 +79,10 @@ export function createWebSocketHandler<
     // Set up heartbeat
     if (heartbeat > 0) {
       if (typeof ws.ping !== 'function' || typeof ws.terminate !== 'function') {
-        throw new Error(
-          'WebSocket heartbeat requires ping() and terminate() support on the provided socket'
-        );
+        if (onError) {
+          onError(ws, createHeartbeatCapabilityError());
+        }
+        return;
       }
 
       const ping = ws.ping.bind(ws);
