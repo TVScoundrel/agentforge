@@ -123,7 +123,10 @@ export interface SSEFormatter<T = any> {
 /**
  * Binary WebSocket payload
  */
-export type WebSocketBinaryData = ArrayBuffer | ArrayBufferView;
+export type WebSocketBinaryData =
+  | ArrayBuffer
+  | ArrayBufferView
+  | ReadonlyArray<ArrayBufferView>;
 
 /**
  * Raw WebSocket message payload

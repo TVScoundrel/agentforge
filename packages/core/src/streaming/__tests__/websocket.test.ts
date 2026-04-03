@@ -177,10 +177,7 @@ describe('WebSocket Support', () => {
       const ws = new MockWebSocket();
       handler(ws);
 
-      // Emit message and wait for async handler to complete
       await ws.emitMessage('{"type":"test"}');
-      // Give time for the async error handler to be called
-      await new Promise((resolve) => setTimeout(resolve, 10));
 
       expect(onError).toHaveBeenCalledWith(ws, expect.any(Error));
     });
@@ -196,7 +193,6 @@ describe('WebSocket Support', () => {
       handler(ws);
 
       await ws.emitMessage('{"type":"test"}');
-      await new Promise((resolve) => setTimeout(resolve, 10));
 
       expect(onError).toHaveBeenCalledWith(ws, expect.objectContaining({ message: 'Message error' }));
     });
