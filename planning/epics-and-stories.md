@@ -1178,7 +1178,7 @@
 **Priority:** P1 (High)
 **Estimate:** 3 hours
 **Dependencies:** ST-09012
-**Status:** Ready
+**Status:** In Review
 
 **Acceptance criteria:**
 - [ ] `packages/core/src/streaming/websocket.ts` and adjacent streaming types replace broad `ws`, `message`, and `data` `any` boundaries with safer contracts

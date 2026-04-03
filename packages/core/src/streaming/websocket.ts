@@ -3,7 +3,57 @@
  * @module streaming/websocket
  */
 
-import type { WebSocketHandlerOptions, WebSocketMessage } from './types.js';
+import type {
+  WebSocketCloseReasonFor,
+  WebSocketConnection,
+  WebSocketHandlerOptions,
+  WebSocketMessage,
+  WebSocketMessageFor,
+  WebSocketSendTarget,
+} from './types.js';
+
+const WEBSOCKET_OPEN = 1;
+
+function parseWebSocketMessage(data: unknown): unknown {
+  if (typeof data !== 'string') {
+    return data;
+  }
+
+  try {
+    return JSON.parse(data);
+  } catch {
+    return data;
+  }
+}
+
+function normalizeThrownError(error: unknown): Error {
+  return error instanceof Error ? error : new Error(String(error));
+}
+
+function createHeartbeatCapabilityError(): Error {
+  return new Error(
+    'WebSocket heartbeat requires ping() and terminate() support on the provided socket'
+  );
+}
+
+function closeIncompatibleHeartbeatSocket(socket: WebSocketConnection): void {
+  if (typeof socket.close === 'function') {
+    try {
+      socket.close();
+      return;
+    } catch {
+      // Ignore close errors after reporting the heartbeat compatibility issue.
+    }
+  }
+
+  if (typeof socket.terminate === 'function') {
+    try {
+      socket.terminate();
+    } catch {
+      // Ignore terminate errors after reporting the heartbeat compatibility issue.
+    }
+  }
+}
 
 /**
  * Create a WebSocket handler for bidirectional streaming
@@ -31,15 +81,33 @@ import type { WebSocketHandlerOptions, WebSocketMessage } from './types.js';
  * wss.on('connection', handler);
  * ```
  */
-export function createWebSocketHandler(options: WebSocketHandlerOptions) {
+export function createWebSocketHandler<
+  TSocket extends WebSocketConnection = WebSocketConnection,
+  TRequest = unknown,
+>(options: WebSocketHandlerOptions<TSocket, TRequest>) {
   const { onConnect, onMessage, onError, onClose, heartbeat = 0 } = options;
 
-  return function handler(ws: any, req?: any) {
+  return function handler(ws: TSocket, req?: TRequest) {
+    const socket = ws as WebSocketConnection<
+      WebSocketMessageFor<TSocket>,
+      WebSocketCloseReasonFor<TSocket>
+    >;
     let heartbeatInterval: NodeJS.Timeout | null = null;
     let isAlive = true;
 
     // Set up heartbeat
     if (heartbeat > 0) {
+      if (typeof ws.ping !== 'function' || typeof ws.terminate !== 'function') {
+        if (onError) {
+          onError(ws, createHeartbeatCapabilityError());
+        }
+        closeIncompatibleHeartbeatSocket(socket);
+        return;
+      }
+
+      const ping = ws.ping.bind(ws);
+      const terminate = ws.terminate.bind(ws);
+
       // Ping client periodically
       heartbeatInterval = setInterval(() => {
         if (!isAlive) {
@@ -47,16 +115,16 @@ export function createWebSocketHandler(options: WebSocketHandlerOptions) {
           if (heartbeatInterval) {
             clearInterval(heartbeatInterval);
           }
-          ws.terminate();
+          terminate();
           return;
         }
 
         isAlive = false;
-        ws.ping();
+        ping();
       }, heartbeat);
 
       // Handle pong responses
-      ws.on('pong', () => {
+      socket.on('pong', () => {
         isAlive = true;
       });
     }
@@ -67,25 +135,15 @@ export function createWebSocketHandler(options: WebSocketHandlerOptions) {
         onConnect(ws, req);
       } catch (error) {
         if (onError) {
-          onError(ws, error as Error);
+          onError(ws, normalizeThrownError(error));
         }
       }
     }
 
     // Handle incoming messages
-    ws.on('message', async (data: any) => {
+    socket.on('message', async (data) => {
       try {
-        // Parse message
-        let message: any;
-        if (typeof data === 'string') {
-          try {
-            message = JSON.parse(data);
-          } catch {
-            message = data;
-          }
-        } else {
-          message = data;
-        }
+        const message = parseWebSocketMessage(data);
 
         // Handle message
         if (onMessage) {
@@ -93,20 +151,20 @@ export function createWebSocketHandler(options: WebSocketHandlerOptions) {
         }
       } catch (error) {
         if (onError) {
-          onError(ws, error as Error);
+          onError(ws, normalizeThrownError(error));
         }
       }
     });
 
     // Handle errors
-    ws.on('error', (error: Error) => {
+    socket.on('error', (error: Error) => {
       if (onError) {
         onError(ws, error);
       }
     });
 
     // Handle close
-    ws.on('close', (code?: number, reason?: string) => {
+    socket.on('close', (code, reason) => {
       // Clean up heartbeat
       if (heartbeatInterval) {
         clearInterval(heartbeatInterval);
@@ -124,8 +182,11 @@ export function createWebSocketHandler(options: WebSocketHandlerOptions) {
  *
  * Automatically serializes objects to JSON
  */
-export function sendMessage(ws: any, message: WebSocketMessage): void {
-  if (ws.readyState === 1) {
+export function sendMessage<TData = unknown>(
+  ws: WebSocketSendTarget,
+  message: WebSocketMessage<TData>
+): void {
+  if (ws.readyState === WEBSOCKET_OPEN) {
     // WebSocket.OPEN
     ws.send(JSON.stringify(message));
   }
@@ -134,11 +195,14 @@ export function sendMessage(ws: any, message: WebSocketMessage): void {
 /**
  * Broadcast a message to multiple WebSocket clients
  */
-export function broadcast(clients: Set<any>, message: WebSocketMessage): void {
+export function broadcast<TData = unknown, TSocket extends WebSocketSendTarget = WebSocketSendTarget>(
+  clients: Set<TSocket>,
+  message: WebSocketMessage<TData>
+): void {
   const data = JSON.stringify(message);
 
   for (const client of clients) {
-    if (client.readyState === 1) {
+    if (client.readyState === WEBSOCKET_OPEN) {
       // WebSocket.OPEN
       client.send(data);
     }
@@ -148,7 +212,10 @@ export function broadcast(clients: Set<any>, message: WebSocketMessage): void {
 /**
  * Create a WebSocket message
  */
-export function createMessage(type: string, data?: any, error?: string): WebSocketMessage {
+export function createMessage<TData = unknown>(
+  type: string,
+  data?: TData,
+  error?: string
+): WebSocketMessage<TData> {
   return { type, data, error };
 }
-
