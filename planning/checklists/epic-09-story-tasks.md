@@ -795,7 +795,7 @@ Implementation notes:
 - [x] Run lint (`pnpm lint`) before finalizing the PR and record results
 - [x] Commit completed checklist items as logical commits and push updates
 - [x] Mark PR Ready only after all story tasks are complete
-- [ ] Wait for merge; do not merge directly from local branch
+- [x] Wait for merge; do not merge directly from local branch
 
 ### Notes
 
@@ -810,6 +810,8 @@ Implementation notes:
   - `pnpm lint:explicit-any:baseline --silent` -> `201/289` warnings, `patterns 15/28`
   - `pnpm test --run` -> `156 passed | 16 skipped` files; `2170 passed | 286 skipped` tests
   - `pnpm lint` -> exit `0`; warnings only
+- Merged PR: #84
+- Merge commit: `82aad8e`
 
 ---
 

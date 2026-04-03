@@ -8,6 +8,13 @@
 
 ## Completed Stories
 
+### ST-09022: Harden Shared Deduplication Utility Contracts
+- **Merged:** 2026-04-03
+- **PR:** https://github.com/TVScoundrel/agentforge/pull/84 (commit 82aad8e)
+- **Epic:** EP-09 (SOLID Micro-Refactors and Type Boundary Hardening)
+- **Estimate:** 3 hours
+- **Outcome:** Tightened the shared deduplication helpers around unknown-first normalization and cache-key generation, normalized sorted objects onto null-prototype maps so special keys are treated as data, added focused coverage for the `__proto__` special-key path, and improved the workspace explicit-`any` baseline from 205 to 201 while lowering the `patterns` package from 19 to 15.
+
 ### ST-09021: Harden Streaming WebSocket and Message Contracts
 - **Merged:** 2026-04-03
 - **PR:** https://github.com/TVScoundrel/agentforge/pull/83 (commit 87885d1)
