@@ -168,10 +168,10 @@ export interface WebSocketConnection<
   ): void;
   /** Send string data */
   send(data: string): void;
-  /** Send ping */
-  ping(): void;
-  /** Force terminate socket */
-  terminate(): void;
+  /** Send ping when heartbeat support is available */
+  ping?(): void;
+  /** Force terminate socket when supported by the implementation */
+  terminate?(): void;
 }
 
 /**

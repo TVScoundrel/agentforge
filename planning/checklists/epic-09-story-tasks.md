@@ -766,7 +766,7 @@ Implementation notes:
 - Validation:
   - `pnpm exec tsc -p packages/core/tsconfig.json --noEmit`
   - `pnpm exec eslint packages/core/src/streaming/websocket.ts packages/core/src/streaming/types.ts packages/core/src/streaming/index.ts packages/core/src/streaming/__tests__/websocket.test.ts`
-  - `pnpm test --run packages/core/src/streaming/__tests__/websocket.test.ts` -> `1 passed` file, `14 passed` tests
+  - `pnpm test --run packages/core/src/streaming/__tests__/websocket.test.ts` -> `1 passed` file, `16 passed` tests
   - `pnpm lint:explicit-any:baseline --silent` -> `205/289` warnings, `core 82/119`
   - `pnpm test --run` -> `156 passed | 16 skipped` files; `2166 passed | 286 skipped` tests
   - `pnpm lint` -> exit `0`; warnings only

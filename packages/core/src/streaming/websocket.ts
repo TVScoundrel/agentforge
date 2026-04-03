@@ -26,6 +26,10 @@ function parseWebSocketMessage(data: unknown): unknown {
   }
 }
 
+function normalizeThrownError(error: unknown): Error {
+  return error instanceof Error ? error : new Error(String(error));
+}
+
 /**
  * Create a WebSocket handler for bidirectional streaming
  *
@@ -68,6 +72,15 @@ export function createWebSocketHandler<
 
     // Set up heartbeat
     if (heartbeat > 0) {
+      if (typeof ws.ping !== 'function' || typeof ws.terminate !== 'function') {
+        throw new Error(
+          'WebSocket heartbeat requires ping() and terminate() support on the provided socket'
+        );
+      }
+
+      const ping = ws.ping.bind(ws);
+      const terminate = ws.terminate.bind(ws);
+
       // Ping client periodically
       heartbeatInterval = setInterval(() => {
         if (!isAlive) {
@@ -75,12 +88,12 @@ export function createWebSocketHandler<
           if (heartbeatInterval) {
             clearInterval(heartbeatInterval);
           }
-          ws.terminate();
+          terminate();
           return;
         }
 
         isAlive = false;
-        ws.ping();
+        ping();
       }, heartbeat);
 
       // Handle pong responses
@@ -95,7 +108,7 @@ export function createWebSocketHandler<
         onConnect(ws, req);
       } catch (error) {
         if (onError) {
-          onError(ws, error as Error);
+          onError(ws, normalizeThrownError(error));
         }
       }
     }
@@ -111,7 +124,7 @@ export function createWebSocketHandler<
         }
       } catch (error) {
         if (onError) {
-          onError(ws, error as Error);
+          onError(ws, normalizeThrownError(error));
         }
       }
     });

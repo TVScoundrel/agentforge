@@ -150,6 +150,19 @@ describe('WebSocket Support', () => {
       expect(onError).toHaveBeenCalledWith(ws, expect.any(Error));
     });
 
+    it('should normalize non-Error values thrown in onConnect', () => {
+      const onConnect = vi.fn(() => {
+        throw 'Connect error';
+      });
+      const onError = vi.fn();
+      const handler = createWebSocketHandler({ onConnect, onError });
+
+      const ws = new MockWebSocket();
+      handler(ws);
+
+      expect(onError).toHaveBeenCalledWith(ws, expect.objectContaining({ message: 'Connect error' }));
+    });
+
     it('should handle errors in onMessage', async () => {
       const onMessage = vi.fn(async () => {
         throw new Error('Message error');
@@ -166,6 +179,22 @@ describe('WebSocket Support', () => {
       await new Promise((resolve) => setTimeout(resolve, 10));
 
       expect(onError).toHaveBeenCalledWith(ws, expect.any(Error));
+    });
+
+    it('should normalize non-Error values thrown in onMessage', async () => {
+      const onMessage = vi.fn(async () => {
+        throw 'Message error';
+      });
+      const onError = vi.fn();
+      const handler = createWebSocketHandler({ onMessage, onError });
+
+      const ws = new MockWebSocket();
+      handler(ws);
+
+      await ws.emitMessage('{"type":"test"}');
+      await new Promise((resolve) => setTimeout(resolve, 10));
+
+      expect(onError).toHaveBeenCalledWith(ws, expect.objectContaining({ message: 'Message error' }));
     });
   });
 

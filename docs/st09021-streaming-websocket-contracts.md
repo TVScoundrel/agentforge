@@ -34,14 +34,15 @@ Remaining warnings in `packages/core/src/streaming/types.ts` are the pre-existin
 - `createWebSocketHandler(...)` still parses string payloads as JSON when possible and still passes non-JSON strings through unchanged.
 - Non-string message payloads are still forwarded unchanged to `onMessage(...)`; the callback boundary is now `unknown` instead of `any`.
 - `sendMessage(...)` and `broadcast(...)` still serialize the message once with `JSON.stringify(...)` and still send only when `readyState === 1`.
-- The WebSocket helper types now describe a minimal structural socket contract instead of `any`, which is compatible with common Node/browser WebSocket implementations that provide `on(...)`, `send(...)`, `ping()`, `terminate()`, and `readyState`.
+- The WebSocket helper types now describe a minimal structural socket contract instead of `any`, which aligns with common Node server-side WebSocket libraries such as `ws` that provide `on(...)`, `send(...)`, and `readyState`; browser-native WebSockets require an adapter for that contract.
+- `ping()` and `terminate()` are now optional on the structural socket contract, but `heartbeat > 0` still requires a socket implementation that provides both methods and will fail fast otherwise.
 - Close reasons are now typed as string-or-binary payloads rather than just `string`, matching the broader runtime behavior of WebSocket implementations without changing the forwarding behavior.
 
 ## Validation
 
 - `pnpm exec tsc -p packages/core/tsconfig.json --noEmit`
 - `pnpm exec eslint packages/core/src/streaming/websocket.ts packages/core/src/streaming/types.ts packages/core/src/streaming/index.ts packages/core/src/streaming/__tests__/websocket.test.ts`
-- `pnpm test --run packages/core/src/streaming/__tests__/websocket.test.ts` -> `1 passed` file, `14 passed` tests
+- `pnpm test --run packages/core/src/streaming/__tests__/websocket.test.ts` -> `1 passed` file, `16 passed` tests
 - `pnpm lint:explicit-any:baseline --silent` -> `205/289` warnings, `core 82/119`
 - `pnpm test --run` -> `156 passed | 16 skipped` files; `2166 passed | 286 skipped` tests
 - `pnpm lint` -> exit `0`; warnings only
