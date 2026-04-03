@@ -744,19 +744,32 @@ Implementation notes:
 **Branch:** `fix/st-09021-streaming-websocket-contracts`
 
 ### Checklist
-- [ ] Create branch `fix/st-09021-streaming-websocket-contracts`
-- [ ] Create draft PR with story ID in title
-- [ ] Replace broad socket/message/data `any` boundaries in `packages/core/src/streaming/websocket.ts` and adjacent streaming types
-- [ ] Preserve current WebSocket handler, send, parse, and broadcast behavior
-- [ ] Add/update focused tests for message parsing, error handling, and broadcast behavior
-- [ ] Record explicit-`any` warning deltas for touched files in story docs
-- [ ] Add or update story documentation at `docs/st09021-streaming-websocket-contracts.md` (or document why not required)
-- [ ] Assess test impact; add/update automated tests when needed, or document why tests are not required
-- [ ] Run full test suite before finalizing the PR and record results
-- [ ] Run lint (`pnpm lint`) before finalizing the PR and record results
-- [ ] Commit completed checklist items as logical commits and push updates
-- [ ] Mark PR Ready only after all story tasks are complete
+- [x] Create branch `fix/st-09021-streaming-websocket-contracts`
+- [x] Create draft PR with story ID in title
+- [x] Replace broad socket/message/data `any` boundaries in `packages/core/src/streaming/websocket.ts` and adjacent streaming types
+- [x] Preserve current WebSocket handler, send, parse, and broadcast behavior
+- [x] Add/update focused tests for message parsing, error handling, and broadcast behavior
+- [x] Record explicit-`any` warning deltas for touched files in story docs
+- [x] Add or update story documentation at `docs/st09021-streaming-websocket-contracts.md` (or document why not required)
+- [x] Assess test impact; add/update automated tests when needed, or document why tests are not required
+- [x] Run full test suite before finalizing the PR and record results
+- [x] Run lint (`pnpm lint`) before finalizing the PR and record results
+- [x] Commit completed checklist items as logical commits and push updates
+- [x] Mark PR Ready only after all story tasks are complete
 - [ ] Wait for merge; do not merge directly from local branch
+
+### Notes
+
+- Created branch: `codex/fix/st-09021-streaming-websocket-contracts`
+- Draft PR: #83 `fix(st-09021): harden streaming websocket and message contracts`
+- Implementation commit: `7c29f09` `fix(st-09021): harden streaming websocket contracts`
+- Validation:
+  - `pnpm exec tsc -p packages/core/tsconfig.json --noEmit`
+  - `pnpm exec eslint packages/core/src/streaming/websocket.ts packages/core/src/streaming/types.ts packages/core/src/streaming/index.ts packages/core/src/streaming/__tests__/websocket.test.ts`
+  - `pnpm test --run packages/core/src/streaming/__tests__/websocket.test.ts` -> `1 passed` file, `14 passed` tests
+  - `pnpm lint:explicit-any:baseline --silent` -> `205/289` warnings, `core 82/119`
+  - `pnpm test --run` -> `156 passed | 16 skipped` files; `2166 passed | 286 skipped` tests
+  - `pnpm lint` -> exit `0`; warnings only
 
 ---
 

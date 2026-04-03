@@ -1,12 +1,12 @@
 # Kanban Queue: AgentForge
 
-**Last Updated:** 2026-04-02
+**Last Updated:** 2026-04-03
 
 ## Queue Status Summary
 
-- **Ready:** 5 stories
+- **Ready:** 4 stories
 - **In Progress:** 0 stories
-- **In Review:** 0 stories
+- **In Review:** 1 story
 - **Blocked:** 0 stories
 - **Backlog:** 4 stories
 
@@ -14,7 +14,6 @@
 
 ## Ready
 
-- `ST-09021` - Harden Streaming WebSocket and Message Contracts
 - `ST-09022` - Harden Shared Deduplication Utility Contracts
 - `ST-09023` - Tighten Core Tool Builder Fluent Typing
 - `ST-09024` - Tighten LangGraph Interrupt Type Contracts
@@ -24,7 +23,7 @@
 
 ## In Review
 
-_No stories currently in review_
+- `ST-09021` - Harden Streaming WebSocket and Message Contracts
 
 ---
 
@@ -116,6 +115,7 @@ _No stories currently blocked_
 - ✅ ST-09018 complete - testing assertion and state-builder helper contracts hardened with follow-up fixes for partial planning results, field-key narrowing, empty conversation initialization, and cross-package message assertions (PR #80, 2026-03-29)
 - ✅ ST-09019 complete - reflection agent routing typing hardened by replacing route and compile casts with typed route maps plus focused factory route coverage (PR #81, 2026-03-31)
 - ✅ ST-09020 complete - prompt-loader variable contracts hardened around unknown-first and null-prototype variable maps, with follow-up fixes for own-property detection and documented own-enumerable compatibility boundaries (PR #82, 2026-04-02)
+- 🔄 ST-09021 in review - streaming websocket contracts hardened around structural socket boundaries and unknown-first message payloads (PR #83)
 - Epic 09 (SOLID Micro-Refactors and Type Boundary Hardening) was expanded on 2026-03-22 with low-hanging follow-on stories ST-09008 through ST-09012
 - Epic 09 (SOLID Micro-Refactors and Type Boundary Hardening) was expanded again on 2026-03-23 with daily hardening stories ST-09013 through ST-09018
 - Epic 09 (SOLID Micro-Refactors and Type Boundary Hardening) was expanded a third time on 2026-03-23 with daily hardening stories ST-09019 through ST-09028
