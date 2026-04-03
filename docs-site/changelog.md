@@ -5,6 +5,35 @@ All notable changes to AgentForge will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.16.9] - 2026-04-03
+
+### Added
+
+#### @agentforge/patterns - Shared Deduplication Regression Coverage
+- Added focused shared-deduplication coverage in `packages/patterns/tests/shared/deduplication.test.ts` for the `__proto__` special-key path while retaining cache-key normalization and metrics coverage
+- Added story documentation in `docs/st09022-shared-deduplication-contracts.md` covering the unknown-first deduplication boundary changes, warning delta, and validation record
+
+### Changed
+
+#### @agentforge/patterns - Shared Deduplication Utility Contracts
+- Tightened `packages/patterns/src/shared/deduplication.ts` by replacing broad normalization and cache-key `any` seams with unknown-first contracts and explicit plain-object detection
+- Preserved current deduplication metrics, cache-key generation, and logging behavior across the shared helper’s ReAct and Plan-Execute consumers
+
+### Fixed
+
+#### @agentforge/patterns - Deduplication Cache-Key Hardening
+- Normalized sorted plain objects onto null-prototype maps so special keys such as `__proto__` are handled as data instead of mutating the intermediate normalized object shape
+- Reduced the workspace explicit-`any` baseline from `205` to `201`, improving the `patterns` package from `19` to `15`
+
+### Published
+- All packages published to npm registry at version 0.16.9:
+  - @agentforge/core@0.16.9
+  - @agentforge/skills@0.16.9
+  - @agentforge/patterns@0.16.9
+  - @agentforge/tools@0.16.9
+  - @agentforge/testing@0.16.9
+  - @agentforge/cli@0.16.9
+
 ## [0.16.8] - 2026-04-03
 
 ### Added
