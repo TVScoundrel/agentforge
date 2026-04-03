@@ -178,13 +178,15 @@ export interface WebSocketConnection<
  * Extract message payload type from a WebSocket-like connection
  */
 export type WebSocketMessageFor<TSocket extends WebSocketConnection> =
-  TSocket extends WebSocketConnection<infer TMessage, unknown> ? TMessage : WebSocketRawMessage;
+  TSocket extends WebSocketConnection<infer TMessage>
+    ? TMessage
+    : WebSocketRawMessage;
 
 /**
  * Extract close reason type from a WebSocket-like connection
  */
 export type WebSocketCloseReasonFor<TSocket extends WebSocketConnection> =
-  TSocket extends WebSocketConnection<unknown, infer TCloseReason>
+  TSocket extends WebSocketConnection<WebSocketRawMessage, infer TCloseReason>
     ? TCloseReason
     : WebSocketCloseReason;
 
