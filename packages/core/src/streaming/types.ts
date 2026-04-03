@@ -121,13 +121,91 @@ export interface SSEFormatter<T = any> {
 }
 
 /**
+ * Binary WebSocket payload
+ */
+export type WebSocketBinaryData = ArrayBuffer | ArrayBufferView;
+
+/**
+ * Raw WebSocket message payload
+ */
+export type WebSocketRawMessage = string | WebSocketBinaryData;
+
+/**
+ * WebSocket close reason payload
+ */
+export type WebSocketCloseReason = string | WebSocketBinaryData;
+
+/**
+ * Minimal WebSocket-like connection contract used by streaming helpers
+ */
+export type WebSocketEvent = 'pong' | 'message' | 'error' | 'close';
+
+/**
+ * Typed WebSocket event handler
+ */
+export type WebSocketEventHandler<
+  TEvent extends WebSocketEvent,
+  TMessage,
+  TCloseReason,
+> = TEvent extends 'pong'
+  ? () => void
+  : TEvent extends 'message'
+    ? (data: TMessage) => void | Promise<void>
+    : TEvent extends 'error'
+      ? (error: Error) => void
+      : (code?: number, reason?: TCloseReason) => void;
+
+export interface WebSocketConnection<
+  TMessage = WebSocketRawMessage,
+  TCloseReason = WebSocketCloseReason,
+> {
+  /** Socket ready state */
+  readyState: number;
+  /** Register event handler */
+  on<TEvent extends WebSocketEvent>(
+    event: TEvent,
+    handler: WebSocketEventHandler<TEvent, TMessage, TCloseReason>
+  ): void;
+  /** Send string data */
+  send(data: string): void;
+  /** Send ping */
+  ping(): void;
+  /** Force terminate socket */
+  terminate(): void;
+}
+
+/**
+ * Extract message payload type from a WebSocket-like connection
+ */
+export type WebSocketMessageFor<TSocket extends WebSocketConnection> =
+  TSocket extends WebSocketConnection<infer TMessage, unknown> ? TMessage : WebSocketRawMessage;
+
+/**
+ * Extract close reason type from a WebSocket-like connection
+ */
+export type WebSocketCloseReasonFor<TSocket extends WebSocketConnection> =
+  TSocket extends WebSocketConnection<unknown, infer TCloseReason>
+    ? TCloseReason
+    : WebSocketCloseReason;
+
+/**
+ * Minimal WebSocket-like send target used by send/broadcast helpers
+ */
+export interface WebSocketSendTarget {
+  /** Socket ready state */
+  readyState: number;
+  /** Send string data */
+  send(data: string): void;
+}
+
+/**
  * WebSocket message
  */
-export interface WebSocketMessage {
+export interface WebSocketMessage<TData = unknown> {
   /** Message type */
   type: string;
   /** Message data */
-  data?: any;
+  data?: TData;
   /** Error information */
   error?: string;
 }
@@ -135,16 +213,18 @@ export interface WebSocketMessage {
 /**
  * WebSocket handler options
  */
-export interface WebSocketHandlerOptions {
+export interface WebSocketHandlerOptions<
+  TSocket extends WebSocketConnection = WebSocketConnection,
+  TRequest = unknown,
+> {
   /** Connection handler */
-  onConnect?: (ws: any, req?: any) => void;
+  onConnect?: (ws: TSocket, req?: TRequest) => void;
   /** Message handler */
-  onMessage?: (ws: any, message: any) => Promise<void>;
+  onMessage?: (ws: TSocket, message: unknown) => void | Promise<void>;
   /** Error handler */
-  onError?: (ws: any, error: Error) => void;
+  onError?: (ws: TSocket, error: Error) => void;
   /** Close handler */
-  onClose?: (ws: any, code?: number, reason?: string) => void;
+  onClose?: (ws: TSocket, code?: number, reason?: WebSocketCloseReasonFor<TSocket>) => void;
   /** Heartbeat interval (ms) */
   heartbeat?: number;
 }
-

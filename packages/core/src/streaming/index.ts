@@ -40,8 +40,17 @@ export type {
   SSEEvent,
   SSEFormatter,
   SSEFormatterOptions,
+  WebSocketBinaryData,
+  WebSocketCloseReason,
+  WebSocketCloseReasonFor,
+  WebSocketConnection,
+  WebSocketEvent,
+  WebSocketEventHandler,
   WebSocketMessage,
+  WebSocketMessageFor,
   WebSocketHandlerOptions,
+  WebSocketRawMessage,
+  WebSocketSendTarget,
 } from './types.js';
 
 // Transformers
@@ -76,4 +85,3 @@ export {
 
 // WebSocket support
 export { createWebSocketHandler, sendMessage, broadcast, createMessage } from './websocket.js';
-

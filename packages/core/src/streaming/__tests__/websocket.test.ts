@@ -1,19 +1,32 @@
 import { describe, it, expect, vi } from 'vitest';
 import { createWebSocketHandler, sendMessage, broadcast, createMessage } from '../websocket.js';
+import type { WebSocketConnection } from '../types.js';
 
-// Mock WebSocket
-class MockWebSocket {
+type MockHandlers = {
+  pong: Array<() => void>;
+  message: Array<(data: unknown) => void | Promise<void>>;
+  error: Array<(error: Error) => void>;
+  close: Array<(code?: number, reason?: string) => void>;
+};
+
+class MockWebSocket implements WebSocketConnection<unknown, string> {
   readyState = 1; // OPEN
-  handlers: Record<string, ((...args: any[]) => void)[]> = {};
+  handlers: MockHandlers = {
+    pong: [],
+    message: [],
+    error: [],
+    close: [],
+  };
 
-  on(event: string, handler: (...args: any[]) => void) {
-    if (!this.handlers[event]) {
-      this.handlers[event] = [];
-    }
-    this.handlers[event].push(handler);
+  on(event: 'pong', handler: () => void): void;
+  on(event: 'message', handler: (data: unknown) => void | Promise<void>): void;
+  on(event: 'error', handler: (error: Error) => void): void;
+  on(event: 'close', handler: (code?: number, reason?: string) => void): void;
+  on(event: keyof MockHandlers, handler: MockHandlers[keyof MockHandlers][number]): void {
+    this.handlers[event].push(handler as never);
   }
 
-  send(data: string) {
+  send(_data: string) {
     // Mock send
   }
 
@@ -25,11 +38,27 @@ class MockWebSocket {
     // Mock terminate
   }
 
-  emit(event: string, ...args: any[]) {
-    if (this.handlers[event]) {
-      for (const handler of this.handlers[event]) {
-        handler(...args);
-      }
+  emitPong() {
+    for (const handler of this.handlers.pong) {
+      handler();
+    }
+  }
+
+  async emitMessage(data: unknown) {
+    for (const handler of this.handlers.message) {
+      await handler(data);
+    }
+  }
+
+  emitError(error: Error) {
+    for (const handler of this.handlers.error) {
+      handler(error);
+    }
+  }
+
+  emitClose(code?: number, reason?: string) {
+    for (const handler of this.handlers.close) {
+      handler(code, reason);
     }
   }
 }
@@ -53,7 +82,7 @@ describe('WebSocket Support', () => {
       const ws = new MockWebSocket();
       handler(ws);
 
-      await ws.emit('message', '{"type":"test","data":"hello"}');
+      await ws.emitMessage('{"type":"test","data":"hello"}');
 
       expect(onMessage).toHaveBeenCalledWith(ws, { type: 'test', data: 'hello' });
     });
@@ -65,9 +94,22 @@ describe('WebSocket Support', () => {
       const ws = new MockWebSocket();
       handler(ws);
 
-      await ws.emit('message', 'plain text');
+      await ws.emitMessage('plain text');
 
       expect(onMessage).toHaveBeenCalledWith(ws, 'plain text');
+    });
+
+    it('should pass through non-string message payloads unchanged', async () => {
+      const onMessage = vi.fn();
+      const handler = createWebSocketHandler({ onMessage });
+
+      const ws = new MockWebSocket();
+      const binaryPayload = new Uint8Array([1, 2, 3]);
+      handler(ws);
+
+      await ws.emitMessage(binaryPayload);
+
+      expect(onMessage).toHaveBeenCalledWith(ws, binaryPayload);
     });
 
     it('should call onError when error occurs', () => {
@@ -78,7 +120,7 @@ describe('WebSocket Support', () => {
       handler(ws);
 
       const error = new Error('Test error');
-      ws.emit('error', error);
+      ws.emitError(error);
 
       expect(onError).toHaveBeenCalledWith(ws, error);
     });
@@ -90,7 +132,7 @@ describe('WebSocket Support', () => {
       const ws = new MockWebSocket();
       handler(ws);
 
-      ws.emit('close', 1000, 'Normal closure');
+      ws.emitClose(1000, 'Normal closure');
 
       expect(onClose).toHaveBeenCalledWith(ws, 1000, 'Normal closure');
     });
@@ -119,7 +161,7 @@ describe('WebSocket Support', () => {
       handler(ws);
 
       // Emit message and wait for async handler to complete
-      await ws.emit('message', '{"type":"test"}');
+      await ws.emitMessage('{"type":"test"}');
       // Give time for the async error handler to be called
       await new Promise((resolve) => setTimeout(resolve, 10));
 
@@ -204,4 +246,3 @@ describe('WebSocket Support', () => {
     });
   });
 });
-
