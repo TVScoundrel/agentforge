@@ -5,6 +5,35 @@ All notable changes to AgentForge will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.16.8] - 2026-04-03
+
+### Added
+
+#### @agentforge/core - Streaming WebSocket Regression Coverage
+- Added focused streaming WebSocket coverage in `packages/core/src/streaming/__tests__/websocket.test.ts` for raw non-string payload passthrough, normalized thrown errors, heartbeat capability handling, and close/broadcast behavior
+- Added story documentation in `docs/st09021-streaming-websocket-contracts.md` covering the structural socket contract changes, warning delta, and review-fix history
+
+### Changed
+
+#### @agentforge/core - Streaming WebSocket Contracts
+- Tightened `packages/core/src/streaming/websocket.ts` and `packages/core/src/streaming/types.ts` by replacing broad socket, message, and close-reason `any` seams with structural and generic contracts
+- Preserved existing string JSON parsing behavior while forwarding non-string payloads unchanged and keeping the public streaming entrypoint aligned with the new WebSocket types
+
+### Fixed
+
+#### @agentforge/core - WebSocket Runtime Boundary Hardening
+- Normalized unknown thrown values before forwarding them to `onError(...)`, widened raw payload typing for fragmented binary frames, and made heartbeat incompatibility report via `onError(...)` with early close/return semantics instead of throwing
+- Reduced the workspace explicit-`any` baseline from `219` to `205`, improving the `core` package from `96` to `82`
+
+### Published
+- All packages published to npm registry at version 0.16.8:
+  - @agentforge/core@0.16.8
+  - @agentforge/skills@0.16.8
+  - @agentforge/patterns@0.16.8
+  - @agentforge/tools@0.16.8
+  - @agentforge/testing@0.16.8
+  - @agentforge/cli@0.16.8
+
 ## [0.16.7] - 2026-04-02
 
 ### Added
