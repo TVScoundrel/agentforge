@@ -4,9 +4,9 @@
 
 ## Queue Status Summary
 
-- **Ready:** 4 stories
+- **Ready:** 3 stories
 - **In Progress:** 0 stories
-- **In Review:** 0 stories
+- **In Review:** 1 story
 - **Blocked:** 0 stories
 - **Backlog:** 4 stories
 
@@ -14,7 +14,6 @@
 
 ## Ready
 
-- `ST-09022` - Harden Shared Deduplication Utility Contracts
 - `ST-09023` - Tighten Core Tool Builder Fluent Typing
 - `ST-09024` - Tighten LangGraph Interrupt Type Contracts
 - `ST-09029` - Modularize Plan-Execute Node Responsibilities
@@ -23,7 +22,7 @@
 
 ## In Review
 
-_No stories currently in review_
+- `ST-09022` - Harden Shared Deduplication Utility Contracts
 
 ---
 
@@ -116,8 +115,9 @@ _No stories currently blocked_
 - ✅ ST-09019 complete - reflection agent routing typing hardened by replacing route and compile casts with typed route maps plus focused factory route coverage (PR #81, 2026-03-31)
 - ✅ ST-09020 complete - prompt-loader variable contracts hardened around unknown-first and null-prototype variable maps, with follow-up fixes for own-property detection and documented own-enumerable compatibility boundaries (PR #82, 2026-04-02)
 - ✅ ST-09021 complete - streaming websocket contracts hardened around structural socket boundaries and unknown-first message payloads (merged 2026-04-03, PR #83)
+- 🔄 ST-09022 in review - shared deduplication contracts hardened around unknown-first normalization and null-prototype cache-key handling (PR #84)
 - Epic 09 (SOLID Micro-Refactors and Type Boundary Hardening) was expanded on 2026-03-22 with low-hanging follow-on stories ST-09008 through ST-09012
 - Epic 09 (SOLID Micro-Refactors and Type Boundary Hardening) was expanded again on 2026-03-23 with daily hardening stories ST-09013 through ST-09018
 - Epic 09 (SOLID Micro-Refactors and Type Boundary Hardening) was expanded a third time on 2026-03-23 with daily hardening stories ST-09019 through ST-09028
 - Epic 09 (SOLID Micro-Refactors and Type Boundary Hardening) was expanded a fourth time on 2026-03-24 with the plan-execute node modularization follow-up story ST-09029
-- Current measured `no-explicit-any` baseline is `205` warnings (`cli 6`, `core 82`, `patterns 19`, `testing 31`, `tools 67`)
+- Current measured `no-explicit-any` baseline is `201` warnings (`cli 6`, `core 82`, `patterns 15`, `testing 31`, `tools 67`)

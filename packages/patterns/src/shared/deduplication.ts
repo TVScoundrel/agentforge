@@ -8,6 +8,16 @@
 
 import { createLogger, type LogLevel } from '@agentforge/core';
 
+type DeduplicationObject = Record<string, unknown>;
+
+function isPlainObject(value: unknown): value is DeduplicationObject {
+  return (
+    typeof value === 'object' &&
+    value !== null &&
+    Object.getPrototypeOf(value) === Object.prototype
+  );
+}
+
 /**
  * Recursively normalize an object by sorting all keys at all levels
  * This ensures consistent serialization regardless of key order
@@ -15,7 +25,7 @@ import { createLogger, type LogLevel } from '@agentforge/core';
  * @param obj - Object to normalize
  * @returns Normalized object with sorted keys at all levels
  */
-function normalizeObject(obj: any): any {
+function normalizeObject(obj: unknown): unknown {
   if (obj === null || obj === undefined) {
     return obj;
   }
@@ -26,8 +36,8 @@ function normalizeObject(obj: any): any {
   }
 
   // Handle objects - sort keys and normalize values recursively
-  if (typeof obj === 'object' && obj.constructor === Object) {
-    const normalized: any = {};
+  if (isPlainObject(obj)) {
+    const normalized = Object.create(null) as DeduplicationObject;
     const sortedKeys = Object.keys(obj).sort();
     for (const key of sortedKeys) {
       normalized[key] = normalizeObject(obj[key]);
@@ -69,7 +79,7 @@ function normalizeObject(obj: any): any {
  * // key3 === key4 (nested object order doesn't matter)
  * ```
  */
-export function generateToolCallCacheKey(toolName: string, args: any): string {
+export function generateToolCallCacheKey(toolName: string, args: unknown): string {
   // Normalize the arguments recursively to ensure consistent key ordering
   const normalizedArgs = normalizeObject(args);
   const sortedArgs = JSON.stringify(normalizedArgs);
@@ -158,4 +168,3 @@ export function buildDeduplicationMetrics(
     deduplicationSavings: calculateDeduplicationSavings(duplicatesSkipped, toolsExecuted),
   };
 }
-

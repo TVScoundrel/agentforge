@@ -1195,7 +1195,7 @@
 **Priority:** P1 (High)
 **Estimate:** 3 hours
 **Dependencies:** ST-09012
-**Status:** Ready
+**Status:** In Review
 
 **Acceptance criteria:**
 - [ ] `packages/patterns/src/shared/deduplication.ts` replaces broad `any` normalization and cache-key boundaries with safer unknown-first contracts

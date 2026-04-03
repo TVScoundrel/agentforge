@@ -135,6 +135,19 @@ describe('Deduplication Utilities', () => {
 
       expect(key1).toBe(key2);
     });
+
+    it('should treat __proto__ as data without mutating object prototypes', () => {
+      const args = JSON.parse('{"__proto__":{"polluted":true},"query":"test"}') as Record<
+        string,
+        unknown
+      >;
+
+      const cacheKey = generateToolCallCacheKey('search', args);
+
+      expect(cacheKey).toContain('"__proto__":{"polluted":true}');
+      expect(cacheKey).toContain('"query":"test"');
+      expect(({} as Record<string, unknown>).polluted).toBeUndefined();
+    });
   });
 
   describe('calculateDeduplicationSavings', () => {
@@ -155,4 +168,3 @@ describe('Deduplication Utilities', () => {
     });
   });
 });
-

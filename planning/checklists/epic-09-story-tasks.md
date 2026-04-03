@@ -783,19 +783,33 @@ Implementation notes:
 **Branch:** `fix/st-09022-shared-deduplication-contracts`
 
 ### Checklist
-- [ ] Create branch `fix/st-09022-shared-deduplication-contracts`
-- [ ] Create draft PR with story ID in title
-- [ ] Replace broad normalization and cache-key `any` boundaries in `packages/patterns/src/shared/deduplication.ts`
-- [ ] Preserve current deduplication metrics, cache-key generation, and logging behavior
-- [ ] Add/update focused tests for normalization, cache-key generation, and metrics helpers
-- [ ] Record explicit-`any` warning deltas for touched files in story docs
-- [ ] Add or update story documentation at `docs/st09022-shared-deduplication-contracts.md` (or document why not required)
-- [ ] Assess test impact; add/update automated tests when needed, or document why tests are not required
-- [ ] Run full test suite before finalizing the PR and record results
-- [ ] Run lint (`pnpm lint`) before finalizing the PR and record results
-- [ ] Commit completed checklist items as logical commits and push updates
-- [ ] Mark PR Ready only after all story tasks are complete
+- [x] Create branch `fix/st-09022-shared-deduplication-contracts`
+- [x] Create draft PR with story ID in title
+- [x] Replace broad normalization and cache-key `any` boundaries in `packages/patterns/src/shared/deduplication.ts`
+- [x] Preserve current deduplication metrics, cache-key generation, and logging behavior
+- [x] Add/update focused tests for normalization, cache-key generation, and metrics helpers
+- [x] Record explicit-`any` warning deltas for touched files in story docs
+- [x] Add or update story documentation at `docs/st09022-shared-deduplication-contracts.md` (or document why not required)
+- [x] Assess test impact; add/update automated tests when needed, or document why tests are not required
+- [x] Run full test suite before finalizing the PR and record results
+- [x] Run lint (`pnpm lint`) before finalizing the PR and record results
+- [x] Commit completed checklist items as logical commits and push updates
+- [x] Mark PR Ready only after all story tasks are complete
 - [ ] Wait for merge; do not merge directly from local branch
+
+### Notes
+
+- Created branch: `fix/st-09022-shared-deduplication-contracts` (workspace branch: `codex/fix/st-09022-shared-deduplication-contracts`)
+- Draft PR: #84 `fix(st-09022): harden shared deduplication utility contracts`
+- Implementation commit: `52b6bf0` `fix(st-09022): harden shared deduplication contracts`
+- Validation:
+  - `pnpm exec eslint packages/patterns/src/shared/deduplication.ts packages/patterns/tests/shared/deduplication.test.ts`
+  - `pnpm exec tsc -p packages/patterns/tsconfig.json --noEmit`
+  - `pnpm test --run packages/patterns/tests/shared/deduplication.test.ts` -> `1 passed` file, `13 passed` tests
+  - `pnpm test --run packages/patterns/tests/react/deduplication.test.ts packages/patterns/tests/plan-execute/deduplication.test.ts packages/patterns/tests/shared/deduplication.test.ts` -> `3 passed` files, `25 passed` tests
+  - `pnpm lint:explicit-any:baseline --silent` -> `201/289` warnings, `patterns 15/28`
+  - `pnpm test --run` -> `156 passed | 16 skipped` files; `2170 passed | 286 skipped` tests
+  - `pnpm lint` -> exit `0`; warnings only
 
 ---
 
