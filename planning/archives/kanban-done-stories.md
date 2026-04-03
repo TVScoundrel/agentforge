@@ -2,11 +2,18 @@
 
 **Purpose:** Track completed and merged stories for the Relational Database Access Tool project.
 
-**Last Updated:** 2026-04-02
+**Last Updated:** 2026-04-03
 
 ---
 
 ## Completed Stories
+
+### ST-09021: Harden Streaming WebSocket and Message Contracts
+- **Merged:** 2026-04-03
+- **PR:** https://github.com/TVScoundrel/agentforge/pull/83 (commit 87885d1)
+- **Epic:** EP-09 (SOLID Micro-Refactors and Type Boundary Hardening)
+- **Estimate:** 3 hours
+- **Outcome:** Hardened the streaming WebSocket helper surface by replacing broad socket, message, and close-reason `any` seams with structural and generic contracts, preserving string JSON parsing while safely forwarding raw binary payloads, and adding focused coverage for non-string passthrough, normalized thrown errors, and heartbeat capability handling. Improved the workspace explicit-`any` baseline from 219 to 205 and the `core` package from 96 to 82.
 
 ### ST-09020: Tighten Prompt Loader Variable Contracts
 - **Merged:** 2026-04-02

@@ -6,7 +6,7 @@
 
 - **Ready:** 4 stories
 - **In Progress:** 0 stories
-- **In Review:** 1 story
+- **In Review:** 0 stories
 - **Blocked:** 0 stories
 - **Backlog:** 4 stories
 
@@ -23,7 +23,7 @@
 
 ## In Review
 
-- `ST-09021` - Harden Streaming WebSocket and Message Contracts
+_No stories currently in review_
 
 ---
 
@@ -115,9 +115,9 @@ _No stories currently blocked_
 - ✅ ST-09018 complete - testing assertion and state-builder helper contracts hardened with follow-up fixes for partial planning results, field-key narrowing, empty conversation initialization, and cross-package message assertions (PR #80, 2026-03-29)
 - ✅ ST-09019 complete - reflection agent routing typing hardened by replacing route and compile casts with typed route maps plus focused factory route coverage (PR #81, 2026-03-31)
 - ✅ ST-09020 complete - prompt-loader variable contracts hardened around unknown-first and null-prototype variable maps, with follow-up fixes for own-property detection and documented own-enumerable compatibility boundaries (PR #82, 2026-04-02)
-- 🔄 ST-09021 in review - streaming websocket contracts hardened around structural socket boundaries and unknown-first message payloads (PR #83)
+- ✅ ST-09021 complete - streaming websocket contracts hardened around structural socket boundaries and unknown-first message payloads (merged 2026-04-03, PR #83)
 - Epic 09 (SOLID Micro-Refactors and Type Boundary Hardening) was expanded on 2026-03-22 with low-hanging follow-on stories ST-09008 through ST-09012
 - Epic 09 (SOLID Micro-Refactors and Type Boundary Hardening) was expanded again on 2026-03-23 with daily hardening stories ST-09013 through ST-09018
 - Epic 09 (SOLID Micro-Refactors and Type Boundary Hardening) was expanded a third time on 2026-03-23 with daily hardening stories ST-09019 through ST-09028
 - Epic 09 (SOLID Micro-Refactors and Type Boundary Hardening) was expanded a fourth time on 2026-03-24 with the plan-execute node modularization follow-up story ST-09029
-- Current measured `no-explicit-any` baseline is `233` warnings (`cli 6`, `core 106`, `patterns 23`, `testing 31`, `tools 67`)
+- Current measured `no-explicit-any` baseline is `205` warnings (`cli 6`, `core 82`, `patterns 19`, `testing 31`, `tools 67`)

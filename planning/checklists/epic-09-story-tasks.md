@@ -756,7 +756,7 @@ Implementation notes:
 - [x] Run lint (`pnpm lint`) before finalizing the PR and record results
 - [x] Commit completed checklist items as logical commits and push updates
 - [x] Mark PR Ready only after all story tasks are complete
-- [ ] Wait for merge; do not merge directly from local branch
+- [x] Wait for merge; do not merge directly from local branch
 
 ### Notes
 
@@ -772,6 +772,9 @@ Implementation notes:
   - `pnpm lint` -> exit `0`; warnings only
 - Review fix commit: `b83a17d` `fix(st-09021): tighten websocket review fixes`
 - Review fix commit: `7f53266` `fix(st-09021): soften heartbeat capability errors`
+- Review fix commit: `3957a3f` `fix(st-09021): widen websocket raw payload typing`
+- Merged PR: #83
+- Merge commit: `87885d1`
 
 ---
 
