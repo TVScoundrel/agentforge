@@ -770,6 +770,7 @@ Implementation notes:
   - `pnpm lint:explicit-any:baseline --silent` -> `205/289` warnings, `core 82/119`
   - `pnpm test --run` -> `156 passed | 16 skipped` files; `2166 passed | 286 skipped` tests
   - `pnpm lint` -> exit `0`; warnings only
+- Review fix commit: `b83a17d` `fix(st-09021): tighten websocket review fixes`
 
 ---
 
