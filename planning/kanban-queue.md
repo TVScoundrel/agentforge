@@ -1,12 +1,12 @@
 # Kanban Queue: AgentForge
 
-**Last Updated:** 2026-04-03
+**Last Updated:** 2026-04-07
 
 ## Queue Status Summary
 
-- **Ready:** 5 stories
+- **Ready:** 4 stories
 - **In Progress:** 0 stories
-- **In Review:** 0 stories
+- **In Review:** 1 story
 - **Blocked:** 0 stories
 - **Backlog:** 2 stories
 
@@ -14,7 +14,6 @@
 
 ## Ready
 
-- `ST-09023` - Tighten Core Tool Builder Fluent Typing
 - `ST-09024` - Tighten LangGraph Interrupt Type Contracts
 - `ST-09025` - Extract Tool Registry Collection and Search Operations
 - `ST-09027` - Extract Connection Manager Vendor Initialization Adapters
@@ -24,7 +23,7 @@
 
 ## In Review
 
-_No stories currently in review_
+- `ST-09023` - Tighten Core Tool Builder Fluent Typing
 
 ---
 

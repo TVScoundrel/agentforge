@@ -820,17 +820,25 @@ Implementation notes:
 **Branch:** `fix/st-09023-tool-builder-fluent-typing`
 
 ### Checklist
-- [ ] Create branch `fix/st-09023-tool-builder-fluent-typing`
-- [ ] Create draft PR with story ID in title
-- [ ] Remove avoidable `(this as any)` seams from `packages/core/src/tools/builder.ts`
-- [ ] Preserve current fluent builder ergonomics and built-tool behavior
-- [ ] Add/update focused tests for schema/invoke chaining and built tool execution behavior
-- [ ] Record explicit-`any` warning deltas for touched files in story docs
-- [ ] Add or update story documentation at `docs/st09023-tool-builder-fluent-typing.md` (or document why not required)
-- [ ] Assess test impact; add/update automated tests when needed, or document why tests are not required
-- [ ] Run full test suite before finalizing the PR and record results
-- [ ] Run lint (`pnpm lint`) before finalizing the PR and record results
-- [ ] Commit completed checklist items as logical commits and push updates
+- [x] Create branch `fix/st-09023-tool-builder-fluent-typing`
+  - Created as `codex/fix/st-09023-tool-builder-fluent-typing` (workspace branch-prefix policy)
+- [x] Create draft PR with story ID in title
+  - PR #85: https://github.com/TVScoundrel/agentforge/pull/85
+- [x] Remove avoidable `(this as any)` seams from `packages/core/src/tools/builder.ts`
+- [x] Preserve current fluent builder ergonomics and built-tool behavior
+- [x] Add/update focused tests for schema/invoke chaining and built tool execution behavior
+  - `pnpm test --run packages/core/tests/tools/builder.test.ts` -> `1 passed` file, `30 passed` tests
+- [x] Record explicit-`any` warning deltas for touched files in story docs
+  - Recorded in `docs/st09023-tool-builder-fluent-typing.md` (`6 -> 0`, overall `201 -> 195`)
+- [x] Add or update story documentation at `docs/st09023-tool-builder-fluent-typing.md` (or document why not required)
+- [x] Assess test impact; add/update automated tests when needed, or document why tests are not required
+  - Added `packages/core/src/tools/builder.typecheck.ts` plus focused chaining/execution coverage in `packages/core/tests/tools/builder.test.ts`
+- [x] Run full test suite before finalizing the PR and record results
+  - `pnpm test --run` -> `156 passed | 16 skipped` files; `2173 passed | 286 skipped` tests
+- [x] Run lint (`pnpm lint`) before finalizing the PR and record results
+  - `pnpm lint` -> exit `0`; warnings only
+- [x] Commit completed checklist items as logical commits and push updates
+  - `cf48e04` `refactor(st-09023): tighten tool builder fluent typing`
 - [ ] Mark PR Ready only after all story tasks are complete
 - [ ] Wait for merge; do not merge directly from local branch
 
