@@ -21,8 +21,10 @@
  */
 
 import { z } from 'zod';
-import { Tool, ToolCategory, ToolExample, ToolMetadata, ToolRelations } from './types.js';
+import { Tool, ToolCategory, ToolExample, ToolMetadata } from './types.js';
 import { createTool } from './helpers.js';
+
+type ToolInvoke<TOutput> = (input: unknown) => Promise<TOutput>;
 
 /**
  * Builder for creating tools with a fluent API
@@ -31,9 +33,11 @@ import { createTool } from './helpers.js';
  * manually constructing the metadata object.
  */
 export class ToolBuilder<TInput = unknown, TOutput = unknown> {
-  private metadata: Partial<ToolMetadata> = {};
-  private _schema?: z.ZodSchema<TInput>;
-  private _invoke?: (input: TInput) => Promise<TOutput>;
+  constructor(
+    private metadata: Partial<ToolMetadata> = {},
+    private _schema?: z.ZodSchema<TInput>,
+    private _invoke?: ToolInvoke<TOutput>
+  ) {}
 
   /**
    * Set the tool name (required)
@@ -254,21 +258,20 @@ export class ToolBuilder<TInput = unknown, TOutput = unknown> {
    * 
    * All fields MUST have .describe() for LLM understanding!
    * 
-   * @param schema - Zod schema for input validation
-   */
+  * @param schema - Zod schema for input validation
+  */
   schema<T>(schema: z.ZodSchema<T>): ToolBuilder<T, TOutput> {
-    (this as any)._schema = schema;
-    return this as any;
+    return new ToolBuilder<T, TOutput>(this.metadata, schema, this._invoke);
   }
 
   /**
    * Set the implementation function (required)
    *
-   * @param invoke - Async function that implements the tool
-   */
+  * @param invoke - Async function that implements the tool
+  */
   implement<T>(invoke: (input: TInput) => Promise<T>): ToolBuilder<TInput, T> {
-    (this as any)._invoke = invoke;
-    return this as any;
+    const wrappedInvoke: ToolInvoke<T> = async (input) => invoke(input as TInput);
+    return new ToolBuilder<TInput, T>(this.metadata, this._schema, wrappedInvoke);
   }
 
   /**
@@ -309,8 +312,14 @@ export class ToolBuilder<TInput = unknown, TOutput = unknown> {
       }
     };
 
-    (this as any)._invoke = safeInvoke;
-    return this as any;
+    const wrappedInvoke: ToolInvoke<{ success: boolean; data?: T; error?: string }> = async (input) =>
+      safeInvoke(input as TInput);
+
+    return new ToolBuilder<TInput, { success: boolean; data?: T; error?: string }>(
+      this.metadata,
+      this._schema,
+      wrappedInvoke
+    );
   }
 
   /**
@@ -342,11 +351,13 @@ export class ToolBuilder<TInput = unknown, TOutput = unknown> {
       throw new Error('Tool implementation is required. Use .implement() to set it.');
     }
 
+    const invoke = this._invoke;
+
     // Use createTool for validation
     return createTool(
       this.metadata as ToolMetadata,
       this._schema,
-      this._invoke
+      async (input: TInput) => invoke(input)
     );
   }
 }
@@ -368,4 +379,3 @@ export class ToolBuilder<TInput = unknown, TOutput = unknown> {
 export function toolBuilder(): ToolBuilder {
   return new ToolBuilder();
 }
-

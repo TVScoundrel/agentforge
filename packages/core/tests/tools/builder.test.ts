@@ -171,7 +171,7 @@ describe('ToolBuilder', () => {
           .name('no-schema')
           .description('Missing schema')
           .category(ToolCategory.UTILITY)
-          .implement(async ({ input }: any) => input)
+          .implement(async ({ input }: { input: string }) => input)
           .build()
       ).toThrow('Tool schema is required');
     });
@@ -266,6 +266,47 @@ describe('ToolBuilder', () => {
       expect(result.tags).toEqual(['tag1', 'tag2']);
       expect(result.count).toBe(0);
     });
+
+    it('should preserve typed chaining after schema then implement', async () => {
+      const tool = toolBuilder()
+        .name('schema-chain-tool')
+        .description('Schema chain typing regression')
+        .category(ToolCategory.UTILITY)
+        .schema(z.object({
+          enabled: z.boolean().describe('Enabled flag'),
+          retries: z.number().describe('Retry count'),
+        }))
+        .implement(async ({ enabled, retries }) => ({
+          enabled,
+          nextRetry: retries + 1,
+        }))
+        .build();
+
+      const result = await tool.invoke({ enabled: true, retries: 2 });
+
+      expect(result).toEqual({
+        enabled: true,
+        nextRetry: 3,
+      });
+    });
+
+    it('should preserve built tool behavior when implement runs before schema', async () => {
+      const tool = toolBuilder()
+        .name('invoke-first-chain-tool')
+        .description('Invoke first chain regression')
+        .category(ToolCategory.UTILITY)
+        .implement(async (input: unknown) => ({ input }))
+        .schema(z.object({
+          path: z.string().describe('Path'),
+        }))
+        .build();
+
+      const result = await tool.invoke({ path: '/tmp/demo.txt' });
+
+      expect(result).toEqual({
+        input: { path: '/tmp/demo.txt' },
+      });
+    });
   });
 
   describe('implementSafe', () => {
@@ -320,7 +361,7 @@ describe('ToolBuilder', () => {
         .schema(z.object({
           input: z.string().describe('Input'),
         }))
-        .implementSafe(async ({ input }) => {
+        .implementSafe(async ({ input: _input }) => {
           throw 'String error message';
         })
         .build();
@@ -382,6 +423,33 @@ describe('ToolBuilder', () => {
         expect(typeof result.data).toBe('number');
         expect(result.data).toBe(20);
       }
+    });
+
+    it('should preserve chaining after implementSafe', async () => {
+      const tool = toolBuilder()
+        .name('safe-chain-tool')
+        .description('Safe chain regression')
+        .category(ToolCategory.UTILITY)
+        .schema(z.object({
+          count: z.number().describe('Count'),
+        }))
+        .tag('safe')
+        .implementSafe(async ({ count }) => count + 1)
+        .example({
+          description: 'Increment a value',
+          input: { count: 1 },
+          output: { success: true, data: 2 },
+        })
+        .build();
+
+      const result = await tool.invoke({ count: 4 });
+
+      expect(tool.metadata.tags).toEqual(['safe']);
+      expect(tool.metadata.examples).toHaveLength(1);
+      expect(result).toEqual({
+        success: true,
+        data: 5,
+      });
     });
   });
 
@@ -502,4 +570,3 @@ describe('ToolBuilder', () => {
     });
   });
 });
-
