@@ -311,7 +311,7 @@ export class ToolBuilder<TInput = unknown, TOutput = unknown> {
   /**
    * Set the implementation function (required)
    *
-  * @param invoke - Async function that implements the tool
+   * @param invoke - Async function that implements the tool
    */
   implement<T>(invoke: (input: TInput) => Promise<T>): ToolBuilder<TInput, T> {
     const wrappedInvoke: ToolInvoke<T> = async function (this: unknown, input) {
