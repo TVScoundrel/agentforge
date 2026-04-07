@@ -5,6 +5,36 @@ All notable changes to AgentForge will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.16.11] - 2026-04-07
+
+### Added
+
+#### @agentforge/core - LangGraph Interrupt Regression Coverage
+- Added focused interrupt utility coverage in `packages/core/tests/langgraph/interrupts/utils.test.ts` for JSON-safe primitive and array custom interrupt payloads while preserving the existing human-request and approval helper behavior
+- Added source-included type regression coverage in `packages/core/src/langgraph/interrupts/contracts.typecheck.ts` for approval interrupts, generic custom interrupts, and resume command/options payload typing
+- Added story documentation in `docs/st09024-langgraph-interrupt-type-contracts.md` covering the interrupt contract changes, warning delta, and validation record
+
+### Changed
+
+#### @agentforge/core - LangGraph Interrupt Type Contracts
+- Tightened `packages/core/src/langgraph/interrupts/types.ts` around generic interrupt contracts, JSON-safe custom payloads, JSON-object metadata, and safer resume value typing
+- Preserved the current human-request, approval-required, custom interrupt, and resume-command runtime flows while making the public type boundaries more precise
+
+### Fixed
+
+#### @agentforge/core - Interrupt Payload and Resume Boundaries
+- Replaced broad interrupt `data`, `metadata`, and resume `value`/`resume` `any` seams with domain-specific and JSON-safe contracts, reducing the workspace explicit-`any` baseline from `195` to `182`
+- Improved the `core` package explicit-`any` baseline from `76` to `63` without changing the existing interrupt helper outputs or human-in-the-loop streaming consumers
+
+### Published
+- All packages published to npm registry at version 0.16.11:
+  - @agentforge/core@0.16.11
+  - @agentforge/skills@0.16.11
+  - @agentforge/patterns@0.16.11
+  - @agentforge/tools@0.16.11
+  - @agentforge/testing@0.16.11
+  - @agentforge/cli@0.16.11
+
 ## [0.16.10] - 2026-04-07
 
 ### Added
