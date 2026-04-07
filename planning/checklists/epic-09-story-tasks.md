@@ -845,6 +845,7 @@ Implementation notes:
   - `eca1873` `fix(st-09023): deep-clone builder example metadata`
   - `735c106` `chore(st-09023): append review-fix commit record`
   - `fc53972` `fix(st-09023): preserve builder invoke compatibility`
+  - `da8a920` `docs(st-09023): fix builder jsdoc indentation`
 - [x] Mark PR Ready only after all story tasks are complete
   - PR #85 marked ready: https://github.com/TVScoundrel/agentforge/pull/85
 - [ ] Wait for merge; do not merge directly from local branch
