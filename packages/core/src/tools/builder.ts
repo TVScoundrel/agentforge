@@ -41,7 +41,11 @@ function cloneRelations(relations?: ToolMetadata['relations']): ToolMetadata['re
 }
 
 function cloneExamples(examples?: ToolExample[]): ToolExample[] | undefined {
-  return examples?.map((example) => ({ ...example }));
+  return examples?.map((example) => ({
+    ...example,
+    input: structuredClone(example.input),
+    output: example.output === undefined ? undefined : structuredClone(example.output),
+  }));
 }
 
 function cloneMetadata(metadata: Partial<ToolMetadata>): Partial<ToolMetadata> {

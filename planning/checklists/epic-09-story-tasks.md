@@ -841,6 +841,7 @@ Implementation notes:
   - `cf48e04` `refactor(st-09023): tighten tool builder fluent typing`
   - `458a30a` `docs(st-09023): record validation and move story to in-review`
   - `2313ad6` `fix(st-09023): isolate typed builder metadata state`
+  - `2713cb0` `chore(st-09023): append review-fix commit record`
 - [x] Mark PR Ready only after all story tasks are complete
   - PR #85 marked ready: https://github.com/TVScoundrel/agentforge/pull/85
 - [ ] Wait for merge; do not merge directly from local branch

@@ -8,9 +8,9 @@ Refined the core tool builder so schema and implementation chaining preserve str
 
 | File | Change |
 |------|--------|
-| `packages/core/src/tools/builder.ts` | Replaced type-changing builder mutations with typed builder copies, preserving schema-first, invoke-first, and safe-builder chaining without `(this as any)` seams |
+| `packages/core/src/tools/builder.ts` | Replaced type-changing builder mutations with typed builder copies, preserving schema-first, invoke-first, and safe-builder chaining without `(this as any)` seams, and deep-cloned example payload metadata to keep branched builders isolated |
 | `packages/core/src/tools/builder.typecheck.ts` | Added source-included type regressions covering schema-first, invoke-first, and `implementSafe(...)` chaining |
-| `packages/core/tests/tools/builder.test.ts` | Added focused runtime coverage for schema-first chaining, invoke-first execution behavior, post-`implementSafe(...)` fluent chaining, and metadata isolation across branched builders |
+| `packages/core/tests/tools/builder.test.ts` | Added focused runtime coverage for schema-first chaining, invoke-first execution behavior, post-`implementSafe(...)` fluent chaining, metadata isolation across branched builders, and nested example payload isolation |
 
 ## Explicit `any` Warning Delta
 
@@ -30,6 +30,7 @@ Refined the core tool builder so schema and implementation chaining preserve str
 - The fluent builder API remains chainable in both the common schema-first flow and the older invoke-first flow.
 - Built tools still validate metadata and schema descriptions through `createTool(...)`.
 - `implementSafe(...)` still returns the same `{ success, data?, error? }` result shape while preserving downstream fluent builder calls.
+- Builder examples are now cloned deeply when fluent type-changing stages branch, so later mutations to supplied example payload objects do not leak between builder instances.
 
 ## Validation
 

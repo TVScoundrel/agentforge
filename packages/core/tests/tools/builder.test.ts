@@ -131,6 +131,11 @@ describe('ToolBuilder', () => {
     });
 
     it('should isolate metadata when branching into typed builders', async () => {
+      const sharedExampleInput = {
+        flag: true,
+        nested: { value: 'original' },
+      };
+
       const baseBuilder = toolBuilder()
         .name('isolated-builder')
         .description('Metadata isolation regression')
@@ -138,7 +143,7 @@ describe('ToolBuilder', () => {
         .tag('base')
         .example({
           description: 'Base example',
-          input: { flag: true },
+          input: sharedExampleInput,
         });
 
       const schemaBuilder = baseBuilder.schema(z.object({
@@ -167,6 +172,16 @@ describe('ToolBuilder', () => {
       expect(safeTool.metadata.examples).toHaveLength(1);
       expect(safeTool.metadata.limitations).toEqual(['safe-only']);
       expect(lateSchemaTool.metadata.tags).toEqual(['base', 'schema-only']);
+
+      sharedExampleInput.nested.value = 'mutated';
+      expect(invokeTool.metadata.examples?.[0].input).toEqual({
+        flag: true,
+        nested: { value: 'original' },
+      });
+      expect(safeTool.metadata.examples?.[0].input).toEqual({
+        flag: true,
+        nested: { value: 'original' },
+      });
 
       const safeResult = await safeTool.invoke({ flag: true });
       expect(safeResult).toEqual({
