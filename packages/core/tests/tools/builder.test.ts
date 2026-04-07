@@ -129,6 +129,51 @@ describe('ToolBuilder', () => {
       expect(tool.metadata.examples?.[0].description).toBe('Example 1');
       expect(tool.metadata.examples?.[1].description).toBe('Example 2');
     });
+
+    it('should isolate metadata when branching into typed builders', async () => {
+      const baseBuilder = toolBuilder()
+        .name('isolated-builder')
+        .description('Metadata isolation regression')
+        .category(ToolCategory.UTILITY)
+        .tag('base')
+        .example({
+          description: 'Base example',
+          input: { flag: true },
+        });
+
+      const schemaBuilder = baseBuilder.schema(z.object({
+        flag: z.boolean().describe('Feature flag'),
+      }));
+      const invokeBuilder = schemaBuilder.implement(async ({ flag }) => flag);
+      const safeBuilder = schemaBuilder.implementSafe(async ({ flag }) => String(flag));
+
+      baseBuilder.tag('base-only');
+      schemaBuilder.tag('schema-only');
+      invokeBuilder.example({
+        description: 'Invoke example',
+        input: { flag: false },
+      });
+      safeBuilder.limitation('safe-only');
+
+      const invokeTool = invokeBuilder.build();
+      const safeTool = safeBuilder.build();
+      const lateSchemaTool = schemaBuilder
+        .implement(async ({ flag }) => flag)
+        .build();
+
+      expect(invokeTool.metadata.tags).toEqual(['base']);
+      expect(invokeTool.metadata.examples).toHaveLength(2);
+      expect(safeTool.metadata.tags).toEqual(['base']);
+      expect(safeTool.metadata.examples).toHaveLength(1);
+      expect(safeTool.metadata.limitations).toEqual(['safe-only']);
+      expect(lateSchemaTool.metadata.tags).toEqual(['base', 'schema-only']);
+
+      const safeResult = await safeTool.invoke({ flag: true });
+      expect(safeResult).toEqual({
+        success: true,
+        data: 'true',
+      });
+    });
   });
 
   describe('validation', () => {

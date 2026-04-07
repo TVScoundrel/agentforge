@@ -827,7 +827,7 @@ Implementation notes:
 - [x] Remove avoidable `(this as any)` seams from `packages/core/src/tools/builder.ts`
 - [x] Preserve current fluent builder ergonomics and built-tool behavior
 - [x] Add/update focused tests for schema/invoke chaining and built tool execution behavior
-  - `pnpm test --run packages/core/tests/tools/builder.test.ts` -> `1 passed` file, `30 passed` tests
+  - `pnpm test --run packages/core/tests/tools/builder.test.ts` -> `1 passed` file, `31 passed` tests
 - [x] Record explicit-`any` warning deltas for touched files in story docs
   - Recorded in `docs/st09023-tool-builder-fluent-typing.md` (`6 -> 0`, overall `201 -> 195`)
 - [x] Add or update story documentation at `docs/st09023-tool-builder-fluent-typing.md` (or document why not required)
@@ -839,7 +839,7 @@ Implementation notes:
   - `pnpm lint` -> exit `0`; warnings only
 - [x] Commit completed checklist items as logical commits and push updates
   - `cf48e04` `refactor(st-09023): tighten tool builder fluent typing`
-- `458a30a` `docs(st-09023): record validation and move story to in-review`
+  - `458a30a` `docs(st-09023): record validation and move story to in-review`
 - [x] Mark PR Ready only after all story tasks are complete
   - PR #85 marked ready: https://github.com/TVScoundrel/agentforge/pull/85
 - [ ] Wait for merge; do not merge directly from local branch

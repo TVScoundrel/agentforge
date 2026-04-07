@@ -26,6 +26,34 @@ import { createTool } from './helpers.js';
 
 type ToolInvoke<TOutput> = (input: unknown) => Promise<TOutput>;
 
+function cloneRelations(relations?: ToolMetadata['relations']): ToolMetadata['relations'] {
+  if (!relations) {
+    return undefined;
+  }
+
+  return {
+    requires: relations.requires ? [...relations.requires] : undefined,
+    suggests: relations.suggests ? [...relations.suggests] : undefined,
+    conflicts: relations.conflicts ? [...relations.conflicts] : undefined,
+    follows: relations.follows ? [...relations.follows] : undefined,
+    precedes: relations.precedes ? [...relations.precedes] : undefined,
+  };
+}
+
+function cloneExamples(examples?: ToolExample[]): ToolExample[] | undefined {
+  return examples?.map((example) => ({ ...example }));
+}
+
+function cloneMetadata(metadata: Partial<ToolMetadata>): Partial<ToolMetadata> {
+  return {
+    ...metadata,
+    tags: metadata.tags ? [...metadata.tags] : undefined,
+    examples: cloneExamples(metadata.examples),
+    limitations: metadata.limitations ? [...metadata.limitations] : undefined,
+    relations: cloneRelations(metadata.relations),
+  };
+}
+
 /**
  * Builder for creating tools with a fluent API
  *
@@ -255,23 +283,23 @@ export class ToolBuilder<TInput = unknown, TOutput = unknown> {
 
   /**
    * Set the input schema (required)
-   * 
+   *
    * All fields MUST have .describe() for LLM understanding!
-   * 
-  * @param schema - Zod schema for input validation
-  */
+   *
+   * @param schema - Zod schema for input validation
+   */
   schema<T>(schema: z.ZodSchema<T>): ToolBuilder<T, TOutput> {
-    return new ToolBuilder<T, TOutput>(this.metadata, schema, this._invoke);
+    return new ToolBuilder<T, TOutput>(cloneMetadata(this.metadata), schema, this._invoke);
   }
 
   /**
    * Set the implementation function (required)
    *
-  * @param invoke - Async function that implements the tool
-  */
+   * @param invoke - Async function that implements the tool
+   */
   implement<T>(invoke: (input: TInput) => Promise<T>): ToolBuilder<TInput, T> {
     const wrappedInvoke: ToolInvoke<T> = async (input) => invoke(input as TInput);
-    return new ToolBuilder<TInput, T>(this.metadata, this._schema, wrappedInvoke);
+    return new ToolBuilder<TInput, T>(cloneMetadata(this.metadata), this._schema, wrappedInvoke);
   }
 
   /**
@@ -316,7 +344,7 @@ export class ToolBuilder<TInput = unknown, TOutput = unknown> {
       safeInvoke(input as TInput);
 
     return new ToolBuilder<TInput, { success: boolean; data?: T; error?: string }>(
-      this.metadata,
+      cloneMetadata(this.metadata),
       this._schema,
       wrappedInvoke
     );
