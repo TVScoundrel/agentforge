@@ -3,7 +3,7 @@
 **Epic Range:** EP-09 through EP-09
 **Status:** In Progress
 **Last Updated:** 2026-04-07
-**Active Story:** ST-09023 (In Review)
+**Active Story:** ST-09024 (Ready)
 
 ---
 
@@ -32,10 +32,10 @@
 
 ## Current Hotspot Snapshot
 
-Current `@typescript-eslint/no-explicit-any` baseline check (`pnpm lint:explicit-any:baseline`, 2026-04-03):
+Current `@typescript-eslint/no-explicit-any` baseline check (`pnpm lint:explicit-any:baseline`, 2026-04-07):
 
-- Total: `201` warnings (`src/**`)
-- By package: `core 82`, `tools 67`, `testing 31`, `patterns 15`, `cli 6`
+- Total: `195` warnings (`src/**`)
+- By package: `core 76`, `tools 67`, `testing 31`, `patterns 15`, `cli 6`
 
 Top runtime hotspots informing this feature slice:
 
@@ -44,7 +44,7 @@ Top runtime hotspots informing this feature slice:
 3. `packages/patterns/src/multi-agent/nodes.ts` was split behind the stable public entrypoint in `ST-09015`, with follow-up hardening landed for log redaction, workload invariants, interrupt propagation, and model-content serialization
 4. `ST-09017` has centralized repeated CLI command-level `catch (error: any)` handling behind a shared helper and is now merged
 5. `ST-09018` has tightened `packages/testing/src/helpers/assertions.ts` and `packages/testing/src/helpers/state-builder.ts`, reducing the `testing` package warning floor from `51` to `31` and is now merged
-6. `ST-09022` has now merged after tightening `packages/patterns/src/shared/deduplication.ts` around unknown-first normalization and cache-key handling; `packages/core/src/tools/builder.ts` is the next small runtime boundary-hardening slice after this shared helper cleanup
+6. `ST-09023` has now merged after tightening `packages/core/src/tools/builder.ts` around fluent generic stages, metadata isolation, example clone safety, and invoke compatibility; `packages/core/src/langgraph/interrupts/types.ts` is the next small runtime boundary-hardening slice after this builder cleanup
 7. `packages/core/src/tools/registry.ts` and `packages/tools/src/data/relational/connection/connection-manager.ts` remain larger SRP targets that need multi-story decomposition rather than one oversized cleanup
 8. `packages/patterns/src/plan-execute/nodes.ts` has grown into a larger mixed-responsibility module and has become the next plan-execute modularization target after the ST-09014 shared contract cleanup
 
@@ -69,6 +69,7 @@ Recent improvement snapshot:
 - `ST-09020` merged after tightening the prompt-loader variable contracts around unknown-first trusted/untrusted maps, lowering the workspace explicit-`any` baseline from `229` to `219` and the `core` package from `106` to `96`, with follow-up fixes for null-prototype map handling, own-property option detection, and documented own-enumerable compatibility boundaries.
 - `ST-09021` merged after tightening the streaming WebSocket helper contracts around structural socket types and unknown-first payload handling, lowering the workspace explicit-`any` baseline from `219` to `205` and the `core` package from `96` to `82`.
 - `ST-09022` merged after tightening the shared deduplication helper contracts around unknown-first normalization and null-prototype cache-key handling, lowering the workspace explicit-`any` baseline from `205` to `201` and the `patterns` package from `19` to `15`.
+- `ST-09023` merged after tightening the core tool builder fluent typing surface, lowering the workspace explicit-`any` baseline from `201` to `195` and the `core` package from `82` to `76`, with follow-up fixes for branched metadata isolation, clone-failure messaging, and `this`-binding compatibility.
 - `EP-09` remains open as the daily hardening stream, with the next follow-on slice now centered on shared deduplication helpers, core tool builder typing, interrupt contracts, and the plan-execute node modularization follow-up.
 - A second follow-on slice is now queued for prompt loading, reflection routing, streaming websocket contracts, shared deduplication helpers, core tool builder typing, interrupt contracts, and split-out registry/connection-manager modularization.
 

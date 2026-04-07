@@ -848,7 +848,8 @@ Implementation notes:
   - `da8a920` `docs(st-09023): fix builder jsdoc indentation`
 - [x] Mark PR Ready only after all story tasks are complete
   - PR #85 marked ready: https://github.com/TVScoundrel/agentforge/pull/85
-- [ ] Wait for merge; do not merge directly from local branch
+- [x] Wait for merge; do not merge directly from local branch
+  - Merged via PR #85 on 2026-04-07 (merge commit `cba76db`)
 
 ---
 

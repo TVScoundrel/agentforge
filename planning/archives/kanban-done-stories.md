@@ -2,11 +2,18 @@
 
 **Purpose:** Track completed and merged stories for the Relational Database Access Tool project.
 
-**Last Updated:** 2026-04-03
+**Last Updated:** 2026-04-07
 
 ---
 
 ## Completed Stories
+
+### ST-09023: Tighten Core Tool Builder Fluent Typing
+- **Merged:** 2026-04-07
+- **PR:** https://github.com/TVScoundrel/agentforge/pull/85 (commit cba76db)
+- **Epic:** EP-09 (SOLID Micro-Refactors and Type Boundary Hardening)
+- **Estimate:** 4 hours
+- **Outcome:** Tightened the core tool builder around typed fluent stage transitions, added source-included type regressions and focused runtime chaining coverage, and landed review-driven follow-up fixes for branched metadata isolation, structured-clone error messaging, and `this`-binding compatibility. Improved the workspace explicit-`any` baseline from 201 to 195 and the `core` package from 82 to 76.
 
 ### ST-09022: Harden Shared Deduplication Utility Contracts
 - **Merged:** 2026-04-03

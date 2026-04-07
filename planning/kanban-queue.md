@@ -6,7 +6,7 @@
 
 - **Ready:** 4 stories
 - **In Progress:** 0 stories
-- **In Review:** 1 story
+- **In Review:** 0 stories
 - **Blocked:** 0 stories
 - **Backlog:** 2 stories
 
@@ -23,7 +23,7 @@
 
 ## In Review
 
-- `ST-09023` - Tighten Core Tool Builder Fluent Typing
+_No stories currently in review_
 
 ---
 
@@ -115,6 +115,7 @@ _No stories currently blocked_
 - ✅ ST-09020 complete - prompt-loader variable contracts hardened around unknown-first and null-prototype variable maps, with follow-up fixes for own-property detection and documented own-enumerable compatibility boundaries (PR #82, 2026-04-02)
 - ✅ ST-09021 complete - streaming websocket contracts hardened around structural socket boundaries and unknown-first message payloads (merged 2026-04-03, PR #83)
 - ✅ ST-09022 complete - shared deduplication contracts hardened around unknown-first normalization and null-prototype cache-key handling (merged 2026-04-03, PR #84)
+- ✅ ST-09023 complete - core tool builder fluent typing tightened with metadata-isolation, clone-failure, and invoke-compatibility follow-up fixes (merged 2026-04-07, PR #85)
 - Epic 09 (SOLID Micro-Refactors and Type Boundary Hardening) was expanded on 2026-03-22 with low-hanging follow-on stories ST-09008 through ST-09012
 - Epic 09 (SOLID Micro-Refactors and Type Boundary Hardening) was expanded again on 2026-03-23 with daily hardening stories ST-09013 through ST-09018
 - Epic 09 (SOLID Micro-Refactors and Type Boundary Hardening) was expanded a third time on 2026-03-23 with daily hardening stories ST-09019 through ST-09028
