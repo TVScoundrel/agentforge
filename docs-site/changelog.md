@@ -5,6 +5,37 @@ All notable changes to AgentForge will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.16.10] - 2026-04-07
+
+### Added
+
+#### @agentforge/core - Tool Builder Regression Coverage
+- Added focused tool-builder runtime coverage in `packages/core/tests/tools/builder.test.ts` for branched metadata isolation, nested example payload isolation, non-cloneable example failures, and `this`-binding compatibility
+- Added source-included type regression coverage in `packages/core/src/tools/builder.typecheck.ts` for schema-first, invoke-first, and safe-builder chaining
+- Added story documentation in `docs/st09023-tool-builder-fluent-typing.md` covering the fluent builder changes, warning delta, and review-fix history
+
+### Changed
+
+#### @agentforge/core - Tool Builder Fluent Typing
+- Tightened `packages/core/src/tools/builder.ts` by replacing the type-changing schema and implementation stage `(this as any)` seams with typed builder-copy transitions
+- Preserved schema-first, invoke-first, and `implementSafe(...)` builder ergonomics while keeping built-tool validation behavior aligned with `createTool(...)`
+
+### Fixed
+
+#### @agentforge/core - Tool Builder Metadata and Invoke Compatibility
+- Isolated branched builder metadata by cloning tags, examples, limitations, and relations during typed builder transitions, with nested example payloads now deep-cloned
+- Preserved historical `this` binding compatibility for non-arrow implementations through `implement()`, `implementSafe()`, and `build()`, and wrapped non-cloneable example payload failures with a clear builder-specific `TypeError`
+- Reduced the workspace explicit-`any` baseline from `201` to `195`, improving the `core` package from `82` to `76`
+
+### Published
+- All packages published to npm registry at version 0.16.10:
+  - @agentforge/core@0.16.10
+  - @agentforge/skills@0.16.10
+  - @agentforge/patterns@0.16.10
+  - @agentforge/tools@0.16.10
+  - @agentforge/testing@0.16.10
+  - @agentforge/cli@0.16.10
+
 ## [0.16.9] - 2026-04-03
 
 ### Added
