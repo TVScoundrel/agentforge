@@ -858,19 +858,41 @@ Implementation notes:
 **Branch:** `fix/st-09024-langgraph-interrupt-type-contracts`
 
 ### Checklist
-- [ ] Create branch `fix/st-09024-langgraph-interrupt-type-contracts`
-- [ ] Create draft PR with story ID in title
-- [ ] Replace broad payload boundaries in `packages/core/src/langgraph/interrupts/types.ts` with safer interrupt/resume contracts
-- [ ] Preserve current human-request, approval, custom interrupt, and resume-command compatibility
-- [ ] Add/update focused tests for touched interrupt type helpers or adjacent runtime consumers as needed
-- [ ] Record explicit-`any` warning deltas for touched files in story docs
-- [ ] Add or update story documentation at `docs/st09024-langgraph-interrupt-type-contracts.md` (or document why not required)
-- [ ] Assess test impact; add/update automated tests when needed, or document why tests are not required
-- [ ] Run full test suite before finalizing the PR and record results
-- [ ] Run lint (`pnpm lint`) before finalizing the PR and record results
-- [ ] Commit completed checklist items as logical commits and push updates
-- [ ] Mark PR Ready only after all story tasks are complete
+- [x] Create branch `fix/st-09024-langgraph-interrupt-type-contracts`
+  - Created as `codex/fix/st-09024-langgraph-interrupt-type-contracts` (workspace branch-prefix policy)
+- [x] Create draft PR with story ID in title
+  - PR #86: https://github.com/TVScoundrel/agentforge/pull/86
+- [x] Replace broad payload boundaries in `packages/core/src/langgraph/interrupts/types.ts` with safer interrupt/resume contracts
+- [x] Preserve current human-request, approval, custom interrupt, and resume-command compatibility
+- [x] Add/update focused tests for touched interrupt type helpers or adjacent runtime consumers as needed
+  - `pnpm test --run packages/core/tests/langgraph/interrupts/utils.test.ts packages/core/tests/streaming/human-in-loop.test.ts` -> `2 passed` files, `20 passed` tests
+- [x] Record explicit-`any` warning deltas for touched files in story docs
+  - Recorded in `docs/st09024-langgraph-interrupt-type-contracts.md` (`types.ts 10 -> 0`, `utils.ts 3 -> 0`, overall `195 -> 182`)
+- [x] Add or update story documentation at `docs/st09024-langgraph-interrupt-type-contracts.md` (or document why not required)
+- [x] Assess test impact; add/update automated tests when needed, or document why tests are not required
+  - Added `packages/core/src/langgraph/interrupts/contracts.typecheck.ts` plus focused interrupt utility coverage in `packages/core/tests/langgraph/interrupts/utils.test.ts`
+- [x] Run full test suite before finalizing the PR and record results
+  - `pnpm test --run` -> `156 passed | 16 skipped` files; `2178 passed | 286 skipped` tests
+- [x] Run lint (`pnpm lint`) before finalizing the PR and record results
+  - `pnpm lint` -> exit `0`; warnings only
+- [x] Commit completed checklist items as logical commits and push updates
+  - `82d7ca6` `fix(st-09024): tighten langgraph interrupt contracts`
+- [x] Mark PR Ready only after all story tasks are complete
+  - PR #86 marked ready: https://github.com/TVScoundrel/agentforge/pull/86
 - [ ] Wait for merge; do not merge directly from local branch
+
+### Notes
+
+- Created branch: `fix/st-09024-langgraph-interrupt-type-contracts` (workspace branch: `codex/fix/st-09024-langgraph-interrupt-type-contracts`)
+- Draft PR: #86 `fix(st-09024): tighten langgraph interrupt type contracts`
+- Implementation commit: `82d7ca6` `fix(st-09024): tighten langgraph interrupt contracts`
+- Validation:
+  - `pnpm exec tsc -p packages/core/tsconfig.json --noEmit`
+  - `pnpm exec eslint packages/core/src/langgraph/interrupts/types.ts packages/core/src/langgraph/interrupts/utils.ts packages/core/src/langgraph/interrupts/contracts.typecheck.ts packages/core/tests/langgraph/interrupts/utils.test.ts`
+  - `pnpm test --run packages/core/tests/langgraph/interrupts/utils.test.ts packages/core/tests/streaming/human-in-loop.test.ts` -> `2 passed` files, `20 passed` tests
+  - `pnpm lint:explicit-any:baseline --silent` -> `182/289` warnings, `core 63/119`
+  - `pnpm test --run` -> `156 passed | 16 skipped` files; `2178 passed | 286 skipped` tests
+  - `pnpm lint` -> exit `0`; warnings only
 
 ---
 

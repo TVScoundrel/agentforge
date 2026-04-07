@@ -4,15 +4,16 @@
  */
 
 import type {
-  InterruptData,
   HumanRequestInterrupt,
   ApprovalRequiredInterrupt,
   CustomInterrupt,
   AnyInterrupt,
-  ThreadInfo,
   ThreadStatus,
   HumanRequest,
+  InterruptMetadata,
+  InterruptPayload,
 } from './types.js';
+import type { JsonObject } from '../observability/payload.js';
 
 /**
  * Create a human request interrupt
@@ -61,7 +62,7 @@ export function createHumanRequestInterrupt(request: HumanRequest): HumanRequest
 export function createApprovalRequiredInterrupt(
   action: string,
   description: string,
-  context?: Record<string, any>
+  context?: JsonObject
 ): ApprovalRequiredInterrupt {
   return {
     type: 'approval_required',
@@ -91,11 +92,14 @@ export function createApprovalRequiredInterrupt(
  * );
  * ```
  */
-export function createCustomInterrupt(
+export function createCustomInterrupt<
+  TData extends InterruptPayload,
+  TMetadata extends InterruptMetadata = InterruptMetadata,
+>(
   id: string,
-  data: any,
-  metadata?: Record<string, any>
-): CustomInterrupt {
+  data: TData,
+  metadata?: TMetadata
+): CustomInterrupt<TData, TMetadata> {
   return {
     type: 'custom',
     id,
@@ -153,4 +157,3 @@ export function getThreadStatus(
   if (hasInterrupts) return 'interrupted';
   return 'running';
 }
-

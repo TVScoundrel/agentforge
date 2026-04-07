@@ -8,7 +8,7 @@ import {
   isCustomInterrupt,
   getThreadStatus,
 } from '../../../src/langgraph/interrupts/utils.js';
-import type { HumanRequest } from '../../../src/tools/builtin/ask-human/types.js';
+import type { HumanRequest } from '../../../src/langgraph/interrupts/types.js';
 
 describe('Interrupt Utilities', () => {
   describe('createHumanRequestInterrupt', () => {
@@ -79,6 +79,20 @@ describe('Interrupt Utilities', () => {
       expect(interrupt.type).toBe('custom');
       expect(interrupt.metadata).toBeUndefined();
     });
+
+    it('should preserve JSON-safe primitive and array payloads', () => {
+      const primitiveInterrupt = createCustomInterrupt('custom-primitive', 'approved');
+      const arrayInterrupt = createCustomInterrupt('custom-array', [
+        { step: 'reviewed', approved: true },
+        { step: 'published', approved: false },
+      ]);
+
+      expect(primitiveInterrupt.data).toBe('approved');
+      expect(arrayInterrupt.data).toEqual([
+        { step: 'reviewed', approved: true },
+        { step: 'published', approved: false },
+      ]);
+    });
   });
 
   describe('Type guards', () => {
@@ -136,4 +150,3 @@ describe('Interrupt Utilities', () => {
     });
   });
 });
-
