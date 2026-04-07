@@ -877,7 +877,8 @@ Implementation notes:
   - `pnpm lint` -> exit `0`; warnings only
 - [x] Commit completed checklist items as logical commits and push updates
   - `82d7ca6` `fix(st-09024): tighten langgraph interrupt contracts`
-- [ ] Mark PR Ready only after all story tasks are complete
+- [x] Mark PR Ready only after all story tasks are complete
+  - PR #86 marked ready: https://github.com/TVScoundrel/agentforge/pull/86
 - [ ] Wait for merge; do not merge directly from local branch
 
 ### Notes
