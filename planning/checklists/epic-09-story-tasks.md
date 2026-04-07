@@ -879,7 +879,8 @@ Implementation notes:
   - `82d7ca6` `fix(st-09024): tighten langgraph interrupt contracts`
 - [x] Mark PR Ready only after all story tasks are complete
   - PR #86 marked ready: https://github.com/TVScoundrel/agentforge/pull/86
-- [ ] Wait for merge; do not merge directly from local branch
+- [x] Wait for merge; do not merge directly from local branch
+  - Merged via PR #86 on 2026-04-07 (merge commit `08978b8`)
 
 ### Notes
 
@@ -893,6 +894,8 @@ Implementation notes:
   - `pnpm lint:explicit-any:baseline --silent` -> `182/289` warnings, `core 63/119`
   - `pnpm test --run` -> `156 passed | 16 skipped` files; `2178 passed | 286 skipped` tests
   - `pnpm lint` -> exit `0`; warnings only
+- Merged PR: #86
+- Merge commit: `08978b8`
 
 ---
 

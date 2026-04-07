@@ -423,6 +423,13 @@
 - **Estimate:** 3 hours
 - **Outcome:** Hardened the ask-human tool’s LangGraph interrupt boundary by replacing broad interrupt import/response casts with typed `unknown` guards, preserving clear compatibility errors, and adding focused regressions for missing dependencies, timeout/default handling, non-string resumes, and nullish resumes. Improved the workspace explicit-`any` baseline from 295 to 292 and the `tools` baseline from 70 to 67.
 
+### ST-09024: Tighten LangGraph Interrupt Type Contracts
+- **Merged:** 2026-04-07
+- **PR:** https://github.com/TVScoundrel/agentforge/pull/86
+- **Epic:** EP-09 (SOLID Micro-Refactors and Type Boundary Hardening)
+- **Estimate:** 3 hours
+- **Outcome:** Tightened the shared LangGraph interrupt contracts around generic interrupt typing, JSON-safe custom payloads, JSON-object metadata, and safer resume values while preserving current human-request and approval flows. Improved the workspace explicit-`any` baseline from 195 to 182 and the `core` package from 76 to 63.
+
 ---
 
 ## Archive Format
