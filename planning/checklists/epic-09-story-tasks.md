@@ -840,6 +840,7 @@ Implementation notes:
 - [x] Commit completed checklist items as logical commits and push updates
   - `cf48e04` `refactor(st-09023): tighten tool builder fluent typing`
   - `458a30a` `docs(st-09023): record validation and move story to in-review`
+  - `2313ad6` `fix(st-09023): isolate typed builder metadata state`
 - [x] Mark PR Ready only after all story tasks are complete
   - PR #85 marked ready: https://github.com/TVScoundrel/agentforge/pull/85
 - [ ] Wait for merge; do not merge directly from local branch
