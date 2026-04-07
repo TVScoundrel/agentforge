@@ -3,6 +3,8 @@
  * @module langgraph/interrupts/types
  */
 
+import type { JsonObject, JsonValue } from '../observability/payload.js';
+
 /**
  * Priority level for human requests
  */
@@ -30,7 +32,7 @@ export interface HumanRequest {
   /**
    * Optional context
    */
-  context?: Record<string, any>;
+  context?: JsonObject;
 
   /**
    * Priority level
@@ -79,13 +81,27 @@ export interface HumanRequest {
 export type InterruptType = 'human_request' | 'approval_required' | 'custom';
 
 /**
+ * Shared interrupt metadata contract.
+ */
+export type InterruptMetadata = JsonObject;
+
+/**
+ * JSON-safe payload allowed in generic interrupt and resume flows.
+ */
+export type InterruptPayload = JsonValue;
+
+/**
  * Interrupt data stored in the checkpoint
  */
-export interface InterruptData {
+export interface InterruptData<
+  TType extends InterruptType = InterruptType,
+  TData = unknown,
+  TMetadata extends InterruptMetadata = InterruptMetadata,
+> {
   /**
    * Type of interrupt
    */
-  type: InterruptType;
+  type: TType;
 
   /**
    * Unique ID for this interrupt
@@ -100,41 +116,40 @@ export interface InterruptData {
   /**
    * The data associated with this interrupt
    */
-  data: any;
+  data: TData;
 
   /**
    * Optional metadata
    */
-  metadata?: Record<string, any>;
+  metadata?: TMetadata;
+}
+
+/**
+ * Approval request payload.
+ */
+export interface ApprovalRequiredData {
+  action: string;
+  description: string;
+  context?: JsonObject;
 }
 
 /**
  * Human request interrupt data
  */
-export interface HumanRequestInterrupt extends InterruptData {
-  type: 'human_request';
-  data: HumanRequest;
-}
+export type HumanRequestInterrupt = InterruptData<'human_request', HumanRequest>;
 
 /**
  * Approval required interrupt data
  */
-export interface ApprovalRequiredInterrupt extends InterruptData {
-  type: 'approval_required';
-  data: {
-    action: string;
-    description: string;
-    context?: Record<string, any>;
-  };
-}
+export type ApprovalRequiredInterrupt = InterruptData<'approval_required', ApprovalRequiredData>;
 
 /**
  * Custom interrupt data
  */
-export interface CustomInterrupt extends InterruptData {
-  type: 'custom';
-  data: any;
-}
+export type CustomInterrupt<
+  TData extends InterruptPayload = InterruptPayload,
+  TMetadata extends InterruptMetadata = InterruptMetadata,
+> = InterruptData<'custom', TData, TMetadata>;
 
 /**
  * Union type of all interrupt types
@@ -144,16 +159,19 @@ export type AnyInterrupt = HumanRequestInterrupt | ApprovalRequiredInterrupt | C
 /**
  * Resume command for continuing after an interrupt
  */
-export interface ResumeCommand {
+export interface ResumeCommand<
+  TResume extends InterruptPayload = InterruptPayload,
+  TMetadata extends InterruptMetadata = InterruptMetadata,
+> {
   /**
    * The response to the interrupt
    */
-  resume: any;
+  resume: TResume;
 
   /**
    * Optional metadata about the response
    */
-  metadata?: Record<string, any>;
+  metadata?: TMetadata;
 }
 
 /**
@@ -188,7 +206,7 @@ export interface ThreadInfo {
   /**
    * Optional metadata
    */
-  metadata?: Record<string, any>;
+  metadata?: InterruptMetadata;
 }
 
 /**
@@ -223,11 +241,10 @@ export interface ResumeOptions {
   /**
    * The response/value to resume with
    */
-  value: any;
+  value: InterruptPayload;
 
   /**
    * Optional metadata
    */
-  metadata?: Record<string, any>;
+  metadata?: InterruptMetadata;
 }
-
