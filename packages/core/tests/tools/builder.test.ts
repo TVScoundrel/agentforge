@@ -272,6 +272,22 @@ describe('ToolBuilder', () => {
           .build()
       ).toThrow(MissingDescriptionError);
     });
+
+    it('should throw a clear error for non-cloneable tool example payloads', () => {
+      expect(() =>
+        toolBuilder()
+          .name('non-cloneable-example')
+          .description('Testing clone failure messaging')
+          .category(ToolCategory.UTILITY)
+          .example({
+            description: 'Bad example',
+            input: {
+              handler: () => 'nope',
+            },
+          })
+          .schema(z.object({ input: z.string().describe('Input') }))
+      ).toThrow('structured-cloneable value');
+    });
   });
 
   describe('type safety', () => {
@@ -366,6 +382,28 @@ describe('ToolBuilder', () => {
       expect(result).toEqual({
         input: { path: '/tmp/demo.txt' },
       });
+    });
+
+    it('should preserve invoke this-binding compatibility', async () => {
+      const tool = toolBuilder()
+        .name('this-binding-tool')
+        .description('This binding regression')
+        .category(ToolCategory.UTILITY)
+        .schema(z.object({
+          value: z.string().describe('Value'),
+        }))
+        .implement(async function (this: unknown, { value }) {
+          return {
+            sameTool: this,
+            echoed: value,
+          };
+        })
+        .build();
+
+      const result = await tool.invoke({ value: 'demo' });
+
+      expect(result.echoed).toBe('demo');
+      expect(result.sameTool).toBe(tool);
     });
   });
 
@@ -509,6 +547,33 @@ describe('ToolBuilder', () => {
       expect(result).toEqual({
         success: true,
         data: 5,
+      });
+    });
+
+    it('should preserve this-binding compatibility through implementSafe', async () => {
+      const tool = toolBuilder()
+        .name('safe-this-binding-tool')
+        .description('Safe this binding regression')
+        .category(ToolCategory.UTILITY)
+        .schema(z.object({
+          value: z.number().describe('Value'),
+        }))
+        .implementSafe(async function (this: unknown, { value }) {
+          return {
+            sameTool: this,
+            doubled: value * 2,
+          };
+        })
+        .build();
+
+      const result = await tool.invoke({ value: 3 });
+
+      expect(result).toEqual({
+        success: true,
+        data: {
+          sameTool: tool,
+          doubled: 6,
+        },
       });
     });
   });

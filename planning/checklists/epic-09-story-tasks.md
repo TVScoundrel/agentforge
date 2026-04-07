@@ -827,7 +827,7 @@ Implementation notes:
 - [x] Remove avoidable `(this as any)` seams from `packages/core/src/tools/builder.ts`
 - [x] Preserve current fluent builder ergonomics and built-tool behavior
 - [x] Add/update focused tests for schema/invoke chaining and built tool execution behavior
-  - `pnpm test --run packages/core/tests/tools/builder.test.ts` -> `1 passed` file, `31 passed` tests
+  - `pnpm test --run packages/core/tests/tools/builder.test.ts` -> `1 passed` file, `34 passed` tests
 - [x] Record explicit-`any` warning deltas for touched files in story docs
   - Recorded in `docs/st09023-tool-builder-fluent-typing.md` (`6 -> 0`, overall `201 -> 195`)
 - [x] Add or update story documentation at `docs/st09023-tool-builder-fluent-typing.md` (or document why not required)
