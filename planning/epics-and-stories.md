@@ -1212,7 +1212,7 @@
 **Priority:** P1 (High)
 **Estimate:** 4 hours
 **Dependencies:** ST-09012
-**Status:** Backlog
+**Status:** In Review
 
 **Acceptance criteria:**
 - [ ] `packages/core/src/tools/builder.ts` removes avoidable `(this as any)` usage in schema and invoke builder stages

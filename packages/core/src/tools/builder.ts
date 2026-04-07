@@ -21,8 +21,54 @@
  */
 
 import { z } from 'zod';
-import { Tool, ToolCategory, ToolExample, ToolMetadata, ToolRelations } from './types.js';
+import { Tool, ToolCategory, ToolExample, ToolMetadata } from './types.js';
 import { createTool } from './helpers.js';
+
+type ToolInvoke<TOutput> = (this: unknown, input: unknown) => Promise<TOutput>;
+
+function cloneRelations(relations?: ToolMetadata['relations']): ToolMetadata['relations'] {
+  if (!relations) {
+    return undefined;
+  }
+
+  return {
+    requires: relations.requires ? [...relations.requires] : undefined,
+    suggests: relations.suggests ? [...relations.suggests] : undefined,
+    conflicts: relations.conflicts ? [...relations.conflicts] : undefined,
+    follows: relations.follows ? [...relations.follows] : undefined,
+    precedes: relations.precedes ? [...relations.precedes] : undefined,
+  };
+}
+
+function cloneExampleValue<T>(value: T, exampleIndex: number, field: 'input' | 'output'): T {
+  try {
+    return structuredClone(value);
+  } catch (error) {
+    const reason = error instanceof Error ? error.message : String(error);
+    throw new TypeError(
+      `Invalid tool example at index ${exampleIndex}: "${field}" must be a structured-cloneable value. ` +
+      `Received a non-cloneable value while building the tool metadata. Original error: ${reason}`
+    );
+  }
+}
+
+function cloneExamples(examples?: ToolExample[]): ToolExample[] | undefined {
+  return examples?.map((example, index) => ({
+    ...example,
+    input: cloneExampleValue(example.input, index, 'input'),
+    output: example.output === undefined ? undefined : cloneExampleValue(example.output, index, 'output'),
+  }));
+}
+
+function cloneMetadata(metadata: Partial<ToolMetadata>): Partial<ToolMetadata> {
+  return {
+    ...metadata,
+    tags: metadata.tags ? [...metadata.tags] : undefined,
+    examples: cloneExamples(metadata.examples),
+    limitations: metadata.limitations ? [...metadata.limitations] : undefined,
+    relations: cloneRelations(metadata.relations),
+  };
+}
 
 /**
  * Builder for creating tools with a fluent API
@@ -31,9 +77,11 @@ import { createTool } from './helpers.js';
  * manually constructing the metadata object.
  */
 export class ToolBuilder<TInput = unknown, TOutput = unknown> {
-  private metadata: Partial<ToolMetadata> = {};
-  private _schema?: z.ZodSchema<TInput>;
-  private _invoke?: (input: TInput) => Promise<TOutput>;
+  constructor(
+    private metadata: Partial<ToolMetadata> = {},
+    private _schema?: z.ZodSchema<TInput>,
+    private _invoke?: ToolInvoke<TOutput>
+  ) {}
 
   /**
    * Set the tool name (required)
@@ -251,14 +299,13 @@ export class ToolBuilder<TInput = unknown, TOutput = unknown> {
 
   /**
    * Set the input schema (required)
-   * 
+   *
    * All fields MUST have .describe() for LLM understanding!
-   * 
+   *
    * @param schema - Zod schema for input validation
    */
   schema<T>(schema: z.ZodSchema<T>): ToolBuilder<T, TOutput> {
-    (this as any)._schema = schema;
-    return this as any;
+    return new ToolBuilder<T, TOutput>(cloneMetadata(this.metadata), schema, this._invoke);
   }
 
   /**
@@ -267,8 +314,11 @@ export class ToolBuilder<TInput = unknown, TOutput = unknown> {
    * @param invoke - Async function that implements the tool
    */
   implement<T>(invoke: (input: TInput) => Promise<T>): ToolBuilder<TInput, T> {
-    (this as any)._invoke = invoke;
-    return this as any;
+    const wrappedInvoke: ToolInvoke<T> = async function (this: unknown, input) {
+      return invoke.call(this, input as TInput);
+    };
+
+    return new ToolBuilder<TInput, T>(cloneMetadata(this.metadata), this._schema, wrappedInvoke);
   }
 
   /**
@@ -297,9 +347,9 @@ export class ToolBuilder<TInput = unknown, TOutput = unknown> {
   implementSafe<T>(
     invoke: (input: TInput) => Promise<T>
   ): ToolBuilder<TInput, { success: boolean; data?: T; error?: string }> {
-    const safeInvoke = async (input: TInput) => {
+    const safeInvoke = async function (this: unknown, input: TInput) {
       try {
-        const data = await invoke(input);
+        const data = await invoke.call(this, input);
         return { success: true, data };
       } catch (error) {
         return {
@@ -309,8 +359,18 @@ export class ToolBuilder<TInput = unknown, TOutput = unknown> {
       }
     };
 
-    (this as any)._invoke = safeInvoke;
-    return this as any;
+    const wrappedInvoke: ToolInvoke<{ success: boolean; data?: T; error?: string }> = async function (
+      this: unknown,
+      input
+    ) {
+      return safeInvoke.call(this, input as TInput);
+    };
+
+    return new ToolBuilder<TInput, { success: boolean; data?: T; error?: string }>(
+      cloneMetadata(this.metadata),
+      this._schema,
+      wrappedInvoke
+    );
   }
 
   /**
@@ -342,11 +402,15 @@ export class ToolBuilder<TInput = unknown, TOutput = unknown> {
       throw new Error('Tool implementation is required. Use .implement() to set it.');
     }
 
+    const invoke = this._invoke;
+
     // Use createTool for validation
     return createTool(
       this.metadata as ToolMetadata,
       this._schema,
-      this._invoke
+      async function (this: unknown, input: TInput) {
+        return invoke.call(this, input);
+      }
     );
   }
 }
@@ -368,4 +432,3 @@ export class ToolBuilder<TInput = unknown, TOutput = unknown> {
 export function toolBuilder(): ToolBuilder {
   return new ToolBuilder();
 }
-
