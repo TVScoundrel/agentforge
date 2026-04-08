@@ -904,19 +904,42 @@ Implementation notes:
 **Branch:** `refactor/st-09025-tool-registry-collection-search-extraction`
 
 ### Checklist
-- [ ] Create branch `refactor/st-09025-tool-registry-collection-search-extraction`
-- [ ] Create draft PR with story ID in title
-- [ ] Extract collection and search responsibilities from `packages/core/src/tools/registry.ts`
-- [ ] Preserve current `getAll`, category/tag filter, and text-search behavior
-- [ ] Add/update focused tests for extracted collection and search behavior
-- [ ] Record explicit-`any` warning deltas for touched files in story docs
-- [ ] Add or update story documentation at `docs/st09025-tool-registry-collection-search-extraction.md` (or document why not required)
-- [ ] Assess test impact; add/update automated tests when needed, or document why tests are not required
-- [ ] Run full test suite before finalizing the PR and record results
-- [ ] Run lint (`pnpm lint`) before finalizing the PR and record results
-- [ ] Commit completed checklist items as logical commits and push updates
-- [ ] Mark PR Ready only after all story tasks are complete
+- [x] Create branch `refactor/st-09025-tool-registry-collection-search-extraction`
+  - Created as `codex/refactor/st-09025-tool-registry-collection-search-extraction` (workspace branch-prefix policy)
+- [x] Create draft PR with story ID in title
+  - PR #87: https://github.com/TVScoundrel/agentforge/pull/87
+- [x] Extract collection and search responsibilities from `packages/core/src/tools/registry.ts`
+- [x] Preserve current `getAll`, category/tag filter, and text-search behavior
+- [x] Add/update focused tests for extracted collection and search behavior
+  - `pnpm test --run packages/core/tests/tools/registry.test.ts packages/core/tests/tools/registry-collection.test.ts` -> `2 passed` files, `46 passed` tests
+- [x] Record explicit-`any` warning deltas for touched files in story docs
+  - Recorded in `docs/st09025-tool-registry-collection-search-extraction.md` (`registry.ts 8 -> 8`, overall `182 -> 182`)
+- [x] Add or update story documentation at `docs/st09025-tool-registry-collection-search-extraction.md` (or document why not required)
+- [x] Assess test impact; add/update automated tests when needed, or document why tests are not required
+  - Added focused helper coverage in `packages/core/tests/tools/registry-collection.test.ts`
+- [x] Run full test suite before finalizing the PR and record results
+  - `pnpm test --run` -> `157 passed | 16 skipped` files; `2181 passed | 286 skipped` tests
+- [x] Run lint (`pnpm lint`) before finalizing the PR and record results
+  - `pnpm lint` -> exit `0`; warnings only
+- [x] Commit completed checklist items as logical commits and push updates
+  - `2964a48` `refactor(st-09025): extract registry collection and search helpers`
+  - `232c0d9` `docs(st-09025): record validation and move story to in-review`
+- [x] Mark PR Ready only after all story tasks are complete
+  - PR #87 marked ready: https://github.com/TVScoundrel/agentforge/pull/87
 - [ ] Wait for merge; do not merge directly from local branch
+
+### Notes
+
+- Created branch: `refactor/st-09025-tool-registry-collection-search-extraction` (workspace branch: `codex/refactor/st-09025-tool-registry-collection-search-extraction`)
+- Draft PR: #87 `refactor(st-09025): extract registry collection and search operations`
+- Implementation commit: `2964a48` `refactor(st-09025): extract registry collection and search helpers`
+- Validation:
+  - `pnpm exec tsc -p packages/core/tsconfig.json --noEmit`
+  - `pnpm exec eslint packages/core/src/tools/registry.ts packages/core/src/tools/registry-collection.ts packages/core/tests/tools/registry.test.ts packages/core/tests/tools/registry-collection.test.ts`
+  - `pnpm test --run packages/core/tests/tools/registry.test.ts packages/core/tests/tools/registry-collection.test.ts` -> `2 passed` files, `46 passed` tests
+  - `pnpm lint:explicit-any:baseline --silent` -> `182/289` warnings, `core 63/119`
+  - `pnpm test --run` -> `157 passed | 16 skipped` files; `2181 passed | 286 skipped` tests
+  - `pnpm lint` -> exit `0`; warnings only
 
 ---
 
