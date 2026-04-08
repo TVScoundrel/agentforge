@@ -5,6 +5,35 @@ All notable changes to AgentForge will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.16.12] - 2026-04-08
+
+### Added
+
+#### @agentforge/core - Tool Registry Collection/Search Coverage
+- Added focused helper coverage in `packages/core/tests/tools/registry-collection.test.ts` for ordered tool listing, category/tag filtering, and case-insensitive search behavior
+- Added story documentation in `docs/st09025-tool-registry-collection-search-extraction.md` covering the extraction, compatibility notes, warning delta, and validation record
+
+### Changed
+
+#### @agentforge/core - Tool Registry Collection and Search Extraction
+- Extracted ordered listing, category filtering, tag filtering, tool-name listing, and case-insensitive text search from `packages/core/src/tools/registry.ts` into the internal helper module `packages/core/src/tools/registry-collection.ts`
+- Kept `ToolRegistry` as the stable public entrypoint while preserving the existing `getAll`, `getByCategory`, `getByTag`, `search`, and `getNames` behavior
+
+### Fixed
+
+#### @agentforge/core - Public Registry Declaration Boundary
+- Kept the internal `registry-collection` helper type out of the public `ToolRegistry` declaration surface so emitted `.d.ts` files do not expose the internal helper module path
+- Preserved the workspace explicit-`any` baseline at `182` and the `core` package baseline at `63` while improving maintainability of the registry lookup/search path
+
+### Published
+- All packages published to npm registry at version 0.16.12:
+  - @agentforge/core@0.16.12
+  - @agentforge/skills@0.16.12
+  - @agentforge/patterns@0.16.12
+  - @agentforge/tools@0.16.12
+  - @agentforge/testing@0.16.12
+  - @agentforge/cli@0.16.12
+
 ## [0.16.11] - 2026-04-07
 
 ### Added
