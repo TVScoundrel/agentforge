@@ -21,6 +21,14 @@ import { toLangChainTools as convertToLangChainTools } from '../langchain/conver
 import type { DynamicStructuredTool } from '@langchain/core/tools';
 import { z } from 'zod';
 import { createLogger, LogLevel } from '../langgraph/observability/logger.js';
+import {
+  getAllRegistryTools,
+  getRegistryToolNames,
+  getRegistryToolsByCategory,
+  getRegistryToolsByTag,
+  searchRegistryTools,
+  type RegistryTool,
+} from './registry-collection.js';
 
 const logger = createLogger('agentforge:core:tools:registry', { level: LogLevel.INFO });
 
@@ -39,7 +47,6 @@ export enum RegistryEvent {
  */
 export type EventHandler = (data: unknown) => void;
 
-type RegistryTool = Tool<unknown, unknown>;
 // Use `never` for erased input so heterogeneous Tool<TInput, TOutput> values
 // remain assignable through the contravariant invoke parameter.
 type RegisterManyTool = Tool<never, unknown>;
@@ -242,7 +249,7 @@ export class ToolRegistry {
    * ```
    */
   getAll(): RegistryTool[] {
-    return Array.from(this.tools.values());
+    return getAllRegistryTools(this.tools);
   }
 
   /**
@@ -257,7 +264,7 @@ export class ToolRegistry {
    * ```
    */
   getByCategory(category: ToolCategory): RegistryTool[] {
-    return this.getAll().filter((tool) => tool.metadata.category === category);
+    return getRegistryToolsByCategory(this.tools, category);
   }
 
   /**
@@ -272,9 +279,7 @@ export class ToolRegistry {
    * ```
    */
   getByTag(tag: string): RegistryTool[] {
-    return this.getAll().filter((tool) =>
-      tool.metadata.tags?.includes(tag)
-    );
+    return getRegistryToolsByTag(this.tools, tag);
   }
 
   /**
@@ -292,19 +297,7 @@ export class ToolRegistry {
    * ```
    */
   search(query: string): RegistryTool[] {
-    const lowerQuery = query.toLowerCase();
-
-    return this.getAll().filter((tool) => {
-      const name = tool.metadata.name.toLowerCase();
-      const displayName = tool.metadata.displayName?.toLowerCase() || '';
-      const description = tool.metadata.description.toLowerCase();
-
-      return (
-        name.includes(lowerQuery) ||
-        displayName.includes(lowerQuery) ||
-        description.includes(lowerQuery)
-      );
-    });
+    return searchRegistryTools(this.tools, query);
   }
 
   /**
@@ -400,7 +393,7 @@ export class ToolRegistry {
    * ```
    */
   getNames(): string[] {
-    return Array.from(this.tools.keys());
+    return getRegistryToolNames(this.tools);
   }
 
   /**
