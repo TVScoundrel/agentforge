@@ -922,7 +922,10 @@ Implementation notes:
 - [x] Run lint (`pnpm lint`) before finalizing the PR and record results
   - `pnpm lint` -> exit `0`; warnings only
 - [x] Commit completed checklist items as logical commits and push updates
+  - `2964a48` `refactor(st-09025): extract registry collection and search helpers`
+  - `232c0d9` `docs(st-09025): record validation and move story to in-review`
 - [x] Mark PR Ready only after all story tasks are complete
+  - PR #87 marked ready: https://github.com/TVScoundrel/agentforge/pull/87
 - [ ] Wait for merge; do not merge directly from local branch
 
 ### Notes
