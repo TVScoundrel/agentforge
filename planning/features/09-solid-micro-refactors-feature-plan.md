@@ -3,7 +3,7 @@
 **Epic Range:** EP-09 through EP-09
 **Status:** In Progress
 **Last Updated:** 2026-04-08
-**Active Story:** ST-09025 (In Review)
+**Active Story:** ST-09026 (Ready)
 
 ---
 
@@ -44,7 +44,7 @@ Top runtime hotspots informing this feature slice:
 3. `packages/patterns/src/multi-agent/nodes.ts` was split behind the stable public entrypoint in `ST-09015`, with follow-up hardening landed for log redaction, workload invariants, interrupt propagation, and model-content serialization
 4. `ST-09017` has centralized repeated CLI command-level `catch (error: any)` handling behind a shared helper and is now merged
 5. `ST-09018` has tightened `packages/testing/src/helpers/assertions.ts` and `packages/testing/src/helpers/state-builder.ts`, reducing the `testing` package warning floor from `51` to `31` and is now merged
-6. `ST-09024` has now merged after tightening `packages/core/src/langgraph/interrupts/types.ts` around domain-specific interrupt payload and resume contracts; `packages/core/src/tools/registry.ts` collection/search extraction is now the next small core runtime slice
+6. `ST-09025` has now merged after extracting `packages/core/src/tools/registry.ts` collection and search responsibilities into focused helpers; `ST-09026` is now the next small core runtime slice
 7. `packages/core/src/tools/registry.ts` and `packages/tools/src/data/relational/connection/connection-manager.ts` remain larger SRP targets that need multi-story decomposition rather than one oversized cleanup
 8. `packages/patterns/src/plan-execute/nodes.ts` has grown into a larger mixed-responsibility module and has become the next plan-execute modularization target after the ST-09014 shared contract cleanup
 

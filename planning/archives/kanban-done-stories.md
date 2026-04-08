@@ -430,6 +430,13 @@
 - **Estimate:** 3 hours
 - **Outcome:** Tightened the shared LangGraph interrupt contracts around generic interrupt typing, JSON-safe custom payloads, JSON-object metadata, and safer resume values while preserving current human-request and approval flows. Improved the workspace explicit-`any` baseline from 195 to 182 and the `core` package from 76 to 63.
 
+### ST-09025: Extract Tool Registry Collection and Search Operations
+- **Merged:** 2026-04-08
+- **PR:** https://github.com/TVScoundrel/agentforge/pull/87
+- **Epic:** EP-09 (SOLID Micro-Refactors and Type Boundary Hardening)
+- **Estimate:** 4 hours
+- **Outcome:** Extracted tool registry collection and search behavior into a focused internal helper module while keeping `ToolRegistry` as the stable public entrypoint, preserving lookup behavior for listing, category and tag filtering, and case-insensitive text search. Maintained the explicit-`any` baseline at 182 workspace-wide and 63 in `core` while adding direct coverage for the extracted helper paths.
+
 ---
 
 ## Archive Format

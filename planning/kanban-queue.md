@@ -4,16 +4,17 @@
 
 ## Queue Status Summary
 
-- **Ready:** 1 story
+- **Ready:** 3 stories
 - **In Progress:** 0 stories
-- **In Review:** 1 story
+- **In Review:** 0 stories
 - **Blocked:** 0 stories
-- **Backlog:** 2 stories
+- **Backlog:** 1 story
 
 ---
 
 ## Ready
 
+- `ST-09026` - Modularize Tool Registry Prompt Rendering and Event Paths
 - `ST-09027` - Extract Connection Manager Vendor Initialization Adapters
 - `ST-09029` - Modularize Plan-Execute Node Responsibilities
 
@@ -21,7 +22,7 @@
 
 ## In Review
 
-- `ST-09025` - Extract Tool Registry Collection and Search Operations
+_No stories currently in review_
 
 ---
 
@@ -39,8 +40,6 @@ _No stories currently blocked_
 
 ## Backlog
 
-- `ST-09026` - Modularize Tool Registry Prompt Rendering and Event Paths
-  - Depends on `ST-09025`
 - `ST-09028` - Modularize Connection Manager Lifecycle and Reconnection Control
   - Depends on `ST-09027`
 

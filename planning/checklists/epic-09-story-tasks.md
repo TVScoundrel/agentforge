@@ -926,7 +926,8 @@ Implementation notes:
   - `232c0d9` `docs(st-09025): record validation and move story to in-review`
 - [x] Mark PR Ready only after all story tasks are complete
   - PR #87 marked ready: https://github.com/TVScoundrel/agentforge/pull/87
-- [ ] Wait for merge; do not merge directly from local branch
+- [x] Wait for merge; do not merge directly from local branch
+  - Merged via PR #87 on 2026-04-08 (merge commit `fbb6498`)
 
 ### Notes
 
@@ -940,6 +941,8 @@ Implementation notes:
   - `pnpm lint:explicit-any:baseline --silent` -> `182/289` warnings, `core 63/119`
   - `pnpm test --run` -> `157 passed | 16 skipped` files; `2181 passed | 286 skipped` tests
   - `pnpm lint` -> exit `0`; warnings only
+- Merged PR: #87
+- Merge commit: `fbb6498`
 
 ---
 
