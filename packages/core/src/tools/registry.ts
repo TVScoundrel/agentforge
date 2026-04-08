@@ -27,7 +27,6 @@ import {
   getRegistryToolsByCategory,
   getRegistryToolsByTag,
   searchRegistryTools,
-  type RegistryTool,
 } from './registry-collection.js';
 
 const logger = createLogger('agentforge:core:tools:registry', { level: LogLevel.INFO });
@@ -50,6 +49,7 @@ export type EventHandler = (data: unknown) => void;
 // Use `never` for erased input so heterogeneous Tool<TInput, TOutput> values
 // remain assignable through the contravariant invoke parameter.
 type RegisterManyTool = Tool<never, unknown>;
+type RegistryTool = Tool<unknown, unknown>;
 
 function eraseToolType<TInput, TOutput>(tool: Tool<TInput, TOutput>): RegistryTool {
   return tool as unknown as RegistryTool;
