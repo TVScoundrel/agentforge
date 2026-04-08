@@ -1246,7 +1246,7 @@
 **Priority:** P2 (Medium)
 **Estimate:** 4 hours
 **Dependencies:** ST-09012
-**Status:** Ready
+**Status:** In Review
 
 **Acceptance criteria:**
 - [ ] `packages/core/src/tools/registry.ts` extracts collection/search responsibilities such as list, category/tag filtering, and text search into clearer helpers or modules

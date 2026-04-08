@@ -38,8 +38,8 @@ Extracted the tool registry’s collection and search behavior into a focused he
 - `pnpm exec eslint packages/core/src/tools/registry.ts packages/core/src/tools/registry-collection.ts packages/core/tests/tools/registry.test.ts packages/core/tests/tools/registry-collection.test.ts`
 - `pnpm test --run packages/core/tests/tools/registry.test.ts packages/core/tests/tools/registry-collection.test.ts` -> `2 passed` files, `46 passed` tests
 - `pnpm lint:explicit-any:baseline --silent` -> `182/289` warnings, `core 63/119`
-- `pnpm test --run` -> pending
-- `pnpm lint` -> pending
+- `pnpm test --run` -> `157 passed | 16 skipped` files; `2181 passed | 286 skipped` tests
+- `pnpm lint` -> exit `0`; warnings only
 
 ## Test Impact
 
