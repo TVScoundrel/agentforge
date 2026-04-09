@@ -1263,7 +1263,7 @@
 **Priority:** P2 (Medium)
 **Estimate:** 4 hours
 **Dependencies:** ST-09025
-**Status:** In Progress
+**Status:** In Review
 
 **Acceptance criteria:**
 - [ ] `packages/core/src/tools/registry.ts` extracts prompt-rendering and event-emission responsibilities into clearer helpers or modules

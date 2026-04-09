@@ -41,8 +41,8 @@ Extracted the tool registry's prompt-generation, LangChain conversion, and event
 - `pnpm exec eslint packages/core/src/tools/registry.ts packages/core/src/tools/registry-collection.ts packages/core/src/tools/registry-events.ts packages/core/src/tools/registry-prompt.ts packages/core/tests/tools/registry.test.ts packages/core/tests/tools/registry-collection.test.ts packages/core/tests/tools/registry-events.test.ts packages/core/tests/tools/registry-prompt.test.ts`
 - `pnpm test --run packages/core/tests/tools/registry.test.ts packages/core/tests/tools/registry-collection.test.ts packages/core/tests/tools/registry-events.test.ts packages/core/tests/tools/registry-prompt.test.ts` -> `4 passed` files, `50 passed` tests
 - `pnpm lint:explicit-any:baseline --silent` -> `182/289` warnings, `core 63/119`
-- `pnpm test --run` -> pending
-- `pnpm lint` -> pending
+- `pnpm test --run` -> `159 passed | 16 skipped` files; `2185 passed | 286 skipped` tests
+- `pnpm lint` -> exit `0`; warnings only
 
 ## Test Impact
 
