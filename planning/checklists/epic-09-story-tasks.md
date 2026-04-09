@@ -972,14 +972,19 @@ Implementation notes:
   - `86a3842` `refactor(st-09026): extract registry prompt and event helpers`
   - `44b24ff` `docs(st-09026): record progress and move story to in-progress`
   - `42eab78` `docs(st-09026): record validation and move story to in-review`
+  - `d4e7b71` `chore(st-09026): finalize checklist and ready status`
+  - `8a354da` `fix(st-09026): filter prompt categories from active set`
 - [x] Mark PR Ready only after all story tasks are complete
   - PR #88 marked ready: https://github.com/TVScoundrel/agentforge/pull/88
-- [ ] Wait for merge; do not merge directly from local branch
+- [x] Wait for merge; do not merge directly from local branch
+  - Merged via PR #88 on 2026-04-09 (merge commit `6682cad`)
 
 ### Notes
 
 - Created branch: `refactor/st-09026-tool-registry-prompt-event-modularization` (workspace branch: `codex/refactor/st-09026-tool-registry-prompt-event-modularization`)
 - Draft PR: #88 `refactor(st-09026): modularize tool registry prompt rendering and event paths`
+- Merged PR: #88
+- Merge commit: `6682cad`
 - Validation so far:
   - `pnpm exec tsc -p packages/core/tsconfig.json --noEmit`
   - `pnpm exec eslint packages/core/src/tools/registry.ts packages/core/src/tools/registry-collection.ts packages/core/src/tools/registry-events.ts packages/core/src/tools/registry-prompt.ts packages/core/tests/tools/registry.test.ts packages/core/tests/tools/registry-collection.test.ts packages/core/tests/tools/registry-events.test.ts packages/core/tests/tools/registry-prompt.test.ts`

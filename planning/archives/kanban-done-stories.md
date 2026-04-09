@@ -437,6 +437,13 @@
 - **Estimate:** 4 hours
 - **Outcome:** Extracted tool registry collection and search behavior into a focused internal helper module while keeping `ToolRegistry` as the stable public entrypoint, preserving lookup behavior for listing, category and tag filtering, and case-insensitive text search. Maintained the explicit-`any` baseline at 182 workspace-wide and 63 in `core` while adding direct coverage for the extracted helper paths.
 
+### ST-09026: Modularize Tool Registry Prompt Rendering and Event Paths
+- **Merged:** 2026-04-09
+- **PR:** https://github.com/TVScoundrel/agentforge/pull/88
+- **Epic:** EP-09 (SOLID Micro-Refactors and Type Boundary Hardening)
+- **Estimate:** 4 hours
+- **Outcome:** Extracted tool registry prompt rendering, LangChain conversion, and event-emission responsibilities into focused internal helper modules while keeping `ToolRegistry` as the stable public facade. Preserved grouped and minimal prompt generation, safe registry event dispatch, and LangChain conversion behavior while keeping the explicit-`any` baseline flat at 182 workspace-wide and 63 in `core`.
+
 ---
 
 ## Archive Format
