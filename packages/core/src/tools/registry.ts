@@ -16,11 +16,8 @@
  * ```
  */
 
-import { Tool, ToolCategory, ToolRelations } from './types.js';
-import { toLangChainTools as convertToLangChainTools } from '../langchain/converter.js';
+import { Tool, ToolCategory } from './types.js';
 import type { DynamicStructuredTool } from '@langchain/core/tools';
-import { z } from 'zod';
-import { createLogger, LogLevel } from '../langgraph/observability/logger.js';
 import {
   getAllRegistryTools,
   getRegistryToolNames,
@@ -28,8 +25,17 @@ import {
   getRegistryToolsByTag,
   searchRegistryTools,
 } from './registry-collection.js';
-
-const logger = createLogger('agentforge:core:tools:registry', { level: LogLevel.INFO });
+import {
+  addRegistryEventHandler,
+  emitRegistryEvent,
+  removeRegistryEventHandler,
+  type RegistryEventHandler,
+} from './registry-events.js';
+import {
+  convertRegistryToolsToLangChain,
+  generateRegistryPrompt,
+  type RegistryPromptOptions,
+} from './registry-prompt.js';
 
 /**
  * Registry events
@@ -44,7 +50,7 @@ export enum RegistryEvent {
 /**
  * Event handler type
  */
-export type EventHandler = (data: unknown) => void;
+export type EventHandler = RegistryEventHandler;
 
 // Use `never` for erased input so heterogeneous Tool<TInput, TOutput> values
 // remain assignable through the contravariant invoke parameter.
@@ -58,7 +64,7 @@ function eraseToolType<TInput, TOutput>(tool: Tool<TInput, TOutput>): RegistryTo
 /**
  * Options for generating tool prompts
  */
-export interface PromptOptions {
+export interface PromptOptions extends RegistryPromptOptions {
   /** Include usage examples in the prompt */
   includeExamples?: boolean;
   /** Include usage notes in the prompt */
@@ -410,10 +416,7 @@ export class ToolRegistry {
    * ```
    */
   on(event: RegistryEvent, handler: EventHandler): void {
-    if (!this.eventHandlers.has(event)) {
-      this.eventHandlers.set(event, new Set());
-    }
-    this.eventHandlers.get(event)!.add(handler);
+    addRegistryEventHandler(this.eventHandlers, event, handler);
   }
 
   /**
@@ -430,10 +433,7 @@ export class ToolRegistry {
    * ```
    */
   off(event: RegistryEvent, handler: EventHandler): void {
-    const handlers = this.eventHandlers.get(event);
-    if (handlers) {
-      handlers.delete(handler);
-    }
+    removeRegistryEventHandler(this.eventHandlers, event, handler);
   }
 
   /**
@@ -444,21 +444,7 @@ export class ToolRegistry {
    * @private
    */
   private emit(event: RegistryEvent, data: unknown): void {
-    const handlers = this.eventHandlers.get(event);
-    if (handlers) {
-      handlers.forEach((handler) => {
-        try {
-          handler(data);
-        } catch (error) {
-          // Log error but don't throw to prevent one handler from breaking others
-          logger.error('Event handler error', {
-            event,
-            error: error instanceof Error ? error.message : String(error),
-            ...(error instanceof Error && error.stack ? { stack: error.stack } : {})
-          });
-        }
-      });
-    }
+    emitRegistryEvent(this.eventHandlers, event, data);
   }
 
   /**
@@ -482,7 +468,7 @@ export class ToolRegistry {
    * ```
    */
   toLangChainTools(): DynamicStructuredTool[] {
-    return convertToLangChainTools(this.getAll());
+    return convertRegistryToolsToLangChain(this.getAll());
   }
 
   /**
@@ -514,252 +500,6 @@ export class ToolRegistry {
    * ```
    */
   generatePrompt(options: PromptOptions = {}): string {
-    const {
-      includeExamples = false,
-      includeNotes = false,
-      includeLimitations = false,
-      includeRelations = false,
-      groupByCategory = false,
-      categories,
-      maxExamplesPerTool,
-      minimal = false,
-    } = options;
-
-    // Get tools to include
-    let tools = this.getAll();
-
-    // Filter by categories if specified
-    if (categories && categories.length > 0) {
-      tools = tools.filter((tool) => categories.includes(tool.metadata.category));
-    }
-
-    if (tools.length === 0) {
-      return 'No tools available.';
-    }
-
-    const lines: string[] = ['Available Tools:', ''];
-
-    if (groupByCategory) {
-      // Group tools by category
-      const toolsByCategory = new Map<ToolCategory, RegistryTool[]>();
-
-      for (const tool of tools) {
-        const category = tool.metadata.category;
-        if (!toolsByCategory.has(category)) {
-          toolsByCategory.set(category, []);
-        }
-        toolsByCategory.get(category)!.push(tool);
-      }
-
-      // Generate prompt for each category
-      for (const [category, categoryTools] of toolsByCategory) {
-        lines.push(`${category.toUpperCase().replace(/-/g, ' ')} TOOLS:`);
-
-        for (const tool of categoryTools) {
-          lines.push(...this.formatToolForPrompt(tool, {
-            includeExamples,
-            includeNotes,
-            includeLimitations,
-            includeRelations,
-            maxExamplesPerTool,
-            minimal,
-          }));
-        }
-
-        lines.push('');
-      }
-    } else {
-      // List all tools without grouping
-      for (const tool of tools) {
-        lines.push(...this.formatToolForPrompt(tool, {
-          includeExamples,
-          includeNotes,
-          includeLimitations,
-          includeRelations,
-          maxExamplesPerTool,
-          minimal,
-        }));
-        lines.push('');
-      }
-    }
-
-    return lines.join('\n').trim();
-  }
-
-  /**
-   * Format a single tool for inclusion in a prompt
-   *
-   * @param tool - The tool to format
-   * @param options - Formatting options
-   * @returns Array of formatted lines
-   * @private
-   */
-  private formatToolForPrompt(
-    tool: RegistryTool,
-    options: {
-      includeExamples?: boolean;
-      includeNotes?: boolean;
-      includeLimitations?: boolean;
-      includeRelations?: boolean;
-      maxExamplesPerTool?: number;
-      minimal?: boolean;
-    }
-  ): string[] {
-    const { metadata } = tool;
-    const lines: string[] = [];
-
-    // In minimal mode, only include supplementary context
-    if (options.minimal) {
-      // Tool name as header for matching with API-provided definitions
-      lines.push(`## ${metadata.name}`);
-
-      // Only include supplementary information not in the API definition
-      let hasContent = false;
-
-      // Relations
-      if (options.includeRelations && metadata.relations) {
-        const relationLines = this.formatRelations(metadata.relations);
-        if (relationLines.length > 0) {
-          lines.push(...relationLines);
-          hasContent = true;
-        }
-      }
-
-      // Examples
-      if (options.includeExamples && metadata.examples && metadata.examples.length > 0) {
-        const maxExamples = options.maxExamplesPerTool || metadata.examples.length;
-        const examples = metadata.examples.slice(0, maxExamples);
-
-        for (const example of examples) {
-          lines.push(`  Example: ${example.description}`);
-          lines.push(`    Input: ${JSON.stringify(example.input)}`);
-          if (example.explanation) {
-            lines.push(`    ${example.explanation}`);
-          }
-          hasContent = true;
-        }
-      }
-
-      // Usage notes
-      if (options.includeNotes && metadata.usageNotes) {
-        lines.push(`  Notes: ${metadata.usageNotes}`);
-        hasContent = true;
-      }
-
-      // Limitations
-      if (options.includeLimitations && metadata.limitations && metadata.limitations.length > 0) {
-        lines.push(`  Limitations:`);
-        for (const limitation of metadata.limitations) {
-          lines.push(`    - ${limitation}`);
-        }
-        hasContent = true;
-      }
-
-      // If no supplementary content, don't include this tool
-      if (!hasContent) {
-        return [];
-      }
-
-      return lines;
-    }
-
-    // Full mode: include complete tool definition
-    // Tool name and description
-    lines.push(`- ${metadata.name}: ${metadata.description}`);
-
-    // Get schema properties
-    const schemaShape = this.getSchemaShape(tool.schema);
-    if (schemaShape) {
-      const params = Object.keys(schemaShape);
-      if (params.length > 0) {
-        const paramDescriptions = params.map((param) => {
-          const field = schemaShape[param];
-          const typeName = field._def.typeName;
-          const type = typeName.replace('Zod', '').toLowerCase();
-          return `${param} (${type})`;
-        });
-        lines.push(`  Parameters: ${paramDescriptions.join(', ')}`);
-      }
-    }
-
-    // Relations
-    if (options.includeRelations && metadata.relations) {
-      const relationLines = this.formatRelations(metadata.relations);
-      if (relationLines.length > 0) {
-        lines.push(...relationLines);
-      }
-    }
-
-    // Usage notes
-    if (options.includeNotes && metadata.usageNotes) {
-      lines.push(`  Notes: ${metadata.usageNotes}`);
-    }
-
-    // Examples
-    if (options.includeExamples && metadata.examples && metadata.examples.length > 0) {
-      const maxExamples = options.maxExamplesPerTool || metadata.examples.length;
-      const examples = metadata.examples.slice(0, maxExamples);
-
-      for (const example of examples) {
-        lines.push(`  Example: ${example.description}`);
-        lines.push(`    Input: ${JSON.stringify(example.input)}`);
-        if (example.explanation) {
-          lines.push(`    ${example.explanation}`);
-        }
-      }
-    }
-
-    // Limitations
-    if (options.includeLimitations && metadata.limitations && metadata.limitations.length > 0) {
-      lines.push(`  Limitations:`);
-      for (const limitation of metadata.limitations) {
-        lines.push(`    - ${limitation}`);
-      }
-    }
-
-    return lines;
-  }
-
-  /**
-   * Format tool relations for inclusion in a prompt
-   *
-   * @param relations - The relations to format
-   * @returns Array of formatted lines
-   * @private
-   */
-  private formatRelations(relations: ToolRelations): string[] {
-    const lines: string[] = [];
-
-    if (relations.requires && relations.requires.length > 0) {
-      lines.push(`  Requires: ${relations.requires.join(', ')}`);
-    }
-
-    if (relations.suggests && relations.suggests.length > 0) {
-      lines.push(`  Suggests: ${relations.suggests.join(', ')}`);
-    }
-
-    if (relations.conflicts && relations.conflicts.length > 0) {
-      lines.push(`  Conflicts: ${relations.conflicts.join(', ')}`);
-    }
-
-    if (relations.follows && relations.follows.length > 0) {
-      lines.push(`  Follows: ${relations.follows.join(', ')}`);
-    }
-
-    if (relations.precedes && relations.precedes.length > 0) {
-      lines.push(`  Precedes: ${relations.precedes.join(', ')}`);
-    }
-
-    return lines;
-  }
-
-  private getSchemaShape(
-    schema: z.ZodSchema<unknown>
-  ): z.ZodRawShape | undefined {
-    if (schema instanceof z.ZodObject) {
-      return schema.shape;
-    }
-
-    return undefined;
+    return generateRegistryPrompt(this.getAll(), options);
   }
 }
