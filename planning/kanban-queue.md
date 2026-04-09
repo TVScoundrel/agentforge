@@ -1,12 +1,12 @@
 # Kanban Queue: AgentForge
 
-**Last Updated:** 2026-04-08
+**Last Updated:** 2026-04-09
 
 ## Queue Status Summary
 
-- **Ready:** 3 stories
+- **Ready:** 2 stories
 - **In Progress:** 0 stories
-- **In Review:** 0 stories
+- **In Review:** 1 story
 - **Blocked:** 0 stories
 - **Backlog:** 1 story
 
@@ -14,7 +14,6 @@
 
 ## Ready
 
-- `ST-09026` - Modularize Tool Registry Prompt Rendering and Event Paths
 - `ST-09027` - Extract Connection Manager Vendor Initialization Adapters
 - `ST-09029` - Modularize Plan-Execute Node Responsibilities
 
@@ -22,7 +21,7 @@
 
 ## In Review
 
-_No stories currently in review_
+- `ST-09026` - Modularize Tool Registry Prompt Rendering and Event Paths
 
 ---
 

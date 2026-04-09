@@ -951,19 +951,42 @@ Implementation notes:
 **Branch:** `refactor/st-09026-tool-registry-prompt-event-modularization`
 
 ### Checklist
-- [ ] Create branch `refactor/st-09026-tool-registry-prompt-event-modularization`
-- [ ] Create draft PR with story ID in title
-- [ ] Extract prompt-rendering and event-emission responsibilities from `packages/core/src/tools/registry.ts`
-- [ ] Preserve current prompt-generation, LangChain conversion, and registry event behavior
-- [ ] Add/update focused tests for prompt rendering and event behavior after the split
-- [ ] Record explicit-`any` warning deltas for touched files in story docs
-- [ ] Add or update story documentation at `docs/st09026-tool-registry-prompt-event-modularization.md` (or document why not required)
-- [ ] Assess test impact; add/update automated tests when needed, or document why tests are not required
-- [ ] Run full test suite before finalizing the PR and record results
-- [ ] Run lint (`pnpm lint`) before finalizing the PR and record results
-- [ ] Commit completed checklist items as logical commits and push updates
-- [ ] Mark PR Ready only after all story tasks are complete
+- [x] Create branch `refactor/st-09026-tool-registry-prompt-event-modularization`
+  - Created as `codex/refactor/st-09026-tool-registry-prompt-event-modularization` (workspace branch-prefix policy)
+- [x] Create draft PR with story ID in title
+  - PR #88: https://github.com/TVScoundrel/agentforge/pull/88
+- [x] Extract prompt-rendering and event-emission responsibilities from `packages/core/src/tools/registry.ts`
+- [x] Preserve current prompt-generation, LangChain conversion, and registry event behavior
+- [x] Add/update focused tests for prompt rendering and event behavior after the split
+  - `pnpm test --run packages/core/tests/tools/registry.test.ts packages/core/tests/tools/registry-collection.test.ts packages/core/tests/tools/registry-events.test.ts packages/core/tests/tools/registry-prompt.test.ts` -> `4 passed` files, `50 passed` tests
+- [x] Record explicit-`any` warning deltas for touched files in story docs
+  - Recorded in `docs/st09026-tool-registry-prompt-event-modularization.md` (`registry.ts 8 -> 8`, overall `182 -> 182`)
+- [x] Add or update story documentation at `docs/st09026-tool-registry-prompt-event-modularization.md` (or document why not required)
+- [x] Assess test impact; add/update automated tests when needed, or document why tests are not required
+  - Added focused helper coverage in `packages/core/tests/tools/registry-events.test.ts` and `packages/core/tests/tools/registry-prompt.test.ts`
+- [x] Run full test suite before finalizing the PR and record results
+  - `pnpm test --run` -> `159 passed | 16 skipped` files; `2185 passed | 286 skipped` tests
+- [x] Run lint (`pnpm lint`) before finalizing the PR and record results
+  - `pnpm lint` -> exit `0`; warnings only
+- [x] Commit completed checklist items as logical commits and push updates
+  - `86a3842` `refactor(st-09026): extract registry prompt and event helpers`
+  - `44b24ff` `docs(st-09026): record progress and move story to in-progress`
+  - `42eab78` `docs(st-09026): record validation and move story to in-review`
+- [x] Mark PR Ready only after all story tasks are complete
+  - PR #88 marked ready: https://github.com/TVScoundrel/agentforge/pull/88
 - [ ] Wait for merge; do not merge directly from local branch
+
+### Notes
+
+- Created branch: `refactor/st-09026-tool-registry-prompt-event-modularization` (workspace branch: `codex/refactor/st-09026-tool-registry-prompt-event-modularization`)
+- Draft PR: #88 `refactor(st-09026): modularize tool registry prompt rendering and event paths`
+- Validation so far:
+  - `pnpm exec tsc -p packages/core/tsconfig.json --noEmit`
+  - `pnpm exec eslint packages/core/src/tools/registry.ts packages/core/src/tools/registry-collection.ts packages/core/src/tools/registry-events.ts packages/core/src/tools/registry-prompt.ts packages/core/tests/tools/registry.test.ts packages/core/tests/tools/registry-collection.test.ts packages/core/tests/tools/registry-events.test.ts packages/core/tests/tools/registry-prompt.test.ts`
+  - `pnpm test --run packages/core/tests/tools/registry.test.ts packages/core/tests/tools/registry-collection.test.ts packages/core/tests/tools/registry-events.test.ts packages/core/tests/tools/registry-prompt.test.ts` -> `4 passed` files, `50 passed` tests
+  - `pnpm lint:explicit-any:baseline --silent` -> `182/289` warnings, `core 63/119`
+  - `pnpm test --run` -> `159 passed | 16 skipped` files; `2185 passed | 286 skipped` tests
+  - `pnpm lint` -> exit `0`; warnings only
 
 ---
 
