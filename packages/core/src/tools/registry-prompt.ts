@@ -40,7 +40,9 @@ export function generateRegistryPrompt(
   let toolsToInclude = tools;
 
   if (categories && categories.length > 0) {
-    toolsToInclude = tools.filter((tool) => categories.includes(tool.metadata.category));
+    toolsToInclude = toolsToInclude.filter((tool) =>
+      categories.includes(tool.metadata.category)
+    );
   }
 
   if (toolsToInclude.length === 0) {
