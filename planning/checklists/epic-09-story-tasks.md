@@ -968,8 +968,12 @@ Implementation notes:
   - `pnpm test --run` -> `159 passed | 16 skipped` files; `2185 passed | 286 skipped` tests
 - [x] Run lint (`pnpm lint`) before finalizing the PR and record results
   - `pnpm lint` -> exit `0`; warnings only
-- [ ] Commit completed checklist items as logical commits and push updates
-- [ ] Mark PR Ready only after all story tasks are complete
+- [x] Commit completed checklist items as logical commits and push updates
+  - `86a3842` `refactor(st-09026): extract registry prompt and event helpers`
+  - `44b24ff` `docs(st-09026): record progress and move story to in-progress`
+  - `42eab78` `docs(st-09026): record validation and move story to in-review`
+- [x] Mark PR Ready only after all story tasks are complete
+  - PR #88 marked ready: https://github.com/TVScoundrel/agentforge/pull/88
 - [ ] Wait for merge; do not merge directly from local branch
 
 ### Notes
