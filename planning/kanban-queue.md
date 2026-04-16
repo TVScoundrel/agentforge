@@ -4,23 +4,18 @@
 
 ## Queue Status Summary
 
-- **Ready:** 1 story
+- **Ready:** 2 stories
 - **In Progress:** 0 stories
-- **In Review:** 1 story
+- **In Review:** 0 stories
 - **Blocked:** 0 stories
-- **Backlog:** 1 story
+- **Backlog:** 0 stories
 
 ---
 
 ## Ready
 
+- `ST-09028` - Modularize Connection Manager Lifecycle and Reconnection Control
 - `ST-09029` - Modularize Plan-Execute Node Responsibilities
-
----
-
-## In Review
-
-- `ST-09027` - Extract Connection Manager Vendor Initialization Adapters
 
 ---
 
@@ -38,8 +33,7 @@ _No stories currently blocked_
 
 ## Backlog
 
-- `ST-09028` - Modularize Connection Manager Lifecycle and Reconnection Control
-  - Depends on `ST-09027`
+_No stories currently in backlog_
 
 ---
 
@@ -111,6 +105,7 @@ _No stories currently blocked_
 - ✅ ST-09021 complete - streaming websocket contracts hardened around structural socket boundaries and unknown-first message payloads (merged 2026-04-03, PR #83)
 - ✅ ST-09022 complete - shared deduplication contracts hardened around unknown-first normalization and null-prototype cache-key handling (merged 2026-04-03, PR #84)
 - ✅ ST-09023 complete - core tool builder fluent typing tightened with metadata-isolation, clone-failure, and invoke-compatibility follow-up fixes (merged 2026-04-07, PR #85)
+- ✅ ST-09027 complete - connection-manager vendor initialization extracted into focused internal helpers with follow-up logger and vendor-pairing contract fixes (merged 2026-04-16, PR #89)
 - Epic 09 (SOLID Micro-Refactors and Type Boundary Hardening) was expanded on 2026-03-22 with low-hanging follow-on stories ST-09008 through ST-09012
 - Epic 09 (SOLID Micro-Refactors and Type Boundary Hardening) was expanded again on 2026-03-23 with daily hardening stories ST-09013 through ST-09018
 - Epic 09 (SOLID Micro-Refactors and Type Boundary Hardening) was expanded a third time on 2026-03-23 with daily hardening stories ST-09019 through ST-09028

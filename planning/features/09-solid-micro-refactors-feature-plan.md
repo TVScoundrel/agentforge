@@ -3,7 +3,7 @@
 **Epic Range:** EP-09 through EP-09
 **Status:** In Progress
 **Last Updated:** 2026-04-16
-**Active Story:** ST-09027 (In Review)
+**Active Story:** ST-09028 (Ready)
 
 ---
 
@@ -44,7 +44,7 @@ Top runtime hotspots informing this feature slice:
 3. `packages/patterns/src/multi-agent/nodes.ts` was split behind the stable public entrypoint in `ST-09015`, with follow-up hardening landed for log redaction, workload invariants, interrupt propagation, and model-content serialization
 4. `ST-09017` has centralized repeated CLI command-level `catch (error: any)` handling behind a shared helper and is now merged
 5. `ST-09018` has tightened `packages/testing/src/helpers/assertions.ts` and `packages/testing/src/helpers/state-builder.ts`, reducing the `testing` package warning floor from `51` to `31` and is now merged
-6. `ST-09027` is now in review after extracting `packages/tools/src/data/relational/connection/connection-manager.ts` vendor-specific initialization and pool-configuration logic into focused helpers while preserving the public connection lifecycle surface
+6. `ST-09027` is now merged after extracting `packages/tools/src/data/relational/connection/connection-manager.ts` vendor-specific initialization and pool-configuration logic into focused helpers while preserving the public connection lifecycle surface
 7. `packages/core/src/tools/registry.ts` and `packages/tools/src/data/relational/connection/connection-manager.ts` remain larger SRP targets that need multi-story decomposition rather than one oversized cleanup
 8. `packages/patterns/src/plan-execute/nodes.ts` has grown into a larger mixed-responsibility module and has become the next plan-execute modularization target after the ST-09014 shared contract cleanup
 
@@ -71,6 +71,7 @@ Recent improvement snapshot:
 - `ST-09022` merged after tightening the shared deduplication helper contracts around unknown-first normalization and null-prototype cache-key handling, lowering the workspace explicit-`any` baseline from `205` to `201` and the `patterns` package from `19` to `15`.
 - `ST-09023` merged after tightening the core tool builder fluent typing surface, lowering the workspace explicit-`any` baseline from `201` to `195` and the `core` package from `82` to `76`, with follow-up fixes for branched metadata isolation, clone-failure messaging, and `this`-binding compatibility.
 - `ST-09024` merged after tightening the LangGraph interrupt contracts around JSON-safe custom payloads, JSON-object metadata, and safer resume values, lowering the workspace explicit-`any` baseline from `195` to `182` and the `core` package from `76` to `63`.
+- `ST-09027` merged after extracting relational connection-manager vendor initialization into focused PostgreSQL/MySQL/SQLite helper adapters, lowering the workspace explicit-`any` baseline from `182` to `180` and the `tools` package from `67` to `65`, with follow-up fixes for logger attribution and vendor/connection type pairing.
 - `EP-09` remains open as the daily hardening stream, with the next follow-on slice now centered on shared deduplication helpers, core tool builder typing, interrupt contracts, and the plan-execute node modularization follow-up.
 - A second follow-on slice is now queued for prompt loading, reflection routing, streaming websocket contracts, shared deduplication helpers, core tool builder typing, interrupt contracts, and split-out registry/connection-manager modularization.
 

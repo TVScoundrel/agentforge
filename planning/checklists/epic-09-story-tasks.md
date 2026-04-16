@@ -1020,9 +1020,16 @@ Implementation notes:
 - [x] Commit completed checklist items as logical commits and push updates
   - `bdf3e5d` `refactor(st-09027): extract vendor initialization helpers`
   - `5d0aae0` `docs(st-09027): record validation and move story to in-review`
+  - `ae10d2a` `chore(st-09027): finalize checklist and ready status`
+  - `1a0fc22` `fix(st-09027): tighten vendor initialization review fixes`
+  - `290bc4b` `chore(st-09027): append review-fix commit record`
+  - `57bedb4` `fix(st-09027): tighten vendor helper type pairing`
+  - `d6653a9` `chore(st-09027): append review-fix commit record`
 - [x] Mark PR Ready only after all story tasks are complete
   - PR #89 marked ready: https://github.com/TVScoundrel/agentforge/pull/89
-- [ ] Wait for merge; do not merge directly from local branch
+- [x] Wait for merge; do not merge directly from local branch
+  - Merged via PR #89: https://github.com/TVScoundrel/agentforge/pull/89
+  - Merge commit: `a995df3`
 
 ### Notes
 

@@ -2,11 +2,18 @@
 
 **Purpose:** Track completed and merged stories for the Relational Database Access Tool project.
 
-**Last Updated:** 2026-04-07
+**Last Updated:** 2026-04-16
 
 ---
 
 ## Completed Stories
+
+### ST-09027: Extract Connection Manager Vendor Initialization Adapters
+- **Merged:** 2026-04-16
+- **PR:** https://github.com/TVScoundrel/agentforge/pull/89 (commit a995df3)
+- **Epic:** EP-09 (SOLID Micro-Refactors and Type Boundary Hardening)
+- **Estimate:** 4 hours
+- **Outcome:** Extracted the relational connection-manager vendor-specific PostgreSQL, MySQL, and SQLite initialization paths into focused internal helpers, preserved the public lifecycle surface and existing lifecycle coverage, added focused vendor-initialization tests, and lowered the workspace explicit-`any` baseline from 182 to 180 while lowering the `tools` package from 67 to 65. Follow-up review fixes gave the helper its own logger namespace and tightened vendor/connection type pairing around the exported initialization adapters.
 
 ### ST-09023: Tighten Core Tool Builder Fluent Typing
 - **Merged:** 2026-04-07
