@@ -1280,7 +1280,7 @@
 **Priority:** P2 (Medium)
 **Estimate:** 4 hours
 **Dependencies:** ST-09012
-**Status:** Ready
+**Status:** In Review
 
 **Acceptance criteria:**
 - [ ] `packages/tools/src/data/relational/connection/connection-manager.ts` extracts PostgreSQL, MySQL, and SQLite initialization/pool-configuration logic into clearer helpers or modules

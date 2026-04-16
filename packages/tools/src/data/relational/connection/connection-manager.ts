@@ -4,7 +4,11 @@
  */
 
 import type { DatabaseConnection, DatabaseVendor } from '../types.js';
-import type { ConnectionConfig, PoolConfig } from './types.js';
+import type { ConnectionConfig } from './types.js';
+import {
+  initializeVendorConnection,
+  SAFE_INITIALIZATION_PATTERNS,
+} from './vendor-initialization.js';
 import { checkPeerDependency } from '../utils/peer-dependency-checker.js';
 import { sql, type SQL } from 'drizzle-orm';
 import { createLogger } from '@agentforge/core';
@@ -41,37 +45,6 @@ export interface ReconnectionConfig {
   /** Maximum delay in milliseconds between reconnection attempts */
   maxDelayMs: number;
 }
-
-/**
- * Validate pool configuration
- * @param poolConfig - Pool configuration to validate
- * @throws {Error} If pool configuration is invalid
- */
-function validatePoolConfig(poolConfig: PoolConfig): void {
-  if (poolConfig.max !== undefined && poolConfig.max < 1) {
-    throw new Error('Pool max connections must be >= 1');
-  }
-
-  if (poolConfig.acquireTimeoutMillis !== undefined && poolConfig.acquireTimeoutMillis < 0) {
-    throw new Error('Pool acquire timeout must be >= 0');
-  }
-
-  if (poolConfig.idleTimeoutMillis !== undefined && poolConfig.idleTimeoutMillis < 0) {
-    throw new Error('Pool idle timeout must be >= 0');
-  }
-}
-
-/**
- * Validation error patterns that should be re-thrown directly from initialize()
- * without wrapping in a generic "Failed to initialize ... connection" message.
- */
-const SAFE_INITIALIZATION_PATTERNS = [
-  'Pool max connections must be',
-  'Pool acquire timeout must be',
-  'Pool idle timeout must be',
-  'connection requires a url property',
-  'Unsupported database vendor',
-] as const;
 
 /**
  * Connection manager that handles database connections for PostgreSQL, MySQL, and SQLite
@@ -258,19 +231,9 @@ export class ConnectionManager extends EventEmitter implements DatabaseConnectio
     });
 
     try {
-      switch (this.vendor) {
-        case 'postgresql':
-          await this.initializePostgreSQL();
-          break;
-        case 'mysql':
-          await this.initializeMySQL();
-          break;
-        case 'sqlite':
-          await this.initializeSQLite();
-          break;
-        default:
-          throw new Error(`Unsupported database vendor: ${this.vendor}`);
-      }
+      const initialized = await initializeVendorConnection(this.config);
+      this.client = initialized.client;
+      this.db = initialized.db;
 
       // Check if disconnect() was called during initialization
       if (currentGeneration !== this.connectionGeneration) {
@@ -467,158 +430,6 @@ export class ConnectionManager extends EventEmitter implements DatabaseConnectio
         // The initialize() method will schedule another reconnection if needed
       }
     }, delay);
-  }
-
-  /**
-   * Initialize PostgreSQL connection using Drizzle ORM with node-postgres
-   *
-   * Applies pool configuration options to pg.Pool for connection management.
-   */
-  private async initializePostgreSQL(): Promise<void> {
-    const { drizzle } = await import('drizzle-orm/node-postgres');
-    const { Pool } = await import('pg');
-
-    // Extract pool config and base config separately to avoid passing unknown 'pool' property to pg.Pool
-    const { pool: poolConfig, ...baseConfig } = typeof this.config.connection === 'string'
-      ? { connectionString: this.config.connection }
-      : this.config.connection;
-
-    // Validate pool configuration
-    if (poolConfig) {
-      validatePoolConfig(poolConfig);
-    }
-
-    const connectionConfig = {
-      ...baseConfig,
-      // Map our PoolConfig to pg.Pool options
-      // Note: pg.Pool does not support a `min` option
-      ...(poolConfig?.max !== undefined && { max: poolConfig.max }),
-      ...(poolConfig?.idleTimeoutMillis !== undefined && { idleTimeoutMillis: poolConfig.idleTimeoutMillis }),
-      ...(poolConfig?.acquireTimeoutMillis !== undefined && { connectionTimeoutMillis: poolConfig.acquireTimeoutMillis }),
-    };
-
-    logger.debug('Creating PostgreSQL connection pool', {
-      vendor: this.vendor,
-      poolConfig: {
-        ...(connectionConfig.max !== undefined ? { max: connectionConfig.max } : {}),
-        ...(connectionConfig.idleTimeoutMillis !== undefined
-          ? { idleTimeoutMillis: connectionConfig.idleTimeoutMillis }
-          : {}),
-        ...(connectionConfig.connectionTimeoutMillis !== undefined
-          ? { connectionTimeoutMillis: connectionConfig.connectionTimeoutMillis }
-          : {}),
-      }
-    });
-
-    this.client = new Pool(connectionConfig);
-    this.db = drizzle({ client: this.client });
-  }
-
-  /**
-   * Initialize MySQL connection using Drizzle ORM with mysql2
-   *
-   * Applies pool configuration options to mysql2.createPool for connection management.
-   */
-  private async initializeMySQL(): Promise<void> {
-    const { drizzle } = await import('drizzle-orm/mysql2');
-    const mysql = await import('mysql2/promise');
-
-    // mysql2.createPool accepts both connection strings directly and config objects
-    // When a string is provided, we can't apply pool config (would need to parse URL)
-    let connectionConfig: any;
-
-    if (typeof this.config.connection === 'string') {
-      connectionConfig = this.config.connection;
-      logger.debug('Creating MySQL connection pool from connection string', {
-        vendor: this.vendor,
-      });
-    } else {
-      // Destructure to separate pool config from mysql2 config
-      const { pool: poolConfig, ...baseConfig } = this.config.connection;
-
-      // Validate pool configuration
-      if (poolConfig) {
-        validatePoolConfig(poolConfig);
-      }
-
-      connectionConfig = {
-        ...baseConfig,
-        // Map our PoolConfig to mysql2 pool options
-        ...(poolConfig?.max !== undefined && { connectionLimit: poolConfig.max }),
-        ...(poolConfig?.acquireTimeoutMillis !== undefined && { acquireTimeout: poolConfig.acquireTimeoutMillis }),
-        ...(poolConfig?.idleTimeoutMillis !== undefined && { idleTimeout: poolConfig.idleTimeoutMillis }),
-      };
-
-      logger.debug('Creating MySQL connection pool', {
-        vendor: this.vendor,
-        poolConfig: {
-          ...(connectionConfig.connectionLimit !== undefined
-            ? { connectionLimit: connectionConfig.connectionLimit }
-            : {}),
-          ...(connectionConfig.acquireTimeout !== undefined
-            ? { acquireTimeout: connectionConfig.acquireTimeout }
-            : {}),
-          ...(connectionConfig.idleTimeout !== undefined ? { idleTimeout: connectionConfig.idleTimeout } : {}),
-        }
-      });
-    }
-
-    // createPool is synchronous and returns a Pool instance directly
-    this.client = mysql.createPool(connectionConfig);
-    this.db = drizzle({ client: this.client });
-  }
-
-  /**
-   * Initialize SQLite connection using Drizzle ORM with better-sqlite3
-   *
-   * Note: SQLite uses a single connection. Pool configuration is logged but not applied
-   * as SQLite handles concurrent access through its internal locking mechanism.
-   */
-  private async initializeSQLite(): Promise<void> {
-    const { drizzle } = await import('drizzle-orm/better-sqlite3');
-    const DatabaseModule = await import('better-sqlite3');
-
-    // better-sqlite3 uses CommonJS module.exports, which becomes .default in ESM
-    const Database = DatabaseModule.default;
-
-    const url = typeof this.config.connection === 'string'
-      ? this.config.connection
-      : (this.config.connection as any).url;
-
-    if (!url) {
-      throw new Error('SQLite connection requires a url property');
-    }
-
-    // Validate and log pool config if provided (for awareness, but SQLite doesn't use traditional pooling)
-    if (typeof this.config.connection === 'object' && this.config.connection.pool) {
-      validatePoolConfig(this.config.connection.pool);
-      logger.debug('SQLite pool configuration provided but not applied (SQLite uses single connection)', {
-        vendor: this.vendor,
-        poolConfig: {
-          ...(this.config.connection.pool.max !== undefined ? { max: this.config.connection.pool.max } : {}),
-          ...(this.config.connection.pool.idleTimeoutMillis !== undefined
-            ? { idleTimeoutMillis: this.config.connection.pool.idleTimeoutMillis }
-            : {}),
-          ...(this.config.connection.pool.acquireTimeoutMillis !== undefined
-            ? { acquireTimeoutMillis: this.config.connection.pool.acquireTimeoutMillis }
-            : {}),
-        },
-      });
-    }
-
-    logger.debug('Creating SQLite connection', {
-      vendor: this.vendor,
-      url: url === ':memory:' ? ':memory:' : 'file',
-    });
-
-    this.client = new Database(url);
-
-    // Enable foreign key enforcement for every connection. SQLite disables
-    // foreign keys by default and the PRAGMA is per-connection, so we must
-    // set it immediately after opening.
-    this.client.pragma('foreign_keys = ON');
-
-    this.db = drizzle({ client: this.client });
   }
 
   /**

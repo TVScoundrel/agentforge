@@ -1000,19 +1000,44 @@ Implementation notes:
 **Branch:** `refactor/st-09027-connection-manager-vendor-initialization-extraction`
 
 ### Checklist
-- [ ] Create branch `refactor/st-09027-connection-manager-vendor-initialization-extraction`
-- [ ] Create draft PR with story ID in title
-- [ ] Extract PostgreSQL/MySQL/SQLite initialization and pool-configuration logic from `packages/tools/src/data/relational/connection/connection-manager.ts`
-- [ ] Preserve current vendor initialization behavior and validation
-- [ ] Add/update focused tests for vendor initialization and pool configuration behavior
-- [ ] Record explicit-`any` warning deltas for touched files in story docs
-- [ ] Add or update story documentation at `docs/st09027-connection-manager-vendor-initialization-extraction.md` (or document why not required)
-- [ ] Assess test impact; add/update automated tests when needed, or document why tests are not required
-- [ ] Run full test suite before finalizing the PR and record results
-- [ ] Run lint (`pnpm lint`) before finalizing the PR and record results
-- [ ] Commit completed checklist items as logical commits and push updates
-- [ ] Mark PR Ready only after all story tasks are complete
+- [x] Create branch `refactor/st-09027-connection-manager-vendor-initialization-extraction`
+  - Created as `codex/refactor/st-09027-connection-manager-vendor-initialization-extraction` (workspace branch-prefix policy)
+- [x] Create draft PR with story ID in title
+  - PR #89: https://github.com/TVScoundrel/agentforge/pull/89
+- [x] Extract PostgreSQL/MySQL/SQLite initialization and pool-configuration logic from `packages/tools/src/data/relational/connection/connection-manager.ts`
+- [x] Preserve current vendor initialization behavior and validation
+- [x] Add/update focused tests for vendor initialization and pool configuration behavior
+  - `pnpm test --run packages/tools/tests/data/relational/connection/connection-manager.test.ts packages/tools/tests/data/relational/connection/vendor-initialization.test.ts` -> `2 passed` files, `49 passed` tests
+- [x] Record explicit-`any` warning deltas for touched files in story docs
+  - Recorded in `docs/st09027-connection-manager-vendor-initialization-extraction.md` (`connection-manager.ts 2 -> 2`, overall `182 -> 180`)
+- [x] Add or update story documentation at `docs/st09027-connection-manager-vendor-initialization-extraction.md` (or document why not required)
+- [x] Assess test impact; add/update automated tests when needed, or document why tests are not required
+  - Added focused helper coverage in `packages/tools/tests/data/relational/connection/vendor-initialization.test.ts`
+- [x] Run full test suite before finalizing the PR and record results
+  - `pnpm test --run` -> `160 passed | 16 skipped` files; `2196 passed | 286 skipped` tests
+- [x] Run lint (`pnpm lint`) before finalizing the PR and record results
+  - `pnpm lint` -> exit `0`; warnings only
+- [x] Commit completed checklist items as logical commits and push updates
+  - `bdf3e5d` `refactor(st-09027): extract vendor initialization helpers`
+  - `5d0aae0` `docs(st-09027): record validation and move story to in-review`
+- [x] Mark PR Ready only after all story tasks are complete
+  - PR #89 marked ready: https://github.com/TVScoundrel/agentforge/pull/89
 - [ ] Wait for merge; do not merge directly from local branch
+
+### Notes
+
+- Created branch: `refactor/st-09027-connection-manager-vendor-initialization-extraction` (workspace branch: `codex/refactor/st-09027-connection-manager-vendor-initialization-extraction`)
+- Draft PR: #89 `refactor(st-09027): extract connection manager vendor initialization adapters`
+- Implementation commit: `bdf3e5d` `refactor(st-09027): extract vendor initialization helpers`
+- Validation so far:
+  - `pnpm exec tsc -p packages/tools/tsconfig.json --noEmit`
+  - `pnpm exec eslint packages/tools/src/data/relational/connection/connection-manager.ts packages/tools/src/data/relational/connection/vendor-initialization.ts packages/tools/tests/data/relational/connection/connection-manager.test.ts packages/tools/tests/data/relational/connection/vendor-initialization.test.ts`
+  - `pnpm test --run packages/tools/tests/data/relational/connection/connection-manager.test.ts packages/tools/tests/data/relational/connection/vendor-initialization.test.ts` -> `2 passed` files, `49 passed` tests
+  - `pnpm lint:explicit-any:baseline --silent` -> `180/289` warnings, `tools 65/67`
+  - `pnpm test --run` -> `160 passed | 16 skipped` files; `2196 passed | 286 skipped` tests
+  - `pnpm lint` -> exit `0`; warnings only
+- Review fix commit: `1a0fc22` `fix(st-09027): tighten vendor initialization review fixes`
+- Review fix commit: `57bedb4` `fix(st-09027): tighten vendor helper type pairing`
 
 ---
 
