@@ -8,7 +8,7 @@ import type {
 import type { DatabaseVendor } from '../types.js';
 import { createLogger } from '@agentforge/core';
 
-const logger = createLogger('agentforge:tools:data:relational:connection');
+const logger = createLogger('agentforge:tools:data:relational:connection:vendor-init');
 
 export interface InitializedVendorConnection {
   client: unknown;
@@ -191,9 +191,12 @@ export async function initializeMySQLConnection(
     });
   }
 
-  const client = typeof connectionConfig === 'string'
-    ? mysql.createPool(connectionConfig)
-    : mysql.createPool(connectionConfig);
+  let client;
+  if (typeof connectionConfig === 'string') {
+    client = mysql.createPool(connectionConfig);
+  } else {
+    client = mysql.createPool(connectionConfig);
+  }
   const db = drizzle({ client });
   return { client, db };
 }
