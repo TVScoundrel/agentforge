@@ -1036,6 +1036,7 @@ Implementation notes:
   - `pnpm lint:explicit-any:baseline --silent` -> `180/289` warnings, `tools 65/67`
   - `pnpm test --run` -> `160 passed | 16 skipped` files; `2196 passed | 286 skipped` tests
   - `pnpm lint` -> exit `0`; warnings only
+- Review fix commit: `1a0fc22` `fix(st-09027): tighten vendor initialization review fixes`
 
 ---
 
