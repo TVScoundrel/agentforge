@@ -1,11 +1,9 @@
 import type {
   ConnectionConfig,
-  MySQLConnectionConfig,
   PoolConfig,
   PostgreSQLConnectionConfig,
-  SQLiteConnectionConfig,
+  MySQLConnectionConfig,
 } from './types.js';
-import type { DatabaseVendor } from '../types.js';
 import { createLogger } from '@agentforge/core';
 
 const logger = createLogger('agentforge:tools:data:relational:connection:vendor-init');
@@ -26,6 +24,10 @@ interface MySQLPoolConnectionConfig extends Omit<MySQLConnectionConfig, 'pool'> 
   acquireTimeout?: number;
   idleTimeout?: number;
 }
+
+type PostgreSQLVendorConnection = Extract<ConnectionConfig, { vendor: 'postgresql' }>['connection'];
+type MySQLVendorConnection = Extract<ConnectionConfig, { vendor: 'mysql' }>['connection'];
+type SQLiteVendorConnection = Extract<ConnectionConfig, { vendor: 'sqlite' }>['connection'];
 
 export const SAFE_INITIALIZATION_PATTERNS = [
   'Pool max connections must be',
@@ -59,14 +61,13 @@ function pickConfiguredPoolFields(
 }
 
 function normalizePostgreSQLConfig(
-  connection: ConnectionConfig['connection']
+  connection: PostgreSQLVendorConnection
 ): {
   connectionConfig: PostgreSQLPoolConnectionConfig;
   poolConfig?: PoolConfig;
 } {
-  const { pool: poolConfig, ...baseConfig } = typeof connection === 'string'
-    ? { connectionString: connection }
-    : (connection as PostgreSQLConnectionConfig);
+  const { pool: poolConfig, ...baseConfig } =
+    typeof connection === 'string' ? { connectionString: connection } : connection;
 
   if (poolConfig) {
     validatePoolConfig(poolConfig);
@@ -88,7 +89,7 @@ function normalizePostgreSQLConfig(
 }
 
 function normalizeMySQLConfig(
-  connection: ConnectionConfig['connection']
+  connection: MySQLVendorConnection
 ): string | MySQLPoolConnectionConfig {
   if (typeof connection === 'string') {
     logger.debug('Creating MySQL connection pool from connection string', {
@@ -97,7 +98,7 @@ function normalizeMySQLConfig(
     return connection;
   }
 
-  const { pool: poolConfig, ...baseConfig } = connection as MySQLConnectionConfig;
+  const { pool: poolConfig, ...baseConfig } = connection;
 
   if (poolConfig) {
     validatePoolConfig(poolConfig);
@@ -115,7 +116,7 @@ function normalizeMySQLConfig(
   };
 }
 
-function resolveSqliteUrl(connection: ConnectionConfig['connection']): {
+function resolveSqliteUrl(connection: SQLiteVendorConnection): {
   url: string;
   poolConfig?: PoolConfig;
 } {
@@ -123,7 +124,7 @@ function resolveSqliteUrl(connection: ConnectionConfig['connection']): {
     return { url: connection };
   }
 
-  const { url, pool } = connection as SQLiteConnectionConfig;
+  const { url, pool } = connection;
 
   if (!url) {
     throw new Error('SQLite connection requires a url property');
@@ -137,23 +138,22 @@ function resolveSqliteUrl(connection: ConnectionConfig['connection']): {
 }
 
 export async function initializeVendorConnection(
-  vendor: DatabaseVendor,
-  connection: ConnectionConfig['connection']
+  config: ConnectionConfig
 ): Promise<InitializedVendorConnection> {
-  switch (vendor) {
+  switch (config.vendor) {
     case 'postgresql':
-      return initializePostgreSQLConnection(connection);
+      return initializePostgreSQLConnection(config.connection);
     case 'mysql':
-      return initializeMySQLConnection(connection);
+      return initializeMySQLConnection(config.connection);
     case 'sqlite':
-      return initializeSQLiteConnection(connection);
+      return initializeSQLiteConnection(config.connection);
     default:
-      throw new Error(`Unsupported database vendor: ${vendor}`);
+      throw new Error(`Unsupported database vendor: ${(config as { vendor: string }).vendor}`);
   }
 }
 
 export async function initializePostgreSQLConnection(
-  connection: ConnectionConfig['connection']
+  connection: PostgreSQLVendorConnection
 ): Promise<InitializedVendorConnection> {
   const { drizzle } = await import('drizzle-orm/node-postgres');
   const { Pool } = await import('pg');
@@ -174,7 +174,7 @@ export async function initializePostgreSQLConnection(
 }
 
 export async function initializeMySQLConnection(
-  connection: ConnectionConfig['connection']
+  connection: MySQLVendorConnection
 ): Promise<InitializedVendorConnection> {
   const { drizzle } = await import('drizzle-orm/mysql2');
   const mysql = await import('mysql2/promise');
@@ -202,7 +202,7 @@ export async function initializeMySQLConnection(
 }
 
 export async function initializeSQLiteConnection(
-  connection: ConnectionConfig['connection']
+  connection: SQLiteVendorConnection
 ): Promise<InitializedVendorConnection> {
   const { drizzle } = await import('drizzle-orm/better-sqlite3');
   const DatabaseModule = await import('better-sqlite3');

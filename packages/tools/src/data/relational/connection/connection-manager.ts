@@ -231,7 +231,7 @@ export class ConnectionManager extends EventEmitter implements DatabaseConnectio
     });
 
     try {
-      const initialized = await initializeVendorConnection(this.vendor, this.config.connection);
+      const initialized = await initializeVendorConnection(this.config);
       this.client = initialized.client;
       this.db = initialized.db;
 

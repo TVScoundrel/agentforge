@@ -173,13 +173,19 @@ describe('vendor-initialization helpers', () => {
 
   describe('initializeVendorConnection', () => {
     it('routes vendor initialization to the selected adapter', async () => {
-      const initialized = await initializeVendorConnection('sqlite', ':memory:');
+      const initialized = await initializeVendorConnection({
+        vendor: 'sqlite',
+        connection: ':memory:',
+      });
       expect(initialized.client).toEqual(expect.objectContaining({ kind: 'sqlite-client' }));
     });
 
     it('rejects unsupported vendors', async () => {
       await expect(
-        initializeVendorConnection('oracle' as never, 'oracle://localhost/test')
+        initializeVendorConnection({
+          vendor: 'oracle' as never,
+          connection: 'oracle://localhost/test',
+        })
       ).rejects.toThrow('Unsupported database vendor: oracle');
     });
   });
