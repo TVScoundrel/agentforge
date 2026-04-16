@@ -1,12 +1,12 @@
 # Kanban Queue: AgentForge
 
-**Last Updated:** 2026-04-09
+**Last Updated:** 2026-04-16
 
 ## Queue Status Summary
 
-- **Ready:** 2 stories
+- **Ready:** 1 story
 - **In Progress:** 0 stories
-- **In Review:** 0 stories
+- **In Review:** 1 story
 - **Blocked:** 0 stories
 - **Backlog:** 1 story
 
@@ -14,14 +14,13 @@
 
 ## Ready
 
-- `ST-09027` - Extract Connection Manager Vendor Initialization Adapters
 - `ST-09029` - Modularize Plan-Execute Node Responsibilities
 
 ---
 
 ## In Review
 
-_No stories currently in review_
+- `ST-09027` - Extract Connection Manager Vendor Initialization Adapters
 
 ---
 
@@ -116,4 +115,4 @@ _No stories currently blocked_
 - Epic 09 (SOLID Micro-Refactors and Type Boundary Hardening) was expanded again on 2026-03-23 with daily hardening stories ST-09013 through ST-09018
 - Epic 09 (SOLID Micro-Refactors and Type Boundary Hardening) was expanded a third time on 2026-03-23 with daily hardening stories ST-09019 through ST-09028
 - Epic 09 (SOLID Micro-Refactors and Type Boundary Hardening) was expanded a fourth time on 2026-03-24 with the plan-execute node modularization follow-up story ST-09029
-- Current measured `no-explicit-any` baseline is `201` warnings (`cli 6`, `core 82`, `patterns 15`, `testing 31`, `tools 67`)
+- Current measured `no-explicit-any` baseline is `180` warnings (`cli 6`, `core 63`, `patterns 15`, `testing 31`, `tools 65`)

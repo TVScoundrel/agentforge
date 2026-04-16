@@ -2,8 +2,8 @@
 
 **Epic Range:** EP-09 through EP-09
 **Status:** In Progress
-**Last Updated:** 2026-04-09
-**Active Story:** ST-09027 (Ready)
+**Last Updated:** 2026-04-16
+**Active Story:** ST-09027 (In Review)
 
 ---
 
@@ -32,10 +32,10 @@
 
 ## Current Hotspot Snapshot
 
-Current `@typescript-eslint/no-explicit-any` baseline check (`pnpm lint:explicit-any:baseline`, 2026-04-07):
+Current `@typescript-eslint/no-explicit-any` baseline check (`pnpm lint:explicit-any:baseline`, 2026-04-16):
 
-- Total: `182` warnings (`src/**`)
-- By package: `core 63`, `tools 67`, `testing 31`, `patterns 15`, `cli 6`
+- Total: `180` warnings (`src/**`)
+- By package: `core 63`, `tools 65`, `testing 31`, `patterns 15`, `cli 6`
 
 Top runtime hotspots informing this feature slice:
 
@@ -44,7 +44,7 @@ Top runtime hotspots informing this feature slice:
 3. `packages/patterns/src/multi-agent/nodes.ts` was split behind the stable public entrypoint in `ST-09015`, with follow-up hardening landed for log redaction, workload invariants, interrupt propagation, and model-content serialization
 4. `ST-09017` has centralized repeated CLI command-level `catch (error: any)` handling behind a shared helper and is now merged
 5. `ST-09018` has tightened `packages/testing/src/helpers/assertions.ts` and `packages/testing/src/helpers/state-builder.ts`, reducing the `testing` package warning floor from `51` to `31` and is now merged
-6. `ST-09026` has now merged after extracting `packages/core/src/tools/registry.ts` prompt-rendering, LangChain conversion, and event-emission responsibilities into focused helpers; `ST-09027` is now the next small core runtime slice
+6. `ST-09027` is now in review after extracting `packages/tools/src/data/relational/connection/connection-manager.ts` vendor-specific initialization and pool-configuration logic into focused helpers while preserving the public connection lifecycle surface
 7. `packages/core/src/tools/registry.ts` and `packages/tools/src/data/relational/connection/connection-manager.ts` remain larger SRP targets that need multi-story decomposition rather than one oversized cleanup
 8. `packages/patterns/src/plan-execute/nodes.ts` has grown into a larger mixed-responsibility module and has become the next plan-execute modularization target after the ST-09014 shared contract cleanup
 
