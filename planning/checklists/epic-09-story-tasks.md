@@ -1088,3 +1088,129 @@ Implementation notes:
 - [ ] Commit completed checklist items as logical commits and push updates
 - [ ] Mark PR Ready only after all story tasks are complete
 - [ ] Wait for merge; do not merge directly from local branch
+
+---
+
+## ST-09030: Extract Connection Manager Query Execution and Session Adapters
+
+**Branch:** `refactor/st-09030-connection-manager-query-session-extraction`
+
+### Checklist
+- [ ] Create branch `refactor/st-09030-connection-manager-query-session-extraction`
+- [ ] Create draft PR with story ID in title
+- [ ] Extract query execution and `executeInConnection(...)` vendor branches from `packages/tools/src/data/relational/connection/connection-manager.ts`
+- [ ] Preserve current PostgreSQL/MySQL/SQLite result normalization and dedicated-session behavior
+- [ ] Add/update focused tests for vendor-specific query execution and session handling
+- [ ] Record explicit-`any` warning deltas for touched files in story docs
+- [ ] Add or update story documentation at `docs/st09030-connection-manager-query-session-extraction.md` (or document why not required)
+- [ ] Assess test impact; add/update automated tests when needed, or document why tests are not required
+- [ ] Run full test suite before finalizing the PR and record results
+- [ ] Run lint (`pnpm lint`) before finalizing the PR and record results
+- [ ] Commit completed checklist items as logical commits and push updates
+- [ ] Mark PR Ready only after all story tasks are complete
+- [ ] Wait for merge; do not merge directly from local branch
+
+---
+
+## ST-09031: Extract Tool Registry Registration and Mutation Paths
+
+**Branch:** `refactor/st-09031-tool-registry-registration-mutation-extraction`
+
+### Checklist
+- [ ] Create branch `refactor/st-09031-tool-registry-registration-mutation-extraction`
+- [ ] Create draft PR with story ID in title
+- [ ] Extract registration, update, removal, and bulk-registration logic from `packages/core/src/tools/registry.ts`
+- [ ] Preserve duplicate detection, name consistency checks, and emitted event behavior
+- [ ] Add/update focused tests for registration conflicts, updates, removals, and bulk-registration edge cases
+- [ ] Record explicit-`any` warning deltas for touched files in story docs
+- [ ] Add or update story documentation at `docs/st09031-tool-registry-registration-mutation-extraction.md` (or document why not required)
+- [ ] Assess test impact; add/update automated tests when needed, or document why tests are not required
+- [ ] Run full test suite before finalizing the PR and record results
+- [ ] Run lint (`pnpm lint`) before finalizing the PR and record results
+- [ ] Commit completed checklist items as logical commits and push updates
+- [ ] Mark PR Ready only after all story tasks are complete
+- [ ] Wait for merge; do not merge directly from local branch
+
+---
+
+## ST-09032: Tighten Managed Tool Lifecycle Contracts
+
+**Branch:** `fix/st-09032-managed-tool-lifecycle-contracts`
+
+### Checklist
+- [ ] Create branch `fix/st-09032-managed-tool-lifecycle-contracts`
+- [ ] Create draft PR with story ID in title
+- [ ] Replace broad lifecycle generics and metadata boundaries in `packages/core/src/tools/lifecycle.ts` with safer contracts
+- [ ] Preserve current managed-tool initialization, execution, cleanup, health-check, and LangChain interop behavior
+- [ ] Add/update focused tests for lifecycle hooks, health checks, stats, and process-exit cleanup behavior as needed
+- [ ] Record explicit-`any` warning deltas for touched files in story docs
+- [ ] Add or update story documentation at `docs/st09032-managed-tool-lifecycle-contracts.md` (or document why not required)
+- [ ] Assess test impact; add/update automated tests when needed, or document why tests are not required
+- [ ] Run full test suite before finalizing the PR and record results
+- [ ] Run lint (`pnpm lint`) before finalizing the PR and record results
+- [ ] Commit completed checklist items as logical commits and push updates
+- [ ] Mark PR Ready only after all story tasks are complete
+- [ ] Wait for merge; do not merge directly from local branch
+
+---
+
+## ST-09033: Tighten Database Pool Adapter Contracts
+
+**Branch:** `fix/st-09033-database-pool-adapter-contracts`
+
+### Checklist
+- [ ] Create branch `fix/st-09033-database-pool-adapter-contracts`
+- [ ] Create draft PR with story ID in title
+- [ ] Replace broad query/parameter contracts in `packages/core/src/resources/database-pool.ts` with safer adapter types
+- [ ] Preserve current acquire/release, query/execute delegation, and pool lifecycle behavior
+- [ ] Add/update focused tests for pool acquisition, query/execute delegation, and health-check validation as needed
+- [ ] Record explicit-`any` warning deltas for touched files in story docs
+- [ ] Add or update story documentation at `docs/st09033-database-pool-adapter-contracts.md` (or document why not required)
+- [ ] Assess test impact; add/update automated tests when needed, or document why tests are not required
+- [ ] Run full test suite before finalizing the PR and record results
+- [ ] Run lint (`pnpm lint`) before finalizing the PR and record results
+- [ ] Commit completed checklist items as logical commits and push updates
+- [ ] Mark PR Ready only after all story tasks are complete
+- [ ] Wait for merge; do not merge directly from local branch
+
+---
+
+## ST-09034: Tighten Snapshot Testing Runner Contracts
+
+**Branch:** `fix/st-09034-snapshot-testing-runner-contracts`
+
+### Checklist
+- [ ] Create branch `fix/st-09034-snapshot-testing-runner-contracts`
+- [ ] Create draft PR with story ID in title
+- [ ] Replace broad state and normalizer boundaries in `packages/testing/src/runners/snapshot-testing.ts` with safer unknown-first contracts
+- [ ] Preserve current snapshot normalization, comparison, diffing, and message snapshot behavior
+- [ ] Add/update focused tests for snapshot creation, comparisons, diffs, and message snapshot helpers
+- [ ] Record explicit-`any` warning deltas for touched files in story docs
+- [ ] Add or update story documentation at `docs/st09034-snapshot-testing-runner-contracts.md` (or document why not required)
+- [ ] Assess test impact; add/update automated tests when needed, or document why tests are not required
+- [ ] Run full test suite before finalizing the PR and record results
+- [ ] Run lint (`pnpm lint`) before finalizing the PR and record results
+- [ ] Commit completed checklist items as logical commits and push updates
+- [ ] Mark PR Ready only after all story tasks are complete
+- [ ] Wait for merge; do not merge directly from local branch
+
+---
+
+## ST-09035: Tighten Agent Test Runner State Contracts
+
+**Branch:** `fix/st-09035-agent-test-runner-state-contracts`
+
+### Checklist
+- [ ] Create branch `fix/st-09035-agent-test-runner-state-contracts`
+- [ ] Create draft PR with story ID in title
+- [ ] Replace broad agent, input, state, and step contracts in `packages/testing/src/runners/agent-test-runner.ts` with safer interfaces or generics
+- [ ] Preserve current timeout, validation, step-capture, and `runMany(...)` behavior
+- [ ] Add/update focused tests for successful runs, timeout handling, validation failures, and multi-input execution
+- [ ] Record explicit-`any` warning deltas for touched files in story docs
+- [ ] Add or update story documentation at `docs/st09035-agent-test-runner-state-contracts.md` (or document why not required)
+- [ ] Assess test impact; add/update automated tests when needed, or document why tests are not required
+- [ ] Run full test suite before finalizing the PR and record results
+- [ ] Run lint (`pnpm lint`) before finalizing the PR and record results
+- [ ] Commit completed checklist items as logical commits and push updates
+- [ ] Mark PR Ready only after all story tasks are complete
+- [ ] Wait for merge; do not merge directly from local branch

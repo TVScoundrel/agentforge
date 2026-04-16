@@ -39,14 +39,14 @@ Current `@typescript-eslint/no-explicit-any` baseline check (`pnpm lint:explicit
 
 Top runtime hotspots informing this feature slice:
 
-1. `packages/core/src/langgraph/builders/sequential.ts` still carries an easy schema/edge `any` boundary that mirrors the already-completed parallel builder cleanup
-2. `packages/patterns/src/plan-execute/types.ts` still exposes a small but high-leverage `Tool<any, any>[]` boundary in active EP-09 code
-3. `packages/patterns/src/multi-agent/nodes.ts` was split behind the stable public entrypoint in `ST-09015`, with follow-up hardening landed for log redaction, workload invariants, interrupt propagation, and model-content serialization
-4. `ST-09017` has centralized repeated CLI command-level `catch (error: any)` handling behind a shared helper and is now merged
-5. `ST-09018` has tightened `packages/testing/src/helpers/assertions.ts` and `packages/testing/src/helpers/state-builder.ts`, reducing the `testing` package warning floor from `51` to `31` and is now merged
-6. `ST-09027` is now merged after extracting `packages/tools/src/data/relational/connection/connection-manager.ts` vendor-specific initialization and pool-configuration logic into focused helpers while preserving the public connection lifecycle surface
-7. `packages/core/src/tools/registry.ts` and `packages/tools/src/data/relational/connection/connection-manager.ts` remain larger SRP targets that need multi-story decomposition rather than one oversized cleanup
-8. `packages/patterns/src/plan-execute/nodes.ts` has grown into a larger mixed-responsibility module and has become the next plan-execute modularization target after the ST-09014 shared contract cleanup
+1. `packages/tools/src/data/relational/connection/connection-manager.ts` still couples lifecycle, reconnection, query execution, session handling, metrics, and health checks even after ST-09027 extracted vendor initialization
+2. `packages/core/src/tools/registry.ts` still carries public registration, mutation, and prompt option shaping responsibilities after the collection/prompt/event helper splits
+3. `packages/core/src/tools/lifecycle.ts` remains one of the largest remaining core explicit-`any` hotspots and mixes lifecycle hooks, health checks, stats, and LangChain interop behind broad generic defaults
+4. `packages/core/src/resources/database-pool.ts` still exposes broad connection and query parameter contracts behind a mock adapter surface that is small enough for a focused hardening pass
+5. `packages/testing/src/runners/snapshot-testing.ts` is the largest remaining testing-package explicit-`any` hotspot and is a good fit for a standalone unknown-first state normalization story
+6. `packages/testing/src/runners/agent-test-runner.ts` still exposes broad agent/state/step contracts and is a natural follow-on once snapshot/state runner contracts are tightened
+7. `packages/patterns/src/plan-execute/nodes.ts` has grown into a larger mixed-responsibility module and remains the active modularization target in ST-09029
+8. The next follow-on slice should keep EP-09 open for one more short burst rather than creating a new epic before the remaining runtime and testing hotspots are sequenced
 
 Recent improvement snapshot:
 
@@ -72,8 +72,8 @@ Recent improvement snapshot:
 - `ST-09023` merged after tightening the core tool builder fluent typing surface, lowering the workspace explicit-`any` baseline from `201` to `195` and the `core` package from `82` to `76`, with follow-up fixes for branched metadata isolation, clone-failure messaging, and `this`-binding compatibility.
 - `ST-09024` merged after tightening the LangGraph interrupt contracts around JSON-safe custom payloads, JSON-object metadata, and safer resume values, lowering the workspace explicit-`any` baseline from `195` to `182` and the `core` package from `76` to `63`.
 - `ST-09027` merged after extracting relational connection-manager vendor initialization into focused PostgreSQL/MySQL/SQLite helper adapters, lowering the workspace explicit-`any` baseline from `182` to `180` and the `tools` package from `67` to `65`, with follow-up fixes for logger attribution and vendor/connection type pairing.
-- `EP-09` remains open as the daily hardening stream, with the next follow-on slice now centered on shared deduplication helpers, core tool builder typing, interrupt contracts, and the plan-execute node modularization follow-up.
-- A second follow-on slice is now queued for prompt loading, reflection routing, streaming websocket contracts, shared deduplication helpers, core tool builder typing, interrupt contracts, and split-out registry/connection-manager modularization.
+- `EP-09` remains open as the daily hardening stream, with the active queue now centered on connection-manager lifecycle modularization and plan-execute node decomposition.
+- A fresh follow-on slice is now queued behind that work for connection-manager execution/session extraction, registry registration/mutation extraction, managed-tool lifecycle hardening, database-pool contract tightening, and testing runner type-boundary cleanup.
 
 ---
 
@@ -96,7 +96,7 @@ Recent improvement snapshot:
 
 ## Story Coverage by Epic
 
-- EP-09: ST-09001, ST-09002, ST-09003, ST-09004, ST-09005, ST-09006, ST-09007, ST-09008, ST-09009, ST-09010, ST-09011, ST-09012, ST-09013, ST-09014, ST-09015, ST-09016, ST-09017, ST-09018, ST-09019, ST-09020, ST-09021, ST-09022, ST-09023, ST-09024, ST-09025, ST-09026, ST-09027, ST-09028, ST-09029
+- EP-09: ST-09001, ST-09002, ST-09003, ST-09004, ST-09005, ST-09006, ST-09007, ST-09008, ST-09009, ST-09010, ST-09011, ST-09012, ST-09013, ST-09014, ST-09015, ST-09016, ST-09017, ST-09018, ST-09019, ST-09020, ST-09021, ST-09022, ST-09023, ST-09024, ST-09025, ST-09026, ST-09027, ST-09028, ST-09029, ST-09030, ST-09031, ST-09032, ST-09033, ST-09034, ST-09035
 
 ---
 
@@ -112,7 +112,7 @@ Recent improvement snapshot:
 
 ## Related Planning Documents
 
-- `planning/epics-and-stories.md` (EP-09 and ST-09001 through ST-09029)
+- `planning/epics-and-stories.md` (EP-09 and ST-09001 through ST-09035)
 - `planning/checklists/epic-09-story-tasks.md`
 - `planning/kanban-queue.md`
 - `scripts/no-explicit-any-baseline.json`

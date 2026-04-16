@@ -121,7 +121,7 @@
 - Story slices are intentionally small (1 day each) so quality improvements can ship continuously
 - Lightweight quality-gate follow-ups keep release/build feedback tight by reducing stale warning caps and easy package metadata warnings
 
-**Stories:** ST-09001 through ST-09029
+**Stories:** ST-09001 through ST-09035
 
 ---
 
@@ -1326,15 +1326,117 @@
 
 ---
 
+#### ST-09030: Extract Connection Manager Query Execution and Session Adapters
+**User story:** As a tools maintainer, I want the relational connection manager query execution and session-specific adapter logic split into focused helpers so vendor-specific execution paths are easier to maintain after the lifecycle split.
+
+**Priority:** P2 (Medium)
+**Estimate:** 4 hours
+**Dependencies:** ST-09028
+**Status:** Ready
+
+**Acceptance criteria:**
+- [ ] `packages/tools/src/data/relational/connection/connection-manager.ts` extracts query execution and `executeInConnection(...)` vendor branches into focused helpers or modules
+- [ ] Public SQL execution behavior remains unchanged for PostgreSQL, MySQL, and SQLite across `execute(...)` and `executeInConnection(...)`
+- [ ] Focused tests are added or updated for vendor-specific result normalization and dedicated-session execution flows
+- [ ] Touched files do not regress on explicit-`any` warning counts and the outcome is recorded in story documentation
+- [ ] Add or update story documentation at `docs/st09030-connection-manager-query-session-extraction.md`
+
+---
+
+#### ST-09031: Extract Tool Registry Registration and Mutation Paths
+**User story:** As a core maintainer, I want the tool registry registration and mutation logic split out of the public façade so duplicate checking, updates, and bulk registration are easier to review and evolve independently.
+
+**Priority:** P2 (Medium)
+**Estimate:** 4 hours
+**Dependencies:** ST-09026
+**Status:** Ready
+
+**Acceptance criteria:**
+- [ ] `packages/core/src/tools/registry.ts` extracts registration, update, removal, and bulk-registration logic into focused helpers while keeping the public registry entrypoint stable
+- [ ] Public registry behavior remains unchanged for duplicate detection, name consistency checks, and emitted events
+- [ ] Focused tests are added or updated for registration conflicts, updates, removals, and bulk-registration edge cases after the split
+- [ ] Touched files do not regress on explicit-`any` warning counts and the outcome is recorded in story documentation
+- [ ] Add or update story documentation at `docs/st09031-tool-registry-registration-mutation-extraction.md`
+
+---
+
+#### ST-09032: Tighten Managed Tool Lifecycle Contracts
+**User story:** As a core maintainer, I want the managed-tool lifecycle surface typed more precisely so initialization, execution, cleanup, and health-check contracts no longer rely on broad `any` defaults.
+
+**Priority:** P2 (Medium)
+**Estimate:** 3 hours
+**Dependencies:** ST-09023
+**Status:** Ready
+
+**Acceptance criteria:**
+- [ ] `packages/core/src/tools/lifecycle.ts` replaces broad lifecycle `any` defaults with safer generic defaults or unknown-first contracts
+- [ ] Managed tool health-check metadata, stats, and LangChain interop remain backward compatible at runtime
+- [ ] Focused tests are added or updated for initialization, execution, cleanup, health checks, and process-exit cleanup behavior as needed
+- [ ] Touched files do not regress on explicit-`any` warning counts and the outcome is recorded in story documentation
+- [ ] Add or update story documentation at `docs/st09032-managed-tool-lifecycle-contracts.md`
+
+---
+
+#### ST-09033: Tighten Database Pool Adapter Contracts
+**User story:** As a core maintainer, I want the database pool adapter surface typed more precisely so query, execute, and connection hook contracts are safer for downstream integration work.
+
+**Priority:** P2 (Medium)
+**Estimate:** 3 hours
+**Dependencies:** ST-09032
+**Status:** Backlog
+
+**Acceptance criteria:**
+- [ ] `packages/core/src/resources/database-pool.ts` replaces broad connection/query parameter contracts with safer generic or unknown-first adapter types
+- [ ] Mock connection behavior and pool lifecycle semantics remain unchanged at runtime
+- [ ] Focused tests are added or updated for acquire/release, query/execute delegation, and health-check validation behavior as needed
+- [ ] Touched files do not regress on explicit-`any` warning counts and the outcome is recorded in story documentation
+- [ ] Add or update story documentation at `docs/st09033-database-pool-adapter-contracts.md`
+
+---
+
+#### ST-09034: Tighten Snapshot Testing Runner Contracts
+**User story:** As a testing maintainer, I want the snapshot-testing helpers typed more precisely so state normalization and diffing no longer rely on broad `any` surfaces.
+
+**Priority:** P2 (Medium)
+**Estimate:** 4 hours
+**Dependencies:** ST-09018
+**Status:** Backlog
+
+**Acceptance criteria:**
+- [ ] `packages/testing/src/runners/snapshot-testing.ts` replaces broad snapshot state and normalizer `any` contracts with unknown-first or constrained generic helpers
+- [ ] Snapshot normalization behavior remains unchanged for included/excluded fields, timestamp and ID normalization, message snapshots, and state diffing
+- [ ] Focused tests are added or updated for snapshot creation, comparisons, diffs, and message snapshot helpers
+- [ ] Touched files do not regress on explicit-`any` warning counts and the outcome is recorded in story documentation
+- [ ] Add or update story documentation at `docs/st09034-snapshot-testing-runner-contracts.md`
+
+---
+
+#### ST-09035: Tighten Agent Test Runner State Contracts
+**User story:** As a testing maintainer, I want the agent test runner typed more precisely so agent input, final state, captured steps, and validation hooks are safer to extend.
+
+**Priority:** P2 (Medium)
+**Estimate:** 3 hours
+**Dependencies:** ST-09034
+**Status:** Backlog
+
+**Acceptance criteria:**
+- [ ] `packages/testing/src/runners/agent-test-runner.ts` replaces broad agent, input, state, and step `any` contracts with safer interfaces or unknown-first generics
+- [ ] Runtime behavior remains unchanged for timeout handling, optional step capture, validation hooks, and multi-input execution
+- [ ] Focused tests are added or updated for successful runs, timeout handling, validation failures, and `runMany(...)`
+- [ ] Touched files do not regress on explicit-`any` warning counts and the outcome is recorded in story documentation
+- [ ] Add or update story documentation at `docs/st09035-agent-test-runner-state-contracts.md`
+
+---
+
 ## Story Summary
 
-**Total Stories:** 65
+**Total Stories:** 71
 **By Priority:**
 - P0 (Critical): 17 stories
 - P1 (High): 27 stories
-- P2 (Medium): 21 stories
+- P2 (Medium): 27 stories
 
-**Total Estimated Effort:** ~243 hours (30.4 working days)
+**Total Estimated Effort:** ~264 hours (33.0 working days)
 
 **Dependency Chain:**
 1. Phase 1 (Foundation): ST-01001 → ST-01002 → ST-01003 → ST-01004
@@ -1345,4 +1447,4 @@
 6. Phase 6 (Agent Skills): ST-06001 → ST-06002 → ST-06003 → ST-06004 → ST-06005 → ST-06006
 7. Phase 7 (Skills Extraction): ST-07001 → ST-07002 → [ST-07003, ST-07004 parallel] → ST-07005; ST-07001 → ST-07006 (independent)
 8. Phase 8 (Type Safety Hardening): ST-08001 → [ST-08002, ST-08003, ST-08004 parallel]
-9. Phase 9 (SOLID Micro-Refactors): ST-09001 (Merged) → ST-09002 (Merged) → ST-09003 (Merged) → ST-09004 (Merged) → ST-09005 (Merged) → ST-09006 (Merged) → ST-09007 (Merged) → ST-09008 (Merged) → ST-09009 (Merged) → ST-09010 (Merged) → ST-09011 (Merged) → ST-09012 (Merged) → ST-09013 (Merged) → ST-09014 (Merged) → ST-09015 (Merged) → ST-09016 (Merged) → ST-09017 (Merged) → ST-09018 (Merged) → ST-09019 (Merged) → ST-09020 (Merged) → ST-09021 (Merged) → ST-09022 (Merged) → ST-09023 (Merged); ST-09025 (Merged) → ST-09026 (Merged); ST-09027 (Merged) → ST-09028; [ST-09024, ST-09029] remain independently queueable after ST-09012
+9. Phase 9 (SOLID Micro-Refactors): ST-09001 (Merged) → ST-09002 (Merged) → ST-09003 (Merged) → ST-09004 (Merged) → ST-09005 (Merged) → ST-09006 (Merged) → ST-09007 (Merged) → ST-09008 (Merged) → ST-09009 (Merged) → ST-09010 (Merged) → ST-09011 (Merged) → ST-09012 (Merged) → ST-09013 (Merged) → ST-09014 (Merged) → ST-09015 (Merged) → ST-09016 (Merged) → ST-09017 (Merged) → ST-09018 (Merged) → ST-09019 (Merged) → ST-09020 (Merged) → ST-09021 (Merged) → ST-09022 (Merged) → ST-09023 (Merged); ST-09025 (Merged) → ST-09026 (Merged) → ST-09031; ST-09027 (Merged) → ST-09028 → ST-09030; ST-09032 → ST-09033; ST-09034 → ST-09035; [ST-09024, ST-09029] remain independently queueable after ST-09012

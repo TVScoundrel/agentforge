@@ -4,11 +4,11 @@
 
 ## Queue Status Summary
 
-- **Ready:** 2 stories
+- **Ready:** 5 stories
 - **In Progress:** 0 stories
 - **In Review:** 0 stories
 - **Blocked:** 0 stories
-- **Backlog:** 0 stories
+- **Backlog:** 3 stories
 
 ---
 
@@ -16,6 +16,9 @@
 
 - `ST-09028` - Modularize Connection Manager Lifecycle and Reconnection Control
 - `ST-09029` - Modularize Plan-Execute Node Responsibilities
+- `ST-09030` - Extract Connection Manager Query Execution and Session Adapters
+- `ST-09031` - Extract Tool Registry Registration and Mutation Paths
+- `ST-09032` - Tighten Managed Tool Lifecycle Contracts
 
 ---
 
@@ -33,7 +36,9 @@ _No stories currently blocked_
 
 ## Backlog
 
-_No stories currently in backlog_
+- `ST-09033` - Tighten Database Pool Adapter Contracts
+- `ST-09034` - Tighten Snapshot Testing Runner Contracts
+- `ST-09035` - Tighten Agent Test Runner State Contracts
 
 ---
 
@@ -110,4 +115,5 @@ _No stories currently in backlog_
 - Epic 09 (SOLID Micro-Refactors and Type Boundary Hardening) was expanded again on 2026-03-23 with daily hardening stories ST-09013 through ST-09018
 - Epic 09 (SOLID Micro-Refactors and Type Boundary Hardening) was expanded a third time on 2026-03-23 with daily hardening stories ST-09019 through ST-09028
 - Epic 09 (SOLID Micro-Refactors and Type Boundary Hardening) was expanded a fourth time on 2026-03-24 with the plan-execute node modularization follow-up story ST-09029
+- Epic 09 (SOLID Micro-Refactors and Type Boundary Hardening) was expanded a fifth time on 2026-04-16 with follow-on backlog stories ST-09030 through ST-09035
 - Current measured `no-explicit-any` baseline is `180` warnings (`cli 6`, `core 63`, `patterns 15`, `testing 31`, `tools 65`)
