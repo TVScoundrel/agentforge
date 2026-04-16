@@ -5,6 +5,35 @@ All notable changes to AgentForge will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.16.14] - 2026-04-16
+
+### Added
+
+#### @agentforge/tools - Vendor Initialization Regression Coverage
+- Added focused helper coverage in `packages/tools/tests/data/relational/connection/vendor-initialization.test.ts` for PostgreSQL/MySQL pool-config mapping, SQLite foreign-key enablement, shared pool validation, dispatcher routing, and unsupported-vendor rejection
+- Added story documentation in `docs/st09027-connection-manager-vendor-initialization-extraction.md` covering the extraction, compatibility notes, warning delta, and validation record
+
+### Changed
+
+#### @agentforge/tools - Connection Manager Vendor Initialization Extraction
+- Extracted PostgreSQL, MySQL, and SQLite initialization plus pool-configuration normalization from `packages/tools/src/data/relational/connection/connection-manager.ts` into the internal helper module `packages/tools/src/data/relational/connection/vendor-initialization.ts`
+- Kept `ConnectionManager` as the stable public lifecycle entrypoint while preserving connect, initialize, disconnect, close, health-check, and reconnection behavior
+
+### Fixed
+
+#### @agentforge/tools - Vendor Initialization Logging and Type Pairing
+- Gave the internal vendor-initialization helper its own logger namespace for clearer attribution and tightened the exported initialization helpers around vendor-specific connection types plus a discriminated `ConnectionConfig` dispatcher
+- Reduced the workspace explicit-`any` baseline from `182` to `180`, improving the `tools` package baseline from `67` to `65`
+
+### Published
+- All packages published to npm registry at version 0.16.14:
+  - @agentforge/core@0.16.14
+  - @agentforge/skills@0.16.14
+  - @agentforge/patterns@0.16.14
+  - @agentforge/tools@0.16.14
+  - @agentforge/testing@0.16.14
+  - @agentforge/cli@0.16.14
+
 ## [0.16.13] - 2026-04-09
 
 ### Added
