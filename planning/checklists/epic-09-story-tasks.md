@@ -1053,19 +1053,38 @@ Implementation notes:
 **Branch:** `refactor/st-09028-connection-manager-lifecycle-modularization`
 
 ### Checklist
-- [ ] Create branch `refactor/st-09028-connection-manager-lifecycle-modularization`
-- [ ] Create draft PR with story ID in title
-- [ ] Extract lifecycle and reconnection orchestration from `packages/tools/src/data/relational/connection/connection-manager.ts`
-- [ ] Preserve current connect/initialize/disconnect/close/reconnection behavior
-- [ ] Add/update focused tests for cancellation, reconnection scheduling, and lifecycle cleanup behavior
-- [ ] Record explicit-`any` warning deltas for touched files in story docs
-- [ ] Add or update story documentation at `docs/st09028-connection-manager-lifecycle-modularization.md` (or document why not required)
-- [ ] Assess test impact; add/update automated tests when needed, or document why tests are not required
-- [ ] Run full test suite before finalizing the PR and record results
-- [ ] Run lint (`pnpm lint`) before finalizing the PR and record results
+- [x] Create branch `refactor/st-09028-connection-manager-lifecycle-modularization`
+  - Created as `codex/refactor/st-09028-connection-manager-lifecycle-modularization` (workspace branch-prefix policy)
+- [x] Create draft PR with story ID in title
+  - PR #90: https://github.com/TVScoundrel/agentforge/pull/90
+- [x] Extract lifecycle and reconnection orchestration from `packages/tools/src/data/relational/connection/connection-manager.ts`
+- [x] Preserve current connect/initialize/disconnect/close/reconnection behavior
+- [x] Add/update focused tests for cancellation, reconnection scheduling, and lifecycle cleanup behavior
+- [x] Record explicit-`any` warning deltas for touched files in story docs
+  - Recorded in `docs/st09028-connection-manager-lifecycle-modularization.md` (`connection-manager.ts 2 -> 2`, workspace `180 -> 180`)
+- [x] Add or update story documentation at `docs/st09028-connection-manager-lifecycle-modularization.md` (or document why not required)
+- [x] Assess test impact; add/update automated tests when needed, or document why tests are not required
+  - Added focused lifecycle regressions in `packages/tools/tests/data/relational/connection/connection-manager.test.ts` for disconnect-during-initialize cancellation and canceling a pending reconnection timer during close
+- [x] Run full test suite before finalizing the PR and record results
+  - `pnpm test --run` -> `160 passed | 16 skipped` files; `2198 passed | 286 skipped` tests
+- [x] Run lint (`pnpm lint`) before finalizing the PR and record results
+  - `pnpm lint` -> exit `0`; warnings only
 - [ ] Commit completed checklist items as logical commits and push updates
 - [ ] Mark PR Ready only after all story tasks are complete
 - [ ] Wait for merge; do not merge directly from local branch
+
+### Notes
+
+- Created branch: `refactor/st-09028-connection-manager-lifecycle-modularization` (workspace branch: `codex/refactor/st-09028-connection-manager-lifecycle-modularization`)
+- Draft PR: #90 `refactor(st-09028): modularize connection manager lifecycle`
+- Implementation commit: `7aff487` `refactor(st-09028): extract connection lifecycle helpers`
+- Validation:
+  - `pnpm exec tsc -p packages/tools/tsconfig.json --noEmit`
+  - `pnpm exec eslint packages/tools/src/data/relational/connection/connection-manager.ts packages/tools/src/data/relational/connection/lifecycle.ts packages/tools/tests/data/relational/connection/connection-manager.test.ts packages/tools/tests/data/relational/connection/vendor-initialization.test.ts`
+  - `pnpm test --run packages/tools/tests/data/relational/connection/connection-manager.test.ts packages/tools/tests/data/relational/connection/vendor-initialization.test.ts` -> `2 passed` files, `51 passed` tests
+  - `pnpm lint:explicit-any:baseline --silent` -> `180/289` warnings, `tools 65/67`
+  - `pnpm test --run` -> `160 passed | 16 skipped` files; `2198 passed | 286 skipped` tests
+  - `pnpm lint` -> exit `0`; warnings only
 
 ---
 

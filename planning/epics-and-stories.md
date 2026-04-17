@@ -1297,7 +1297,7 @@
 **Priority:** P2 (Medium)
 **Estimate:** 4 hours
 **Dependencies:** ST-09027
-**Status:** Ready
+**Status:** In Review
 
 **Acceptance criteria:**
 - [ ] `packages/tools/src/data/relational/connection/connection-manager.ts` extracts lifecycle/reconnection concerns such as state transitions, cancellation, reconnection scheduling, and close/dispose orchestration into clearer helpers or modules
