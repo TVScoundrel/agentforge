@@ -3,7 +3,7 @@
 **Epic Range:** EP-09 through EP-09
 **Status:** In Progress
 **Last Updated:** 2026-04-17
-**Active Story:** ST-09028 (In Review)
+**Active Story:** ST-09029 (Ready)
 
 ---
 
@@ -72,7 +72,7 @@ Recent improvement snapshot:
 - `ST-09023` merged after tightening the core tool builder fluent typing surface, lowering the workspace explicit-`any` baseline from `201` to `195` and the `core` package from `82` to `76`, with follow-up fixes for branched metadata isolation, clone-failure messaging, and `this`-binding compatibility.
 - `ST-09024` merged after tightening the LangGraph interrupt contracts around JSON-safe custom payloads, JSON-object metadata, and safer resume values, lowering the workspace explicit-`any` baseline from `195` to `182` and the `core` package from `76` to `63`.
 - `ST-09027` merged after extracting relational connection-manager vendor initialization into focused PostgreSQL/MySQL/SQLite helper adapters, lowering the workspace explicit-`any` baseline from `182` to `180` and the `tools` package from `67` to `65`, with follow-up fixes for logger attribution and vendor/connection type pairing.
-- `EP-09` remains open as the daily hardening stream, with the active queue now centered on connection-manager lifecycle modularization and plan-execute node decomposition.
+- `EP-09` remains open as the daily hardening stream, with the active queue now centered on plan-execute node decomposition and the follow-on connection-manager extraction stories.
 - A fresh follow-on slice is now queued behind that work for connection-manager execution/session extraction, registry registration/mutation extraction, managed-tool lifecycle hardening, database-pool contract tightening, and testing runner type-boundary cleanup.
 
 ---

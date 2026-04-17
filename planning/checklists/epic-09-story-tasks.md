@@ -1075,9 +1075,12 @@ Implementation notes:
   - `41498e5` `fix(st-09028): address lifecycle review feedback`
   - `f2eb2ce` `chore(st-09028): record review-fix commit`
   - `82921ad` `fix(st-09028): tighten lifecycle helper contracts`
+  - `3ddfd40` `chore(st-09028): append review-fix commit record`
+  - `5943cf6` `fix(st-09028): clarify reconnection helper naming`
 - [x] Mark PR Ready only after all story tasks are complete
   - PR #90 marked ready: https://github.com/TVScoundrel/agentforge/pull/90
-- [ ] Wait for merge; do not merge directly from local branch
+- [x] Wait for merge; do not merge directly from local branch
+  - Merged via PR #90 on 2026-04-17 (merge commit `91f0e2f`)
 
 ### Notes
 
@@ -1087,6 +1090,8 @@ Implementation notes:
 - Review-fix commit: `41498e5` `fix(st-09028): address lifecycle review feedback`
 - Review-fix commit: `f2eb2ce` `chore(st-09028): record review-fix commit`
 - Review-fix commit: `82921ad` `fix(st-09028): tighten lifecycle helper contracts`
+- Review-fix commit: `3ddfd40` `chore(st-09028): append review-fix commit record`
+- Review-fix commit: `5943cf6` `fix(st-09028): clarify reconnection helper naming`
 - Validation:
   - `pnpm exec tsc -p packages/tools/tsconfig.json --noEmit`
   - `pnpm exec eslint packages/tools/src/data/relational/connection/connection-manager.ts packages/tools/src/data/relational/connection/lifecycle.ts packages/tools/tests/data/relational/connection/connection-manager.test.ts packages/tools/tests/data/relational/connection/vendor-initialization.test.ts`
@@ -1094,6 +1099,8 @@ Implementation notes:
   - `pnpm lint:explicit-any:baseline --silent` -> `180/289` warnings, `tools 65/67`
   - `pnpm test --run` -> `160 passed | 16 skipped` files; `2198 passed | 286 skipped` tests
   - `pnpm lint` -> exit `0`; warnings only
+- Merged PR: #90
+- Merge commit: `91f0e2f`
 
 ---
 

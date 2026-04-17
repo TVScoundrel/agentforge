@@ -2,11 +2,18 @@
 
 **Purpose:** Track completed and merged stories for the Relational Database Access Tool project.
 
-**Last Updated:** 2026-04-16
+**Last Updated:** 2026-04-17
 
 ---
 
 ## Completed Stories
+
+### ST-09028: Modularize Connection Manager Lifecycle and Reconnection Control
+- **Merged:** 2026-04-17
+- **PR:** https://github.com/TVScoundrel/agentforge/pull/90 (commit 91f0e2f)
+- **Epic:** EP-09 (SOLID Micro-Refactors and Type Boundary Hardening)
+- **Estimate:** 4 hours
+- **Outcome:** Extracted the relational connection-manager lifecycle and reconnection orchestration into a focused internal helper module for state transitions, in-flight connect waiting, pending reconnection cancellation, shutdown, and scheduling, while preserving the public connection-manager lifecycle surface and adding focused cancellation/reconnection cleanup regressions. Review follow-ups restored public reconnection JSDoc, tightened helper logger and context contracts, fixed stale reconnection-attempt capture, and clarified the helper naming boundary to avoid accidental-recursion confusion.
 
 ### ST-09027: Extract Connection Manager Vendor Initialization Adapters
 - **Merged:** 2026-04-16

@@ -6,7 +6,7 @@
 
 - **Ready:** 4 stories
 - **In Progress:** 0 stories
-- **In Review:** 1 story
+- **In Review:** 0 stories
 - **Blocked:** 0 stories
 - **Backlog:** 3 stories
 
@@ -29,7 +29,7 @@ _No stories currently in progress_
 
 ## In Review
 
-- `ST-09028` - Modularize Connection Manager Lifecycle and Reconnection Control
+_No stories currently in review_
 
 ---
 
