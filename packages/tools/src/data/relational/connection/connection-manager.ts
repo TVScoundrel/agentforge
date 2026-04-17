@@ -8,7 +8,7 @@ import type { ConnectionConfig } from './types.js';
 import {
   cancelPendingReconnection,
   ConnectionState,
-  scheduleReconnection,
+  scheduleReconnection as scheduleReconnectionHelper,
   shutdownClient,
   waitForInFlightConnection,
   type ReconnectionConfig,
@@ -347,7 +347,7 @@ export class ConnectionManager extends EventEmitter implements DatabaseConnectio
    * @private
    */
   private scheduleReconnection(): void {
-    scheduleReconnection(
+    scheduleReconnectionHelper(
       {
         vendor: this.vendor,
         reconnectionConfig: this.reconnectionConfig,
