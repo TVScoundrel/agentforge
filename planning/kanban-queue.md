@@ -7,7 +7,6 @@
 - **Ready:** 4 stories
 - **In Progress:** 0 stories
 - **In Review:** 1 story
-- **In Review:** 0 stories
 - **Blocked:** 0 stories
 - **Backlog:** 3 stories
 
@@ -15,7 +14,6 @@
 
 ## Ready
 
-- `ST-09028` - Modularize Connection Manager Lifecycle and Reconnection Control
 - `ST-09029` - Modularize Plan-Execute Node Responsibilities
 - `ST-09030` - Extract Connection Manager Query Execution and Session Adapters
 - `ST-09031` - Extract Tool Registry Registration and Mutation Paths
@@ -32,6 +30,7 @@ _No stories currently in progress_
 ## In Review
 
 - `ST-09028` - Modularize Connection Manager Lifecycle and Reconnection Control
+
 ---
 
 ## Blocked

@@ -9,9 +9,13 @@ export enum ConnectionState {
 }
 
 export interface ReconnectionConfig {
+  /** Enable automatic reconnection on connection loss. */
   enabled: boolean;
+  /** Maximum number of reconnection attempts (0 = infinite). */
   maxAttempts: number;
+  /** Base delay in milliseconds for exponential backoff. */
   baseDelayMs: number;
+  /** Maximum delay in milliseconds between reconnection attempts. */
   maxDelayMs: number;
 }
 
