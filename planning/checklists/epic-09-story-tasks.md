@@ -1069,8 +1069,11 @@ Implementation notes:
   - `pnpm test --run` -> `160 passed | 16 skipped` files; `2198 passed | 286 skipped` tests
 - [x] Run lint (`pnpm lint`) before finalizing the PR and record results
   - `pnpm lint` -> exit `0`; warnings only
-- [ ] Commit completed checklist items as logical commits and push updates
-- [ ] Mark PR Ready only after all story tasks are complete
+- [x] Commit completed checklist items as logical commits and push updates
+  - `7aff487` `refactor(st-09028): extract connection lifecycle helpers`
+  - `a2b75fc` `docs(st-09028): track lifecycle modularization progress`
+- [x] Mark PR Ready only after all story tasks are complete
+  - PR #90 marked ready: https://github.com/TVScoundrel/agentforge/pull/90
 - [ ] Wait for merge; do not merge directly from local branch
 
 ### Notes
