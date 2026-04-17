@@ -11,57 +11,57 @@
 
 **AgentForge** is a TypeScript framework that provides production-grade abstractions for building autonomous agents with LangGraph. It focuses on developer experience, type safety, and real-world production needs.
 
-📚 **[View Full Documentation](https://tvscoundrel.github.io/agentforge/)** | 🚀 **[Quick Start Guide](https://tvscoundrel.github.io/agentforge/guide/quick-start)** | 💡 **[Examples](https://tvscoundrel.github.io/agentforge/examples/react-agent)**
+**[View Full Documentation](https://tvscoundrel.github.io/agentforge/)** | **[Quick Start Guide](https://tvscoundrel.github.io/agentforge/guide/quick-start)** | **[Examples](https://tvscoundrel.github.io/agentforge/examples/react-agent)**
 
 ---
 
-## ✨ Features
+## Features
 
-### ✅ Complete & Production-Ready
+### Complete & Production-Ready
 
 **Phase 1-2: Core Foundation**
-- 🛠️ **Rich Tool Registry** - Metadata-driven tools with automatic prompt generation
-- 🔗 **LangChain Integration** - Seamless conversion between AgentForge and LangChain tools
-- 📊 **LangGraph State Management** - Type-safe state utilities with Zod validation
-- 🏗️ **Workflow Builders** - Sequential, parallel, and conditional workflow patterns
-- 🔄 **Error Handling Patterns** - Retry, error handling, and timeout utilities
-- 🧩 **Subgraph Composition** - Reusable subgraph utilities
-- 💾 **Memory & Persistence** - Checkpointer and thread management utilities
-- 📈 **Observability** - LangSmith integration, metrics, logging, and error handling
+- **Rich Tool Registry** - Metadata-driven tools with automatic prompt generation
+- **LangChain Integration** - Seamless conversion between AgentForge and LangChain tools
+- **LangGraph State Management** - Type-safe state utilities with Zod validation
+- **Workflow Builders** - Sequential, parallel, and conditional workflow patterns
+- **Error Handling Patterns** - Retry, error handling, and timeout utilities
+- **Subgraph Composition** - Reusable subgraph utilities
+- **Memory & Persistence** - Checkpointer and thread management utilities
+- **Observability** - LangSmith integration, metrics, logging, and error handling
 
 **Phase 3: Agent Patterns**
-- 🤖 **ReAct Pattern** - Reasoning and Action loop for exploratory tasks
-- 📋 **Plan-Execute Pattern** - Structured planning with parallel execution
-- 🔍 **Reflection Pattern** - Iterative self-improvement through critique
-- 👥 **Multi-Agent Pattern** - Coordinate specialized agents with supervisor routing
+- **ReAct Pattern** - Reasoning and Action loop for exploratory tasks
+- **Plan-Execute Pattern** - Structured planning with parallel execution
+- **Reflection Pattern** - Iterative self-improvement through critique
+- **Multi-Agent Pattern** - Coordinate specialized agents with supervisor routing
 
 **Phase 4-5: Advanced Features**
-- 🔌 **Middleware System** - Composable middleware for caching, rate limiting, validation
-- 🌊 **Streaming & Real-time** - Stream transformers, aggregators, SSE, WebSocket, progress tracking
-- 🛠️ **Advanced Tools** - Async execution, lifecycle management, composition, testing utilities
-- 📦 **Resource Management** - Connection pooling, memory management, batch processing, circuit breaker
-- 📊 **Monitoring** - Health checks, profiling, alerts, audit logging
-- 🚀 **Deployment** - Docker, Kubernetes, CI/CD templates, multi-cloud guides
+- **Middleware System** - Composable middleware for caching, rate limiting, validation
+- **Streaming & Real-time** - Stream transformers, aggregators, SSE, WebSocket, progress tracking
+- **Advanced Tools** - Async execution, lifecycle management, composition, testing utilities
+- **Resource Management** - Connection pooling, memory management, batch processing, circuit breaker
+- **Monitoring** - Health checks, profiling, alerts, audit logging
+- **Deployment** - Docker, Kubernetes, CI/CD templates, multi-cloud guides
 
 **Phase 6: Developer Experience**
-- 🎯 **CLI Tool** - Project scaffolding, development, testing, deployment (156 tests, 98.11% coverage)
-- 🧪 **Testing Utilities** - Mocks, assertions, fixtures for agent testing
-- 📦 **Standard Tools** - 81 production-ready tools across 5 categories
-- 🔒 **Type Safety** - Full TypeScript support with Zod schemas
-- 📚 **Comprehensive Tests** - 2198 tests passing across all packages
+- **CLI Tool** - Project scaffolding, development, testing, deployment (156 tests, 98.11% coverage)
+- **Testing Utilities** - Mocks, assertions, fixtures for agent testing
+- **Standard Tools** - 81 production-ready tools across 5 categories
+- **Type Safety** - Full TypeScript support with Zod schemas
+- **Comprehensive Tests** - 2198 tests passing across all packages
 
 **Phase 7: Documentation**
-- 📖 **Complete Documentation** - 34 pages, 10,000+ lines of guides, tutorials, and API docs
-- 💡 **Pattern Guides** - Detailed guides for all 4 agent patterns
-- 🎓 **Tutorials** - 5 step-by-step tutorials from basics to advanced
-- 📚 **Examples** - 6 complete working examples
-- 🔍 **API Reference** - Full API documentation for all 5 packages
+- **Complete Documentation** - 34 pages, 10,000+ lines of guides, tutorials, and API docs
+- **Pattern Guides** - Detailed guides for all 4 agent patterns
+- **Tutorials** - 5 step-by-step tutorials from basics to advanced
+- **Examples** - 6 complete working examples
+- **API Reference** - Full API documentation for all 5 packages
 
 
 
 ---
 
-## 📦 Packages
+## Packages
 
 All packages are **published on npm** and ready for production use!
 
@@ -95,7 +95,7 @@ npm install -g @agentforge/cli
 
 ---
 
-## 🤖 Agent Patterns
+## Agent Patterns
 
 AgentForge provides 4 production-ready agent patterns:
 
@@ -156,7 +156,7 @@ See the [Pattern Comparison Guide](./packages/patterns/docs/pattern-comparison.m
 
 ---
 
-## 🔌 Middleware System
+## Middleware System
 
 AgentForge provides a powerful middleware system for adding cross-cutting concerns to your LangGraph nodes:
 
@@ -202,7 +202,7 @@ See the [Middleware Guide](https://tvscoundrel.github.io/agentforge/guide/concep
 
 ---
 
-## 🚀 Quick Start
+## Quick Start
 
 ```bash
 # Install dependencies
@@ -220,17 +220,17 @@ pnpm test:coverage
 
 ---
 
-## 📖 Documentation
+## Documentation
 
-### 🌐 User Documentation (GitHub Pages)
-- 🚀 **[Quick Start](https://tvscoundrel.github.io/agentforge/guide/quick-start)** - Get started in 5 minutes
-- 📚 **[Full Documentation](https://tvscoundrel.github.io/agentforge/)** - Complete guides and API reference
-- 🤖 **[Pattern Guides](https://tvscoundrel.github.io/agentforge/guide/patterns/react)** - ReAct, Plan-Execute, Reflection, Multi-Agent
-- 🔧 **[Middleware Guide](https://tvscoundrel.github.io/agentforge/guide/concepts/middleware)** - Comprehensive middleware guide
-- 💡 **[Examples](https://tvscoundrel.github.io/agentforge/examples/react-agent)** - Working code examples
-- 📖 **[API Reference](https://tvscoundrel.github.io/agentforge/api/core)** - Complete API documentation
+### User Documentation (GitHub Pages)
+- **[Quick Start](https://tvscoundrel.github.io/agentforge/guide/quick-start)** - Get started in 5 minutes
+- **[Full Documentation](https://tvscoundrel.github.io/agentforge/)** - Complete guides and API reference
+- **[Pattern Guides](https://tvscoundrel.github.io/agentforge/guide/patterns/react)** - ReAct, Plan-Execute, Reflection, Multi-Agent
+- **[Middleware Guide](https://tvscoundrel.github.io/agentforge/guide/concepts/middleware)** - Comprehensive middleware guide
+- **[Examples](https://tvscoundrel.github.io/agentforge/examples/react-agent)** - Working code examples
+- **[API Reference](https://tvscoundrel.github.io/agentforge/api/core)** - Complete API documentation
 
-### 📂 Developer Documentation (Repository)
+### Developer Documentation (Repository)
 For contributors and advanced users:
 - [Framework Design](./docs/FRAMEWORK_DESIGN.md) - Architecture and design decisions
 - [Roadmap](./docs/ROADMAP.md) - Development roadmap and milestones
@@ -241,14 +241,14 @@ For contributors and advanced users:
 
 ### Examples & Templates
 
-#### 🚀 [Deployment Templates](./templates/)
+#### [Deployment Templates](./templates/)
 Production-ready templates for deploying your agents:
 - **[Docker Templates](./templates/docker/)** - Containerization with docker-compose
 - **[Kubernetes Manifests](./templates/kubernetes/)** - Production K8s deployment
 - **[CI/CD Pipelines](./templates/ci-cd/)** - GitHub Actions & GitLab CI
 - **[Cloud Guides](./templates/deployment/)** - AWS, GCP, Azure deployment guides
 
-#### 💡 [Application Examples](./examples/)
+#### [Application Examples](./examples/)
 Real-world applications and integrations:
 - [Research Assistant](./examples/applications/research-assistant/) - ReAct pattern for research
 - [Code Reviewer](./examples/applications/code-reviewer/) - Reflection pattern for code quality
@@ -257,13 +257,13 @@ Real-world applications and integrations:
 - [Express.js Integration](./examples/integrations/express-api/) - REST API with streaming
 - [Next.js Integration](./examples/integrations/nextjs-app/) - Full-stack app with chat UI
 
-#### 📚 Pattern Examples
+#### Pattern Examples
 - [ReAct Examples](./packages/patterns/examples/react/) - 4 ReAct examples
 - [Plan-Execute Examples](./packages/patterns/examples/plan-execute/) - 4 Plan-Execute examples
 - [Reflection Examples](./packages/patterns/examples/reflection/) - 4 Reflection examples
 - [Multi-Agent Examples](./packages/patterns/examples/multi-agent/) - 4 Multi-Agent examples
 
-#### 🔧 Feature Examples
+#### Feature Examples
 - [Streaming Examples](./packages/core/examples/streaming/) - 5 streaming examples (32+ demonstrations)
 - [Advanced Tools Examples](./packages/core/examples/tools/) - 4 tool examples
 - [Resource Management Examples](./packages/core/examples/resources/) - 4 resource examples
@@ -272,7 +272,7 @@ Real-world applications and integrations:
 
 ---
 
-## 🏗️ Development
+## Development
 
 ### Prerequisites
 
@@ -310,33 +310,33 @@ pnpm clean          # Clean all build artifacts
 
 ---
 
-## 🎯 Current Status
+## Current Status
 
-**🎉 AgentForge v0.16.15 - Published on npm and Production-Ready!**
+**AgentForge v0.16.15 - Published on npm and Production-Ready!**
 
 **All 7 Phases Complete:**
 
-### ✅ Phase 1: Tool Registry (113 tests)
+### Phase 1: Tool Registry (113 tests)
 - Rich tool metadata, builder API, registry with events
 - LangChain integration, prompt generation
 - **Status**: Complete & Published
 
-### ✅ Phase 2: LangGraph Utilities (158 tests)
+### Phase 2: LangGraph Utilities (158 tests)
 - State management, workflow builders, error handling
 - Memory & persistence, observability & logging
 - **Status**: Complete & Published
 
-### ✅ Phase 3: Agent Patterns (129 tests)
+### Phase 3: Agent Patterns (129 tests)
 - ReAct, Plan-Execute, Reflection, Multi-Agent patterns
 - 16 working examples with comprehensive documentation
 - **Status**: Complete & Published
 
-### ✅ Phase 4: Middleware System (94 tests)
+### Phase 4: Middleware System (94 tests)
 - Composable middleware (caching, rate limiting, validation, concurrency)
 - Production, development, and testing presets
 - **Status**: Complete & Published
 
-### ✅ Phase 5: Production Features (163 tests)
+### Phase 5: Production Features (163 tests)
 - **5.1**: Streaming & Real-time (68 tests) - Stream transformers, SSE, WebSocket, progress tracking
 - **5.2**: Advanced Tools - Async execution, lifecycle, composition, testing utilities
 - **5.3**: Resource Management - Connection pooling, memory management, batch processing, circuit breaker
@@ -345,14 +345,14 @@ pnpm clean          # Clean all build artifacts
 - 20 working examples demonstrating all features
 - **Status**: Complete & Published
 
-### ✅ Phase 6: Developer Experience
+### Phase 6: Developer Experience
 - **6.1**: CLI Tool - 156 tests (98.11% coverage), 13 commands, 4 templates
 - **6.2**: Testing Utilities - Mocks, assertions, fixtures, test helpers
 - **6.3**: Standard Tools - 74 production-ready tools (web, file, data, utility, agent)
 - **6.4**: Documentation Site - 17 pages, comprehensive guides, API docs, tutorials
 - **Status**: Complete & Published
 
-### ✅ Phase 7: Documentation Completion (34 pages, 10,000+ lines)
+### Phase 7: Documentation Completion (34 pages, 10,000+ lines)
 - **7.1**: Core Concepts - 5 foundational guides
 - **7.2**: Pattern Guides - 4 comprehensive pattern guides (2,011 lines)
 - **7.3**: Advanced Topics - 4 advanced guides (3,474 lines)
@@ -363,7 +363,7 @@ pnpm clean          # Clean all build artifacts
 
 ---
 
-## 📊 Project Metrics
+## Project Metrics
 
 - **Total Tests**: 2198 passing across all packages
 - **Test Coverage**: 98.11% (CLI package)
@@ -375,21 +375,21 @@ pnpm clean          # Clean all build artifacts
 
 ---
 
-## 💡 What You Can Build
+## What You Can Build
 
-- 🤖 **Autonomous Agents** - ReAct, Plan-Execute, Reflection, Multi-Agent patterns
-- 🌊 **Real-time Applications** - Streaming with SSE/WebSocket
-- 🔌 **Production APIs** - Express.js or Next.js integrations
-- 📊 **Data Analysis Tools** - Research and analytics agents
-- 💬 **Customer Support** - Multi-agent support systems
-- 🔍 **Code Review Tools** - Reflection-based quality tools
-- 🚀 **Enterprise Deployments** - Docker/Kubernetes ready
+- **Autonomous Agents** - ReAct, Plan-Execute, Reflection, Multi-Agent patterns
+- **Real-time Applications** - Streaming with SSE/WebSocket
+- **Production APIs** - Express.js or Next.js integrations
+- **Data Analysis Tools** - Research and analytics agents
+- **Customer Support** - Multi-agent support systems
+- **Code Review Tools** - Reflection-based quality tools
+- **Enterprise Deployments** - Docker/Kubernetes ready
 
 See [ROADMAP.md](./docs/ROADMAP.md) for complete development history.
 
 ---
 
-## 🤝 Contributing
+## Contributing
 
 Contributions are welcome! Please follow these steps:
 
@@ -427,13 +427,13 @@ See [`.ai/RELEASE_PROCESS.md`](./.ai/RELEASE_PROCESS.md) for the complete proces
 
 ---
 
-## 📄 License
+## License
 
 MIT © 2026 Tom Van Schoor
 
 ---
 
-## 🙏 Acknowledgments
+## Acknowledgments
 
 - Inspired by [DeepAgents](https://github.com/langchain-ai/deepagentsjs)
 - Built on [LangGraph](https://langchain-ai.github.io/langgraph/)
