@@ -6,6 +6,14 @@
 import type { DatabaseConnection, DatabaseVendor } from '../types.js';
 import type { ConnectionConfig } from './types.js';
 import {
+  cancelPendingReconnection,
+  ConnectionState,
+  scheduleReconnection,
+  shutdownClient,
+  waitForInFlightConnection,
+  type ReconnectionConfig,
+} from './lifecycle.js';
+import {
   initializeVendorConnection,
   SAFE_INITIALIZATION_PATTERNS,
 } from './vendor-initialization.js';
@@ -17,34 +25,11 @@ import { EventEmitter } from 'events';
 const logger = createLogger('agentforge:tools:data:relational:connection');
 
 /**
- * Connection state enum
- */
-export enum ConnectionState {
-  DISCONNECTED = 'disconnected',
-  CONNECTING = 'connecting',
-  CONNECTED = 'connected',
-  RECONNECTING = 'reconnecting',
-  ERROR = 'error',
-}
-
-/**
  * Connection lifecycle events
  */
 export type ConnectionEvent = 'connected' | 'disconnected' | 'error' | 'reconnecting';
-
-/**
- * Reconnection configuration
- */
-export interface ReconnectionConfig {
-  /** Enable automatic reconnection on connection loss */
-  enabled: boolean;
-  /** Maximum number of reconnection attempts (0 = infinite) */
-  maxAttempts: number;
-  /** Base delay in milliseconds for exponential backoff */
-  baseDelayMs: number;
-  /** Maximum delay in milliseconds between reconnection attempts */
-  maxDelayMs: number;
-}
+export { ConnectionState } from './lifecycle.js';
+export type { ReconnectionConfig } from './lifecycle.js';
 
 /**
  * Connection manager that handles database connections for PostgreSQL, MySQL, and SQLite
@@ -109,13 +94,12 @@ export class ConnectionManager extends EventEmitter implements DatabaseConnectio
     }
 
     // If a reconnection has been scheduled, cancel it before starting a new connection attempt
-    if (this.reconnectionTimer) {
-      logger.debug('Clearing pending reconnection timer before manual connect', {
-        vendor: this.vendor,
-      });
-      clearTimeout(this.reconnectionTimer);
-      this.reconnectionTimer = null;
-    }
+    this.reconnectionTimer = cancelPendingReconnection(
+      this.reconnectionTimer,
+      logger,
+      this.vendor,
+      'Clearing pending reconnection timer before manual connect'
+    );
 
     // Track the connection promise so concurrent callers can await it
     this.connectPromise = this.initialize().finally(() => {
@@ -137,28 +121,24 @@ export class ConnectionManager extends EventEmitter implements DatabaseConnectio
     this.connectionGeneration++;
 
     // Cancel any pending reconnection
-    if (this.reconnectionTimer) {
-      clearTimeout(this.reconnectionTimer);
-      this.reconnectionTimer = null;
-    }
+    this.reconnectionTimer = cancelPendingReconnection(
+      this.reconnectionTimer,
+      logger,
+      this.vendor,
+      'Clearing pending reconnection timer before disconnect'
+    );
 
     // Reset reconnection attempts
     this.reconnectionAttempts = 0;
 
     // Wait for any in-flight connection attempt to complete before closing
     // This prevents race conditions where initialize() completes after disconnect()
-    if (this.connectPromise) {
-      logger.debug('Waiting for in-flight connection attempt to complete before disconnect', {
-        vendor: this.vendor,
-      });
-      try {
-        await this.connectPromise;
-      } catch {
-        // Ignore errors from the connection attempt - we're disconnecting anyway
-      }
-      // Clear the promise reference
-      this.connectPromise = null;
-    }
+    this.connectPromise = await waitForInFlightConnection(
+      this.connectPromise,
+      logger,
+      this.vendor,
+      'disconnect'
+    );
 
     // Close the connection
     await this.close();
@@ -367,69 +347,32 @@ export class ConnectionManager extends EventEmitter implements DatabaseConnectio
    * @private
    */
   private scheduleReconnection(): void {
-    // Check if we've exceeded max attempts
-    if (
-      this.reconnectionConfig.maxAttempts > 0 &&
-      this.reconnectionAttempts >= this.reconnectionConfig.maxAttempts
-    ) {
-      logger.error('Max reconnection attempts reached', {
+    scheduleReconnection(
+      {
         vendor: this.vendor,
-        attempts: this.reconnectionAttempts,
-        maxAttempts: this.reconnectionConfig.maxAttempts,
-      });
-      return;
-    }
-
-    // Calculate delay with exponential backoff
-    const delay = Math.min(
-      this.reconnectionConfig.baseDelayMs * Math.pow(2, this.reconnectionAttempts),
-      this.reconnectionConfig.maxDelayMs
+        reconnectionConfig: this.reconnectionConfig,
+        reconnectionAttempts: this.reconnectionAttempts,
+        setReconnectionAttempts: (attempts) => {
+          this.reconnectionAttempts = attempts;
+        },
+        setState: (state) => {
+          this.setState(state);
+        },
+        emitReconnecting: (payload) => {
+          this.emit('reconnecting', payload);
+        },
+        initialize: () => this.initialize(),
+        connectPromise: this.connectPromise,
+        setConnectPromise: (promise) => {
+          this.connectPromise = promise;
+        },
+        reconnectionTimer: this.reconnectionTimer,
+        setReconnectionTimer: (timer) => {
+          this.reconnectionTimer = timer;
+        },
+      },
+      logger
     );
-
-    this.reconnectionAttempts++;
-
-    // Set state to reconnecting
-    this.setState(ConnectionState.RECONNECTING);
-
-    logger.info('Scheduling reconnection attempt', {
-      vendor: this.vendor,
-      attempt: this.reconnectionAttempts,
-      maxAttempts: this.reconnectionConfig.maxAttempts,
-      delayMs: delay,
-    });
-
-    this.emit('reconnecting', {
-      attempt: this.reconnectionAttempts,
-      maxAttempts: this.reconnectionConfig.maxAttempts,
-      delayMs: delay,
-    });
-
-    // Schedule reconnection
-    this.reconnectionTimer = setTimeout(async () => {
-      this.reconnectionTimer = null;
-
-      try {
-        logger.info('Attempting reconnection', {
-          vendor: this.vendor,
-          attempt: this.reconnectionAttempts,
-        });
-
-        // Track the reconnection promise so concurrent connect() calls can await it
-        this.connectPromise = this.initialize().finally(() => {
-          this.connectPromise = null;
-        });
-
-        await this.connectPromise;
-      } catch (error) {
-        logger.error('Reconnection attempt failed', {
-          vendor: this.vendor,
-          attempt: this.reconnectionAttempts,
-          error: error instanceof Error ? error.message : String(error),
-        });
-
-        // The initialize() method will schedule another reconnection if needed
-      }
-    }, delay);
   }
 
   /**
@@ -650,26 +593,20 @@ export class ConnectionManager extends EventEmitter implements DatabaseConnectio
     this.connectionGeneration++;
 
     // Cancel any pending reconnection to prevent unexpected reconnection after close
-    if (this.reconnectionTimer) {
-      logger.debug('Canceling pending reconnection timer during close', {
-        vendor: this.vendor,
-      });
-      clearTimeout(this.reconnectionTimer);
-      this.reconnectionTimer = null;
-    }
+    this.reconnectionTimer = cancelPendingReconnection(
+      this.reconnectionTimer,
+      logger,
+      this.vendor,
+      'Canceling pending reconnection timer during close'
+    );
 
     // Wait for any in-flight connection attempt to complete before closing
-    if (this.connectPromise) {
-      logger.debug('Waiting for in-flight connection attempt to complete before close', {
-        vendor: this.vendor,
-      });
-      try {
-        await this.connectPromise;
-      } catch {
-        // Ignore errors from the connection attempt - we're closing anyway
-      }
-      this.connectPromise = null;
-    }
+    this.connectPromise = await waitForInFlightConnection(
+      this.connectPromise,
+      logger,
+      this.vendor,
+      'close'
+    );
 
     // Now perform the actual close operation
     if (this.client) {
@@ -679,11 +616,7 @@ export class ConnectionManager extends EventEmitter implements DatabaseConnectio
       });
 
       try {
-        if (this.vendor === 'postgresql' || this.vendor === 'mysql') {
-          await this.client.end();
-        } else if (this.vendor === 'sqlite') {
-          this.client.close();
-        }
+        await shutdownClient(this.vendor, this.client);
 
         // Set state to disconnected and emit event
         this.setState(ConnectionState.DISCONNECTED);
@@ -734,11 +667,7 @@ export class ConnectionManager extends EventEmitter implements DatabaseConnectio
 
     try {
       // Close the client connection
-      if (this.vendor === 'postgresql' || this.vendor === 'mysql') {
-        await this.client.end();
-      } else if (this.vendor === 'sqlite') {
-        this.client.close();
-      }
+      await shutdownClient(this.vendor, this.client);
     } catch (error) {
       // Log but don't throw - we're cleaning up a cancelled connection
       logger.debug('Error during cancelled connection cleanup', {

@@ -286,6 +286,30 @@ describe('ConnectionManager', () => {
       await manager.disconnect();
       expect(disconnectedFn).toHaveBeenCalledOnce();
     });
+
+    it('cancels an in-flight initialize during disconnect', async () => {
+      let resolveHealthCheck: ((value: Array<{ '?column?': number }>) => void) | undefined;
+      const healthCheckPromise = new Promise<Array<{ '?column?': number }>>((resolve) => {
+        resolveHealthCheck = resolve;
+      });
+      mockPgExecute.mockReturnValueOnce(healthCheckPromise);
+
+      const manager = new ConnectionManager({
+        vendor: 'postgresql',
+        connection: 'postgresql://localhost/test',
+      });
+
+      const connectPromise = manager.connect();
+      const disconnectPromise = manager.disconnect();
+
+      resolveHealthCheck?.([{ '?column?': 1 }]);
+
+      await expect(connectPromise).rejects.toThrow('Failed to initialize postgresql connection');
+      await disconnectPromise;
+
+      expect(manager.getState()).toBe(ConnectionState.DISCONNECTED);
+      expect(mockPoolEnd).toHaveBeenCalledTimes(1);
+    });
   });
 
   describe('dispose', () => {
@@ -582,6 +606,30 @@ describe('ConnectionManager', () => {
       (manager as any).state = ConnectionState.ERROR;
       await manager.close();
       expect(manager.getState()).toBe(ConnectionState.DISCONNECTED);
+    });
+
+    it('cancels a pending reconnection timer during close', async () => {
+      vi.useFakeTimers();
+      mockPgExecute.mockRejectedValue(new Error('Health check failed'));
+
+      const manager = new ConnectionManager(
+        { vendor: 'postgresql', connection: 'postgresql://localhost/test' },
+        { enabled: true, maxAttempts: 1, baseDelayMs: 10, maxDelayMs: 100 }
+      );
+
+      const errorFn = vi.fn();
+      manager.on('error', errorFn);
+
+      await expect(manager.connect()).rejects.toThrow('Failed to initialize postgresql connection');
+      expect(manager.getState()).toBe(ConnectionState.RECONNECTING);
+
+      await manager.close();
+      await vi.advanceTimersByTimeAsync(20);
+
+      expect(manager.getState()).toBe(ConnectionState.DISCONNECTED);
+      expect(mockPool).toHaveBeenCalledTimes(1);
+      expect(errorFn).toHaveBeenCalled();
+      vi.useRealTimers();
     });
   });
 
