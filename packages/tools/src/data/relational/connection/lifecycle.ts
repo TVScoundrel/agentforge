@@ -1,3 +1,5 @@
+import type { JsonValue } from '@agentforge/core';
+
 import type { DatabaseVendor } from '../types.js';
 
 export enum ConnectionState {
@@ -26,9 +28,9 @@ export interface ReconnectingEventPayload {
 }
 
 export interface ConnectionLifecycleLogger {
-  debug(message: string, metadata?: unknown): void;
-  info(message: string, metadata?: unknown): void;
-  error(message: string, metadata?: unknown): void;
+  debug(message: string, metadata?: JsonValue): void;
+  info(message: string, metadata?: JsonValue): void;
+  error(message: string, metadata?: JsonValue): void;
 }
 
 export interface ScheduledReconnectionContext {
@@ -39,9 +41,7 @@ export interface ScheduledReconnectionContext {
   setState(state: ConnectionState): void;
   emitReconnecting(payload: ReconnectingEventPayload): void;
   initialize(): Promise<void>;
-  connectPromise: Promise<void> | null;
   setConnectPromise(promise: Promise<void> | null): void;
-  reconnectionTimer: NodeJS.Timeout | null;
   setReconnectionTimer(timer: NodeJS.Timeout | null): void;
 }
 
@@ -138,7 +138,7 @@ export function scheduleReconnection(
     try {
       logger.info('Attempting reconnection', {
         vendor: context.vendor,
-        attempt: context.reconnectionAttempts,
+        attempt: nextAttempt,
       });
 
       const promise = context.initialize().finally(() => {
@@ -150,7 +150,7 @@ export function scheduleReconnection(
     } catch (error) {
       logger.error('Reconnection attempt failed', {
         vendor: context.vendor,
-        attempt: context.reconnectionAttempts,
+        attempt: nextAttempt,
         error: error instanceof Error ? error.message : String(error),
       });
     }

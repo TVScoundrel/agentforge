@@ -362,11 +362,9 @@ export class ConnectionManager extends EventEmitter implements DatabaseConnectio
           this.emit('reconnecting', payload);
         },
         initialize: () => this.initialize(),
-        connectPromise: this.connectPromise,
         setConnectPromise: (promise) => {
           this.connectPromise = promise;
         },
-        reconnectionTimer: this.reconnectionTimer,
         setReconnectionTimer: (timer) => {
           this.reconnectionTimer = timer;
         },
