@@ -1072,7 +1072,7 @@ Implementation notes:
 - [x] Commit completed checklist items as logical commits and push updates
   - `7aff487` `refactor(st-09028): extract connection lifecycle helpers`
   - `a2b75fc` `docs(st-09028): track lifecycle modularization progress`
-  - review-fix commit pending below
+  - `41498e5` `fix(st-09028): address lifecycle review feedback`
 - [x] Mark PR Ready only after all story tasks are complete
   - PR #90 marked ready: https://github.com/TVScoundrel/agentforge/pull/90
 - [ ] Wait for merge; do not merge directly from local branch
@@ -1082,7 +1082,7 @@ Implementation notes:
 - Created branch: `refactor/st-09028-connection-manager-lifecycle-modularization` (workspace branch: `codex/refactor/st-09028-connection-manager-lifecycle-modularization`)
 - Draft PR: #90 `refactor(st-09028): modularize connection manager lifecycle`
 - Implementation commit: `7aff487` `refactor(st-09028): extract connection lifecycle helpers`
-- Review-fix commit: pending
+- Review-fix commit: `41498e5` `fix(st-09028): address lifecycle review feedback`
 - Validation:
   - `pnpm exec tsc -p packages/tools/tsconfig.json --noEmit`
   - `pnpm exec eslint packages/tools/src/data/relational/connection/connection-manager.ts packages/tools/src/data/relational/connection/lifecycle.ts packages/tools/tests/data/relational/connection/connection-manager.test.ts packages/tools/tests/data/relational/connection/vendor-initialization.test.ts`
