@@ -1,6 +1,6 @@
 {
   "name": "@agentforge/docs",
-  "version": "0.16.14",
+  "version": "0.16.15",
   "private": true,
   "description": "AgentForge documentation site",
   "type": "module",

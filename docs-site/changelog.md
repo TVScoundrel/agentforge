@@ -5,6 +5,35 @@ All notable changes to AgentForge will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.16.15] - 2026-04-17
+
+### Added
+
+#### @agentforge/tools - Connection Lifecycle Regression Coverage
+- Added focused lifecycle regressions in `packages/tools/tests/data/relational/connection/connection-manager.test.ts` for disconnect-during-initialize cancellation and canceling a pending reconnection timer during close
+- Added story documentation in `docs/st09028-connection-manager-lifecycle-modularization.md` covering the lifecycle extraction, compatibility notes, review fixes, and validation record
+
+### Changed
+
+#### @agentforge/tools - Connection Manager Lifecycle Modularization
+- Extracted connection lifecycle and reconnection orchestration from `packages/tools/src/data/relational/connection/connection-manager.ts` into the internal helper module `packages/tools/src/data/relational/connection/lifecycle.ts`
+- Kept `ConnectionManager` as the stable public lifecycle entrypoint while preserving connect, initialize, disconnect, close, dispose, and reconnection behavior
+
+### Fixed
+
+#### @agentforge/tools - Lifecycle Helper Contract and Review Follow-Ups
+- Restored public `ReconnectionConfig` field documentation, tightened lifecycle logger metadata to the core `JsonValue` contract, trimmed unused scheduled-reconnection context fields, and fixed stale reconnection-attempt capture inside the timeout closure
+- Clarified the helper naming boundary in `connection-manager.ts` so the private `scheduleReconnection()` wrapper no longer reads like accidental recursion, while preserving the workspace explicit-`any` baseline at `180` and the `tools` package baseline at `65`
+
+### Published
+- All packages published to npm registry at version 0.16.15:
+  - @agentforge/core@0.16.15
+  - @agentforge/skills@0.16.15
+  - @agentforge/patterns@0.16.15
+  - @agentforge/tools@0.16.15
+  - @agentforge/testing@0.16.15
+  - @agentforge/cli@0.16.15
+
 ## [0.16.14] - 2026-04-16
 
 ### Added
