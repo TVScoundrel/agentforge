@@ -7,6 +7,7 @@ import {
   PLANNING_PROMPT_TEMPLATE,
 } from './prompts.js';
 import { plannerLogger } from './node-loggers.js';
+import { normalizeModelContent } from './serialization.js';
 
 export function createPlannerNode(config: PlannerConfig) {
   const {
@@ -42,7 +43,7 @@ export function createPlannerNode(config: PlannerConfig) {
       ];
 
       const response = await model.invoke(messages);
-      const content = response.content.toString();
+      const content = normalizeModelContent(response.content);
 
       let plan: Plan;
       try {

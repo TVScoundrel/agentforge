@@ -9,6 +9,7 @@ import {
   REMAINING_STEP_TEMPLATE,
 } from './prompts.js';
 import { replannerLogger } from './node-loggers.js';
+import { normalizeModelContent, serializePlanExecuteResult } from './serialization.js';
 
 export function createReplannerNode(config: ReplannerConfig) {
   const {
@@ -45,7 +46,7 @@ export function createReplannerNode(config: ReplannerConfig) {
           COMPLETED_STEP_TEMPLATE
             .replace('{stepNumber}', String(idx + 1))
             .replace('{description}', ps.step.description)
-            .replace('{result}', JSON.stringify(ps.result))
+            .replace('{result}', serializePlanExecuteResult(ps.result))
             .replace('{status}', ps.success ? 'Success' : `Failed: ${ps.error}`)
         )
         .join('\n\n');
@@ -71,7 +72,7 @@ export function createReplannerNode(config: ReplannerConfig) {
       ];
 
       const response = await model.invoke(messages);
-      const content = response.content.toString();
+      const content = normalizeModelContent(response.content);
 
       let decision: ReplanDecision;
       try {

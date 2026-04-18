@@ -1133,6 +1133,7 @@ Implementation notes:
 - [x] Commit completed checklist items as logical commits and push updates
   - `9dfed82` refactor(st-09029): split plan-execute node responsibilities
   - `ab3bc40` docs(st-09029): record validation and move story to in-review
+  - `5c1141f` chore(st-09029): finalize checklist and ready status
 - [x] Mark PR Ready only after all story tasks are complete
   - PR #92 marked ready: https://github.com/TVScoundrel/agentforge/pull/92
 - [ ] Wait for merge; do not merge directly from local branch

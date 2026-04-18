@@ -14,13 +14,16 @@ ST-09029 split the plan-execute node layer into focused internal modules while k
 | `packages/patterns/src/plan-execute/replanner-node.ts` | Isolated replanning prompt assembly, decision parsing, and replanner logging. |
 | `packages/patterns/src/plan-execute/finisher-node.ts` | Isolated final response aggregation and completion-state handling. |
 | `packages/patterns/src/plan-execute/node-loggers.ts` | Centralized the planner/executor/replanner logger setup shared by the extracted node modules. |
-| `packages/patterns/tests/plan-execute/nodes.test.ts` | Added focused coverage for the finisher path and invalid replanner JSON handling while preserving public-facade tests. |
+| `packages/patterns/src/plan-execute/serialization.ts` | Added shared safe serialization helpers for structured model content and non-JSON-safe step results. |
+| `packages/patterns/tests/plan-execute/nodes.test.ts` | Added focused coverage for the finisher path, invalid replanner JSON handling, structured model content normalization, and unserializable step-result fallback behavior. |
 
 ## Behavior Notes
 
 - Public imports remain unchanged through `packages/patterns/src/plan-execute/nodes.ts`.
 - Planner, executor, replanner, and finisher runtime behavior remains unchanged after the split.
 - Shared logger setup was extracted because it reduced duplication without hiding node control flow.
+- Planner and replanner parsing now normalize non-string model content before `JSON.parse`.
+- Replanner prompt building and finisher aggregation now tolerate non-JSON-safe step results with fallback strings instead of throwing.
 
 ## Validation
 
@@ -29,6 +32,10 @@ ST-09029 split the plan-execute node layer into focused internal modules while k
   - Passed with existing `nodes.test.ts` warnings only
 - `pnpm test --run packages/patterns/tests/plan-execute/nodes.test.ts packages/patterns/tests/plan-execute/deduplication.test.ts packages/patterns/tests/plan-execute/agent.test.ts packages/patterns/tests/plan-execute/integration.test.ts packages/patterns/tests/plan-execute/state.test.ts`
   - `5 passed` files, `45 passed` tests
+- `pnpm exec eslint packages/patterns/src/plan-execute/planner-node.ts packages/patterns/src/plan-execute/replanner-node.ts packages/patterns/src/plan-execute/finisher-node.ts packages/patterns/src/plan-execute/serialization.ts packages/patterns/tests/plan-execute/nodes.test.ts`
+  - Passed with existing `nodes.test.ts` warnings only
+- `pnpm test --run packages/patterns/tests/plan-execute/nodes.test.ts packages/patterns/tests/plan-execute/deduplication.test.ts packages/patterns/tests/plan-execute/agent.test.ts packages/patterns/tests/plan-execute/integration.test.ts packages/patterns/tests/plan-execute/state.test.ts`
+  - `5 passed` files, `49 passed` tests
 - `pnpm lint:explicit-any:baseline --silent`
   - Workspace baseline unchanged at `180/289`
   - `patterns` baseline unchanged at `15/28`
@@ -47,3 +54,4 @@ ST-09029 split the plan-execute node layer into focused internal modules while k
   - `replanner-node.ts` (`117` lines)
   - `finisher-node.ts` (`23` lines)
   - `node-loggers.ts` (`5` lines)
+  - `serialization.ts` (`21` lines)

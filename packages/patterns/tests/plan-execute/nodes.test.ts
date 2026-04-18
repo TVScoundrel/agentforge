@@ -166,6 +166,25 @@ describe('Plan-Execute Nodes', () => {
       expect(result.status).toBe('failed');
       expect(result.error).toContain('Failed to parse plan');
     });
+
+    it('should normalize structured model content before parsing', async () => {
+      const llm = {
+        invoke: async () => new AIMessage({
+          content: {
+            goal: 'Structured goal',
+            steps: [{ id: 'step-1', description: 'Structured step' }],
+          },
+        }),
+      } as any;
+
+      const planner = createPlannerNode({ model: llm });
+      const state: Partial<PlanExecuteStateType> = { input: 'Test', status: 'planning' };
+      const result = await planner(state as PlanExecuteStateType);
+
+      expect(result.status).toBe('executing');
+      expect(result.plan?.goal).toBe('Structured goal');
+      expect(result.plan?.steps).toHaveLength(1);
+    });
   });
 
   describe('createExecutorNode', () => {
@@ -420,6 +439,65 @@ describe('Plan-Execute Nodes', () => {
       expect(result.input).toBe('Updated goal');
     });
 
+    it('should normalize structured replanner content before parsing', async () => {
+      const llm = {
+        invoke: async () => new AIMessage({
+          content: {
+            shouldReplan: true,
+            reason: 'Structured content',
+            newGoal: 'Structured goal',
+          },
+        }),
+      } as any;
+
+      const replanner = createReplannerNode({ model: llm });
+      const state: Partial<PlanExecuteStateType> = {
+        plan: {
+          steps: [{ id: 'step-1', description: 'First' }],
+          goal: 'Test goal',
+          createdAt: new Date().toISOString(),
+        },
+        currentStepIndex: 0,
+        pastSteps: [],
+        status: 'replanning',
+      };
+
+      const result = await replanner(state as PlanExecuteStateType);
+
+      expect(result.status).toBe('planning');
+      expect(result.input).toBe('Structured goal');
+    });
+
+    it('should tolerate unserializable completed step results in replanning prompts', async () => {
+      const circular: { self?: unknown } = {};
+      circular.self = circular;
+
+      const llm = createMockReplannerLLM(false) as any;
+      const replanner = createReplannerNode({ model: llm });
+
+      const state: Partial<PlanExecuteStateType> = {
+        plan: {
+          steps: [{ id: 'step-1', description: 'First' }],
+          goal: 'Test goal',
+          createdAt: new Date().toISOString(),
+        },
+        pastSteps: [
+          {
+            step: { id: 'step-1', description: 'First' },
+            result: circular,
+            success: true,
+            timestamp: new Date().toISOString(),
+          },
+        ],
+        currentStepIndex: 0,
+        status: 'replanning',
+      };
+
+      const result = await replanner(state as PlanExecuteStateType);
+
+      expect(result.status).toBe('executing');
+    });
+
 
 
     it('should handle invalid JSON from the replanner LLM', async () => {
@@ -502,9 +580,36 @@ describe('Plan-Execute Nodes', () => {
       expect(response.totalSteps).toBe(2);
       expect(response.successfulSteps).toBe(1);
       expect(response.results).toEqual([
-        { step: 'First step', result: 'ok', success: true },
-        { step: 'Second step', result: null, success: false },
+        { step: 'First step', result: '"ok"', success: true },
+        { step: 'Second step', result: 'null', success: false },
       ]);
+    });
+
+    it('should fall back when a completed step result is not JSON serializable', async () => {
+      const circular: { self?: unknown } = {};
+      circular.self = circular;
+
+      const finisher = createFinisherNode();
+      const state: Partial<PlanExecuteStateType> = {
+        input: 'Original goal',
+        pastSteps: [
+          {
+            step: { id: 'step-1', description: 'Circular step' },
+            result: circular,
+            success: true,
+            timestamp: new Date().toISOString(),
+          },
+        ],
+        status: 'executing',
+      };
+
+      const result = await finisher(state as PlanExecuteStateType);
+      const response = JSON.parse(result.response ?? '{}');
+
+      expect(response.status).toBeUndefined();
+      expect(response.results[0].step).toBe('Circular step');
+      expect(response.results[0].result).toContain('Unserializable step result');
+      expect(result.status).toBe('completed');
     });
   });
 
