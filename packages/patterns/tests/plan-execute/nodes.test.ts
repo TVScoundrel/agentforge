@@ -580,8 +580,8 @@ describe('Plan-Execute Nodes', () => {
       expect(response.totalSteps).toBe(2);
       expect(response.successfulSteps).toBe(1);
       expect(response.results).toEqual([
-        { step: 'First step', result: '"ok"', success: true },
-        { step: 'Second step', result: 'null', success: false },
+        { step: 'First step', result: 'ok', success: true },
+        { step: 'Second step', result: null, success: false },
       ]);
     });
 
@@ -609,6 +609,28 @@ describe('Plan-Execute Nodes', () => {
       expect(response.status).toBeUndefined();
       expect(response.results[0].step).toBe('Circular step');
       expect(response.results[0].result).toContain('Unserializable step result');
+      expect(result.status).toBe('completed');
+    });
+
+    it('should normalize undefined-like results to a safe placeholder value', async () => {
+      const finisher = createFinisherNode();
+      const state: Partial<PlanExecuteStateType> = {
+        input: 'Original goal',
+        pastSteps: [
+          {
+            step: { id: 'step-1', description: 'Undefined step' },
+            result: undefined,
+            success: true,
+            timestamp: new Date().toISOString(),
+          },
+        ],
+        status: 'executing',
+      };
+
+      const result = await finisher(state as PlanExecuteStateType);
+      const response = JSON.parse(result.response ?? '{}');
+
+      expect(response.results[0].result).toBe('[Unserializable step result: JSON.stringify returned undefined]');
       expect(result.status).toBe('completed');
     });
   });

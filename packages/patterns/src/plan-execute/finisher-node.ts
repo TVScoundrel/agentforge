@@ -1,11 +1,11 @@
 import type { PlanExecuteStateType } from './state.js';
-import { serializePlanExecuteResult } from './serialization.js';
+import { toJsonSafeValue } from './serialization.js';
 
 export function createFinisherNode() {
   return async (state: PlanExecuteStateType): Promise<Partial<PlanExecuteStateType>> => {
     const results = state.pastSteps?.map((ps) => ({
       step: ps.step.description,
-      result: serializePlanExecuteResult(ps.result),
+      result: toJsonSafeValue(ps.result),
       success: ps.success,
     })) || [];
 
