@@ -125,6 +125,34 @@
 
 ---
 
+### EP-10: Documentation Only Changes
+**Capability:** Maintain a standing, docs-only improvement lane for markdown cleanup, style normalization, accuracy updates, and lightweight documentation governance across the repository.
+
+**Outcomes:**
+- Project-owned markdown stays readable and stylistically consistent without decorative noise
+- Public docs, planning docs, internal docs, and example/template READMEs can be improved through low-risk, reviewable stories
+- Documentation-only cleanup work has a durable home instead of being forced into runtime epics
+- The epic remains open as an evergreen intake lane even when there are temporarily no active stories, so future docs-only work can be added without reopening or redefining the capability boundary
+
+**Stories:** ST-10001 through ST-10005
+
+#### Feature Context: Documentation Only Changes (from `planning/features/10-documentation-only-changes-feature-plan.md`)
+
+- Goal:
+  - Establish a standing docs-only cleanup track for markdown style normalization, with the current initial slice focused on emoji overuse in project-owned `.md` files.
+- Scope:
+  - In:
+    - Markdown audits, README/docs cleanup, planning/internal docs cleanup, example/template docs cleanup, and documentation style guardrails.
+  - Out:
+    - Runtime code changes, behavior changes, API redesigns, and broad content rewrites unrelated to documentation consistency.
+- Critical edge cases:
+  - Preserve meaningful non-emoji Unicode such as arrows, legal symbols, and literal sample output where those characters are part of the documented behavior.
+  - Keep changes reviewable by splitting public docs, internal docs, and examples/templates into separate stories after the initial audit.
+- Delivery controls:
+  - Treat EP-10 as evergreen and leave it open even when no stories are currently queued.
+
+---
+
 ## Stories
 
 ### Epic 01: Core Database Connection Management
@@ -1428,15 +1456,100 @@
 
 ---
 
+#### ST-10001: Audit Markdown Emoji Usage Across Project-Owned Docs
+**User story:** As a maintainer, I want a clear inventory of markdown emoji usage so docs-only cleanup work can be prioritized and executed without noisy, repo-wide guesswork.
+
+**Priority:** P2 (Medium)
+**Estimate:** 2 hours
+**Dependencies:** None
+**Status:** Ready
+
+**Acceptance criteria:**
+- [ ] Project-owned `.md` files with decorative emoji usage are inventoried and grouped by scope such as public docs, package READMEs, planning/internal docs, and examples/templates
+- [ ] The audit distinguishes decorative emoji from meaningful non-emoji symbols or literal sample output that should be preserved
+- [ ] The outcome produces a documented cleanup recommendation sequence for follow-on stories
+- [ ] No runtime code is changed as part of the audit story
+- [ ] Add or update story documentation at `docs/st10001-markdown-emoji-audit.md`
+
+---
+
+#### ST-10002: Normalize Emoji Usage in Public-Facing Docs
+**User story:** As a consumer reading AgentForge documentation, I want public-facing docs to avoid decorative emoji so the material feels consistent and professional.
+
+**Priority:** P2 (Medium)
+**Estimate:** 3 hours
+**Dependencies:** ST-10001
+**Status:** Backlog
+
+**Acceptance criteria:**
+- [ ] Public-facing docs such as the root README, package READMEs, and selected docs-site pages have decorative emoji removed from headings, bullets, banners, and link callouts
+- [ ] Wording remains materially unchanged aside from readability cleanup required by emoji removal
+- [ ] Meaningful non-emoji Unicode and literal sample output are preserved unless explicitly documented otherwise
+- [ ] The cleanup is limited to project-owned markdown and does not change runtime behavior
+- [ ] Add or update story documentation at `docs/st10002-public-docs-emoji-normalization.md`
+
+---
+
+#### ST-10003: Normalize Emoji Usage in Planning and Internal Docs
+**User story:** As a maintainer, I want planning and internal markdown to avoid decorative emoji so project tracking and internal documentation stay easier to scan and maintain.
+
+**Priority:** P2 (Medium)
+**Estimate:** 3 hours
+**Dependencies:** ST-10001
+**Status:** Backlog
+
+**Acceptance criteria:**
+- [ ] Planning docs, checklists, feature plans, and internal docs targeted by the audit have decorative emoji removed or replaced with plain-text status wording
+- [ ] Existing planning semantics and status meaning remain intact after cleanup
+- [ ] Internal documentation remains reviewable by keeping changes scoped to markdown presentation rather than content redesign
+- [ ] The cleanup does not alter story IDs, acceptance criteria, or execution workflow conventions
+- [ ] Add or update story documentation at `docs/st10003-internal-docs-emoji-normalization.md`
+
+---
+
+#### ST-10004: Normalize Emoji Usage in Examples and Template Docs
+**User story:** As a developer using examples and templates, I want accompanying documentation to be clean and consistent without decorative emoji clutter.
+
+**Priority:** P2 (Medium)
+**Estimate:** 3 hours
+**Dependencies:** ST-10001
+**Status:** Backlog
+
+**Acceptance criteria:**
+- [ ] Example READMEs, template docs, and similar supporting markdown targeted by the audit have decorative emoji removed
+- [ ] Literal demo output keeps emoji only where the emoji is part of the demonstrated runtime behavior and is explicitly intended to stay
+- [ ] The cleanup does not change example code, commands, or documented setup flow beyond markdown presentation
+- [ ] Scope remains limited to project-owned markdown identified by the audit
+- [ ] Add or update story documentation at `docs/st10004-example-template-docs-emoji-normalization.md`
+
+---
+
+#### ST-10005: Add Documentation Style Guardrails for Emoji Usage
+**User story:** As a maintainer, I want a documented markdown style rule for emoji usage so future docs-only changes do not reintroduce inconsistent decoration across the repo.
+
+**Priority:** P2 (Medium)
+**Estimate:** 2 hours
+**Dependencies:** ST-10001
+**Status:** Backlog
+
+**Acceptance criteria:**
+- [ ] A contributor-facing or internal documentation style rule defines the expected policy for decorative emoji usage in project-owned markdown
+- [ ] The rule distinguishes disallowed decorative emoji from acceptable literal sample output or meaningful symbols
+- [ ] The style guidance references the evergreen EP-10 docs-only lane as the home for future markdown normalization stories
+- [ ] The guidance is added to an appropriate existing docs/process file instead of creating redundant policy fragments
+- [ ] Add or update story documentation at `docs/st10005-docs-style-guardrails.md`
+
+---
+
 ## Story Summary
 
-**Total Stories:** 71
+**Total Stories:** 76
 **By Priority:**
 - P0 (Critical): 17 stories
 - P1 (High): 27 stories
-- P2 (Medium): 27 stories
+- P2 (Medium): 32 stories
 
-**Total Estimated Effort:** ~264 hours (33.0 working days)
+**Total Estimated Effort:** ~277 hours (34.6 working days)
 
 **Dependency Chain:**
 1. Phase 1 (Foundation): ST-01001 → ST-01002 → ST-01003 → ST-01004
@@ -1448,3 +1561,4 @@
 7. Phase 7 (Skills Extraction): ST-07001 → ST-07002 → [ST-07003, ST-07004 parallel] → ST-07005; ST-07001 → ST-07006 (independent)
 8. Phase 8 (Type Safety Hardening): ST-08001 → [ST-08002, ST-08003, ST-08004 parallel]
 9. Phase 9 (SOLID Micro-Refactors): ST-09001 (Merged) → ST-09002 (Merged) → ST-09003 (Merged) → ST-09004 (Merged) → ST-09005 (Merged) → ST-09006 (Merged) → ST-09007 (Merged) → ST-09008 (Merged) → ST-09009 (Merged) → ST-09010 (Merged) → ST-09011 (Merged) → ST-09012 (Merged) → ST-09013 (Merged) → ST-09014 (Merged) → ST-09015 (Merged) → ST-09016 (Merged) → ST-09017 (Merged) → ST-09018 (Merged) → ST-09019 (Merged) → ST-09020 (Merged) → ST-09021 (Merged) → ST-09022 (Merged) → ST-09023 (Merged); ST-09025 (Merged) → ST-09026 (Merged) → ST-09031; ST-09027 (Merged) → ST-09028 (Merged) → ST-09030; ST-09032 → ST-09033; ST-09034 → ST-09035; [ST-09024, ST-09029] remain independently queueable after ST-09012
+10. Phase 10 (Documentation Only Changes): ST-10001 → [ST-10002, ST-10003, ST-10004, ST-10005 parallel]; EP-10 remains evergreen and intentionally open for future docs-only stories even when no current stories are queued
