@@ -4,8 +4,8 @@
 
 ## Queue Status Summary
 
-- **Ready:** 5 stories
-- **In Progress:** 0 stories
+- **Ready:** 4 stories
+- **In Progress:** 1 story
 - **In Review:** 0 stories
 - **Blocked:** 0 stories
 - **Backlog:** 7 stories
@@ -14,7 +14,6 @@
 
 ## Ready
 
-- `ST-09029` - Modularize Plan-Execute Node Responsibilities
 - `ST-09030` - Extract Connection Manager Query Execution and Session Adapters
 - `ST-09031` - Extract Tool Registry Registration and Mutation Paths
 - `ST-09032` - Tighten Managed Tool Lifecycle Contracts
@@ -24,7 +23,7 @@
 
 ## In Progress
 
-_No stories currently in progress_
+- `ST-09029` - Modularize Plan-Execute Node Responsibilities
 
 ---
 

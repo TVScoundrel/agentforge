@@ -1109,15 +1109,22 @@ Implementation notes:
 **Branch:** `refactor/st-09029-plan-execute-node-modularization`
 
 ### Checklist
-- [ ] Create branch `refactor/st-09029-plan-execute-node-modularization`
+- [x] Create branch `refactor/st-09029-plan-execute-node-modularization`
+  - Created as `codex/refactor/st-09029-plan-execute-node-modularization` (workspace branch-prefix policy)
 - [ ] Create draft PR with story ID in title
-- [ ] Split `packages/patterns/src/plan-execute/nodes.ts` into planner, executor, replanner, and finisher modules or focused helpers
-- [ ] Preserve the public plan-execute node entrypoint and current runtime behavior
-- [ ] Extract shared helpers where they reduce duplication without obscuring control flow
-- [ ] Add/update focused tests for planning, execution, replanning, and node-level error handling
-- [ ] Record explicit-`any` warning deltas for touched files in story docs
-- [ ] Add or update story documentation at `docs/st09029-plan-execute-node-modularization.md` (or document why not required)
-- [ ] Assess test impact; add/update automated tests when needed, or document why tests are not required
+- [x] Split `packages/patterns/src/plan-execute/nodes.ts` into planner, executor, replanner, and finisher modules or focused helpers
+  - Extracted `planner-node.ts`, `executor-node.ts`, `replanner-node.ts`, `finisher-node.ts`, and `node-loggers.ts`
+- [x] Preserve the public plan-execute node entrypoint and current runtime behavior
+  - `packages/patterns/src/plan-execute/nodes.ts` remains the stable facade and re-exports the same node factories
+- [x] Extract shared helpers where they reduce duplication without obscuring control flow
+  - Shared logger setup now lives in `packages/patterns/src/plan-execute/node-loggers.ts`
+- [x] Add/update focused tests for planning, execution, replanning, and node-level error handling
+  - `pnpm test --run packages/patterns/tests/plan-execute/nodes.test.ts packages/patterns/tests/plan-execute/deduplication.test.ts packages/patterns/tests/plan-execute/agent.test.ts packages/patterns/tests/plan-execute/integration.test.ts packages/patterns/tests/plan-execute/state.test.ts` -> `5 passed` files, `45 passed` tests
+- [x] Record explicit-`any` warning deltas for touched files in story docs
+  - Recorded in `docs/st09029-plan-execute-node-modularization.md`; workspace baseline remains `180/289`, `patterns` remains `15/28`
+- [x] Add or update story documentation at `docs/st09029-plan-execute-node-modularization.md` (or document why not required)
+- [x] Assess test impact; add/update automated tests when needed, or document why tests are not required
+  - Added focused coverage for finisher aggregation and replanner invalid-JSON error handling in `packages/patterns/tests/plan-execute/nodes.test.ts`
 - [ ] Run full test suite before finalizing the PR and record results
 - [ ] Run lint (`pnpm lint`) before finalizing the PR and record results
 - [ ] Commit completed checklist items as logical commits and push updates

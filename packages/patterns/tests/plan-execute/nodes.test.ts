@@ -1,6 +1,6 @@
 import { describe, it, expect, vi } from 'vitest';
 import { AIMessage } from '@langchain/core/messages';
-import { createPlannerNode, createExecutorNode, createReplannerNode } from '../../src/plan-execute/nodes.js';
+import { createPlannerNode, createExecutorNode, createReplannerNode, createFinisherNode } from '../../src/plan-execute/nodes.js';
 import type { PlanExecuteStateType } from '../../src/plan-execute/state.js';
 import { toolBuilder, ToolCategory } from '@agentforge/core';
 import { createMockLLM } from '@agentforge/testing';
@@ -420,6 +420,33 @@ describe('Plan-Execute Nodes', () => {
       expect(result.input).toBe('Updated goal');
     });
 
+
+
+    it('should handle invalid JSON from the replanner LLM', async () => {
+      const llm = {
+        invoke: async () => new AIMessage({ content: 'not-json' }),
+      } as any;
+
+      const replanner = createReplannerNode({ model: llm });
+      const state: Partial<PlanExecuteStateType> = {
+        plan: {
+          steps: [
+            { id: 'step-1', description: 'First' },
+          ],
+          goal: 'Test goal',
+          createdAt: new Date().toISOString(),
+        },
+        currentStepIndex: 0,
+        pastSteps: [],
+        status: 'replanning',
+      };
+
+      const result = await replanner(state as PlanExecuteStateType);
+
+      expect(result.status).toBe('failed');
+      expect(result.error).toContain('Failed to parse replan decision');
+    });
+
     it('should handle missing plan', async () => {
       const llm = createMockReplannerLLM() as any;
       const replanner = createReplannerNode({ model: llm });
@@ -434,4 +461,51 @@ describe('Plan-Execute Nodes', () => {
       expect(result.error).toContain('No plan available');
     });
   });
+
+  describe('createFinisherNode', () => {
+    it('should summarize completed steps into the final response', async () => {
+      const finisher = createFinisherNode();
+
+      const state: Partial<PlanExecuteStateType> = {
+        input: 'Original goal',
+        plan: {
+          steps: [
+            { id: 'step-1', description: 'First step' },
+            { id: 'step-2', description: 'Second step' },
+          ],
+          goal: 'Execute the plan',
+          createdAt: new Date().toISOString(),
+        },
+        pastSteps: [
+          {
+            step: { id: 'step-1', description: 'First step' },
+            result: 'ok',
+            success: true,
+            timestamp: new Date().toISOString(),
+          },
+          {
+            step: { id: 'step-2', description: 'Second step' },
+            result: null,
+            success: false,
+            error: 'failed',
+            timestamp: new Date().toISOString(),
+          },
+        ],
+        status: 'executing',
+      };
+
+      const result = await finisher(state as PlanExecuteStateType);
+      expect(result.status).toBe('completed');
+
+      const response = JSON.parse(result.response ?? '{}');
+      expect(response.goal).toBe('Execute the plan');
+      expect(response.totalSteps).toBe(2);
+      expect(response.successfulSteps).toBe(1);
+      expect(response.results).toEqual([
+        { step: 'First step', result: 'ok', success: true },
+        { step: 'Second step', result: null, success: false },
+      ]);
+    });
+  });
+
 });
