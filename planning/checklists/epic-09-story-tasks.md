@@ -1111,7 +1111,8 @@ Implementation notes:
 ### Checklist
 - [x] Create branch `refactor/st-09029-plan-execute-node-modularization`
   - Created as `codex/refactor/st-09029-plan-execute-node-modularization` (workspace branch-prefix policy)
-- [ ] Create draft PR with story ID in title
+- [x] Create draft PR with story ID in title
+  - PR #92: https://github.com/TVScoundrel/agentforge/pull/92
 - [x] Split `packages/patterns/src/plan-execute/nodes.ts` into planner, executor, replanner, and finisher modules or focused helpers
   - Extracted `planner-node.ts`, `executor-node.ts`, `replanner-node.ts`, `finisher-node.ts`, and `node-loggers.ts`
 - [x] Preserve the public plan-execute node entrypoint and current runtime behavior
@@ -1125,8 +1126,10 @@ Implementation notes:
 - [x] Add or update story documentation at `docs/st09029-plan-execute-node-modularization.md` (or document why not required)
 - [x] Assess test impact; add/update automated tests when needed, or document why tests are not required
   - Added focused coverage for finisher aggregation and replanner invalid-JSON error handling in `packages/patterns/tests/plan-execute/nodes.test.ts`
-- [ ] Run full test suite before finalizing the PR and record results
-- [ ] Run lint (`pnpm lint`) before finalizing the PR and record results
+- [x] Run full test suite before finalizing the PR and record results
+  - `pnpm test --run` -> `160 passed | 16 skipped` files; `2200 passed | 286 skipped` tests
+- [x] Run lint (`pnpm lint`) before finalizing the PR and record results
+  - `pnpm lint` -> exit `0`; warnings only
 - [ ] Commit completed checklist items as logical commits and push updates
 - [ ] Mark PR Ready only after all story tasks are complete
 - [ ] Wait for merge; do not merge directly from local branch

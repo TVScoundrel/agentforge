@@ -1342,7 +1342,7 @@
 **Priority:** P2 (Medium)
 **Estimate:** 4 hours
 **Dependencies:** ST-09014
-**Status:** In Progress
+**Status:** In Review
 
 **Acceptance criteria:**
 - [ ] `packages/patterns/src/plan-execute/nodes.ts` is split into smaller modules or helper layers that separate planner, executor, replanner, and finisher responsibilities

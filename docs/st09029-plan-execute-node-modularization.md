@@ -32,6 +32,10 @@ ST-09029 split the plan-execute node layer into focused internal modules while k
 - `pnpm lint:explicit-any:baseline --silent`
   - Workspace baseline unchanged at `180/289`
   - `patterns` baseline unchanged at `15/28`
+- `pnpm test --run`
+  - `160 passed | 16 skipped` files; `2200 passed | 286 skipped` tests
+- `pnpm lint`
+  - exit `0`; warnings only
 
 ## Explicit-`any` Notes
 
