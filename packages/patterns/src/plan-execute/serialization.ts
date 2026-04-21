@@ -27,7 +27,7 @@ export function toJsonSafeValue(value: unknown): unknown {
     const serialized = JSON.stringify(value);
 
     if (serialized === undefined) {
-      return '[Unserializable step result: JSON.stringify returned undefined]';
+      return undefined;
     }
 
     return JSON.parse(serialized) as unknown;

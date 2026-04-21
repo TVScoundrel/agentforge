@@ -666,7 +666,7 @@ describe('Plan-Execute Nodes', () => {
       expect(result.status).toBe('completed');
     });
 
-    it('should normalize undefined-like results to a safe placeholder value', async () => {
+    it('should omit undefined-like results from the final response payload', async () => {
       const finisher = createFinisherNode();
       const state: Partial<PlanExecuteStateType> = {
         input: 'Original goal',
@@ -684,7 +684,7 @@ describe('Plan-Execute Nodes', () => {
       const result = await finisher(state as PlanExecuteStateType);
       const response = JSON.parse(result.response ?? '{}');
 
-      expect(response.results[0].result).toBe('[Unserializable step result: JSON.stringify returned undefined]');
+      expect(response.results[0]).not.toHaveProperty('result');
       expect(result.status).toBe('completed');
     });
   });
