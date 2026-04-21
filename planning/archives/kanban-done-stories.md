@@ -2,11 +2,18 @@
 
 **Purpose:** Track completed and merged stories for the Relational Database Access Tool project.
 
-**Last Updated:** 2026-04-17
+**Last Updated:** 2026-04-21
 
 ---
 
 ## Completed Stories
+
+### ST-09029: Modularize Plan-Execute Node Responsibilities
+- **Merged:** 2026-04-21
+- **PR:** https://github.com/TVScoundrel/agentforge/pull/92 (commit bc62b59)
+- **Epic:** EP-09 (SOLID Micro-Refactors and Type Boundary Hardening)
+- **Estimate:** 4 hours
+- **Outcome:** Split the plan-execute node runtime into focused planner, executor, replanner, finisher, logger, and serialization modules behind the stable public facade, added focused regressions for invalid replanner JSON, structured and array-based model-content normalization, finisher response compatibility, prompt formatting, undefined serialization semantics, and GraphInterrupt propagation, and kept the `patterns` explicit-`any` baseline stable at `15/28`.
 
 ### ST-09028: Modularize Connection Manager Lifecycle and Reconnection Control
 - **Merged:** 2026-04-17

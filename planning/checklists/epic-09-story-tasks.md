@@ -1145,7 +1145,8 @@ Implementation notes:
   - `6c81788` fix(st-09029): rethrow executor graph interrupts
 - [x] Mark PR Ready only after all story tasks are complete
   - PR #92 marked ready: https://github.com/TVScoundrel/agentforge/pull/92
-- [ ] Wait for merge; do not merge directly from local branch
+- [x] Wait for merge; do not merge directly from local branch
+  - Merged via PR #92 with merge commit `bc62b59`
 
 ---
 
