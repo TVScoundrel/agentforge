@@ -1120,7 +1120,7 @@ Implementation notes:
 - [x] Extract shared helpers where they reduce duplication without obscuring control flow
   - Shared logger setup now lives in `packages/patterns/src/plan-execute/node-loggers.ts`
 - [x] Add/update focused tests for planning, execution, replanning, and node-level error handling
-  - `pnpm test --run packages/patterns/tests/plan-execute/nodes.test.ts packages/patterns/tests/plan-execute/deduplication.test.ts packages/patterns/tests/plan-execute/agent.test.ts packages/patterns/tests/plan-execute/integration.test.ts packages/patterns/tests/plan-execute/state.test.ts` -> `5 passed` files, `53 passed` tests
+  - `pnpm test --run packages/patterns/tests/plan-execute/nodes.test.ts packages/patterns/tests/plan-execute/deduplication.test.ts packages/patterns/tests/plan-execute/agent.test.ts packages/patterns/tests/plan-execute/integration.test.ts packages/patterns/tests/plan-execute/state.test.ts` -> `5 passed` files, `54 passed` tests
 - [x] Record explicit-`any` warning deltas for touched files in story docs
   - Recorded in `docs/st09029-plan-execute-node-modularization.md`; workspace baseline remains `180/289`, `patterns` remains `15/28`
 - [x] Add or update story documentation at `docs/st09029-plan-execute-node-modularization.md` (or document why not required)
@@ -1141,6 +1141,7 @@ Implementation notes:
   - `0b5a2da` fix(st-09029): support array-based model content
   - `940e48d` fix(st-09029): preserve undefined result omission
   - `ce3848b` docs(st-09029): clarify replanner prompt behavior
+  - `c57ae5c` fix(st-09029): normalize undefined prompt serialization
 - [x] Mark PR Ready only after all story tasks are complete
   - PR #92 marked ready: https://github.com/TVScoundrel/agentforge/pull/92
 - [ ] Wait for merge; do not merge directly from local branch
