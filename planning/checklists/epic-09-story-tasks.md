@@ -1140,6 +1140,7 @@ Implementation notes:
   - `a5cb14d` fix(st-09029): tighten replanner serialization fallbacks
   - `0b5a2da` fix(st-09029): support array-based model content
   - `940e48d` fix(st-09029): preserve undefined result omission
+  - `ce3848b` docs(st-09029): clarify replanner prompt behavior
 - [x] Mark PR Ready only after all story tasks are complete
   - PR #92 marked ready: https://github.com/TVScoundrel/agentforge/pull/92
 - [ ] Wait for merge; do not merge directly from local branch
