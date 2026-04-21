@@ -1120,7 +1120,7 @@ Implementation notes:
 - [x] Extract shared helpers where they reduce duplication without obscuring control flow
   - Shared logger setup now lives in `packages/patterns/src/plan-execute/node-loggers.ts`
 - [x] Add/update focused tests for planning, execution, replanning, and node-level error handling
-  - `pnpm test --run packages/patterns/tests/plan-execute/nodes.test.ts packages/patterns/tests/plan-execute/deduplication.test.ts packages/patterns/tests/plan-execute/agent.test.ts packages/patterns/tests/plan-execute/integration.test.ts packages/patterns/tests/plan-execute/state.test.ts` -> `5 passed` files, `52 passed` tests
+  - `pnpm test --run packages/patterns/tests/plan-execute/nodes.test.ts packages/patterns/tests/plan-execute/deduplication.test.ts packages/patterns/tests/plan-execute/agent.test.ts packages/patterns/tests/plan-execute/integration.test.ts packages/patterns/tests/plan-execute/state.test.ts` -> `5 passed` files, `53 passed` tests
 - [x] Record explicit-`any` warning deltas for touched files in story docs
   - Recorded in `docs/st09029-plan-execute-node-modularization.md`; workspace baseline remains `180/289`, `patterns` remains `15/28`
 - [x] Add or update story documentation at `docs/st09029-plan-execute-node-modularization.md` (or document why not required)

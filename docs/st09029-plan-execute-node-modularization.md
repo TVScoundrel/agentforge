@@ -20,10 +20,11 @@ ST-09029 split the plan-execute node layer into focused internal modules while k
 ## Behavior Notes
 
 - Public imports remain unchanged through `packages/patterns/src/plan-execute/nodes.ts`.
-- Planner, executor, replanner, and finisher runtime behavior remains unchanged after the split.
+- Planner, executor, replanner, and finisher keep the same public entrypoints and core control flow after the split, while later review fixes tightened edge-case parsing and serialization behavior.
 - Shared logger setup was extracted because it reduced duplication without hiding node control flow.
 - Planner and replanner parsing now normalize non-string model content before `JSON.parse`.
 - Planner and replanner also extract JSON text from array-based LangChain message content before falling back to structural stringification.
+- Replanner prompt rendering now omits blank dependency lines when a step has `dependencies: []`.
 - Replanner prompt building and finisher aggregation now tolerate non-JSON-safe step results with fallback strings instead of throwing.
 - Finisher aggregation preserves the original JSON-native response shape and only uses fallback strings for values that cannot be represented safely in JSON.
 
@@ -35,7 +36,7 @@ ST-09029 split the plan-execute node layer into focused internal modules while k
 - `pnpm exec eslint packages/patterns/src/plan-execute/planner-node.ts packages/patterns/src/plan-execute/replanner-node.ts packages/patterns/src/plan-execute/finisher-node.ts packages/patterns/src/plan-execute/serialization.ts packages/patterns/tests/plan-execute/nodes.test.ts`
   - Passed with existing `nodes.test.ts` warnings only
 - `pnpm test --run packages/patterns/tests/plan-execute/nodes.test.ts packages/patterns/tests/plan-execute/deduplication.test.ts packages/patterns/tests/plan-execute/agent.test.ts packages/patterns/tests/plan-execute/integration.test.ts packages/patterns/tests/plan-execute/state.test.ts`
-  - `5 passed` files, `52 passed` tests
+  - `5 passed` files, `53 passed` tests
 - `pnpm lint:explicit-any:baseline --silent`
   - Workspace baseline unchanged at `180/289`
   - `patterns` baseline unchanged at `15/28`

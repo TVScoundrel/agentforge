@@ -522,6 +522,43 @@ describe('Plan-Execute Nodes', () => {
       expect(result.input).toBe('Array content goal');
     });
 
+    it('should omit blank dependency lines for steps with empty dependency arrays', async () => {
+      const invoke = vi.fn(async () => new AIMessage({
+        content: JSON.stringify({
+          shouldReplan: false,
+          reason: 'Continue with current plan',
+        }),
+      }));
+
+      const replanner = createReplannerNode({ model: { invoke } as any });
+      const state: Partial<PlanExecuteStateType> = {
+        plan: {
+          steps: [
+            { id: 'step-1', description: 'First', dependencies: [] },
+            { id: 'step-2', description: 'Second', dependencies: ['step-1'] },
+          ],
+          goal: 'Test goal',
+          createdAt: new Date().toISOString(),
+        },
+        currentStepIndex: 0,
+        pastSteps: [],
+        status: 'replanning',
+      };
+
+      const result = await replanner(state as PlanExecuteStateType);
+
+      expect(result.status).toBe('executing');
+      expect(invoke).toHaveBeenCalledTimes(1);
+
+      const messages = invoke.mock.calls[0]?.[0] as Array<{ content: unknown }>;
+      const userPrompt = messages[1]?.content;
+
+      expect(typeof userPrompt).toBe('string');
+      expect(userPrompt).toContain('Step 1: First');
+      expect(userPrompt).not.toContain('Step 1: First\nDependencies: ');
+      expect(userPrompt).toContain('Step 2: Second\nDependencies: step-1');
+    });
+
     it('should tolerate unserializable completed step results in replanning prompts', async () => {
       const circular: { self?: unknown } = {};
       circular.self = circular;
