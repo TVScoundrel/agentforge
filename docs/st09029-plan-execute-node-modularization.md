@@ -31,8 +31,6 @@ ST-09029 split the plan-execute node layer into focused internal modules while k
 - `pnpm exec tsc -p packages/patterns/tsconfig.json --noEmit`
 - `pnpm exec eslint packages/patterns/src/plan-execute/nodes.ts packages/patterns/src/plan-execute/node-loggers.ts packages/patterns/src/plan-execute/planner-node.ts packages/patterns/src/plan-execute/executor-node.ts packages/patterns/src/plan-execute/replanner-node.ts packages/patterns/src/plan-execute/finisher-node.ts packages/patterns/tests/plan-execute/nodes.test.ts`
   - Passed with existing `nodes.test.ts` warnings only
-- `pnpm test --run packages/patterns/tests/plan-execute/nodes.test.ts packages/patterns/tests/plan-execute/deduplication.test.ts packages/patterns/tests/plan-execute/agent.test.ts packages/patterns/tests/plan-execute/integration.test.ts packages/patterns/tests/plan-execute/state.test.ts`
-  - `5 passed` files, `45 passed` tests
 - `pnpm exec eslint packages/patterns/src/plan-execute/planner-node.ts packages/patterns/src/plan-execute/replanner-node.ts packages/patterns/src/plan-execute/finisher-node.ts packages/patterns/src/plan-execute/serialization.ts packages/patterns/tests/plan-execute/nodes.test.ts`
   - Passed with existing `nodes.test.ts` warnings only
 - `pnpm test --run packages/patterns/tests/plan-execute/nodes.test.ts packages/patterns/tests/plan-execute/deduplication.test.ts packages/patterns/tests/plan-execute/agent.test.ts packages/patterns/tests/plan-execute/integration.test.ts packages/patterns/tests/plan-execute/state.test.ts`
@@ -55,4 +53,4 @@ ST-09029 split the plan-execute node layer into focused internal modules while k
   - `replanner-node.ts` (`117` lines)
   - `finisher-node.ts` (`23` lines)
   - `node-loggers.ts` (`5` lines)
-  - `serialization.ts` (`21` lines)
+  - `serialization.ts` (`38` lines)

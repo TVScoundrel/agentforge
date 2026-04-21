@@ -3,7 +3,12 @@ import type { MessageContent } from '@langchain/core/messages';
 function stringifyWithFallback(value: unknown, fallbackLabel: string): string {
   try {
     const serialized = JSON.stringify(value);
-    return serialized ?? 'null';
+
+    if (serialized === undefined) {
+      return `[${fallbackLabel}: JSON.stringify returned undefined]`;
+    }
+
+    return serialized;
   } catch (error) {
     const reason = error instanceof Error ? error.message : String(error);
     return `[${fallbackLabel}: ${reason}]`;

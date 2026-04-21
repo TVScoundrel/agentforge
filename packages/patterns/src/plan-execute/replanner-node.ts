@@ -57,7 +57,7 @@ export function createReplannerNode(config: ReplannerConfig) {
           REMAINING_STEP_TEMPLATE
             .replace('{stepNumber}', String(currentStepIndex + idx + 1))
             .replace('{description}', step.description)
-            .replace('{dependencies}', step.dependencies ? `Dependencies: ${step.dependencies.join(', ')}` : '')
+            .replace('{dependencies}', step.dependencies?.length ? `Dependencies: ${step.dependencies.join(', ')}` : '')
         )
         .join('\n\n');
 
