@@ -1109,19 +1109,42 @@ Implementation notes:
 **Branch:** `refactor/st-09029-plan-execute-node-modularization`
 
 ### Checklist
-- [ ] Create branch `refactor/st-09029-plan-execute-node-modularization`
-- [ ] Create draft PR with story ID in title
-- [ ] Split `packages/patterns/src/plan-execute/nodes.ts` into planner, executor, replanner, and finisher modules or focused helpers
-- [ ] Preserve the public plan-execute node entrypoint and current runtime behavior
-- [ ] Extract shared helpers where they reduce duplication without obscuring control flow
-- [ ] Add/update focused tests for planning, execution, replanning, and node-level error handling
-- [ ] Record explicit-`any` warning deltas for touched files in story docs
-- [ ] Add or update story documentation at `docs/st09029-plan-execute-node-modularization.md` (or document why not required)
-- [ ] Assess test impact; add/update automated tests when needed, or document why tests are not required
-- [ ] Run full test suite before finalizing the PR and record results
-- [ ] Run lint (`pnpm lint`) before finalizing the PR and record results
-- [ ] Commit completed checklist items as logical commits and push updates
-- [ ] Mark PR Ready only after all story tasks are complete
+- [x] Create branch `refactor/st-09029-plan-execute-node-modularization`
+  - Created as `codex/refactor/st-09029-plan-execute-node-modularization` (workspace branch-prefix policy)
+- [x] Create draft PR with story ID in title
+  - PR #92: https://github.com/TVScoundrel/agentforge/pull/92
+- [x] Split `packages/patterns/src/plan-execute/nodes.ts` into planner, executor, replanner, and finisher modules or focused helpers
+  - Extracted `planner-node.ts`, `executor-node.ts`, `replanner-node.ts`, `finisher-node.ts`, and `node-loggers.ts`
+- [x] Preserve the public plan-execute node entrypoint and current runtime behavior
+  - `packages/patterns/src/plan-execute/nodes.ts` remains the stable facade and re-exports the same node factories
+- [x] Extract shared helpers where they reduce duplication without obscuring control flow
+  - Shared logger setup now lives in `packages/patterns/src/plan-execute/node-loggers.ts`
+- [x] Add/update focused tests for planning, execution, replanning, and node-level error handling
+  - `pnpm test --run packages/patterns/tests/plan-execute/nodes.test.ts packages/patterns/tests/plan-execute/deduplication.test.ts packages/patterns/tests/plan-execute/agent.test.ts packages/patterns/tests/plan-execute/integration.test.ts packages/patterns/tests/plan-execute/state.test.ts` -> `5 passed` files, `55 passed` tests
+- [x] Record explicit-`any` warning deltas for touched files in story docs
+  - Recorded in `docs/st09029-plan-execute-node-modularization.md`; workspace baseline remains `180/289`, `patterns` remains `15/28`
+- [x] Add or update story documentation at `docs/st09029-plan-execute-node-modularization.md` (or document why not required)
+- [x] Assess test impact; add/update automated tests when needed, or document why tests are not required
+  - Added focused coverage for finisher aggregation and replanner invalid-JSON error handling in `packages/patterns/tests/plan-execute/nodes.test.ts`
+- [x] Run full test suite before finalizing the PR and record results
+  - `pnpm test --run` -> `160 passed | 16 skipped` files; `2200 passed | 286 skipped` tests
+- [x] Run lint (`pnpm lint`) before finalizing the PR and record results
+  - `pnpm lint` -> exit `0`; warnings only
+- [x] Commit completed checklist items as logical commits and push updates
+  - `9dfed82` refactor(st-09029): split plan-execute node responsibilities
+  - `ab3bc40` docs(st-09029): record validation and move story to in-review
+  - `5c1141f` chore(st-09029): finalize checklist and ready status
+  - `f6033a4` fix(st-09029): harden plan-execute serialization paths
+  - `dd45057` chore(st-09029): append review-fix commit record
+  - `fde60a2` fix(st-09029): preserve finisher response compatibility
+  - `a5cb14d` fix(st-09029): tighten replanner serialization fallbacks
+  - `0b5a2da` fix(st-09029): support array-based model content
+  - `940e48d` fix(st-09029): preserve undefined result omission
+  - `ce3848b` docs(st-09029): clarify replanner prompt behavior
+  - `c57ae5c` fix(st-09029): normalize undefined prompt serialization
+  - `6c81788` fix(st-09029): rethrow executor graph interrupts
+- [x] Mark PR Ready only after all story tasks are complete
+  - PR #92 marked ready: https://github.com/TVScoundrel/agentforge/pull/92
 - [ ] Wait for merge; do not merge directly from local branch
 
 ---
