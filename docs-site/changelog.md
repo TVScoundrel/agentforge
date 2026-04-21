@@ -5,6 +5,35 @@ All notable changes to AgentForge will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.16.16] - 2026-04-21
+
+### Added
+
+#### @agentforge/patterns - Plan-Execute Node Modularization Coverage
+- Added focused node-level coverage in `packages/patterns/tests/plan-execute/nodes.test.ts` for finisher aggregation, invalid replanner JSON handling, structured and array-based model-content normalization, prompt formatting, undefined serialization semantics, and executor GraphInterrupt propagation
+- Added story documentation in `docs/st09029-plan-execute-node-modularization.md` covering the module split, compatibility notes, review follow-ups, and validation record
+
+### Changed
+
+#### @agentforge/patterns - Plan-Execute Node Modularization
+- Split `packages/patterns/src/plan-execute/nodes.ts` into focused internal modules for planner, executor, replanner, finisher, logger setup, and serialization helpers
+- Kept `nodes.ts` as the stable public facade while preserving the existing plan-execute entrypoint and core control flow
+
+### Fixed
+
+#### @agentforge/patterns - Plan-Execute Review Follow-Ups
+- Hardened planner and replanner parsing for structured and array-based LangChain message content, preserved finisher response compatibility for JSON-native and undefined-like results, documented the intentional empty-dependency prompt cleanup, and ensured executor `GraphInterrupt` values propagate instead of being downgraded to failed node state
+- Preserved the workspace explicit-`any` baseline at `180` and the `patterns` package baseline at `15`
+
+### Published
+- All packages published to npm registry at version 0.16.16:
+  - @agentforge/core@0.16.16
+  - @agentforge/skills@0.16.16
+  - @agentforge/patterns@0.16.16
+  - @agentforge/tools@0.16.16
+  - @agentforge/testing@0.16.16
+  - @agentforge/cli@0.16.16
+
 ## [0.16.15] - 2026-04-17
 
 ### Added
