@@ -12,7 +12,7 @@ function stringifyWithFallback(value: unknown, fallbackLabel: string): string {
     const serialized = JSON.stringify(value);
 
     if (serialized === undefined) {
-      return `[${fallbackLabel}: JSON.stringify returned undefined]`;
+      return 'undefined';
     }
 
     return serialized;

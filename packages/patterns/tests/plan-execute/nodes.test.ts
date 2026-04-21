@@ -589,6 +589,48 @@ describe('Plan-Execute Nodes', () => {
       expect(result.status).toBe('executing');
     });
 
+    it('should render undefined completed step results without an unserializable fallback label', async () => {
+      const invoke = vi.fn(async () => new AIMessage({
+        content: JSON.stringify({
+          shouldReplan: false,
+          reason: 'Continue with current plan',
+        }),
+      }));
+
+      const replanner = createReplannerNode({ model: { invoke } as any });
+
+      const state: Partial<PlanExecuteStateType> = {
+        plan: {
+          steps: [{ id: 'step-1', description: 'First' }],
+          goal: 'Test goal',
+          createdAt: new Date().toISOString(),
+        },
+        pastSteps: [
+          {
+            step: { id: 'step-1', description: 'First' },
+            result: undefined,
+            success: true,
+            timestamp: new Date().toISOString(),
+          },
+        ],
+        currentStepIndex: 0,
+        status: 'replanning',
+      };
+
+      const result = await replanner(state as PlanExecuteStateType);
+
+      expect(result.status).toBe('executing');
+      expect(invoke).toHaveBeenCalledTimes(1);
+
+      const messages = invoke.mock.calls[0]?.[0] as Array<{ content: unknown }>;
+      const userPrompt = messages[1]?.content;
+
+      expect(typeof userPrompt).toBe('string');
+      expect(userPrompt).toContain('Result: undefined');
+      expect(userPrompt).not.toContain('JSON.stringify returned undefined');
+      expect(userPrompt).not.toContain('Unserializable step result');
+    });
+
 
 
     it('should handle invalid JSON from the replanner LLM', async () => {
