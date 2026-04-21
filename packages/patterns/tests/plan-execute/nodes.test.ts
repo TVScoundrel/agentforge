@@ -185,6 +185,28 @@ describe('Plan-Execute Nodes', () => {
       expect(result.plan?.goal).toBe('Structured goal');
       expect(result.plan?.steps).toHaveLength(1);
     });
+
+    it('should extract JSON text from array-based planner content before parsing', async () => {
+      const llm = {
+        invoke: async () => new AIMessage({
+          content: [{
+            type: 'text',
+            text: JSON.stringify({
+              goal: 'Array content goal',
+              steps: [{ id: 'step-1', description: 'Array content step' }],
+            }),
+          }],
+        }),
+      } as any;
+
+      const planner = createPlannerNode({ model: llm });
+      const state: Partial<PlanExecuteStateType> = { input: 'Test', status: 'planning' };
+      const result = await planner(state as PlanExecuteStateType);
+
+      expect(result.status).toBe('executing');
+      expect(result.plan?.goal).toBe('Array content goal');
+      expect(result.plan?.steps).toHaveLength(1);
+    });
   });
 
   describe('createExecutorNode', () => {
@@ -466,6 +488,38 @@ describe('Plan-Execute Nodes', () => {
 
       expect(result.status).toBe('planning');
       expect(result.input).toBe('Structured goal');
+    });
+
+    it('should extract JSON text from array-based replanner content before parsing', async () => {
+      const llm = {
+        invoke: async () => new AIMessage({
+          content: [{
+            type: 'text',
+            text: JSON.stringify({
+              shouldReplan: true,
+              reason: 'Array content',
+              newGoal: 'Array content goal',
+            }),
+          }],
+        }),
+      } as any;
+
+      const replanner = createReplannerNode({ model: llm });
+      const state: Partial<PlanExecuteStateType> = {
+        plan: {
+          steps: [{ id: 'step-1', description: 'First' }],
+          goal: 'Test goal',
+          createdAt: new Date().toISOString(),
+        },
+        currentStepIndex: 0,
+        pastSteps: [],
+        status: 'replanning',
+      };
+
+      const result = await replanner(state as PlanExecuteStateType);
+
+      expect(result.status).toBe('planning');
+      expect(result.input).toBe('Array content goal');
     });
 
     it('should tolerate unserializable completed step results in replanning prompts', async () => {
