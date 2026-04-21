@@ -92,6 +92,8 @@ const calculatorTool = toolBuilder()
   .implement(async ({ a, b }) => a + b)
   .build();
 
+class GraphInterrupt extends Error {}
+
 describe('Plan-Execute Nodes', () => {
   describe('createPlannerNode', () => {
     it('should create a planner node', () => {
@@ -307,6 +309,35 @@ describe('Plan-Execute Nodes', () => {
       expect(result.pastSteps).toHaveLength(1);
       expect(result.pastSteps?.[0].success).toBe(false);
       expect(result.pastSteps?.[0].error).toContain('Tool not found');
+    });
+
+    it('should rethrow GraphInterrupt from tool execution', async () => {
+      const interruptingTool = toolBuilder()
+        .name('ask-human')
+        .description('Interrupt for human input')
+        .category(ToolCategory.UTILITY)
+        .schema(z.object({ question: z.string().describe('Question requiring human input') }))
+        .implement(async () => {
+          throw new GraphInterrupt('Pause for human input');
+        })
+        .build();
+
+      const executor = createExecutorNode({ tools: [interruptingTool] });
+
+      const state: Partial<PlanExecuteStateType> = {
+        plan: {
+          steps: [
+            { id: 'step-1', description: 'Ask human', tool: 'ask-human', args: { question: 'Need approval?' } },
+          ],
+          goal: 'Get approval',
+          createdAt: new Date().toISOString(),
+        },
+        currentStepIndex: 0,
+        pastSteps: [],
+        status: 'executing',
+      };
+
+      await expect(executor(state as PlanExecuteStateType)).rejects.toBeInstanceOf(GraphInterrupt);
     });
 
     it('should execute step without tool', async () => {

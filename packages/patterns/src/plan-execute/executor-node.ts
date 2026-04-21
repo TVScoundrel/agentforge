@@ -2,7 +2,7 @@ import type { PlanExecuteStateType } from './state.js';
 import type { ExecutorConfig, PlanExecuteTool } from './types.js';
 import type { CompletedStep, PlanStepArguments, PlanStepResult } from './schemas.js';
 import { generateToolCallCacheKey } from '../shared/deduplication.js';
-import { handleNodeError } from '../shared/error-handling.js';
+import { handleNodeError, isGraphInterrupt } from '../shared/error-handling.js';
 import { executorLogger } from './node-loggers.js';
 
 function invokePlanExecuteTool(tool: PlanExecuteTool, args: PlanStepArguments): Promise<PlanStepResult> {
@@ -181,6 +181,10 @@ export function createExecutorNode(config: ExecutorConfig) {
         currentStepIndex: currentStepIndex + 1,
       };
     } catch (error) {
+      if (isGraphInterrupt(error)) {
+        throw error;
+      }
+
       executorLogger.error('Executor node failed', {
         error: error instanceof Error ? error.message : 'Unknown error',
         iteration,
