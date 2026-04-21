@@ -1137,6 +1137,7 @@ Implementation notes:
   - `f6033a4` fix(st-09029): harden plan-execute serialization paths
   - `dd45057` chore(st-09029): append review-fix commit record
   - `fde60a2` fix(st-09029): preserve finisher response compatibility
+  - `a5cb14d` fix(st-09029): tighten replanner serialization fallbacks
 - [x] Mark PR Ready only after all story tasks are complete
   - PR #92 marked ready: https://github.com/TVScoundrel/agentforge/pull/92
 - [ ] Wait for merge; do not merge directly from local branch
