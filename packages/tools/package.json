@@ -1,6 +1,6 @@
 {
   "name": "@agentforge/tools",
-  "version": "0.16.16",
+  "version": "0.16.17",
   "description": "Tool library for TypeScript AI agents: web, data, file, and integration tools (HTTP, scraping, CSV, XML/JSON, Slack, databases).",
   "type": "module",
   "main": "./dist/index.js",

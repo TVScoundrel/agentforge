@@ -67,12 +67,12 @@ All packages are **published on npm** and ready for production use!
 
 | Package | Version | Description | npm |
 |---------|---------|-------------|-----|
-| [@agentforge/core](./packages/core) | 0.16.16 | Core abstractions (tools, registry, LangGraph utilities, middleware, streaming, resources, monitoring) | [![npm](https://img.shields.io/npm/v/@agentforge/core)](https://www.npmjs.com/package/@agentforge/core) |
-| [@agentforge/patterns](./packages/patterns) | 0.16.16 | Agent patterns (ReAct, Plan-Execute, Reflection, Multi-Agent) | [![npm](https://img.shields.io/npm/v/@agentforge/patterns)](https://www.npmjs.com/package/@agentforge/patterns) |
-| [@agentforge/tools](./packages/tools) | 0.16.16 | Standard tool library (81 production-ready tools) | [![npm](https://img.shields.io/npm/v/@agentforge/tools)](https://www.npmjs.com/package/@agentforge/tools) |
-| [@agentforge/skills](./packages/skills) | 0.16.16 | Agent Skills system (SKILL.md discovery, activation, trust policies) | [![npm](https://img.shields.io/npm/v/@agentforge/skills)](https://www.npmjs.com/package/@agentforge/skills) |
-| [@agentforge/testing](./packages/testing) | 0.16.16 | Testing utilities (mocks, assertions, fixtures) | [![npm](https://img.shields.io/npm/v/@agentforge/testing)](https://www.npmjs.com/package/@agentforge/testing) |
-| [@agentforge/cli](./packages/cli) | 0.16.16 | CLI tool (156 tests, 98.11% coverage) | [![npm](https://img.shields.io/npm/v/@agentforge/cli)](https://www.npmjs.com/package/@agentforge/cli) |
+| [@agentforge/core](./packages/core) | 0.16.17 | Core abstractions (tools, registry, LangGraph utilities, middleware, streaming, resources, monitoring) | [![npm](https://img.shields.io/npm/v/@agentforge/core)](https://www.npmjs.com/package/@agentforge/core) |
+| [@agentforge/patterns](./packages/patterns) | 0.16.17 | Agent patterns (ReAct, Plan-Execute, Reflection, Multi-Agent) | [![npm](https://img.shields.io/npm/v/@agentforge/patterns)](https://www.npmjs.com/package/@agentforge/patterns) |
+| [@agentforge/tools](./packages/tools) | 0.16.17 | Standard tool library (81 production-ready tools) | [![npm](https://img.shields.io/npm/v/@agentforge/tools)](https://www.npmjs.com/package/@agentforge/tools) |
+| [@agentforge/skills](./packages/skills) | 0.16.17 | Agent Skills system (SKILL.md discovery, activation, trust policies) | [![npm](https://img.shields.io/npm/v/@agentforge/skills)](https://www.npmjs.com/package/@agentforge/skills) |
+| [@agentforge/testing](./packages/testing) | 0.16.17 | Testing utilities (mocks, assertions, fixtures) | [![npm](https://img.shields.io/npm/v/@agentforge/testing)](https://www.npmjs.com/package/@agentforge/testing) |
+| [@agentforge/cli](./packages/cli) | 0.16.17 | CLI tool (156 tests, 98.11% coverage) | [![npm](https://img.shields.io/npm/v/@agentforge/cli)](https://www.npmjs.com/package/@agentforge/cli) |
 
 ### Installation
 
@@ -312,7 +312,7 @@ pnpm clean          # Clean all build artifacts
 
 ## Current Status
 
-**AgentForge v0.16.16 - Published on npm and Production-Ready!**
+**AgentForge v0.16.17 - Published on npm and Production-Ready!**
 
 **All 7 Phases Complete:**
 

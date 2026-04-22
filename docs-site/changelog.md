@@ -5,6 +5,36 @@ All notable changes to AgentForge will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.16.17] - 2026-04-22
+
+### Added
+
+#### @agentforge/tools - Connection Manager Query/Session Extraction Coverage
+- Added focused helper coverage in `packages/tools/tests/data/relational/connection/query-session-extraction.test.ts` for MySQL tuple unwrapping, SQLite non-query normalization, and dedicated PostgreSQL/MySQL session release behavior
+- Added story documentation in `docs/st09030-connection-manager-query-session-extraction.md` covering the extraction, compatibility notes, explicit-`any` snapshot, and validation record
+
+### Changed
+
+#### @agentforge/tools - Connection Manager Query Execution and Session Adapter Extraction
+- Extracted vendor-aware SQL execution from `packages/tools/src/data/relational/connection/connection-manager.ts` into `packages/tools/src/data/relational/connection/query-execution.ts`
+- Extracted dedicated PostgreSQL/MySQL session handling and direct SQLite session reuse into `packages/tools/src/data/relational/connection/session-adapters.ts`
+- Kept `ConnectionManager` as the stable public façade for `execute(...)` and `executeInConnection(...)`
+
+### Fixed
+
+#### @agentforge/tools - Session Adapter Review Follow-Ups
+- Removed the temporary `never`-cast escape hatches at the Drizzle adapter boundary and replaced them with type-only PostgreSQL and mysql2 pool-connection contracts
+- Preserved the workspace explicit-`any` baseline at `180` and the `tools` package baseline at `65`
+
+### Published
+- All packages published to npm registry at version 0.16.17:
+  - @agentforge/core@0.16.17
+  - @agentforge/skills@0.16.17
+  - @agentforge/patterns@0.16.17
+  - @agentforge/tools@0.16.17
+  - @agentforge/testing@0.16.17
+  - @agentforge/cli@0.16.17
+
 ## [0.16.16] - 2026-04-21
 
 ### Added
