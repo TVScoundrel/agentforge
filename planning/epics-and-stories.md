@@ -1360,7 +1360,7 @@
 **Priority:** P2 (Medium)
 **Estimate:** 4 hours
 **Dependencies:** ST-09028
-**Status:** Ready
+**Status:** In Review
 
 **Acceptance criteria:**
 - [ ] `packages/tools/src/data/relational/connection/connection-manager.ts` extracts query execution and `executeInConnection(...)` vendor branches into focused helpers or modules

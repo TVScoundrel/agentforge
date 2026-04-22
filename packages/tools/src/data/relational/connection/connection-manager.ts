@@ -17,6 +17,8 @@ import {
   initializeVendorConnection,
   SAFE_INITIALIZATION_PATTERNS,
 } from './vendor-initialization.js';
+import { executeQuery } from './query-execution.js';
+import { executeInDedicatedConnection } from './session-adapters.js';
 import { checkPeerDependency } from '../utils/peer-dependency-checker.js';
 import { sql, type SQL } from 'drizzle-orm';
 import { createLogger } from '@agentforge/core';
@@ -416,45 +418,15 @@ export class ConnectionManager extends EventEmitter implements DatabaseConnectio
       throw new Error('Database not initialized. Call initialize() first.');
     }
 
-    logger.debug('Executing SQL query', {
-      vendor: this.vendor
-    });
-
-    // drizzle-orm's better-sqlite3 adapter does not expose an .execute() method.
-    // It uses .all() for SELECT (returns row arrays) and .run() for DML/DDL
-    // (returns { changes, lastInsertRowid }). Try .all() first and fall back
-    // to .run() when better-sqlite3 throws a SqliteError indicating the
-    // statement does not return data.
-    if (this.vendor === 'sqlite') {
-      try {
-        return this.db.all(query);
-      } catch (error: unknown) {
-        if (this.isSqliteNonQueryError(error)) {
-          // .run() returns { changes, lastInsertRowid }. Normalize by mapping
-          // `changes` to `affectedRows` so executeQuery() can derive rowCount
-          // consistently across vendors.
-          const runResult = this.db.run(query) as { changes?: number; lastInsertRowid?: number };
-          return { ...runResult, affectedRows: runResult.changes ?? 0 };
-        }
-        throw error;
-      }
-    }
-
-    // drizzle-orm's mysql2 adapter returns [rows, fields] from execute().
-    // Normalize by extracting just the rows array so callers can treat the
-    // result identically to PostgreSQL (which returns rows directly).
-    if (this.vendor === 'mysql') {
-      const raw = await this.db.execute(query);
-      // mysql2 returns [rows, fields] for SELECTs and [ResultSetHeader, fields]
-      // for INSERT/UPDATE/DELETE. Unwrap the first element in both cases so
-      // callers get a consistent shape matching PostgreSQL / SQLite.
-      if (Array.isArray(raw) && raw.length === 2) {
-        return raw[0];
-      }
-      return raw;
-    }
-
-    return this.db.execute(query);
+    return executeQuery(
+      {
+        vendor: this.vendor,
+        db: this.db,
+        isSqliteNonQueryError: (error) => this.isSqliteNonQueryError(error),
+      },
+      query,
+      logger
+    );
   }
 
   /**
@@ -470,52 +442,15 @@ export class ConnectionManager extends EventEmitter implements DatabaseConnectio
       throw new Error('Database not initialized. Call connect() first.');
     }
 
-    if (this.vendor === 'sqlite') {
-      return callback(async (query) => {
-        try {
-          return this.db.all(query);
-        } catch (error: unknown) {
-          if (this.isSqliteNonQueryError(error)) {
-            // Normalize .run() result — see execute() for details.
-            const runResult = this.db.run(query) as { changes?: number; lastInsertRowid?: number };
-            return { ...runResult, affectedRows: runResult.changes ?? 0 };
-          }
-          throw error;
-        }
-      });
-    }
-
-    if (this.vendor === 'postgresql') {
-      const poolClient = await this.client.connect();
-      try {
-        const { drizzle } = await import('drizzle-orm/node-postgres');
-        const sessionDb = drizzle({ client: poolClient });
-        return await callback(async (query) => sessionDb.execute(query));
-      } finally {
-        poolClient.release();
-      }
-    }
-
-    if (this.vendor === 'mysql') {
-      const mysqlConnection = await this.client.getConnection();
-      try {
-        const { drizzle } = await import('drizzle-orm/mysql2');
-        const sessionDb = drizzle({ client: mysqlConnection });
-        return await callback(async (query) => {
-          const raw = await sessionDb.execute(query);
-          // mysql2 returns [rows, fields] for SELECTs and [ResultSetHeader, fields]
-          // for INSERT/UPDATE/DELETE. Unwrap the first element in both cases.
-          if (Array.isArray(raw) && raw.length === 2) {
-            return raw[0];
-          }
-          return raw;
-        });
-      } finally {
-        mysqlConnection.release();
-      }
-    }
-
-    throw new Error(`Unsupported database vendor: ${this.vendor}`);
+    return executeInDedicatedConnection(
+      {
+        vendor: this.vendor,
+        client: this.client,
+        db: this.db,
+        isSqliteNonQueryError: (error) => this.isSqliteNonQueryError(error),
+      },
+      callback
+    );
   }
 
   /**
