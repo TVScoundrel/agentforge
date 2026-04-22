@@ -1176,6 +1176,7 @@ Implementation notes:
 - [x] Commit completed checklist items as logical commits and push updates
   - `0eb485d` refactor(st-09030): extract query and session helpers
   - `097b0a9` docs(st-09030): record validation and move story to in-review
+  - `3395cf4` chore(st-09030): finalize checklist and ready status
 - [x] Mark PR Ready only after all story tasks are complete
   - PR #93 marked ready: https://github.com/TVScoundrel/agentforge/pull/93
 - [ ] Wait for merge; do not merge directly from local branch

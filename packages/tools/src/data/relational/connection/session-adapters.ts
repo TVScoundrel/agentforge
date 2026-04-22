@@ -1,4 +1,6 @@
 import type { SQL } from 'drizzle-orm';
+import type { PoolConnection as MySqlPoolConnection } from 'mysql2/promise';
+import type { NodePgClient } from 'drizzle-orm/node-postgres';
 
 import type { DatabaseVendor } from '../types.js';
 import {
@@ -35,7 +37,7 @@ export async function executeInDedicatedConnection<T>(
 
     try {
       const { drizzle } = await import('drizzle-orm/node-postgres');
-      const sessionDb = drizzle({ client: poolClient } as never);
+      const sessionDb = drizzle({ client: poolClient as NodePgClient });
       return await callback((query) => sessionDb.execute(query));
     } finally {
       poolClient.release();
@@ -44,12 +46,12 @@ export async function executeInDedicatedConnection<T>(
 
   if (context.vendor === 'mysql') {
     const mysqlConnection = await (context.client as {
-      getConnection(): Promise<{ release(): void }>;
+      getConnection(): Promise<MySqlPoolConnection>;
     }).getConnection();
 
     try {
       const { drizzle } = await import('drizzle-orm/mysql2');
-      const sessionDb = drizzle({ client: mysqlConnection } as never);
+      const sessionDb = drizzle({ client: mysqlConnection });
       return await callback(async (query) =>
         normalizeMySqlResult(await sessionDb.execute(query))
       );
