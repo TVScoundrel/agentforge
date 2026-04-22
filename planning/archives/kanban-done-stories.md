@@ -2,11 +2,18 @@
 
 **Purpose:** Track completed and merged stories for the Relational Database Access Tool project.
 
-**Last Updated:** 2026-04-21
+**Last Updated:** 2026-04-22
 
 ---
 
 ## Completed Stories
+
+### ST-09030: Extract Connection Manager Query Execution and Session Adapters
+- **Merged:** 2026-04-22
+- **PR:** https://github.com/TVScoundrel/agentforge/pull/93 (commit dd2a8c4)
+- **Epic:** EP-09 (SOLID Micro-Refactors and Type Boundary Hardening)
+- **Estimate:** 4 hours
+- **Outcome:** Extracted relational connection-manager query execution and dedicated-session adapter handling into focused internal helpers, preserved vendor-specific MySQL tuple normalization and SQLite non-query normalization, kept the public `ConnectionManager` execution façade stable, and added focused helper coverage plus review follow-up fixes to remove the remaining session-adapter type escape hatches.
 
 ### ST-09029: Modularize Plan-Execute Node Responsibilities
 - **Merged:** 2026-04-21

@@ -1179,7 +1179,8 @@ Implementation notes:
   - `3395cf4` chore(st-09030): finalize checklist and ready status
 - [x] Mark PR Ready only after all story tasks are complete
   - PR #93 marked ready: https://github.com/TVScoundrel/agentforge/pull/93
-- [ ] Wait for merge; do not merge directly from local branch
+- [x] Wait for merge; do not merge directly from local branch
+  - Merged via PR #93 with merge commit `dd2a8c4`
 
 ---
 

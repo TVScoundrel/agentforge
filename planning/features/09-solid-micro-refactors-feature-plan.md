@@ -3,7 +3,7 @@
 **Epic Range:** EP-09 through EP-09
 **Status:** In Progress
 **Last Updated:** 2026-04-22
-**Active Story:** ST-09030 (In Review)
+**Active Story:** ST-09031 (Ready)
 
 ---
 
@@ -45,7 +45,7 @@ Top runtime hotspots informing this feature slice:
 4. `packages/core/src/resources/database-pool.ts` still exposes broad connection and query parameter contracts behind a mock adapter surface that is small enough for a focused hardening pass
 5. `packages/testing/src/runners/snapshot-testing.ts` is the largest remaining testing-package explicit-`any` hotspot and is a good fit for a standalone unknown-first state normalization story
 6. `packages/testing/src/runners/agent-test-runner.ts` still exposes broad agent/state/step contracts and is a natural follow-on once snapshot/state runner contracts are tightened
-7. `packages/patterns/src/plan-execute/nodes.ts` was modularized in ST-09029 and the next active extraction target is the connection-manager execution/session slice in ST-09030
+7. `ST-09030` merged the connection-manager execution/session extraction slice, and the next active extraction target is the tool-registry registration/mutation split in `ST-09031`
 8. The next follow-on slice should keep EP-09 open for one more short burst rather than creating a new epic before the remaining runtime and testing hotspots are sequenced
 
 Recent improvement snapshot:
@@ -73,7 +73,8 @@ Recent improvement snapshot:
 - `ST-09024` merged after tightening the LangGraph interrupt contracts around JSON-safe custom payloads, JSON-object metadata, and safer resume values, lowering the workspace explicit-`any` baseline from `195` to `182` and the `core` package from `76` to `63`.
 - `ST-09027` merged after extracting relational connection-manager vendor initialization into focused PostgreSQL/MySQL/SQLite helper adapters, lowering the workspace explicit-`any` baseline from `182` to `180` and the `tools` package from `67` to `65`, with follow-up fixes for logger attribution and vendor/connection type pairing.
 - `ST-09029` merged after modularizing the plan-execute node layer into focused planner, executor, replanner, finisher, logger, and serialization helpers behind the stable public facade, with review-driven follow-up fixes for structured and array-based model-content normalization, finisher response compatibility, prompt formatting, undefined serialization semantics, and GraphInterrupt propagation.
-- `EP-09` remains open as the daily hardening stream, with the active queue now centered on the follow-on connection-manager extraction stories and remaining contract-tightening work.
+- `ST-09030` merged after extracting relational connection-manager query execution and dedicated-session adapter handling into focused helpers, preserving MySQL tuple normalization, SQLite non-query normalization, and dedicated PostgreSQL/MySQL session behavior while leaving the workspace explicit-`any` baseline unchanged at `180` and `tools` unchanged at `65`.
+- `EP-09` remains open as the daily hardening stream, with the active queue now centered on tool-registry extraction, lifecycle hardening, and the remaining testing-contract follow-ons.
 - A fresh follow-on slice is now queued behind that work for connection-manager execution/session extraction, registry registration/mutation extraction, managed-tool lifecycle hardening, database-pool contract tightening, and testing runner type-boundary cleanup.
 
 ---
