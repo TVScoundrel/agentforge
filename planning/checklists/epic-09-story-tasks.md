@@ -1155,16 +1155,24 @@ Implementation notes:
 **Branch:** `refactor/st-09030-connection-manager-query-session-extraction`
 
 ### Checklist
-- [ ] Create branch `refactor/st-09030-connection-manager-query-session-extraction`
-- [ ] Create draft PR with story ID in title
-- [ ] Extract query execution and `executeInConnection(...)` vendor branches from `packages/tools/src/data/relational/connection/connection-manager.ts`
-- [ ] Preserve current PostgreSQL/MySQL/SQLite result normalization and dedicated-session behavior
-- [ ] Add/update focused tests for vendor-specific query execution and session handling
-- [ ] Record explicit-`any` warning deltas for touched files in story docs
-- [ ] Add or update story documentation at `docs/st09030-connection-manager-query-session-extraction.md` (or document why not required)
-- [ ] Assess test impact; add/update automated tests when needed, or document why tests are not required
-- [ ] Run full test suite before finalizing the PR and record results
-- [ ] Run lint (`pnpm lint`) before finalizing the PR and record results
+- [x] Create branch `refactor/st-09030-connection-manager-query-session-extraction`
+- [x] Create draft PR with story ID in title
+  - Draft PR #93: https://github.com/TVScoundrel/agentforge/pull/93
+- [x] Extract query execution and `executeInConnection(...)` vendor branches from `packages/tools/src/data/relational/connection/connection-manager.ts`
+  - Extracted focused helpers into `query-execution.ts` and `session-adapters.ts` while keeping `ConnectionManager` as the public façade
+- [x] Preserve current PostgreSQL/MySQL/SQLite result normalization and dedicated-session behavior
+  - MySQL tuple unwrapping, SQLite `affectedRows` normalization, and dedicated PostgreSQL/MySQL session release behavior are preserved by focused helper coverage
+- [x] Add/update focused tests for vendor-specific query execution and session handling
+  - `pnpm test --run packages/tools/tests/data/relational/connection/query-session-extraction.test.ts packages/tools/tests/data/relational/connection/connection-manager.test.ts packages/tools/tests/data/relational/connection/vendor-initialization.test.ts` -> `3 passed` files, `57 passed` tests
+- [x] Record explicit-`any` warning deltas for touched files in story docs
+  - Recorded in `docs/st09030-connection-manager-query-session-extraction.md`; workspace baseline remains `180/289`, `tools` remains `65/67`
+- [x] Add or update story documentation at `docs/st09030-connection-manager-query-session-extraction.md` (or document why not required)
+- [x] Assess test impact; add/update automated tests when needed, or document why tests are not required
+  - Added focused helper coverage in `packages/tools/tests/data/relational/connection/query-session-extraction.test.ts`
+- [x] Run full test suite before finalizing the PR and record results
+  - `pnpm test --run` -> `161 passed | 16 skipped` files; `2216 passed | 286 skipped` tests
+- [x] Run lint (`pnpm lint`) before finalizing the PR and record results
+  - `pnpm lint` -> exit `0`; warnings only
 - [ ] Commit completed checklist items as logical commits and push updates
 - [ ] Mark PR Ready only after all story tasks are complete
 - [ ] Wait for merge; do not merge directly from local branch

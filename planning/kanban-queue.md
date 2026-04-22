@@ -1,12 +1,12 @@
 # Kanban Queue: AgentForge
 
-**Last Updated:** 2026-04-21
+**Last Updated:** 2026-04-22
 
 ## Queue Status Summary
 
-- **Ready:** 4 stories
+- **Ready:** 3 stories
 - **In Progress:** 0 stories
-- **In Review:** 0 stories
+- **In Review:** 1 story
 - **Blocked:** 0 stories
 - **Backlog:** 7 stories
 
@@ -14,7 +14,6 @@
 
 ## Ready
 
-- `ST-09030` - Extract Connection Manager Query Execution and Session Adapters
 - `ST-09031` - Extract Tool Registry Registration and Mutation Paths
 - `ST-09032` - Tighten Managed Tool Lifecycle Contracts
 - `ST-10001` - Audit Markdown Emoji Usage Across Project-Owned Docs
@@ -29,7 +28,7 @@ _No stories currently in progress_
 
 ## In Review
 
-_No stories currently in review_
+- `ST-09030` - Extract Connection Manager Query Execution and Session Adapters
 
 ---
 
