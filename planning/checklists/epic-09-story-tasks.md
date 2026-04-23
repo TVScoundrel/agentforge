@@ -1189,18 +1189,29 @@ Implementation notes:
 **Branch:** `refactor/st-09031-tool-registry-registration-mutation-extraction`
 
 ### Checklist
-- [ ] Create branch `refactor/st-09031-tool-registry-registration-mutation-extraction`
-- [ ] Create draft PR with story ID in title
-- [ ] Extract registration, update, removal, and bulk-registration logic from `packages/core/src/tools/registry.ts`
-- [ ] Preserve duplicate detection, name consistency checks, and emitted event behavior
-- [ ] Add/update focused tests for registration conflicts, updates, removals, and bulk-registration edge cases
-- [ ] Record explicit-`any` warning deltas for touched files in story docs
-- [ ] Add or update story documentation at `docs/st09031-tool-registry-registration-mutation-extraction.md` (or document why not required)
-- [ ] Assess test impact; add/update automated tests when needed, or document why tests are not required
-- [ ] Run full test suite before finalizing the PR and record results
-- [ ] Run lint (`pnpm lint`) before finalizing the PR and record results
-- [ ] Commit completed checklist items as logical commits and push updates
-- [ ] Mark PR Ready only after all story tasks are complete
+- [x] Create branch `refactor/st-09031-tool-registry-registration-mutation-extraction`
+- [x] Create draft PR with story ID in title
+  - Draft PR #94: https://github.com/TVScoundrel/agentforge/pull/94
+- [x] Extract registration, update, removal, and bulk-registration logic from `packages/core/src/tools/registry.ts`
+  - Extracted focused mutation helpers into `packages/core/src/tools/registry-mutations.ts` while keeping `ToolRegistry` as the stable public facade
+- [x] Preserve duplicate detection, name consistency checks, and emitted event behavior
+  - Duplicate/conflict errors, update rename protection, and register/remove/update/clear event payloads are preserved by the extracted helpers and facade coverage
+- [x] Add/update focused tests for registration conflicts, updates, removals, and bulk-registration edge cases
+  - `pnpm test --run packages/core/tests/tools/registry.test.ts packages/core/tests/tools/registry-events.test.ts packages/core/tests/tools/registry-collection.test.ts packages/core/tests/tools/registry-prompt.test.ts packages/core/tests/tools/registry-mutations.test.ts` -> `5 passed` files, `59 passed` tests
+- [x] Record explicit-`any` warning deltas for touched files in story docs
+  - Recorded in `docs/st09031-tool-registry-registration-mutation-extraction.md`; workspace baseline remains `180/289`, `core` remains `63/119`
+- [x] Add or update story documentation at `docs/st09031-tool-registry-registration-mutation-extraction.md` (or document why not required)
+- [x] Assess test impact; add/update automated tests when needed, or document why tests are not required
+  - Added focused helper coverage in `packages/core/tests/tools/registry-mutations.test.ts` while preserving the broader `ToolRegistry` facade suite
+- [x] Run full test suite before finalizing the PR and record results
+  - `pnpm test --run` -> `162 passed | 16 skipped` files; `2225 passed | 286 skipped` tests
+- [x] Run lint (`pnpm lint`) before finalizing the PR and record results
+  - `pnpm lint` -> exit `0`; warnings only
+- [x] Commit completed checklist items as logical commits and push updates
+  - `1e9a3ba` refactor(st-09031): extract registry mutation helpers
+  - `3ea5d2c` docs(st-09031): record validation and move story to in-review
+- [x] Mark PR Ready only after all story tasks are complete
+  - PR #94 marked ready: https://github.com/TVScoundrel/agentforge/pull/94
 - [ ] Wait for merge; do not merge directly from local branch
 
 ---
