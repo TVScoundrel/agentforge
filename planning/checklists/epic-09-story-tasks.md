@@ -1197,7 +1197,7 @@ Implementation notes:
 - [x] Preserve duplicate detection, name consistency checks, and emitted event behavior
   - Duplicate/conflict errors, update rename protection, and register/remove/update/clear event payloads are preserved by the extracted helpers and facade coverage
 - [x] Add/update focused tests for registration conflicts, updates, removals, and bulk-registration edge cases
-  - `pnpm test --run packages/core/tests/tools/registry.test.ts packages/core/tests/tools/registry-events.test.ts packages/core/tests/tools/registry-collection.test.ts packages/core/tests/tools/registry-prompt.test.ts packages/core/tests/tools/registry-mutations.test.ts` -> `5 passed` files, `60 passed` tests
+  - `pnpm test --run packages/core/tests/tools/registry.test.ts packages/core/tests/tools/registry-events.test.ts packages/core/tests/tools/registry-collection.test.ts packages/core/tests/tools/registry-prompt.test.ts packages/core/tests/tools/registry-mutations.test.ts` -> passed for the targeted registry suites (`5 passed` files)
 - [x] Record explicit-`any` warning deltas for touched files in story docs
   - Recorded in `docs/st09031-tool-registry-registration-mutation-extraction.md`; workspace baseline remains `180/289`, `core` remains `63/119`
 - [x] Add or update story documentation at `docs/st09031-tool-registry-registration-mutation-extraction.md` (or document why not required)
@@ -1210,7 +1210,7 @@ Implementation notes:
 - [x] Commit completed checklist items as logical commits and push updates
   - `1e9a3ba` refactor(st-09031): extract registry mutation helpers
   - `3ea5d2c` docs(st-09031): record validation and move story to in-review
-  - `ad7e45d` fix(st-09031): tighten registry review follow-ups
+  - `946796f` fix(st-09031): tighten registry review follow-ups
 - [x] Mark PR Ready only after all story tasks are complete
   - PR #94 marked ready: https://github.com/TVScoundrel/agentforge/pull/94
 - [ ] Wait for merge; do not merge directly from local branch

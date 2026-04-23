@@ -41,7 +41,7 @@
 - `pnpm exec eslint packages/core/src/tools/registry.ts packages/core/src/tools/registry-mutations.ts packages/core/tests/tools/registry.test.ts packages/core/tests/tools/registry-mutations.test.ts`
   - passed cleanly
 - `pnpm test --run packages/core/tests/tools/registry.test.ts packages/core/tests/tools/registry-events.test.ts packages/core/tests/tools/registry-collection.test.ts packages/core/tests/tools/registry-prompt.test.ts packages/core/tests/tools/registry-mutations.test.ts`
-  - `5 passed` files, `59 passed` tests
+  - passed for the targeted registry suites (`5 passed` files)
 - `pnpm lint:explicit-any:baseline --silent`
   - `180/289` warnings, `core 63/119`
 - `pnpm test --run`

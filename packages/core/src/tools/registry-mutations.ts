@@ -81,20 +81,20 @@ export function registerManyRegistryTools<TEvent>(
 ): void {
   const pendingTools = Array.from(toolsToRegister);
   const inputNames = new Set<string>();
-  const duplicatesInInput = new Set<string>();
+  const duplicatesInInput: string[] = [];
 
   for (const tool of pendingTools) {
     const name = tool.metadata.name;
     if (inputNames.has(name)) {
-      duplicatesInInput.add(name);
+      duplicatesInInput.push(name);
     } else {
       inputNames.add(name);
     }
   }
 
-  if (duplicatesInInput.size > 0) {
+  if (duplicatesInInput.length > 0) {
     throw new Error(
-      `Cannot register tools: duplicate names in input list: ${Array.from(duplicatesInInput).join(', ')}`
+      `Cannot register tools: duplicate names in input list: ${duplicatesInInput.join(', ')}`
     );
   }
 

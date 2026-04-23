@@ -118,7 +118,7 @@ describe('registry-mutations', () => {
     expect(emit).not.toHaveBeenCalled();
   });
 
-  it('lists each duplicate input name once even when repeated more than twice', () => {
+  it('preserves repeated duplicate-name output when the same name appears more than twice', () => {
     const tools = new Map<string, RegistryTool>();
     const emit = vi.fn();
 
@@ -129,7 +129,7 @@ describe('registry-mutations', () => {
         emit,
         events
       )
-    ).toThrow('Cannot register tools: duplicate names in input list: duplicate-name');
+    ).toThrow('Cannot register tools: duplicate names in input list: duplicate-name, duplicate-name');
   });
 
   it('rejects existing-name conflicts during bulk registration without partial writes', () => {

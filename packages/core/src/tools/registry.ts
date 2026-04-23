@@ -146,11 +146,11 @@ export class ToolRegistry {
    * @param tool - The tool to register
    * @throws Error if a tool with the same name already exists
    * 
-   * @example
-   * ```ts
-   * registry.register(readFileTool);
-  * ```
-  */
+  * @example
+  * ```ts
+  * registry.register(readFileTool);
+   * ```
+   */
   register<TInput, TOutput>(tool: Tool<TInput, TOutput>): void {
     registerRegistryTool(this.tools, tool, this.emitMutation, this.mutationEvents);
   }
@@ -196,12 +196,12 @@ export class ToolRegistry {
    * @param name - The tool name
    * @returns True if the tool was removed, false if it didn't exist
    * 
-   * @example
-   * ```ts
-   * const removed = registry.remove('read-file');
-   * console.log(removed ? 'Removed' : 'Not found');
-  * ```
-  */
+  * @example
+  * ```ts
+  * const removed = registry.remove('read-file');
+  * console.log(removed ? 'Removed' : 'Not found');
+   * ```
+   */
   remove(name: string): boolean {
     return removeRegistryTool(this.tools, name, this.emitMutation, this.mutationEvents);
   }
@@ -214,11 +214,11 @@ export class ToolRegistry {
    * @returns True if updated, false if the tool didn't exist
    * @throws Error if the tool's metadata.name doesn't match the name parameter
    *
-   * @example
-   * ```ts
-   * const updated = registry.update('read-file', newReadFileTool);
-  * ```
-  */
+  * @example
+  * ```ts
+  * const updated = registry.update('read-file', newReadFileTool);
+   * ```
+   */
   update<TInput, TOutput>(name: string, tool: Tool<TInput, TOutput>): boolean {
     return updateRegistryTool(this.tools, name, tool, this.emitMutation, this.mutationEvents);
   }
@@ -292,11 +292,11 @@ export class ToolRegistry {
    * @param tools - Iterable of tools to register
    * @throws Error if any tool name conflicts with existing tools
    *
-   * @example
-   * ```ts
-   * registry.registerMany([tool1, tool2, tool3]);
-  * ```
-  */
+  * @example
+  * ```ts
+  * registry.registerMany([tool1, tool2, tool3]);
+   * ```
+   */
   registerMany(tools: Iterable<RegisterManyTool>): void {
     registerManyRegistryTools(this.tools, tools, this.emitMutation, this.mutationEvents);
   }
@@ -304,12 +304,12 @@ export class ToolRegistry {
   /**
    * Clear all tools from the registry
    *
-   * @example
-   * ```ts
-   * registry.clear();
-   * console.log(registry.size()); // 0
-  * ```
-  */
+  * @example
+  * ```ts
+  * registry.clear();
+  * console.log(registry.size()); // 0
+   * ```
+   */
   clear(): void {
     clearRegistryTools(this.tools, this.emitMutation, this.mutationEvents);
   }
