@@ -3,7 +3,7 @@
 **Epic Range:** EP-09 through EP-09
 **Status:** In Progress
 **Last Updated:** 2026-04-23
-**Active Story:** ST-09031 (In Review)
+**Active Story:** ST-09032 (Ready)
 
 ---
 
@@ -74,7 +74,7 @@ Recent improvement snapshot:
 - `ST-09027` merged after extracting relational connection-manager vendor initialization into focused PostgreSQL/MySQL/SQLite helper adapters, lowering the workspace explicit-`any` baseline from `182` to `180` and the `tools` package from `67` to `65`, with follow-up fixes for logger attribution and vendor/connection type pairing.
 - `ST-09029` merged after modularizing the plan-execute node layer into focused planner, executor, replanner, finisher, logger, and serialization helpers behind the stable public facade, with review-driven follow-up fixes for structured and array-based model-content normalization, finisher response compatibility, prompt formatting, undefined serialization semantics, and GraphInterrupt propagation.
 - `ST-09030` merged after extracting relational connection-manager query execution and dedicated-session adapter handling into focused helpers, preserving MySQL tuple normalization, SQLite non-query normalization, and dedicated PostgreSQL/MySQL session behavior while leaving the workspace explicit-`any` baseline unchanged at `180` and `tools` unchanged at `65`.
-- `ST-09031` is now in review after extracting the remaining tool-registry registration, update, removal, bulk-registration, and clear paths into a focused internal helper while preserving the stable public facade, mutation error semantics, and emitted events.
+- `ST-09031` merged after extracting the remaining tool-registry registration, update, removal, bulk-registration, and clear paths into a focused internal helper while preserving the stable public facade, mutation error semantics, and emitted events, and the next active Epic 9 target is `ST-09032`.
 - `EP-09` remains open as the daily hardening stream, with the active queue now centered on tool-registry extraction, lifecycle hardening, and the remaining testing-contract follow-ons.
 - A fresh follow-on slice is now queued behind that work for connection-manager execution/session extraction, registry registration/mutation extraction, managed-tool lifecycle hardening, database-pool contract tightening, and testing runner type-boundary cleanup.
 

@@ -1213,7 +1213,8 @@ Implementation notes:
   - `946796f` fix(st-09031): tighten registry review follow-ups
 - [x] Mark PR Ready only after all story tasks are complete
   - PR #94 marked ready: https://github.com/TVScoundrel/agentforge/pull/94
-- [ ] Wait for merge; do not merge directly from local branch
+- [x] Wait for merge; do not merge directly from local branch
+  - Merged via PR #94 with merge commit `4d9ea4c`
 
 ---
 

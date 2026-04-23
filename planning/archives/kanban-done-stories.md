@@ -2,11 +2,18 @@
 
 **Purpose:** Track completed and merged stories for the Relational Database Access Tool project.
 
-**Last Updated:** 2026-04-22
+**Last Updated:** 2026-04-23
 
 ---
 
 ## Completed Stories
+
+### ST-09031: Extract Tool Registry Registration and Mutation Paths
+- **Merged:** 2026-04-23
+- **PR:** https://github.com/TVScoundrel/agentforge/pull/94 (commit 4d9ea4c)
+- **Epic:** EP-09 (SOLID Micro-Refactors and Type Boundary Hardening)
+- **Estimate:** 4 hours
+- **Outcome:** Extracted tool registry register, remove, update, bulk-register, and clear mutation logic into a focused internal helper module while keeping `ToolRegistry` as the stable public facade, preserving duplicate/conflict handling and emitted mutation event semantics, adding a focused helper test suite, and folding in review follow-up fixes for cached mutation helpers, duplicate-message behavior preservation, and JSDoc/validation-note cleanup.
 
 ### ST-09030: Extract Connection Manager Query Execution and Session Adapters
 - **Merged:** 2026-04-22

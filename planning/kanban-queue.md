@@ -6,7 +6,7 @@
 
 - **Ready:** 3 stories
 - **In Progress:** 0 stories
-- **In Review:** 1 story
+- **In Review:** 0 stories
 - **Blocked:** 0 stories
 - **Backlog:** 6 stories
 
@@ -28,7 +28,7 @@ _No stories currently in progress_
 
 ## In Review
 
-- `ST-09031` - Extract Tool Registry Registration and Mutation Paths
+_No stories currently in review_
 
 ---
 
