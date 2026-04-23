@@ -32,6 +32,13 @@ import {
   type RegistryEventHandler,
 } from './registry-events.js';
 import {
+  clearRegistryTools,
+  registerManyRegistryTools,
+  registerRegistryTool,
+  removeRegistryTool,
+  updateRegistryTool,
+} from './registry-mutations.js';
+import {
   convertRegistryToolsToLangChain,
   generateRegistryPrompt,
   type RegistryPromptOptions,
@@ -56,10 +63,6 @@ export type EventHandler = RegistryEventHandler;
 // remain assignable through the contravariant invoke parameter.
 type RegisterManyTool = Tool<never, unknown>;
 type RegistryTool = Tool<unknown, unknown>;
-
-function eraseToolType<TInput, TOutput>(tool: Tool<TInput, TOutput>): RegistryTool {
-  return tool as unknown as RegistryTool;
-}
 
 /**
  * Options for generating tool prompts
@@ -127,6 +130,15 @@ export interface PromptOptions extends RegistryPromptOptions {
 export class ToolRegistry {
   private tools: Map<string, RegistryTool> = new Map();
   private eventHandlers: Map<RegistryEvent, Set<EventHandler>> = new Map();
+  private readonly mutationEvents = {
+    registered: RegistryEvent.TOOL_REGISTERED,
+    removed: RegistryEvent.TOOL_REMOVED,
+    updated: RegistryEvent.TOOL_UPDATED,
+    cleared: RegistryEvent.REGISTRY_CLEARED,
+  } as const;
+  private readonly emitMutation = (event: RegistryEvent, data: unknown): void => {
+    this.emit(event, data);
+  };
 
   /**
    * Register a tool in the registry
@@ -134,23 +146,13 @@ export class ToolRegistry {
    * @param tool - The tool to register
    * @throws Error if a tool with the same name already exists
    * 
-   * @example
-   * ```ts
-   * registry.register(readFileTool);
+  * @example
+  * ```ts
+  * registry.register(readFileTool);
    * ```
    */
   register<TInput, TOutput>(tool: Tool<TInput, TOutput>): void {
-    const erasedTool = eraseToolType(tool);
-    const name = tool.metadata.name;
-    
-    if (this.tools.has(name)) {
-      throw new Error(
-        `Tool with name "${name}" is already registered. Use update() to modify it.`
-      );
-    }
-
-    this.tools.set(name, erasedTool);
-    this.emit(RegistryEvent.TOOL_REGISTERED, tool);
+    registerRegistryTool(this.tools, tool, this.emitMutation, this.mutationEvents);
   }
 
   /**
@@ -194,21 +196,14 @@ export class ToolRegistry {
    * @param name - The tool name
    * @returns True if the tool was removed, false if it didn't exist
    * 
-   * @example
-   * ```ts
-   * const removed = registry.remove('read-file');
-   * console.log(removed ? 'Removed' : 'Not found');
+  * @example
+  * ```ts
+  * const removed = registry.remove('read-file');
+  * console.log(removed ? 'Removed' : 'Not found');
    * ```
    */
   remove(name: string): boolean {
-    const tool = this.tools.get(name);
-    if (!tool) {
-      return false;
-    }
-
-    this.tools.delete(name);
-    this.emit(RegistryEvent.TOOL_REMOVED, tool);
-    return true;
+    return removeRegistryTool(this.tools, name, this.emitMutation, this.mutationEvents);
   }
 
   /**
@@ -219,28 +214,13 @@ export class ToolRegistry {
    * @returns True if updated, false if the tool didn't exist
    * @throws Error if the tool's metadata.name doesn't match the name parameter
    *
-   * @example
-   * ```ts
-   * const updated = registry.update('read-file', newReadFileTool);
+  * @example
+  * ```ts
+  * const updated = registry.update('read-file', newReadFileTool);
    * ```
    */
   update<TInput, TOutput>(name: string, tool: Tool<TInput, TOutput>): boolean {
-    const erasedTool = eraseToolType(tool);
-    if (!this.tools.has(name)) {
-      return false;
-    }
-
-    // Prevent desync: ensure the tool's metadata.name matches the Map key
-    if (tool.metadata.name !== name) {
-      throw new Error(
-        `Cannot update tool: metadata.name "${tool.metadata.name}" does not match registry key "${name}". ` +
-        `To rename a tool, remove it and register it again with the new name.`
-      );
-    }
-
-    this.tools.set(name, erasedTool);
-    this.emit(RegistryEvent.TOOL_UPDATED, { name, tool });
-    return true;
+    return updateRegistryTool(this.tools, name, tool, this.emitMutation, this.mutationEvents);
   }
 
   /**
@@ -312,65 +292,26 @@ export class ToolRegistry {
    * @param tools - Iterable of tools to register
    * @throws Error if any tool name conflicts with existing tools
    *
-   * @example
-   * ```ts
-   * registry.registerMany([tool1, tool2, tool3]);
+  * @example
+  * ```ts
+  * registry.registerMany([tool1, tool2, tool3]);
    * ```
    */
   registerMany(tools: Iterable<RegisterManyTool>): void {
-    const toolsToRegister = Array.from(tools);
-
-    // Check for duplicates within the input list first
-    const inputNames = new Set<string>();
-    const duplicatesInInput: string[] = [];
-
-    for (const tool of toolsToRegister) {
-      const name = tool.metadata.name;
-      if (inputNames.has(name)) {
-        duplicatesInInput.push(name);
-      } else {
-        inputNames.add(name);
-      }
-    }
-
-    if (duplicatesInInput.length > 0) {
-      throw new Error(
-        `Cannot register tools: duplicate names in input list: ${duplicatesInInput.join(', ')}`
-      );
-    }
-
-    // Check for conflicts with existing tools
-    const conflicts: string[] = [];
-    for (const tool of toolsToRegister) {
-      if (this.tools.has(tool.metadata.name)) {
-        conflicts.push(tool.metadata.name);
-      }
-    }
-
-    if (conflicts.length > 0) {
-      throw new Error(
-        `Cannot register tools: the following names already exist: ${conflicts.join(', ')}`
-      );
-    }
-
-    // Register all tools
-    for (const tool of toolsToRegister) {
-      this.register(tool);
-    }
+    registerManyRegistryTools(this.tools, tools, this.emitMutation, this.mutationEvents);
   }
 
   /**
    * Clear all tools from the registry
    *
-   * @example
-   * ```ts
-   * registry.clear();
-   * console.log(registry.size()); // 0
+  * @example
+  * ```ts
+  * registry.clear();
+  * console.log(registry.size()); // 0
    * ```
    */
   clear(): void {
-    this.tools.clear();
-    this.emit(RegistryEvent.REGISTRY_CLEARED, null);
+    clearRegistryTools(this.tools, this.emitMutation, this.mutationEvents);
   }
 
   /**

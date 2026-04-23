@@ -1,12 +1,12 @@
 # Kanban Queue: AgentForge
 
-**Last Updated:** 2026-04-22
+**Last Updated:** 2026-04-23
 
 ## Queue Status Summary
 
-- **Ready:** 4 stories
+- **Ready:** 3 stories
 - **In Progress:** 0 stories
-- **In Review:** 0 stories
+- **In Review:** 1 story
 - **Blocked:** 0 stories
 - **Backlog:** 6 stories
 
@@ -14,7 +14,6 @@
 
 ## Ready
 
-- `ST-09031` - Extract Tool Registry Registration and Mutation Paths
 - `ST-09032` - Tighten Managed Tool Lifecycle Contracts
 - `ST-09034` - Tighten Snapshot Testing Runner Contracts
 - `ST-10001` - Audit Markdown Emoji Usage Across Project-Owned Docs
@@ -29,7 +28,7 @@ _No stories currently in progress_
 
 ## In Review
 
-_No stories currently in review_
+- `ST-09031` - Extract Tool Registry Registration and Mutation Paths
 
 ---
 
