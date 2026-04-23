@@ -118,6 +118,20 @@ describe('registry-mutations', () => {
     expect(emit).not.toHaveBeenCalled();
   });
 
+  it('lists each duplicate input name once even when repeated more than twice', () => {
+    const tools = new Map<string, RegistryTool>();
+    const emit = vi.fn();
+
+    expect(() =>
+      registerManyRegistryTools(
+        tools,
+        [createTool('duplicate-name'), createTool('duplicate-name'), createTool('duplicate-name')],
+        emit,
+        events
+      )
+    ).toThrow('Cannot register tools: duplicate names in input list: duplicate-name');
+  });
+
   it('rejects existing-name conflicts during bulk registration without partial writes', () => {
     const tools = new Map<string, RegistryTool>([['existing', createTool('existing')]]);
     const emit = vi.fn();

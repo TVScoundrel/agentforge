@@ -130,6 +130,15 @@ export interface PromptOptions extends RegistryPromptOptions {
 export class ToolRegistry {
   private tools: Map<string, RegistryTool> = new Map();
   private eventHandlers: Map<RegistryEvent, Set<EventHandler>> = new Map();
+  private readonly mutationEvents = {
+    registered: RegistryEvent.TOOL_REGISTERED,
+    removed: RegistryEvent.TOOL_REMOVED,
+    updated: RegistryEvent.TOOL_UPDATED,
+    cleared: RegistryEvent.REGISTRY_CLEARED,
+  } as const;
+  private readonly emitMutation = (event: RegistryEvent, data: unknown): void => {
+    this.emit(event, data);
+  };
 
   /**
    * Register a tool in the registry
@@ -143,7 +152,7 @@ export class ToolRegistry {
   * ```
   */
   register<TInput, TOutput>(tool: Tool<TInput, TOutput>): void {
-    registerRegistryTool(this.tools, tool, this.emit.bind(this), this.getMutationEvents());
+    registerRegistryTool(this.tools, tool, this.emitMutation, this.mutationEvents);
   }
 
   /**
@@ -194,7 +203,7 @@ export class ToolRegistry {
   * ```
   */
   remove(name: string): boolean {
-    return removeRegistryTool(this.tools, name, this.emit.bind(this), this.getMutationEvents());
+    return removeRegistryTool(this.tools, name, this.emitMutation, this.mutationEvents);
   }
 
   /**
@@ -211,7 +220,7 @@ export class ToolRegistry {
   * ```
   */
   update<TInput, TOutput>(name: string, tool: Tool<TInput, TOutput>): boolean {
-    return updateRegistryTool(this.tools, name, tool, this.emit.bind(this), this.getMutationEvents());
+    return updateRegistryTool(this.tools, name, tool, this.emitMutation, this.mutationEvents);
   }
 
   /**
@@ -289,7 +298,7 @@ export class ToolRegistry {
   * ```
   */
   registerMany(tools: Iterable<RegisterManyTool>): void {
-    registerManyRegistryTools(this.tools, tools, this.emit.bind(this), this.getMutationEvents());
+    registerManyRegistryTools(this.tools, tools, this.emitMutation, this.mutationEvents);
   }
 
   /**
@@ -302,7 +311,7 @@ export class ToolRegistry {
   * ```
   */
   clear(): void {
-    clearRegistryTools(this.tools, this.emit.bind(this), this.getMutationEvents());
+    clearRegistryTools(this.tools, this.emitMutation, this.mutationEvents);
   }
 
   /**
@@ -377,15 +386,6 @@ export class ToolRegistry {
    */
   private emit(event: RegistryEvent, data: unknown): void {
     emitRegistryEvent(this.eventHandlers, event, data);
-  }
-
-  private getMutationEvents() {
-    return {
-      registered: RegistryEvent.TOOL_REGISTERED,
-      removed: RegistryEvent.TOOL_REMOVED,
-      updated: RegistryEvent.TOOL_UPDATED,
-      cleared: RegistryEvent.REGISTRY_CLEARED,
-    };
   }
 
   /**
