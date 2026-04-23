@@ -5,6 +5,36 @@ All notable changes to AgentForge will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.16.18] - 2026-04-23
+
+### Added
+
+#### @agentforge/core - Registry Mutation Helper Coverage
+- Added focused helper coverage in `packages/core/tests/tools/registry-mutations.test.ts` for registration conflicts, update invariants, removals, clear behavior, and bulk-registration edge cases
+- Added story documentation in `docs/st09031-tool-registry-registration-mutation-extraction.md` covering the extraction, compatibility notes, explicit-`any` snapshot, and validation record
+
+### Changed
+
+#### @agentforge/core - Tool Registry Registration and Mutation Extraction
+- Extracted register, remove, update, bulk-register, and clear mutation logic from `packages/core/src/tools/registry.ts` into `packages/core/src/tools/registry-mutations.ts`
+- Kept `ToolRegistry` as the stable public facade while preserving public mutation semantics and emitted event payloads
+
+### Fixed
+
+#### @agentforge/core - Registry Review Follow-Ups
+- Cached the registry mutation emitter and mutation event mapping instead of re-allocating them on every mutation call
+- Preserved the original repeated-name duplicate error output for bulk registration and cleaned up the affected JSDoc and validation-note wording
+- Preserved the workspace explicit-`any` baseline at `180` and the `core` package baseline at `63`
+
+### Published
+- All packages published to npm registry at version 0.16.18:
+  - @agentforge/core@0.16.18
+  - @agentforge/skills@0.16.18
+  - @agentforge/patterns@0.16.18
+  - @agentforge/tools@0.16.18
+  - @agentforge/testing@0.16.18
+  - @agentforge/cli@0.16.18
+
 ## [0.16.17] - 2026-04-22
 
 ### Added
