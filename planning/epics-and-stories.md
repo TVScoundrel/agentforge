@@ -1377,7 +1377,7 @@
 **Priority:** P2 (Medium)
 **Estimate:** 4 hours
 **Dependencies:** ST-09026
-**Status:** Ready
+**Status:** In Progress
 
 **Acceptance criteria:**
 - [ ] `packages/core/src/tools/registry.ts` extracts registration, update, removal, and bulk-registration logic into focused helpers while keeping the public registry entrypoint stable
