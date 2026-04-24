@@ -1247,7 +1247,7 @@ Implementation notes:
   - `47407dc` fix(st-09032): tighten lifecycle review follow-ups
   - `0b55206` fix(st-09032): preserve lifecycle public interface
   - `d619cba` fix(st-09032): harden lifecycle background hooks
-  - review-fix commit pending for cleanup-before-initialize and late health-check teardown follow-ups
+  - `4a41ea6` fix(st-09032): handle lifecycle cleanup races
 - [x] Mark PR Ready only after all story tasks are complete
   - PR #95 marked ready: https://github.com/TVScoundrel/agentforge/pull/95
 - [ ] Wait for merge; do not merge directly from local branch

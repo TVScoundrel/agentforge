@@ -10,6 +10,7 @@ const managedTool = createManagedTool<
 >({
   name: 'managed-tool',
   description: 'Lifecycle typecheck fixture',
+  autoCleanup: false,
   context: {
     requestId: 'req-123',
   },
@@ -62,6 +63,7 @@ void explicitHealthResult;
 const unknownTool = createManagedTool({
   name: 'unknown-tool',
   description: 'Unknown defaults fixture',
+  autoCleanup: false,
   execute: async (input: unknown) => input,
 });
 

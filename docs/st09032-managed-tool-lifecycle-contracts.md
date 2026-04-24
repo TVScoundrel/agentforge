@@ -14,7 +14,7 @@
 
 ## Compatibility Notes
 
-- Managed-tool initialization, execution, cleanup, and health-check runtime behavior remain unchanged.
+- The public managed-tool surface and core lifecycle flow remain stable, while the latest review-fix rounds tighten background-hook and teardown behavior in edge cases.
 - `ManagedTool.context` is now typed as `TContext | undefined`, matching the existing runtime possibility when no initial context is provided.
 - `healthCheck()` still returns `{ healthy: true, metadata: { message: 'No health check configured' } }` when no health check is configured.
 - `toLangChainTool()` still returns the same runtime shape with `name`, `description`, and `invoke(...)`.
