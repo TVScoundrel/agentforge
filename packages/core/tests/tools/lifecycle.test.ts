@@ -259,4 +259,90 @@ describe('ManagedTool lifecycle', () => {
     expect(tool.getStats().lastHealthCheck).toBeUndefined();
     expect(tool.getStats().lastHealthCheckTime).toBeUndefined();
   });
+
+  it('does not update periodic health stats while cleanup is awaiting teardown', async () => {
+    vi.useFakeTimers();
+
+    let resolveHealthCheck: (() => void) | undefined;
+    let resolveCleanup: (() => void) | undefined;
+    const healthCheck = vi.fn(
+      () =>
+        new Promise<ToolHealthCheckResult>((resolve) => {
+          resolveHealthCheck = () => resolve({ healthy: true, metadata: { run: 1 } });
+        })
+    );
+    const cleanup = vi.fn(
+      () =>
+        new Promise<void>((resolve) => {
+          resolveCleanup = resolve;
+        })
+    );
+
+    const tool = createManagedTool({
+      name: 'managed-health-cleanup-await-race',
+      description: 'Managed health cleanup await race fixture',
+      execute: async () => 'ok',
+      healthCheck,
+      cleanup,
+      healthCheckInterval: 50,
+      autoCleanup: false,
+    });
+
+    await tool.initialize();
+    await vi.advanceTimersByTimeAsync(50);
+    expect(healthCheck).toHaveBeenCalledTimes(1);
+
+    const cleanupPromise = tool.cleanup();
+    resolveHealthCheck?.();
+    await vi.runAllTicks();
+
+    expect(tool.initialized).toBe(false);
+    expect(tool.getStats().lastHealthCheck).toBeUndefined();
+    expect(tool.getStats().lastHealthCheckTime).toBeUndefined();
+
+    resolveCleanup?.();
+    await cleanupPromise;
+  });
+
+  it('does not update manual health-check stats if cleanup starts before it resolves', async () => {
+    let resolveHealthCheck: (() => void) | undefined;
+    let resolveCleanup: (() => void) | undefined;
+    const healthCheck = vi.fn(
+      () =>
+        new Promise<ToolHealthCheckResult>((resolve) => {
+          resolveHealthCheck = () => resolve({ healthy: true, metadata: { run: 1 } });
+        })
+    );
+    const cleanup = vi.fn(
+      () =>
+        new Promise<void>((resolve) => {
+          resolveCleanup = resolve;
+        })
+    );
+
+    const tool = createManagedTool({
+      name: 'managed-manual-health-cleanup-race',
+      description: 'Managed manual health cleanup race fixture',
+      execute: async () => 'ok',
+      healthCheck,
+      cleanup,
+      autoCleanup: false,
+    });
+
+    await tool.initialize();
+
+    const healthCheckPromise = tool.healthCheck();
+    const cleanupPromise = tool.cleanup();
+
+    resolveHealthCheck?.();
+    await expect(healthCheckPromise).resolves.toEqual({
+      healthy: false,
+      error: 'Tool is not initialized',
+    });
+    expect(tool.getStats().lastHealthCheck).toBeUndefined();
+    expect(tool.getStats().lastHealthCheckTime).toBeUndefined();
+
+    resolveCleanup?.();
+    await cleanupPromise;
+  });
 });

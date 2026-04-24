@@ -69,6 +69,7 @@ export class ManagedTool<TContext = undefined, TInput = unknown, TOutput = unkno
   private _healthCheckTimer?: NodeJS.Timeout;
   private _beforeExitHandler?: () => void;
   private _healthCheckInFlight = false;
+  private _cleaningUp = false;
 
   constructor(config: ManagedToolConfig<TContext, TInput, TOutput>) {
     this.name = config.name;
@@ -121,7 +122,7 @@ export class ManagedTool<TContext = undefined, TInput = unknown, TOutput = unkno
    * Initialize the tool
    */
   async initialize(): Promise<void> {
-    if (this._initialized) {
+    if (this._initialized || this._cleaningUp) {
       return;
     }
 
@@ -167,6 +168,8 @@ export class ManagedTool<TContext = undefined, TInput = unknown, TOutput = unkno
    * Cleanup the tool
    */
   async cleanup(): Promise<void> {
+    this._cleaningUp = true;
+
     // Stop health check timer
     if (this._healthCheckTimer) {
       clearInterval(this._healthCheckTimer);
@@ -179,22 +182,31 @@ export class ManagedTool<TContext = undefined, TInput = unknown, TOutput = unkno
     }
 
     if (!this._initialized) {
+      this._cleaningUp = false;
       return;
-    }
-
-    if (this.cleanupFn) {
-      await this.cleanupFn();
     }
 
     this._initialized = false;
     this._stats.initialized = false;
+
+    if (this.cleanupFn) {
+      try {
+        await this.cleanupFn();
+      } finally {
+        this._cleaningUp = false;
+      }
+
+      return;
+    }
+
+    this._cleaningUp = false;
   }
 
   /**
    * Run health check
    */
   async healthCheck(): Promise<ToolHealthCheckResult> {
-    if (!this._initialized) {
+    if (!this._initialized || this._cleaningUp) {
       return {
         healthy: false,
         error: 'Tool is not initialized',
@@ -210,10 +222,22 @@ export class ManagedTool<TContext = undefined, TInput = unknown, TOutput = unkno
 
     try {
       const result = await this.healthCheckFn();
+      if (!this._initialized || this._cleaningUp) {
+        return {
+          healthy: false,
+          error: 'Tool is not initialized',
+        };
+      }
       this._stats.lastHealthCheck = result;
       this._stats.lastHealthCheckTime = Date.now();
       return result;
     } catch (error) {
+      if (!this._initialized || this._cleaningUp) {
+        return {
+          healthy: false,
+          error: 'Tool is not initialized',
+        };
+      }
       const result: ToolHealthCheckResult = {
         healthy: false,
         error: getErrorMessage(error),
@@ -259,7 +283,7 @@ export class ManagedTool<TContext = undefined, TInput = unknown, TOutput = unkno
   }
 
   private async runPeriodicHealthCheck(): Promise<void> {
-    if (!this.healthCheckFn || this._healthCheckInFlight || !this._initialized) {
+    if (!this.healthCheckFn || this._healthCheckInFlight || !this._initialized || this._cleaningUp) {
       return;
     }
 
@@ -267,13 +291,13 @@ export class ManagedTool<TContext = undefined, TInput = unknown, TOutput = unkno
 
     try {
       const result = await this.healthCheckFn();
-      if (!this._initialized) {
+      if (!this._initialized || this._cleaningUp) {
         return;
       }
       this._stats.lastHealthCheck = result;
       this._stats.lastHealthCheckTime = Date.now();
     } catch (error) {
-      if (!this._initialized) {
+      if (!this._initialized || this._cleaningUp) {
         return;
       }
       this._stats.lastHealthCheck = {
