@@ -110,6 +110,43 @@ describe('ManagedTool lifecycle', () => {
     }
   });
 
+  it('does not overlap periodic health checks when a prior run is still in flight', async () => {
+    vi.useFakeTimers();
+
+    let resolveHealthCheck: (() => void) | undefined;
+    const healthCheck = vi.fn(
+      () =>
+        new Promise<{ healthy: boolean; metadata: { run: number } }>((resolve) => {
+          resolveHealthCheck = () => resolve({ healthy: true, metadata: { run: 1 } });
+        })
+    );
+
+    const tool = createManagedTool({
+      name: 'managed-health-single-flight',
+      description: 'Managed health single-flight fixture',
+      execute: async () => 'ok',
+      healthCheck,
+      healthCheckInterval: 50,
+      autoCleanup: false,
+    });
+
+    try {
+      await tool.initialize();
+      await vi.advanceTimersByTimeAsync(50);
+      expect(healthCheck).toHaveBeenCalledTimes(1);
+
+      await vi.advanceTimersByTimeAsync(50);
+      expect(healthCheck).toHaveBeenCalledTimes(1);
+
+      resolveHealthCheck?.();
+      await vi.runAllTicks();
+      await vi.advanceTimersByTimeAsync(50);
+      expect(healthCheck).toHaveBeenCalledTimes(2);
+    } finally {
+      await tool.cleanup();
+    }
+  });
+
   it('stops periodic health checks during cleanup and runs cleanup hooks', async () => {
     vi.useFakeTimers();
 
@@ -140,6 +177,7 @@ describe('ManagedTool lifecycle', () => {
 
   it('registers beforeExit cleanup when autoCleanup is enabled', async () => {
     const processOn = vi.spyOn(process, 'on').mockImplementation(() => process);
+    const processOff = vi.spyOn(process, 'off').mockImplementation(() => process);
     const cleanup = vi.fn(async () => {});
 
     const tool = createManagedTool({
@@ -157,6 +195,7 @@ describe('ManagedTool lifecycle', () => {
     beforeExitHandler?.();
     await vi.waitFor(() => expect(cleanup).toHaveBeenCalledTimes(1));
     expect(processOn).toHaveBeenCalledWith('beforeExit', expect.any(Function));
+    expect(processOff).toHaveBeenCalledWith('beforeExit', expect.any(Function));
   });
 
   it('exposes a LangChain-style invoke wrapper around execute', async () => {

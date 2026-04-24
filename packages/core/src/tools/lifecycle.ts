@@ -67,6 +67,8 @@ export class ManagedTool<TContext = undefined, TInput = unknown, TOutput = unkno
     failedExecutions: 0,
   };
   private _healthCheckTimer?: NodeJS.Timeout;
+  private _beforeExitHandler?: () => void;
+  private _healthCheckInFlight = false;
 
   constructor(config: ManagedToolConfig<TContext, TInput, TOutput>) {
     this.name = config.name;
@@ -79,9 +81,9 @@ export class ManagedTool<TContext = undefined, TInput = unknown, TOutput = unkno
     this.healthCheckInterval = config.healthCheckInterval;
     this._context = config.context;
 
-    // Setup auto-cleanup on process exit
+    // Register auto-cleanup on process exit so instances can release resources.
     if (this.autoCleanup) {
-      process.on('beforeExit', () => {
+      this._beforeExitHandler = () => {
         this.cleanup().catch(err =>
           logger.error('Cleanup failed', {
             toolName: this.name,
@@ -89,7 +91,8 @@ export class ManagedTool<TContext = undefined, TInput = unknown, TOutput = unkno
             ...(err instanceof Error && err.stack ? { stack: err.stack } : {})
           })
         );
-      });
+      };
+      process.on('beforeExit', this._beforeExitHandler);
     }
   }
 
@@ -131,18 +134,8 @@ export class ManagedTool<TContext = undefined, TInput = unknown, TOutput = unkno
 
     // Start periodic health checks if configured
     if (this.healthCheckInterval && this.healthCheckFn) {
-      this._healthCheckTimer = setInterval(async () => {
-        try {
-          const result = await this.healthCheckFn!();
-          this._stats.lastHealthCheck = result;
-          this._stats.lastHealthCheckTime = Date.now();
-        } catch (error) {
-          this._stats.lastHealthCheck = {
-            healthy: false,
-            error: getErrorMessage(error),
-          };
-          this._stats.lastHealthCheckTime = Date.now();
-        }
+      this._healthCheckTimer = setInterval(() => {
+        void this.runPeriodicHealthCheck();
       }, this.healthCheckInterval);
     }
   }
@@ -182,6 +175,11 @@ export class ManagedTool<TContext = undefined, TInput = unknown, TOutput = unkno
     if (this._healthCheckTimer) {
       clearInterval(this._healthCheckTimer);
       this._healthCheckTimer = undefined;
+    }
+
+    if (this._beforeExitHandler) {
+      process.off('beforeExit', this._beforeExitHandler);
+      this._beforeExitHandler = undefined;
     }
 
     if (this.cleanupFn) {
@@ -258,6 +256,28 @@ export class ManagedTool<TContext = undefined, TInput = unknown, TOutput = unkno
         return await this.execute(input);
       },
     };
+  }
+
+  private async runPeriodicHealthCheck(): Promise<void> {
+    if (!this.healthCheckFn || this._healthCheckInFlight) {
+      return;
+    }
+
+    this._healthCheckInFlight = true;
+
+    try {
+      const result = await this.healthCheckFn();
+      this._stats.lastHealthCheck = result;
+      this._stats.lastHealthCheckTime = Date.now();
+    } catch (error) {
+      this._stats.lastHealthCheck = {
+        healthy: false,
+        error: getErrorMessage(error),
+      };
+      this._stats.lastHealthCheckTime = Date.now();
+    } finally {
+      this._healthCheckInFlight = false;
+    }
   }
 }
 
