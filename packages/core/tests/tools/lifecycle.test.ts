@@ -345,4 +345,39 @@ describe('ManagedTool lifecycle', () => {
     resolveCleanup?.();
     await cleanupPromise;
   });
+
+  it('treats cleanup as single-flight while teardown is still awaiting', async () => {
+    let resolveCleanup: (() => void) | undefined;
+    const cleanup = vi.fn(
+      () =>
+        new Promise<void>((resolve) => {
+          resolveCleanup = resolve;
+        })
+    );
+
+    const tool = createManagedTool({
+      name: 'managed-single-flight-cleanup',
+      description: 'Managed single-flight cleanup fixture',
+      execute: async () => 'ok',
+      cleanup,
+      autoCleanup: false,
+    });
+
+    await tool.initialize();
+
+    const firstCleanup = tool.cleanup();
+    const secondCleanup = tool.cleanup();
+
+    expect(tool.initialized).toBe(false);
+
+    await tool.initialize();
+    expect(cleanup).toHaveBeenCalledTimes(1);
+    expect(tool.initialized).toBe(false);
+
+    resolveCleanup?.();
+    await Promise.all([firstCleanup, secondCleanup]);
+
+    await tool.initialize();
+    expect(tool.initialized).toBe(true);
+  });
 });

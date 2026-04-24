@@ -70,6 +70,7 @@ export class ManagedTool<TContext = undefined, TInput = unknown, TOutput = unkno
   private _beforeExitHandler?: () => void;
   private _healthCheckInFlight = false;
   private _cleaningUp = false;
+  private _cleanupPromise?: Promise<void>;
 
   constructor(config: ManagedToolConfig<TContext, TInput, TOutput>) {
     this.name = config.name;
@@ -168,6 +169,22 @@ export class ManagedTool<TContext = undefined, TInput = unknown, TOutput = unkno
    * Cleanup the tool
    */
   async cleanup(): Promise<void> {
+    if (this._cleanupPromise) {
+      await this._cleanupPromise;
+      return;
+    }
+
+    const cleanupPromise = this.performCleanup();
+    this._cleanupPromise = cleanupPromise;
+
+    try {
+      await cleanupPromise;
+    } finally {
+      this._cleanupPromise = undefined;
+    }
+  }
+
+  private async performCleanup(): Promise<void> {
     this._cleaningUp = true;
 
     // Stop health check timer
