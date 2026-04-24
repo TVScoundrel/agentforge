@@ -91,19 +91,23 @@ describe('ManagedTool lifecycle', () => {
       autoCleanup: false,
     });
 
-    await tool.initialize();
-    await expect(tool.healthCheck()).resolves.toEqual({
-      healthy: true,
-      metadata: { run: 1 },
-    });
+    try {
+      await tool.initialize();
+      await expect(tool.healthCheck()).resolves.toEqual({
+        healthy: true,
+        metadata: { run: 1 },
+      });
 
-    await vi.advanceTimersByTimeAsync(50);
+      await vi.advanceTimersByTimeAsync(50);
 
-    expect(tool.getStats().lastHealthCheck).toEqual({
-      healthy: true,
-      metadata: { run: 2 },
-    });
-    expect(tool.getStats().lastHealthCheckTime).toBeTypeOf('number');
+      expect(tool.getStats().lastHealthCheck).toEqual({
+        healthy: true,
+        metadata: { run: 2 },
+      });
+      expect(tool.getStats().lastHealthCheckTime).toBeTypeOf('number');
+    } finally {
+      await tool.cleanup();
+    }
   });
 
   it('stops periodic health checks during cleanup and runs cleanup hooks', async () => {
@@ -135,7 +139,7 @@ describe('ManagedTool lifecycle', () => {
   });
 
   it('registers beforeExit cleanup when autoCleanup is enabled', async () => {
-    const processOn = vi.spyOn(process, 'on');
+    const processOn = vi.spyOn(process, 'on').mockImplementation(() => process);
     const cleanup = vi.fn(async () => {});
 
     const tool = createManagedTool({
@@ -152,6 +156,7 @@ describe('ManagedTool lifecycle', () => {
     await tool.initialize();
     beforeExitHandler?.();
     await vi.waitFor(() => expect(cleanup).toHaveBeenCalledTimes(1));
+    expect(processOn).toHaveBeenCalledWith('beforeExit', expect.any(Function));
   });
 
   it('exposes a LangChain-style invoke wrapper around execute', async () => {

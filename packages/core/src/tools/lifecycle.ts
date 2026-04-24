@@ -14,7 +14,7 @@ export interface ToolHealthCheckResult {
   metadata?: JsonObject;
 }
 
-export interface ManagedToolConfig<TContext = undefined, TInput = unknown, TOutput = unknown> {
+interface ManagedToolConfigBase<TContext, TInput, TOutput> {
   name: string;
   description: string;
   initialize?: (this: ManagedTool<TContext, TInput, TOutput>) => Promise<void>;
@@ -26,10 +26,14 @@ export interface ManagedToolConfig<TContext = undefined, TInput = unknown, TOutp
   healthCheck?: (
     this: ManagedTool<TContext, TInput, TOutput>
   ) => Promise<ToolHealthCheckResult>;
-  context?: TContext;
   autoCleanup?: boolean;
   healthCheckInterval?: number;
 }
+
+export type ManagedToolConfig<TContext = undefined, TInput = unknown, TOutput = unknown> =
+  ManagedToolConfigBase<TContext, TInput, TOutput> & {
+    context?: TContext;
+  };
 
 export interface ManagedToolStats {
   initialized: boolean;
@@ -55,7 +59,7 @@ export class ManagedTool<TContext = undefined, TInput = unknown, TOutput = unkno
   private readonly healthCheckInterval?: number;
 
   private _initialized = false;
-  private _context: TContext;
+  private _context: TContext | undefined;
   private _stats: ManagedToolStats = {
     initialized: false,
     totalExecutions: 0,
@@ -73,7 +77,7 @@ export class ManagedTool<TContext = undefined, TInput = unknown, TOutput = unkno
     this.healthCheckFn = config.healthCheck?.bind(this);
     this.autoCleanup = config.autoCleanup ?? true;
     this.healthCheckInterval = config.healthCheckInterval;
-    this._context = config.context as TContext;
+    this._context = config.context;
 
     // Setup auto-cleanup on process exit
     if (this.autoCleanup) {
@@ -92,14 +96,14 @@ export class ManagedTool<TContext = undefined, TInput = unknown, TOutput = unkno
   /**
    * Get the tool context (e.g., connection pool, API client)
    */
-  get context(): TContext {
+  get context(): TContext | undefined {
     return this._context;
   }
 
   /**
    * Set the tool context
    */
-  set context(value: TContext) {
+  set context(value: TContext | undefined) {
     this._context = value;
   }
 

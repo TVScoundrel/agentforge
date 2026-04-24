@@ -8,13 +8,14 @@
 
 | File | Change |
 |------|--------|
-| `packages/core/src/tools/lifecycle.ts` | Replaced broad lifecycle generic defaults with safer defaults, aligned health-check metadata with shared JSON-safe payload contracts, tightened the LangChain interop return type, and normalized unknown error handling without changing runtime behavior. |
+| `packages/core/src/tools/lifecycle.ts` | Replaced broad lifecycle generic defaults with safer defaults, aligned health-check metadata with shared JSON-safe payload contracts, exposed `context` as optionally present to match runtime reality, tightened the LangChain interop return type, and normalized unknown error handling without changing runtime behavior. |
 | `packages/core/src/tools/lifecycle.typecheck.ts` | Added source-included type regressions covering typed context access, execute input/output inference, JSON-safe health metadata, and the unknown-first default surface. |
 | `packages/core/tests/tools/lifecycle.test.ts` | Added focused lifecycle coverage for initialization, execution stats, default and periodic health checks, cleanup, process-exit cleanup registration, and LangChain-style invocation. |
 
 ## Compatibility Notes
 
 - Managed-tool initialization, execution, cleanup, and health-check runtime behavior remain unchanged.
+- `ManagedTool.context` is now typed as `TContext | undefined`, matching the existing runtime possibility when no initial context is provided.
 - `healthCheck()` still returns `{ healthy: true, metadata: { message: 'No health check configured' } }` when no health check is configured.
 - `toLangChainTool()` still returns the same runtime shape with `name`, `description`, and `invoke(...)`.
 - Process-exit auto-cleanup registration remains enabled by default when `autoCleanup` is not disabled.

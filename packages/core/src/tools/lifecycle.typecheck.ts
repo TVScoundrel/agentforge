@@ -14,10 +14,18 @@ const managedTool = createManagedTool<
     requestId: 'req-123',
   },
   initialize: async function () {
+    if (!this.context) {
+      throw new Error('Context missing');
+    }
+
     const requestId: string = this.context.requestId;
     void requestId;
   },
   execute: async function (input: { count: number }) {
+    if (!this.context) {
+      throw new Error('Context missing');
+    }
+
     return {
       doubled: input.count * 2,
       requestId: this.context.requestId,
