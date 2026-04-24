@@ -1224,8 +1224,8 @@ Implementation notes:
 
 ### Checklist
 - [x] Create branch `fix/st-09032-managed-tool-lifecycle-contracts` (`codex/fix/st-09032-managed-tool-lifecycle-contracts`)
-- [ ] Create draft PR with story ID in title
-  - Draft PR pending branch push
+- [x] Create draft PR with story ID in title
+  - Draft PR #95: https://github.com/TVScoundrel/agentforge/pull/95
 - [x] Replace broad lifecycle generics and metadata boundaries in `packages/core/src/tools/lifecycle.ts` with safer contracts
   - Replaced broad `any` defaults with safer lifecycle defaults, aligned health metadata with shared JSON-safe payload types, and tightened LangChain interop typing without changing runtime behavior
 - [x] Preserve current managed-tool initialization, execution, cleanup, health-check, and LangChain interop behavior
@@ -1241,9 +1241,11 @@ Implementation notes:
   - `pnpm test --run` -> `163 passed | 16 skipped` files; `2233 passed | 286 skipped` tests
 - [x] Run lint (`pnpm lint`) before finalizing the PR and record results
   - `pnpm lint` -> exit `0`; warnings only
-- [ ] Commit completed checklist items as logical commits and push updates
+- [x] Commit completed checklist items as logical commits and push updates
   - `971defa` fix(st-09032): tighten managed tool lifecycle contracts
-- [ ] Mark PR Ready only after all story tasks are complete
+  - `429950b` docs(st-09032): record validation and move story to in-review
+- [x] Mark PR Ready only after all story tasks are complete
+  - PR #95 marked ready: https://github.com/TVScoundrel/agentforge/pull/95
 - [ ] Wait for merge; do not merge directly from local branch
 
 ---
