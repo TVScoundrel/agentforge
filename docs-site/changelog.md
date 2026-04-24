@@ -5,6 +5,40 @@ All notable changes to AgentForge will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.16.19] - 2026-04-24
+
+### Added
+
+#### @agentforge/core - Managed Tool Lifecycle Coverage
+- Added focused runtime coverage in `packages/core/tests/tools/lifecycle.test.ts` for managed-tool initialization, execution stats, default and periodic health checks, cleanup, process-exit cleanup registration, LangChain-style invocation, and lifecycle race handling
+- Added source-included type regressions in `packages/core/src/tools/lifecycle.typecheck.ts` for typed context access, execute input/output inference, JSON-safe health metadata, and unknown-first lifecycle defaults
+- Added story documentation in `docs/st09032-managed-tool-lifecycle-contracts.md` covering the lifecycle contract changes, compatibility notes, explicit-`any` snapshot, and validation record
+
+### Changed
+
+#### @agentforge/core - Managed Tool Lifecycle Contract Hardening
+- Tightened `ManagedTool` lifecycle generics from broad `any` defaults to safer unknown-first defaults while preserving the public `ManagedToolConfig` interface
+- Aligned health-check metadata with the shared JSON-safe payload contract and exposed managed-tool context as optionally present to match runtime behavior
+- Tightened the LangChain interop return type without changing the `toLangChainTool()` runtime shape
+
+### Fixed
+
+#### @agentforge/core - Managed Tool Lifecycle Concurrency
+- Made `initialize()` and `cleanup()` single-flight so concurrent callers share one setup or teardown pass
+- Coordinated initialize/cleanup ordering so cleanup waits for in-flight initialization and initialization waits for in-flight cleanup
+- Prevented stale manual and periodic health-check results from updating stats after cleanup/reinitialize lifecycle boundaries
+- Prevented overlapping periodic health checks and restored process `beforeExit` auto-cleanup registration across manual cleanup/reinitialize reuse cycles
+- Preserved the workspace explicit-`any` baseline at `180` and the `core` package baseline at `63`
+
+### Published
+- All packages published to npm registry at version 0.16.19:
+  - @agentforge/core@0.16.19
+  - @agentforge/skills@0.16.19
+  - @agentforge/patterns@0.16.19
+  - @agentforge/tools@0.16.19
+  - @agentforge/testing@0.16.19
+  - @agentforge/cli@0.16.19
+
 ## [0.16.18] - 2026-04-23
 
 ### Added
