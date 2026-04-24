@@ -31,6 +31,44 @@ describe('ManagedTool lifecycle', () => {
     expect(tool.getStats().initialized).toBe(true);
   });
 
+  it('treats initialize as single-flight under concurrent calls', async () => {
+    vi.useFakeTimers();
+
+    let resolveInitialize: (() => void) | undefined;
+    const initialize = vi.fn(
+      () =>
+        new Promise<void>((resolve) => {
+          resolveInitialize = resolve;
+        })
+    );
+    const healthCheck = vi.fn(async () => ({ healthy: true }));
+
+    const tool = createManagedTool({
+      name: 'managed-init-single-flight',
+      description: 'Managed init single-flight fixture',
+      initialize,
+      execute: async () => 'ok',
+      healthCheck,
+      healthCheckInterval: 50,
+      autoCleanup: false,
+    });
+
+    const firstInitialize = tool.initialize();
+    const secondInitialize = tool.initialize();
+
+    expect(initialize).toHaveBeenCalledTimes(1);
+
+    resolveInitialize?.();
+    await Promise.all([firstInitialize, secondInitialize]);
+
+    expect(tool.initialized).toBe(true);
+
+    await vi.advanceTimersByTimeAsync(50);
+    expect(healthCheck).toHaveBeenCalledTimes(1);
+
+    await tool.cleanup();
+  });
+
   it('tracks successful and failed executions', async () => {
     const tool = createManagedTool({
       name: 'managed-stats',

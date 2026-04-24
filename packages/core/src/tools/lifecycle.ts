@@ -71,6 +71,7 @@ export class ManagedTool<TContext = undefined, TInput = unknown, TOutput = unkno
   private _healthCheckInFlight = false;
   private _cleaningUp = false;
   private _cleanupPromise?: Promise<void>;
+  private _initializePromise?: Promise<void>;
   private _lifecycleGeneration = 0;
 
   constructor(config: ManagedToolConfig<TContext, TInput, TOutput>) {
@@ -112,25 +113,22 @@ export class ManagedTool<TContext = undefined, TInput = unknown, TOutput = unkno
    * Initialize the tool
    */
   async initialize(): Promise<void> {
+    if (this._initializePromise) {
+      await this._initializePromise;
+      return;
+    }
+
     if (this._initialized || this._cleaningUp) {
       return;
     }
 
-    this.ensureBeforeExitHandler();
-    this._lifecycleGeneration++;
+    const initializePromise = this.performInitialize();
+    this._initializePromise = initializePromise;
 
-    if (this.initializeFn) {
-      await this.initializeFn();
-    }
-
-    this._initialized = true;
-    this._stats.initialized = true;
-
-    // Start periodic health checks if configured
-    if (this.healthCheckInterval && this.healthCheckFn) {
-      this._healthCheckTimer = setInterval(() => {
-        void this.runPeriodicHealthCheck();
-      }, this.healthCheckInterval);
+    try {
+      await initializePromise;
+    } finally {
+      this._initializePromise = undefined;
     }
   }
 
@@ -335,6 +333,25 @@ export class ManagedTool<TContext = undefined, TInput = unknown, TOutput = unkno
       this._stats.lastHealthCheckTime = Date.now();
     } finally {
       this._healthCheckInFlight = false;
+    }
+  }
+
+  private async performInitialize(): Promise<void> {
+    this.ensureBeforeExitHandler();
+    this._lifecycleGeneration++;
+
+    if (this.initializeFn) {
+      await this.initializeFn();
+    }
+
+    this._initialized = true;
+    this._stats.initialized = true;
+
+    // Start periodic health checks if configured.
+    if (this.healthCheckInterval && this.healthCheckFn) {
+      this._healthCheckTimer = setInterval(() => {
+        void this.runPeriodicHealthCheck();
+      }, this.healthCheckInterval);
     }
   }
 
