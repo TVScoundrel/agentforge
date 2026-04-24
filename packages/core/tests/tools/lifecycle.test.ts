@@ -69,6 +69,46 @@ describe('ManagedTool lifecycle', () => {
     await tool.cleanup();
   });
 
+  it('waits for in-flight initialize before cleanup completes', async () => {
+    vi.useFakeTimers();
+
+    let resolveInitialize: (() => void) | undefined;
+    const initialize = vi.fn(
+      () =>
+        new Promise<void>((resolve) => {
+          resolveInitialize = resolve;
+        })
+    );
+    const cleanup = vi.fn(async () => {});
+    const healthCheck = vi.fn(async () => ({ healthy: true }));
+
+    const tool = createManagedTool({
+      name: 'managed-init-cleanup-race',
+      description: 'Managed init cleanup race fixture',
+      initialize,
+      execute: async () => 'ok',
+      cleanup,
+      healthCheck,
+      healthCheckInterval: 50,
+      autoCleanup: false,
+    });
+
+    const initializePromise = tool.initialize();
+    const cleanupPromise = tool.cleanup();
+
+    expect(initialize).toHaveBeenCalledTimes(1);
+    expect(cleanup).not.toHaveBeenCalled();
+
+    resolveInitialize?.();
+    await Promise.all([initializePromise, cleanupPromise]);
+
+    expect(cleanup).toHaveBeenCalledTimes(1);
+    expect(tool.initialized).toBe(false);
+
+    await vi.advanceTimersByTimeAsync(50);
+    expect(healthCheck).not.toHaveBeenCalled();
+  });
+
   it('tracks successful and failed executions', async () => {
     const tool = createManagedTool({
       name: 'managed-stats',

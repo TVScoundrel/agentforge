@@ -1229,9 +1229,9 @@ Implementation notes:
 - [x] Replace broad lifecycle generics and metadata boundaries in `packages/core/src/tools/lifecycle.ts` with safer contracts
   - Replaced broad `any` defaults with safer lifecycle defaults, aligned health metadata with shared JSON-safe payload types, and tightened LangChain interop typing without changing runtime behavior
 - [x] Preserve current managed-tool initialization, execution, cleanup, health-check, and LangChain interop behavior
-  - Managed-tool hooks, default health responses, process-exit registration, and `toLangChainTool()` runtime shape are preserved; periodic health checks now run single-flight to avoid overlapping status updates, auto-cleanup listeners are removed during teardown even before initialization, teardown blocks stale health-status writes once cleanup begins, repeated `cleanup()` calls now share a single teardown pass, concurrent `initialize()` calls now share a single setup pass, reusable tools re-register auto-cleanup on re-initialize, and stale health-check results from prior lifecycles are ignored after cleanup/reinitialize boundaries
+  - Managed-tool hooks, default health responses, process-exit registration, and `toLangChainTool()` runtime shape are preserved; periodic health checks now run single-flight to avoid overlapping status updates, auto-cleanup listeners are removed during teardown even before initialization, teardown blocks stale health-status writes once cleanup begins, repeated `cleanup()` calls now share a single teardown pass, concurrent `initialize()` calls now share a single setup pass, cleanup waits for in-flight initialization before tearing down, reusable tools re-register auto-cleanup on re-initialize, and stale health-check results from prior lifecycles are ignored after cleanup/reinitialize boundaries
 - [x] Add/update focused tests for lifecycle hooks, health checks, stats, and process-exit cleanup behavior as needed
-  - `pnpm test --run packages/core/tests/tools/lifecycle.test.ts` -> `1 passed` file, `17 passed` tests
+  - `pnpm test --run packages/core/tests/tools/lifecycle.test.ts` -> `1 passed` file, `18 passed` tests
 - [x] Record explicit-`any` warning deltas for touched files in story docs
   - Recorded in `docs/st09032-managed-tool-lifecycle-contracts.md`; workspace baseline improved to `170/289`, `core` improved to `53/119`
 - [x] Add or update story documentation at `docs/st09032-managed-tool-lifecycle-contracts.md` (or document why not required)
@@ -1252,7 +1252,8 @@ Implementation notes:
   - `c2ea15d` fix(st-09032): make cleanup single-flight
   - `f9a5c93` fix(st-09032): restore cleanup reuse auto-cleanup
   - `8f6098a` fix(st-09032): guard health checks across reuse
-  - pending review-fix commit: initialize single-flight follow-up
+  - `3dc1fc0` fix(st-09032): make initialize single-flight
+  - pending review-fix commit: initialize/cleanup ordering follow-up
 - [x] Mark PR Ready only after all story tasks are complete
   - PR #95 marked ready: https://github.com/TVScoundrel/agentforge/pull/95
 - [ ] Wait for merge; do not merge directly from local branch

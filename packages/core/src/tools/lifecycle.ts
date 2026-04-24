@@ -164,6 +164,14 @@ export class ManagedTool<TContext = undefined, TInput = unknown, TOutput = unkno
       return;
     }
 
+    if (this._initializePromise) {
+      try {
+        await this._initializePromise;
+      } catch {
+        // Cleanup should still settle lifecycle hooks if initialization fails.
+      }
+    }
+
     const cleanupPromise = this.performCleanup();
     this._cleanupPromise = cleanupPromise;
 

@@ -8,9 +8,9 @@
 
 | File | Change |
 |------|--------|
-| `packages/core/src/tools/lifecycle.ts` | Replaced broad lifecycle generic defaults with safer defaults, aligned health-check metadata with shared JSON-safe payload contracts, exposed `context` as optionally present to match runtime reality, tightened the LangChain interop return type, normalized unknown error handling, and made initialization, auto-cleanup listeners, and health-check teardown safer under repeated instance creation, long-running checks, concurrent initialization/cleanup, repeated teardown calls, cleanup/reinitialize reuse cycles, and late health-check completions from prior lifecycles. |
+| `packages/core/src/tools/lifecycle.ts` | Replaced broad lifecycle generic defaults with safer defaults, aligned health-check metadata with shared JSON-safe payload contracts, exposed `context` as optionally present to match runtime reality, tightened the LangChain interop return type, normalized unknown error handling, and made initialization, cleanup, auto-cleanup listeners, and health-check teardown safer under repeated instance creation, long-running checks, concurrent initialization/cleanup, repeated teardown calls, cleanup/reinitialize reuse cycles, and late health-check completions from prior lifecycles. |
 | `packages/core/src/tools/lifecycle.typecheck.ts` | Added source-included type regressions covering typed context access, execute input/output inference, JSON-safe health metadata, and the unknown-first default surface. |
-| `packages/core/tests/tools/lifecycle.test.ts` | Added focused lifecycle coverage for initialization, execution stats, default and periodic health checks, cleanup, process-exit cleanup registration, LangChain-style invocation, pre-initialize cleanup, late health-check completion after cleanup, health-check races during teardown, single-flight cleanup behavior, single-flight initialization behavior, auto-cleanup reuse after re-initialization, and stale health-check results across lifecycle reuse. |
+| `packages/core/tests/tools/lifecycle.test.ts` | Added focused lifecycle coverage for initialization, execution stats, default and periodic health checks, cleanup, process-exit cleanup registration, LangChain-style invocation, pre-initialize cleanup, late health-check completion after cleanup, health-check races during teardown, single-flight cleanup behavior, single-flight initialization behavior, cleanup during in-flight initialization, auto-cleanup reuse after re-initialization, and stale health-check results across lifecycle reuse. |
 
 ## Compatibility Notes
 
@@ -24,6 +24,7 @@
 - Cleanup now marks the tool unavailable before awaiting teardown hooks, so manual and periodic health checks do not write stale status after teardown starts.
 - Cleanup is now single-flight, so repeated `cleanup()` calls cannot clear teardown state early or allow `initialize()` to race ahead of an in-progress teardown.
 - Initialization is now single-flight, so concurrent callers share one setup pass and cannot double-run `initializeFn()` or leak duplicate periodic health-check intervals.
+- Cleanup now waits for any in-flight initialization attempt before tearing down, so `cleanup()` cannot return while the tool later becomes initialized from a pending setup.
 - Auto-cleanup registration is restored on re-initialization, so reusable managed tools still clean up on `beforeExit` after a manual `cleanup()` / `initialize()` cycle.
 - Manual and periodic health checks now capture a lifecycle generation, so late results from an earlier init cycle cannot overwrite health stats after a cleanup/reinitialize boundary.
 
@@ -47,7 +48,7 @@
 - `pnpm exec eslint packages/core/src/tools/lifecycle.ts packages/core/src/tools/lifecycle.typecheck.ts packages/core/tests/tools/lifecycle.test.ts`
   - passed cleanly
 - `pnpm test --run packages/core/tests/tools/lifecycle.test.ts`
-  - `1 passed` file, `17 passed` tests
+  - `1 passed` file, `18 passed` tests
 - `pnpm lint:explicit-any:baseline --silent`
   - `170/289` warnings, `core 53/119`
 - `pnpm test --run`
