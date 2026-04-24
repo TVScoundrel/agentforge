@@ -30,10 +30,10 @@ interface ManagedToolConfigBase<TContext, TInput, TOutput> {
   healthCheckInterval?: number;
 }
 
-export type ManagedToolConfig<TContext = undefined, TInput = unknown, TOutput = unknown> =
-  ManagedToolConfigBase<TContext, TInput, TOutput> & {
-    context?: TContext;
-  };
+export interface ManagedToolConfig<TContext = undefined, TInput = unknown, TOutput = unknown>
+  extends ManagedToolConfigBase<TContext, TInput, TOutput> {
+  context?: TContext;
+}
 
 export interface ManagedToolStats {
   initialized: boolean;

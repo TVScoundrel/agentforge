@@ -1244,7 +1244,8 @@ Implementation notes:
 - [x] Commit completed checklist items as logical commits and push updates
   - `971defa` fix(st-09032): tighten managed tool lifecycle contracts
   - `429950b` docs(st-09032): record validation and move story to in-review
-  - review-fix commit pending for context soundness and lifecycle test isolation follow-ups
+  - `47407dc` fix(st-09032): tighten lifecycle review follow-ups
+  - review-fix commit pending for public interface compatibility and test contract alignment follow-ups
 - [x] Mark PR Ready only after all story tasks are complete
   - PR #95 marked ready: https://github.com/TVScoundrel/agentforge/pull/95
 - [ ] Wait for merge; do not merge directly from local branch

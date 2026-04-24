@@ -18,7 +18,7 @@ describe('ManagedTool lifecycle', () => {
       context: { token: 'pending' },
       initialize,
       execute: async function (input: { count: number }) {
-        return `${this.context.token}:${input.count}`;
+        return `${this.context!.token}:${input.count}`;
       },
       autoCleanup: false,
     });
