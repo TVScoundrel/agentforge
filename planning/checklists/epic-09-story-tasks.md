@@ -1223,17 +1223,26 @@ Implementation notes:
 **Branch:** `fix/st-09032-managed-tool-lifecycle-contracts`
 
 ### Checklist
-- [ ] Create branch `fix/st-09032-managed-tool-lifecycle-contracts`
+- [x] Create branch `fix/st-09032-managed-tool-lifecycle-contracts` (`codex/fix/st-09032-managed-tool-lifecycle-contracts`)
 - [ ] Create draft PR with story ID in title
-- [ ] Replace broad lifecycle generics and metadata boundaries in `packages/core/src/tools/lifecycle.ts` with safer contracts
-- [ ] Preserve current managed-tool initialization, execution, cleanup, health-check, and LangChain interop behavior
-- [ ] Add/update focused tests for lifecycle hooks, health checks, stats, and process-exit cleanup behavior as needed
-- [ ] Record explicit-`any` warning deltas for touched files in story docs
-- [ ] Add or update story documentation at `docs/st09032-managed-tool-lifecycle-contracts.md` (or document why not required)
-- [ ] Assess test impact; add/update automated tests when needed, or document why tests are not required
-- [ ] Run full test suite before finalizing the PR and record results
-- [ ] Run lint (`pnpm lint`) before finalizing the PR and record results
+  - Draft PR pending branch push
+- [x] Replace broad lifecycle generics and metadata boundaries in `packages/core/src/tools/lifecycle.ts` with safer contracts
+  - Replaced broad `any` defaults with safer lifecycle defaults, aligned health metadata with shared JSON-safe payload types, and tightened LangChain interop typing without changing runtime behavior
+- [x] Preserve current managed-tool initialization, execution, cleanup, health-check, and LangChain interop behavior
+  - Managed-tool hooks, default health responses, periodic health checks, process-exit registration, and `toLangChainTool()` runtime shape are preserved
+- [x] Add/update focused tests for lifecycle hooks, health checks, stats, and process-exit cleanup behavior as needed
+  - `pnpm test --run packages/core/tests/tools/lifecycle.test.ts` -> `1 passed` file, `7 passed` tests
+- [x] Record explicit-`any` warning deltas for touched files in story docs
+  - Recorded in `docs/st09032-managed-tool-lifecycle-contracts.md`; workspace baseline improved to `170/289`, `core` improved to `53/119`
+- [x] Add or update story documentation at `docs/st09032-managed-tool-lifecycle-contracts.md` (or document why not required)
+- [x] Assess test impact; add/update automated tests when needed, or document why tests are not required
+  - Added a dedicated lifecycle suite plus source-included type regressions for typed context, execute inference, health metadata, and process-exit cleanup registration
+- [x] Run full test suite before finalizing the PR and record results
+  - `pnpm test --run` -> `163 passed | 16 skipped` files; `2233 passed | 286 skipped` tests
+- [x] Run lint (`pnpm lint`) before finalizing the PR and record results
+  - `pnpm lint` -> exit `0`; warnings only
 - [ ] Commit completed checklist items as logical commits and push updates
+  - `971defa` fix(st-09032): tighten managed tool lifecycle contracts
 - [ ] Mark PR Ready only after all story tasks are complete
 - [ ] Wait for merge; do not merge directly from local branch
 
