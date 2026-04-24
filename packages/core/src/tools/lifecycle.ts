@@ -83,19 +83,7 @@ export class ManagedTool<TContext = undefined, TInput = unknown, TOutput = unkno
     this.healthCheckInterval = config.healthCheckInterval;
     this._context = config.context;
 
-    // Register auto-cleanup on process exit so instances can release resources.
-    if (this.autoCleanup) {
-      this._beforeExitHandler = () => {
-        this.cleanup().catch(err =>
-          logger.error('Cleanup failed', {
-            toolName: this.name,
-            error: getErrorMessage(err),
-            ...(err instanceof Error && err.stack ? { stack: err.stack } : {})
-          })
-        );
-      };
-      process.on('beforeExit', this._beforeExitHandler);
-    }
+    this.ensureBeforeExitHandler();
   }
 
   /**
@@ -126,6 +114,8 @@ export class ManagedTool<TContext = undefined, TInput = unknown, TOutput = unkno
     if (this._initialized || this._cleaningUp) {
       return;
     }
+
+    this.ensureBeforeExitHandler();
 
     if (this.initializeFn) {
       await this.initializeFn();
@@ -325,6 +315,24 @@ export class ManagedTool<TContext = undefined, TInput = unknown, TOutput = unkno
     } finally {
       this._healthCheckInFlight = false;
     }
+  }
+
+  private ensureBeforeExitHandler(): void {
+    if (!this.autoCleanup || this._beforeExitHandler) {
+      return;
+    }
+
+    // Register auto-cleanup on process exit so instances can release resources.
+    this._beforeExitHandler = () => {
+      this.cleanup().catch(err =>
+        logger.error('Cleanup failed', {
+          toolName: this.name,
+          error: getErrorMessage(err),
+          ...(err instanceof Error && err.stack ? { stack: err.stack } : {})
+        })
+      );
+    };
+    process.on('beforeExit', this._beforeExitHandler);
   }
 }
 
