@@ -118,7 +118,16 @@ export class ManagedTool<TContext = undefined, TInput = unknown, TOutput = unkno
       return;
     }
 
-    if (this._initialized || this._cleaningUp) {
+    if (this._cleanupPromise) {
+      await this._cleanupPromise;
+
+      if (this._initializePromise) {
+        await this._initializePromise;
+        return;
+      }
+    }
+
+    if (this._initialized) {
       return;
     }
 

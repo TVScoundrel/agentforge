@@ -491,8 +491,9 @@ describe('ManagedTool lifecycle', () => {
     });
   });
 
-  it('treats cleanup as single-flight while teardown is still awaiting', async () => {
+  it('waits for in-flight cleanup before reinitializing', async () => {
     let resolveCleanup: (() => void) | undefined;
+    const initialize = vi.fn(async () => {});
     const cleanup = vi.fn(
       () =>
         new Promise<void>((resolve) => {
@@ -503,27 +504,30 @@ describe('ManagedTool lifecycle', () => {
     const tool = createManagedTool({
       name: 'managed-single-flight-cleanup',
       description: 'Managed single-flight cleanup fixture',
+      initialize,
       execute: async () => 'ok',
       cleanup,
       autoCleanup: false,
     });
 
     await tool.initialize();
+    expect(initialize).toHaveBeenCalledTimes(1);
 
     const firstCleanup = tool.cleanup();
     const secondCleanup = tool.cleanup();
+    const firstReinitialize = tool.initialize();
+    const secondReinitialize = tool.initialize();
 
     expect(tool.initialized).toBe(false);
 
-    await tool.initialize();
     expect(cleanup).toHaveBeenCalledTimes(1);
     expect(tool.initialized).toBe(false);
 
     resolveCleanup?.();
-    await Promise.all([firstCleanup, secondCleanup]);
+    await Promise.all([firstCleanup, secondCleanup, firstReinitialize, secondReinitialize]);
 
-    await tool.initialize();
     expect(tool.initialized).toBe(true);
+    expect(initialize).toHaveBeenCalledTimes(2);
   });
 
   it('ignores a late periodic health-check result from a prior lifecycle after reinitialize', async () => {
