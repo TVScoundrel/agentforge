@@ -1254,6 +1254,7 @@ Implementation notes:
   - `8f6098a` fix(st-09032): guard health checks across reuse
   - `3dc1fc0` fix(st-09032): make initialize single-flight
   - `e259ec2` fix(st-09032): coordinate cleanup with initialization
+  - `301c96e` fix(st-09032): wait for cleanup before initialize
 - [x] Mark PR Ready only after all story tasks are complete
   - PR #95 marked ready: https://github.com/TVScoundrel/agentforge/pull/95
 - [ ] Wait for merge; do not merge directly from local branch
