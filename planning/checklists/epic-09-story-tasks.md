@@ -1223,18 +1223,40 @@ Implementation notes:
 **Branch:** `fix/st-09032-managed-tool-lifecycle-contracts`
 
 ### Checklist
-- [ ] Create branch `fix/st-09032-managed-tool-lifecycle-contracts`
-- [ ] Create draft PR with story ID in title
-- [ ] Replace broad lifecycle generics and metadata boundaries in `packages/core/src/tools/lifecycle.ts` with safer contracts
-- [ ] Preserve current managed-tool initialization, execution, cleanup, health-check, and LangChain interop behavior
-- [ ] Add/update focused tests for lifecycle hooks, health checks, stats, and process-exit cleanup behavior as needed
-- [ ] Record explicit-`any` warning deltas for touched files in story docs
-- [ ] Add or update story documentation at `docs/st09032-managed-tool-lifecycle-contracts.md` (or document why not required)
-- [ ] Assess test impact; add/update automated tests when needed, or document why tests are not required
-- [ ] Run full test suite before finalizing the PR and record results
-- [ ] Run lint (`pnpm lint`) before finalizing the PR and record results
-- [ ] Commit completed checklist items as logical commits and push updates
-- [ ] Mark PR Ready only after all story tasks are complete
+- [x] Create branch `fix/st-09032-managed-tool-lifecycle-contracts` (`codex/fix/st-09032-managed-tool-lifecycle-contracts`)
+- [x] Create draft PR with story ID in title
+  - Draft PR #95: https://github.com/TVScoundrel/agentforge/pull/95
+- [x] Replace broad lifecycle generics and metadata boundaries in `packages/core/src/tools/lifecycle.ts` with safer contracts
+  - Replaced broad `any` defaults with safer lifecycle defaults, aligned health metadata with shared JSON-safe payload types, and tightened LangChain interop typing without changing runtime behavior
+- [x] Preserve current managed-tool initialization, execution, cleanup, health-check, and LangChain interop behavior
+  - Managed-tool hooks, default health responses, process-exit registration, and `toLangChainTool()` runtime shape are preserved; periodic health checks now run single-flight to avoid overlapping status updates, auto-cleanup listeners are removed during teardown even before initialization, teardown blocks stale health-status writes once cleanup begins, repeated `cleanup()` calls now share a single teardown pass, concurrent `initialize()` calls now share a single setup pass, cleanup waits for in-flight initialization before tearing down, initialize waits for in-flight cleanup before reinitializing, reusable tools re-register auto-cleanup on re-initialize, and stale health-check results from prior lifecycles are ignored after cleanup/reinitialize boundaries
+- [x] Add/update focused tests for lifecycle hooks, health checks, stats, and process-exit cleanup behavior as needed
+  - `pnpm test --run packages/core/tests/tools/lifecycle.test.ts` -> `1 passed` file, `18 passed` tests
+- [x] Record explicit-`any` warning deltas for touched files in story docs
+  - Recorded in `docs/st09032-managed-tool-lifecycle-contracts.md`; workspace baseline improved to `170/289`, `core` improved to `53/119`
+- [x] Add or update story documentation at `docs/st09032-managed-tool-lifecycle-contracts.md` (or document why not required)
+- [x] Assess test impact; add/update automated tests when needed, or document why tests are not required
+  - Added a dedicated lifecycle suite plus source-included type regressions for typed context, execute inference, health metadata, and process-exit cleanup registration
+- [x] Run full test suite before finalizing the PR and record results
+  - `pnpm test --run` -> `163 passed | 16 skipped` files; `2233 passed | 286 skipped` tests
+- [x] Run lint (`pnpm lint`) before finalizing the PR and record results
+  - `pnpm lint` -> exit `0`; warnings only
+- [x] Commit completed checklist items as logical commits and push updates
+  - `971defa` fix(st-09032): tighten managed tool lifecycle contracts
+  - `429950b` docs(st-09032): record validation and move story to in-review
+  - `47407dc` fix(st-09032): tighten lifecycle review follow-ups
+  - `0b55206` fix(st-09032): preserve lifecycle public interface
+  - `d619cba` fix(st-09032): harden lifecycle background hooks
+  - `4a41ea6` fix(st-09032): handle lifecycle cleanup races
+  - `ad63eee` fix(st-09032): block stale health updates during cleanup
+  - `c2ea15d` fix(st-09032): make cleanup single-flight
+  - `f9a5c93` fix(st-09032): restore cleanup reuse auto-cleanup
+  - `8f6098a` fix(st-09032): guard health checks across reuse
+  - `3dc1fc0` fix(st-09032): make initialize single-flight
+  - `e259ec2` fix(st-09032): coordinate cleanup with initialization
+  - `301c96e` fix(st-09032): wait for cleanup before initialize
+- [x] Mark PR Ready only after all story tasks are complete
+  - PR #95 marked ready: https://github.com/TVScoundrel/agentforge/pull/95
 - [ ] Wait for merge; do not merge directly from local branch
 
 ---
