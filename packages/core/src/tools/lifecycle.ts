@@ -3,6 +3,7 @@
  * @module tools/lifecycle
  */
 
+import type { JsonObject } from '../langgraph/observability/payload.js';
 import { createLogger, LogLevel } from '../langgraph/observability/logger.js';
 
 const logger = createLogger('agentforge:core:tools:lifecycle', { level: LogLevel.INFO });
@@ -10,10 +11,10 @@ const logger = createLogger('agentforge:core:tools:lifecycle', { level: LogLevel
 export interface ToolHealthCheckResult {
   healthy: boolean;
   error?: string;
-  metadata?: Record<string, any>;
+  metadata?: JsonObject;
 }
 
-export interface ManagedToolConfig<TContext = any, TInput = any, TOutput = any> {
+export interface ManagedToolConfig<TContext = undefined, TInput = unknown, TOutput = unknown> {
   name: string;
   description: string;
   initialize?: (this: ManagedTool<TContext, TInput, TOutput>) => Promise<void>;
@@ -43,7 +44,7 @@ export interface ManagedToolStats {
 /**
  * Managed tool with lifecycle hooks
  */
-export class ManagedTool<TContext = any, TInput = any, TOutput = any> {
+export class ManagedTool<TContext = undefined, TInput = unknown, TOutput = unknown> {
   public readonly name: string;
   public readonly description: string;
   private readonly initializeFn?: () => Promise<void>;
@@ -80,7 +81,7 @@ export class ManagedTool<TContext = any, TInput = any, TOutput = any> {
         this.cleanup().catch(err =>
           logger.error('Cleanup failed', {
             toolName: this.name,
-            error: err instanceof Error ? err.message : String(err),
+            error: getErrorMessage(err),
             ...(err instanceof Error && err.stack ? { stack: err.stack } : {})
           })
         );
@@ -134,7 +135,7 @@ export class ManagedTool<TContext = any, TInput = any, TOutput = any> {
         } catch (error) {
           this._stats.lastHealthCheck = {
             healthy: false,
-            error: (error as Error).message,
+            error: getErrorMessage(error),
           };
           this._stats.lastHealthCheckTime = Date.now();
         }
@@ -213,7 +214,7 @@ export class ManagedTool<TContext = any, TInput = any, TOutput = any> {
     } catch (error) {
       const result: ToolHealthCheckResult = {
         healthy: false,
-        error: (error as Error).message,
+        error: getErrorMessage(error),
       };
       this._stats.lastHealthCheck = result;
       this._stats.lastHealthCheckTime = Date.now();
@@ -241,7 +242,11 @@ export class ManagedTool<TContext = any, TInput = any, TOutput = any> {
   /**
    * Convert to LangChain tool format
    */
-  toLangChainTool() {
+  toLangChainTool(): {
+    name: string;
+    description: string;
+    invoke: (input: TInput) => Promise<TOutput>;
+  } {
     return {
       name: this.name,
       description: this.description,
@@ -255,8 +260,12 @@ export class ManagedTool<TContext = any, TInput = any, TOutput = any> {
 /**
  * Create a managed tool
  */
-export function createManagedTool<TContext = any, TInput = any, TOutput = any>(
+export function createManagedTool<TContext = undefined, TInput = unknown, TOutput = unknown>(
   config: ManagedToolConfig<TContext, TInput, TOutput>
 ): ManagedTool<TContext, TInput, TOutput> {
   return new ManagedTool(config);
+}
+
+function getErrorMessage(error: unknown): string {
+  return error instanceof Error ? error.message : String(error);
 }

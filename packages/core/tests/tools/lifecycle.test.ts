@@ -1,0 +1,169 @@
+import { afterEach, describe, expect, it, vi } from 'vitest';
+import { createManagedTool } from '../../src/tools/lifecycle.js';
+
+describe('ManagedTool lifecycle', () => {
+  afterEach(() => {
+    vi.restoreAllMocks();
+    vi.useRealTimers();
+  });
+
+  it('initializes once and executes through the managed wrapper', async () => {
+    const initialize = vi.fn(async function () {
+      this.context = { token: 'ready' };
+    });
+
+    const tool = createManagedTool({
+      name: 'managed-init',
+      description: 'Managed init fixture',
+      context: { token: 'pending' },
+      initialize,
+      execute: async function (input: { count: number }) {
+        return `${this.context.token}:${input.count}`;
+      },
+      autoCleanup: false,
+    });
+
+    await tool.initialize();
+    await tool.initialize();
+
+    await expect(tool.execute({ count: 3 })).resolves.toBe('ready:3');
+    expect(initialize).toHaveBeenCalledTimes(1);
+    expect(tool.getStats().initialized).toBe(true);
+  });
+
+  it('tracks successful and failed executions', async () => {
+    const tool = createManagedTool({
+      name: 'managed-stats',
+      description: 'Managed stats fixture',
+      execute: async ({ shouldFail }: { shouldFail: boolean }) => {
+        if (shouldFail) {
+          throw new Error('boom');
+        }
+
+        return 'ok';
+      },
+      autoCleanup: false,
+    });
+
+    await tool.initialize();
+
+    await expect(tool.execute({ shouldFail: false })).resolves.toBe('ok');
+    await expect(tool.execute({ shouldFail: true })).rejects.toThrow('boom');
+
+    expect(tool.getStats()).toMatchObject({
+      totalExecutions: 2,
+      successfulExecutions: 1,
+      failedExecutions: 1,
+    });
+    expect(tool.getStats().lastExecutionTime).toBeTypeOf('number');
+  });
+
+  it('returns default health metadata when no health check is configured', async () => {
+    const tool = createManagedTool({
+      name: 'managed-default-health',
+      description: 'Managed default health fixture',
+      execute: async () => 'ok',
+      autoCleanup: false,
+    });
+
+    await tool.initialize();
+
+    await expect(tool.healthCheck()).resolves.toEqual({
+      healthy: true,
+      metadata: { message: 'No health check configured' },
+    });
+  });
+
+  it('records configured health checks and periodic updates', async () => {
+    vi.useFakeTimers();
+
+    const healthCheck = vi
+      .fn<() => Promise<{ healthy: boolean; metadata: { run: number } }>>()
+      .mockResolvedValueOnce({ healthy: true, metadata: { run: 1 } })
+      .mockResolvedValueOnce({ healthy: true, metadata: { run: 2 } });
+
+    const tool = createManagedTool({
+      name: 'managed-health',
+      description: 'Managed health fixture',
+      execute: async () => 'ok',
+      healthCheck,
+      healthCheckInterval: 50,
+      autoCleanup: false,
+    });
+
+    await tool.initialize();
+    await expect(tool.healthCheck()).resolves.toEqual({
+      healthy: true,
+      metadata: { run: 1 },
+    });
+
+    await vi.advanceTimersByTimeAsync(50);
+
+    expect(tool.getStats().lastHealthCheck).toEqual({
+      healthy: true,
+      metadata: { run: 2 },
+    });
+    expect(tool.getStats().lastHealthCheckTime).toBeTypeOf('number');
+  });
+
+  it('stops periodic health checks during cleanup and runs cleanup hooks', async () => {
+    vi.useFakeTimers();
+
+    const cleanup = vi.fn(async () => {});
+    const healthCheck = vi.fn(async () => ({ healthy: true }));
+
+    const tool = createManagedTool({
+      name: 'managed-cleanup',
+      description: 'Managed cleanup fixture',
+      execute: async () => 'ok',
+      cleanup,
+      healthCheck,
+      healthCheckInterval: 25,
+      autoCleanup: false,
+    });
+
+    await tool.initialize();
+    await vi.advanceTimersByTimeAsync(25);
+    expect(healthCheck).toHaveBeenCalledTimes(1);
+
+    await tool.cleanup();
+    await vi.advanceTimersByTimeAsync(100);
+
+    expect(cleanup).toHaveBeenCalledTimes(1);
+    expect(healthCheck).toHaveBeenCalledTimes(1);
+    expect(tool.initialized).toBe(false);
+  });
+
+  it('registers beforeExit cleanup when autoCleanup is enabled', async () => {
+    const processOn = vi.spyOn(process, 'on');
+    const cleanup = vi.fn(async () => {});
+
+    const tool = createManagedTool({
+      name: 'managed-auto-cleanup',
+      description: 'Managed auto cleanup fixture',
+      execute: async () => 'ok',
+      cleanup,
+    });
+
+    const beforeExitHandler = processOn.mock.calls.find(([event]) => event === 'beforeExit')?.[1];
+
+    expect(beforeExitHandler).toBeTypeOf('function');
+
+    await tool.initialize();
+    beforeExitHandler?.();
+    await vi.waitFor(() => expect(cleanup).toHaveBeenCalledTimes(1));
+  });
+
+  it('exposes a LangChain-style invoke wrapper around execute', async () => {
+    const tool = createManagedTool({
+      name: 'managed-langchain',
+      description: 'Managed langchain fixture',
+      execute: async ({ value }: { value: string }) => value.toUpperCase(),
+      autoCleanup: false,
+    });
+
+    await tool.initialize();
+
+    await expect(tool.toLangChainTool().invoke({ value: 'mixed' })).resolves.toBe('MIXED');
+  });
+});
