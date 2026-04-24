@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import { createManagedTool } from '../../src/tools/lifecycle.js';
+import { createManagedTool, type ToolHealthCheckResult } from '../../src/tools/lifecycle.js';
 
 describe('ManagedTool lifecycle', () => {
   afterEach(() => {
@@ -198,6 +198,22 @@ describe('ManagedTool lifecycle', () => {
     expect(processOff).toHaveBeenCalledWith('beforeExit', expect.any(Function));
   });
 
+  it('removes the beforeExit listener even if cleanup happens before initialize', async () => {
+    const processOn = vi.spyOn(process, 'on').mockImplementation(() => process);
+    const processOff = vi.spyOn(process, 'off').mockImplementation(() => process);
+
+    const tool = createManagedTool({
+      name: 'managed-preinit-cleanup',
+      description: 'Managed preinit cleanup fixture',
+      execute: async () => 'ok',
+    });
+
+    await tool.cleanup();
+
+    expect(processOn).toHaveBeenCalledWith('beforeExit', expect.any(Function));
+    expect(processOff).toHaveBeenCalledWith('beforeExit', expect.any(Function));
+  });
+
   it('exposes a LangChain-style invoke wrapper around execute', async () => {
     const tool = createManagedTool({
       name: 'managed-langchain',
@@ -209,5 +225,38 @@ describe('ManagedTool lifecycle', () => {
     await tool.initialize();
 
     await expect(tool.toLangChainTool().invoke({ value: 'mixed' })).resolves.toBe('MIXED');
+  });
+
+  it('does not update health stats after cleanup if a periodic health check resolves late', async () => {
+    vi.useFakeTimers();
+
+    let resolveHealthCheck: (() => void) | undefined;
+    const healthCheck = vi.fn(
+      () =>
+        new Promise<ToolHealthCheckResult>((resolve) => {
+          resolveHealthCheck = () => resolve({ healthy: true, metadata: { run: 1 } });
+        })
+    );
+
+    const tool = createManagedTool({
+      name: 'managed-health-cleanup-race',
+      description: 'Managed health cleanup race fixture',
+      execute: async () => 'ok',
+      healthCheck,
+      healthCheckInterval: 50,
+      autoCleanup: false,
+    });
+
+    await tool.initialize();
+    await vi.advanceTimersByTimeAsync(50);
+    expect(healthCheck).toHaveBeenCalledTimes(1);
+
+    await tool.cleanup();
+    resolveHealthCheck?.();
+    await vi.runAllTicks();
+
+    expect(tool.initialized).toBe(false);
+    expect(tool.getStats().lastHealthCheck).toBeUndefined();
+    expect(tool.getStats().lastHealthCheckTime).toBeUndefined();
   });
 });

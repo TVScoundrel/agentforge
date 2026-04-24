@@ -1229,9 +1229,9 @@ Implementation notes:
 - [x] Replace broad lifecycle generics and metadata boundaries in `packages/core/src/tools/lifecycle.ts` with safer contracts
   - Replaced broad `any` defaults with safer lifecycle defaults, aligned health metadata with shared JSON-safe payload types, and tightened LangChain interop typing without changing runtime behavior
 - [x] Preserve current managed-tool initialization, execution, cleanup, health-check, and LangChain interop behavior
-  - Managed-tool hooks, default health responses, process-exit registration, and `toLangChainTool()` runtime shape are preserved; periodic health checks now run single-flight to avoid overlapping status updates
+  - Managed-tool hooks, default health responses, process-exit registration, and `toLangChainTool()` runtime shape are preserved; periodic health checks now run single-flight to avoid overlapping status updates, and auto-cleanup listeners are removed during teardown even before initialization
 - [x] Add/update focused tests for lifecycle hooks, health checks, stats, and process-exit cleanup behavior as needed
-  - `pnpm test --run packages/core/tests/tools/lifecycle.test.ts` -> `1 passed` file, `8 passed` tests
+  - `pnpm test --run packages/core/tests/tools/lifecycle.test.ts` -> `1 passed` file, `10 passed` tests
 - [x] Record explicit-`any` warning deltas for touched files in story docs
   - Recorded in `docs/st09032-managed-tool-lifecycle-contracts.md`; workspace baseline improved to `170/289`, `core` improved to `53/119`
 - [x] Add or update story documentation at `docs/st09032-managed-tool-lifecycle-contracts.md` (or document why not required)
@@ -1246,7 +1246,8 @@ Implementation notes:
   - `429950b` docs(st-09032): record validation and move story to in-review
   - `47407dc` fix(st-09032): tighten lifecycle review follow-ups
   - `0b55206` fix(st-09032): preserve lifecycle public interface
-  - review-fix commit pending for auto-cleanup listener and periodic health-check follow-ups
+  - `d619cba` fix(st-09032): harden lifecycle background hooks
+  - review-fix commit pending for cleanup-before-initialize and late health-check teardown follow-ups
 - [x] Mark PR Ready only after all story tasks are complete
   - PR #95 marked ready: https://github.com/TVScoundrel/agentforge/pull/95
 - [ ] Wait for merge; do not merge directly from local branch
