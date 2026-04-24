@@ -372,6 +372,47 @@ describe('ManagedTool lifecycle', () => {
     await cleanupPromise;
   });
 
+  it('ignores a late manual health-check result from a prior lifecycle after reinitialize', async () => {
+    let resolveFirstHealthCheck: (() => void) | undefined;
+    const healthCheck = vi
+      .fn<() => Promise<ToolHealthCheckResult>>()
+      .mockImplementationOnce(
+        () =>
+          new Promise<ToolHealthCheckResult>((resolve) => {
+            resolveFirstHealthCheck = () => resolve({ healthy: true, metadata: { run: 1 } });
+          })
+      )
+      .mockResolvedValueOnce({ healthy: true, metadata: { run: 2 } });
+
+    const tool = createManagedTool({
+      name: 'managed-manual-health-lifecycle-generation',
+      description: 'Managed manual health generation fixture',
+      execute: async () => 'ok',
+      healthCheck,
+      autoCleanup: false,
+    });
+
+    await tool.initialize();
+    const firstHealthCheck = tool.healthCheck();
+    await tool.cleanup();
+    await tool.initialize();
+
+    resolveFirstHealthCheck?.();
+    await expect(firstHealthCheck).resolves.toEqual({
+      healthy: false,
+      error: 'Tool is not initialized',
+    });
+
+    await expect(tool.healthCheck()).resolves.toEqual({
+      healthy: true,
+      metadata: { run: 2 },
+    });
+    expect(tool.getStats().lastHealthCheck).toEqual({
+      healthy: true,
+      metadata: { run: 2 },
+    });
+  });
+
   it('treats cleanup as single-flight while teardown is still awaiting', async () => {
     let resolveCleanup: (() => void) | undefined;
     const cleanup = vi.fn(
@@ -405,5 +446,47 @@ describe('ManagedTool lifecycle', () => {
 
     await tool.initialize();
     expect(tool.initialized).toBe(true);
+  });
+
+  it('ignores a late periodic health-check result from a prior lifecycle after reinitialize', async () => {
+    vi.useFakeTimers();
+
+    let resolveFirstHealthCheck: (() => void) | undefined;
+    const healthCheck = vi
+      .fn<() => Promise<ToolHealthCheckResult>>()
+      .mockImplementationOnce(
+        () =>
+          new Promise<ToolHealthCheckResult>((resolve) => {
+            resolveFirstHealthCheck = () => resolve({ healthy: true, metadata: { run: 1 } });
+          })
+      )
+      .mockResolvedValueOnce({ healthy: true, metadata: { run: 2 } });
+
+    const tool = createManagedTool({
+      name: 'managed-periodic-health-lifecycle-generation',
+      description: 'Managed periodic health generation fixture',
+      execute: async () => 'ok',
+      healthCheck,
+      healthCheckInterval: 50,
+      autoCleanup: false,
+    });
+
+    await tool.initialize();
+    await vi.advanceTimersByTimeAsync(50);
+    expect(healthCheck).toHaveBeenCalledTimes(1);
+
+    await tool.cleanup();
+    await tool.initialize();
+
+    resolveFirstHealthCheck?.();
+    await vi.runAllTicks();
+    expect(tool.getStats().lastHealthCheck).toBeUndefined();
+
+    await vi.advanceTimersByTimeAsync(50);
+    expect(healthCheck).toHaveBeenCalledTimes(2);
+    expect(tool.getStats().lastHealthCheck).toEqual({
+      healthy: true,
+      metadata: { run: 2 },
+    });
   });
 });

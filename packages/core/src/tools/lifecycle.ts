@@ -71,6 +71,7 @@ export class ManagedTool<TContext = undefined, TInput = unknown, TOutput = unkno
   private _healthCheckInFlight = false;
   private _cleaningUp = false;
   private _cleanupPromise?: Promise<void>;
+  private _lifecycleGeneration = 0;
 
   constructor(config: ManagedToolConfig<TContext, TInput, TOutput>) {
     this.name = config.name;
@@ -116,6 +117,7 @@ export class ManagedTool<TContext = undefined, TInput = unknown, TOutput = unkno
     }
 
     this.ensureBeforeExitHandler();
+    this._lifecycleGeneration++;
 
     if (this.initializeFn) {
       await this.initializeFn();
@@ -227,9 +229,15 @@ export class ManagedTool<TContext = undefined, TInput = unknown, TOutput = unkno
       };
     }
 
+    const lifecycleGeneration = this._lifecycleGeneration;
+
     try {
       const result = await this.healthCheckFn();
-      if (!this._initialized || this._cleaningUp) {
+      if (
+        !this._initialized ||
+        this._cleaningUp ||
+        this._lifecycleGeneration !== lifecycleGeneration
+      ) {
         return {
           healthy: false,
           error: 'Tool is not initialized',
@@ -239,7 +247,11 @@ export class ManagedTool<TContext = undefined, TInput = unknown, TOutput = unkno
       this._stats.lastHealthCheckTime = Date.now();
       return result;
     } catch (error) {
-      if (!this._initialized || this._cleaningUp) {
+      if (
+        !this._initialized ||
+        this._cleaningUp ||
+        this._lifecycleGeneration !== lifecycleGeneration
+      ) {
         return {
           healthy: false,
           error: 'Tool is not initialized',
@@ -295,16 +307,25 @@ export class ManagedTool<TContext = undefined, TInput = unknown, TOutput = unkno
     }
 
     this._healthCheckInFlight = true;
+    const lifecycleGeneration = this._lifecycleGeneration;
 
     try {
       const result = await this.healthCheckFn();
-      if (!this._initialized || this._cleaningUp) {
+      if (
+        !this._initialized ||
+        this._cleaningUp ||
+        this._lifecycleGeneration !== lifecycleGeneration
+      ) {
         return;
       }
       this._stats.lastHealthCheck = result;
       this._stats.lastHealthCheckTime = Date.now();
     } catch (error) {
-      if (!this._initialized || this._cleaningUp) {
+      if (
+        !this._initialized ||
+        this._cleaningUp ||
+        this._lifecycleGeneration !== lifecycleGeneration
+      ) {
         return;
       }
       this._stats.lastHealthCheck = {
