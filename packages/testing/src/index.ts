@@ -101,5 +101,8 @@ export {
   compareStates,
   createStateDiff,
   assertStateChanged,
+  type MessageSnapshot,
   type SnapshotConfig,
+  type SnapshotDiff,
+  type SnapshotObject,
 } from './runners/snapshot-testing.js';

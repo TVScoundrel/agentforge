@@ -1,5 +1,18 @@
-import { BaseMessage } from '@langchain/core/messages';
+import type { BaseMessage } from '@langchain/core/messages';
 import { expect } from 'vitest';
+
+export type SnapshotObject = Record<string, unknown>;
+
+export interface SnapshotDiff {
+  added: SnapshotObject;
+  removed: SnapshotObject;
+  changed: Record<string, { from: unknown; to: unknown }>;
+}
+
+export interface MessageSnapshot {
+  type: string;
+  content: BaseMessage['content'];
+}
 
 /**
  * Snapshot configuration
@@ -28,13 +41,13 @@ export interface SnapshotConfig {
   /**
    * Custom normalizer function
    */
-  normalizer?: (value: any) => any;
+  normalizer?: (value: unknown) => unknown;
 }
 
 /**
  * Normalize a value for snapshot testing
  */
-function normalizeValue(value: any, config: SnapshotConfig): any {
+function normalizeValue(value: unknown, config: SnapshotConfig): unknown {
   if (value === null || value === undefined) {
     return value;
   }
@@ -66,7 +79,7 @@ function normalizeValue(value: any, config: SnapshotConfig): any {
   
   // Recursively normalize objects
   if (typeof value === 'object' && !Array.isArray(value)) {
-    const normalized: any = {};
+    const normalized: SnapshotObject = {};
     
     for (const [key, val] of Object.entries(value)) {
       // Skip excluded fields
@@ -93,10 +106,17 @@ function normalizeValue(value: any, config: SnapshotConfig): any {
   return value;
 }
 
+function toSnapshotObject(value: unknown): SnapshotObject {
+  return Object(value) as SnapshotObject;
+}
+
 /**
  * Create a snapshot of state
  */
-export function createSnapshot(state: any, config: SnapshotConfig = {}): any {
+export function createSnapshot<TState = unknown>(
+  state: TState,
+  config: SnapshotConfig = {}
+): unknown {
   return normalizeValue(state, {
     normalizeTimestamps: true,
     normalizeIds: true,
@@ -107,7 +127,10 @@ export function createSnapshot(state: any, config: SnapshotConfig = {}): any {
 /**
  * Assert that state matches snapshot
  */
-export function assertMatchesSnapshot(state: any, config?: SnapshotConfig): void {
+export function assertMatchesSnapshot<TState = unknown>(
+  state: TState,
+  config?: SnapshotConfig
+): void {
   const snapshot = createSnapshot(state, config);
   expect(snapshot).toMatchSnapshot();
 }
@@ -115,7 +138,12 @@ export function assertMatchesSnapshot(state: any, config?: SnapshotConfig): void
 /**
  * Create a snapshot of messages
  */
-export function createMessageSnapshot(messages: BaseMessage[], config?: SnapshotConfig): any {
+export function createMessageSnapshot(
+  messages: BaseMessage[],
+  config?: SnapshotConfig
+): MessageSnapshot[] {
+  void config;
+
   return messages.map((msg) => ({
     type: msg._getType(),
     content: msg.content,
@@ -133,7 +161,11 @@ export function assertMessagesMatchSnapshot(messages: BaseMessage[], config?: Sn
 /**
  * Compare two states for equality
  */
-export function compareStates(state1: any, state2: any, config?: SnapshotConfig): boolean {
+export function compareStates<TState1 = unknown, TState2 = unknown>(
+  state1: TState1,
+  state2: TState2,
+  config?: SnapshotConfig
+): boolean {
   const snapshot1 = createSnapshot(state1, config);
   const snapshot2 = createSnapshot(state2, config);
   
@@ -143,29 +175,35 @@ export function compareStates(state1: any, state2: any, config?: SnapshotConfig)
 /**
  * Create a diff between two states
  */
-export function createStateDiff(state1: any, state2: any, config?: SnapshotConfig): any {
+export function createStateDiff<TState1 = unknown, TState2 = unknown>(
+  state1: TState1,
+  state2: TState2,
+  config?: SnapshotConfig
+): SnapshotDiff {
   const snapshot1 = createSnapshot(state1, config);
   const snapshot2 = createSnapshot(state2, config);
+  const snapshot1Object = toSnapshotObject(snapshot1);
+  const snapshot2Object = toSnapshotObject(snapshot2);
   
-  const diff: any = {
+  const diff: SnapshotDiff = {
     added: {},
     removed: {},
     changed: {},
   };
   
   // Find added and changed fields
-  for (const [key, value] of Object.entries(snapshot2)) {
-    if (!(key in snapshot1)) {
+  for (const [key, value] of Object.entries(snapshot2Object)) {
+    if (!(key in snapshot1Object)) {
       diff.added[key] = value;
-    } else if (JSON.stringify(snapshot1[key]) !== JSON.stringify(value)) {
-      diff.changed[key] = { from: snapshot1[key], to: value };
+    } else if (JSON.stringify(snapshot1Object[key]) !== JSON.stringify(value)) {
+      diff.changed[key] = { from: snapshot1Object[key], to: value };
     }
   }
   
   // Find removed fields
-  for (const key of Object.keys(snapshot1)) {
-    if (!(key in snapshot2)) {
-      diff.removed[key] = snapshot1[key];
+  for (const key of Object.keys(snapshot1Object)) {
+    if (!(key in snapshot2Object)) {
+      diff.removed[key] = snapshot1Object[key];
     }
   }
   
@@ -175,9 +213,9 @@ export function createStateDiff(state1: any, state2: any, config?: SnapshotConfi
 /**
  * Assert that state has changed
  */
-export function assertStateChanged(
-  stateBefore: any,
-  stateAfter: any,
+export function assertStateChanged<TStateBefore = unknown, TStateAfter = unknown>(
+  stateBefore: TStateBefore,
+  stateAfter: TStateAfter,
   expectedChanges: string[],
   config?: SnapshotConfig
 ): void {
@@ -187,4 +225,3 @@ export function assertStateChanged(
     expect(diff.changed).toHaveProperty(field);
   });
 }
-
