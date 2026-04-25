@@ -5,6 +5,41 @@ All notable changes to AgentForge will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.16.20] - 2026-04-25
+
+### Added
+
+#### @agentforge/testing - Snapshot Runner Contract Coverage
+- Added focused runtime coverage in `packages/testing/tests/runners/snapshot-testing.test.ts` for snapshot normalization, include/exclude filtering, custom normalizer ordering, state comparison, state diffs, root-level diffs, prototype-sensitive keys, non-plain object roots, and LangChain message snapshots
+- Added story documentation in `docs/st09034-snapshot-testing-runner-contracts.md` covering the snapshot runner contract changes, compatibility notes, explicit-`any` delta, and validation record
+
+### Changed
+
+#### @agentforge/testing - Snapshot Runner Contract Hardening
+- Tightened snapshot runner APIs around unknown-first state inputs, typed snapshot objects and diffs, and normalized message snapshot output
+- Added exported snapshot runner contracts: `SnapshotObject`, `SnapshotDiff`, `MessageSnapshot`, and `ROOT_SNAPSHOT_DIFF_KEY`
+- Widened `MessageSnapshot.content` to `unknown` so the exported type matches normalized snapshot output after filters and custom normalizers
+- Preserved non-plain object roots such as `Date`, `Map`, and `RegExp` instead of rebuilding them from enumerable entries; root diffs now use the explicit `$root` diff key
+
+### Fixed
+
+#### @agentforge/testing - Snapshot Diff and Normalization Safety
+- Removed object coercion paths that could hide primitive, array, `null`, or `undefined` root changes in state diffs
+- Applied custom normalizers before built-in timestamp, UUID, recursive, and field-filter normalization instead of bypassing built-in normalization
+- Applied configured snapshot normalization to LangChain message content while preserving the `{ type, content }` message snapshot shape
+- Hardened normalized snapshot objects and diff containers with null-prototype containers so prototype-sensitive keys remain data
+- Replaced JSON-stringified snapshot equality with deep equality to avoid key-order false negatives and `bigint` stringify failures
+- Lowered the workspace explicit-`any` baseline from `170` to `153` and the `testing` package baseline from `31` to `14`
+
+### Published
+- All packages published to npm registry at version 0.16.20:
+  - @agentforge/core@0.16.20
+  - @agentforge/skills@0.16.20
+  - @agentforge/patterns@0.16.20
+  - @agentforge/tools@0.16.20
+  - @agentforge/testing@0.16.20
+  - @agentforge/cli@0.16.20
+
 ## [0.16.19] - 2026-04-24
 
 ### Added

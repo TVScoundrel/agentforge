@@ -16,8 +16,8 @@
     "format": "prettier --write ."
   },
   "dependencies": {
-    "@agentforge/core": "^0.16.19",
-    "@agentforge/patterns": "^0.16.19",
+    "@agentforge/core": "^0.16.20",
+    "@agentforge/patterns": "^0.16.20",
     "@langchain/core": "^1.1.17",
     "@langchain/langgraph": "^1.1.2",
     "@langchain/openai": "^1.2.3",
