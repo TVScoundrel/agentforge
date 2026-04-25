@@ -17,6 +17,10 @@ export interface MessageSnapshot {
 
 export const ROOT_SNAPSHOT_DIFF_KEY = '$root';
 
+function createSnapshotObject(): SnapshotObject {
+  return Object.create(null) as SnapshotObject;
+}
+
 /**
  * Snapshot configuration
  */
@@ -79,7 +83,7 @@ function normalizeValue(value: unknown, config: SnapshotConfig): unknown {
   
   // Recursively normalize objects
   if (typeof valueToNormalize === 'object' && !Array.isArray(valueToNormalize)) {
-    const normalized = Object.create(null) as SnapshotObject;
+    const normalized = createSnapshotObject();
     
     for (const [key, val] of Object.entries(valueToNormalize)) {
       // Skip excluded fields
@@ -186,9 +190,9 @@ export function createStateDiff<TState1 = unknown, TState2 = unknown>(
   const snapshot2 = createSnapshot(state2, config);
   
   const diff: SnapshotDiff = {
-    added: {},
-    removed: {},
-    changed: {},
+    added: createSnapshotObject(),
+    removed: createSnapshotObject(),
+    changed: Object.create(null) as SnapshotDiff['changed'],
   };
 
   if (!isSnapshotObject(snapshot1) || !isSnapshotObject(snapshot2)) {

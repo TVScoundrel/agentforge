@@ -167,6 +167,33 @@ describe('snapshot testing runner', () => {
     expect(({} as { polluted?: boolean }).polluted).toBeUndefined();
   });
 
+  it('keeps prototype-sensitive keys as data in diff containers', () => {
+    const added = createStateDiff({}, JSON.parse('{"__proto__":"added"}') as Record<
+      string,
+      unknown
+    >);
+    const removed = createStateDiff(
+      JSON.parse('{"__proto__":"removed"}') as Record<string, unknown>,
+      {}
+    );
+    const changed = createStateDiff(
+      JSON.parse('{"__proto__":"before"}') as Record<string, unknown>,
+      JSON.parse('{"__proto__":"after"}') as Record<string, unknown>
+    );
+
+    expect(Object.getPrototypeOf(added.added)).toBeNull();
+    expect(Object.hasOwn(added.added, '__proto__')).toBe(true);
+    expect(added.added.__proto__).toBe('added');
+
+    expect(Object.getPrototypeOf(removed.removed)).toBeNull();
+    expect(Object.hasOwn(removed.removed, '__proto__')).toBe(true);
+    expect(removed.removed.__proto__).toBe('removed');
+
+    expect(Object.getPrototypeOf(changed.changed)).toBeNull();
+    expect(Object.hasOwn(changed.changed, '__proto__')).toBe(true);
+    expect(changed.changed.__proto__).toEqual({ from: 'before', to: 'after' });
+  });
+
   it('reports root-level changes for non-object snapshot roots', () => {
     expect(createStateDiff('before', 'after')).toEqual({
       added: {},
