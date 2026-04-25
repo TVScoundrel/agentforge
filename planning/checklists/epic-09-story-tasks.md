@@ -1292,7 +1292,7 @@ Implementation notes:
 - [x] Create draft PR with story ID in title
   - Draft PR #96: https://github.com/TVScoundrel/agentforge/pull/96
 - [x] Replace broad state and normalizer boundaries in `packages/testing/src/runners/snapshot-testing.ts` with safer unknown-first contracts
-  - Replaced broad snapshot, normalizer, comparison, and diff contracts with `unknown`-first inputs plus typed snapshot object, diff, and message snapshot outputs
+  - Replaced broad snapshot, normalizer, comparison, and diff contracts with `unknown`-first inputs plus typed snapshot object, diff, and message snapshot outputs with `unknown` normalized content
 - [x] Preserve current snapshot normalization, comparison, diffing, and message snapshot behavior
   - Preserved default timestamp/UUID normalization, recursive include/exclude filtering for plain objects, custom normalizer ordering, top-level diff shape, and message snapshot shape while applying configured normalization to message content and hardening object/diff ownership and equality checks
 - [x] Add/update focused tests for snapshot creation, comparisons, diffs, and message snapshot helpers

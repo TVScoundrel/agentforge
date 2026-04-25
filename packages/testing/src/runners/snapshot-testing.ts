@@ -12,7 +12,7 @@ export interface SnapshotDiff {
 
 export interface MessageSnapshot {
   type: string;
-  content: BaseMessage['content'];
+  content: unknown;
 }
 
 export const ROOT_SNAPSHOT_DIFF_KEY = '$root';
@@ -157,7 +157,7 @@ export function createMessageSnapshot(
       normalizeTimestamps: true,
       normalizeIds: true,
       ...config,
-    }) as BaseMessage['content'],
+    }),
   }));
 }
 

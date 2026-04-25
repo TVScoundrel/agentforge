@@ -8,7 +8,7 @@
 
 | File | Change |
 |------|--------|
-| `packages/testing/src/runners/snapshot-testing.ts` | Replaced broad `any` snapshot and normalizer contracts with `unknown`-first inputs, typed snapshot object/diff/message snapshot outputs, explicit root-level diff handling for non-object snapshot roots, configured normalization for message content, plain-object-only recursive normalization, null-prototype normalized objects and diff containers, own-property diff checks, and deep equality comparisons. |
+| `packages/testing/src/runners/snapshot-testing.ts` | Replaced broad `any` snapshot and normalizer contracts with `unknown`-first inputs, typed snapshot object/diff/message snapshot outputs, unknown message snapshot content, explicit root-level diff handling for non-object snapshot roots, configured normalization for message content, plain-object-only recursive normalization, null-prototype normalized objects and diff containers, own-property diff checks, and deep equality comparisons. |
 | `packages/testing/src/index.ts` | Re-exported the new snapshot runner output types so downstream callers can reference the tightened contracts directly. |
 | `packages/testing/tests/runners/snapshot-testing.test.ts` | Added focused runtime coverage for timestamp and UUID normalization, include/exclude filtering, custom normalizers, state comparison, state diffs, state-change assertions, prototype-sensitive keys, non-plain object snapshots, and LangChain message snapshots. |
 
@@ -18,7 +18,7 @@
 - Snapshot creation still enables timestamp and UUID normalization by default.
 - Include and exclude field filtering still applies recursively to object snapshots.
 - Custom normalizers still run before built-in normalization.
-- Message snapshots still include message type and content only, with configured normalization applied to the content value.
+- Message snapshots still include message type and content only, with configured normalization applied to the content value and the exported content type widened to `unknown` to match normalized snapshot output.
 - State diffs still report top-level `added`, `removed`, and `changed` fields with null-prototype containers so special keys remain data.
 - Non-object root snapshots such as primitives, arrays, `null`, and `undefined` now report changes under the exported `$root` diff key instead of being coerced into object-like records.
 - Non-plain object roots such as `Date`, `Map`, `RegExp`, and class instances are preserved rather than rebuilt from enumerable entries; diffs for those roots use the exported `$root` diff key.
