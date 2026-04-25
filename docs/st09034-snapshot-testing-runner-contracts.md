@@ -35,6 +35,8 @@
 - `pnpm exec eslint packages/testing/src/runners/snapshot-testing.ts packages/testing/src/index.ts packages/testing/tests/runners/snapshot-testing.test.ts` -> passed
 - `pnpm test --run packages/testing/tests/runners/snapshot-testing.test.ts packages/testing/tests/helpers.test.ts` -> `2 passed` files, `18 passed` tests
 - `pnpm lint:explicit-any:baseline` -> passed with `153/289` workspace warnings and `14/51` testing warnings
+- `pnpm test --run` -> `164 passed | 16 skipped` files, `2250 passed | 286 skipped` tests
+- `pnpm lint` -> exit `0`; warnings only
 
 ## Test Impact
 

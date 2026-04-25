@@ -3,7 +3,7 @@
 **Epic Range:** EP-09 through EP-09
 **Status:** In Progress
 **Last Updated:** 2026-04-25
-**Active Story:** ST-09034 (In Progress)
+**Active Story:** ST-09034 (In Review)
 
 ---
 
@@ -76,7 +76,7 @@ Recent improvement snapshot:
 - `ST-09030` merged after extracting relational connection-manager query execution and dedicated-session adapter handling into focused helpers, preserving MySQL tuple normalization, SQLite non-query normalization, and dedicated PostgreSQL/MySQL session behavior while leaving the workspace explicit-`any` baseline unchanged at `180` and `tools` unchanged at `65`.
 - `ST-09031` merged after extracting the remaining tool-registry registration, update, removal, bulk-registration, and clear paths into a focused internal helper while preserving the stable public facade, mutation error semantics, and emitted events, and the next active Epic 9 target is `ST-09032`.
 - `ST-09032` merged after tightening the managed-tool lifecycle surface around unknown-first generic defaults, JSON-safe health metadata, typed LangChain interop, and lifecycle concurrency handling while lowering the workspace explicit-`any` baseline from `180` to `170` and the `core` package from `63` to `53`.
-- `ST-09034` is now in progress from the Ready lane, focused on unknown-first snapshot runner contracts in `@agentforge/testing`.
+- `ST-09034` is now in review after tightening snapshot runner contracts around unknown-first state normalization and typed snapshot diffs in `@agentforge/testing`.
 - `EP-09` remains open as the daily hardening stream, with the active queue now centered on tool-registry extraction, lifecycle hardening, and the remaining testing-contract follow-ons.
 - A fresh follow-on slice is now queued behind that work for connection-manager execution/session extraction, registry registration/mutation extraction, managed-tool lifecycle hardening, database-pool contract tightening, and testing runner type-boundary cleanup.
 
