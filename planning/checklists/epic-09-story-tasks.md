@@ -1313,6 +1313,7 @@ Implementation notes:
   - `7bf26e9` fix(st-09034): normalize after custom snapshot hooks
   - `7f93a97` fix(st-09034): harden snapshot equality and object keys
   - `50b53e1` fix(st-09034): harden snapshot diff containers
+  - `8375292` fix(st-09034): preserve non-plain snapshot roots
 - [x] Mark PR Ready only after all story tasks are complete
   - PR #96 ready for review: https://github.com/TVScoundrel/agentforge/pull/96
 - [ ] Wait for merge; do not merge directly from local branch
