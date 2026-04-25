@@ -21,6 +21,15 @@ function createSnapshotObject(): SnapshotObject {
   return Object.create(null) as SnapshotObject;
 }
 
+function isPlainSnapshotObject(value: unknown): value is SnapshotObject {
+  if (typeof value !== 'object' || value === null || Array.isArray(value)) {
+    return false;
+  }
+
+  const prototype = Object.getPrototypeOf(value);
+  return prototype === Object.prototype || prototype === null;
+}
+
 /**
  * Snapshot configuration
  */
@@ -82,7 +91,7 @@ function normalizeValue(value: unknown, config: SnapshotConfig): unknown {
   }
   
   // Recursively normalize objects
-  if (typeof valueToNormalize === 'object' && !Array.isArray(valueToNormalize)) {
+  if (isPlainSnapshotObject(valueToNormalize)) {
     const normalized = createSnapshotObject();
     
     for (const [key, val] of Object.entries(valueToNormalize)) {
@@ -108,10 +117,6 @@ function normalizeValue(value: unknown, config: SnapshotConfig): unknown {
   }
   
   return valueToNormalize;
-}
-
-function isSnapshotObject(value: unknown): value is SnapshotObject {
-  return typeof value === 'object' && value !== null && !Array.isArray(value);
 }
 
 /**
@@ -195,7 +200,7 @@ export function createStateDiff<TState1 = unknown, TState2 = unknown>(
     changed: Object.create(null) as SnapshotDiff['changed'],
   };
 
-  if (!isSnapshotObject(snapshot1) || !isSnapshotObject(snapshot2)) {
+  if (!isPlainSnapshotObject(snapshot1) || !isPlainSnapshotObject(snapshot2)) {
     if (!isDeepStrictEqual(snapshot1, snapshot2)) {
       diff.changed[ROOT_SNAPSHOT_DIFF_KEY] = { from: snapshot1, to: snapshot2 };
     }

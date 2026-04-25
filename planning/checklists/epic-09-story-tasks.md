@@ -1294,14 +1294,14 @@ Implementation notes:
 - [x] Replace broad state and normalizer boundaries in `packages/testing/src/runners/snapshot-testing.ts` with safer unknown-first contracts
   - Replaced broad snapshot, normalizer, comparison, and diff contracts with `unknown`-first inputs plus typed snapshot object, diff, and message snapshot outputs
 - [x] Preserve current snapshot normalization, comparison, diffing, and message snapshot behavior
-  - Preserved default timestamp/UUID normalization, recursive include/exclude filtering, custom normalizer ordering, top-level diff shape, and message snapshot shape while applying configured normalization to message content and hardening object/diff ownership and equality checks
+  - Preserved default timestamp/UUID normalization, recursive include/exclude filtering for plain objects, custom normalizer ordering, top-level diff shape, and message snapshot shape while applying configured normalization to message content and hardening object/diff ownership and equality checks
 - [x] Add/update focused tests for snapshot creation, comparisons, diffs, and message snapshot helpers
   - Added `packages/testing/tests/runners/snapshot-testing.test.ts`
 - [x] Record explicit-`any` warning deltas for touched files in story docs
   - Recorded in `docs/st09034-snapshot-testing-runner-contracts.md`; workspace baseline improved to `153/289`, `testing` improved to `14/51`
 - [x] Add or update story documentation at `docs/st09034-snapshot-testing-runner-contracts.md` (or document why not required)
 - [x] Assess test impact; add/update automated tests when needed, or document why tests are not required
-  - Added direct snapshot runner coverage for normalization, comparison, diffs, state-change assertions, message snapshots, message content normalization, prototype-sensitive keys in normalized snapshots and diff containers, key-order equality, and bigint equality
+  - Added direct snapshot runner coverage for normalization, comparison, diffs, state-change assertions, message snapshots, message content normalization, prototype-sensitive keys in normalized snapshots and diff containers, non-plain object snapshots, key-order equality, and bigint equality
 - [x] Run full test suite before finalizing the PR and record results
   - `pnpm test --run` -> `164 passed | 16 skipped` files; `2250 passed | 286 skipped` tests
 - [x] Run lint (`pnpm lint`) before finalizing the PR and record results

@@ -194,6 +194,30 @@ describe('snapshot testing runner', () => {
     expect(changed.changed.__proto__).toEqual({ from: 'before', to: 'after' });
   });
 
+  it('preserves non-plain objects instead of collapsing them to empty snapshots', () => {
+    const date = new Date('2026-04-25T10:00:00.000Z');
+    const map = new Map([['key', 'value']]);
+    const pattern = /stable/;
+
+    expect(createSnapshot(date, { normalizeTimestamps: false })).toBe(date);
+    expect(createSnapshot(map)).toBe(map);
+    expect(createSnapshot(pattern)).toBe(pattern);
+  });
+
+  it('reports root-level diffs for non-plain object snapshots', () => {
+    const first = new Map([['key', 'before']]);
+    const second = new Map([['key', 'after']]);
+    const diff = createStateDiff(first, second);
+
+    expect(diff).toEqual({
+      added: {},
+      removed: {},
+      changed: {
+        [ROOT_SNAPSHOT_DIFF_KEY]: { from: first, to: second },
+      },
+    });
+  });
+
   it('reports root-level changes for non-object snapshot roots', () => {
     expect(createStateDiff('before', 'after')).toEqual({
       added: {},
