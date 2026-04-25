@@ -479,6 +479,13 @@
 - **Estimate:** 4 hours
 - **Outcome:** Extracted tool registry prompt rendering, LangChain conversion, and event-emission responsibilities into focused internal helper modules while keeping `ToolRegistry` as the stable public facade. Preserved grouped and minimal prompt generation, safe registry event dispatch, and LangChain conversion behavior while keeping the explicit-`any` baseline flat at 182 workspace-wide and 63 in `core`.
 
+### ST-09032: Tighten Managed Tool Lifecycle Contracts
+- **Merged:** 2026-04-24
+- **PR:** https://github.com/TVScoundrel/agentforge/pull/95 (commit 74e737c)
+- **Epic:** EP-09 (SOLID Micro-Refactors and Type Boundary Hardening)
+- **Estimate:** 3 hours
+- **Outcome:** Tightened the managed-tool lifecycle surface around unknown-first generic defaults, JSON-safe health metadata, optional context typing, and typed LangChain interop while preserving runtime compatibility. Added focused lifecycle runtime and type coverage, hardened initialization/cleanup concurrency, prevented stale health-check writes across reuse boundaries, and improved the explicit-`any` baseline from 180 to 170 workspace-wide and from 63 to 53 in `core`.
+
 ---
 
 ## Archive Format

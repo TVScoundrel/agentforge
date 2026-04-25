@@ -1257,7 +1257,8 @@ Implementation notes:
   - `301c96e` fix(st-09032): wait for cleanup before initialize
 - [x] Mark PR Ready only after all story tasks are complete
   - PR #95 marked ready: https://github.com/TVScoundrel/agentforge/pull/95
-- [ ] Wait for merge; do not merge directly from local branch
+- [x] Wait for merge; do not merge directly from local branch
+  - Merged via PR #95 with merge commit `74e737c`
 
 ---
 

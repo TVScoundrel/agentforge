@@ -1,14 +1,14 @@
 # Kanban Queue: AgentForge
 
-**Last Updated:** 2026-04-24
+**Last Updated:** 2026-04-25
 
 ## Queue Status Summary
 
-- **Ready:** 2 stories
+- **Ready:** 3 stories
 - **In Progress:** 0 stories
-- **In Review:** 1 story
+- **In Review:** 0 stories
 - **Blocked:** 0 stories
-- **Backlog:** 6 stories
+- **Backlog:** 5 stories
 
 ---
 
@@ -16,6 +16,7 @@
 
 - `ST-09034` - Tighten Snapshot Testing Runner Contracts
 - `ST-10001` - Audit Markdown Emoji Usage Across Project-Owned Docs
+- `ST-09033` - Tighten Database Pool Adapter Contracts
 
 ---
 
@@ -27,7 +28,7 @@ _No stories currently in progress_
 
 ## In Review
 
-- `ST-09032` - Tighten Managed Tool Lifecycle Contracts
+_No stories currently in review_
 
 ---
 
@@ -39,7 +40,6 @@ _No stories currently blocked_
 
 ## Backlog
 
-- `ST-09033` - Tighten Database Pool Adapter Contracts
 - `ST-09035` - Tighten Agent Test Runner State Contracts
 - `ST-10002` - Normalize Emoji Usage in Public-Facing Docs
 - `ST-10003` - Normalize Emoji Usage in Planning and Internal Docs

@@ -1394,7 +1394,7 @@
 **Priority:** P2 (Medium)
 **Estimate:** 3 hours
 **Dependencies:** ST-09023
-**Status:** In Review
+**Status:** Merged
 
 **Acceptance criteria:**
 - [ ] `packages/core/src/tools/lifecycle.ts` replaces broad lifecycle `any` defaults with safer generic defaults or unknown-first contracts
