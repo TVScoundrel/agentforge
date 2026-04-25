@@ -14,6 +14,8 @@ export interface MessageSnapshot {
   content: BaseMessage['content'];
 }
 
+export const ROOT_SNAPSHOT_DIFF_KEY = '$root';
+
 /**
  * Snapshot configuration
  */
@@ -106,8 +108,8 @@ function normalizeValue(value: unknown, config: SnapshotConfig): unknown {
   return value;
 }
 
-function toSnapshotObject(value: unknown): SnapshotObject {
-  return Object(value) as SnapshotObject;
+function isSnapshotObject(value: unknown): value is SnapshotObject {
+  return typeof value === 'object' && value !== null && !Array.isArray(value);
 }
 
 /**
@@ -182,28 +184,34 @@ export function createStateDiff<TState1 = unknown, TState2 = unknown>(
 ): SnapshotDiff {
   const snapshot1 = createSnapshot(state1, config);
   const snapshot2 = createSnapshot(state2, config);
-  const snapshot1Object = toSnapshotObject(snapshot1);
-  const snapshot2Object = toSnapshotObject(snapshot2);
   
   const diff: SnapshotDiff = {
     added: {},
     removed: {},
     changed: {},
   };
+
+  if (!isSnapshotObject(snapshot1) || !isSnapshotObject(snapshot2)) {
+    if (JSON.stringify(snapshot1) !== JSON.stringify(snapshot2)) {
+      diff.changed[ROOT_SNAPSHOT_DIFF_KEY] = { from: snapshot1, to: snapshot2 };
+    }
+
+    return diff;
+  }
   
   // Find added and changed fields
-  for (const [key, value] of Object.entries(snapshot2Object)) {
-    if (!(key in snapshot1Object)) {
+  for (const [key, value] of Object.entries(snapshot2)) {
+    if (!(key in snapshot1)) {
       diff.added[key] = value;
-    } else if (JSON.stringify(snapshot1Object[key]) !== JSON.stringify(value)) {
-      diff.changed[key] = { from: snapshot1Object[key], to: value };
+    } else if (JSON.stringify(snapshot1[key]) !== JSON.stringify(value)) {
+      diff.changed[key] = { from: snapshot1[key], to: value };
     }
   }
   
   // Find removed fields
-  for (const key of Object.keys(snapshot1Object)) {
-    if (!(key in snapshot2Object)) {
-      diff.removed[key] = snapshot1Object[key];
+  for (const key of Object.keys(snapshot1)) {
+    if (!(key in snapshot2)) {
+      diff.removed[key] = snapshot1[key];
     }
   }
   

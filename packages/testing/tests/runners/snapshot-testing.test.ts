@@ -6,6 +6,7 @@ import {
   createMessageSnapshot,
   createSnapshot,
   createStateDiff,
+  ROOT_SNAPSHOT_DIFF_KEY,
 } from '../../src/runners/snapshot-testing.js';
 
 describe('snapshot testing runner', () => {
@@ -124,6 +125,32 @@ describe('snapshot testing runner', () => {
       },
     });
     expect(() => assertStateChanged({ step: 1 }, { step: 2 }, ['step'])).not.toThrow();
+  });
+
+  it('reports root-level changes for non-object snapshot roots', () => {
+    expect(createStateDiff('before', 'after')).toEqual({
+      added: {},
+      removed: {},
+      changed: {
+        [ROOT_SNAPSHOT_DIFF_KEY]: { from: 'before', to: 'after' },
+      },
+    });
+
+    expect(createStateDiff(['a'], ['a', 'b'])).toEqual({
+      added: {},
+      removed: {},
+      changed: {
+        [ROOT_SNAPSHOT_DIFF_KEY]: { from: ['a'], to: ['a', 'b'] },
+      },
+    });
+
+    expect(createStateDiff(null, undefined)).toEqual({
+      added: {},
+      removed: {},
+      changed: {
+        [ROOT_SNAPSHOT_DIFF_KEY]: { from: null, to: undefined },
+      },
+    });
   });
 
   it('creates stable message snapshots from LangChain messages', () => {
