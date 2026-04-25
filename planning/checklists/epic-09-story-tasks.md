@@ -1288,7 +1288,7 @@ Implementation notes:
 **Branch:** `fix/st-09034-snapshot-testing-runner-contracts`
 
 ### Checklist
-- [ ] Create branch `fix/st-09034-snapshot-testing-runner-contracts`
+- [x] Create branch `fix/st-09034-snapshot-testing-runner-contracts`
 - [ ] Create draft PR with story ID in title
 - [ ] Replace broad state and normalizer boundaries in `packages/testing/src/runners/snapshot-testing.ts` with safer unknown-first contracts
 - [ ] Preserve current snapshot normalization, comparison, diffing, and message snapshot behavior

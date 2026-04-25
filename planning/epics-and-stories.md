@@ -1428,7 +1428,7 @@
 **Priority:** P2 (Medium)
 **Estimate:** 4 hours
 **Dependencies:** ST-09018
-**Status:** Backlog
+**Status:** In Progress
 
 **Acceptance criteria:**
 - [ ] `packages/testing/src/runners/snapshot-testing.ts` replaces broad snapshot state and normalizer `any` contracts with unknown-first or constrained generic helpers
