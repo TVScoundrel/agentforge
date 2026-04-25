@@ -4,11 +4,11 @@
 
 ## Queue Status Summary
 
-- **Ready:** 2 stories
+- **Ready:** 3 stories
 - **In Progress:** 0 stories
-- **In Review:** 1 story
+- **In Review:** 0 stories
 - **Blocked:** 0 stories
-- **Backlog:** 5 stories
+- **Backlog:** 4 stories
 
 ---
 
@@ -16,6 +16,7 @@
 
 - `ST-10001` - Audit Markdown Emoji Usage Across Project-Owned Docs
 - `ST-09033` - Tighten Database Pool Adapter Contracts
+- `ST-09035` - Tighten Agent Test Runner State Contracts
 
 ---
 
@@ -27,7 +28,7 @@ _No stories currently in progress_
 
 ## In Review
 
-- `ST-09034` - Tighten Snapshot Testing Runner Contracts
+_No stories currently in review_
 
 ---
 
@@ -39,7 +40,6 @@ _No stories currently blocked_
 
 ## Backlog
 
-- `ST-09035` - Tighten Agent Test Runner State Contracts
 - `ST-10002` - Normalize Emoji Usage in Public-Facing Docs
 - `ST-10003` - Normalize Emoji Usage in Planning and Internal Docs
 - `ST-10004` - Normalize Emoji Usage in Examples and Template Docs
@@ -116,10 +116,11 @@ _No stories currently blocked_
 - ✅ ST-09022 complete - shared deduplication contracts hardened around unknown-first normalization and null-prototype cache-key handling (merged 2026-04-03, PR #84)
 - ✅ ST-09023 complete - core tool builder fluent typing tightened with metadata-isolation, clone-failure, and invoke-compatibility follow-up fixes (merged 2026-04-07, PR #85)
 - ✅ ST-09027 complete - connection-manager vendor initialization extracted into focused internal helpers with follow-up logger and vendor-pairing contract fixes (merged 2026-04-16, PR #89)
+- ✅ ST-09034 complete - snapshot testing runner contracts hardened (merged 2026-04-25, PR #96)
 - Epic 09 (SOLID Micro-Refactors and Type Boundary Hardening) was expanded on 2026-03-22 with low-hanging follow-on stories ST-09008 through ST-09012
 - Epic 09 (SOLID Micro-Refactors and Type Boundary Hardening) was expanded again on 2026-03-23 with daily hardening stories ST-09013 through ST-09018
 - Epic 09 (SOLID Micro-Refactors and Type Boundary Hardening) was expanded a third time on 2026-03-23 with daily hardening stories ST-09019 through ST-09028
 - Epic 09 (SOLID Micro-Refactors and Type Boundary Hardening) was expanded a fourth time on 2026-03-24 with the plan-execute node modularization follow-up story ST-09029
 - Epic 09 (SOLID Micro-Refactors and Type Boundary Hardening) was expanded a fifth time on 2026-04-16 with follow-on backlog stories ST-09030 through ST-09035
 - Epic 10 (Documentation Only Changes) was opened on 2026-04-18 as an evergreen docs-only lane for markdown cleanup, style normalization, and future documentation maintenance stories
-- Current measured `no-explicit-any` baseline is `180` warnings (`cli 6`, `core 63`, `patterns 15`, `testing 31`, `tools 65`)
+- Current measured `no-explicit-any` baseline is `153` warnings (`cli 6`, `core 53`, `patterns 15`, `testing 14`, `tools 65`)

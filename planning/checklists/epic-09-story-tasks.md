@@ -1317,7 +1317,8 @@ Implementation notes:
   - `3145060` fix(st-09034): widen message snapshot content type
 - [x] Mark PR Ready only after all story tasks are complete
   - PR #96 ready for review: https://github.com/TVScoundrel/agentforge/pull/96
-- [ ] Wait for merge; do not merge directly from local branch
+- [x] Wait for merge; do not merge directly from local branch
+  - Merged via PR #96 on 2026-04-25; merge commit `4c39e76`
 
 ---
 
