@@ -8,9 +8,9 @@
 
 | File | Change |
 |------|--------|
-| `packages/testing/src/runners/snapshot-testing.ts` | Replaced broad `any` snapshot and normalizer contracts with `unknown`-first inputs, typed snapshot object/diff/message snapshot outputs, explicit root-level diff handling for non-object snapshot roots, and configured normalization for message content. |
+| `packages/testing/src/runners/snapshot-testing.ts` | Replaced broad `any` snapshot and normalizer contracts with `unknown`-first inputs, typed snapshot object/diff/message snapshot outputs, explicit root-level diff handling for non-object snapshot roots, configured normalization for message content, null-prototype normalized objects, own-property diff checks, and deep equality comparisons. |
 | `packages/testing/src/index.ts` | Re-exported the new snapshot runner output types so downstream callers can reference the tightened contracts directly. |
-| `packages/testing/tests/runners/snapshot-testing.test.ts` | Added focused runtime coverage for timestamp and UUID normalization, include/exclude filtering, custom normalizers, state comparison, state diffs, state-change assertions, and LangChain message snapshots. |
+| `packages/testing/tests/runners/snapshot-testing.test.ts` | Added focused runtime coverage for timestamp and UUID normalization, include/exclude filtering, custom normalizers, state comparison, state diffs, state-change assertions, prototype-sensitive keys, and LangChain message snapshots. |
 
 ## Compatibility Notes
 
@@ -21,6 +21,8 @@
 - Message snapshots still include message type and content only, with configured normalization applied to the content value.
 - State diffs still report top-level `added`, `removed`, and `changed` fields.
 - Non-object root snapshots such as primitives, arrays, `null`, and `undefined` now report changes under the exported `$root` diff key instead of being coerced into object-like records.
+- Normalized object snapshots use null-prototype objects internally so special keys such as `__proto__`, `constructor`, and `toString` remain data instead of affecting prototypes or diff ownership checks.
+- State comparison and diff equality use deep equality instead of JSON stringification, so object key insertion order and `bigint` values do not produce false differences or stringify errors.
 
 ## Explicit `any` Delta
 
@@ -34,7 +36,7 @@
 
 - `pnpm --filter @agentforge/testing typecheck` -> passed
 - `pnpm exec eslint packages/testing/src/runners/snapshot-testing.ts packages/testing/src/index.ts packages/testing/tests/runners/snapshot-testing.test.ts` -> passed
-- `pnpm test --run packages/testing/tests/runners/snapshot-testing.test.ts packages/testing/tests/helpers.test.ts` -> `2 passed` files, `20 passed` tests
+- `pnpm test --run packages/testing/tests/runners/snapshot-testing.test.ts packages/testing/tests/helpers.test.ts` -> `2 passed` files, `22 passed` tests
 - `pnpm lint:explicit-any:baseline` -> passed with `153/289` workspace warnings and `14/51` testing warnings
 - `pnpm test --run` -> `164 passed | 16 skipped` files, `2250 passed | 286 skipped` tests
 - `pnpm lint` -> exit `0`; warnings only

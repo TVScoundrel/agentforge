@@ -1,4 +1,5 @@
 import type { BaseMessage } from '@langchain/core/messages';
+import { isDeepStrictEqual } from 'node:util';
 import { expect } from 'vitest';
 
 export type SnapshotObject = Record<string, unknown>;
@@ -78,7 +79,7 @@ function normalizeValue(value: unknown, config: SnapshotConfig): unknown {
   
   // Recursively normalize objects
   if (typeof valueToNormalize === 'object' && !Array.isArray(valueToNormalize)) {
-    const normalized: SnapshotObject = {};
+    const normalized = Object.create(null) as SnapshotObject;
     
     for (const [key, val] of Object.entries(valueToNormalize)) {
       // Skip excluded fields
@@ -170,7 +171,7 @@ export function compareStates<TState1 = unknown, TState2 = unknown>(
   const snapshot1 = createSnapshot(state1, config);
   const snapshot2 = createSnapshot(state2, config);
   
-  return JSON.stringify(snapshot1) === JSON.stringify(snapshot2);
+  return isDeepStrictEqual(snapshot1, snapshot2);
 }
 
 /**
@@ -191,7 +192,7 @@ export function createStateDiff<TState1 = unknown, TState2 = unknown>(
   };
 
   if (!isSnapshotObject(snapshot1) || !isSnapshotObject(snapshot2)) {
-    if (JSON.stringify(snapshot1) !== JSON.stringify(snapshot2)) {
+    if (!isDeepStrictEqual(snapshot1, snapshot2)) {
       diff.changed[ROOT_SNAPSHOT_DIFF_KEY] = { from: snapshot1, to: snapshot2 };
     }
 
@@ -200,16 +201,16 @@ export function createStateDiff<TState1 = unknown, TState2 = unknown>(
   
   // Find added and changed fields
   for (const [key, value] of Object.entries(snapshot2)) {
-    if (!(key in snapshot1)) {
+    if (!Object.hasOwn(snapshot1, key)) {
       diff.added[key] = value;
-    } else if (JSON.stringify(snapshot1[key]) !== JSON.stringify(value)) {
+    } else if (!isDeepStrictEqual(snapshot1[key], value)) {
       diff.changed[key] = { from: snapshot1[key], to: value };
     }
   }
   
   // Find removed fields
   for (const key of Object.keys(snapshot1)) {
-    if (!(key in snapshot2)) {
+    if (!Object.hasOwn(snapshot2, key)) {
       diff.removed[key] = snapshot1[key];
     }
   }

@@ -109,6 +109,8 @@ describe('snapshot testing runner', () => {
 
     expect(compareStates(first, second)).toBe(true);
     expect(compareStates(first, { ...second, value: 'changed' })).toBe(false);
+    expect(compareStates({ a: 1, b: 2 }, { b: 2, a: 1 })).toBe(true);
+    expect(compareStates({ value: 1n }, { value: 1n })).toBe(true);
   });
 
   it('creates state diffs for added, removed, and changed fields', () => {
@@ -133,6 +135,36 @@ describe('snapshot testing runner', () => {
       },
     });
     expect(() => assertStateChanged({ step: 1 }, { step: 2 }, ['step'])).not.toThrow();
+  });
+
+  it('uses own-property diff checks for prototype-named keys', () => {
+    const diff = createStateDiff(
+      {},
+      {
+        constructor: 'stable',
+        toString: 'added',
+      }
+    );
+
+    expect(diff.added).toEqual({
+      constructor: 'stable',
+      toString: 'added',
+    });
+    expect(diff.changed).toEqual({});
+  });
+
+  it('normalizes objects without allowing prototype pollution keys to mutate output prototypes', () => {
+    const input = JSON.parse('{"__proto__":{"polluted":true},"safe":"value"}') as Record<
+      string,
+      unknown
+    >;
+    const snapshot = createSnapshot(input) as Record<string, unknown>;
+
+    expect(Object.getPrototypeOf(snapshot)).toBeNull();
+    expect(Object.hasOwn(snapshot, '__proto__')).toBe(true);
+    expect(snapshot.__proto__).toEqual({ polluted: true });
+    expect(snapshot.safe).toBe('value');
+    expect(({} as { polluted?: boolean }).polluted).toBeUndefined();
   });
 
   it('reports root-level changes for non-object snapshot roots', () => {
