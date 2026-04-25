@@ -1288,18 +1288,35 @@ Implementation notes:
 **Branch:** `fix/st-09034-snapshot-testing-runner-contracts`
 
 ### Checklist
-- [ ] Create branch `fix/st-09034-snapshot-testing-runner-contracts`
-- [ ] Create draft PR with story ID in title
-- [ ] Replace broad state and normalizer boundaries in `packages/testing/src/runners/snapshot-testing.ts` with safer unknown-first contracts
-- [ ] Preserve current snapshot normalization, comparison, diffing, and message snapshot behavior
-- [ ] Add/update focused tests for snapshot creation, comparisons, diffs, and message snapshot helpers
-- [ ] Record explicit-`any` warning deltas for touched files in story docs
-- [ ] Add or update story documentation at `docs/st09034-snapshot-testing-runner-contracts.md` (or document why not required)
-- [ ] Assess test impact; add/update automated tests when needed, or document why tests are not required
-- [ ] Run full test suite before finalizing the PR and record results
-- [ ] Run lint (`pnpm lint`) before finalizing the PR and record results
-- [ ] Commit completed checklist items as logical commits and push updates
-- [ ] Mark PR Ready only after all story tasks are complete
+- [x] Create branch `fix/st-09034-snapshot-testing-runner-contracts`
+- [x] Create draft PR with story ID in title
+  - Draft PR #96: https://github.com/TVScoundrel/agentforge/pull/96
+- [x] Replace broad state and normalizer boundaries in `packages/testing/src/runners/snapshot-testing.ts` with safer unknown-first contracts
+  - Replaced broad snapshot, normalizer, comparison, and diff contracts with `unknown`-first inputs plus typed snapshot object, diff, and message snapshot outputs with `unknown` normalized content
+- [x] Preserve current snapshot normalization, comparison, diffing, and message snapshot behavior
+  - Preserved default timestamp/UUID normalization, recursive include/exclude filtering for plain objects, custom normalizer ordering, top-level diff shape, and message snapshot shape while applying configured normalization to message content and hardening object/diff ownership and equality checks
+- [x] Add/update focused tests for snapshot creation, comparisons, diffs, and message snapshot helpers
+  - Added `packages/testing/tests/runners/snapshot-testing.test.ts`
+- [x] Record explicit-`any` warning deltas for touched files in story docs
+  - Recorded in `docs/st09034-snapshot-testing-runner-contracts.md`; workspace baseline improved to `153/289`, `testing` improved to `14/51`
+- [x] Add or update story documentation at `docs/st09034-snapshot-testing-runner-contracts.md` (or document why not required)
+- [x] Assess test impact; add/update automated tests when needed, or document why tests are not required
+  - Added direct snapshot runner coverage for normalization, comparison, diffs, state-change assertions, message snapshots, message content normalization, prototype-sensitive keys in normalized snapshots and diff containers, non-plain object snapshots, key-order equality, and bigint equality
+- [x] Run full test suite before finalizing the PR and record results
+  - `pnpm test --run` -> `164 passed | 16 skipped` files; `2250 passed | 286 skipped` tests
+- [x] Run lint (`pnpm lint`) before finalizing the PR and record results
+  - `pnpm lint` -> exit `0`; warnings only
+- [x] Commit completed checklist items as logical commits and push updates
+  - `6a8b982` chore(st-09034): start snapshot runner contract story
+  - `352c09b` fix(st-09034): tighten snapshot runner contracts
+  - `f7a68e7` fix(st-09034): handle root snapshot diffs
+  - `7bf26e9` fix(st-09034): normalize after custom snapshot hooks
+  - `7f93a97` fix(st-09034): harden snapshot equality and object keys
+  - `50b53e1` fix(st-09034): harden snapshot diff containers
+  - `8375292` fix(st-09034): preserve non-plain snapshot roots
+  - `3145060` fix(st-09034): widen message snapshot content type
+- [x] Mark PR Ready only after all story tasks are complete
+  - PR #96 ready for review: https://github.com/TVScoundrel/agentforge/pull/96
 - [ ] Wait for merge; do not merge directly from local branch
 
 ---

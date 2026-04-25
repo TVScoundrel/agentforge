@@ -1,5 +1,34 @@
-import { BaseMessage } from '@langchain/core/messages';
+import type { BaseMessage } from '@langchain/core/messages';
+import { isDeepStrictEqual } from 'node:util';
 import { expect } from 'vitest';
+
+export type SnapshotObject = Record<string, unknown>;
+
+export interface SnapshotDiff {
+  added: SnapshotObject;
+  removed: SnapshotObject;
+  changed: Record<string, { from: unknown; to: unknown }>;
+}
+
+export interface MessageSnapshot {
+  type: string;
+  content: unknown;
+}
+
+export const ROOT_SNAPSHOT_DIFF_KEY = '$root';
+
+function createSnapshotObject(): SnapshotObject {
+  return Object.create(null) as SnapshotObject;
+}
+
+function isPlainSnapshotObject(value: unknown): value is SnapshotObject {
+  if (typeof value !== 'object' || value === null || Array.isArray(value)) {
+    return false;
+  }
+
+  const prototype = Object.getPrototypeOf(value);
+  return prototype === Object.prototype || prototype === null;
+}
 
 /**
  * Snapshot configuration
@@ -28,47 +57,44 @@ export interface SnapshotConfig {
   /**
    * Custom normalizer function
    */
-  normalizer?: (value: any) => any;
+  normalizer?: (value: unknown) => unknown;
 }
 
 /**
  * Normalize a value for snapshot testing
  */
-function normalizeValue(value: any, config: SnapshotConfig): any {
-  if (value === null || value === undefined) {
-    return value;
-  }
-  
-  // Apply custom normalizer
-  if (config.normalizer) {
-    return config.normalizer(value);
+function normalizeValue(value: unknown, config: SnapshotConfig): unknown {
+  const valueToNormalize = config.normalizer ? config.normalizer(value) : value;
+
+  if (valueToNormalize === null || valueToNormalize === undefined) {
+    return valueToNormalize;
   }
   
   // Normalize timestamps
-  if (config.normalizeTimestamps && value instanceof Date) {
+  if (config.normalizeTimestamps && valueToNormalize instanceof Date) {
     return '[TIMESTAMP]';
   }
   
-  if (config.normalizeTimestamps && typeof value === 'string') {
+  if (config.normalizeTimestamps && typeof valueToNormalize === 'string') {
     // ISO timestamp pattern
-    if (/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}/.test(value)) {
+    if (/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}/.test(valueToNormalize)) {
       return '[TIMESTAMP]';
     }
   }
   
   // Normalize IDs
-  if (config.normalizeIds && typeof value === 'string') {
+  if (config.normalizeIds && typeof valueToNormalize === 'string') {
     // UUID pattern
-    if (/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(value)) {
+    if (/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(valueToNormalize)) {
       return '[UUID]';
     }
   }
   
   // Recursively normalize objects
-  if (typeof value === 'object' && !Array.isArray(value)) {
-    const normalized: any = {};
+  if (isPlainSnapshotObject(valueToNormalize)) {
+    const normalized = createSnapshotObject();
     
-    for (const [key, val] of Object.entries(value)) {
+    for (const [key, val] of Object.entries(valueToNormalize)) {
       // Skip excluded fields
       if (config.excludeFields?.includes(key)) {
         continue;
@@ -86,17 +112,20 @@ function normalizeValue(value: any, config: SnapshotConfig): any {
   }
   
   // Recursively normalize arrays
-  if (Array.isArray(value)) {
-    return value.map((item) => normalizeValue(item, config));
+  if (Array.isArray(valueToNormalize)) {
+    return valueToNormalize.map((item) => normalizeValue(item, config));
   }
   
-  return value;
+  return valueToNormalize;
 }
 
 /**
  * Create a snapshot of state
  */
-export function createSnapshot(state: any, config: SnapshotConfig = {}): any {
+export function createSnapshot<TState = unknown>(
+  state: TState,
+  config: SnapshotConfig = {}
+): unknown {
   return normalizeValue(state, {
     normalizeTimestamps: true,
     normalizeIds: true,
@@ -107,7 +136,10 @@ export function createSnapshot(state: any, config: SnapshotConfig = {}): any {
 /**
  * Assert that state matches snapshot
  */
-export function assertMatchesSnapshot(state: any, config?: SnapshotConfig): void {
+export function assertMatchesSnapshot<TState = unknown>(
+  state: TState,
+  config?: SnapshotConfig
+): void {
   const snapshot = createSnapshot(state, config);
   expect(snapshot).toMatchSnapshot();
 }
@@ -115,10 +147,17 @@ export function assertMatchesSnapshot(state: any, config?: SnapshotConfig): void
 /**
  * Create a snapshot of messages
  */
-export function createMessageSnapshot(messages: BaseMessage[], config?: SnapshotConfig): any {
+export function createMessageSnapshot(
+  messages: BaseMessage[],
+  config?: SnapshotConfig
+): MessageSnapshot[] {
   return messages.map((msg) => ({
     type: msg._getType(),
-    content: msg.content,
+    content: normalizeValue(msg.content, {
+      normalizeTimestamps: true,
+      normalizeIds: true,
+      ...config,
+    }),
   }));
 }
 
@@ -133,38 +172,54 @@ export function assertMessagesMatchSnapshot(messages: BaseMessage[], config?: Sn
 /**
  * Compare two states for equality
  */
-export function compareStates(state1: any, state2: any, config?: SnapshotConfig): boolean {
+export function compareStates<TState1 = unknown, TState2 = unknown>(
+  state1: TState1,
+  state2: TState2,
+  config?: SnapshotConfig
+): boolean {
   const snapshot1 = createSnapshot(state1, config);
   const snapshot2 = createSnapshot(state2, config);
   
-  return JSON.stringify(snapshot1) === JSON.stringify(snapshot2);
+  return isDeepStrictEqual(snapshot1, snapshot2);
 }
 
 /**
  * Create a diff between two states
  */
-export function createStateDiff(state1: any, state2: any, config?: SnapshotConfig): any {
+export function createStateDiff<TState1 = unknown, TState2 = unknown>(
+  state1: TState1,
+  state2: TState2,
+  config?: SnapshotConfig
+): SnapshotDiff {
   const snapshot1 = createSnapshot(state1, config);
   const snapshot2 = createSnapshot(state2, config);
   
-  const diff: any = {
-    added: {},
-    removed: {},
-    changed: {},
+  const diff: SnapshotDiff = {
+    added: createSnapshotObject(),
+    removed: createSnapshotObject(),
+    changed: Object.create(null) as SnapshotDiff['changed'],
   };
+
+  if (!isPlainSnapshotObject(snapshot1) || !isPlainSnapshotObject(snapshot2)) {
+    if (!isDeepStrictEqual(snapshot1, snapshot2)) {
+      diff.changed[ROOT_SNAPSHOT_DIFF_KEY] = { from: snapshot1, to: snapshot2 };
+    }
+
+    return diff;
+  }
   
   // Find added and changed fields
   for (const [key, value] of Object.entries(snapshot2)) {
-    if (!(key in snapshot1)) {
+    if (!Object.hasOwn(snapshot1, key)) {
       diff.added[key] = value;
-    } else if (JSON.stringify(snapshot1[key]) !== JSON.stringify(value)) {
+    } else if (!isDeepStrictEqual(snapshot1[key], value)) {
       diff.changed[key] = { from: snapshot1[key], to: value };
     }
   }
   
   // Find removed fields
   for (const key of Object.keys(snapshot1)) {
-    if (!(key in snapshot2)) {
+    if (!Object.hasOwn(snapshot2, key)) {
       diff.removed[key] = snapshot1[key];
     }
   }
@@ -175,9 +230,9 @@ export function createStateDiff(state1: any, state2: any, config?: SnapshotConfi
 /**
  * Assert that state has changed
  */
-export function assertStateChanged(
-  stateBefore: any,
-  stateAfter: any,
+export function assertStateChanged<TStateBefore = unknown, TStateAfter = unknown>(
+  stateBefore: TStateBefore,
+  stateAfter: TStateAfter,
   expectedChanges: string[],
   config?: SnapshotConfig
 ): void {
@@ -187,4 +242,3 @@ export function assertStateChanged(
     expect(diff.changed).toHaveProperty(field);
   });
 }
-
