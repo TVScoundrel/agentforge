@@ -1310,6 +1310,7 @@ Implementation notes:
   - `6a8b982` chore(st-09034): start snapshot runner contract story
   - `352c09b` fix(st-09034): tighten snapshot runner contracts
   - `f7a68e7` fix(st-09034): handle root snapshot diffs
+  - `7bf26e9` fix(st-09034): normalize after custom snapshot hooks
 - [x] Mark PR Ready only after all story tasks are complete
   - PR #96 ready for review: https://github.com/TVScoundrel/agentforge/pull/96
 - [ ] Wait for merge; do not merge directly from local branch
