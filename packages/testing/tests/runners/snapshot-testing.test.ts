@@ -72,11 +72,15 @@ describe('snapshot testing runner', () => {
 
   it('applies a custom unknown-first normalizer before built-in normalization', () => {
     const snapshot = createSnapshot(
-      { count: 1 },
+      { count: 1, ignored: 'value' },
       {
         normalizer: (value: unknown) => {
           if (typeof value === 'object' && value !== null) {
-            return { normalized: true };
+            return {
+              normalized: true,
+              id: '9f5d6b3a-bd1f-4c3e-b1e2-2f6e80de5ed7',
+              createdAt: '2026-04-25T10:00:00.000Z',
+            };
           }
 
           return value;
@@ -84,7 +88,11 @@ describe('snapshot testing runner', () => {
       }
     );
 
-    expect(snapshot).toEqual({ normalized: true });
+    expect(snapshot).toEqual({
+      normalized: true,
+      id: '[UUID]',
+      createdAt: '[TIMESTAMP]',
+    });
   });
 
   it('compares states after configured normalization', () => {
@@ -162,6 +170,45 @@ describe('snapshot testing runner', () => {
     expect(snapshot).toEqual([
       { type: 'human', content: 'hello' },
       { type: 'ai', content: [{ type: 'text', text: 'hi' }] },
+    ]);
+  });
+
+  it('normalizes message snapshot content with configured snapshot options', () => {
+    const snapshot = createMessageSnapshot(
+      [
+        new HumanMessage('normalize-me'),
+        new AIMessage([
+          {
+            type: 'text',
+            text: '2026-04-25T10:00:00.000Z',
+          },
+        ]),
+      ],
+      {
+        excludeFields: ['type'],
+        normalizer: (value: unknown) => {
+          if (value === 'normalize-me') {
+            return '9f5d6b3a-bd1f-4c3e-b1e2-2f6e80de5ed7';
+          }
+
+          return value;
+        },
+      }
+    );
+
+    expect(snapshot).toEqual([
+      {
+        type: 'human',
+        content: '[UUID]',
+      },
+      {
+        type: 'ai',
+        content: [
+          {
+            text: '[TIMESTAMP]',
+          },
+        ],
+      },
     ]);
   });
 });

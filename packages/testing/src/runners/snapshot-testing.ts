@@ -50,40 +50,37 @@ export interface SnapshotConfig {
  * Normalize a value for snapshot testing
  */
 function normalizeValue(value: unknown, config: SnapshotConfig): unknown {
-  if (value === null || value === undefined) {
-    return value;
-  }
-  
-  // Apply custom normalizer
-  if (config.normalizer) {
-    return config.normalizer(value);
+  const valueToNormalize = config.normalizer ? config.normalizer(value) : value;
+
+  if (valueToNormalize === null || valueToNormalize === undefined) {
+    return valueToNormalize;
   }
   
   // Normalize timestamps
-  if (config.normalizeTimestamps && value instanceof Date) {
+  if (config.normalizeTimestamps && valueToNormalize instanceof Date) {
     return '[TIMESTAMP]';
   }
   
-  if (config.normalizeTimestamps && typeof value === 'string') {
+  if (config.normalizeTimestamps && typeof valueToNormalize === 'string') {
     // ISO timestamp pattern
-    if (/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}/.test(value)) {
+    if (/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}/.test(valueToNormalize)) {
       return '[TIMESTAMP]';
     }
   }
   
   // Normalize IDs
-  if (config.normalizeIds && typeof value === 'string') {
+  if (config.normalizeIds && typeof valueToNormalize === 'string') {
     // UUID pattern
-    if (/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(value)) {
+    if (/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(valueToNormalize)) {
       return '[UUID]';
     }
   }
   
   // Recursively normalize objects
-  if (typeof value === 'object' && !Array.isArray(value)) {
+  if (typeof valueToNormalize === 'object' && !Array.isArray(valueToNormalize)) {
     const normalized: SnapshotObject = {};
     
-    for (const [key, val] of Object.entries(value)) {
+    for (const [key, val] of Object.entries(valueToNormalize)) {
       // Skip excluded fields
       if (config.excludeFields?.includes(key)) {
         continue;
@@ -101,11 +98,11 @@ function normalizeValue(value: unknown, config: SnapshotConfig): unknown {
   }
   
   // Recursively normalize arrays
-  if (Array.isArray(value)) {
-    return value.map((item) => normalizeValue(item, config));
+  if (Array.isArray(valueToNormalize)) {
+    return valueToNormalize.map((item) => normalizeValue(item, config));
   }
   
-  return value;
+  return valueToNormalize;
 }
 
 function isSnapshotObject(value: unknown): value is SnapshotObject {
@@ -144,11 +141,13 @@ export function createMessageSnapshot(
   messages: BaseMessage[],
   config?: SnapshotConfig
 ): MessageSnapshot[] {
-  void config;
-
   return messages.map((msg) => ({
     type: msg._getType(),
-    content: msg.content,
+    content: normalizeValue(msg.content, {
+      normalizeTimestamps: true,
+      normalizeIds: true,
+      ...config,
+    }) as BaseMessage['content'],
   }));
 }
 
