@@ -6,16 +6,16 @@
 
 ### Checklist
 - [x] Create branch `docs/st-10001-markdown-emoji-audit`
-- [ ] Create draft PR with story ID in title
-- [ ] Inventory project-owned `.md` files with decorative emoji usage and group them by scope (public docs, package READMEs, planning/internal docs, examples/templates)
-- [ ] Distinguish decorative emoji from meaningful non-emoji symbols or literal sample output that should be preserved
-- [ ] Document the prioritized cleanup sequence for follow-on stories
-- [ ] Add or update story documentation at `docs/st10001-markdown-emoji-audit.md` (or document why not required).
-- [ ] Assess test impact; add/update automated tests when needed, or document why tests are not required.
-- [ ] Run full test suite before finalizing the PR and record results.
-- [ ] Run lint (`pnpm lint`) before finalizing the PR and record results.
-- [ ] Commit completed checklist items as logical commits and push updates.
-- [ ] Mark PR Ready only after all story tasks are complete.
+- [x] Create draft PR with story ID in title
+- [x] Inventory project-owned `.md` files with decorative emoji usage and group them by scope (public docs, package READMEs, planning/internal docs, examples/templates)
+- [x] Distinguish decorative emoji from meaningful non-emoji symbols or literal sample output that should be preserved
+- [x] Document the prioritized cleanup sequence for follow-on stories
+- [x] Add or update story documentation at `docs/st10001-markdown-emoji-audit.md` (or document why not required).
+- [x] Assess test impact; add/update automated tests when needed, or document why tests are not required.
+- [x] Run full test suite before finalizing the PR and record results.
+- [x] Run lint (`pnpm lint`) before finalizing the PR and record results.
+- [x] Commit completed checklist items as logical commits and push updates.
+- [x] Mark PR Ready only after all story tasks are complete.
 - [ ] Wait for merge; do not merge directly from local branch.
 
 ---
