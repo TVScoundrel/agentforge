@@ -39,4 +39,7 @@ Focused validation:
 - `pnpm --filter @agentforge/core typecheck` -> passed.
 - `pnpm lint:explicit-any:baseline` -> passed and improved from `153/289` to `144/289`; `core` improved from `53/119` to `44/119`.
 
-Full-suite and lint validation will be recorded before marking the PR ready.
+Final validation:
+
+- `pnpm test --run` -> passed (`165` files, `2260` tests, `286` skipped).
+- `pnpm lint` -> passed with existing warnings only.

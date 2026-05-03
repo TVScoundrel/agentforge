@@ -1281,10 +1281,15 @@ Implementation notes:
 - [x] Add or update story documentation at `docs/st09033-database-pool-adapter-contracts.md` (or document why not required)
 - [x] Assess test impact; add/update automated tests when needed, or document why tests are not required
   - Added focused database-pool coverage and ran `pnpm --filter @agentforge/core typecheck` to cover the type-only contract hardening.
-- [ ] Run full test suite before finalizing the PR and record results
-- [ ] Run lint (`pnpm lint`) before finalizing the PR and record results
-- [ ] Commit completed checklist items as logical commits and push updates
-- [ ] Mark PR Ready only after all story tasks are complete
+- [x] Run full test suite before finalizing the PR and record results
+  - `pnpm test --run` -> `165 passed | 16 skipped` files; `2260 passed | 286 skipped` tests.
+- [x] Run lint (`pnpm lint`) before finalizing the PR and record results
+  - `pnpm lint` -> exit `0`; warnings only.
+- [x] Commit completed checklist items as logical commits and push updates
+  - `decf940` chore(st-09033): start database pool adapter story
+  - `5a55680` fix(st-09033): tighten database pool adapter contracts
+- [x] Mark PR Ready only after all story tasks are complete
+  - PR #98 ready for review: https://github.com/TVScoundrel/agentforge/pull/98
 - [ ] Wait for merge; do not merge directly from local branch
 
 ---
