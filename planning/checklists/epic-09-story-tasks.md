@@ -1290,7 +1290,8 @@ Implementation notes:
   - `5a55680` fix(st-09033): tighten database pool adapter contracts
 - [x] Mark PR Ready only after all story tasks are complete
   - PR #98 ready for review: https://github.com/TVScoundrel/agentforge/pull/98
-- [ ] Wait for merge; do not merge directly from local branch
+- [x] Wait for merge; do not merge directly from local branch
+  - Merged via PR #98 on 2026-05-03; merge commit `69bb59d`
 
 ---
 

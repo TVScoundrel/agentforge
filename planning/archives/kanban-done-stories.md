@@ -8,6 +8,13 @@
 
 ## Completed Stories
 
+### ST-09033: Tighten Database Pool Adapter Contracts
+- **Merged:** 2026-05-03
+- **PR:** https://github.com/TVScoundrel/agentforge/pull/98 (commit 69bb59d)
+- **Epic:** EP-09 (SOLID Micro-Refactors and Type Boundary Hardening)
+- **Estimate:** 3 hours
+- **Outcome:** Tightened `@agentforge/core` database pool adapter contracts by adding exported `DatabaseQueryParams` and `DatabaseQueryResult` aliases, moving query/execute parameter and result defaults to unknown-first readonly boundaries, preserving pool acquire/release, query/execute, and health-check behavior with focused tests, and lowering the explicit-`any` baseline from `153/289` to `144/289` while reducing the `core` package from `53/119` to `44/119`.
+
 ### ST-10001: Audit Markdown Emoji Usage Across Project-Owned Docs
 - **Merged:** 2026-05-03
 - **PR:** https://github.com/TVScoundrel/agentforge/pull/97 (commit 38f280d)

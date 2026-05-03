@@ -1411,7 +1411,7 @@
 **Priority:** P2 (Medium)
 **Estimate:** 3 hours
 **Dependencies:** ST-09032
-**Status:** In Review
+**Status:** Merged (PR #98, 2026-05-03)
 
 **Acceptance criteria:**
 - [ ] `packages/core/src/resources/database-pool.ts` replaces broad connection/query parameter contracts with safer generic or unknown-first adapter types
@@ -1615,7 +1615,7 @@
 **Priority:** P2 (Medium)
 **Estimate:** 2 hours
 **Dependencies:** ST-10001 (merged)
-**Status:** Backlog
+**Status:** Ready
 
 **Acceptance criteria:**
 - [ ] A contributor-facing or internal documentation style rule defines the expected policy for decorative emoji usage in project-owned markdown
