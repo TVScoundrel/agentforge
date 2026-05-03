@@ -1267,7 +1267,7 @@ Implementation notes:
 **Branch:** `fix/st-09033-database-pool-adapter-contracts`
 
 ### Checklist
-- [ ] Create branch `fix/st-09033-database-pool-adapter-contracts`
+- [x] Create branch `fix/st-09033-database-pool-adapter-contracts`
 - [ ] Create draft PR with story ID in title
 - [ ] Replace broad query/parameter contracts in `packages/core/src/resources/database-pool.ts` with safer adapter types
 - [ ] Preserve current acquire/release, query/execute delegation, and pool lifecycle behavior
