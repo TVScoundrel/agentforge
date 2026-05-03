@@ -1,11 +1,11 @@
 # Kanban Queue: AgentForge
 
-**Last Updated:** 2026-04-25
+**Last Updated:** 2026-05-03
 
 ## Queue Status Summary
 
-- **Ready:** 3 stories
-- **In Progress:** 0 stories
+- **Ready:** 2 stories
+- **In Progress:** 1 story
 - **In Review:** 0 stories
 - **Blocked:** 0 stories
 - **Backlog:** 4 stories
@@ -14,7 +14,6 @@
 
 ## Ready
 
-- `ST-10001` - Audit Markdown Emoji Usage Across Project-Owned Docs
 - `ST-09033` - Tighten Database Pool Adapter Contracts
 - `ST-09035` - Tighten Agent Test Runner State Contracts
 
@@ -22,7 +21,7 @@
 
 ## In Progress
 
-_No stories currently in progress_
+- `ST-10001` - Audit Markdown Emoji Usage Across Project-Owned Docs
 
 ---
 

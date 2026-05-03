@@ -1462,7 +1462,7 @@
 **Priority:** P2 (Medium)
 **Estimate:** 2 hours
 **Dependencies:** None
-**Status:** Ready
+**Status:** In Progress
 
 **Acceptance criteria:**
 - [ ] Project-owned `.md` files with decorative emoji usage are inventoried and grouped by scope such as public docs, package READMEs, planning/internal docs, and examples/templates

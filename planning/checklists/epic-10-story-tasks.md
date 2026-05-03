@@ -5,7 +5,7 @@
 **Branch:** `docs/st-10001-markdown-emoji-audit`
 
 ### Checklist
-- [ ] Create branch `docs/st-10001-markdown-emoji-audit`
+- [x] Create branch `docs/st-10001-markdown-emoji-audit`
 - [ ] Create draft PR with story ID in title
 - [ ] Inventory project-owned `.md` files with decorative emoji usage and group them by scope (public docs, package READMEs, planning/internal docs, examples/templates)
 - [ ] Distinguish decorative emoji from meaningful non-emoji symbols or literal sample output that should be preserved
