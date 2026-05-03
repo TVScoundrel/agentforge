@@ -1462,7 +1462,7 @@
 **Priority:** P2 (Medium)
 **Estimate:** 2 hours
 **Dependencies:** None
-**Status:** In Review
+**Status:** Merged (PR #97, 2026-05-03)
 
 **Acceptance criteria:**
 - [ ] Project-owned `.md` files with decorative emoji usage are inventoried and grouped by scope such as public docs, package READMEs, planning/internal docs, and examples/templates
@@ -1478,8 +1478,8 @@
 
 **Priority:** P2 (Medium)
 **Estimate:** 3 hours
-**Dependencies:** ST-10001
-**Status:** Backlog
+**Dependencies:** ST-10001 (merged)
+**Status:** Ready
 
 **Acceptance criteria:**
 - [ ] Public-facing docs such as the root README, package READMEs, and selected docs-site pages have decorative emoji removed from headings, bullets, banners, and link callouts
@@ -1495,8 +1495,8 @@
 
 **Priority:** P2 (Medium)
 **Estimate:** 3 hours
-**Dependencies:** ST-10001
-**Status:** Backlog
+**Dependencies:** ST-10001 (merged)
+**Status:** Ready
 
 **Acceptance criteria:**
 - [ ] Planning docs, checklists, feature plans, and internal docs targeted by the audit have decorative emoji removed or replaced with plain-text status wording
@@ -1512,8 +1512,8 @@
 
 **Priority:** P2 (Medium)
 **Estimate:** 3 hours
-**Dependencies:** ST-10001
-**Status:** Backlog
+**Dependencies:** ST-10001 (merged)
+**Status:** Ready
 
 **Acceptance criteria:**
 - [ ] Example READMEs, template docs, and similar supporting markdown targeted by the audit have decorative emoji removed
@@ -1529,7 +1529,7 @@
 
 **Priority:** P2 (Medium)
 **Estimate:** 2 hours
-**Dependencies:** ST-10001
+**Dependencies:** ST-10001 (merged)
 **Status:** Backlog
 
 **Acceptance criteria:**

@@ -2,11 +2,18 @@
 
 **Purpose:** Track completed and merged stories for the Relational Database Access Tool project.
 
-**Last Updated:** 2026-04-23
+**Last Updated:** 2026-05-03
 
 ---
 
 ## Completed Stories
+
+### ST-10001: Audit Markdown Emoji Usage Across Project-Owned Docs
+- **Merged:** 2026-05-03
+- **PR:** https://github.com/TVScoundrel/agentforge/pull/97 (commit 38f280d)
+- **Epic:** EP-10 (Documentation Only Changes)
+- **Estimate:** 2 hours
+- **Outcome:** Added a markdown emoji usage audit covering 246 project-owned Markdown files, identifying 120 files with emoji-range characters across public docs, package docs, planning/internal docs, and examples/templates. The audit distinguished cleanup candidates from fenced-code and literal sample output preservation cases, recommended the follow-on cleanup sequence, and recorded validation results for tests and lint.
 
 ### ST-09031: Extract Tool Registry Registration and Mutation Paths
 - **Merged:** 2026-04-23
