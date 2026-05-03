@@ -14,9 +14,12 @@ export interface DatabaseConfig {
   connectionTimeout?: number;
 }
 
+export type DatabaseQueryParams = readonly unknown[];
+export type DatabaseQueryResult = unknown;
+
 export interface DatabaseConnection {
-  query<T = any>(sql: string, params?: any[]): Promise<T>;
-  execute(sql: string, params?: any[]): Promise<void>;
+  query<TResult = DatabaseQueryResult>(sql: string, params?: DatabaseQueryParams): Promise<TResult>;
+  execute(sql: string, params?: DatabaseQueryParams): Promise<void>;
   close(): Promise<void>;
 }
 
@@ -39,15 +42,18 @@ class MockDatabaseConnection implements DatabaseConnection {
 
   constructor(private config: DatabaseConfig) {}
 
-  async query<T = any>(sql: string, params?: any[]): Promise<T> {
+  async query<TResult = DatabaseQueryResult>(
+    _sql: string,
+    _params?: DatabaseQueryParams
+  ): Promise<TResult> {
     if (this.closed) {
       throw new Error('Connection is closed');
     }
     // Mock implementation
-    return [] as T;
+    return [] as TResult;
   }
 
-  async execute(sql: string, params?: any[]): Promise<void> {
+  async execute(_sql: string, _params?: DatabaseQueryParams): Promise<void> {
     if (this.closed) {
       throw new Error('Connection is closed');
     }
@@ -96,16 +102,19 @@ export class DatabasePool {
     return this.pool.release(connection);
   }
 
-  async query<T = any>(sql: string, params?: any[]): Promise<T> {
+  async query<TResult = DatabaseQueryResult>(
+    sql: string,
+    params?: DatabaseQueryParams
+  ): Promise<TResult> {
     const connection = await this.acquire();
     try {
-      return await connection.query<T>(sql, params);
+      return await connection.query<TResult>(sql, params);
     } finally {
       await this.release(connection);
     }
   }
 
-  async execute(sql: string, params?: any[]): Promise<void> {
+  async execute(sql: string, params?: DatabaseQueryParams): Promise<void> {
     const connection = await this.acquire();
     try {
       await connection.execute(sql, params);
@@ -130,4 +139,3 @@ export class DatabasePool {
 export function createDatabasePool(options: DatabasePoolOptions): DatabasePool {
   return new DatabasePool(options);
 }
-

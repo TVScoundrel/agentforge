@@ -17,6 +17,8 @@ export {
   createDatabasePool,
   type DatabaseConfig,
   type DatabaseConnection,
+  type DatabaseQueryParams,
+  type DatabaseQueryResult,
   type DatabasePoolOptions,
 } from './database-pool.js';
 
@@ -55,4 +57,3 @@ export {
   type CircuitBreakerOptions,
   type CircuitBreakerStats,
 } from './circuit-breaker.js';
-

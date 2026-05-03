@@ -1267,18 +1267,29 @@ Implementation notes:
 **Branch:** `fix/st-09033-database-pool-adapter-contracts`
 
 ### Checklist
-- [ ] Create branch `fix/st-09033-database-pool-adapter-contracts`
-- [ ] Create draft PR with story ID in title
-- [ ] Replace broad query/parameter contracts in `packages/core/src/resources/database-pool.ts` with safer adapter types
-- [ ] Preserve current acquire/release, query/execute delegation, and pool lifecycle behavior
-- [ ] Add/update focused tests for pool acquisition, query/execute delegation, and health-check validation as needed
-- [ ] Record explicit-`any` warning deltas for touched files in story docs
-- [ ] Add or update story documentation at `docs/st09033-database-pool-adapter-contracts.md` (or document why not required)
-- [ ] Assess test impact; add/update automated tests when needed, or document why tests are not required
-- [ ] Run full test suite before finalizing the PR and record results
-- [ ] Run lint (`pnpm lint`) before finalizing the PR and record results
-- [ ] Commit completed checklist items as logical commits and push updates
-- [ ] Mark PR Ready only after all story tasks are complete
+- [x] Create branch `fix/st-09033-database-pool-adapter-contracts`
+- [x] Create draft PR with story ID in title
+  - Draft PR #98: https://github.com/TVScoundrel/agentforge/pull/98
+- [x] Replace broad query/parameter contracts in `packages/core/src/resources/database-pool.ts` with safer adapter types
+  - Added exported `DatabaseQueryParams` and `DatabaseQueryResult` aliases and moved query/execute params to readonly unknown-first boundaries.
+- [x] Preserve current acquire/release, query/execute delegation, and pool lifecycle behavior
+  - Focused tests cover query delegation, execute failure release, and health-check validation through the existing pool lifecycle.
+- [x] Add/update focused tests for pool acquisition, query/execute delegation, and health-check validation as needed
+  - Added `packages/core/tests/resources/database-pool.test.ts`; focused pool tests pass with `2` files and `6` tests including existing HTTP pool coverage.
+- [x] Record explicit-`any` warning deltas for touched files in story docs
+  - Recorded in `docs/st09033-database-pool-adapter-contracts.md`; workspace baseline improved from `153/289` to `144/289`, `core` from `53/119` to `44/119`.
+- [x] Add or update story documentation at `docs/st09033-database-pool-adapter-contracts.md` (or document why not required)
+- [x] Assess test impact; add/update automated tests when needed, or document why tests are not required
+  - Added focused database-pool coverage and ran `pnpm --filter @agentforge/core typecheck` to cover the type-only contract hardening.
+- [x] Run full test suite before finalizing the PR and record results
+  - `pnpm test --run` -> `165 passed | 16 skipped` files; `2260 passed | 286 skipped` tests.
+- [x] Run lint (`pnpm lint`) before finalizing the PR and record results
+  - `pnpm lint` -> exit `0`; warnings only.
+- [x] Commit completed checklist items as logical commits and push updates
+  - `decf940` chore(st-09033): start database pool adapter story
+  - `5a55680` fix(st-09033): tighten database pool adapter contracts
+- [x] Mark PR Ready only after all story tasks are complete
+  - PR #98 ready for review: https://github.com/TVScoundrel/agentforge/pull/98
 - [ ] Wait for merge; do not merge directly from local branch
 
 ---

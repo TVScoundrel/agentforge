@@ -4,9 +4,9 @@
 
 ## Queue Status Summary
 
-- **Ready:** 5 stories
+- **Ready:** 4 stories
 - **In Progress:** 0 stories
-- **In Review:** 0 stories
+- **In Review:** 1 story
 - **Blocked:** 0 stories
 - **Backlog:** 6 stories
 
@@ -14,7 +14,6 @@
 
 ## Ready
 
-- `ST-09033` - Tighten Database Pool Adapter Contracts
 - `ST-09035` - Tighten Agent Test Runner State Contracts
 - `ST-10002` - Normalize Emoji Usage in Public-Facing Docs
 - `ST-10003` - Normalize Emoji Usage in Planning and Internal Docs
@@ -30,7 +29,7 @@ _No stories currently in progress_
 
 ## In Review
 
-_No stories currently in review_
+- `ST-09033` - Tighten Database Pool Adapter Contracts
 
 ---
 
