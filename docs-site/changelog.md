@@ -5,6 +5,35 @@ All notable changes to AgentForge will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.16.21] - 2026-05-03
+
+### Added
+
+#### @agentforge/core - Database Pool Adapter Contract Coverage
+- Added focused runtime coverage in `packages/core/tests/resources/database-pool.test.ts` for typed readonly query parameter delegation, execute failure release behavior, and health-check validation through the database pool query contract
+- Added story documentation in `docs/st09033-database-pool-adapter-contracts.md` covering the database pool adapter contract changes, behavior preservation, explicit-`any` delta, and validation record
+
+### Changed
+
+#### @agentforge/core - Database Pool Adapter Contract Hardening
+- Added exported `DatabaseQueryParams` and `DatabaseQueryResult` aliases for downstream database adapter implementations
+- Tightened `DatabaseConnection` and `DatabasePool` query/execute parameter and result defaults around unknown-first readonly boundaries while preserving the existing pool acquire, release, query, execute, and health-check runtime behavior
+
+### Fixed
+
+#### @agentforge/core - Database Adapter Type Safety
+- Replaced broad database pool adapter `any` boundaries with explicit unknown-first contracts
+- Lowered the workspace explicit-`any` baseline from `153` to `144` and the `core` package baseline from `53` to `44`
+
+### Published
+- All packages published to npm registry at version 0.16.21:
+  - @agentforge/core@0.16.21
+  - @agentforge/skills@0.16.21
+  - @agentforge/patterns@0.16.21
+  - @agentforge/tools@0.16.21
+  - @agentforge/testing@0.16.21
+  - @agentforge/cli@0.16.21
+
 ## [0.16.20] - 2026-04-25
 
 ### Added
