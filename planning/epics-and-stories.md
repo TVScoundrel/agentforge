@@ -117,11 +117,11 @@
 **Outcomes:**
 - Core extension points expose narrower, generic-first contracts instead of broad `any` payloads
 - Cross-package utility modules become easier to test and reason about through extracted helpers and clearer responsibilities
-- Explicit-`any` warnings continue trending down from the current `385` `src/**` baseline without regressions
+- Explicit-`any` warnings continue trending down from the current `153` `src/**` baseline without regressions
 - Story slices are intentionally small (1 day each) so quality improvements can ship continuously
 - Lightweight quality-gate follow-ups keep release/build feedback tight by reducing stale warning caps and easy package metadata warnings
 
-**Stories:** ST-09001 through ST-09035
+**Stories:** ST-09001 through ST-09040
 
 ---
 
@@ -1456,6 +1456,91 @@
 
 ---
 
+#### ST-09036: Tighten Conversation Simulator Agent Contracts
+**User story:** As a testing maintainer, I want the conversation simulator to share safer agent and message-result contracts with the agent test runner so multi-turn test helpers are easier to extend without broad `any` seams.
+
+**Priority:** P2 (Medium)
+**Estimate:** 3 hours
+**Dependencies:** ST-09035
+**Status:** Backlog
+
+**Acceptance criteria:**
+- [ ] `packages/testing/src/runners/conversation-simulator.ts` replaces broad agent and invoke-result `any` contracts with reusable unknown-first or generic runner interfaces
+- [ ] Multi-turn simulation, dynamic input generation, stop-condition handling, verbose logging, and error capture behavior remain unchanged
+- [ ] Focused tests are added or updated for static input simulation, dynamic simulation, stop conditions, max-turn behavior, and malformed invoke results as needed
+- [ ] Touched files do not regress on explicit-`any` warning counts and the outcome is recorded in story documentation
+- [ ] Add or update story documentation at `docs/st09036-conversation-simulator-agent-contracts.md`
+
+---
+
+#### ST-09037: Tighten ReAct Builder and Prompt Boundary Contracts
+**User story:** As a patterns maintainer, I want the ReAct builder, agent factory, and prompt helpers to use narrower tool, checkpointer, and schema contracts so the public ReAct setup API stays ergonomic without broad casts leaking through the module.
+
+**Priority:** P2 (Medium)
+**Estimate:** 3 hours
+**Dependencies:** ST-09023, ST-09029
+**Status:** Backlog
+
+**Acceptance criteria:**
+- [ ] `packages/patterns/src/react/types.ts`, `builder.ts`, `agent.ts`, and `prompts.ts` replace broad tool/schema/checkpointer/compiled-graph `any` surfaces with exported aliases or unknown-first contracts where practical
+- [ ] Existing ReAct builder usage, deprecated `withLLM(...)`, stop-condition routing, checkpointer handling, and tool prompt formatting behavior remain unchanged
+- [ ] Focused tests are added or updated for builder validation, tool-array input, registry input, checkpointer input, custom stop conditions, and prompt formatting as needed
+- [ ] Touched files do not regress on explicit-`any` warning counts and the outcome is recorded in story documentation
+- [ ] Add or update story documentation at `docs/st09037-react-builder-prompt-boundary-contracts.md`
+
+---
+
+#### ST-09038: Extract Data Transformer Object Path Helpers
+**User story:** As a tools maintainer, I want shared transformer helpers for nested path access and object projection so array/object transformer tools avoid duplicated ad hoc implementations while preserving their current runtime behavior.
+
+**Priority:** P2 (Medium)
+**Estimate:** 3 hours
+**Dependencies:** None
+**Status:** Backlog
+
+**Acceptance criteria:**
+- [ ] `packages/tools/src/data/transformer/tools/array-filter.ts`, `array-sort.ts`, `object-pick.ts`, and `object-omit.ts` share focused helper functions for nested value lookup and object projection/omission
+- [ ] Helper contracts use unknown-first JSON/object boundaries instead of local broad `any` helper types
+- [ ] Existing equality, comparison, contains, starts-with, ends-with, sort-order, pick, and omit behavior remains unchanged
+- [ ] Focused transformer tests are added or updated for nested paths, missing paths, primitive values, object projection, and object omission as needed
+- [ ] Add or update story documentation at `docs/st09038-transformer-object-path-helpers.md`
+
+---
+
+#### ST-09039: Tighten Core Mock Tool Testing Helper Contracts
+**User story:** As a core maintainer, I want mock-tool and tool-simulator testing helpers to expose generic input/output contracts so tests can stay expressive without relying on broad `any` payloads.
+
+**Priority:** P2 (Medium)
+**Estimate:** 3 hours
+**Dependencies:** ST-09023
+**Status:** Backlog
+
+**Acceptance criteria:**
+- [ ] `packages/core/src/tools/testing.ts` replaces broad mock response, default response, invocation, and simulator input/output contracts with generic or unknown-first helper types
+- [ ] Mock response matching, default responses, random errors, latency simulation, invocation recording, and simulator execution behavior remain unchanged
+- [ ] Focused tests are added or updated for typed mock responses, predicate matching, error recording, simulator missing-tool errors, and invocation clearing as needed
+- [ ] Touched files do not regress on explicit-`any` warning counts and the outcome is recorded in story documentation
+- [ ] Add or update story documentation at `docs/st09039-core-mock-tool-testing-contracts.md`
+
+---
+
+#### ST-09040: Tighten Human-in-Loop Streaming Resume Contracts
+**User story:** As a core maintainer, I want human-in-loop SSE resume payloads to use safer value contracts so interrupt/resume streaming remains flexible without exposing broad `any` in public event helpers.
+
+**Priority:** P2 (Medium)
+**Estimate:** 2 hours
+**Dependencies:** ST-09024
+**Status:** Backlog
+
+**Acceptance criteria:**
+- [ ] `packages/core/src/streaming/human-in-loop.ts` replaces resume payload `any` contracts with an unknown-first or JSON-safe value type aligned with interrupt/resume boundaries
+- [ ] Human request, response, interrupt, resume, waiting, and resumed SSE event formatting remains unchanged at runtime
+- [ ] Focused tests are added or updated for resume payload serialization, primitive/object resume values, and event ID stability as needed
+- [ ] Touched files do not regress on explicit-`any` warning counts and the outcome is recorded in story documentation
+- [ ] Add or update story documentation at `docs/st09040-human-in-loop-streaming-resume-contracts.md`
+
+---
+
 #### ST-10001: Audit Markdown Emoji Usage Across Project-Owned Docs
 **User story:** As a maintainer, I want a clear inventory of markdown emoji usage so docs-only cleanup work can be prioritized and executed without noisy, repo-wide guesswork.
 
@@ -1543,13 +1628,13 @@
 
 ## Story Summary
 
-**Total Stories:** 76
+**Total Stories:** 81
 **By Priority:**
 - P0 (Critical): 17 stories
 - P1 (High): 27 stories
-- P2 (Medium): 32 stories
+- P2 (Medium): 37 stories
 
-**Total Estimated Effort:** ~277 hours (34.6 working days)
+**Total Estimated Effort:** ~291 hours (36.4 working days)
 
 **Dependency Chain:**
 1. Phase 1 (Foundation): ST-01001 → ST-01002 → ST-01003 → ST-01004
@@ -1560,5 +1645,5 @@
 6. Phase 6 (Agent Skills): ST-06001 → ST-06002 → ST-06003 → ST-06004 → ST-06005 → ST-06006
 7. Phase 7 (Skills Extraction): ST-07001 → ST-07002 → [ST-07003, ST-07004 parallel] → ST-07005; ST-07001 → ST-07006 (independent)
 8. Phase 8 (Type Safety Hardening): ST-08001 → [ST-08002, ST-08003, ST-08004 parallel]
-9. Phase 9 (SOLID Micro-Refactors): ST-09001 (Merged) → ST-09002 (Merged) → ST-09003 (Merged) → ST-09004 (Merged) → ST-09005 (Merged) → ST-09006 (Merged) → ST-09007 (Merged) → ST-09008 (Merged) → ST-09009 (Merged) → ST-09010 (Merged) → ST-09011 (Merged) → ST-09012 (Merged) → ST-09013 (Merged) → ST-09014 (Merged) → ST-09015 (Merged) → ST-09016 (Merged) → ST-09017 (Merged) → ST-09018 (Merged) → ST-09019 (Merged) → ST-09020 (Merged) → ST-09021 (Merged) → ST-09022 (Merged) → ST-09023 (Merged); ST-09025 (Merged) → ST-09026 (Merged) → ST-09031 (Merged); ST-09027 (Merged) → ST-09028 (Merged) → ST-09030 (Merged); ST-09032 → ST-09033; ST-09034 (Merged) → ST-09035; ST-09024 (Merged) and ST-09029 (Merged) completed as independent follow-on slices after ST-09012
+9. Phase 9 (SOLID Micro-Refactors): ST-09001 (Merged) → ST-09002 (Merged) → ST-09003 (Merged) → ST-09004 (Merged) → ST-09005 (Merged) → ST-09006 (Merged) → ST-09007 (Merged) → ST-09008 (Merged) → ST-09009 (Merged) → ST-09010 (Merged) → ST-09011 (Merged) → ST-09012 (Merged) → ST-09013 (Merged) → ST-09014 (Merged) → ST-09015 (Merged) → ST-09016 (Merged) → ST-09017 (Merged) → ST-09018 (Merged) → ST-09019 (Merged) → ST-09020 (Merged) → ST-09021 (Merged) → ST-09022 (Merged) → ST-09023 (Merged); ST-09025 (Merged) → ST-09026 (Merged) → ST-09031 (Merged); ST-09027 (Merged) → ST-09028 (Merged) → ST-09030 (Merged); ST-09032 → ST-09033; ST-09034 (Merged) → ST-09035 → ST-09036; ST-09023 (Merged) and ST-09029 (Merged) → ST-09037; ST-09038 independent; ST-09023 (Merged) → ST-09039; ST-09024 (Merged) → ST-09040
 10. Phase 10 (Documentation Only Changes): ST-10001 → [ST-10002, ST-10003, ST-10004, ST-10005 parallel]; EP-10 remains evergreen and intentionally open for future docs-only stories even when no current stories are queued

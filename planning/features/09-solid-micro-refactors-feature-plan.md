@@ -2,8 +2,8 @@
 
 **Epic Range:** EP-09 through EP-09
 **Status:** In Progress
-**Last Updated:** 2026-04-25
-**Active Story:** ST-09035 (Ready)
+**Last Updated:** 2026-05-03
+**Active Story:** ST-09033 (Ready)
 
 ---
 
@@ -32,21 +32,21 @@
 
 ## Current Hotspot Snapshot
 
-Current `@typescript-eslint/no-explicit-any` baseline check (`pnpm lint:explicit-any:baseline`, 2026-04-16):
+Current `@typescript-eslint/no-explicit-any` baseline check (`pnpm lint:explicit-any:baseline`, 2026-05-03):
 
-- Total: `180` warnings (`src/**`)
-- By package: `core 63`, `tools 65`, `testing 31`, `patterns 15`, `cli 6`
+- Total: `153` warnings (`src/**`)
+- By package: `cli 6`, `core 53`, `patterns 15`, `testing 14`, `tools 65`
 
 Top runtime hotspots informing this feature slice:
 
-1. `packages/tools/src/data/relational/connection/connection-manager.ts` still couples lifecycle, reconnection, query execution, session handling, metrics, and health checks even after ST-09027 extracted vendor initialization
-2. `packages/core/src/tools/registry.ts` still carries public registration, mutation, and prompt option shaping responsibilities after the collection/prompt/event helper splits
-3. `packages/core/src/tools/lifecycle.ts` remains one of the largest remaining core explicit-`any` hotspots and mixes lifecycle hooks, health checks, stats, and LangChain interop behind broad generic defaults
-4. `packages/core/src/resources/database-pool.ts` still exposes broad connection and query parameter contracts behind a mock adapter surface that is small enough for a focused hardening pass
-5. `packages/testing/src/runners/snapshot-testing.ts` is the largest remaining testing-package explicit-`any` hotspot and is a good fit for a standalone unknown-first state normalization story
-6. `packages/testing/src/runners/agent-test-runner.ts` still exposes broad agent/state/step contracts and is a natural follow-on once snapshot/state runner contracts are tightened
-7. `ST-09030` merged the connection-manager execution/session extraction slice, and the next active extraction target is the tool-registry registration/mutation split in `ST-09031`
-8. The next follow-on slice should keep EP-09 open for one more short burst rather than creating a new epic before the remaining runtime and testing hotspots are sequenced
+1. `packages/core/src/resources/database-pool.ts` still exposes broad connection and query parameter contracts behind a mock adapter surface that is small enough for a focused hardening pass
+2. `packages/testing/src/runners/agent-test-runner.ts` still exposes broad agent/state/step contracts and is the next testing-package type-boundary slice after snapshot hardening
+3. `packages/testing/src/runners/conversation-simulator.ts` duplicates the same broad agent/invoke-result seam as the agent test runner and can share safer contracts after ST-09035
+4. `packages/patterns/src/react/{types,builder,agent,prompts}.ts` still carries ReAct setup casts around tool arrays, checkpointers, prompt schemas, and compiled graph return typing
+5. `packages/tools/src/data/transformer/tools/{array-filter,array-sort,object-pick,object-omit}.ts` duplicate nested-path and object projection logic with local broad helper types
+6. `packages/core/src/tools/testing.ts` exposes broad mock-tool and simulator payload contracts that can be made generic without changing test helper behavior
+7. `packages/core/src/streaming/human-in-loop.ts` still has broad resume payload typing even after the interrupt boundary hardening work in ST-09024
+8. The next follow-on slice should keep EP-09 open for another short burst of small SOLID/DRY improvements rather than creating a new epic for the same quality lane
 
 Recent improvement snapshot:
 
@@ -77,9 +77,10 @@ Recent improvement snapshot:
 - `ST-09031` merged after extracting the remaining tool-registry registration, update, removal, bulk-registration, and clear paths into a focused internal helper while preserving the stable public facade, mutation error semantics, and emitted events, and the next active Epic 9 target is `ST-09032`.
 - `ST-09032` merged after tightening the managed-tool lifecycle surface around unknown-first generic defaults, JSON-safe health metadata, typed LangChain interop, and lifecycle concurrency handling while lowering the workspace explicit-`any` baseline from `180` to `170` and the `core` package from `63` to `53`.
 - `ST-09034` merged after tightening snapshot runner contracts around unknown-first state normalization, typed snapshot diffs, normalized message snapshots, plain-object-only recursive normalization, and non-plain root diffs in `@agentforge/testing`.
-- `ST-09035` is now ready as the next testing-package follow-on after the snapshot runner contract hardening dependency was merged.
-- `EP-09` remains open as the daily hardening stream, with the active queue now centered on tool-registry extraction, lifecycle hardening, and the remaining testing-contract follow-ons.
-- A fresh follow-on slice is now queued behind that work for connection-manager execution/session extraction, registry registration/mutation extraction, managed-tool lifecycle hardening, database-pool contract tightening, and testing runner type-boundary cleanup.
+- `ST-09035` is ready as the next testing-package follow-on after the snapshot runner contract hardening dependency was merged.
+- `ST-09036` through `ST-09040` were added on 2026-05-03 as small SOLID/DRY follow-on slices covering conversation simulator contracts, ReAct builder/prompt boundaries, data transformer helper extraction, core mock-tool testing contracts, and human-in-loop streaming resume typing.
+- `EP-09` remains open as the daily hardening stream, with the active queue now centered on database-pool contract tightening, testing-contract follow-ons, and small SOLID/DRY helper extractions.
+- A fresh follow-on slice is now queued behind current Ready work for database-pool contract tightening, testing runner type-boundary cleanup, ReAct boundary tightening, transformer DRY helper extraction, core testing-helper contracts, and streaming resume payload hardening.
 
 ---
 
@@ -102,7 +103,7 @@ Recent improvement snapshot:
 
 ## Story Coverage by Epic
 
-- EP-09: ST-09001, ST-09002, ST-09003, ST-09004, ST-09005, ST-09006, ST-09007, ST-09008, ST-09009, ST-09010, ST-09011, ST-09012, ST-09013, ST-09014, ST-09015, ST-09016, ST-09017, ST-09018, ST-09019, ST-09020, ST-09021, ST-09022, ST-09023, ST-09024, ST-09025, ST-09026, ST-09027, ST-09028, ST-09029, ST-09030, ST-09031, ST-09032, ST-09033, ST-09034, ST-09035
+- EP-09: ST-09001, ST-09002, ST-09003, ST-09004, ST-09005, ST-09006, ST-09007, ST-09008, ST-09009, ST-09010, ST-09011, ST-09012, ST-09013, ST-09014, ST-09015, ST-09016, ST-09017, ST-09018, ST-09019, ST-09020, ST-09021, ST-09022, ST-09023, ST-09024, ST-09025, ST-09026, ST-09027, ST-09028, ST-09029, ST-09030, ST-09031, ST-09032, ST-09033, ST-09034, ST-09035, ST-09036, ST-09037, ST-09038, ST-09039, ST-09040
 
 ---
 
@@ -118,7 +119,7 @@ Recent improvement snapshot:
 
 ## Related Planning Documents
 
-- `planning/epics-and-stories.md` (EP-09 and ST-09001 through ST-09035)
+- `planning/epics-and-stories.md` (EP-09 and ST-09001 through ST-09040)
 - `planning/checklists/epic-09-story-tasks.md`
 - `planning/kanban-queue.md`
 - `scripts/no-explicit-any-baseline.json`

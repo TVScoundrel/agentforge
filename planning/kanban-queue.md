@@ -8,7 +8,7 @@
 - **In Progress:** 0 stories
 - **In Review:** 0 stories
 - **Blocked:** 0 stories
-- **Backlog:** 1 story
+- **Backlog:** 6 stories
 
 ---
 
@@ -43,6 +43,11 @@ _No stories currently blocked_
 ## Backlog
 
 - `ST-10005` - Add Documentation Style Guardrails for Emoji Usage
+- `ST-09036` - Tighten Conversation Simulator Agent Contracts
+- `ST-09037` - Tighten ReAct Builder and Prompt Boundary Contracts
+- `ST-09038` - Extract Data Transformer Object Path Helpers
+- `ST-09039` - Tighten Core Mock Tool Testing Helper Contracts
+- `ST-09040` - Tighten Human-in-Loop Streaming Resume Contracts
 
 ---
 
@@ -121,6 +126,7 @@ _No stories currently blocked_
 - Epic 09 (SOLID Micro-Refactors and Type Boundary Hardening) was expanded a third time on 2026-03-23 with daily hardening stories ST-09019 through ST-09028
 - Epic 09 (SOLID Micro-Refactors and Type Boundary Hardening) was expanded a fourth time on 2026-03-24 with the plan-execute node modularization follow-up story ST-09029
 - Epic 09 (SOLID Micro-Refactors and Type Boundary Hardening) was expanded a fifth time on 2026-04-16 with follow-on backlog stories ST-09030 through ST-09035
+- Epic 09 (SOLID Micro-Refactors and Type Boundary Hardening) was expanded a sixth time on 2026-05-03 with small SOLID/DRY follow-on stories ST-09036 through ST-09040
 - Epic 10 (Documentation Only Changes) was opened on 2026-04-18 as an evergreen docs-only lane for markdown cleanup, style normalization, and future documentation maintenance stories
 - ST-10001 complete - markdown emoji usage audit merged (PR #97, 2026-05-03); ST-10002 through ST-10004 promoted to Ready, ST-10005 remains in Backlog under the Ready cap
 - Current measured `no-explicit-any` baseline is `153` warnings (`cli 6`, `core 53`, `patterns 15`, `testing 14`, `tools 65`)

@@ -1340,3 +1340,119 @@ Implementation notes:
 - [ ] Commit completed checklist items as logical commits and push updates
 - [ ] Mark PR Ready only after all story tasks are complete
 - [ ] Wait for merge; do not merge directly from local branch
+
+---
+
+## ST-09036: Tighten Conversation Simulator Agent Contracts
+
+**Branch:** `fix/st-09036-conversation-simulator-agent-contracts`
+
+### Checklist
+- [ ] Create branch `fix/st-09036-conversation-simulator-agent-contracts`
+- [ ] Create draft PR with story ID in title
+- [ ] Define test strategy before implementation: cover static simulation, dynamic simulation, stop conditions, max-turn behavior, and malformed invoke results; first failing test should assert typed handling of an invoke result without broad agent `any`
+- [ ] Write or update the failing automated test before production changes when practical; if not practical, record why before implementation
+- [ ] Replace broad agent and invoke-result contracts in `packages/testing/src/runners/conversation-simulator.ts` with reusable unknown-first or generic runner interfaces
+- [ ] Preserve multi-turn simulation, dynamic input generation, stop-condition handling, verbose logging, and error capture behavior
+- [ ] Add/update production code until focused tests pass, keeping test evidence in checklist notes and PR body
+- [ ] Record explicit-`any` warning deltas for touched files in story docs
+- [ ] Add or update story documentation at `docs/st09036-conversation-simulator-agent-contracts.md` (or document why not required)
+- [ ] Assess residual test impact; add/update additional automated tests when needed, or document why no further tests are required
+- [ ] Run full test suite before finalizing the PR and record results
+- [ ] Run lint (`pnpm lint`) before finalizing the PR and record results
+- [ ] Commit completed checklist items as logical commits and push updates
+- [ ] Mark PR Ready only after all story tasks are complete
+- [ ] Wait for merge; do not merge directly from local branch
+
+---
+
+## ST-09037: Tighten ReAct Builder and Prompt Boundary Contracts
+
+**Branch:** `fix/st-09037-react-builder-prompt-boundary-contracts`
+
+### Checklist
+- [ ] Create branch `fix/st-09037-react-builder-prompt-boundary-contracts`
+- [ ] Create draft PR with story ID in title
+- [ ] Define test strategy before implementation: cover builder validation, registry tools, array tools, checkpointer handling, custom stop conditions, and prompt formatting; first failing test should type-check the narrowed builder/prompt contracts
+- [ ] Write or update the failing automated test before production changes when practical; if not practical, record why before implementation
+- [ ] Replace broad tool/schema/checkpointer/compiled-graph `any` surfaces in `packages/patterns/src/react/types.ts`, `builder.ts`, `agent.ts`, and `prompts.ts` with exported aliases or unknown-first contracts where practical
+- [ ] Preserve existing ReAct builder usage, deprecated `withLLM(...)`, stop-condition routing, checkpointer handling, and tool prompt formatting behavior
+- [ ] Add/update production code until focused tests pass, keeping test evidence in checklist notes and PR body
+- [ ] Record explicit-`any` warning deltas for touched files in story docs
+- [ ] Add or update story documentation at `docs/st09037-react-builder-prompt-boundary-contracts.md` (or document why not required)
+- [ ] Assess residual test impact; add/update additional automated tests when needed, or document why no further tests are required
+- [ ] Run full test suite before finalizing the PR and record results
+- [ ] Run lint (`pnpm lint`) before finalizing the PR and record results
+- [ ] Commit completed checklist items as logical commits and push updates
+- [ ] Mark PR Ready only after all story tasks are complete
+- [ ] Wait for merge; do not merge directly from local branch
+
+---
+
+## ST-09038: Extract Data Transformer Object Path Helpers
+
+**Branch:** `refactor/st-09038-transformer-object-path-helpers`
+
+### Checklist
+- [ ] Create branch `refactor/st-09038-transformer-object-path-helpers`
+- [ ] Create draft PR with story ID in title
+- [ ] Define test strategy before implementation: cover nested paths, missing paths, primitive values, object projection, and object omission; first failing test should target shared helper behavior currently duplicated in array filter/sort
+- [ ] Write or update the failing automated test before production changes when practical; if not practical, record why before implementation
+- [ ] Extract shared nested path lookup and object projection/omission helpers for `array-filter.ts`, `array-sort.ts`, `object-pick.ts`, and `object-omit.ts`
+- [ ] Replace local broad helper `any` types with unknown-first JSON/object boundaries
+- [ ] Preserve equality, comparison, contains, starts-with, ends-with, sort-order, pick, and omit runtime behavior
+- [ ] Add/update production code until focused tests pass, keeping test evidence in checklist notes and PR body
+- [ ] Record explicit-`any` warning deltas for touched files in story docs
+- [ ] Add or update story documentation at `docs/st09038-transformer-object-path-helpers.md` (or document why not required)
+- [ ] Assess residual test impact; add/update additional automated tests when needed, or document why no further tests are required
+- [ ] Run full test suite before finalizing the PR and record results
+- [ ] Run lint (`pnpm lint`) before finalizing the PR and record results
+- [ ] Commit completed checklist items as logical commits and push updates
+- [ ] Mark PR Ready only after all story tasks are complete
+- [ ] Wait for merge; do not merge directly from local branch
+
+---
+
+## ST-09039: Tighten Core Mock Tool Testing Helper Contracts
+
+**Branch:** `fix/st-09039-core-mock-tool-testing-contracts`
+
+### Checklist
+- [ ] Create branch `fix/st-09039-core-mock-tool-testing-contracts`
+- [ ] Create draft PR with story ID in title
+- [ ] Define test strategy before implementation: cover typed mock responses, predicate matching, error recording, simulator missing-tool errors, and invocation clearing; first failing test should assert generic input/output inference for `createMockTool(...)`
+- [ ] Write or update the failing automated test before production changes when practical; if not practical, record why before implementation
+- [ ] Replace broad mock response, default response, invocation, and simulator input/output contracts in `packages/core/src/tools/testing.ts` with generic or unknown-first helper types
+- [ ] Preserve mock response matching, default responses, random errors, latency simulation, invocation recording, and simulator execution behavior
+- [ ] Add/update production code until focused tests pass, keeping test evidence in checklist notes and PR body
+- [ ] Record explicit-`any` warning deltas for touched files in story docs
+- [ ] Add or update story documentation at `docs/st09039-core-mock-tool-testing-contracts.md` (or document why not required)
+- [ ] Assess residual test impact; add/update additional automated tests when needed, or document why no further tests are required
+- [ ] Run full test suite before finalizing the PR and record results
+- [ ] Run lint (`pnpm lint`) before finalizing the PR and record results
+- [ ] Commit completed checklist items as logical commits and push updates
+- [ ] Mark PR Ready only after all story tasks are complete
+- [ ] Wait for merge; do not merge directly from local branch
+
+---
+
+## ST-09040: Tighten Human-in-Loop Streaming Resume Contracts
+
+**Branch:** `fix/st-09040-human-in-loop-streaming-resume-contracts`
+
+### Checklist
+- [ ] Create branch `fix/st-09040-human-in-loop-streaming-resume-contracts`
+- [ ] Create draft PR with story ID in title
+- [ ] Define test strategy before implementation: cover resume payload serialization, primitive/object resume values, and event ID stability; first failing test should assert resume value typing without public `any`
+- [ ] Write or update the failing automated test before production changes when practical; if not practical, record why before implementation
+- [ ] Replace resume payload `any` contracts in `packages/core/src/streaming/human-in-loop.ts` with an unknown-first or JSON-safe value type aligned with interrupt/resume boundaries
+- [ ] Preserve human request, response, interrupt, resume, waiting, and resumed SSE event formatting at runtime
+- [ ] Add/update production code until focused tests pass, keeping test evidence in checklist notes and PR body
+- [ ] Record explicit-`any` warning deltas for touched files in story docs
+- [ ] Add or update story documentation at `docs/st09040-human-in-loop-streaming-resume-contracts.md` (or document why not required)
+- [ ] Assess residual test impact; add/update additional automated tests when needed, or document why no further tests are required
+- [ ] Run full test suite before finalizing the PR and record results
+- [ ] Run lint (`pnpm lint`) before finalizing the PR and record results
+- [ ] Commit completed checklist items as logical commits and push updates
+- [ ] Mark PR Ready only after all story tasks are complete
+- [ ] Wait for merge; do not merge directly from local branch
