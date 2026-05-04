@@ -1339,7 +1339,7 @@ Implementation notes:
 **Branch:** `fix/st-09035-agent-test-runner-state-contracts`
 
 ### Checklist
-- [ ] Create branch `fix/st-09035-agent-test-runner-state-contracts`
+- [x] Create branch `fix/st-09035-agent-test-runner-state-contracts`
 - [ ] Create draft PR with story ID in title
 - [ ] Replace broad agent, input, state, and step contracts in `packages/testing/src/runners/agent-test-runner.ts` with safer interfaces or generics
 - [ ] Preserve current timeout, validation, step-capture, and `runMany(...)` behavior
