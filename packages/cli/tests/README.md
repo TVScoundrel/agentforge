@@ -130,7 +130,7 @@ Current coverage (as of last run):
 ## Notes
 
 - **Core Commands (98% coverage)**: All main CLI commands are thoroughly tested with comprehensive mocking
-- **Agent/Tool Commands (0% coverage)**: Needs attention Scaffolding commands not tested - less critical, harder to test, lower risk
+- **Agent/Tool Commands (0% coverage)**: Needs attention: Scaffolding commands not tested - less critical, harder to test, lower risk
 - **Templates**: Template files are excluded from test runs as they are meant to be copied to user projects
 - **Mocking**: Tests use Vitest's mocking capabilities to mock external dependencies like `fs-extra`, `execa`, and `inquirer`
 - **Integration Functions**: Some utility functions (copyTemplate, installDependencies, runScript) are better suited for E2E tests
@@ -142,4 +142,3 @@ Potential areas for expansion:
 2. E2E tests for full CLI workflows
 3. Template validation tests
 4. Performance benchmarks
-
