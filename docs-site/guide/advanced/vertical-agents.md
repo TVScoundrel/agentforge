@@ -383,6 +383,8 @@ export function createSupportAgent(config: CustomerSupportConfig = {}) {
 **Alternative: Inline Prompts (Not Recommended)**
 
 For simple cases, you can build prompts inline, but this becomes hard to maintain:
+
+```typescript
       'Provide clear, actionable solutions',
       'Follow up to ensure satisfaction',
     ],
@@ -643,14 +645,14 @@ Examples of breaking changes:
 - Updating peer dependencies to incompatible versions
 
 ```typescript
-//  Breaking change (v1 -> v2)
+// ❌ Breaking change (v1 -> v2)
 // v1
 export function createAgent(config: { model: string }) { }
 
 // v2 - Changed config structure
 export function createAgent(config: { llm: { provider: string } }) { }
 
-//  Non-breaking change (v1.0 -> v1.1)
+// ✅ Non-breaking change (v1.0 -> v1.1)
 // v1.0
 export function createAgent(config: { model: string }) { }
 
@@ -1056,12 +1058,12 @@ For complete, working implementations of vertical agents, see the examples in th
 ### [Customer Support Agent](https://github.com/TVScoundrel/agentforge/tree/main/examples/vertical-agents/customer-support)
 
 A fully-featured customer support agent demonstrating:
-- ✅ Factory function pattern with Zod validation
-- ✅ Tool injection using ToolRegistry
-- ✅ Feature flags (human escalation, ticket creation, knowledge base)
-- ✅ **External prompt pattern** with `prompts/system.md`
-- ✅ System prompt customization with company branding
-- ✅ 24 comprehensive tests demonstrating reusability
+- Factory function pattern with Zod validation
+- Tool injection using ToolRegistry
+- Feature flags (human escalation, ticket creation, knowledge base)
+- **External prompt pattern** with `prompts/system.md`
+- System prompt customization with company branding
+- 24 comprehensive tests demonstrating reusability
 
 **Key Files:**
 - `src/index.ts` - Agent factory function (uses `loadPrompt` from `@agentforge/core`)
@@ -1074,14 +1076,14 @@ This example showcases the **recommended pattern** for creating production-ready
 ### [Code Review Agent](https://github.com/TVScoundrel/agentforge/tree/main/examples/vertical-agents/code-review)
 
 A configurable code review agent demonstrating:
-- ✅ Factory function pattern with Zod validation
-- ✅ Tool injection using ToolRegistry
-- ✅ Feature flags (security checks, performance checks, strict mode, auto-approve)
-- ✅ **External prompt pattern** with `prompts/system.md`
-- ✅ Built-in tools (analyze-code, check-security, check-performance)
-- ✅ Review depth configuration (quick, standard, thorough)
-- ✅ Language-specific review support
-- ✅ 26 comprehensive tests demonstrating reusability
+- Factory function pattern with Zod validation
+- Tool injection using ToolRegistry
+- Feature flags (security checks, performance checks, strict mode, auto-approve)
+- **External prompt pattern** with `prompts/system.md`
+- Built-in tools (analyze-code, check-security, check-performance)
+- Review depth configuration (quick, standard, thorough)
+- Language-specific review support
+- 26 comprehensive tests demonstrating reusability
 
 **Key Files:**
 - `src/index.ts` - Agent factory function (uses `loadPrompt` from `@agentforge/core`)
@@ -1094,14 +1096,14 @@ Perfect for teams needing customizable code review automation.
 ### [Data Analyst Agent](https://github.com/TVScoundrel/agentforge/tree/main/examples/vertical-agents/data-analyst)
 
 A flexible data analyst agent demonstrating:
-- ✅ Factory function pattern with Zod validation
-- ✅ Tool injection using ToolRegistry
-- ✅ Feature flags (statistical analysis, data validation, visualization, confidential data mode)
-- ✅ **External prompt pattern** with `prompts/system.md`
-- ✅ Built-in tools (analyze-data, calculate-statistics, create-visualization, validate-data)
-- ✅ Analysis depth configuration (quick, standard, deep)
-- ✅ Data type specialization support
-- ✅ 28 comprehensive tests demonstrating reusability
+- Factory function pattern with Zod validation
+- Tool injection using ToolRegistry
+- Feature flags (statistical analysis, data validation, visualization, confidential data mode)
+- **External prompt pattern** with `prompts/system.md`
+- Built-in tools (analyze-data, calculate-statistics, create-visualization, validate-data)
+- Analysis depth configuration (quick, standard, deep)
+- Data type specialization support
+- 28 comprehensive tests demonstrating reusability
 
 **Key Files:**
 - `src/index.ts` - Agent factory function (uses `loadPrompt` from `@agentforge/core`)
@@ -1128,5 +1130,3 @@ Perfect for teams needing flexible data analysis with customizable depth and foc
 - [Patterns Guide](../concepts/patterns.md) - Agent patterns overview
 - [Testing Guide](../../api/testing.md) - Testing agents
 - [Deployment Guide](./deployment.md) - Deploying agents to production
-
-

@@ -129,7 +129,7 @@ Tools for web interactions, HTTP operations, and integrations.
 - **`archiveConfluencePage`** - Archive pages (move to trash)
 - **`createConfluenceTools()`** - Factory function for custom Confluence configuration
 
-### Data Tools (18 tools)
+### Data Tools (25 tools)
 
 Tools for data processing and transformation.
 
@@ -862,9 +862,9 @@ pnpm lint
 
 ## Tool Statistics
 
-- **Total Tools**: 81
+- **Total Tools**: 88
 - **Web Tools**: 22 (includes 4 Slack tools + 7 Confluence tools)
-- **Data Tools**: 18
+- **Data Tools**: 25
 - **File Tools**: 18
 - **Utility Tools**: 22
 - **Agent Tools**: 1
@@ -906,5 +906,4 @@ MIT © 2026 Tom Van Schoor
 ---
 
 **Built with love by the AgentForge Team**
-
 
