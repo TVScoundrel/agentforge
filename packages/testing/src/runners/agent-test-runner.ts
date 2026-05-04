@@ -1,4 +1,4 @@
-import { BaseMessage } from '@langchain/core/messages';
+import type { BaseMessage } from '@langchain/core/messages';
 
 /**
  * Agent-like contract used by the test runner.
@@ -115,12 +115,13 @@ export class AgentTestRunner<
     let messages: BaseMessage[] = [];
     let passed = true;
     let error: Error | undefined;
+    let timeoutId: ReturnType<typeof setTimeout> | undefined;
     
     try {
       // Set timeout if configured
       const timeout = this.config.timeout || 30000;
       const timeoutPromise = new Promise((_, reject) => {
-        setTimeout(() => reject(new Error('Agent test timeout')), timeout);
+        timeoutId = setTimeout(() => reject(new Error('Agent test timeout')), timeout);
       });
       
       // Run agent
@@ -146,7 +147,13 @@ export class AgentTestRunner<
         }
       })();
       
-      await Promise.race([runPromise, timeoutPromise]);
+      try {
+        await Promise.race([runPromise, timeoutPromise]);
+      } finally {
+        if (timeoutId !== undefined) {
+          clearTimeout(timeoutId);
+        }
+      }
     } catch (err) {
       passed = false;
       error = err as Error;
@@ -187,6 +194,10 @@ export function createAgentTestRunner<
 }
 
 function extractMessages(state: unknown): BaseMessage[] {
-  const stateWithMessages = state as { messages?: BaseMessage[] };
-  return stateWithMessages.messages || [];
+  if (typeof state !== 'object' || state === null) {
+    return [];
+  }
+
+  const { messages } = state as { messages?: unknown };
+  return Array.isArray(messages) ? (messages as BaseMessage[]) : [];
 }

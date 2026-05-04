@@ -1,8 +1,12 @@
 import { AIMessage, HumanMessage } from '@langchain/core/messages';
-import { describe, expect, it } from 'vitest';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 import { AgentTestRunner, createAgentTestRunner } from '../../src/runners/agent-test-runner.js';
 
 describe('agent test runner', () => {
+  afterEach(() => {
+    vi.useRealTimers();
+  });
+
   it('runs an agent and returns final state, messages, and execution metadata', async () => {
     const messages = [new HumanMessage('hello'), new AIMessage('hi')];
     const agent = {
@@ -23,6 +27,22 @@ describe('agent test runner', () => {
     expect(result.executionTime).toBeGreaterThanOrEqual(0);
   });
 
+  it('clears timeout handles when the agent finishes before the timeout', async () => {
+    vi.useFakeTimers();
+
+    const runner = createAgentTestRunner(
+      {
+        invoke: async () => ({ messages: [new AIMessage('done')] }),
+      },
+      { timeout: 30_000 }
+    );
+
+    const result = await runner.run({ messages: [] });
+
+    expect(result.passed).toBe(true);
+    expect(vi.getTimerCount()).toBe(0);
+  });
+
   it('reports timeout failures without throwing', async () => {
     const runner = new AgentTestRunner(
       {
@@ -37,6 +57,21 @@ describe('agent test runner', () => {
     expect(result.finalState).toBeUndefined();
     expect(result.messages).toEqual([]);
     expect(result.error?.message).toBe('Agent test timeout');
+  });
+
+  it('falls back to empty messages when final state has a malformed messages field', async () => {
+    const runner = createAgentTestRunner({
+      invoke: async () => ({
+        messages: 'not-an-array',
+        value: 1,
+      }),
+    });
+
+    const result = await runner.run({ messages: [] });
+
+    expect(result.passed).toBe(true);
+    expect(result.finalState).toEqual({ messages: 'not-an-array', value: 1 });
+    expect(result.messages).toEqual([]);
   });
 
   it('runs configured validation against the final state', async () => {
