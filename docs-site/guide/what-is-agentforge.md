@@ -13,7 +13,7 @@ AgentForge follows a simple philosophy: **We wrap, don't replace**. Instead of c
 
 ## Key Features
 
-### 🛠️ Tool Registry & Auto-Prompt Generation
+### Tool Registry & Auto-Prompt Generation
 AgentForge's **killer feature** - a centralized tool registry that automatically generates LLM-ready prompts:
 
 - **Register Once, Use Everywhere** - Define tools with rich metadata (categories, tags, examples)
@@ -48,14 +48,14 @@ const dataAnalystRegistry = new ToolRegistry();
 // Each agent gets its own focused toolset!
 ```
 
-### 🎯 Agent Patterns
+### Agent Patterns
 Four production-ready patterns:
 - **ReAct** - Reasoning and acting in cycles
 - **Plan-Execute** - Planning then executing steps
 - **Reflection** - Self-critique and improvement
 - **Multi-Agent** - Coordinated agent systems
 
-### 🔌 Middleware System
+### Middleware System
 Composable middleware for:
 - Caching and rate limiting
 - Validation and error handling
@@ -63,19 +63,19 @@ Composable middleware for:
 - Metrics and monitoring
 - Retry and timeout logic
 
-### 📊 Streaming & Real-time
+### Streaming & Real-time
 - Server-Sent Events (SSE)
 - WebSocket support
 - Progress tracking
 - Backpressure management
 
-### 🧪 Testing Utilities
+### Testing Utilities
 - Mock LLM and tools
 - Test helpers and assertions
 - Sample conversations and fixtures
 - Integration testing tools
 
-### 🚀 Production Features
+### Production Features
 - Health checks and monitoring
 - Resource management
 - Connection pooling
@@ -128,46 +128,46 @@ Standard tools library:
 
 AgentForge is ideal when you need:
 
-✅ **Production-ready agents** - Not just prototypes  
-✅ **Type safety** - Full TypeScript support  
-✅ **Proven patterns** - Battle-tested architectures  
-✅ **Smart tool management** - Auto-generate prompts, no manual prompt engineering  
-✅ **Developer experience** - CLI, testing, docs  
-✅ **LangChain ecosystem** - Leverage existing tools  
+- **Production-ready agents** - Not just prototypes
+- **Type safety** - Full TypeScript support
+- **Proven patterns** - Battle-tested architectures
+- **Smart tool management** - Auto-generate prompts, no manual prompt engineering
+- **Developer experience** - CLI, testing, docs
+- **LangChain ecosystem** - Leverage existing tools
 
 ## When NOT to Use AgentForge
 
 AgentForge might not be the best fit if:
 
-❌ You need a framework-agnostic solution  
-❌ You're building simple chatbots (use LangChain directly)  
-❌ You want to avoid the LangChain ecosystem  
-❌ You need Python (AgentForge is TypeScript-only)  
+- You need a framework-agnostic solution
+- You're building simple chatbots (use LangChain directly)
+- You want to avoid the LangChain ecosystem
+- You need Python (AgentForge is TypeScript-only)
 
 **Note:** AgentForge is built **on top of** LangGraph, not instead of it. You have full access to LangGraph's flexibility and can create custom patterns using AgentForge's utilities while still leveraging all of LangGraph's capabilities.
 
 ## Comparison with Alternatives
 
 ### vs. LangChain/LangGraph Directly
-- ✅ Higher-level abstractions
-- ✅ Production-ready patterns
-- ✅ Better TypeScript support
-- ✅ **Auto-prompt generation** - No manual tool description writing
-- ✅ More comprehensive tooling
-- ✅ **Full LangGraph access** - Build custom patterns when needed
-- ⚠️ Additional abstraction layer (minimal overhead)
+- Higher-level abstractions
+- Production-ready patterns
+- Better TypeScript support
+- **Auto-prompt generation** - No manual tool description writing
+- More comprehensive tooling
+- **Full LangGraph access** - Build custom patterns when needed
+- Additional abstraction layer (minimal overhead)
 
 ### vs. AutoGPT/BabyAGI
-- ✅ More structured and maintainable
-- ✅ Better production features
-- ✅ Type safety
-- ❌ Less autonomous
+- More structured and maintainable
+- Better production features
+- Type safety
+- Less autonomous
 
 ### vs. CrewAI
-- ✅ TypeScript instead of Python
-- ✅ Built on LangGraph
-- ✅ More comprehensive middleware
-- ❌ Smaller community (newer)
+- TypeScript instead of Python
+- Built on LangGraph
+- More comprehensive middleware
+- Smaller community (newer)
 
 ## Next Steps
 

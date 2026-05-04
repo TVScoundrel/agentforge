@@ -265,10 +265,10 @@ const runTestsTool = toolBuilder()
 ```
 
 **Benefits of Tool Relations:**
-- ✅ **Better LLM decisions** - Relations guide the LLM through proper workflows
-- ✅ **Fewer errors** - `requires` prevents calling tools in wrong order
-- ✅ **Improved suggestions** - `suggests` helps LLM discover related tools
-- ✅ **Workflow hints** - `follows`/`precedes` show typical usage patterns
+- **Better LLM decisions** - Relations guide the LLM through proper workflows
+- **Fewer errors** - `requires` prevents calling tools in wrong order
+- **Improved suggestions** - `suggests` helps LLM discover related tools
+- **Workflow hints** - `follows`/`precedes` show typical usage patterns
 
 ## Tool Registry & Auto-Prompt Generation
 
@@ -541,11 +541,11 @@ ${generalRegistry.generatePrompt({ includeExamples: true, groupByCategory: true 
 ```
 
 **Benefits of multiple registries:**
-- ✅ **Focused agents** - Each agent only has tools relevant to its purpose
-- ✅ **Better performance** - Smaller tool sets = faster LLM decision making
-- ✅ **Clearer prompts** - Auto-generated prompts are more concise and relevant
-- ✅ **Easier maintenance** - Tools are organized by agent responsibility
-- ✅ **Cost optimization** - Smaller prompts = lower token costs
+- **Focused agents** - Each agent only has tools relevant to its purpose
+- **Better performance** - Smaller tool sets = faster LLM decision making
+- **Clearer prompts** - Auto-generated prompts are more concise and relevant
+- **Easier maintenance** - Tools are organized by agent responsibility
+- **Cost optimization** - Smaller prompts = lower token costs
 
 ### Event Listeners
 
@@ -635,7 +635,7 @@ Write clear descriptions that help LLMs understand when to use the tool:
 
 ### 2. Proper Error Handling
 
-**✅ Recommended: Use `.implementSafe()` for automatic error handling (v0.7.0+)**
+**Recommended: Use `.implementSafe()` for automatic error handling (v0.7.0+)**
 
 ```typescript
 .implementSafe(async ({ path }) => {

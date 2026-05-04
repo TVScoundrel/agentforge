@@ -23,17 +23,17 @@ The Plan-Execute pattern separates planning from execution, enabling better perf
 ### When to Use Plan-Execute
 
 **Ideal for:**
-- ✅ Well-defined, complex tasks
-- ✅ Tasks that benefit from upfront planning
-- ✅ Workflows with clear dependencies
-- ✅ Tasks requiring parallel execution
-- ✅ Structured, traceable execution
+- Well-defined, complex tasks
+- Tasks that benefit from upfront planning
+- Workflows with clear dependencies
+- Tasks requiring parallel execution
+- Structured, traceable execution
 
 **Not ideal for:**
-- ❌ Simple, single-step tasks
-- ❌ Highly exploratory tasks
-- ❌ Tasks where requirements are unclear
-- ❌ Tasks requiring constant adaptation
+- Simple, single-step tasks
+- Highly exploratory tasks
+- Tasks where requirements are unclear
+- Tasks requiring constant adaptation
 
 ### Key Benefits
 
@@ -483,18 +483,18 @@ for await (const event of await agent.stream({ input: query })) {
 ### 1. Planning Best Practices
 
 **DO:**
-- ✅ Create 3-7 steps for most tasks
-- ✅ Make steps specific and actionable
-- ✅ Identify dependencies clearly
-- ✅ Include validation steps
-- ✅ Plan for error scenarios
+- Create 3-7 steps for most tasks
+- Make steps specific and actionable
+- Identify dependencies clearly
+- Include validation steps
+- Plan for error scenarios
 
 **DON'T:**
-- ❌ Create overly granular plans (>15 steps)
-- ❌ Make steps too vague
-- ❌ Ignore dependencies
-- ❌ Skip validation
-- ❌ Assume perfect execution
+- Create overly granular plans (>15 steps)
+- Make steps too vague
+- Ignore dependencies
+- Skip validation
+- Assume perfect execution
 
 Example:
 ```typescript
@@ -1126,7 +1126,7 @@ function createPlanExecuteAgent(
 
 **Other Options**
 - `maxIterations?: number` - Max planning iterations (default: 5)
-- `returnIntermediateSteps?: boolean` - ⚠️ **Not yet implemented** - Defined in types but not currently used
+- `returnIntermediateSteps?: boolean` - **Not yet implemented** - Defined in types but not currently used
 - `verbose?: boolean` - Enable logging
 
 #### Returns
@@ -1618,5 +1618,4 @@ MIT License - see [LICENSE](../LICENSE) for details.
 ---
 
 **Need help?** Check the [Troubleshooting](#troubleshooting) section or open an issue on GitHub.
-
 

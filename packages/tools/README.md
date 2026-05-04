@@ -1,16 +1,16 @@
 # @agentforge/tools
 
-> Production-ready tools collection for AgentForge - 88 tools for web, data, file, utility, and agent operations
+> Production-ready tools collection for AgentForge - 94 tools for web, data, file, utility, and agent operations
 
 [![npm version](https://img.shields.io/npm/v/@agentforge/tools)](https://www.npmjs.com/package/@agentforge/tools)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.9-blue)](https://www.typescriptlang.org/)
 [![License](https://img.shields.io/badge/license-MIT-green)](../../LICENSE)
 
-## 🎉 Status: Production Ready & Published
+## Status: Production Ready & Published
 
-**88 production-ready tools** | **Full TypeScript support** | **Comprehensive documentation** | **LangChain compatible**
+**94 production-ready tools** | **Full TypeScript support** | **Comprehensive documentation** | **LangChain compatible**
 
-## 📦 Installation
+## Installation
 
 ```bash
 npm install @agentforge/tools
@@ -36,25 +36,25 @@ pnpm add mysql2
 pnpm add better-sqlite3 @types/better-sqlite3
 ```
 
-## 🎯 Overview
+## Overview
 
-This package provides **88 ready-to-use tools** organized into 5 categories:
+This package provides **94 ready-to-use tools** organized into 5 categories:
 
-- **🌐 Web Tools** (22 tools) - HTTP requests, web search, web scraping, HTML parsing, URL manipulation, Slack integration, Confluence integration
-- **📊 Data Tools** (25 tools) - JSON, CSV, XML processing, data transformation, and Neo4j graph database with embeddings
-- **📁 File Tools** (18 tools) - File operations, directory management, path utilities
-- **🔧 Utility Tools** (22 tools) - Date/time, strings, math, validation
-- **🤖 Agent Tools** (1 tool) - Human-in-the-loop and agent interaction
+- **Web Tools** (22 tools) - HTTP requests, web search, web scraping, HTML parsing, URL manipulation, Slack integration, Confluence integration
+- **Data Tools** (32 tools) - JSON, CSV, XML processing, data transformation, Neo4j graph database, and relational database operations
+- **File Tools** (17 tools) - File operations, directory management, path utilities
+- **Utility Tools** (22 tools) - Date/time, strings, math, validation
+- **Agent Tools** (1 tool) - Human-in-the-loop and agent interaction
 
 All tools feature:
-- ✅ Full TypeScript support with type inference
-- ✅ Zod schema validation
-- ✅ Comprehensive error handling
-- ✅ Detailed documentation and examples
-- ✅ LangChain compatibility
-- ✅ Production-tested and ready
+- Full TypeScript support with type inference
+- Zod schema validation
+- Comprehensive error handling
+- Detailed documentation and examples
+- LangChain compatibility
+- Production-tested and ready
 
-## 🚀 Quick Start
+## Quick Start
 
 ```typescript
 import { httpGet, jsonParser, fileReader, calculator } from '@agentforge/tools';
@@ -83,9 +83,9 @@ const result = await calculator.invoke({
 });
 ```
 
-## 📚 Tool Categories
+## Tool Categories
 
-### 🌐 Web Tools (22 tools)
+### Web Tools (22 tools)
 
 Tools for web interactions, HTTP operations, and integrations.
 
@@ -129,7 +129,7 @@ Tools for web interactions, HTTP operations, and integrations.
 - **`archiveConfluencePage`** - Archive pages (move to trash)
 - **`createConfluenceTools()`** - Factory function for custom Confluence configuration
 
-### 📊 Data Tools (18 tools)
+### Data Tools (32 tools)
 
 Tools for data processing and transformation.
 
@@ -169,7 +169,15 @@ Tools for data processing and transformation.
 - **`neo4jVectorSearchWithEmbedding`** - Semantic search with automatic embedding generation
 - **`neo4jCreateNodeWithEmbedding`** - Create nodes with automatic embeddings
 
-### 📁 File Tools (18 tools)
+#### Relational Database Tools
+- **`relationalQuery`** - Execute raw SQL with vendor-aware connections
+- **`relationalSelect`** - Build and execute SELECT queries
+- **`relationalInsert`** - Insert rows into relational tables
+- **`relationalUpdate`** - Update rows in relational tables
+- **`relationalDelete`** - Delete rows from relational tables
+- **`relationalGetSchema`** - Inspect relational database schema metadata
+
+### File Tools (17 tools)
 
 Tools for file system operations.
 
@@ -196,7 +204,7 @@ Tools for file system operations.
 - **`pathRelative`** - Get relative path
 - **`pathNormalize`** - Normalize paths
 
-### 🔧 Utility Tools (22 tools)
+### Utility Tools (22 tools)
 
 General utility tools for common operations.
 
@@ -230,7 +238,7 @@ General utility tools for common operations.
 - **`ipValidator`** - Validate IPv4/IPv6 addresses
 - **`uuidValidator`** - Validate UUIDs
 
-## 💡 Usage Examples
+## Usage Examples
 
 ### Web Search Example
 
@@ -299,8 +307,8 @@ SERPER_API_KEY=your-serper-api-key-here
 
 | Feature | DuckDuckGo (Free) | Serper (Premium) |
 |---------|-------------------|------------------|
-| **API Key** | ❌ Not required | ✅ Required ([get key](https://serper.dev)) |
-| **Cost** | 🆓 Free | 💰 Paid (see [pricing](https://serper.dev/pricing)) |
+| **API Key** | Not required | Required ([get key](https://serper.dev)) |
+| **Cost** | Free | Paid (see [pricing](https://serper.dev/pricing)) |
 | **Search Engine** | DuckDuckGo | Google |
 | **Rate Limits** | Generous | Based on plan |
 | **Result Quality** | Good | Excellent (Google results) |
@@ -695,7 +703,7 @@ const card = await creditCardValidator.invoke({
 console.log(card.valid); // true (passes Luhn check)
 ```
 
-## 🔗 Using with LangChain
+## Using with LangChain
 
 All tools are compatible with LangChain through the `@agentforge/core` integration:
 
@@ -711,7 +719,7 @@ const langchainJsonParser = toLangChainTool(jsonParser);
 const tools = [langchainHttpGet, langchainJsonParser];
 ```
 
-## 📖 API Reference
+## API Reference
 
 ### Tool Structure
 
@@ -761,7 +769,7 @@ const result = await httpGet.invoke({
 console.log(result.data);
 ```
 
-## 🏗️ Code Organization
+## Code Organization
 
 All tools follow a consistent directory structure pattern for better maintainability and discoverability:
 
@@ -841,7 +849,7 @@ Available factory functions:
 - `createMathOperationTools(config?)` - Math operation tools
 - `createValidationTools(config?)` - Validation tools
 
-## 🛠️ Development
+## Development
 
 ```bash
 # Install dependencies
@@ -860,43 +868,43 @@ pnpm typecheck
 pnpm lint
 ```
 
-## 📊 Tool Statistics
+## Tool Statistics
 
-- **Total Tools**: 81
+- **Total Tools**: 94
 - **Web Tools**: 22 (includes 4 Slack tools + 7 Confluence tools)
-- **Data Tools**: 18
-- **File Tools**: 18
+- **Data Tools**: 32
+- **File Tools**: 17
 - **Utility Tools**: 22
 - **Agent Tools**: 1
 - **Lines of Code**: ~4,000
-- **Full TypeScript Support**: ✅
-- **Zod Validation**: ✅
-- **LangChain Compatible**: ✅
+- **Full TypeScript Support**: Yes
+- **Zod Validation**: Yes
+- **LangChain Compatible**: Yes
 
-## 🤝 Contributing
+## Contributing
 
 Contributions are welcome! Please see the main AgentForge repository for contribution guidelines.
 
-## 📄 License
+## License
 
 MIT © 2026 Tom Van Schoor
 
-## 📖 Documentation
+## Documentation
 
-- 📚 **[Full Documentation](https://tvscoundrel.github.io/agentforge/)**
-- 🚀 **[Quick Start](https://tvscoundrel.github.io/agentforge/guide/quick-start)**
-- 🛠️ **[Tools API Reference](https://tvscoundrel.github.io/agentforge/api/tools)**
-- 💡 **[Custom Tools Tutorial](https://tvscoundrel.github.io/agentforge/tutorials/custom-tools)**
-- 📦 **[Examples](https://tvscoundrel.github.io/agentforge/examples/custom-tools)**
+- **[Full Documentation](https://tvscoundrel.github.io/agentforge/)**
+- **[Quick Start](https://tvscoundrel.github.io/agentforge/guide/quick-start)**
+- **[Tools API Reference](https://tvscoundrel.github.io/agentforge/api/tools)**
+- **[Custom Tools Tutorial](https://tvscoundrel.github.io/agentforge/tutorials/custom-tools)**
+- **[Examples](https://tvscoundrel.github.io/agentforge/examples/custom-tools)**
 
-## 🔗 Links
+## Links
 
 - [GitHub Repository](https://github.com/TVScoundrel/agentforge)
 - [npm Package](https://www.npmjs.com/package/@agentforge/tools)
 - [Changelog](https://tvscoundrel.github.io/agentforge/changelog.html) - See what's new before upgrading
 - [Report Issues](https://github.com/TVScoundrel/agentforge/issues)
 
-## 📚 Related Packages
+## Related Packages
 
 - [@agentforge/core](https://www.npmjs.com/package/@agentforge/core) - Core abstractions
 - [@agentforge/patterns](https://www.npmjs.com/package/@agentforge/patterns) - Agent patterns
@@ -905,6 +913,4 @@ MIT © 2026 Tom Van Schoor
 
 ---
 
-**Built with ❤️ by the AgentForge Team**
-
-
+**Built with love by the AgentForge Team**

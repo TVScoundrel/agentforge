@@ -6,34 +6,34 @@ Welcome to AgentForge! This guide will help you get up and running in minutes.
 
 Pick the installation method that best fits your needs:
 
-::: info 🚀 **CLI Scaffold** (Recommended for new projects)
+::: info **CLI Scaffold** (Recommended for new projects)
 **Best for:** Starting a new AgentForge project from scratch
 
 **What you get:** Pre-configured TypeScript, example agent, environment setup, development scripts
 
 **Time:** ~2 minutes
 
-👉 [Jump to CLI Installation](#option-1-using-the-cli-recommended)
+- [Jump to CLI Installation](#option-1-using-the-cli-recommended)
 :::
 
-::: info 🔧 **Manual Install** (For existing projects)
+::: info **Manual Install** (For existing projects)
 **Best for:** Adding AgentForge to an existing TypeScript project
 
 **What you get:** Full control over configuration and dependencies
 
 **Time:** ~5 minutes
 
-👉 [Jump to Manual Installation](#option-2-manual-installation)
+- [Jump to Manual Installation](#option-2-manual-installation)
 :::
 
-::: info 📦 **Add to Existing Project**
+::: info **Add to Existing Project**
 **Best for:** Integrating AgentForge into your current codebase
 
 **What you need:** Existing Node.js/TypeScript project with package.json
 
 **Time:** ~3 minutes
 
-👉 See [Manual Installation](#option-2-manual-installation) and skip the project initialization steps
+- See [Manual Installation](#option-2-manual-installation) and skip the project initialization steps
 :::
 
 ## Prerequisites
@@ -175,18 +175,18 @@ node dist/index.js
 
 Now that you have a basic agent running, here's your learning path:
 
-### 📚 Learn the Fundamentals
+### Learn the Fundamentals
 - **[Quick Start Guide](/guide/quick-start)** - Build more complex agents step-by-step
 - **[Core Concepts](/guide/concepts/tools)** - Understand tools, state, middleware, and memory
 - **[Agent Patterns](/guide/concepts/patterns)** - Compare all 4 agent patterns
 
-### 🎯 Choose Your Pattern
+### Choose Your Pattern
 - **[ReAct Pattern](/guide/patterns/react)** - Best for exploration and flexibility
 - **[Plan-Execute Pattern](/guide/patterns/plan-execute)** - Best for structured workflows
 - **[Reflection Pattern](/guide/patterns/reflection)** - Best for quality-critical outputs
 - **[Multi-Agent Pattern](/guide/patterns/multi-agent)** - Best for specialized tasks
 
-### 🛠️ Build Custom Solutions
+### Build Custom Solutions
 - **[Custom Tools Tutorial](/tutorials/custom-tools)** - Create your own tools
 - **[Advanced Patterns Tutorial](/tutorials/advanced-patterns)** - Combine patterns
 - **[Examples](/examples/react-agent)** - See real-world examples
@@ -227,4 +227,3 @@ pnpm add -D typescript@latest
 - **[GitHub Discussions](https://github.com/TVScoundrel/agentforge/discussions)** - Ask questions
 - **[Discord](https://discord.gg/U9twuFu4PQ)** - Chat with the community
 - **[Examples](https://github.com/TVScoundrel/agentforge/tree/main/examples)** - Browse code examples
-

@@ -336,10 +336,10 @@ const editFile = toolBuilder()
 - **`precedes`** - Typically called before
 
 **Benefits:**
-- ✅ Better LLM decision making
-- ✅ Fewer workflow errors
-- ✅ Improved tool discovery
-- ✅ Clear usage patterns
+- Better LLM decision making
+- Fewer workflow errors
+- Improved tool discovery
+- Clear usage patterns
 
 ## Testing Custom Tools
 

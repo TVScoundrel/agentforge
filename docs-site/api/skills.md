@@ -132,9 +132,9 @@ type TrustLevel = 'workspace' | 'trusted' | 'untrusted';
 
 | Level | Reference Files | Script Files | Use Case |
 |-------|:---------------:|:------------:|----------|
-| `workspace` | ✅ | ✅ | First-party project skills |
-| `trusted` | ✅ | ✅ | Vetted community/team skills |
-| `untrusted` | ✅ | ❌ | Unknown or unreviewed sources |
+| `workspace` | Yes | Yes | First-party project skills |
+| `trusted` | Yes | Yes | Vetted community/team skills |
+| `untrusted` | Yes | No | Unknown or unreviewed sources |
 
 ## TrustPolicyReason
 

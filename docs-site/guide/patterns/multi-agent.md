@@ -15,14 +15,16 @@ This pattern is inspired by organizational structures and the [AutoGen framework
 
 ## When to Use Multi-Agent
 
-✅ **Good for:**
+**Good for:**
+
 - Complex tasks requiring diverse expertise
 - Tasks with distinct subtasks or domains
 - When specialization improves quality
 - Collaborative problem-solving
 - Scalable, modular systems
 
-❌ **Not ideal for:**
+**Not ideal for:**
+
 - Simple, single-domain tasks (use [ReAct](/guide/patterns/react) instead)
 - When coordination overhead exceeds benefits (use [ReAct](/guide/patterns/react) or [Plan-Execute](/guide/patterns/plan-execute) instead)
 - Real-time applications (adds latency) (use [ReAct](/guide/patterns/react) instead)
@@ -1270,5 +1272,4 @@ Parallel routing is fully backward compatible. Existing systems continue to work
 - [AutoGen Paper](https://arxiv.org/abs/2308.08155) - Microsoft's multi-agent framework
 - [MetaGPT Paper](https://arxiv.org/abs/2308.00352) - Multi-agent collaboration
 - [Examples](/examples/multi-agent) - Working code examples
-
 

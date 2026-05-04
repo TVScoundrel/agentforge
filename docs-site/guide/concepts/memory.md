@@ -20,10 +20,10 @@ Memory in AgentForge refers to:
 ## Checkpointers
 
 Checkpointers save agent state at each step, enabling:
-- ✅ **Resuming conversations** after interruptions
-- ✅ **Multi-turn interactions** with context
-- ✅ **Time travel** to previous states
-- ✅ **Debugging** by inspecting state history
+- **Resuming conversations** after interruptions
+- **Multi-turn interactions** with context
+- **Time travel** to previous states
+- **Debugging** by inspecting state history
 
 ### Memory Checkpointer
 
@@ -70,15 +70,15 @@ const app = workflow.compile({ checkpointer });
 ```
 
 **Benefits:**
-- ✅ Persists across restarts
-- ✅ Good for local development
-- ✅ Single-machine deployments
-- ✅ No external dependencies
+- Persists across restarts
+- Good for local development
+- Single-machine deployments
+- No external dependencies
 
 **Limitations:**
-- ❌ Not suitable for distributed systems
-- ❌ Limited concurrent access
-- ❌ File-based storage
+- Not suitable for distributed systems
+- Limited concurrent access
+- File-based storage
 
 ::: tip Installation
 Requires `@langchain/langgraph-checkpoint-sqlite`:

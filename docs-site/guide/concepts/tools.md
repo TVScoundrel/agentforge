@@ -12,11 +12,11 @@ Tools are the building blocks that allow AI agents to interact with the world. A
 
 A **tool** is a function that an AI agent can call to perform actions or retrieve information. Tools enable agents to:
 
-- 📁 **Read and write files**
-- 🌐 **Make HTTP requests**
-- 🗄️ **Query databases**
-- 🧮 **Perform calculations**
-- 🔍 **Search the web**
+- **Read and write files**
+- **Make HTTP requests**
+- **Query databases**
+- **Perform calculations**
+- **Search the web**
 - And much more...
 
 ## Why AgentForge Tools?
@@ -36,10 +36,10 @@ Every tool includes comprehensive metadata that helps both LLMs and developers u
 ### Type Safety
 Full TypeScript support with Zod schema validation ensures:
 
-- ✅ Input validation at runtime
-- ✅ Type inference for better DX
-- ✅ Automatic error messages
-- ✅ IDE autocomplete
+- Input validation at runtime
+- Type inference for better DX
+- Automatic error messages
+- IDE autocomplete
 
 ### LangChain Compatible
 Tools can be seamlessly converted to LangChain's `DynamicStructuredTool` format, allowing you to use them with any LangChain agent or workflow.
@@ -81,18 +81,18 @@ const readFileTool = toolBuilder()
 
 | Method | Required | Description |
 |--------|----------|-------------|
-| `.name(string)` | ✅ | Tool identifier (kebab-case) |
-| `.description(string)` | ✅ | What the tool does (min 10 chars) |
-| `.category(ToolCategory)` | ✅ | Primary category |
-| `.schema(ZodSchema)` | ✅ | Input validation schema |
-| `.implement(function)` | ✅ | Async implementation function |
-| `.tags(string[])` | ❌ | Tags for discovery |
-| `.displayName(string)` | ❌ | Human-readable name |
-| `.usageNotes(string)` | ❌ | Important usage information |
-| `.limitation(string)` | ❌ | What the tool can't do |
-| `.example(ToolExample)` | ❌ | Usage example |
-| `.version(string)` | ❌ | Tool version |
-| `.author(string)` | ❌ | Tool author |
+| `.name(string)` | Yes | Tool identifier (kebab-case) |
+| `.description(string)` | Yes | What the tool does (min 10 chars) |
+| `.category(ToolCategory)` | Yes | Primary category |
+| `.schema(ZodSchema)` | Yes | Input validation schema |
+| `.implement(function)` | Yes | Async implementation function |
+| `.tags(string[])` | No | Tags for discovery |
+| `.displayName(string)` | No | Human-readable name |
+| `.usageNotes(string)` | No | Important usage information |
+| `.limitation(string)` | No | What the tool can't do |
+| `.example(ToolExample)` | No | Usage example |
+| `.version(string)` | No | Tool version |
+| `.author(string)` | No | Tool author |
 
 ::: tip Schema Descriptions Required
 All schema fields **must** include `.describe()` for LLM understanding:
@@ -300,7 +300,7 @@ Use Zod schemas to validate and transform inputs:
 
 ### Error Handling
 
-**✅ Recommended: Automatic Error Handling (v0.7.0+)**
+**Recommended: Automatic Error Handling (v0.7.0+)**
 
 Use `.implementSafe()` for automatic error handling with consistent response format:
 

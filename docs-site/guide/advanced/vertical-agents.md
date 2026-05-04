@@ -16,13 +16,13 @@ All demonstrate production-ready implementations with external prompts, tool inj
 **Vertical agents** (also known as "reusable agents") are domain-specific agents designed for particular use cases or industries. They provide:
 
 **Benefits:**
-- 🔄 **Reusability**: Write once, use in multiple projects
-- ⚙️ **Configurability**: Customize behavior without changing code
-- 📦 **Composability**: Combine agents with different tools and capabilities
-- 🧪 **Testability**: Easier to test with dependency injection
-- 📚 **Shareability**: Publish to npm for team or community use
-- 🔧 **Maintainability**: Centralized updates benefit all consumers
-- 🎯 **Domain-Specific**: Optimized for specific verticals (support, legal, HR, etc.)
+- **Reusability**: Write once, use in multiple projects
+- **Configurability**: Customize behavior without changing code
+- **Composability**: Combine agents with different tools and capabilities
+- **Testability**: Easier to test with dependency injection
+- **Shareability**: Publish to npm for team or community use
+- **Maintainability**: Centralized updates benefit all consumers
+- **Domain-Specific**: Optimized for specific verticals (support, legal, HR, etc.)
 
 ## Core Patterns
 
@@ -372,17 +372,19 @@ export function createSupportAgent(config: CustomerSupportConfig = {}) {
 
 **Benefits of External Prompts:**
 
-- ✅ **Separation of Concerns**: Prompts are content, not code
-- ✅ **Easier to Read**: Markdown is more readable than template strings
-- ✅ **Version Control**: Track prompt changes independently from code
-- ✅ **Team Collaboration**: Non-developers can edit prompts
-- ✅ **Reusability**: Share prompts across multiple agents
-- ✅ **Testing**: Easier to test different prompt variations
-- ✅ **Localization**: Create language-specific prompt files
+- **Separation of Concerns**: Prompts are content, not code
+- **Easier to Read**: Markdown is more readable than template strings
+- **Version Control**: Track prompt changes independently from code
+- **Team Collaboration**: Non-developers can edit prompts
+- **Reusability**: Share prompts across multiple agents
+- **Testing**: Easier to test different prompt variations
+- **Localization**: Create language-specific prompt files
 
 **Alternative: Inline Prompts (Not Recommended)**
 
 For simple cases, you can build prompts inline, but this becomes hard to maintain:
+
+```typescript
       'Provide clear, actionable solutions',
       'Follow up to ensure satisfaction',
     ],
@@ -1056,12 +1058,12 @@ For complete, working implementations of vertical agents, see the examples in th
 ### [Customer Support Agent](https://github.com/TVScoundrel/agentforge/tree/main/examples/vertical-agents/customer-support)
 
 A fully-featured customer support agent demonstrating:
-- ✅ Factory function pattern with Zod validation
-- ✅ Tool injection using ToolRegistry
-- ✅ Feature flags (human escalation, ticket creation, knowledge base)
-- ✅ **External prompt pattern** with `prompts/system.md`
-- ✅ System prompt customization with company branding
-- ✅ 24 comprehensive tests demonstrating reusability
+- Factory function pattern with Zod validation
+- Tool injection using ToolRegistry
+- Feature flags (human escalation, ticket creation, knowledge base)
+- **External prompt pattern** with `prompts/system.md`
+- System prompt customization with company branding
+- 24 comprehensive tests demonstrating reusability
 
 **Key Files:**
 - `src/index.ts` - Agent factory function (uses `loadPrompt` from `@agentforge/core`)
@@ -1074,14 +1076,14 @@ This example showcases the **recommended pattern** for creating production-ready
 ### [Code Review Agent](https://github.com/TVScoundrel/agentforge/tree/main/examples/vertical-agents/code-review)
 
 A configurable code review agent demonstrating:
-- ✅ Factory function pattern with Zod validation
-- ✅ Tool injection using ToolRegistry
-- ✅ Feature flags (security checks, performance checks, strict mode, auto-approve)
-- ✅ **External prompt pattern** with `prompts/system.md`
-- ✅ Built-in tools (analyze-code, check-security, check-performance)
-- ✅ Review depth configuration (quick, standard, thorough)
-- ✅ Language-specific review support
-- ✅ 26 comprehensive tests demonstrating reusability
+- Factory function pattern with Zod validation
+- Tool injection using ToolRegistry
+- Feature flags (security checks, performance checks, strict mode, auto-approve)
+- **External prompt pattern** with `prompts/system.md`
+- Built-in tools (analyze-code, check-security, check-performance)
+- Review depth configuration (quick, standard, thorough)
+- Language-specific review support
+- 26 comprehensive tests demonstrating reusability
 
 **Key Files:**
 - `src/index.ts` - Agent factory function (uses `loadPrompt` from `@agentforge/core`)
@@ -1094,14 +1096,14 @@ Perfect for teams needing customizable code review automation.
 ### [Data Analyst Agent](https://github.com/TVScoundrel/agentforge/tree/main/examples/vertical-agents/data-analyst)
 
 A flexible data analyst agent demonstrating:
-- ✅ Factory function pattern with Zod validation
-- ✅ Tool injection using ToolRegistry
-- ✅ Feature flags (statistical analysis, data validation, visualization, confidential data mode)
-- ✅ **External prompt pattern** with `prompts/system.md`
-- ✅ Built-in tools (analyze-data, calculate-statistics, create-visualization, validate-data)
-- ✅ Analysis depth configuration (quick, standard, deep)
-- ✅ Data type specialization support
-- ✅ 28 comprehensive tests demonstrating reusability
+- Factory function pattern with Zod validation
+- Tool injection using ToolRegistry
+- Feature flags (statistical analysis, data validation, visualization, confidential data mode)
+- **External prompt pattern** with `prompts/system.md`
+- Built-in tools (analyze-data, calculate-statistics, create-visualization, validate-data)
+- Analysis depth configuration (quick, standard, deep)
+- Data type specialization support
+- 28 comprehensive tests demonstrating reusability
 
 **Key Files:**
 - `src/index.ts` - Agent factory function (uses `loadPrompt` from `@agentforge/core`)
@@ -1128,5 +1130,3 @@ Perfect for teams needing flexible data analysis with customizable depth and foc
 - [Patterns Guide](../concepts/patterns.md) - Agent patterns overview
 - [Testing Guide](../../api/testing.md) - Testing agents
 - [Deployment Guide](./deployment.md) - Deploying agents to production
-
-

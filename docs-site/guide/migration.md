@@ -20,12 +20,12 @@
 
 AgentForge builds on top of LangChain, providing:
 
-✅ **Rich Metadata** - Add examples, usage notes, limitations, and more  
-✅ **Type Safety** - Full TypeScript support with Zod validation  
-✅ **Better DX** - Fluent builder API for creating tools  
-✅ **Discoverability** - Registry system with search and categorization  
-✅ **Auto Prompts** - Generate LLM prompts automatically from metadata  
-✅ **100% Compatible** - Convert back to LangChain tools anytime  
+- **Rich Metadata** - Add examples, usage notes, limitations, and more
+- **Type Safety** - Full TypeScript support with Zod validation
+- **Better DX** - Fluent builder API for creating tools
+- **Discoverability** - Registry system with search and categorization
+- **Auto Prompts** - Generate LLM prompts automatically from metadata
+- **100% Compatible** - Convert back to LangChain tools anytime
 
 ---
 
@@ -147,11 +147,11 @@ const langchainTool = readFileTool.toLangChainTool();
 ```
 
 **Key Differences:**
-- 📝 Rich metadata (category, tags, examples, notes)
-- 🔍 Better discoverability
-- 📚 Self-documenting
-- 🔄 Bidirectional conversion
-- ✨ **Automatic error handling with `.implementSafe()`** (NEW in v0.7.0)
+- Rich metadata (category, tags, examples, notes)
+- Better discoverability
+- Self-documenting
+- Bidirectional conversion
+- **Automatic error handling with `.implementSafe()`** (NEW in v0.7.0)
 
 ---
 
@@ -627,5 +627,5 @@ After migrating your tools:
 
 ---
 
-**Happy Migrating! 🚀**
+**Happy Migrating!**
 

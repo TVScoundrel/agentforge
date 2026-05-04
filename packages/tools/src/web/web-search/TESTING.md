@@ -15,14 +15,14 @@ pnpm test:coverage web-search
 ```
 
 **Test Coverage:**
-- ✅ 45 unit tests passing
-- ✅ DuckDuckGo provider tests (11 tests)
-- ✅ Serper provider tests (10 tests)
-- ✅ Index/integration tests (14 tests)
-- ✅ Utility tests (10 tests)
-- ✅ Fallback mechanism tests
-- ✅ Error handling tests
-- ✅ Schema validation tests
+- 45 unit tests passing
+- DuckDuckGo provider tests (11 tests)
+- Serper provider tests (10 tests)
+- Index/integration tests (14 tests)
+- Utility tests (10 tests)
+- Fallback mechanism tests
+- Error handling tests
+- Schema validation tests
 
 ## Performance Tests
 
@@ -34,10 +34,10 @@ npx tsx scripts/test-performance.ts
 ```
 
 **Performance Benchmarks:**
-- ✅ Typical query (10 results): ~280ms
-- ✅ Large query (50 results): ~100ms
-- ✅ Custom timeout: ~110ms
-- ✅ Concurrent queries (5x): ~250ms total, ~50ms avg
+- Typical query (10 results): ~280ms
+- Large query (50 results): ~100ms
+- Custom timeout: ~110ms
+- Concurrent queries (5x): ~250ms total, ~50ms avg
 
 All queries complete well under the 5-second threshold.
 

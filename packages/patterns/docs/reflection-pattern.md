@@ -238,14 +238,14 @@ workflow.addNode('validator', customValidatorNode);
 ### 2. Quality Criteria
 
 **Good Criteria**:
-- ✅ Specific and measurable
-- ✅ Relevant to the task
-- ✅ Achievable within iterations
+- Specific and measurable
+- Relevant to the task
+- Achievable within iterations
 
 **Poor Criteria**:
-- ❌ Vague ("good quality")
-- ❌ Subjective without guidelines
-- ❌ Too many criteria
+- Vague ("good quality")
+- Subjective without guidelines
+- Too many criteria
 
 ### 3. Iteration Management
 

@@ -10,7 +10,7 @@ Comprehensive documentation for agent patterns in the AgentForge framework.
 
 ## Documentation Structure
 
-### 📚 Pattern Guides
+### Pattern Guides
 
 Comprehensive guides for each pattern:
 
@@ -49,7 +49,7 @@ Comprehensive guides for each pattern:
   - Quality assessment and revision
   - Generator-Reflector-Reviser architecture
 
-### 🔄 Pattern Comparison
+### Pattern Comparison
 
 - **[Pattern Comparison Guide](./pattern-comparison.md)** - Choose the right pattern
   - Decision tree
@@ -206,9 +206,9 @@ We welcome documentation improvements! When contributing:
 ### v1.0.0 (Current)
 
 **Patterns**:
-- ✅ ReAct Pattern (Phase 3.1)
-- ✅ Plan-Execute Pattern (Phase 3.2)
-- 🚧 Reflection Pattern (Phase 3.3 - Coming Soon)
+- ReAct Pattern (Phase 3.1)
+- Plan-Execute Pattern (Phase 3.2)
+- Reflection Pattern (Phase 3.3 - Coming Soon)
 
 **Documentation**:
 - Complete pattern guides

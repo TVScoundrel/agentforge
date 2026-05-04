@@ -54,14 +54,14 @@ const result = await agent.invoke({
 
 ### When to Use ReAct
 
-**✅ Ideal for:**
+**Ideal for:**
 - Exploratory tasks requiring tool usage
 - Multi-step problem solving
 - Transparent decision-making
 - Dynamic task decomposition
 - Tasks where the path isn't known upfront
 
-**❌ Not ideal for:**
+**Not ideal for:**
 - Simple, single-step tasks
 - Tasks requiring extensive upfront planning
 - Highly structured, predetermined workflows
@@ -69,10 +69,10 @@ const result = await agent.invoke({
 
 ### Key Features
 
-- 🔄 **Iterative** - Adapts based on observations
-- 🔍 **Transparent** - Shows reasoning at each step
-- 🛠️ **Tool-driven** - Leverages tools effectively
-- 🎯 **Flexible** - Handles unexpected situations
+- **Iterative** - Adapts based on observations
+- **Transparent** - Shows reasoning at each step
+- **Tool-driven** - Leverages tools effectively
+- **Flexible** - Handles unexpected situations
 
 ## Plan-Execute Pattern
 
@@ -110,14 +110,14 @@ const result = await agent.invoke({
 
 ### When to Use Plan-Execute
 
-**✅ Ideal for:**
+**Ideal for:**
 - Well-defined workflows
 - Tasks benefiting from parallel execution
 - Structured, multi-step processes
 - Research and analysis tasks
 - ETL pipelines and data processing
 
-**❌ Not ideal for:**
+**Not ideal for:**
 - Highly exploratory tasks
 - Tasks requiring constant adaptation
 - Simple, single-step operations
@@ -125,10 +125,10 @@ const result = await agent.invoke({
 
 ### Key Features
 
-- 📋 **Structured** - Clear plan before execution
-- ⚡ **Parallel** - Execute independent steps simultaneously
-- 🔄 **Adaptive** - Can replan if needed
-- 📊 **Efficient** - Optimizes execution order
+- **Structured** - Clear plan before execution
+- **Parallel** - Execute independent steps simultaneously
+- **Adaptive** - Can replan if needed
+- **Efficient** - Optimizes execution order
 
 ## Reflection Pattern
 
@@ -171,14 +171,14 @@ const result = await agent.invoke({
 
 ### When to Use Reflection
 
-**✅ Ideal for:**
+**Ideal for:**
 - Quality-critical outputs (writing, code, designs)
 - Tasks requiring refinement
 - Content that benefits from review
 - Complex problem-solving
 - Creative tasks
 
-**❌ Not ideal for:**
+**Not ideal for:**
 - Time-sensitive tasks
 - Simple queries
 - Tasks with clear right/wrong answers
@@ -186,10 +186,10 @@ const result = await agent.invoke({
 
 ### Key Features
 
-- 🎯 **Quality-focused** - Iterative improvement
-- 🔍 **Self-critical** - Built-in review process
-- 📈 **Measurable** - Quality criteria and scoring
-- 🔄 **Iterative** - Multiple revision cycles
+- **Quality-focused** - Iterative improvement
+- **Self-critical** - Built-in review process
+- **Measurable** - Quality criteria and scoring
+- **Iterative** - Multiple revision cycles
 
 ## Multi-Agent Pattern
 
@@ -243,14 +243,14 @@ const result = await system.invoke({
 
 ### When to Use Multi-Agent
 
-**✅ Ideal for:**
+**Ideal for:**
 - Tasks requiring different expertise
 - Complex workflows with specialized steps
 - Parallel processing of different aspects
 - Systems needing load balancing
 - Modular, maintainable architectures
 
-**❌ Not ideal for:**
+**Not ideal for:**
 - Simple, single-domain tasks
 - Tasks where coordination overhead isn't worth it
 - Real-time, low-latency requirements
@@ -268,10 +268,10 @@ const result = await system.invoke({
 
 ### Key Features
 
-- 🎯 **Specialized** - Each worker has specific expertise
-- 🔀 **Coordinated** - Supervisor manages workflow
-- ⚡ **Parallel** - Multiple workers can run simultaneously
-- 📊 **Scalable** - Add workers as needed
+- **Specialized** - Each worker has specific expertise
+- **Coordinated** - Supervisor manages workflow
+- **Parallel** - Multiple workers can run simultaneously
+- **Scalable** - Add workers as needed
 
 ## Choosing the Right Pattern
 
@@ -307,28 +307,28 @@ Start
 ### By Characteristics
 
 **Choose ReAct when you need:**
-- 🔍 Transparency in reasoning
-- 🔄 Dynamic adaptation
-- 🛠️ Flexible tool usage
-- 📝 Visible thought process
+- Transparency in reasoning
+- Dynamic adaptation
+- Flexible tool usage
+- Visible thought process
 
 **Choose Plan-Execute when you need:**
-- 📋 Structured approach
-- ⚡ Parallel execution
-- 🎯 Efficiency
-- 📊 Clear progress tracking
+- Structured approach
+- Parallel execution
+- Efficiency
+- Clear progress tracking
 
 **Choose Reflection when you need:**
-- 🎯 High quality output
-- 🔄 Iterative improvement
-- 📈 Measurable quality
-- 🔍 Self-critique
+- High quality output
+- Iterative improvement
+- Measurable quality
+- Self-critique
 
 **Choose Multi-Agent when you need:**
-- 🎯 Specialized expertise
-- 🔀 Task routing
-- ⚡ Parallel processing
-- 📊 Scalability
+- Specialized expertise
+- Task routing
+- Parallel processing
+- Scalability
 
 ## Combining Patterns
 

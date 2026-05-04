@@ -7,11 +7,11 @@
 [![Coverage](https://img.shields.io/badge/coverage-98.11%25-brightgreen)](https://www.npmjs.com/package/@agentforge/cli)
 [![License](https://img.shields.io/badge/license-MIT-green)](../../LICENSE)
 
-## 🎉 Status: Production Ready & Published
+## Status: Production Ready & Published
 
 **156 tests passing** | **98.11% coverage** | **13 commands** | **4 project templates**
 
-## 📦 Installation
+## Installation
 
 ```bash
 # Global installation (recommended)
@@ -21,16 +21,16 @@ npm install -g @agentforge/cli
 npx @agentforge/cli create my-agent-project
 ```
 
-## ✨ Features
+## Features
 
-- 🚀 **Project Scaffolding** - 4 templates (minimal, full, api, cli)
-- 🛠️ **Development Tools** - Dev server, build, test commands
-- 📦 **Deployment** - Deploy to Docker, Kubernetes, cloud platforms
-- 🔧 **Code Generation** - Generate agents, tools, middleware
-- ✅ **Validation** - Project structure and configuration validation
-- 📊 **Diagnostics** - Health checks and issue detection
-- 🔄 **Upgrades** - Dependency and framework upgrades
-- 📝 **Configuration** - Manage project settings
+- **Project Scaffolding** - 4 templates (minimal, full, api, cli)
+- **Development Tools** - Dev server, build, test commands
+- **Deployment** - Deploy to Docker, Kubernetes, cloud platforms
+- **Code Generation** - Generate agents, tools, middleware
+- **Validation** - Project structure and configuration validation
+- **Diagnostics** - Health checks and issue detection
+- **Upgrades** - Dependency and framework upgrades
+- **Configuration** - Manage project settings
 
 ## Commands
 
@@ -291,21 +291,21 @@ agentforge tool:publish myTool --tag beta --dry-run
 - `--tag <tag>` - npm tag [default: latest]
 - `--dry-run` - Dry run without actual publishing
 
-## 📖 Documentation
+## Documentation
 
-- 📚 **[Full Documentation](https://tvscoundrel.github.io/agentforge/)**
-- 🚀 **[Quick Start](https://tvscoundrel.github.io/agentforge/guide/quick-start)**
-- 🛠️ **[CLI API Reference](https://tvscoundrel.github.io/agentforge/api/cli)**
-- 💡 **[Getting Started Tutorial](https://tvscoundrel.github.io/agentforge/tutorials/first-agent)**
+- **[Full Documentation](https://tvscoundrel.github.io/agentforge/)**
+- **[Quick Start](https://tvscoundrel.github.io/agentforge/guide/quick-start)**
+- **[CLI API Reference](https://tvscoundrel.github.io/agentforge/api/cli)**
+- **[Getting Started Tutorial](https://tvscoundrel.github.io/agentforge/tutorials/first-agent)**
 
-## 🔗 Links
+## Links
 
 - [GitHub Repository](https://github.com/TVScoundrel/agentforge)
 - [npm Package](https://www.npmjs.com/package/@agentforge/cli)
 - [Changelog](https://tvscoundrel.github.io/agentforge/changelog.html) - See what's new before upgrading
 - [Report Issues](https://github.com/TVScoundrel/agentforge/issues)
 
-## 📚 Related Packages
+## Related Packages
 
 - [@agentforge/core](https://www.npmjs.com/package/@agentforge/core) - Core abstractions
 - [@agentforge/patterns](https://www.npmjs.com/package/@agentforge/patterns) - Agent patterns

@@ -25,17 +25,17 @@
 **Branch:** `docs/st-10002-public-docs-emoji-normalization`
 
 ### Checklist
-- [ ] Create branch `docs/st-10002-public-docs-emoji-normalization`
-- [ ] Create draft PR with story ID in title
-- [ ] Remove decorative emoji from targeted public-facing docs such as the root README, package READMEs, and selected docs-site pages identified by the audit
-- [ ] Preserve wording and structure except where readability cleanup is required after emoji removal
-- [ ] Preserve meaningful non-emoji Unicode and literal sample output unless explicitly documented otherwise
-- [ ] Add or update story documentation at `docs/st10002-public-docs-emoji-normalization.md` (or document why not required).
-- [ ] Assess test impact; add/update automated tests when needed, or document why tests are not required.
-- [ ] Run full test suite before finalizing the PR and record results.
-- [ ] Run lint (`pnpm lint`) before finalizing the PR and record results.
-- [ ] Commit completed checklist items as logical commits and push updates.
-- [ ] Mark PR Ready only after all story tasks are complete.
+- [x] Create branch `docs/st-10002-public-docs-emoji-normalization`
+- [x] Create draft PR with story ID in title
+- [x] Remove decorative emoji from targeted public-facing docs such as the root README, package READMEs, and selected docs-site pages identified by the audit
+- [x] Preserve wording and structure except where readability cleanup is required after emoji removal
+- [x] Preserve meaningful non-emoji Unicode and literal sample output unless explicitly documented otherwise
+- [x] Add or update story documentation at `docs/st10002-public-docs-emoji-normalization.md` (or document why not required).
+- [x] Assess test impact; add/update automated tests when needed, or document why tests are not required.
+- [x] Run full test suite before finalizing the PR and record results.
+- [x] Run lint (`pnpm lint`) before finalizing the PR and record results.
+- [x] Commit completed checklist items as logical commits and push updates.
+- [x] Mark PR Ready only after all story tasks are complete.
 - [ ] Wait for merge; do not merge directly from local branch.
 
 ---

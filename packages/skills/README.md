@@ -6,7 +6,7 @@
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.9-blue)](https://www.typescriptlang.org/)
 [![License](https://img.shields.io/badge/license-MIT-green)](../../LICENSE)
 
-## 📦 Installation
+## Installation
 
 ```bash
 npm install @agentforge/skills

@@ -105,10 +105,10 @@ const readFileTool = toolBuilder()
 ```
 
 **Benefits:**
-- ✅ No manual try-catch blocks needed
-- ✅ Consistent error response format
-- ✅ Type-safe response: `{ success: boolean; data?: T; error?: string }`
-- ✅ Cleaner, more readable code
+- No manual try-catch blocks needed
+- Consistent error response format
+- Type-safe response: `{ success: boolean; data?: T; error?: string }`
+- Cleaner, more readable code
 
 **When to use `.implement()` vs `.implementSafe()`:**
 

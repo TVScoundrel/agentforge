@@ -1,10 +1,10 @@
 # Neo4j Tools Implementation Summary
 
-## 🎉 Implementation Complete
+## Implementation Complete
 
-Successfully implemented a comprehensive Neo4j tools suite for AgentForge, adding 5 production-ready tools for graph database operations, knowledge graphs, and GraphRAG applications.
+Successfully implemented a comprehensive Neo4j tools suite for AgentForge, adding 7 production-ready tools for graph database operations, knowledge graphs, and GraphRAG applications.
 
-## 📦 What Was Built
+## What Was Built
 
 ### Core Infrastructure
 
@@ -59,21 +59,45 @@ Successfully implemented a comprehensive Neo4j tools suite for AgentForge, addin
 - Returns nodes with similarity scores
 - Helpful error messages for missing indexes
 
-## 📁 Files Created
+#### 6. neo4jVectorSearchWithEmbedding
+- Semantic search with automatic embedding generation
+- Supports configurable embedding providers
+- Reduces boilerplate for GraphRAG retrieval workflows
+
+#### 7. neo4jCreateNodeWithEmbedding
+- Creates nodes with automatic embedding generation
+- Stores vector properties for later semantic search
+- Supports embedding-enabled knowledge graph ingestion
+
+## Files Created
 
 ```
 packages/tools/src/data/neo4j/
 ├── index.ts                          # Main exports and tool instances
 ├── types.ts                          # Zod schemas and TypeScript types
 ├── connection.ts                     # Connection pool management
+├── embeddings/
+│   ├── embedding-manager.ts         # Embedding orchestration
+│   ├── index.ts                     # Embedding exports
+│   ├── types.ts                     # Embedding provider types
+│   ├── utils.ts                     # Embedding helper utilities
+│   └── providers/
+│       ├── cohere.ts                # Cohere embedding provider
+│       ├── huggingface.ts           # HuggingFace embedding provider
+│       ├── ollama.ts                # Ollama embedding provider
+│       ├── openai.ts                # OpenAI embedding provider
+│       └── voyage.ts                # Voyage embedding provider
 ├── utils/
+│   ├── cypher-sanitizer.ts          # Cypher safety helpers
 │   └── result-formatter.ts          # Neo4j result formatting utilities
 └── tools/
     ├── neo4j-query.ts               # Cypher query execution
     ├── neo4j-get-schema.ts          # Schema introspection
     ├── neo4j-find-nodes.ts          # Node search
     ├── neo4j-traverse.ts            # Graph traversal
-    └── neo4j-vector-search.ts       # Vector similarity search
+    ├── neo4j-vector-search.ts       # Vector similarity search
+    ├── neo4j-vector-search-with-embedding.ts # Vector search with embeddings
+    └── neo4j-create-node-with-embedding.ts   # Node creation with embeddings
 
 packages/tools/tests/data/
 └── neo4j.test.ts                    # Comprehensive test suite
@@ -87,7 +111,7 @@ packages/tools/docs/
 └── NEO4J_IMPLEMENTATION_SUMMARY.md  # This file
 ```
 
-## ✅ Testing Results
+## Testing Results
 
 All tools tested successfully against local Neo4j instance:
 
@@ -119,13 +143,13 @@ Test 5: Cleanup - ✅ PASSED
 ✅ All tests passed!
 ```
 
-## 📚 Documentation
+## Documentation
 
 ### Updated Files
 - `packages/tools/README.md` - Added Neo4j tools section with examples
-- `packages/tools/docs/NEO4J.md` - Comprehensive 467-line guide covering:
+- `packages/tools/docs/NEO4J.md` - Comprehensive guide covering:
   - Installation and setup
-  - All 5 tools with detailed examples
+  - All 7 tools with detailed examples
   - GraphRAG implementation patterns
   - Best practices
   - Troubleshooting guide
@@ -138,7 +162,7 @@ Test 5: Cleanup - ✅ PASSED
 - Security best practices (parameterized queries)
 - Connection management guidelines
 
-## 🔧 Configuration
+## Configuration
 
 ### Environment Variables
 ```bash
@@ -161,7 +185,7 @@ const result = await neo4jQuery.execute({
 });
 ```
 
-## 🎯 Use Cases Enabled
+## Use Cases Enabled
 
 1. **Knowledge Graphs**
    - Build structured knowledge representations
@@ -183,7 +207,7 @@ const result = await neo4jQuery.execute({
    - Query enterprise knowledge graphs
    - Integrate with graph analytics
 
-## 🚀 Next Steps (Optional Enhancements)
+## Next Steps (Optional Enhancements)
 
 Future enhancements that could be added:
 
@@ -206,28 +230,28 @@ Future enhancements that could be added:
    - Bulk node creation
    - Batch updates
 
-## 📊 Impact
+## Impact
 
-- **Tools Added**: 5 new tools
-- **Total AgentForge Tools**: 86 (was 81)
+- **Tools Added**: 7 new tools
+- **Total `@agentforge/tools` tools**: 94
 - **Lines of Code**: ~1,500 lines
-- **Documentation**: 467 lines
+- **Documentation**: Comprehensive Neo4j guide
 - **Test Coverage**: Comprehensive test suite
 - **Dependencies**: neo4j-driver ^6.0.1
 
-## ✨ Key Features
+## Key Features
 
-- ✅ Full TypeScript support with type inference
-- ✅ Zod schema validation
-- ✅ Connection pooling with health checks
-- ✅ Comprehensive error handling
-- ✅ LLM-friendly tool descriptions
-- ✅ Production-ready and tested
-- ✅ GraphRAG support with vector search
-- ✅ Follows AgentForge conventions
-- ✅ Complete documentation
+- Full TypeScript support with type inference
+- Zod schema validation
+- Connection pooling with health checks
+- Comprehensive error handling
+- LLM-friendly tool descriptions
+- Production-ready and tested
+- GraphRAG support with vector search
+- Follows AgentForge conventions
+- Complete documentation
 
-## 🎓 Learning Resources
+## Learning Resources
 
 Created comprehensive examples demonstrating:
 - Basic Neo4j operations
@@ -237,4 +261,3 @@ Created comprehensive examples demonstrating:
 - Vector similarity search
 
 All examples tested and working with the provided Neo4j instance.
-

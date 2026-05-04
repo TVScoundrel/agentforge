@@ -20,40 +20,31 @@ hero:
       link: /api/core
 
 features:
-  - icon: 🛠️
-    title: Tool Registry & Auto-Prompt Generation
+  - title: Tool Registry & Auto-Prompt Generation
     details: Register tools once, generate LLM-ready prompts automatically. Organize by category, search by tags, and convert to LangChain tools seamlessly.
 
-  - icon: 🎯
-    title: Agent Patterns
+  - title: Agent Patterns
     details: Production-ready patterns - ReAct, Plan-Execute, Reflection, and Multi-Agent coordination.
   
-  - icon: 🔌
-    title: Middleware System
+  - title: Middleware System
     details: Composable middleware for caching, rate limiting, validation, logging, and more.
   
-  - icon: 📊
-    title: Streaming & Real-time
+  - title: Streaming & Real-time
     details: Built-in support for SSE, WebSocket, progress tracking, and backpressure management.
   
-  - icon: 🧪
-    title: Testing Utilities
+  - title: Testing Utilities
     details: Mock factories, test helpers, fixtures, and integration testing tools.
   
-  - icon: 🚀
-    title: Production Ready
+  - title: Production Ready
     details: Health checks, monitoring, resource management, and deployment templates.
   
-  - icon: 📦
-    title: TypeScript First
+  - title: TypeScript First
     details: Full type safety with Zod validation and comprehensive type definitions.
   
-  - icon: 🎨
-    title: Developer Experience
+  - title: Developer Experience
     details: CLI tool, project templates, interactive docs, and extensive examples.
   
-  - icon: 🔄
-    title: LangGraph Integration
+  - title: LangGraph Integration
     details: Built on LangGraph - leverage the full power of LangChain ecosystem.
 ---
 
@@ -168,19 +159,19 @@ dataAnalystRegistry.registerMany([fileReader, calculator]);
 
 ## Why AgentForge?
 
-### 🎯 **Production-Ready Patterns**
+### **Production-Ready Patterns**
 Don't reinvent the wheel. Use battle-tested agent patterns that work in production.
 
-### 🛠️ **Smart Tool Management**
+### **Smart Tool Management**
 Register tools once with rich metadata, then automatically generate LLM prompts, query by category/tags, and convert to LangChain tools. No manual prompt engineering needed.
 
-### 📚 **Extensive Documentation**
+### **Extensive Documentation**
 Interactive tutorials, API reference, and real-world examples to get you started quickly.
 
-### 🔒 **Type Safety**
+### **Type Safety**
 Full TypeScript support with Zod validation ensures your agents are reliable and maintainable.
 
-### 🚀 **Scalable**
+### **Scalable**
 Built-in resource management, monitoring, and deployment templates for production workloads.
 
 ## What's Included?
@@ -199,4 +190,3 @@ Built-in resource management, monitoring, and deployment templates for productio
 ## License
 
 MIT © 2026 Tom Van Schoor
-

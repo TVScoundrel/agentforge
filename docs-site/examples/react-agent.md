@@ -244,12 +244,12 @@ describe('ReAct Agent', () => {
 
 ## Key Features
 
-- ✅ **Reasoning Loop** - Think before acting
-- ✅ **Tool Integration** - Use multiple tools
-- ✅ **Streaming Support** - Real-time responses
-- ✅ **State Persistence** - Remember context
-- ✅ **Error Handling** - Graceful failures
-- ✅ **Middleware Support** - Caching, rate limiting, etc.
+- **Reasoning Loop** - Think before acting
+- **Tool Integration** - Use multiple tools
+- **Streaming Support** - Real-time responses
+- **State Persistence** - Remember context
+- **Error Handling** - Graceful failures
+- **Middleware Support** - Caching, rate limiting, etc.
 
 ## When to Use ReAct
 

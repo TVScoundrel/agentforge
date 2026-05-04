@@ -4,9 +4,9 @@
 
 ## Queue Status Summary
 
-- **Ready:** 5 stories
+- **Ready:** 4 stories
 - **In Progress:** 0 stories
-- **In Review:** 0 stories
+- **In Review:** 1 story
 - **Blocked:** 0 stories
 - **Backlog:** 4 stories
 
@@ -14,7 +14,6 @@
 
 ## Ready
 
-- `ST-10002` - Normalize Emoji Usage in Public-Facing Docs
 - `ST-10003` - Normalize Emoji Usage in Planning and Internal Docs
 - `ST-10004` - Normalize Emoji Usage in Examples and Template Docs
 - `ST-10005` - Add Documentation Style Guardrails for Emoji Usage
@@ -30,7 +29,7 @@ _No stories currently in progress_
 
 ## In Review
 
-_No stories currently in review_
+- `ST-10002` - Normalize Emoji Usage in Public-Facing Docs
 
 ---
 
