@@ -59,6 +59,20 @@ describe('agent test runner', () => {
     expect(result.error?.message).toBe('Agent test timeout');
   });
 
+  it('honors an explicit zero timeout', async () => {
+    const runner = new AgentTestRunner(
+      {
+        invoke: () => new Promise((resolve) => setTimeout(() => resolve({ messages: [] }), 10)),
+      },
+      { timeout: 0 }
+    );
+
+    const result = await runner.run({ messages: [] });
+
+    expect(result.passed).toBe(false);
+    expect(result.error?.message).toBe('Agent test timeout');
+  });
+
   it('falls back to empty messages when final state has a malformed messages field', async () => {
     const runner = createAgentTestRunner({
       invoke: async () => ({

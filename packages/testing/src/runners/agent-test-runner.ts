@@ -119,7 +119,7 @@ export class AgentTestRunner<
     
     try {
       // Set timeout if configured
-      const timeout = this.config.timeout || 30000;
+      const timeout = this.config.timeout ?? 30000;
       const timeoutPromise = new Promise((_, reject) => {
         timeoutId = setTimeout(() => reject(new Error('Agent test timeout')), timeout);
       });
