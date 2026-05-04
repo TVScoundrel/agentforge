@@ -5,6 +5,40 @@ All notable changes to AgentForge will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.16.22] - 2026-05-04
+
+### Added
+
+#### @agentforge/testing - Agent Test Runner Contract Coverage
+- Added source-included typecheck regression coverage for typed agent input, final state, validation hook, result, and step contracts in `packages/testing/src/runners/agent-test-runner.typecheck.ts`
+- Added focused runtime coverage in `packages/testing/tests/runners/agent-test-runner.test.ts` for successful runs, timeout failures, timeout cleanup, explicit zero-timeout behavior, malformed message fallback, validation failures, and `runMany(...)`
+- Added story documentation in `docs/st09035-agent-test-runner-state-contracts.md` covering the runner contract changes, behavior preservation, review fixes, explicit-`any` delta, and validation record
+
+### Changed
+
+#### @agentforge/testing - Agent Test Runner Contract Hardening
+- Added exported `AgentTestAgent<TInput, TState>` and `AgentTestRunnerStep<TState>` contracts for downstream runner integrations
+- Made `AgentTestConfig`, `AgentTestResult`, `AgentTestRunner`, and `createAgentTestRunner(...)` generic over agent input, final state, and step contracts
+- Replaced broad runner `any` seams with unknown-first generic defaults while preserving existing invocation, validation, step-capture, timeout, and multi-input behavior
+
+### Fixed
+
+#### @agentforge/testing - Agent Test Runner Edge Cases
+- Cleared timeout handles after runner execution settles so successful runs do not leave pending timers behind
+- Guarded malformed `messages` fields in final state and safely falls back to an empty message list
+- Honored explicit `timeout: 0` instead of treating it as an unset timeout
+- Clarified validation-hook documentation so it reflects that validation runs only after invocation completes
+- Lowered the workspace explicit-`any` baseline from `144` to `135` and the `testing` package baseline from `14` to `5`
+
+### Published
+- All packages published to npm registry at version 0.16.22:
+  - @agentforge/core@0.16.22
+  - @agentforge/skills@0.16.22
+  - @agentforge/patterns@0.16.22
+  - @agentforge/tools@0.16.22
+  - @agentforge/testing@0.16.22
+  - @agentforge/cli@0.16.22
+
 ## [0.16.21] - 2026-05-03
 
 ### Added
