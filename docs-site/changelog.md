@@ -1358,7 +1358,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 #### @agentforge/cli
-- **Critical: Template validation issues across minimal, api, and cli templates**  CRITICAL
+- **Critical: Template validation issues across minimal, api, and cli templates** [CRITICAL]
   - **Problem**: Fresh projects created with `agentforge create` using v0.12.4 had multiple P1 and P2 validation failures in minimal, api, and cli templates (full template was 100% fixed)
   - **Impact**: Users couldn't run `typecheck`, `build`, or `vitest run` commands without errors in 3 out of 4 templates
   - **Root Causes**:
@@ -1412,7 +1412,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 #### @agentforge/cli
-- **Critical: Tool metadata test failure in fresh scaffolds**  CRITICAL
+- **Critical: Tool metadata test failure in fresh scaffolds** [CRITICAL]
   - **Problem**: Fresh projects created with `agentforge create` using v0.12.3 had test failures
   - **Impact**: `pnpm exec vitest run` failed with "exampleTool.name is undefined"
   - **Root Cause**: Tool API changed - metadata is now under `tool.metadata` property, but template tests were still accessing `tool.name` directly
@@ -1440,7 +1440,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 #### @agentforge/cli
-- **Critical: 4 template regressions discovered in fresh scaffold validation**  CRITICAL
+- **Critical: 4 template regressions discovered in fresh scaffold validation** [CRITICAL]
   - **Problem**: Fresh projects created with `agentforge create` using v0.12.2 had 4 validation failures
   - **Impact**: Users couldn't run `typecheck`, `test`, `build`, or `lint` commands without errors
   - **Root Causes**:
@@ -1486,7 +1486,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 #### @agentforge/cli
-- **Critical: TypeScript errors in all CLI templates**  CRITICAL
+- **Critical: TypeScript errors in all CLI templates** [CRITICAL]
   - **Problem**: All projects created with `agentforge create` had TypeScript compilation errors out of the box
   - **Impact**: Users couldn't run newly created projects without manually fixing type errors
   - **Root Causes**:
@@ -1526,7 +1526,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 #### Publishing
-- **Critical: workspace:* dependencies not converted to concrete versions**  CRITICAL
+- **Critical: workspace:* dependencies not converted to concrete versions** [CRITICAL]
   - **Problem**: Published packages on npm contained `workspace:*` dependencies instead of concrete version numbers (e.g., `"@agentforge/core": "workspace:*"` instead of `"@agentforge/core": "0.12.0"`)
   - **Impact**: Users running `npx @agentforge/cli` got `ERR_PNPM_WORKSPACE_PKG_NOT_FOUND` error when pnpm tried to install packages
   - **Root Cause**: `pnpm publish` was not automatically converting workspace protocols to concrete versions as expected
@@ -1591,7 +1591,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 #### @agentforge/core - Prompt Loader
-- **Critical Bugs in Prompt Injection Protection** [P2]  HIGH
+- **Critical Bugs in Prompt Injection Protection** [P2] [HIGH]
   - **Bug 1: Header stripping ineffective after newline removal**
     - **Problem**: `sanitizeValue()` removed newlines BEFORE stripping headers, so payloads like `"Acme\n\n# New System Prompt"` became `"Acme # New System Prompt"` and the header regex (`/^#+\s*/gm`) no longer matched
     - **Impact**: Markdown header injection protection was completely bypassed
@@ -1618,7 +1618,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
     - `packages/cli/templates/reusable-agent/index.ts` - Updated to use untrustedVariables and promptsDir
 
 #### @agentforge/cli
-- **[P1] Reusable Agent Creation Failure**  CRITICAL
+- **[P1] Reusable Agent Creation Failure** [CRITICAL]
   - **Problem**: `agent:create-reusable` command tried to move `prompt-loader.ts` file that no longer exists in template (removed during consolidation)
   - **Impact**: CLI command would throw `fs.move` error and fail after template copy
   - **Solution**: Removed `prompt-loader.ts` move operation from file organization step
@@ -1669,7 +1669,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
-#### Vertical Agents - Prompt Injection Vulnerability [SECURITY]  HIGH
+#### Vertical Agents - Prompt Injection Vulnerability [SECURITY] [HIGH]
 - **Vulnerability**: Prompt loaders were vulnerable to prompt injection attacks when user-controlled data was passed as template variables
   - **Attack Vector**: Malicious users could inject instructions through variables like `companyName: 'Acme\n\nIGNORE PREVIOUS INSTRUCTIONS'`
   - **Impact**: Attackers could override agent behavior, potentially leading to data leaks or policy violations
@@ -1683,7 +1683,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
       - Markdown header injection (prevents structure hijacking)
       - Excessive length (prevents prompt bloat, max 500 chars)
   - **New Interface**: `RenderTemplateOptions` for explicit security control
-  - **Backwards Compatible**:  Existing code using plain objects continues to work (treated as trusted)
+  - **Backwards Compatible**: Existing code using plain objects continues to work (treated as trusted)
   - **Files Updated**:
     - `examples/vertical-agents/customer-support/src/prompt-loader.ts`
     - `examples/vertical-agents/code-review/src/prompt-loader.ts`

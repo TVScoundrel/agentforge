@@ -40,11 +40,11 @@ pnpm add better-sqlite3 @types/better-sqlite3
 
 This package provides **88 ready-to-use tools** organized into 5 categories:
 
-- ** Web Tools** (22 tools) - HTTP requests, web search, web scraping, HTML parsing, URL manipulation, Slack integration, Confluence integration
-- ** Data Tools** (25 tools) - JSON, CSV, XML processing, data transformation, and Neo4j graph database with embeddings
-- ** File Tools** (18 tools) - File operations, directory management, path utilities
-- ** Utility Tools** (22 tools) - Date/time, strings, math, validation
-- ** Agent Tools** (1 tool) - Human-in-the-loop and agent interaction
+- **Web Tools** (22 tools) - HTTP requests, web search, web scraping, HTML parsing, URL manipulation, Slack integration, Confluence integration
+- **Data Tools** (25 tools) - JSON, CSV, XML processing, data transformation, and Neo4j graph database with embeddings
+- **File Tools** (18 tools) - File operations, directory management, path utilities
+- **Utility Tools** (22 tools) - Date/time, strings, math, validation
+- **Agent Tools** (1 tool) - Human-in-the-loop and agent interaction
 
 All tools feature:
 - Full TypeScript support with type inference
@@ -300,7 +300,7 @@ SERPER_API_KEY=your-serper-api-key-here
 | Feature | DuckDuckGo (Free) | Serper (Premium) |
 |---------|-------------------|------------------|
 | **API Key** | Not required | Required ([get key](https://serper.dev)) |
-| **Cost** | 🆓 Free | Paid (see [pricing](https://serper.dev/pricing)) |
+| **Cost** | Free | Paid (see [pricing](https://serper.dev/pricing)) |
 | **Search Engine** | DuckDuckGo | Google |
 | **Rate Limits** | Generous | Based on plan |
 | **Result Quality** | Good | Excellent (Google results) |
@@ -869,9 +869,9 @@ pnpm lint
 - **Utility Tools**: 22
 - **Agent Tools**: 1
 - **Lines of Code**: ~4,000
-- **Full TypeScript Support**:
-- **Zod Validation**:
-- **LangChain Compatible**:
+- **Full TypeScript Support**: Yes
+- **Zod Validation**: Yes
+- **LangChain Compatible**: Yes
 
 ## Contributing
 
@@ -905,6 +905,6 @@ MIT © 2026 Tom Van Schoor
 
 ---
 
-**Built with  by the AgentForge Team**
+**Built with love by the AgentForge Team**
 
 

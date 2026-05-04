@@ -627,5 +627,5 @@ After migrating your tools:
 
 ---
 
-**Happy Migrating! **
+**Happy Migrating!**
 
