@@ -40,7 +40,7 @@ Focused runtime coverage was added in `packages/testing/tests/runners/agent-test
 Focused validation:
 
 - `pnpm --filter @agentforge/testing typecheck` -> passed.
-- `pnpm test --run packages/testing/tests/runners/agent-test-runner.test.ts` -> passed (`1` file, `6` tests).
+- `pnpm test --run packages/testing/tests/runners/agent-test-runner.test.ts` -> passed (`1` file, `7` tests).
 - `pnpm lint:explicit-any:baseline` -> passed and improved from `144/289` to `135/289`; `testing` improved from `14/51` to `5/51`.
 
 Final validation:
