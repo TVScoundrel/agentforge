@@ -1126,7 +1126,7 @@ function createPlanExecuteAgent(
 
 **Other Options**
 - `maxIterations?: number` - Max planning iterations (default: 5)
-- `returnIntermediateSteps?: boolean` -  **Not yet implemented** - Defined in types but not currently used
+- `returnIntermediateSteps?: boolean` - **Not yet implemented** - Defined in types but not currently used
 - `verbose?: boolean` - Enable logging
 
 #### Returns
@@ -1618,5 +1618,4 @@ MIT License - see [LICENSE](../LICENSE) for details.
 ---
 
 **Need help?** Check the [Troubleshooting](#troubleshooting) section or open an issue on GitHub.
-
 

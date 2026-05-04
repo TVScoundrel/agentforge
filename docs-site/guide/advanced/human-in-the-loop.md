@@ -288,12 +288,14 @@ await askHuman.invoke({
 
 ### 1. Clear Questions
 
-- **Bad:**
+**Bad:**
+
 ```typescript
 await askHuman.invoke({ question: 'OK?' });
 ```
 
-- **Good:**
+**Good:**
+
 ```typescript
 await askHuman.invoke({
   question: 'Approve refund of $500 to customer John Doe for order #12345?',
@@ -407,5 +409,4 @@ try {
 - Check [ReAct Pattern](../patterns/react.md) for agent integration
 - Review [Plan-Execute Pattern](../patterns/plan-execute.md) for multi-phase workflows
 - Explore the [Tools API](../../api/tools.md) for all available tools
-
 

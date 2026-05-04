@@ -6,7 +6,7 @@ Welcome to AgentForge! This guide will help you get up and running in minutes.
 
 Pick the installation method that best fits your needs:
 
-::: info  **CLI Scaffold** (Recommended for new projects)
+::: info **CLI Scaffold** (Recommended for new projects)
 **Best for:** Starting a new AgentForge project from scratch
 
 **What you get:** Pre-configured TypeScript, example agent, environment setup, development scripts
@@ -16,7 +16,7 @@ Pick the installation method that best fits your needs:
 - [Jump to CLI Installation](#option-1-using-the-cli-recommended)
 :::
 
-::: info  **Manual Install** (For existing projects)
+::: info **Manual Install** (For existing projects)
 **Best for:** Adding AgentForge to an existing TypeScript project
 
 **What you get:** Full control over configuration and dependencies
@@ -26,7 +26,7 @@ Pick the installation method that best fits your needs:
 - [Jump to Manual Installation](#option-2-manual-installation)
 :::
 
-::: info  **Add to Existing Project**
+::: info **Add to Existing Project**
 **Best for:** Integrating AgentForge into your current codebase
 
 **What you need:** Existing Node.js/TypeScript project with package.json
@@ -227,4 +227,3 @@ pnpm add -D typescript@latest
 - **[GitHub Discussions](https://github.com/TVScoundrel/agentforge/discussions)** - Ask questions
 - **[Discord](https://discord.gg/U9twuFu4PQ)** - Chat with the community
 - **[Examples](https://github.com/TVScoundrel/agentforge/tree/main/examples)** - Browse code examples
-
