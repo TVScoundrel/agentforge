@@ -8,6 +8,13 @@
 
 ## Completed Stories
 
+### ST-10002: Normalize Emoji Usage in Public-Facing Docs
+- **Merged:** 2026-05-04
+- **PR:** https://github.com/TVScoundrel/agentforge/pull/100 (commit 7d33a44)
+- **Epic:** EP-10 (Documentation Only Changes)
+- **Estimate:** 3 hours
+- **Outcome:** Removed decorative emoji from public-facing documentation across docs-site pages, package READMEs, package docs, and related public markdown while preserving meaning and fenced examples where appropriate. Follow-up review fixes corrected markdown grouping, whitespace, status markers, tool counts, and Neo4j summary drift so the published docs remain readable and internally consistent.
+
 ### ST-09035: Tighten Agent Test Runner State Contracts
 - **Merged:** 2026-05-04
 - **PR:** https://github.com/TVScoundrel/agentforge/pull/99 (commit 89d97a9)
