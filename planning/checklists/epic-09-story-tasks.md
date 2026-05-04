@@ -1362,7 +1362,8 @@ Implementation notes:
   - `3060f9d` fix(st-09035): tighten agent test runner contracts
 - [x] Mark PR Ready only after all story tasks are complete
   - PR #99 ready for review: https://github.com/TVScoundrel/agentforge/pull/99
-- [ ] Wait for merge; do not merge directly from local branch
+- [x] Wait for merge; do not merge directly from local branch
+  - Merged via PR #99 on 2026-05-04; merge commit `89d97a9`.
 
 ---
 

@@ -2,11 +2,18 @@
 
 **Purpose:** Track completed and merged stories for the Relational Database Access Tool project.
 
-**Last Updated:** 2026-05-03
+**Last Updated:** 2026-05-04
 
 ---
 
 ## Completed Stories
+
+### ST-09035: Tighten Agent Test Runner State Contracts
+- **Merged:** 2026-05-04
+- **PR:** https://github.com/TVScoundrel/agentforge/pull/99 (commit 89d97a9)
+- **Epic:** EP-09 (SOLID Micro-Refactors and Type Boundary Hardening)
+- **Estimate:** 3 hours
+- **Outcome:** Tightened `@agentforge/testing` agent test runner contracts by adding exported `AgentTestAgent` and `AgentTestRunnerStep` interfaces, making runner config/result/factory APIs generic over input, state, and step types, preserving timeout, validation, step-capture, and multi-input behavior with focused tests, folding in review fixes for timeout cleanup, malformed message guards, explicit zero-timeout handling, and documentation accuracy, and lowering the explicit-`any` baseline from `144/289` to `135/289` while reducing the `testing` package from `14/51` to `5/51`.
 
 ### ST-09033: Tighten Database Pool Adapter Contracts
 - **Merged:** 2026-05-03

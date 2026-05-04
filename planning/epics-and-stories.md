@@ -1445,7 +1445,7 @@
 **Priority:** P2 (Medium)
 **Estimate:** 3 hours
 **Dependencies:** ST-09034
-**Status:** In Review (PR #99)
+**Status:** Merged (PR #99, 2026-05-04)
 
 **Acceptance criteria:**
 - [ ] `packages/testing/src/runners/agent-test-runner.ts` replaces broad agent, input, state, and step `any` contracts with safer interfaces or unknown-first generics
@@ -1462,7 +1462,7 @@
 **Priority:** P2 (Medium)
 **Estimate:** 3 hours
 **Dependencies:** ST-09035
-**Status:** Backlog
+**Status:** Ready
 
 **Acceptance criteria:**
 - [ ] `packages/testing/src/runners/conversation-simulator.ts` replaces broad agent and invoke-result `any` contracts with reusable unknown-first or generic runner interfaces
