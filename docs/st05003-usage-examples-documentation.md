@@ -52,5 +52,5 @@ This story is documentation-only. No functional code was changed. The JSDoc addi
 
 ## Dependencies
 
-- ST-02006 (SQL Sanitization & Security) ✅
-- ST-03001 (Schema Introspection Tool) ✅
+- ST-02006 (SQL Sanitization & Security)
+- ST-03001 (Schema Introspection Tool)

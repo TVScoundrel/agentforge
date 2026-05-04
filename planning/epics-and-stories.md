@@ -51,7 +51,7 @@
 
 ---
 
-### EP-05: Documentation, Examples, and Testing ✅ Complete
+### EP-05: Documentation, Examples, and Testing
 **Capability:** Comprehensive documentation, examples, and test coverage for production readiness.
 
 **Outcomes:**
@@ -670,7 +670,7 @@
 
 ---
 
-#### ST-07002: Move Skills Source Files and Re-wire Imports ✅ Merged
+#### ST-07002: Move Skills Source Files and Re-wire Imports Merged
 **User story:** As a developer, I want the skills source code to live in `packages/skills/src/` with correct imports so that the module is self-contained.
 
 **Priority:** P0 (Critical)

@@ -1,6 +1,6 @@
 # ST-04003: Result Streaming for Relational SELECT
 
-**Status:** 👀 In Review  
+**Status:** In Review
 **PR:** [#36](https://github.com/TVScoundrel/agentforge/pull/36)  
 **Epic:** 04 - Advanced Features and Optimization
 

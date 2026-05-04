@@ -381,7 +381,7 @@ logger.info('Revision complete', {
 
 ## Anti-Patterns (Don't Do This)
 
-### ❌ Using console.log instead of logger
+### Anti-pattern: Using console.log instead of logger
 
 ```typescript
 // ❌ Bad
@@ -393,7 +393,7 @@ if (verbose) {
 logger.debug('Worker executing task', { workerId: id });
 ```
 
-### ❌ Logging without context
+### Anti-pattern: Logging without context
 
 ```typescript
 // ❌ Bad
@@ -407,7 +407,7 @@ logger.info('Task complete', {
 });
 ```
 
-### ❌ Logging sensitive data
+### Anti-pattern: Logging sensitive data
 
 ```typescript
 // ❌ Bad
@@ -417,7 +417,7 @@ logger.debug('User input', { apiKey: config.apiKey });
 logger.debug('User input', { hasApiKey: !!config.apiKey });
 ```
 
-### ❌ Expensive computations in log calls
+### Anti-pattern: Expensive computations in log calls
 
 ```typescript
 // ❌ Bad - always computes even if DEBUG disabled

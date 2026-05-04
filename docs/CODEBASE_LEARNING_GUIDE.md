@@ -7,7 +7,7 @@
 
 ---
 
-## 🎯 Learning Objectives
+## Learning Objectives
 
 By the end of this guide, you should understand:
 1. **Core Architecture** - How agents, tools, and patterns work together
@@ -18,7 +18,7 @@ By the end of this guide, you should understand:
 
 ---
 
-## 📚 Recommended Learning Path
+## Recommended Learning Path
 
 ### Level 1: High-Level Overview (30-60 minutes)
 
@@ -178,7 +178,7 @@ ls -la packages/core/src/
 
 ---
 
-## 🔍 Deep Dive Topics
+## Deep Dive Topics
 
 ### Advanced Topic 1: LangGraph Integration
 
@@ -208,7 +208,7 @@ ls -la packages/core/src/
 
 ---
 
-## 🎓 Hands-On Exercises
+## Hands-On Exercises
 
 ### Exercise 1: Create a Simple Tool (30 min)
 
@@ -239,7 +239,7 @@ ls -la packages/core/src/
 
 ---
 
-## 📊 Architecture Diagrams
+## Architecture Diagrams
 
 **Visual learners**: Check these out!
 
@@ -248,7 +248,7 @@ ls -la packages/core/src/
 
 ---
 
-## ✅ Readiness Checklist
+## Complete Readiness Checklist
 
 Before starting Phase 7, you should be able to:
 
@@ -263,7 +263,7 @@ Before starting Phase 7, you should be able to:
 
 ---
 
-## 🚀 Ready for Phase 7?
+## Ready for Phase 7?
 
 **If you can answer these questions, you're ready**:
 
@@ -277,7 +277,7 @@ Before starting Phase 7, you should be able to:
 
 ---
 
-## 📚 Additional Resources
+## Additional Resources
 
 - **LangGraph Docs**: https://langchain-ai.github.io/langgraph/
 - **TypeScript Handbook**: https://www.typescriptlang.org/docs/handbook/
@@ -286,7 +286,7 @@ Before starting Phase 7, you should be able to:
 
 ---
 
-**Happy Learning!** 🎉
+**Happy Learning!**
 
 When you're ready to start Phase 7, you'll have a solid foundation to build advanced multi-agent orchestration patterns.
 

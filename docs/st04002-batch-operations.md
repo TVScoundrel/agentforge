@@ -1,6 +1,6 @@
 # ST-04002: Batch Operations for Relational CRUD Tools
 
-**Status:** 👀 In Review  
+**Status:** In Review
 **Epic:** 04 - Advanced Features and Optimization
 
 ## Overview

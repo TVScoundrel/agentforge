@@ -1,6 +1,6 @@
 # ST-04001: Transaction Support
 
-**Status:** 👀 In Review  
+**Status:** In Review
 **Epic:** 04 - Advanced Features and Optimization
 
 ## Overview
