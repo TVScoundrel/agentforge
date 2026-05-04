@@ -35,3 +35,6 @@ Validation will rely on:
 ## Validation Notes
 
 - Targeted fenced-code-aware scan result: `outside=0`, `fenced=231`.
+- `git diff --check` passed with no whitespace errors.
+- `pnpm test --run` passed on 2026-05-04: 166 test files passed, 2267 tests passed, 286 tests skipped.
+- `pnpm lint` passed on 2026-05-04 with existing warnings only and no errors.
