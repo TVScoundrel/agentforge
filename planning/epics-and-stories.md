@@ -1445,7 +1445,7 @@
 **Priority:** P2 (Medium)
 **Estimate:** 3 hours
 **Dependencies:** ST-09034
-**Status:** Ready
+**Status:** In Review (PR #99)
 
 **Acceptance criteria:**
 - [ ] `packages/testing/src/runners/agent-test-runner.ts` replaces broad agent, input, state, and step `any` contracts with safer interfaces or unknown-first generics

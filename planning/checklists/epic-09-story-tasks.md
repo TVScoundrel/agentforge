@@ -1339,18 +1339,29 @@ Implementation notes:
 **Branch:** `fix/st-09035-agent-test-runner-state-contracts`
 
 ### Checklist
-- [ ] Create branch `fix/st-09035-agent-test-runner-state-contracts`
-- [ ] Create draft PR with story ID in title
-- [ ] Replace broad agent, input, state, and step contracts in `packages/testing/src/runners/agent-test-runner.ts` with safer interfaces or generics
-- [ ] Preserve current timeout, validation, step-capture, and `runMany(...)` behavior
-- [ ] Add/update focused tests for successful runs, timeout handling, validation failures, and multi-input execution
-- [ ] Record explicit-`any` warning deltas for touched files in story docs
-- [ ] Add or update story documentation at `docs/st09035-agent-test-runner-state-contracts.md` (or document why not required)
-- [ ] Assess test impact; add/update automated tests when needed, or document why tests are not required
-- [ ] Run full test suite before finalizing the PR and record results
-- [ ] Run lint (`pnpm lint`) before finalizing the PR and record results
-- [ ] Commit completed checklist items as logical commits and push updates
-- [ ] Mark PR Ready only after all story tasks are complete
+- [x] Create branch `fix/st-09035-agent-test-runner-state-contracts`
+- [x] Create draft PR with story ID in title
+  - Draft PR #99: https://github.com/TVScoundrel/agentforge/pull/99
+- [x] Replace broad agent, input, state, and step contracts in `packages/testing/src/runners/agent-test-runner.ts` with safer interfaces or generics
+  - Added `AgentTestAgent`, `AgentTestRunnerStep`, and generic `AgentTestConfig`, `AgentTestResult`, `AgentTestRunner`, and `createAgentTestRunner(...)` contracts.
+- [x] Preserve current timeout, validation, step-capture, and `runMany(...)` behavior
+  - Focused runner coverage preserves successful runs, timeout failures, validation failures, empty step capture, and concurrent `runMany(...)` execution.
+- [x] Add/update focused tests for successful runs, timeout handling, validation failures, and multi-input execution
+  - Added `packages/testing/tests/runners/agent-test-runner.test.ts`.
+- [x] Record explicit-`any` warning deltas for touched files in story docs
+  - Recorded in `docs/st09035-agent-test-runner-state-contracts.md`; workspace baseline improved from `144/289` to `135/289`, `testing` from `14/51` to `5/51`.
+- [x] Add or update story documentation at `docs/st09035-agent-test-runner-state-contracts.md` (or document why not required)
+- [x] Assess test impact; add/update automated tests when needed, or document why tests are not required
+  - Added source-included typecheck regression plus focused runtime runner coverage.
+- [x] Run full test suite before finalizing the PR and record results
+  - `pnpm test --run` -> `166 passed | 16 skipped` files; `2264 passed | 286 skipped` tests.
+- [x] Run lint (`pnpm lint`) before finalizing the PR and record results
+  - `pnpm lint` -> exit `0`; warnings only.
+- [x] Commit completed checklist items as logical commits and push updates
+  - `8f87323` chore(st-09035): start agent runner contract story
+  - `3060f9d` fix(st-09035): tighten agent test runner contracts
+- [x] Mark PR Ready only after all story tasks are complete
+  - PR #99 ready for review: https://github.com/TVScoundrel/agentforge/pull/99
 - [ ] Wait for merge; do not merge directly from local branch
 
 ---

@@ -1,12 +1,12 @@
 # Kanban Queue: AgentForge
 
-**Last Updated:** 2026-05-03
+**Last Updated:** 2026-05-04
 
 ## Queue Status Summary
 
-- **Ready:** 5 stories
+- **Ready:** 4 stories
 - **In Progress:** 0 stories
-- **In Review:** 0 stories
+- **In Review:** 1 story
 - **Blocked:** 0 stories
 - **Backlog:** 5 stories
 
@@ -14,7 +14,6 @@
 
 ## Ready
 
-- `ST-09035` - Tighten Agent Test Runner State Contracts
 - `ST-10002` - Normalize Emoji Usage in Public-Facing Docs
 - `ST-10003` - Normalize Emoji Usage in Planning and Internal Docs
 - `ST-10004` - Normalize Emoji Usage in Examples and Template Docs
@@ -30,7 +29,7 @@ _No stories currently in progress_
 
 ## In Review
 
-_No stories currently in review_
+- `ST-09035` - Tighten Agent Test Runner State Contracts
 
 ---
 
@@ -129,4 +128,4 @@ _No stories currently blocked_
 - Epic 09 (SOLID Micro-Refactors and Type Boundary Hardening) was expanded a sixth time on 2026-05-03 with small SOLID/DRY follow-on stories ST-09036 through ST-09040
 - Epic 10 (Documentation Only Changes) was opened on 2026-04-18 as an evergreen docs-only lane for markdown cleanup, style normalization, and future documentation maintenance stories
 - ST-10001 complete - markdown emoji usage audit merged (PR #97, 2026-05-03); ST-10002 through ST-10005 promoted to Ready as capacity became available
-- Current measured `no-explicit-any` baseline is `144` warnings (`cli 6`, `core 44`, `patterns 15`, `testing 14`, `tools 65`)
+- Current measured `no-explicit-any` baseline is `135` warnings (`cli 6`, `core 44`, `patterns 15`, `testing 5`, `tools 65`)

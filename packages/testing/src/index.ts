@@ -82,8 +82,10 @@ export {
 export {
   AgentTestRunner,
   createAgentTestRunner,
+  type AgentTestAgent,
   type AgentTestConfig,
   type AgentTestResult,
+  type AgentTestRunnerStep,
 } from './runners/agent-test-runner.js';
 
 export {
