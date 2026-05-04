@@ -4,8 +4,8 @@
 
 ## Queue Status Summary
 
-- **Ready:** 4 stories
-- **In Progress:** 0 stories
+- **Ready:** 3 stories
+- **In Progress:** 1 story
 - **In Review:** 0 stories
 - **Blocked:** 0 stories
 - **Backlog:** 4 stories
@@ -14,7 +14,6 @@
 
 ## Ready
 
-- `ST-10003` - Normalize Emoji Usage in Planning and Internal Docs
 - `ST-10004` - Normalize Emoji Usage in Examples and Template Docs
 - `ST-10005` - Add Documentation Style Guardrails for Emoji Usage
 - `ST-09036` - Tighten Conversation Simulator Agent Contracts
@@ -23,7 +22,7 @@
 
 ## In Progress
 
-_No stories currently in progress_
+- `ST-10003` - Normalize Emoji Usage in Planning and Internal Docs
 
 ---
 

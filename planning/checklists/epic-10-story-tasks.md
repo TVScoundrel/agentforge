@@ -45,7 +45,7 @@
 **Branch:** `docs/st-10003-internal-docs-emoji-normalization`
 
 ### Checklist
-- [ ] Create branch `docs/st-10003-internal-docs-emoji-normalization`
+- [x] Create branch `docs/st-10003-internal-docs-emoji-normalization`
 - [ ] Create draft PR with story ID in title
 - [ ] Remove decorative emoji from targeted planning docs, feature plans, checklists, and internal markdown identified by the audit
 - [ ] Replace emoji status markers with plain-text wording where needed while preserving planning semantics
