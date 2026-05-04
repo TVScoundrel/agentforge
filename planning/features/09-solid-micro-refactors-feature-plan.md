@@ -3,7 +3,7 @@
 **Epic Range:** EP-09 through EP-09
 **Status:** In Progress
 **Last Updated:** 2026-05-04
-**Active Story:** ST-09035 (In Progress)
+**Active Story:** ST-09035 (In Review)
 
 ---
 
@@ -77,7 +77,7 @@ Recent improvement snapshot:
 - `ST-09032` merged after tightening the managed-tool lifecycle surface around unknown-first generic defaults, JSON-safe health metadata, typed LangChain interop, and lifecycle concurrency handling while lowering the workspace explicit-`any` baseline from `180` to `170` and the `core` package from `63` to `53`.
 - `ST-09034` merged after tightening snapshot runner contracts around unknown-first state normalization, typed snapshot diffs, normalized message snapshots, plain-object-only recursive normalization, and non-plain root diffs in `@agentforge/testing`.
 - `ST-09033` merged after tightening database pool adapter query parameter/result contracts around exported unknown-first aliases, lowering the workspace explicit-`any` baseline from `153` to `144` and the `core` package from `53` to `44`.
-- `ST-09035` is in progress after tightening the agent test runner around exported unknown-first agent, state, result, and step contracts, lowering the workspace explicit-`any` baseline from `144` to `135` and the `testing` package from `14` to `5`.
+- `ST-09035` is in review after tightening the agent test runner around exported unknown-first agent, state, result, and step contracts, lowering the workspace explicit-`any` baseline from `144` to `135` and the `testing` package from `14` to `5`.
 - `ST-09036` through `ST-09040` were added on 2026-05-03 as small SOLID/DRY follow-on slices covering conversation simulator contracts, ReAct builder/prompt boundaries, data transformer helper extraction, core mock-tool testing contracts, and human-in-loop streaming resume typing.
 - `EP-09` remains open as the daily hardening stream, with the active queue now centered on testing-contract follow-ons and small SOLID/DRY helper extractions.
 - A fresh follow-on slice is now queued behind current Ready work for testing runner type-boundary cleanup, ReAct boundary tightening, transformer DRY helper extraction, core testing-helper contracts, and streaming resume payload hardening.

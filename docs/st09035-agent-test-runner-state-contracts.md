@@ -43,4 +43,7 @@ Focused validation:
 - `pnpm test --run packages/testing/tests/runners/agent-test-runner.test.ts` -> passed (`1` file, `4` tests).
 - `pnpm lint:explicit-any:baseline` -> passed and improved from `144/289` to `135/289`; `testing` improved from `14/51` to `5/51`.
 
-Full-suite validation will be recorded before the PR is marked ready for review.
+Final validation:
+
+- `pnpm test --run` -> passed (`166` files, `2264` tests, `286` skipped).
+- `pnpm lint` -> exit `0`; warnings only.
