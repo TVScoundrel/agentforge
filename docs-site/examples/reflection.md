@@ -97,10 +97,10 @@ Best for:
 
 ## Key Features
 
-- ✅ **Self-Critique** - Identify weaknesses
-- ✅ **Iterative Improvement** - Multiple refinement cycles
-- ✅ **Quality Control** - Meet quality thresholds
-- ✅ **Learning** - Improve over iterations
+- **Self-Critique** - Identify weaknesses
+- **Iterative Improvement** - Multiple refinement cycles
+- **Quality Control** - Meet quality thresholds
+- **Learning** - Improve over iterations
 
 ## Next Steps
 

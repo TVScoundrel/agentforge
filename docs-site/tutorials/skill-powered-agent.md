@@ -357,9 +357,9 @@ const skillRegistry = new SkillRegistry({
 
 | Trust Level | Reference Files | Script Files | Use Case |
 |-------------|----------------|--------------|----------|
-| `workspace` | ✅ Allowed | ✅ Allowed | First-party skills in your project |
-| `trusted` | ✅ Allowed | ✅ Allowed | Vetted community/team skills |
-| `untrusted` | ✅ Allowed | ❌ Blocked | Unknown or unreviewed skill sources |
+| `workspace` | Allowed | Allowed | First-party skills in your project |
+| `trusted` | Allowed | Allowed | Vetted community/team skills |
+| `untrusted` | Allowed | Blocked | Unknown or unreviewed skill sources |
 
 ::: warning Script Access
 Resources under `scripts/` directories are subject to trust policy enforcement. Only `workspace` and `trusted` roots allow script access. Use `allowUntrustedScripts: true` in config to override (not recommended for production).

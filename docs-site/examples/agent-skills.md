@@ -233,9 +233,9 @@ skillRegistry.on(SkillRegistryEvent.TRUST_POLICY_ALLOWED, (data) => {
 
 | Resource Type | `workspace` | `trusted` | `untrusted` |
 |--------------|:-----------:|:---------:|:-----------:|
-| `references/*` | ✅ | ✅ | ✅ |
-| `assets/*` | ✅ | ✅ | ✅ |
-| `scripts/*` | ✅ | ✅ | ❌ |
+| `references/*` | Yes | Yes | Yes |
+| `assets/*` | Yes | Yes | Yes |
+| `scripts/*` | Yes | Yes | No |
 
 ::: warning Path Traversal Protection
 The `read-skill-resource` tool blocks all path traversal attempts. Absolute paths, `..` segments, and symlink escapes are rejected before any file access occurs.

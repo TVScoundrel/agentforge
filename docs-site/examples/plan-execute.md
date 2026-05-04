@@ -90,11 +90,11 @@ Best for:
 
 ## Key Features
 
-- ✅ **Structured Planning** - Clear step-by-step approach
-- ✅ **Sequential Execution** - One step at a time
-- ✅ **Progress Tracking** - Monitor execution
-- ✅ **Replanning** - Adjust if needed
-- ✅ **Verification** - Check goal achievement
+- **Structured Planning** - Clear step-by-step approach
+- **Sequential Execution** - One step at a time
+- **Progress Tracking** - Monitor execution
+- **Replanning** - Adjust if needed
+- **Verification** - Check goal achievement
 
 ## Next Steps
 

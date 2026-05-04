@@ -330,10 +330,10 @@ All nodes log their execution duration:
 ```
 
 **Interpreting duration:**
-- < 100ms: Fast ✅
-- 100-500ms: Normal ⚠️
-- 500-2000ms: Slow 🐌
-- > 2000ms: Very slow 🚨
+- < 100ms: Fast
+- 100-500ms: Normal
+- 500-2000ms: Slow
+- > 2000ms: Very slow
 
 ### Identifying Bottlenecks
 

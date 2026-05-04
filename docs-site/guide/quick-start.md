@@ -19,7 +19,7 @@ pnpm install
 
 ## Step 2: Set Up Environment
 
-**⚠️ Important: Do this BEFORE running your agent!**
+**Important: Do this BEFORE running your agent!**
 
 First, copy the example environment file:
 

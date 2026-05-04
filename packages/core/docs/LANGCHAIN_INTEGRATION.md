@@ -48,10 +48,10 @@ Converts a single AgentForge tool to a LangChain `DynamicStructuredTool`.
 - `DynamicStructuredTool` - A LangChain tool
 
 **Features:**
-- ✅ Preserves tool name and description
-- ✅ Uses the same Zod schema for validation
-- ✅ Automatically converts output to strings (LangChain requirement)
-- ✅ Handles objects, arrays, and primitives
+- Preserves tool name and description
+- Uses the same Zod schema for validation
+- Automatically converts output to strings (LangChain requirement)
+- Handles objects, arrays, and primitives
 
 **Example:**
 ```typescript
@@ -166,12 +166,12 @@ npx tsx packages/core/examples/langchain-integration.ts
 ## Testing
 
 The LangChain integration includes comprehensive tests:
-- ✅ Tool conversion
-- ✅ Output type conversion
-- ✅ Schema preservation
-- ✅ Metadata handling
-- ✅ JSON Schema generation
-- ✅ Description formatting
+- Tool conversion
+- Output type conversion
+- Schema preservation
+- Metadata handling
+- JSON Schema generation
+- Description formatting
 
 Run tests:
 ```bash

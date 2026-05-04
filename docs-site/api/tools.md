@@ -896,11 +896,11 @@ results.results.forEach(item => {
 ```
 
 **Key Benefits:**
-- ✅ No manual embedding generation
-- ✅ Provider-agnostic (switch with env vars)
-- ✅ Automatic dimension handling
-- ✅ Built-in retry logic
-- ✅ Production-ready error handling
+- No manual embedding generation
+- Provider-agnostic (switch with env vars)
+- Automatic dimension handling
+- Built-in retry logic
+- Production-ready error handling
 
 ### Relational Database Tools (6)
 

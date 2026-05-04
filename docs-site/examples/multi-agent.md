@@ -153,11 +153,11 @@ Best for:
 
 ## Key Features
 
-- ✅ **Specialization** - Each agent has expertise
-- ✅ **Coordination** - Smart task routing
-- ✅ **Scalability** - Add more agents easily
-- ✅ **Flexibility** - Sequential, parallel, or custom workflows
-- ✅ **Efficiency** - Parallel execution when possible
+- **Specialization** - Each agent has expertise
+- **Coordination** - Smart task routing
+- **Scalability** - Add more agents easily
+- **Flexibility** - Sequential, parallel, or custom workflows
+- **Efficiency** - Parallel execution when possible
 
 ## Agent Communication
 

@@ -15,11 +15,11 @@ Deduplication automatically detects and prevents these duplicate calls by cachin
 
 ## Benefits
 
-✅ **Reduced API Costs** - Avoid paying for duplicate tool calls  
-✅ **Faster Execution** - Skip redundant operations  
-✅ **Better Resource Usage** - Prevent unnecessary load on external services  
-✅ **Automatic** - Works out-of-the-box with no code changes  
-✅ **Transparent** - Agents receive the same results as if the tool was called  
+- **Reduced API Costs** - Avoid paying for duplicate tool calls
+- **Faster Execution** - Skip redundant operations
+- **Better Resource Usage** - Prevent unnecessary load on external services
+- **Automatic** - Works out-of-the-box with no code changes
+- **Transparent** - Agents receive the same results as if the tool was called
 
 ## How It Works
 
@@ -63,10 +63,10 @@ Before executing a tool, the framework:
 
 | Pattern | Deduplication | Status |
 |---------|--------------|--------|
-| **ReAct** | ✅ Enabled | Action node |
-| **Plan-Execute** | ✅ Enabled | Executor node |
-| **Multi-Agent** | ✅ Inherited | Via ReAct workers |
-| **Reflection** | ❌ N/A | No tool execution |
+| **ReAct** | Enabled | Action node |
+| **Plan-Execute** | Enabled | Executor node |
+| **Multi-Agent** | Inherited | Via ReAct workers |
+| **Reflection** | N/A | No tool execution |
 
 ## Configuration
 

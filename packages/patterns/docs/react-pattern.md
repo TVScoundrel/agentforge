@@ -27,17 +27,17 @@ The ReAct (Reasoning and Action) pattern is an agentic workflow that synergizes 
 ### When to Use ReAct
 
 **Ideal for:**
-- ✅ Tasks requiring tool usage
-- ✅ Multi-step problem solving
-- ✅ Transparent decision-making
-- ✅ Dynamic task decomposition
-- ✅ Exploratory workflows
+- Tasks requiring tool usage
+- Multi-step problem solving
+- Transparent decision-making
+- Dynamic task decomposition
+- Exploratory workflows
 
 **Not ideal for:**
-- ❌ Simple, single-step tasks
-- ❌ Tasks requiring extensive planning upfront
-- ❌ Highly structured, predetermined workflows
-- ❌ Tasks where reasoning overhead is unnecessary
+- Simple, single-step tasks
+- Tasks requiring extensive planning upfront
+- Highly structured, predetermined workflows
+- Tasks where reasoning overhead is unnecessary
 
 ### Key Benefits
 
@@ -466,19 +466,19 @@ for await (const event of await agent.stream({
 ### 1. Tool Design
 
 **DO:**
-- ✅ Keep tools focused and single-purpose
-- ✅ Provide clear, descriptive names
-- ✅ Write detailed descriptions
-- ✅ Use Zod schemas for validation
-- ✅ Handle errors gracefully
-- ✅ Return structured data
+- Keep tools focused and single-purpose
+- Provide clear, descriptive names
+- Write detailed descriptions
+- Use Zod schemas for validation
+- Handle errors gracefully
+- Return structured data
 
 **DON'T:**
-- ❌ Create overly complex tools
-- ❌ Use vague descriptions
-- ❌ Skip input validation
-- ❌ Throw unhandled errors
-- ❌ Return inconsistent formats
+- Create overly complex tools
+- Use vague descriptions
+- Skip input validation
+- Throw unhandled errors
+- Return inconsistent formats
 
 Example:
 ```typescript

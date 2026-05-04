@@ -14,14 +14,14 @@ This pattern is inspired by classical AI planning systems and the [Plan-and-Solv
 
 ## When to Use Plan-Execute
 
-✅ **Good for:**
+- **Good for:**
 - Complex multi-step tasks
 - Tasks requiring sequential execution
 - When you need predictable execution order
 - Tasks that benefit from upfront planning
 - Long-running workflows
 
-❌ **Not ideal for:**
+- **Not ideal for:**
 - Simple, single-step tasks (use [ReAct](/guide/patterns/react) instead)
 - Highly exploratory tasks (use [ReAct](/guide/patterns/react) instead)
 - When flexibility is more important than structure (use [ReAct](/guide/patterns/react) instead)

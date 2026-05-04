@@ -288,12 +288,12 @@ await askHuman.invoke({
 
 ### 1. Clear Questions
 
-❌ **Bad:**
+- **Bad:**
 ```typescript
 await askHuman.invoke({ question: 'OK?' });
 ```
 
-✅ **Good:**
+- **Good:**
 ```typescript
 await askHuman.invoke({
   question: 'Approve refund of $500 to customer John Doe for order #12345?',

@@ -6,13 +6,13 @@
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.9-blue)](https://www.typescriptlang.org/)
 [![License](https://img.shields.io/badge/license-MIT-green)](../../LICENSE)
 
-## 🎉 Status: Production Ready & Published
+## Status: Production Ready & Published
 
 **All features complete** | **500+ tests passing** | **Full TypeScript support** | **Comprehensive documentation**
 
-## ✨ Features
+## Features
 
-### 🛠️ Tool System
+### Tool System
 - **Rich Metadata** - Categories, tags, examples, and detailed descriptions
 - **Fluent Builder API** - Easy tool creation with `createTool()`
 - **Tool Registry** - Centralized management with querying and events
@@ -20,7 +20,7 @@
 - **Prompt Generation** - Automatic LLM-friendly prompt generation
 - **113 tests** - Comprehensive test coverage
 
-### 📊 LangGraph Utilities
+### LangGraph Utilities
 - **State Management** - Type-safe state annotations with Zod validation
 - **Workflow Builders** - Sequential, parallel, and conditional patterns
 - **Error Handling** - Retry, error handling, and timeout utilities
@@ -35,7 +35,7 @@
 - **Development Tools** - Logging, debugging, and testing middleware
 - **94 tests** - Comprehensive middleware testing
 
-### 🌊 Streaming & Real-time
+### Streaming & Real-time
 - **Stream Transformers** - Filter, map, batch, debounce, throttle
 - **Stream Aggregators** - Collect, reduce, window operations
 - **SSE Support** - Server-Sent Events for real-time updates
@@ -43,13 +43,13 @@
 - **Progress Tracking** - Monitor long-running operations
 - **68 tests** - Full streaming coverage
 
-### 🛠️ Advanced Tools
+### Advanced Tools
 - **Async Execution** - Parallel and sequential tool execution
 - **Lifecycle Management** - Setup, teardown, and cleanup hooks
 - **Tool Composition** - Combine tools into pipelines
 - **Testing Utilities** - Mock tools and test helpers
 
-### 📦 Resource Management
+### Resource Management
 - **Connection Pooling** - Efficient resource reuse
 - **Memory Management** - Automatic cleanup and limits
 - **Batch Processing** - Efficient bulk operations
@@ -61,7 +61,7 @@
 - **Alerts** - Configurable alerting system
 - **Audit Logging** - Comprehensive activity tracking
 
-### 🚀 Deployment
+### Deployment
 - **Docker Support** - Production-ready containers
 - **Kubernetes** - Deployment manifests and guides
 - **CI/CD Templates** - GitHub Actions, GitLab CI
@@ -119,7 +119,7 @@ const app = workflow.compile();
 
 ## Documentation
 
-📚 **[Full Documentation](https://tvscoundrel.github.io/agentforge/)**
+- **[Full Documentation](https://tvscoundrel.github.io/agentforge/)**
 
 ### Core Guides
 - [Getting Started](https://tvscoundrel.github.io/agentforge/guide/getting-started)
@@ -151,7 +151,7 @@ pnpm test
 pnpm typecheck
 ```
 
-## 🔗 Links
+## Links
 
 - [GitHub Repository](https://github.com/TVScoundrel/agentforge)
 - [npm Package](https://www.npmjs.com/package/@agentforge/core)

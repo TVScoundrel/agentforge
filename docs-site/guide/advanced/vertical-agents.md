@@ -16,13 +16,13 @@ All demonstrate production-ready implementations with external prompts, tool inj
 **Vertical agents** (also known as "reusable agents") are domain-specific agents designed for particular use cases or industries. They provide:
 
 **Benefits:**
-- 🔄 **Reusability**: Write once, use in multiple projects
-- ⚙️ **Configurability**: Customize behavior without changing code
-- 📦 **Composability**: Combine agents with different tools and capabilities
-- 🧪 **Testability**: Easier to test with dependency injection
-- 📚 **Shareability**: Publish to npm for team or community use
-- 🔧 **Maintainability**: Centralized updates benefit all consumers
-- 🎯 **Domain-Specific**: Optimized for specific verticals (support, legal, HR, etc.)
+- **Reusability**: Write once, use in multiple projects
+- **Configurability**: Customize behavior without changing code
+- **Composability**: Combine agents with different tools and capabilities
+- **Testability**: Easier to test with dependency injection
+- **Shareability**: Publish to npm for team or community use
+- **Maintainability**: Centralized updates benefit all consumers
+- **Domain-Specific**: Optimized for specific verticals (support, legal, HR, etc.)
 
 ## Core Patterns
 
@@ -372,13 +372,13 @@ export function createSupportAgent(config: CustomerSupportConfig = {}) {
 
 **Benefits of External Prompts:**
 
-- ✅ **Separation of Concerns**: Prompts are content, not code
-- ✅ **Easier to Read**: Markdown is more readable than template strings
-- ✅ **Version Control**: Track prompt changes independently from code
-- ✅ **Team Collaboration**: Non-developers can edit prompts
-- ✅ **Reusability**: Share prompts across multiple agents
-- ✅ **Testing**: Easier to test different prompt variations
-- ✅ **Localization**: Create language-specific prompt files
+- **Separation of Concerns**: Prompts are content, not code
+- **Easier to Read**: Markdown is more readable than template strings
+- **Version Control**: Track prompt changes independently from code
+- **Team Collaboration**: Non-developers can edit prompts
+- **Reusability**: Share prompts across multiple agents
+- **Testing**: Easier to test different prompt variations
+- **Localization**: Create language-specific prompt files
 
 **Alternative: Inline Prompts (Not Recommended)**
 
@@ -643,14 +643,14 @@ Examples of breaking changes:
 - Updating peer dependencies to incompatible versions
 
 ```typescript
-// ❌ Breaking change (v1 -> v2)
+//  Breaking change (v1 -> v2)
 // v1
 export function createAgent(config: { model: string }) { }
 
 // v2 - Changed config structure
 export function createAgent(config: { llm: { provider: string } }) { }
 
-// ✅ Non-breaking change (v1.0 -> v1.1)
+//  Non-breaking change (v1.0 -> v1.1)
 // v1.0
 export function createAgent(config: { model: string }) { }
 

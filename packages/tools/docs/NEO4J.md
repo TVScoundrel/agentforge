@@ -2,7 +2,7 @@
 
 Complete guide to using Neo4j graph database tools in AgentForge.
 
-## 📋 Table of Contents
+## Table of Contents
 
 - [Overview](#overview)
 - [Installation & Setup](#installation--setup)

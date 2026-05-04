@@ -6,11 +6,11 @@
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.9-blue)](https://www.typescriptlang.org/)
 [![License](https://img.shields.io/badge/license-MIT-green)](../../LICENSE)
 
-## 🎉 Status: Production Ready & Published
+## Status: Production Ready & Published
 
 **Complete testing toolkit** | **Full TypeScript support** | **Comprehensive documentation**
 
-## 📦 Installation
+## Installation
 
 ```bash
 npm install --save-dev @agentforge/testing
@@ -20,15 +20,15 @@ pnpm add -D @agentforge/testing
 yarn add -D @agentforge/testing
 ```
 
-## ✨ Features
+## Features
 
-- 🎭 **Mock Factories** - Create mock LLMs, tools, and states for testing
-- 🔧 **Test Helpers** - Assertion helpers and state builders
-- 📦 **Fixtures** - Pre-built sample agents, tools, and conversations
-- 🏃 **Test Runners** - Agent test runner and conversation simulator
-- 📸 **Snapshot Testing** - State and message snapshot utilities
-- ✅ **Full TypeScript** - Complete type safety and inference
-- 🧪 **Vitest Integration** - Works seamlessly with Vitest
+- **Mock Factories** - Create mock LLMs, tools, and states for testing
+- **Test Helpers** - Assertion helpers and state builders
+- **Fixtures** - Pre-built sample agents, tools, and conversations
+- **Test Runners** - Agent test runner and conversation simulator
+- **Snapshot Testing** - State and message snapshot utilities
+- **Full TypeScript** - Complete type safety and inference
+- **Vitest Integration** - Works seamlessly with Vitest
 
 ## Quick Start
 
@@ -368,21 +368,21 @@ describe('ReAct Agent Integration Tests', () => {
 - `calculatorTool` - Calculator tool
 - `searchTool` - Search tool
 
-## 📖 Documentation
+## Documentation
 
-- 📚 **[Full Documentation](https://tvscoundrel.github.io/agentforge/)**
-- 🚀 **[Quick Start](https://tvscoundrel.github.io/agentforge/guide/quick-start)**
-- 🧪 **[Testing API Reference](https://tvscoundrel.github.io/agentforge/api/testing)**
-- 💡 **[Testing Tutorial](https://tvscoundrel.github.io/agentforge/tutorials/testing)**
+- **[Full Documentation](https://tvscoundrel.github.io/agentforge/)**
+- **[Quick Start](https://tvscoundrel.github.io/agentforge/guide/quick-start)**
+- **[Testing API Reference](https://tvscoundrel.github.io/agentforge/api/testing)**
+- **[Testing Tutorial](https://tvscoundrel.github.io/agentforge/tutorials/testing)**
 
-## 🔗 Links
+## Links
 
 - [GitHub Repository](https://github.com/TVScoundrel/agentforge)
 - [npm Package](https://www.npmjs.com/package/@agentforge/testing)
 - [Changelog](https://tvscoundrel.github.io/agentforge/changelog.html) - See what's new before upgrading
 - [Report Issues](https://github.com/TVScoundrel/agentforge/issues)
 
-## 📚 Related Packages
+## Related Packages
 
 - [@agentforge/core](https://www.npmjs.com/package/@agentforge/core) - Core abstractions
 - [@agentforge/patterns](https://www.npmjs.com/package/@agentforge/patterns) - Agent patterns

@@ -114,7 +114,7 @@ const result = await system.invoke({
 
 ## When to Use
 
-### ✅ Ideal Use Cases
+### Ideal Use Cases
 
 - **Specialized Tasks**: Tasks requiring different expertise areas
 - **Customer Support**: Routing to specialized support teams
@@ -122,7 +122,7 @@ const result = await system.invoke({
 - **Data Processing**: Multi-stage processing pipelines
 - **Parallel Execution**: Independent tasks that can run concurrently
 
-### ❌ Not Recommended For
+### Not Recommended For
 
 - **Simple Tasks**: Single-agent patterns are more efficient
 - **Sequential Reasoning**: Use ReAct or Plan-Execute instead
@@ -388,13 +388,13 @@ Response: "Security assessment combining code analysis and vulnerability scan:
 
 #### When to Use Parallel Routing
 
-✅ **Use parallel routing when:**
+- **Use parallel routing when:**
 - Query needs multiple perspectives (code + docs, legal + HR)
 - Different data sources should be consulted (codebase + documentation)
 - Comprehensive analysis requires multiple specialists
 - Speed matters (parallel > sequential)
 
-❌ **Don't use parallel routing when:**
+- **Don't use parallel routing when:**
 - Query clearly maps to single specialist
 - Workers would duplicate work
 - Results need to be processed sequentially
@@ -649,7 +649,7 @@ const system = createMultiAgentSystem({
 
 ### registerWorkers() (Deprecated)
 
-> ⚠️ **DEPRECATED**: This function only updates worker capabilities in the state, but does not add worker nodes to the graph. Use `MultiAgentSystemBuilder` instead for proper dynamic worker registration.
+> **DEPRECATED**: This function only updates worker capabilities in the state, but does not add worker nodes to the graph. Use `MultiAgentSystemBuilder` instead for proper dynamic worker registration.
 
 Registers workers with the multi-agent system. This function has a fundamental limitation: it can only update the worker capabilities in the state, but cannot add new nodes to the compiled graph (LangGraph graphs are immutable after compilation).
 
@@ -661,10 +661,10 @@ function registerWorkers(
 ```
 
 **Limitations**:
-- ❌ Does NOT add worker nodes to the graph
-- ❌ Only updates worker capabilities in state
-- ❌ Workers must already exist as nodes in the graph
-- ✅ Can update capabilities of existing workers
+- Does NOT add worker nodes to the graph
+- Only updates worker capabilities in state
+- Workers must already exist as nodes in the graph
+- Can update capabilities of existing workers
 
 **Recommended Alternative**: Use `MultiAgentSystemBuilder` instead:
 

@@ -15,14 +15,14 @@ This pattern is inspired by the [ReAct paper](https://arxiv.org/abs/2210.03629) 
 
 ## When to Use ReAct
 
-✅ **Good for:**
+- **Good for:**
 - General-purpose task solving
 - Tasks requiring multiple tool calls
 - Exploratory or research tasks
 - When you need flexibility and adaptability
 - Interactive applications
 
-❌ **Not ideal for:**
+- **Not ideal for:**
 - Tasks requiring complex multi-step planning (use [Plan-Execute](/guide/patterns/plan-execute) instead)
 - When you need guaranteed execution order (use [Plan-Execute](/guide/patterns/plan-execute) instead)
 - Tasks that benefit from self-critique and revision (use [Reflection](/guide/patterns/reflection) instead)

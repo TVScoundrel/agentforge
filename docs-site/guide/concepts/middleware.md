@@ -300,12 +300,12 @@ const productionNode = production(myNode, {
 ```
 
 **Includes:**
-- ✅ Logging (info level)
-- ✅ Metrics tracking
-- ✅ Timeout protection (30s)
-- ✅ Retry logic (3 attempts)
-- ✅ Error handling
-- ✅ Distributed tracing
+- Logging (info level)
+- Metrics tracking
+- Timeout protection (30s)
+- Retry logic (3 attempts)
+- Error handling
+- Distributed tracing
 
 ### Development Preset
 
@@ -321,10 +321,10 @@ const devNode = development(myNode, {
 ```
 
 **Includes:**
-- ✅ Verbose logging (debug level)
-- ✅ Input/output logging
-- ✅ Error details
-- ✅ Performance timing
+- Verbose logging (debug level)
+- Input/output logging
+- Error details
+- Performance timing
 
 ### Testing Preset
 
