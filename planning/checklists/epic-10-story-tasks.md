@@ -54,8 +54,8 @@
 - [x] Assess test impact; add/update automated tests when needed, or document why tests are not required.
 - [x] Run full test suite before finalizing the PR and record results. (`pnpm test --run` passed: 166 files, 2267 tests, 286 skipped)
 - [x] Run lint (`pnpm lint`) before finalizing the PR and record results. (passed with existing warning baseline and no errors)
-- [ ] Commit completed checklist items as logical commits and push updates.
-- [ ] Mark PR Ready only after all story tasks are complete.
+- [x] Commit completed checklist items as logical commits and push updates.
+- [x] Mark PR Ready only after all story tasks are complete.
 - [ ] Wait for merge; do not merge directly from local branch.
 
 ---

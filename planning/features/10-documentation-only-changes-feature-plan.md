@@ -3,7 +3,7 @@
 **Epic Range:** EP-10 through EP-10
 **Status:** In Progress
 **Last Updated:** 2026-05-04
-**Active Story:** ST-10003 (In Progress)
+**Active Story:** ST-10003 (In Review)
 
 ---
 
@@ -62,7 +62,7 @@
 
 ## Story Coverage by Epic
 
-- EP-10: ST-10001 (Merged), ST-10002 (Merged), ST-10003 (In Progress), ST-10004 (Ready), ST-10005 (Backlog)
+- EP-10: ST-10001 (Merged), ST-10002 (Merged), ST-10003 (In Review), ST-10004 (Ready), ST-10005 (Backlog)
 
 ---
 

@@ -5,8 +5,8 @@
 ## Queue Status Summary
 
 - **Ready:** 3 stories
-- **In Progress:** 1 story
-- **In Review:** 0 stories
+- **In Progress:** 0 stories
+- **In Review:** 1 story
 - **Blocked:** 0 stories
 - **Backlog:** 4 stories
 
@@ -22,13 +22,13 @@
 
 ## In Progress
 
-- `ST-10003` - Normalize Emoji Usage in Planning and Internal Docs
+_No stories currently in progress_
 
 ---
 
 ## In Review
 
-_No stories currently in review_
+- `ST-10003` - Normalize Emoji Usage in Planning and Internal Docs
 
 ---
 
