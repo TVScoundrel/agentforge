@@ -1,6 +1,6 @@
 # ST-02002: Type-Safe SELECT Tool
 
-**Status:** ✅ Ready for Review  
+**Status:** Ready for Review
 **PR:** [#30](https://github.com/TVScoundrel/agentforge/pull/30)  
 **Epic:** 02 - Query Operations  
 **Priority:** P0
@@ -169,8 +169,8 @@ Created comprehensive tests under `packages/tools/tests/data/relational/relation
 
 ## Dependencies
 
-- ✅ ST-02001 (Raw SQL Query Execution Tool) - Merged 2026-02-17
-- ✅ ST-01004 (Connection Lifecycle Management) - Merged 2026-02-18
+- Complete: ST-02001 (Raw SQL Query Execution Tool) - Merged 2026-02-17
+- Complete: ST-01004 (Connection Lifecycle Management) - Merged 2026-02-18
 
 ## API Reference
 

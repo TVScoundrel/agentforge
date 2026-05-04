@@ -1,6 +1,6 @@
 # ST-02006: SQL Sanitization and Security
 
-**Status:** 👀 In Review  
+**Status:** In Review
 **PR:** [#31](https://github.com/TVScoundrel/agentforge/pull/31)  
 **Epic:** 02 - Query Operations  
 **Priority:** P0

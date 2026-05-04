@@ -1,6 +1,6 @@
 # ST-03001: Schema Introspection Tool
 
-**Status:** 👀 In Review  
+**Status:** In Review
 **PR:** [#33](https://github.com/TVScoundrel/agentforge/pull/33)  
 **Epic:** 03 - Schema Introspection and Metadata  
 **Priority:** P1

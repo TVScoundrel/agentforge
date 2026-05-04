@@ -1,6 +1,6 @@
 # ST-02004: Type-Safe UPDATE Tool
 
-**Status:** 👀 In Review  
+**Status:** In Review
 **PR:** [#35](https://github.com/TVScoundrel/agentforge/pull/35)  
 **Epic:** 02 - Query Operations  
 **Priority:** P0
@@ -100,4 +100,4 @@ if (result.success) {
 
 ## Dependencies
 
-- ✅ ST-02003 (Type-Safe INSERT Tool) - merged 2026-02-19
+- Complete: ST-02003 (Type-Safe INSERT Tool) - merged 2026-02-19

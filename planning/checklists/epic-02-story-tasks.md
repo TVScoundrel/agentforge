@@ -37,29 +37,29 @@
 **Branch:** `feat/st-02002-type-safe-select-tool`
 
 ### Checklist
-- [x] Create branch `feat/st-02002-type-safe-select-tool` ✅ DONE
-- [x] Create draft PR with story ID in title ✅ DONE (PR #30)
-- [x] Create `packages/tools/src/data/relational/query/query-builder.ts` ✅ SKIPPED (implemented directly in tool using Drizzle sql template API)
-- [x] Implement SELECT query builder using Drizzle ✅ DONE (in relational-select.ts)
-- [x] Add support for WHERE conditions (eq, ne, gt, lt, like, in, etc.) ✅ DONE
-- [x] Add support for ORDER BY (asc, desc) ✅ DONE
-- [x] Add support for LIMIT and OFFSET ✅ DONE
-- [x] Add support for column selection (specific columns or all) ✅ DONE
-- [x] Create `packages/tools/src/data/relational/tools/relational-select.ts` ✅ DONE
-- [x] Define Zod schema for tool input (table, columns, where, orderBy, limit) ✅ DONE
-- [x] Implement tool function using query builder ✅ DONE
-- [x] Add type-safe result mapping ✅ DONE
-- [x] Add clear error messages for invalid queries ✅ DONE
-- [x] Handle empty result sets gracefully ✅ DONE
-- [x] Export tool from `tools/index.ts` ✅ DONE
-- [x] Create unit tests for query builder ✅ DONE (in relational-select-tool.test.ts)
-- [x] Create unit tests for relational-select tool ✅ DONE (8 passed, 6 skipped)
-- [x] Add or update story documentation at docs/st02002-type-safe-select-tool.md (or document why not required) ✅ DONE
-- [x] Assess test impact; add/update automated tests when needed, or document why tests are not required ✅ DONE
-- [x] Run full test suite before finalizing the PR and record results ✅ DONE (1118 passed, 62 skipped)
-- [x] Run lint (`pnpm lint`) before finalizing the PR and record results ✅ DONE (All issues in new code fixed)
-- [x] Mark PR ready for review ✅ DONE (PR #30: https://github.com/TVScoundrel/agentforge/pull/30)
-- [x] Wait for merge ✅ DONE (merged 2026-02-18 via PR #30)
+- [x] Create branch `feat/st-02002-type-safe-select-tool` DONE
+- [x] Create draft PR with story ID in title DONE (PR #30)
+- [x] Create `packages/tools/src/data/relational/query/query-builder.ts` SKIPPED (implemented directly in tool using Drizzle sql template API)
+- [x] Implement SELECT query builder using Drizzle DONE (in relational-select.ts)
+- [x] Add support for WHERE conditions (eq, ne, gt, lt, like, in, etc.) DONE
+- [x] Add support for ORDER BY (asc, desc) DONE
+- [x] Add support for LIMIT and OFFSET DONE
+- [x] Add support for column selection (specific columns or all) DONE
+- [x] Create `packages/tools/src/data/relational/tools/relational-select.ts` DONE
+- [x] Define Zod schema for tool input (table, columns, where, orderBy, limit) DONE
+- [x] Implement tool function using query builder DONE
+- [x] Add type-safe result mapping DONE
+- [x] Add clear error messages for invalid queries DONE
+- [x] Handle empty result sets gracefully DONE
+- [x] Export tool from `tools/index.ts` DONE
+- [x] Create unit tests for query builder DONE (in relational-select-tool.test.ts)
+- [x] Create unit tests for relational-select tool DONE (8 passed, 6 skipped)
+- [x] Add or update story documentation at docs/st02002-type-safe-select-tool.md (or document why not required) DONE
+- [x] Assess test impact; add/update automated tests when needed, or document why tests are not required DONE
+- [x] Run full test suite before finalizing the PR and record results DONE (1118 passed, 62 skipped)
+- [x] Run lint (`pnpm lint`) before finalizing the PR and record results DONE (All issues in new code fixed)
+- [x] Mark PR ready for review DONE (PR #30: https://github.com/TVScoundrel/agentforge/pull/30)
+- [x] Wait for merge DONE (merged 2026-02-18 via PR #30)
 
 ---
 
@@ -90,7 +90,7 @@
 - [x] Run full test suite before finalizing the PR and record results (`pnpm test --run` -> 1212 passed, 105 skipped)
 - [x] Run lint (`pnpm lint`) before finalizing the PR and record results (`pnpm lint` -> 0 errors, warnings-only baseline output across workspace)
 - [x] Mark PR ready for review (PR #34: https://github.com/TVScoundrel/agentforge/pull/34)
-- [x] Wait for merge ✅ DONE (merged 2026-02-19 via PR #34)
+- [x] Wait for merge DONE (merged 2026-02-19 via PR #34)
 
 ---
 
@@ -120,7 +120,7 @@
 - [x] Run full test suite before finalizing the PR and record results (`pnpm test --run` -> 1234 passed, 121 skipped)
 - [x] Run lint (`pnpm lint`) before finalizing the PR and record results (0 errors; warnings-only baseline outside story scope)
 - [x] Mark PR ready for review (PR #35 marked ready on 2026-02-19)
-- [x] Wait for merge ✅ DONE (merged 2026-02-19 via PR #35)
+- [x] Wait for merge DONE (merged 2026-02-19 via PR #35)
 
 ---
 
@@ -150,7 +150,7 @@
 - [x] Run full test suite before finalizing the PR and record results (`pnpm test --run` -> 112 passed, 4 skipped files; 1334 passed, 143 skipped tests)
 - [x] Run lint (`pnpm lint`) before finalizing the PR and record results (`pnpm lint` -> 0 errors; warnings-only baseline across workspace)
 - [x] Mark PR ready for review (PR #38 marked ready on 2026-02-20)
-- [x] Wait for merge ✅ DONE (merged 2026-02-20 via PR #38)
+- [x] Wait for merge DONE (merged 2026-02-20 via PR #38)
 
 ---
 
@@ -159,28 +159,28 @@
 **Branch:** `feat/st-02006-sql-sanitization-security`
 
 ### Checklist
-- [x] Create branch `feat/st-02006-sql-sanitization-security` ✅ DONE
-- [x] Create draft PR with story ID in title ✅ DONE (PR #31)
-- [x] Create `packages/tools/src/data/relational/utils/sql-sanitizer.ts` ✅ DONE
-- [x] Implement input validation for SQL strings ✅ DONE
-- [ ] Implement input escaping for special characters ⏳ Deferred / out of scope for ST-02006 (current mitigation relies on parameterized queries; no dedicated escaping utility implemented in this story)
-- [x] Add dangerous SQL pattern detection (CREATE, DROP, TRUNCATE, ALTER in user input) ✅ DONE
-- [ ] Add table name validation (alphanumeric, underscore only) ⏳ Deferred / out of scope for ST-02006 (raw SQL path does not implement standalone identifier validators in this story)
-- [ ] Add column name validation ⏳ Deferred / out of scope for ST-02006 (raw SQL path does not implement standalone identifier validators in this story)
-- [x] Enforce parameterized query usage in all tools ✅ DONE (integrated into relational query execution path)
-- [x] Create security documentation in docs/ ✅ DONE (`docs/sql-injection-prevention-best-practices.md`)
-- [x] Document SQL injection prevention best practices ✅ DONE
-- [x] Create unit tests for SQL sanitizer ✅ DONE
-- [x] Create unit tests for common injection patterns ✅ DONE
-- [x] Test against OWASP SQL injection examples ✅ DONE
-- [x] Add security audit checklist ✅ DONE (included in security docs)
-- [x] Add or update story documentation at docs/st02006-sql-sanitization-security.md (or document why not required) ✅ DONE
-- [x] Assess test impact; add/update automated tests when needed, or document why tests are not required ✅ DONE (added sanitizer + relational query security tests)
-- [x] Run full test suite before finalizing the PR and record results ✅ DONE (`pnpm test --run` -> 96 passed, 1 skipped file; 1184 passed, 80 skipped tests)
-- [x] Run lint (`pnpm lint`) before finalizing the PR and record results ✅ DONE (`pnpm lint` -> 0 errors; warnings-only output after PR #32 merged)
-- [x] Document lint baseline scope for reviewers and mark baseline remediation out-of-scope for ST-02006 ✅ DONE (PR #32 merged on 2026-02-18; PR #31 scope note updated)
-- [x] Mark PR ready for review ✅ DONE (PR #31 undrafted and ready)
-- [x] Wait for merge ✅ DONE (PR #31 merged on 2026-02-19)
+- [x] Create branch `feat/st-02006-sql-sanitization-security` DONE
+- [x] Create draft PR with story ID in title DONE (PR #31)
+- [x] Create `packages/tools/src/data/relational/utils/sql-sanitizer.ts` DONE
+- [x] Implement input validation for SQL strings DONE
+- [ ] Implement input escaping for special characters Deferred / out of scope for ST-02006 (current mitigation relies on parameterized queries; no dedicated escaping utility implemented in this story)
+- [x] Add dangerous SQL pattern detection (CREATE, DROP, TRUNCATE, ALTER in user input) DONE
+- [ ] Add table name validation (alphanumeric, underscore only) Deferred / out of scope for ST-02006 (raw SQL path does not implement standalone identifier validators in this story)
+- [ ] Add column name validation Deferred / out of scope for ST-02006 (raw SQL path does not implement standalone identifier validators in this story)
+- [x] Enforce parameterized query usage in all tools DONE (integrated into relational query execution path)
+- [x] Create security documentation in docs/ DONE (`docs/sql-injection-prevention-best-practices.md`)
+- [x] Document SQL injection prevention best practices DONE
+- [x] Create unit tests for SQL sanitizer DONE
+- [x] Create unit tests for common injection patterns DONE
+- [x] Test against OWASP SQL injection examples DONE
+- [x] Add security audit checklist DONE (included in security docs)
+- [x] Add or update story documentation at docs/st02006-sql-sanitization-security.md (or document why not required) DONE
+- [x] Assess test impact; add/update automated tests when needed, or document why tests are not required DONE (added sanitizer + relational query security tests)
+- [x] Run full test suite before finalizing the PR and record results DONE (`pnpm test --run` -> 96 passed, 1 skipped file; 1184 passed, 80 skipped tests)
+- [x] Run lint (`pnpm lint`) before finalizing the PR and record results DONE (`pnpm lint` -> 0 errors; warnings-only output after PR #32 merged)
+- [x] Document lint baseline scope for reviewers and mark baseline remediation out-of-scope for ST-02006 DONE (PR #32 merged on 2026-02-18; PR #31 scope note updated)
+- [x] Mark PR ready for review DONE (PR #31 undrafted and ready)
+- [x] Wait for merge DONE (PR #31 merged on 2026-02-19)
 
 ---
 
