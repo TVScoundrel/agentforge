@@ -8,7 +8,7 @@ ST-09035 tightens the `@agentforge/testing` agent test runner surface by replaci
 
 - Added `AgentTestAgent<TInput, TState>` for agent-like objects with an `invoke(...)` method.
 - Added `AgentTestRunnerStep<TState>` as the typed step-capture boundary for future step capture support.
-- Made `AgentTestConfig<TState>` generic so validation hooks receive the typed final state or `undefined` after failed execution.
+- Made `AgentTestConfig<TState>` generic so validation hooks receive the typed final state when invocation completes; the parameter also permits `undefined` for agents that intentionally return no state.
 - Made `AgentTestResult<TState, TStep>` generic so final state and captured steps retain caller-provided types.
 - Made `AgentTestRunner<TInput, TState, TStep>` and `createAgentTestRunner(...)` generic over input, final state, and step contracts.
 - Exported the new runner contracts from `packages/testing/src/index.ts`.
