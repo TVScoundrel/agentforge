@@ -2,7 +2,7 @@
 
 ## Implementation Complete
 
-Successfully implemented a comprehensive Neo4j tools suite for AgentForge, adding 5 production-ready tools for graph database operations, knowledge graphs, and GraphRAG applications.
+Successfully implemented a comprehensive Neo4j tools suite for AgentForge, adding 7 production-ready tools for graph database operations, knowledge graphs, and GraphRAG applications.
 
 ## What Was Built
 
@@ -58,6 +58,16 @@ Successfully implemented a comprehensive Neo4j tools suite for AgentForge, addin
 - Essential for GraphRAG applications
 - Returns nodes with similarity scores
 - Helpful error messages for missing indexes
+
+#### 6. neo4jVectorSearchWithEmbedding
+- Semantic search with automatic embedding generation
+- Supports configurable embedding providers
+- Reduces boilerplate for GraphRAG retrieval workflows
+
+#### 7. neo4jCreateNodeWithEmbedding
+- Creates nodes with automatic embedding generation
+- Stores vector properties for later semantic search
+- Supports embedding-enabled knowledge graph ingestion
 
 ## Files Created
 
@@ -123,9 +133,9 @@ Test 5: Cleanup - ✅ PASSED
 
 ### Updated Files
 - `packages/tools/README.md` - Added Neo4j tools section with examples
-- `packages/tools/docs/NEO4J.md` - Comprehensive 467-line guide covering:
+- `packages/tools/docs/NEO4J.md` - Comprehensive 686-line guide covering:
   - Installation and setup
-  - All 5 tools with detailed examples
+  - All 7 tools with detailed examples
   - GraphRAG implementation patterns
   - Best practices
   - Troubleshooting guide
@@ -208,10 +218,10 @@ Future enhancements that could be added:
 
 ## Impact
 
-- **Tools Added**: 5 new tools
-- **Total AgentForge Tools**: 86 (was 81)
+- **Tools Added**: 7 new tools
+- **Total AgentForge Tools**: 94
 - **Lines of Code**: ~1,500 lines
-- **Documentation**: 467 lines
+- **Documentation**: 686 lines
 - **Test Coverage**: Comprehensive test suite
 - **Dependencies**: neo4j-driver ^6.0.1
 
@@ -237,4 +247,3 @@ Created comprehensive examples demonstrating:
 - Vector similarity search
 
 All examples tested and working with the provided Neo4j instance.
-
