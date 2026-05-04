@@ -169,6 +169,14 @@ Tools for data processing and transformation.
 - **`neo4jVectorSearchWithEmbedding`** - Semantic search with automatic embedding generation
 - **`neo4jCreateNodeWithEmbedding`** - Create nodes with automatic embeddings
 
+#### Relational Database Tools
+- **`relationalQuery`** - Execute raw SQL with vendor-aware connections
+- **`relationalSelect`** - Build and execute SELECT queries
+- **`relationalInsert`** - Insert rows into relational tables
+- **`relationalUpdate`** - Update rows in relational tables
+- **`relationalDelete`** - Delete rows from relational tables
+- **`relationalGetSchema`** - Inspect relational database schema metadata
+
 ### File Tools (17 tools)
 
 Tools for file system operations.

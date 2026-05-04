@@ -76,14 +76,28 @@ packages/tools/src/data/neo4j/
 ├── index.ts                          # Main exports and tool instances
 ├── types.ts                          # Zod schemas and TypeScript types
 ├── connection.ts                     # Connection pool management
+├── embeddings/
+│   ├── embedding-manager.ts         # Embedding orchestration
+│   ├── index.ts                     # Embedding exports
+│   ├── types.ts                     # Embedding provider types
+│   ├── utils.ts                     # Embedding helper utilities
+│   └── providers/
+│       ├── cohere.ts                # Cohere embedding provider
+│       ├── huggingface.ts           # HuggingFace embedding provider
+│       ├── ollama.ts                # Ollama embedding provider
+│       ├── openai.ts                # OpenAI embedding provider
+│       └── voyage.ts                # Voyage embedding provider
 ├── utils/
+│   ├── cypher-sanitizer.ts          # Cypher safety helpers
 │   └── result-formatter.ts          # Neo4j result formatting utilities
 └── tools/
     ├── neo4j-query.ts               # Cypher query execution
     ├── neo4j-get-schema.ts          # Schema introspection
     ├── neo4j-find-nodes.ts          # Node search
     ├── neo4j-traverse.ts            # Graph traversal
-    └── neo4j-vector-search.ts       # Vector similarity search
+    ├── neo4j-vector-search.ts       # Vector similarity search
+    ├── neo4j-vector-search-with-embedding.ts # Vector search with embeddings
+    └── neo4j-create-node-with-embedding.ts   # Node creation with embeddings
 
 packages/tools/tests/data/
 └── neo4j.test.ts                    # Comprehensive test suite
