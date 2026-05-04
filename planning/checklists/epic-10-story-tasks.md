@@ -25,7 +25,7 @@
 **Branch:** `docs/st-10002-public-docs-emoji-normalization`
 
 ### Checklist
-- [ ] Create branch `docs/st-10002-public-docs-emoji-normalization`
+- [x] Create branch `docs/st-10002-public-docs-emoji-normalization`
 - [ ] Create draft PR with story ID in title
 - [ ] Remove decorative emoji from targeted public-facing docs such as the root README, package READMEs, and selected docs-site pages identified by the audit
 - [ ] Preserve wording and structure except where readability cleanup is required after emoji removal

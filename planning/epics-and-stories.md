@@ -1564,7 +1564,7 @@
 **Priority:** P2 (Medium)
 **Estimate:** 3 hours
 **Dependencies:** ST-10001 (merged)
-**Status:** Ready
+**Status:** In Progress
 
 **Acceptance criteria:**
 - [ ] Public-facing docs such as the root README, package READMEs, and selected docs-site pages have decorative emoji removed from headings, bullets, banners, and link callouts
