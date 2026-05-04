@@ -15,14 +15,16 @@ This pattern is inspired by the [Reflexion paper](https://arxiv.org/abs/2303.113
 
 ## When to Use Reflection
 
-- **Good for:**
+**Good for:**
+
 - Content generation (writing, code, reports)
 - Tasks requiring high quality output
 - When accuracy and completeness are critical
 - Creative tasks that benefit from iteration
 - Self-improving systems
 
-- **Not ideal for:**
+**Not ideal for:**
+
 - Simple lookup or calculation tasks (use [ReAct](/guide/patterns/react) instead)
 - Real-time applications (adds latency) (use [ReAct](/guide/patterns/react) instead)
 - When first-draft quality is sufficient (use [ReAct](/guide/patterns/react) or [Plan-Execute](/guide/patterns/plan-execute) instead)
@@ -766,5 +768,4 @@ const system = createMultiAgentSystem({
 - [Reflexion Paper](https://arxiv.org/abs/2303.11366) - Original research
 - [Self-Refine Paper](https://arxiv.org/abs/2303.17651) - Related work
 - [Examples](/examples/reflection) - Working code examples
-
 

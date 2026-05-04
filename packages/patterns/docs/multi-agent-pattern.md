@@ -388,13 +388,15 @@ Response: "Security assessment combining code analysis and vulnerability scan:
 
 #### When to Use Parallel Routing
 
-- **Use parallel routing when:**
+**Use parallel routing when:**
+
 - Query needs multiple perspectives (code + docs, legal + HR)
 - Different data sources should be consulted (codebase + documentation)
 - Comprehensive analysis requires multiple specialists
 - Speed matters (parallel > sequential)
 
-- **Don't use parallel routing when:**
+**Don't use parallel routing when:**
+
 - Query clearly maps to single specialist
 - Workers would duplicate work
 - Results need to be processed sequentially
@@ -1531,4 +1533,3 @@ For more examples, see the [examples directory](../examples/multi-agent/).
 - [Reflection Pattern Guide](./reflection-pattern.md)
 - [Pattern Comparison Guide](./pattern-comparison.md)
 - [API Documentation](./README.md)
-
