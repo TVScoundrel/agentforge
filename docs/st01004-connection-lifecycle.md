@@ -214,7 +214,7 @@ await manager.connect();
 
 ## Related Stories
 
-- **ST-01001**: Setup Drizzle ORM Dependencies
-- **ST-01002**: Implement Connection Manager
-- **ST-01003**: Implement Connection Pooling
+- Complete: **ST-01001**: Setup Drizzle ORM Dependencies
+- Complete: **ST-01002**: Implement Connection Manager
+- Complete: **ST-01003**: Implement Connection Pooling
 

@@ -149,11 +149,11 @@ See documentation: https://github.com/TVScoundrel/agentforge/tree/main/packages/
 
 ## Benefits
 
-- Complete: **Smaller installations** - Users only download what they need
-- Complete: **Faster installs** - Less to download and install
-- Complete: **Clear dependencies** - Explicit about what's required
-- Complete: **Flexible** - Easy to add new database vendors
-- Complete: **Standard pattern** - Common in the Node.js ecosystem (e.g., TypeORM, Prisma)
+- **Smaller installations** - Users only download what they need
+- **Faster installs** - Less to download and install
+- **Clear dependencies** - Explicit about what's required
+- **Flexible** - Easy to add new database vendors
+- **Standard pattern** - Common in the Node.js ecosystem (e.g., TypeORM, Prisma)
 
 ## Implementation Checklist
 
