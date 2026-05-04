@@ -128,4 +128,4 @@ _No stories currently blocked_
 - Epic 09 (SOLID Micro-Refactors and Type Boundary Hardening) was expanded a sixth time on 2026-05-03 with small SOLID/DRY follow-on stories ST-09036 through ST-09040
 - Epic 10 (Documentation Only Changes) was opened on 2026-04-18 as an evergreen docs-only lane for markdown cleanup, style normalization, and future documentation maintenance stories
 - ST-10001 complete - markdown emoji usage audit merged (PR #97, 2026-05-03); ST-10002 through ST-10005 promoted to Ready as capacity became available
-- Current measured `no-explicit-any` baseline is `144` warnings (`cli 6`, `core 44`, `patterns 15`, `testing 14`, `tools 65`)
+- Current measured `no-explicit-any` baseline is `135` warnings (`cli 6`, `core 44`, `patterns 15`, `testing 5`, `tools 65`)

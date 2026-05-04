@@ -1,9 +1,26 @@
 import { BaseMessage } from '@langchain/core/messages';
 
 /**
+ * Agent-like contract used by the test runner.
+ */
+export interface AgentTestAgent<TInput = unknown, TState = unknown> {
+  invoke(input: TInput): TState | Promise<TState>;
+}
+
+/**
+ * Captured runner step. The current runner preserves an empty step list, but
+ * this contract gives future step capture a typed state boundary.
+ */
+export interface AgentTestRunnerStep<TState = unknown> {
+  state: TState;
+  messages: BaseMessage[];
+  timestamp: number;
+}
+
+/**
  * Configuration for agent test runner
  */
-export interface AgentTestConfig {
+export interface AgentTestConfig<TState = unknown> {
   /**
    * Maximum time to wait for agent response (ms)
    */
@@ -22,17 +39,17 @@ export interface AgentTestConfig {
   /**
    * Custom state validator
    */
-  stateValidator?: (state: any) => boolean | Promise<boolean>;
+  stateValidator?: (state: TState | undefined) => boolean | Promise<boolean>;
 }
 
 /**
  * Result from agent test run
  */
-export interface AgentTestResult {
+export interface AgentTestResult<TState = unknown, TStep = AgentTestRunnerStep<TState>> {
   /**
    * Final state after execution
    */
-  finalState: any;
+  finalState: TState | undefined;
   
   /**
    * Messages exchanged
@@ -47,7 +64,7 @@ export interface AgentTestResult {
   /**
    * Intermediate steps (if captured)
    */
-  steps?: any[];
+  steps?: TStep[];
   
   /**
    * Whether the test passed
@@ -78,19 +95,23 @@ export interface AgentTestResult {
  * expect(result.messages.length).toBeGreaterThan(1);
  * ```
  */
-export class AgentTestRunner {
+export class AgentTestRunner<
+  TInput = unknown,
+  TState = unknown,
+  TStep = AgentTestRunnerStep<TState>,
+> {
   constructor(
-    private agent: any,
-    private config: AgentTestConfig = {}
+    private agent: AgentTestAgent<TInput, TState>,
+    private config: AgentTestConfig<TState> = {}
   ) {}
   
   /**
    * Run the agent with given input
    */
-  async run(input: any): Promise<AgentTestResult> {
+  async run(input: TInput): Promise<AgentTestResult<TState, TStep>> {
     const startTime = Date.now();
-    const steps: any[] = [];
-    let finalState: any;
+    const steps: TStep[] = [];
+    let finalState: TState | undefined;
     let messages: BaseMessage[] = [];
     let passed = true;
     let error: Error | undefined;
@@ -108,12 +129,12 @@ export class AgentTestRunner {
           // Capture intermediate steps
           const result = await this.agent.invoke(input);
           finalState = result;
-          messages = result.messages || [];
+          messages = extractMessages(result);
         } else {
           // Just run to completion
           const result = await this.agent.invoke(input);
           finalState = result;
-          messages = result.messages || [];
+          messages = extractMessages(result);
         }
         
         // Validate state if configured
@@ -146,7 +167,7 @@ export class AgentTestRunner {
   /**
    * Run multiple test cases
    */
-  async runMany(inputs: any[]): Promise<AgentTestResult[]> {
+  async runMany(inputs: TInput[]): Promise<AgentTestResult<TState, TStep>[]> {
     return Promise.all(inputs.map((input) => this.run(input)));
   }
 }
@@ -154,10 +175,18 @@ export class AgentTestRunner {
 /**
  * Create an agent test runner
  */
-export function createAgentTestRunner(
-  agent: any,
-  config?: AgentTestConfig
-): AgentTestRunner {
+export function createAgentTestRunner<
+  TInput = unknown,
+  TState = unknown,
+  TStep = AgentTestRunnerStep<TState>,
+>(
+  agent: AgentTestAgent<TInput, TState>,
+  config?: AgentTestConfig<TState>
+): AgentTestRunner<TInput, TState, TStep> {
   return new AgentTestRunner(agent, config);
 }
 
+function extractMessages(state: unknown): BaseMessage[] {
+  const stateWithMessages = state as { messages?: BaseMessage[] };
+  return stateWithMessages.messages || [];
+}
