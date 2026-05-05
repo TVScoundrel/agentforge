@@ -3,7 +3,7 @@
 **Epic Range:** EP-09 through EP-09
 **Status:** In Progress
 **Last Updated:** 2026-05-06
-**Active Story:** ST-09036 (In Progress)
+**Active Story:** ST-09036 (In Review)
 
 ---
 
@@ -32,10 +32,10 @@
 
 ## Current Hotspot Snapshot
 
-Current `@typescript-eslint/no-explicit-any` baseline check (`pnpm lint:explicit-any:baseline`, 2026-05-04):
+Current `@typescript-eslint/no-explicit-any` baseline check (`pnpm lint:explicit-any:baseline`, 2026-05-06):
 
-- Total: `135` warnings (`src/**`)
-- By package: `cli 6`, `core 44`, `patterns 15`, `testing 5`, `tools 65`
+- Total: `133` warnings (`src/**`)
+- By package: `cli 6`, `core 44`, `patterns 15`, `testing 3`, `tools 65`
 
 Top runtime hotspots informing this feature slice:
 
@@ -58,6 +58,7 @@ Recent improvement snapshot:
 - `ST-09011` tightened the committed explicit-`any` baseline caps from `496` to the current measured `289`, aligning the no-regression gate with the post-EP-09 warning floor.
 - `ST-09012` removed the remaining `exports.types` ordering warnings from `@agentforge/skills`, `@agentforge/tools`, and `@agentforge/testing`, quieting the routine build output without changing published entrypoint targets.
 - `ST-09013` merged with an intentional breaking tightening to the sequential workflow builder contract: explicit state generics were removed, and downstream callers must rely on schema-derived inference from `Annotation.Root(...)`.
+- `ST-09036` removed two broad `agent: any` seams from `packages/testing/src/runners/conversation-simulator.ts`, improving the workspace baseline from `135` to `133` and the `testing` baseline from `5` to `3`.
 - `ST-09014` merged after tightening the shared plan-execute tool and schema boundaries, lowering the workspace explicit-`any` baseline from `289` to `278` and the `patterns` package from `28` to `25`.
 - `ST-09015` merged after splitting the multi-agent node runtime into focused supervisor, worker, aggregator, and shared helper modules, lowering the workspace explicit-`any` baseline from `278` to `276` and the `patterns` package from `25` to `23`.
 - `ST-09016` merged after tightening the audit/health monitoring payload contracts, lowering the workspace explicit-`any` baseline from `276` to `271` and the `core` package from `111` to `106`, with follow-up fixes for falsy JSON payload retention, structured startup logging, and explicit zero timestamps.

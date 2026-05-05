@@ -1373,20 +1373,38 @@ Implementation notes:
 
 ### Checklist
 - [x] Create branch `fix/st-09036-conversation-simulator-agent-contracts`
-- [ ] Create draft PR with story ID in title
-- [ ] Define test strategy before implementation: cover static simulation, dynamic simulation, stop conditions, max-turn behavior, and malformed invoke results; first failing test should assert typed handling of an invoke result without broad agent `any`
-- [ ] Write or update the failing automated test before production changes when practical; if not practical, record why before implementation
-- [ ] Replace broad agent and invoke-result contracts in `packages/testing/src/runners/conversation-simulator.ts` with reusable unknown-first or generic runner interfaces
-- [ ] Preserve multi-turn simulation, dynamic input generation, stop-condition handling, verbose logging, and error capture behavior
-- [ ] Add/update production code until focused tests pass, keeping test evidence in checklist notes and PR body
-- [ ] Record explicit-`any` warning deltas for touched files in story docs
-- [ ] Add or update story documentation at `docs/st09036-conversation-simulator-agent-contracts.md` (or document why not required)
-- [ ] Assess residual test impact; add/update additional automated tests when needed, or document why no further tests are required
-- [ ] Run full test suite before finalizing the PR and record results
-- [ ] Run lint (`pnpm lint`) before finalizing the PR and record results
-- [ ] Commit completed checklist items as logical commits and push updates
-- [ ] Mark PR Ready only after all story tasks are complete
+- [x] Create draft PR with story ID in title
+- [x] Define test strategy before implementation: cover static simulation, dynamic simulation, stop conditions, max-turn behavior, and malformed invoke results; first failing test should assert typed handling of an invoke result without broad agent `any`
+- [x] Write or update the failing automated test before production changes when practical; if not practical, record why before implementation
+- [x] Replace broad agent and invoke-result contracts in `packages/testing/src/runners/conversation-simulator.ts` with reusable unknown-first or generic runner interfaces
+- [x] Preserve multi-turn simulation, dynamic input generation, stop-condition handling, verbose logging, and error capture behavior
+- [x] Add/update production code until focused tests pass, keeping test evidence in checklist notes and PR body
+- [x] Record explicit-`any` warning deltas for touched files in story docs
+- [x] Add or update story documentation at `docs/st09036-conversation-simulator-agent-contracts.md` (or document why not required)
+- [x] Assess residual test impact; add/update additional automated tests when needed, or document why no further tests are required
+- [x] Run full test suite before finalizing the PR and record results
+- [x] Run lint (`pnpm lint`) before finalizing the PR and record results
+- [x] Commit completed checklist items as logical commits and push updates
+- [x] Mark PR Ready only after all story tasks are complete
 - [ ] Wait for merge; do not merge directly from local branch
+
+### Notes
+
+- PR #103: https://github.com/TVScoundrel/agentforge/pull/103
+- Pre-implementation failing type regression:
+  - `pnpm --filter @agentforge/testing typecheck` -> failed because `createConversationSimulator<ExampleState>(...)` accepted zero type arguments before the factory was made generic
+- Focused tests and type validation:
+  - `pnpm --filter @agentforge/testing typecheck` -> exit `0`
+  - `pnpm test --run packages/testing/tests/runners/conversation-simulator.test.ts` -> `1` file passed, `5` tests passed
+- Full validation:
+  - `pnpm test --run` -> `167` files passed, `16` skipped; `2272` tests passed, `286` skipped
+  - `pnpm lint` -> exit `0`; warnings only (`0` errors)
+  - `pnpm lint:explicit-any:baseline` -> `133/289` warnings (`testing 3/51`), improving the workspace baseline from `135` to `133` and `testing` from `5` to `3`
+- Story impact:
+  - `packages/testing/src/runners/conversation-simulator.ts` removed two broad `agent: any` seams by sharing `AgentTestAgent` and unknown-first message extraction with the agent test runner
+  - Additional focused coverage now exercises static simulation, dynamic simulation, max-turn stopping, configured stop conditions, and malformed invoke results
+- Ready for review:
+  - PR #103 ready for review: https://github.com/TVScoundrel/agentforge/pull/103
 
 ---
 

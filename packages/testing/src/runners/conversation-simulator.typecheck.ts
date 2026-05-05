@@ -9,11 +9,9 @@ type ExampleState = {
 
 declare const agent: AgentTestAgent<{ messages: BaseMessage[] }, ExampleState>;
 
-async function acceptsTypedConversationSimulator() {
+export async function acceptsTypedConversationSimulator() {
   const simulator = createConversationSimulator<ExampleState>(agent);
   const result = await simulator.simulate(['hello']);
 
-  result.messages[0]?.content;
+  return result.messages[0]?.content;
 }
-
-void acceptsTypedConversationSimulator;
