@@ -6,12 +6,12 @@ A configurable, vertical code review agent built with AgentForge. This agent dem
 
 ## Features
 
-- ✅ **Configurable**: Customize model, tools, prompts, and review criteria
-- 🔧 **Tool Injection**: Add custom tools for linting, testing, and analysis
-- 🎯 **Feature Flags**: Enable/disable security checks, performance analysis, strict mode
-- 📝 **Type-Safe**: Full TypeScript support with Zod validation
-- 🧪 **Testable**: Easy to test with dependency injection
-- 📦 **Reusable**: Use as-is or customize for your needs
+- **Configurable**: Customize model, tools, prompts, and review criteria
+- **Tool Injection**: Add custom tools for linting, testing, and analysis
+- **Feature Flags**: Enable/disable security checks, performance analysis, strict mode
+- **Type-Safe**: Full TypeScript support with Zod validation
+- **Testable**: Easy to test with dependency injection
+- **Reusable**: Use as-is or customize for your needs
 - 📄 **External Prompts**: Prompts stored in `.md` files with `{{variable}}` placeholders
 
 ## Installation
@@ -251,4 +251,3 @@ All 26 tests passing, demonstrating:
 ## License
 
 MIT
-

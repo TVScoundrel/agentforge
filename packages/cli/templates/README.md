@@ -160,4 +160,3 @@ To create a custom template:
 ## License
 
 MIT
-

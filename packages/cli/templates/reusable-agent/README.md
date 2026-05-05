@@ -8,12 +8,12 @@ A configurable, vertical AI agent built with AgentForge.
 
 ## Features
 
-- ✅ **Factory Function Pattern** - Easy to instantiate with different configurations
-- ✅ **External Prompt Templates** - Prompts stored in `.md` files for easy editing
-- ✅ **Tool Injection** - Add custom tools via ToolRegistry or direct injection
-- ✅ **Feature Flags** - Enable/disable capabilities as needed
-- ✅ **Configuration Validation** - Type-safe configuration with Zod schemas
-- ✅ **Comprehensive Tests** - Full test coverage demonstrating all features
+- **Factory Function Pattern** - Easy to instantiate with different configurations
+- **External Prompt Templates** - Prompts stored in `.md` files for easy editing
+- **Tool Injection** - Add custom tools via ToolRegistry or direct injection
+- **Feature Flags** - Enable/disable capabilities as needed
+- **Configuration Validation** - Type-safe configuration with Zod schemas
+- **Comprehensive Tests** - Full test coverage demonstrating all features
 
 ## Installation
 
@@ -147,4 +147,3 @@ npm test
 ## License
 
 MIT
-

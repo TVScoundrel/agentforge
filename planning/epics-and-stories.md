@@ -1462,7 +1462,7 @@
 **Priority:** P2 (Medium)
 **Estimate:** 3 hours
 **Dependencies:** ST-09035
-**Status:** Ready
+**Status:** Merged
 
 **Acceptance criteria:**
 - [ ] `packages/testing/src/runners/conversation-simulator.ts` replaces broad agent and invoke-result `any` contracts with reusable unknown-first or generic runner interfaces
@@ -1581,7 +1581,7 @@
 **Priority:** P2 (Medium)
 **Estimate:** 3 hours
 **Dependencies:** ST-10001 (merged)
-**Status:** Ready
+**Status:** In Progress
 
 **Acceptance criteria:**
 - [ ] Planning docs, checklists, feature plans, and internal docs targeted by the audit have decorative emoji removed or replaced with plain-text status wording

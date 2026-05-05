@@ -20,7 +20,7 @@ examples/
     └── nextjs-app/            # Next.js full-stack app
 ```
 
-## 📦 Reusable Agents (Production Templates)
+## Reusable Agents (Production Templates)
 
 **NEW!** Production-ready, configurable agent templates that you can use as-is or customize for your needs.
 
@@ -108,11 +108,11 @@ const agent = createDataAnalystAgent({
 
 [View Documentation](./vertical-agents/data-analyst/README.md)
 
-**[📚 View All Vertical Agents →](./vertical-agents/README.md)**
+**[View All Vertical Agents](./vertical-agents/README.md)**
 
 ---
 
-## 🚀 Applications
+## Applications
 
 ### Research Assistant
 **Pattern**: ReAct  
@@ -257,7 +257,7 @@ npx create-next-app@latest my-agent-app
 
 ---
 
-## 🎯 Pattern Usage Guide
+## Pattern Usage Guide
 
 | Example | Pattern | Best For |
 |---------|---------|----------|
@@ -271,7 +271,7 @@ npx create-next-app@latest my-agent-app
 | Data Analyst | Plan-Execute | Structured workflows, multi-step tasks |
 | Customer Support | Multi-Agent | Specialized roles, routing |
 
-## 📚 Learning Path
+## Learning Path
 
 ### Beginner
 1. **Start with Reusable Agents** - Use production-ready templates
@@ -299,14 +299,14 @@ npx create-next-app@latest my-agent-app
 3. Combine patterns for complex applications
 4. Optimize for production deployment
 
-## 🛠️ Prerequisites
+## Prerequisites
 
 All examples require:
 - Node.js 18+
 - pnpm (recommended) or npm
 - OpenAI API key
 
-## ⚙️ Configuration
+## Configuration
 
 Create a `.env` file in the repository root:
 
@@ -315,7 +315,7 @@ OPENAI_API_KEY=your-api-key-here
 OPENAI_MODEL=gpt-4  # Optional, defaults to gpt-4
 ```
 
-## 🚀 Quick Start
+## Quick Start
 
 ```bash
 # Install dependencies (from repository root)
@@ -350,7 +350,7 @@ Want to add an example? Great! Please:
 4. Test thoroughly
 5. Submit a pull request
 
-## 📝 License
+## License
 
 MIT © 2026 Tom Van Schoor
 
@@ -358,7 +358,6 @@ MIT © 2026 Tom Van Schoor
 
 ## Need Help?
 
-- 📚 [AgentForge Documentation](../docs-site/)
+- [AgentForge Documentation](../docs-site/)
 - 💬 [GitHub Discussions](https://github.com/your-org/agentforge/discussions)
 - 🐛 [Report Issues](https://github.com/your-org/agentforge/issues)
-

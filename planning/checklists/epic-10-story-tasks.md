@@ -65,7 +65,7 @@
 **Branch:** `docs/st-10004-example-template-docs-emoji-normalization`
 
 ### Checklist
-- [ ] Create branch `docs/st-10004-example-template-docs-emoji-normalization`
+- [x] Create branch `docs/st-10004-example-template-docs-emoji-normalization`
 - [ ] Create draft PR with story ID in title
 - [ ] Remove decorative emoji from targeted example READMEs, template docs, and similar supporting markdown identified by the audit
 - [ ] Preserve literal demo output where emoji are part of the documented runtime behavior and intentionally meant to remain

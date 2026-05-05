@@ -4,11 +4,11 @@ An AI-powered research assistant that can search for information, analyze source
 
 ## Features
 
-- 🔍 **Web Search**: Search for information across the web
+- **Web Search**: Search for information across the web
 - 📄 **Web Scraping**: Extract content from web pages
-- 📊 **Analysis**: Analyze and synthesize information from multiple sources
-- 📝 **Summarization**: Generate concise summaries of findings
-- 📚 **Comprehensive Reports**: Create well-structured research reports
+- **Analysis**: Analyze and synthesize information from multiple sources
+- **Summarization**: Generate concise summaries of findings
+- **Comprehensive Reports**: Create well-structured research reports
 
 ## Prerequisites
 
@@ -139,4 +139,3 @@ Always cite peer-reviewed sources and provide DOI links when available.`,
 ## License
 
 MIT
-

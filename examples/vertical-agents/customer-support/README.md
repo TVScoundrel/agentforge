@@ -6,12 +6,12 @@ A configurable, vertical customer support agent built with AgentForge. This agen
 
 ## Features
 
-- ✅ **Configurable**: Customize model, tools, prompts, and behavior
-- 🔧 **Tool Injection**: Add custom tools for your specific needs
-- 🎯 **Feature Flags**: Enable/disable features like human escalation, ticket creation
-- 📝 **Type-Safe**: Full TypeScript support with Zod validation
-- 🧪 **Testable**: Easy to test with dependency injection
-- 📦 **Reusable**: Use as-is or customize for your needs
+- **Configurable**: Customize model, tools, prompts, and behavior
+- **Tool Injection**: Add custom tools for your specific needs
+- **Feature Flags**: Enable/disable features like human escalation, ticket creation
+- **Type-Safe**: Full TypeScript support with Zod validation
+- **Testable**: Easy to test with dependency injection
+- **Reusable**: Use as-is or customize for your needs
 - 📄 **External Prompts**: Prompts stored in `.md` files with `{{variable}}` placeholders
 
 ## Installation
@@ -239,4 +239,3 @@ All 24 tests passing, demonstrating:
 ## License
 
 MIT
-

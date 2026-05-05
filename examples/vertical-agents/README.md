@@ -4,7 +4,7 @@ This directory contains production-ready examples of vertical AI agents built wi
 
 > **Note**: Vertical agents (also called "reusable agents") are domain-specific agents designed for particular industries or use cases.
 
-## 📦 Available Agents
+## Available Agents
 
 ### [Customer Support Agent](./customer-support/)
 A configurable customer support agent with escalation capabilities.
@@ -68,7 +68,7 @@ A flexible data analysis agent with statistical methods and visualization.
 
 ---
 
-## 🎯 Common Patterns
+## Common Patterns
 
 All three agents demonstrate these production-ready patterns:
 
@@ -188,7 +188,7 @@ export type CustomerSupportConfig = z.infer<typeof CustomerSupportConfigSchema>;
 - Auto-generated TypeScript types
 - Self-documenting configuration
 
-## 🚀 Getting Started
+## Getting Started
 
 ### 1. Choose an Agent
 
@@ -230,7 +230,7 @@ cd customer-support  # or code-review, or data-analyst
 npm test
 ```
 
-## 📚 Using as Templates
+## Using as Templates
 
 These agents are designed to be used as templates for your own agents:
 
@@ -257,7 +257,7 @@ These agents are designed to be used as templates for your own agents:
 3. Publish as your own package
 4. Share with your team
 
-## 🧪 Testing Patterns
+## Testing Patterns
 
 All agents demonstrate comprehensive testing:
 
@@ -309,7 +309,7 @@ Each agent includes:
 - [Agent Patterns](../../packages/patterns/README.md) - ReAct, Plan-Execute, etc.
 - [AgentForge Tools](../../packages/tools/README.md) - 70+ reusable tools
 
-## 💡 Best Practices
+## Best Practices
 
 ### 1. Start Simple
 Begin with default configuration and add complexity as needed.
@@ -337,7 +337,6 @@ These examples are meant to inspire and guide. If you create interesting vertica
 3. Write clear documentation
 4. Share with the community!
 
-## 📝 License
+## License
 
 MIT
-

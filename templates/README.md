@@ -11,7 +11,7 @@ Containerization templates for local development and production:
 - **docker-compose.dev.yml** - Development with hot reload
 - **.dockerignore** - Optimized build context
 
-### ☸️ Kubernetes Manifests (`kubernetes/`)
+### Kubernetes Manifests (`kubernetes/`)
 Production-ready Kubernetes deployment:
 - **deployment.yaml** - High-availability deployment (3 replicas)
 - **service.yaml** - Load balancer service
@@ -31,14 +31,14 @@ Both include:
 - Staging and production deployments
 - Security scanning
 
-### ☁️ Cloud Platform Guides (`deployment/`)
+### Cloud Platform Guides (`deployment/`)
 Step-by-step deployment guides:
 - **AWS.md** - Amazon Web Services (ECS, EKS, Lambda)
 - **GCP.md** - Google Cloud Platform (Cloud Run, GKE)
 - **Azure.md** - Microsoft Azure (Container Apps, AKS)
 - **README.md** - Overview and best practices
 
-## 🚀 Quick Start
+## Quick Start
 
 ### Local Development with Docker
 
@@ -82,7 +82,7 @@ Choose your platform and follow the guide:
 - [GCP Deployment Guide](./deployment/GCP.md)
 - [Azure Deployment Guide](./deployment/Azure.md)
 
-## 🔧 Configuration
+## Configuration
 
 ### Environment Variables
 
@@ -112,18 +112,18 @@ RATE_LIMIT_WINDOW_MS=60000
 
 See [deployment/README.md](./deployment/README.md) for detailed instructions.
 
-## 📊 Features
+## Features
 
 All templates include:
 
-✅ **Production-ready** - Battle-tested configurations  
-✅ **High availability** - Multiple replicas with health checks  
-✅ **Auto-scaling** - CPU/memory-based scaling  
-✅ **Security** - RBAC, read-only filesystems, non-root users  
-✅ **Monitoring** - Health checks, metrics, logging  
-✅ **CI/CD** - Automated testing and deployment  
+- **Production-ready** - Battle-tested configurations
+- **High availability** - Multiple replicas with health checks
+- **Auto-scaling** - CPU/memory-based scaling
+- **Security** - RBAC, read-only filesystems, non-root users
+- **Monitoring** - Health checks, metrics, logging
+- **CI/CD** - Automated testing and deployment
 
-## 📚 Learn More
+## Learn More
 
 - **[Deployment Examples](../packages/core/examples/deployment/)** - Working code examples
 - **[Production Best Practices](../docs/guides/production-best-practices.md)** - Security, performance, monitoring
@@ -166,4 +166,3 @@ Found an issue or have an improvement? Please open an issue or PR!
 ## 📄 License
 
 MIT © 2026 Tom Van Schoor
-
