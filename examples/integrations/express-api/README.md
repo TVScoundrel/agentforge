@@ -6,8 +6,8 @@ A production-ready Express.js REST API integration with AgentForge, featuring ra
 
 - **RESTful API**: Clean, well-structured API endpoints
 - **Security**: Helmet, CORS, rate limiting
-- 💬 **Chat API**: Conversation management with history
-- 🌊 **Streaming**: Server-Sent Events (SSE) for real-time responses
+- **Chat API**: Conversation management with history
+- **Streaming**: Server-Sent Events (SSE) for real-time responses
 - **Performance**: Singleton agent pattern for efficiency
 - **Monitoring**: Request logging and health checks
 - **Validation**: Zod schema validation for all inputs

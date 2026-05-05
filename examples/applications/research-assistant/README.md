@@ -5,7 +5,7 @@ An AI-powered research assistant that can search for information, analyze source
 ## Features
 
 - **Web Search**: Search for information across the web
-- 📄 **Web Scraping**: Extract content from web pages
+- **Web Scraping**: Extract content from web pages
 - **Analysis**: Analyze and synthesize information from multiple sources
 - **Summarization**: Generate concise summaries of findings
 - **Comprehensive Reports**: Create well-structured research reports

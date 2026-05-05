@@ -2,9 +2,9 @@
 
 Production-ready deployment templates for AgentForge applications. These templates help you deploy your AI agents to production environments with best practices for containerization, orchestration, and CI/CD.
 
-## 📁 What's Included
+## What's Included
 
-### 🐳 Docker Templates (`docker/`)
+### Docker Templates (`docker/`)
 Containerization templates for local development and production:
 - **Dockerfile** - Multi-stage production build
 - **docker-compose.yml** - Production configuration
@@ -20,7 +20,7 @@ Production-ready Kubernetes deployment:
 - **hpa.yaml** - Horizontal Pod Autoscaler
 - **serviceaccount.yaml** - RBAC configuration
 
-### 🔄 CI/CD Pipelines (`ci-cd/`)
+### CI/CD Pipelines (`ci-cd/`)
 Automated testing and deployment:
 - **github-actions.yml** - GitHub Actions workflow
 - **gitlab-ci.yml** - GitLab CI pipeline
@@ -129,7 +129,7 @@ All templates include:
 - **[Production Best Practices](../docs/guides/production-best-practices.md)** - Security, performance, monitoring
 - **[CLI Tool](../packages/cli/)** - Use `agentforge deploy` for guided deployment
 
-## 🆘 Troubleshooting
+## Troubleshooting
 
 ### Docker Issues
 
@@ -159,10 +159,10 @@ kubectl rollout restart deployment/agentforge-app
 - **Memory issues**: Increase resource limits in deployment.yaml
 - **API key errors**: Verify secrets are properly configured
 
-## 🤝 Contributing
+## Contributing
 
 Found an issue or have an improvement? Please open an issue or PR!
 
-## 📄 License
+## License
 
 MIT © 2026 Tom Van Schoor

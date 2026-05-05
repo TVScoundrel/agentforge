@@ -12,7 +12,7 @@ A configurable, vertical customer support agent built with AgentForge. This agen
 - **Type-Safe**: Full TypeScript support with Zod validation
 - **Testable**: Easy to test with dependency injection
 - **Reusable**: Use as-is or customize for your needs
-- 📄 **External Prompts**: Prompts stored in `.md` files with `{{variable}}` placeholders
+- **External Prompts**: Prompts stored in `.md` files with `{{variable}}` placeholders
 
 ## Installation
 

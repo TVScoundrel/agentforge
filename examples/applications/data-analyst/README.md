@@ -5,7 +5,7 @@ An AI-powered data analyst that can load, analyze, and generate insights from CS
 ## Features
 
 - **Data Profiling**: Analyze dataset structure, types, and quality
-- 📈 **Statistical Analysis**: Calculate mean, median, min, max, and distributions
+- **Statistical Analysis**: Calculate mean, median, min, max, and distributions
 - **Pattern Detection**: Identify trends, correlations, and anomalies
 - **Insight Generation**: Generate actionable insights from data
 - **Data Transformation**: Filter, sort, and group data

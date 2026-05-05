@@ -5,11 +5,11 @@ A complete Next.js App Router integration with AgentForge, featuring API routes,
 ## Features
 
 - **Next.js 14+**: App Router with Server Components
-- 🎨 **Modern UI**: React components with Tailwind CSS
-- 🌊 **Streaming**: Real-time streaming responses
-- 💬 **Chat Interface**: Interactive chat UI
+- **Modern UI**: React components with Tailwind CSS
+- **Streaming**: Real-time streaming responses
+- **Chat Interface**: Interactive chat UI
 - **API Routes**: Secure server-side agent execution
-- 📱 **Responsive**: Mobile-friendly design
+- **Responsive**: Mobile-friendly design
 - **Fast**: Optimized for performance
 
 ## Prerequisites

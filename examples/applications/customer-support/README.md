@@ -4,11 +4,11 @@ An AI-powered customer support system using multi-agent architecture with FAQ ha
 
 ## Features
 
-- 💬 **Interactive Chat**: Real-time conversation with customers
+- **Interactive Chat**: Real-time conversation with customers
 - **FAQ Database**: Instant answers to common questions
-- 🎫 **Ticket Management**: Create and track support tickets
-- 🔀 **Intelligent Routing**: Route to appropriate specialist agent
-- 😊 **Sentiment Analysis**: Detect frustrated customers and escalate
+- **Ticket Management**: Create and track support tickets
+- **Intelligent Routing**: Route to appropriate specialist agent
+- **Sentiment Analysis**: Detect frustrated customers and escalate
 - **Order Tracking**: Check order status and tracking information
 - **Auto-Escalation**: Automatically escalate urgent or negative cases
 

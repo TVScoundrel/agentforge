@@ -1462,7 +1462,7 @@
 **Priority:** P2 (Medium)
 **Estimate:** 3 hours
 **Dependencies:** ST-09035
-**Status:** Merged
+**Status:** Ready
 
 **Acceptance criteria:**
 - [ ] `packages/testing/src/runners/conversation-simulator.ts` replaces broad agent and invoke-result `any` contracts with reusable unknown-first or generic runner interfaces
@@ -1564,7 +1564,7 @@
 **Priority:** P2 (Medium)
 **Estimate:** 3 hours
 **Dependencies:** ST-10001 (merged)
-**Status:** In Review
+**Status:** Merged (PR #100, 2026-05-04)
 
 **Acceptance criteria:**
 - [ ] Public-facing docs such as the root README, package READMEs, and selected docs-site pages have decorative emoji removed from headings, bullets, banners, and link callouts
@@ -1581,7 +1581,7 @@
 **Priority:** P2 (Medium)
 **Estimate:** 3 hours
 **Dependencies:** ST-10001 (merged)
-**Status:** In Review
+**Status:** Merged (PR #101, 2026-05-04)
 
 **Acceptance criteria:**
 - [ ] Planning docs, checklists, feature plans, and internal docs targeted by the audit have decorative emoji removed or replaced with plain-text status wording

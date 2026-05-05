@@ -2,7 +2,7 @@
 
 This directory contains real-world examples and integrations demonstrating how to use AgentForge in production applications.
 
-## 📁 Directory Structure
+## Directory Structure
 
 ```
 examples/
@@ -341,7 +341,7 @@ Each example includes:
 - Customization guide
 - Production considerations
 
-## 🤝 Contributing
+## Contributing
 
 Want to add an example? Great! Please:
 1. Follow the existing structure
@@ -359,5 +359,5 @@ MIT © 2026 Tom Van Schoor
 ## Need Help?
 
 - [AgentForge Documentation](../docs-site/)
-- 💬 [GitHub Discussions](https://github.com/your-org/agentforge/discussions)
-- 🐛 [Report Issues](https://github.com/your-org/agentforge/issues)
+- [GitHub Discussions](https://github.com/your-org/agentforge/discussions)
+- [Report Issues](https://github.com/your-org/agentforge/issues)
