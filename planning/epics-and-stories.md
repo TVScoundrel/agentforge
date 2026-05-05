@@ -121,7 +121,7 @@
 - Story slices are intentionally small (1 day each) so quality improvements can ship continuously
 - Lightweight quality-gate follow-ups keep release/build feedback tight by reducing stale warning caps and easy package metadata warnings
 
-**Stories:** ST-09001 through ST-09040
+**Stories:** ST-09001 through ST-09041
 
 ---
 
@@ -1538,6 +1538,23 @@
 - [ ] Focused tests are added or updated for resume payload serialization, primitive/object resume values, and event ID stability as needed
 - [ ] Touched files do not regress on explicit-`any` warning counts and the outcome is recorded in story documentation
 - [ ] Add or update story documentation at `docs/st09040-human-in-loop-streaming-resume-contracts.md`
+
+---
+
+#### ST-09041: Adopt Structured Logger in Conversation Simulator
+**User story:** As a testing maintainer, I want `ConversationSimulator` verbose output to use the structured logger instead of `console.log` so diagnostic output can be filtered and aligned with repo observability conventions.
+
+**Priority:** P2 (Medium)
+**Estimate:** 2 hours
+**Dependencies:** ST-09036
+**Status:** Backlog
+
+**Acceptance criteria:**
+- [ ] `packages/testing/src/runners/conversation-simulator.ts` replaces direct verbose `console.log` calls with a testing-package structured logger or shared logger helper
+- [ ] Verbose simulator output remains opt-in and continues to emit the same user/AI turn information without changing non-verbose behavior
+- [ ] Focused tests are added or updated for verbose logging enablement, disabled logging behavior, and emitted message content as needed
+- [ ] Story documentation records any observability or test-double approach used for logger verification
+- [ ] Add or update story documentation at `docs/st09041-conversation-simulator-structured-logger.md`
 
 ---
 

@@ -79,6 +79,7 @@ Recent improvement snapshot:
 - `ST-09033` merged after tightening database pool adapter query parameter/result contracts around exported unknown-first aliases, lowering the workspace explicit-`any` baseline from `153` to `144` and the `core` package from `53` to `44`.
 - `ST-09035` merged after tightening the agent test runner around exported unknown-first agent, state, result, and step contracts, lowering the workspace explicit-`any` baseline from `144` to `135` and the `testing` package from `14` to `5`, with follow-up fixes for timeout cleanup, malformed message guards, zero-timeout semantics, and validation-hook documentation accuracy.
 - `ST-09036` through `ST-09040` were added on 2026-05-03 as small SOLID/DRY follow-on slices covering conversation simulator contracts, ReAct builder/prompt boundaries, data transformer helper extraction, core mock-tool testing contracts, and human-in-loop streaming resume typing.
+- `ST-09041` was added on 2026-05-06 to move `ConversationSimulator` verbose diagnostics from direct `console.log` calls onto the repo's structured logging path without changing simulator behavior.
 - `EP-09` remains open as the daily hardening stream, with the active queue now centered on testing-contract follow-ons and small SOLID/DRY helper extractions.
 - A fresh follow-on slice is now queued behind current Ready work for testing runner type-boundary cleanup, ReAct boundary tightening, transformer DRY helper extraction, core testing-helper contracts, and streaming resume payload hardening.
 
@@ -103,7 +104,7 @@ Recent improvement snapshot:
 
 ## Story Coverage by Epic
 
-- EP-09: ST-09001, ST-09002, ST-09003, ST-09004, ST-09005, ST-09006, ST-09007, ST-09008, ST-09009, ST-09010, ST-09011, ST-09012, ST-09013, ST-09014, ST-09015, ST-09016, ST-09017, ST-09018, ST-09019, ST-09020, ST-09021, ST-09022, ST-09023, ST-09024, ST-09025, ST-09026, ST-09027, ST-09028, ST-09029, ST-09030, ST-09031, ST-09032, ST-09033, ST-09034, ST-09035, ST-09036, ST-09037, ST-09038, ST-09039, ST-09040
+- EP-09: ST-09001, ST-09002, ST-09003, ST-09004, ST-09005, ST-09006, ST-09007, ST-09008, ST-09009, ST-09010, ST-09011, ST-09012, ST-09013, ST-09014, ST-09015, ST-09016, ST-09017, ST-09018, ST-09019, ST-09020, ST-09021, ST-09022, ST-09023, ST-09024, ST-09025, ST-09026, ST-09027, ST-09028, ST-09029, ST-09030, ST-09031, ST-09032, ST-09033, ST-09034, ST-09035, ST-09036, ST-09037, ST-09038, ST-09039, ST-09040, ST-09041
 
 ---
 
@@ -119,7 +120,7 @@ Recent improvement snapshot:
 
 ## Related Planning Documents
 
-- `planning/epics-and-stories.md` (EP-09 and ST-09001 through ST-09040)
+- `planning/epics-and-stories.md` (EP-09 and ST-09001 through ST-09041)
 - `planning/checklists/epic-09-story-tasks.md`
 - `planning/kanban-queue.md`
 - `scripts/no-explicit-any-baseline.json`

@@ -8,7 +8,7 @@
 - **In Progress:** 0 stories
 - **In Review:** 2 stories
 - **Blocked:** 0 stories
-- **Backlog:** 4 stories
+- **Backlog:** 5 stories
 
 ---
 
@@ -42,6 +42,7 @@ _No stories currently blocked_
 - `ST-09038` - Extract Data Transformer Object Path Helpers
 - `ST-09039` - Tighten Core Mock Tool Testing Helper Contracts
 - `ST-09040` - Tighten Human-in-Loop Streaming Resume Contracts
+- `ST-09041` - Adopt Structured Logger in Conversation Simulator
 
 ---
 
@@ -123,6 +124,7 @@ _No stories currently blocked_
 - Epic 09 (SOLID Micro-Refactors and Type Boundary Hardening) was expanded a fourth time on 2026-03-24 with the plan-execute node modularization follow-up story ST-09029
 - Epic 09 (SOLID Micro-Refactors and Type Boundary Hardening) was expanded a fifth time on 2026-04-16 with follow-on backlog stories ST-09030 through ST-09035
 - Epic 09 (SOLID Micro-Refactors and Type Boundary Hardening) was expanded a sixth time on 2026-05-03 with small SOLID/DRY follow-on stories ST-09036 through ST-09040
+- Epic 09 was expanded a seventh time on 2026-05-06 with `ST-09041` to move `ConversationSimulator` verbose diagnostics onto the structured logging path as a separate observability cleanup.
 - Epic 10 (Documentation Only Changes) was opened on 2026-04-18 as an evergreen docs-only lane for markdown cleanup, style normalization, and future documentation maintenance stories
 - ST-10001 complete - markdown emoji usage audit merged (PR #97, 2026-05-03); ST-10002 through ST-10005 promoted to Ready as capacity became available
 - ST-10002 complete - public-facing docs emoji normalization merged (PR #100, 2026-05-04); ST-10003 remained next in Ready at that point
