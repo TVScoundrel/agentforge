@@ -4,13 +4,13 @@
 
 ## Features
 
-- ✅ ReAct agent pattern with tool support
-- ✅ Example tool implementation
-- ✅ Logging and error handling
-- ✅ Environment configuration
-- ✅ Test suite with Vitest
-- ✅ TypeScript support
-- ✅ Hot reload development
+- ReAct agent pattern with tool support
+- Example tool implementation
+- Logging and error handling
+- Environment configuration
+- Test suite with Vitest
+- TypeScript support
+- Hot reload development
 
 ## Getting Started
 
@@ -148,4 +148,3 @@ See the [deployment guides](../../templates/deployment/) for deploying to:
 ## License
 
 MIT
-

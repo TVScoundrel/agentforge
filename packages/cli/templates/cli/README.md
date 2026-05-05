@@ -6,13 +6,13 @@ A command-line interface powered by AgentForge agents.
 
 ## Features
 
-- ✅ Interactive chat command
-- ✅ File analysis command
-- ✅ Commander.js CLI framework
-- ✅ Colored output (chalk)
-- ✅ Spinners and progress (ora)
-- ✅ Interactive prompts (inquirer)
-- ✅ ReAct agent integration
+- Interactive chat command
+- File analysis command
+- Commander.js CLI framework
+- Colored output (chalk)
+- Spinners and progress (ora)
+- Interactive prompts (inquirer)
+- ReAct agent integration
 
 ## Getting Started
 
@@ -161,4 +161,3 @@ npm publish
 ## License
 
 MIT
-

@@ -4,12 +4,12 @@ This example demonstrates a customer support agent that uses the `askHuman` tool
 
 ## Features
 
-- 🤖 **Automated Refunds**: Small refunds ($100 or less) processed automatically
-- 👤 **Human Approval**: Large refunds require human review and approval
-- ⏸️ **Pause/Resume**: LangGraph checkpointing enables workflow interruption
-- 📊 **Context-Rich Requests**: Provides customer history and order details for informed decisions
-- ⏱️ **Timeout Handling**: Safe defaults prevent system from hanging
-- 🔒 **Safe Defaults**: Defaults to "no" for approvals to prevent unauthorized refunds
+- **Automated Refunds**: Small refunds ($100 or less) processed automatically
+- **Human Approval**: Large refunds require human review and approval
+- **Pause/Resume**: LangGraph checkpointing enables workflow interruption
+- **Context-Rich Requests**: Provides customer history and order details for informed decisions
+- **Timeout Handling**: Safe defaults prevent system from hanging
+- **Safe Defaults**: Defaults to "no" for approvals to prevent unauthorized refunds
 
 ## How It Works
 
@@ -231,4 +231,3 @@ eventSource.addEventListener('human_request', (event) => {
 - [askHuman Tool API](../../../docs-site/api/tools.md#ask-human)
 - [LangGraph Checkpointing](https://langchain-ai.github.io/langgraphjs/concepts/persistence/)
 - [SSE Streaming](../../../docs-site/guide/advanced/streaming.md)
-

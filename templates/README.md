@@ -2,16 +2,16 @@
 
 Production-ready deployment templates for AgentForge applications. These templates help you deploy your AI agents to production environments with best practices for containerization, orchestration, and CI/CD.
 
-## 📁 What's Included
+## What's Included
 
-### 🐳 Docker Templates (`docker/`)
+### Docker Templates (`docker/`)
 Containerization templates for local development and production:
 - **Dockerfile** - Multi-stage production build
 - **docker-compose.yml** - Production configuration
 - **docker-compose.dev.yml** - Development with hot reload
 - **.dockerignore** - Optimized build context
 
-### ☸️ Kubernetes Manifests (`kubernetes/`)
+### Kubernetes Manifests (`kubernetes/`)
 Production-ready Kubernetes deployment:
 - **deployment.yaml** - High-availability deployment (3 replicas)
 - **service.yaml** - Load balancer service
@@ -20,7 +20,7 @@ Production-ready Kubernetes deployment:
 - **hpa.yaml** - Horizontal Pod Autoscaler
 - **serviceaccount.yaml** - RBAC configuration
 
-### 🔄 CI/CD Pipelines (`ci-cd/`)
+### CI/CD Pipelines (`ci-cd/`)
 Automated testing and deployment:
 - **github-actions.yml** - GitHub Actions workflow
 - **gitlab-ci.yml** - GitLab CI pipeline
@@ -31,14 +31,14 @@ Both include:
 - Staging and production deployments
 - Security scanning
 
-### ☁️ Cloud Platform Guides (`deployment/`)
+### Cloud Platform Guides (`deployment/`)
 Step-by-step deployment guides:
 - **AWS.md** - Amazon Web Services (ECS, EKS, Lambda)
 - **GCP.md** - Google Cloud Platform (Cloud Run, GKE)
 - **Azure.md** - Microsoft Azure (Container Apps, AKS)
 - **README.md** - Overview and best practices
 
-## 🚀 Quick Start
+## Quick Start
 
 ### Local Development with Docker
 
@@ -82,7 +82,7 @@ Choose your platform and follow the guide:
 - [GCP Deployment Guide](./deployment/GCP.md)
 - [Azure Deployment Guide](./deployment/Azure.md)
 
-## 🔧 Configuration
+## Configuration
 
 ### Environment Variables
 
@@ -112,24 +112,24 @@ RATE_LIMIT_WINDOW_MS=60000
 
 See [deployment/README.md](./deployment/README.md) for detailed instructions.
 
-## 📊 Features
+## Features
 
 All templates include:
 
-✅ **Production-ready** - Battle-tested configurations  
-✅ **High availability** - Multiple replicas with health checks  
-✅ **Auto-scaling** - CPU/memory-based scaling  
-✅ **Security** - RBAC, read-only filesystems, non-root users  
-✅ **Monitoring** - Health checks, metrics, logging  
-✅ **CI/CD** - Automated testing and deployment  
+- **Production-ready** - Battle-tested configurations
+- **High availability** - Multiple replicas with health checks
+- **Auto-scaling** - CPU/memory-based scaling
+- **Security** - RBAC, read-only filesystems, non-root users
+- **Monitoring** - Health checks, metrics, logging
+- **CI/CD** - Automated testing and deployment
 
-## 📚 Learn More
+## Learn More
 
 - **[Deployment Examples](../packages/core/examples/deployment/)** - Working code examples
 - **[Production Best Practices](../docs/guides/production-best-practices.md)** - Security, performance, monitoring
 - **[CLI Tool](../packages/cli/)** - Use `agentforge deploy` for guided deployment
 
-## 🆘 Troubleshooting
+## Troubleshooting
 
 ### Docker Issues
 
@@ -159,11 +159,10 @@ kubectl rollout restart deployment/agentforge-app
 - **Memory issues**: Increase resource limits in deployment.yaml
 - **API key errors**: Verify secrets are properly configured
 
-## 🤝 Contributing
+## Contributing
 
 Found an issue or have an improvement? Please open an issue or PR!
 
-## 📄 License
+## License
 
 MIT © 2026 Tom Van Schoor
-

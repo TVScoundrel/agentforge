@@ -6,13 +6,13 @@ A configurable, vertical data analyst agent built with AgentForge. This agent de
 
 ## Features
 
-- ✅ **Configurable**: Customize model, tools, prompts, and analysis criteria
-- 🔧 **Tool Injection**: Add custom tools for data sources, calculations, and visualizations
-- 🎯 **Feature Flags**: Enable/disable statistical analysis, data validation, visualization, confidential data mode
-- 📝 **Type-Safe**: Full TypeScript support with Zod validation
-- 🧪 **Testable**: Easy to test with dependency injection
-- 📦 **Reusable**: Use as-is or customize for your needs
-- 📄 **External Prompts**: Prompts stored in `.md` files with `{{variable}}` placeholders
+- **Configurable**: Customize model, tools, prompts, and analysis criteria
+- **Tool Injection**: Add custom tools for data sources, calculations, and visualizations
+- **Feature Flags**: Enable/disable statistical analysis, data validation, visualization, confidential data mode
+- **Type-Safe**: Full TypeScript support with Zod validation
+- **Testable**: Easy to test with dependency injection
+- **Reusable**: Use as-is or customize for your needs
+- **External Prompts**: Prompts stored in `.md` files with `{{variable}}` placeholders
 
 ## Installation
 
@@ -297,4 +297,3 @@ All 28 tests passing, demonstrating:
 ## License
 
 MIT
-

@@ -6,13 +6,13 @@ A REST API service powered by AgentForge agents.
 
 ## Features
 
-- ✅ Express.js REST API
-- ✅ ReAct agent integration
-- ✅ Health check endpoint
-- ✅ CORS support
-- ✅ Error handling
-- ✅ Request logging
-- ✅ Environment configuration
+- Express.js REST API
+- ReAct agent integration
+- Health check endpoint
+- CORS support
+- Error handling
+- Request logging
+- Environment configuration
 
 ## Getting Started
 
@@ -150,4 +150,3 @@ See the [deployment guides](../../templates/deployment/) for deploying to:
 ## License
 
 MIT
-

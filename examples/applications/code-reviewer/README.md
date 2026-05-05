@@ -4,13 +4,13 @@ An AI-powered code review assistant that analyzes code quality, identifies issue
 
 ## Features
 
-- 🔍 **Code Quality Analysis**: Evaluate code readability, maintainability, and style
-- 📊 **Complexity Metrics**: Calculate cyclomatic complexity and nesting depth
-- ✅ **Best Practices**: Check adherence to coding standards and patterns
-- 🐛 **Bug Detection**: Identify potential bugs and edge cases
-- 🔒 **Security Review**: Spot security vulnerabilities
-- ⚡ **Performance Analysis**: Find performance bottlenecks
-- 💡 **Improvement Suggestions**: Get specific, actionable recommendations
+- **Code Quality Analysis**: Evaluate code readability, maintainability, and style
+- **Complexity Metrics**: Calculate cyclomatic complexity and nesting depth
+- **Best Practices**: Check adherence to coding standards and patterns
+- **Bug Detection**: Identify potential bugs and edge cases
+- **Security Review**: Spot security vulnerabilities
+- **Performance Analysis**: Find performance bottlenecks
+- **Improvement Suggestions**: Get specific, actionable recommendations
 
 ## Prerequisites
 
@@ -182,4 +182,3 @@ jobs:
 ## License
 
 MIT
-

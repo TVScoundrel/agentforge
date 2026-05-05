@@ -65,17 +65,17 @@
 **Branch:** `docs/st-10004-example-template-docs-emoji-normalization`
 
 ### Checklist
-- [ ] Create branch `docs/st-10004-example-template-docs-emoji-normalization`
-- [ ] Create draft PR with story ID in title
-- [ ] Remove decorative emoji from targeted example READMEs, template docs, and similar supporting markdown identified by the audit
-- [ ] Preserve literal demo output where emoji are part of the documented runtime behavior and intentionally meant to remain
-- [ ] Keep example code, commands, and setup flow unchanged aside from markdown presentation cleanup
-- [ ] Add or update story documentation at `docs/st10004-example-template-docs-emoji-normalization.md` (or document why not required).
-- [ ] Assess test impact; add/update automated tests when needed, or document why tests are not required.
-- [ ] Run full test suite before finalizing the PR and record results.
-- [ ] Run lint (`pnpm lint`) before finalizing the PR and record results.
-- [ ] Commit completed checklist items as logical commits and push updates.
-- [ ] Mark PR Ready only after all story tasks are complete.
+- [x] Create branch `docs/st-10004-example-template-docs-emoji-normalization`
+- [x] Create draft PR with story ID in title
+- [x] Remove decorative emoji from targeted example READMEs, template docs, and similar supporting markdown identified by the audit
+- [x] Preserve literal demo output where emoji are part of the documented runtime behavior and intentionally meant to remain
+- [x] Keep example code, commands, and setup flow unchanged aside from markdown presentation cleanup
+- [x] Add or update story documentation at `docs/st10004-example-template-docs-emoji-normalization.md` (or document why not required).
+- [x] Assess test impact; add/update automated tests when needed, or document why tests are not required.
+- [x] Run full test suite before finalizing the PR and record results. (`pnpm test --run` passed: 166 files, 2267 tests, 286 skipped)
+- [x] Run lint (`pnpm lint`) before finalizing the PR and record results. (passed with existing warning baseline and no errors)
+- [x] Commit completed checklist items as logical commits and push updates.
+- [x] Mark PR Ready only after all story tasks are complete.
 - [ ] Wait for merge; do not merge directly from local branch.
 
 ---

@@ -280,4 +280,3 @@ See example `05-supervisor-with-askhuman.ts` for a complete demonstration.
 - Explore the [Multi-Agent Pattern Guide](../../docs/multi-agent-pattern.md)
 - Check out the [Pattern Comparison Guide](../../docs/pattern-comparison.md)
 - Review the [API Documentation](../../docs/README.md)
-
