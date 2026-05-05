@@ -5,6 +5,38 @@ All notable changes to AgentForge will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.16.23] - 2026-05-05
+
+### Added
+
+#### @agentforge/testing - Conversation Simulator Contract Coverage
+- Added source-included typecheck regression coverage in `packages/testing/src/runners/conversation-simulator.typecheck.ts` for typed state-generic usage of `createConversationSimulator(...)`
+- Added focused runtime coverage in `packages/testing/tests/runners/conversation-simulator.test.ts` for static simulation, dynamic input generation, explicit max-turn stopping, configured stop conditions, and malformed invoke-result handling
+- Added story documentation in `docs/st09036-conversation-simulator-agent-contracts.md` covering the contract tightening, validation record, and explicit-`any` delta
+
+### Changed
+
+#### @agentforge/testing - Conversation Simulator Contract Hardening
+- Tightened `ConversationSimulator` and `createConversationSimulator(...)` to use the shared generic `AgentTestAgent<ConversationSimulatorInput, TState>` contract instead of broad `agent: any`
+- Reused the agent test runner's unknown-first `extractMessages(...)` helper to normalize invoke-result message extraction
+- Preserved multi-turn flow, verbose turn logging, stop-condition routing, max-turn behavior, and captured error behavior while making downstream simulator typing safer
+
+### Fixed
+
+#### @agentforge/testing - Conversation Simulator Type Safety
+- Replaced broad conversation simulator agent and invoke-result `any` seams with unknown-first and generic runner contracts
+- Hardened malformed invoke-result handling so missing or invalid `messages` payloads surface through the existing captured simulator error path
+- Lowered the workspace explicit-`any` baseline from `135` to `133` and the `testing` package baseline from `5` to `3`
+
+### Published
+- All packages published to npm registry at version 0.16.23:
+  - @agentforge/core@0.16.23
+  - @agentforge/skills@0.16.23
+  - @agentforge/patterns@0.16.23
+  - @agentforge/tools@0.16.23
+  - @agentforge/testing@0.16.23
+  - @agentforge/cli@0.16.23
+
 ## [0.16.22] - 2026-05-04
 
 ### Added
