@@ -6,7 +6,7 @@
 
 - **Ready:** 5 stories
 - **In Progress:** 0 stories
-- **In Review:** 1 story
+- **In Review:** 0 stories
 - **Blocked:** 0 stories
 - **Backlog:** 0 stories
 
@@ -29,7 +29,7 @@ _No stories currently in progress_
 
 ## In Review
 
-- `ST-10006` - Normalize Emoji Usage in Example Overview Docs
+_No stories currently in review_
 
 ---
 
@@ -132,4 +132,5 @@ _No stories currently in backlog_
 - Complete: ST-10004 - example/template docs emoji normalization merged (PR #102, 2026-05-05)
 - Complete: ST-10003 - planning and internal docs emoji normalization merged (PR #101, 2026-05-04)
 - EP-10 follow-up story `ST-10006` started on 2026-05-05 to clean remaining decorative emoji in example overview/index markdown while preserving functional status markers and literal sample output.
+- Complete: ST-10006 - example overview docs emoji normalization merged (PR #105, 2026-05-05)
 - Current measured `no-explicit-any` baseline is `133` warnings (`cli 6`, `core 44`, `patterns 15`, `testing 3`, `tools 65`)

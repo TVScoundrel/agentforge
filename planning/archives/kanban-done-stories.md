@@ -8,6 +8,13 @@
 
 ## Completed Stories
 
+### ST-10006: Normalize Emoji Usage in Example Overview Docs
+- **Merged:** 2026-05-05
+- **PR:** https://github.com/TVScoundrel/agentforge/pull/105 (commit dd252d8)
+- **Epic:** EP-10 (Documentation Only Changes)
+- **Estimate:** 2 hours
+- **Outcome:** Removed the remaining decorative emoji from the example overview/index markdown in `examples/README.md` and `examples/vertical-agents/README.md`, including overview headings and decorative navigation arrow glyphs, while preserving functional status checkmarks and literal sample output. The story kept scope tightly limited to example catalog pages, added explicit story documentation, and closed with tracker-consistency follow-up fixes from review.
+
 ### ST-10004: Normalize Emoji Usage in Examples and Template Docs
 - **Merged:** 2026-05-05
 - **PR:** https://github.com/TVScoundrel/agentforge/pull/102 (commit 1a0436a)

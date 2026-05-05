@@ -1649,7 +1649,7 @@
 **Priority:** P2 (Medium)
 **Estimate:** 2 hours
 **Dependencies:** ST-10001 (merged), ST-10005 (merged)
-**Status:** In Review
+**Status:** Merged (PR #105, 2026-05-05)
 
 **Acceptance criteria:**
 - [ ] Example overview and index markdown targeted by the follow-up audit have decorative emoji removed from headings and similar navigation copy
