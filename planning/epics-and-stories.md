@@ -1598,7 +1598,7 @@
 **Priority:** P2 (Medium)
 **Estimate:** 3 hours
 **Dependencies:** ST-10001 (merged)
-**Status:** Ready
+**Status:** In Review
 
 **Acceptance criteria:**
 - [ ] Example READMEs, template docs, and similar supporting markdown targeted by the audit have decorative emoji removed
