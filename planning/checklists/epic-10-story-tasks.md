@@ -119,7 +119,7 @@
 
 ### Checklist
 - [x] Create branch `docs/st-10006-example-overview-docs-emoji-normalization`
-- [ ] Create draft PR with story ID in title
+- [x] Create draft PR with story ID in title
 - [x] Remove decorative emoji from targeted example overview and index markdown identified by the follow-up audit
 - [x] Preserve functional status markers and literal sample output where the symbols carry documented meaning
 - [x] Keep links, commands, and example descriptions unchanged aside from markdown presentation cleanup
@@ -130,8 +130,8 @@
 - [x] Assess residual test impact; add/update additional automated tests when needed, or document why no further tests are required.
 - [x] Run full test suite before finalizing the PR and record results. (`pnpm test --run` passed: 167 files, 2272 tests, 286 skipped)
 - [x] Run lint (`pnpm lint`) before finalizing the PR and record results. (passed with existing warning baseline and no errors)
-- [ ] Commit completed checklist items as logical commits and push updates.
-- [ ] Mark PR Ready only after all story tasks are complete.
+- [x] Commit completed checklist items as logical commits and push updates.
+- [x] Mark PR Ready only after all story tasks are complete.
 - [ ] Wait for merge; do not merge directly from local branch.
 
 ### Notes
@@ -141,3 +141,5 @@
 - Validation:
   - `git diff --check` passed.
   - Targeted scan after edits leaves only functional checkmarks and box-drawing tree structure in `examples/README.md` and `examples/vertical-agents/README.md`.
+- PR:
+  - Draft PR #105 created and then marked ready for review: https://github.com/TVScoundrel/agentforge/pull/105
