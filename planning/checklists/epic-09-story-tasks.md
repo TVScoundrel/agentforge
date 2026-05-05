@@ -1372,7 +1372,7 @@ Implementation notes:
 **Branch:** `fix/st-09036-conversation-simulator-agent-contracts`
 
 ### Checklist
-- [ ] Create branch `fix/st-09036-conversation-simulator-agent-contracts`
+- [x] Create branch `fix/st-09036-conversation-simulator-agent-contracts`
 - [ ] Create draft PR with story ID in title
 - [ ] Define test strategy before implementation: cover static simulation, dynamic simulation, stop conditions, max-turn behavior, and malformed invoke results; first failing test should assert typed handling of an invoke result without broad agent `any`
 - [ ] Write or update the failing automated test before production changes when practical; if not practical, record why before implementation

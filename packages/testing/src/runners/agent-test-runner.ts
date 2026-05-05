@@ -193,7 +193,7 @@ export function createAgentTestRunner<
   return new AgentTestRunner(agent, config);
 }
 
-function extractMessages(state: unknown): BaseMessage[] {
+export function extractMessages(state: unknown): BaseMessage[] {
   if (typeof state !== 'object' || state === null) {
     return [];
   }
