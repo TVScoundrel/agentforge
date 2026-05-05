@@ -22,7 +22,7 @@ A configurable customer support agent with escalation capabilities.
 - Help desk automation
 - FAQ handling
 
-[View Documentation →](./customer-support/README.md)
+[View Documentation](./customer-support/README.md)
 
 ---
 
@@ -43,7 +43,7 @@ An automated code review agent with security and performance analysis.
 - Performance optimization
 - Code quality enforcement
 
-[View Documentation →](./code-review/README.md)
+[View Documentation](./code-review/README.md)
 
 ---
 
@@ -64,7 +64,7 @@ A flexible data analysis agent with statistical methods and visualization.
 - Data quality monitoring
 - Report generation
 
-[View Documentation →](./data-analyst/README.md)
+[View Documentation](./data-analyst/README.md)
 
 ---
 
@@ -293,7 +293,7 @@ it('should create security-focused review agent', () => {
 });
 ```
 
-## 📖 Documentation
+## Documentation
 
 Each agent includes:
 - **README.md** - Complete usage guide
@@ -302,7 +302,7 @@ Each agent includes:
 - **Examples** - Common use cases
 - **Tests** - Demonstrating all features
 
-## 🔗 Related Resources
+## Related Resources
 
 - [Vertical Agents Guide](../../docs-site/guide/advanced/vertical-agents.md) - Comprehensive guide
 - [Tool Builder API](../../packages/core/README.md) - Creating custom tools
@@ -329,7 +329,7 @@ Include clear README with examples, configuration reference, and usage patterns.
 ### 6. Version Carefully
 Follow semantic versioning when publishing vertical agents.
 
-## 🤝 Contributing
+## Contributing
 
 These examples are meant to inspire and guide. If you create interesting vertical agents:
 1. Follow the same patterns demonstrated here

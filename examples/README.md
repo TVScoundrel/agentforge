@@ -202,7 +202,7 @@ pnpm tsx examples/applications/customer-support/src/index.ts
 
 ---
 
-## 🔌 Integrations
+## Integrations
 
 ### Express.js REST API
 **Framework**: Express.js  
@@ -332,7 +332,7 @@ pnpm tsx examples/applications/customer-support/src/index.ts
 pnpm tsx examples/integrations/express-api/src/server.ts
 ```
 
-## 📖 Documentation
+## Documentation
 
 Each example includes:
 - Comprehensive README

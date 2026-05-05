@@ -110,3 +110,36 @@
   - `pnpm lint` -> exit `0`; warnings only (`0` errors)
 - Ready for review:
   - PR #104 ready for review: https://github.com/TVScoundrel/agentforge/pull/104
+
+---
+
+## ST-10006: Normalize Emoji Usage in Example Overview Docs
+
+**Branch:** `docs/st-10006-example-overview-docs-emoji-normalization`
+
+### Checklist
+- [x] Create branch `docs/st-10006-example-overview-docs-emoji-normalization`
+- [x] Create draft PR with story ID in title
+- [x] Remove decorative emoji from targeted example overview and index markdown identified by the follow-up audit
+- [x] Preserve functional status markers and literal sample output where the symbols carry documented meaning
+- [x] Keep links, commands, and example descriptions unchanged aside from markdown presentation cleanup
+- [x] Add or update story documentation at `docs/st10006-example-overview-docs-emoji-normalization.md` (or document why not required).
+- [x] Define test strategy before implementation: this is a docs-only cleanup story with no practical failing automated test seam, so record the rationale and rely on targeted markdown diff review plus standard suite/lint verification.
+- [x] Write or update the failing automated test before production changes when practical; if not practical, record why before implementation.
+- [x] Add/update production code until focused tests pass, keeping test evidence in checklist notes and PR body.
+- [x] Assess residual test impact; add/update additional automated tests when needed, or document why no further tests are required.
+- [x] Run full test suite before finalizing the PR and record results. (`pnpm test --run` passed: 167 files, 2272 tests, 286 skipped)
+- [x] Run lint (`pnpm lint`) before finalizing the PR and record results. (passed with existing warning baseline and no errors)
+- [x] Commit completed checklist items as logical commits and push updates.
+- [x] Mark PR Ready only after all story tasks are complete.
+- [ ] Wait for merge; do not merge directly from local branch.
+
+### Notes
+
+- Test-first rationale:
+  - No practical failing automated test exists because the story changes markdown presentation only and does not modify runtime behavior or docs tooling logic.
+- Validation:
+  - `git diff --check` passed.
+  - Targeted scan after edits leaves only functional checkmarks and box-drawing tree structure in `examples/README.md` and `examples/vertical-agents/README.md`.
+- PR:
+  - Draft PR #105 created and then marked ready for review: https://github.com/TVScoundrel/agentforge/pull/105
