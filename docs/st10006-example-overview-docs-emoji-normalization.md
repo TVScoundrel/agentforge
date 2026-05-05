@@ -2,7 +2,7 @@
 
 **Story:** ST-10006 - Normalize Emoji Usage in Example Overview Docs
 **Epic:** EP-10 - Documentation Only Changes
-**Status:** In Progress
+**Status:** In Review
 
 ## Scope
 
