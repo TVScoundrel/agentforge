@@ -85,15 +85,27 @@
 **Branch:** `docs/st-10005-docs-style-guardrails`
 
 ### Checklist
-- [ ] Create branch `docs/st-10005-docs-style-guardrails`
-- [ ] Create draft PR with story ID in title
-- [ ] Add contributor-facing or internal style guidance for decorative emoji usage in project-owned markdown
-- [ ] Distinguish disallowed decorative emoji from acceptable literal sample output and meaningful symbols
-- [ ] Reference EP-10 as the evergreen lane for future docs-only cleanup stories
-- [ ] Add or update story documentation at `docs/st10005-docs-style-guardrails.md` (or document why not required).
-- [ ] Assess test impact; add/update automated tests when needed, or document why tests are not required.
-- [ ] Run full test suite before finalizing the PR and record results.
-- [ ] Run lint (`pnpm lint`) before finalizing the PR and record results.
-- [ ] Commit completed checklist items as logical commits and push updates.
-- [ ] Mark PR Ready only after all story tasks are complete.
+- [x] Create branch `docs/st-10005-docs-style-guardrails`
+- [x] Create draft PR with story ID in title
+- [x] Add contributor-facing or internal style guidance for decorative emoji usage in project-owned markdown
+- [x] Distinguish disallowed decorative emoji from acceptable literal sample output and meaningful symbols
+- [x] Reference EP-10 as the evergreen lane for future docs-only cleanup stories
+- [x] Add or update story documentation at `docs/st10005-docs-style-guardrails.md` (or document why not required).
+- [x] Assess test impact; add/update automated tests when needed, or document why tests are not required.
+- [x] Run full test suite before finalizing the PR and record results.
+- [x] Run lint (`pnpm lint`) before finalizing the PR and record results.
+- [x] Commit completed checklist items as logical commits and push updates.
+- [x] Mark PR Ready only after all story tasks are complete.
 - [ ] Wait for merge; do not merge directly from local branch.
+
+### Notes
+
+- Draft PR #104: https://github.com/TVScoundrel/agentforge/pull/104
+- Documentation guidance was added to `docs-site/contributing.md` rather than a new standalone policy file so contributors have one authoritative markdown/process guide.
+- Test-first rationale:
+  - No failing automated test was practical because this story changes contributor guidance only and does not modify runtime code or docs tooling behavior.
+- Validation:
+  - `pnpm test --run` -> `167` files passed, `16` skipped; `2272` tests passed, `286` skipped
+  - `pnpm lint` -> exit `0`; warnings only (`0` errors)
+- Ready for review:
+  - PR #104 ready for review: https://github.com/TVScoundrel/agentforge/pull/104
