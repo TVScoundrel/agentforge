@@ -134,7 +134,7 @@
 - Documentation-only cleanup work has a durable home instead of being forced into runtime epics
 - The epic remains open as an evergreen intake lane even when there are temporarily no active stories, so future docs-only work can be added without reopening or redefining the capability boundary
 
-**Stories:** ST-10001 through ST-10005
+**Stories:** ST-10001 through ST-10006
 
 #### Feature Context: Documentation Only Changes (from `planning/features/10-documentation-only-changes-feature-plan.md`)
 
@@ -1643,15 +1643,32 @@
 
 ---
 
+#### ST-10006: Normalize Emoji Usage in Example Overview Docs
+**User story:** As a developer browsing example catalogs, I want overview docs to avoid decorative emoji so navigation pages stay consistent and easy to scan.
+
+**Priority:** P2 (Medium)
+**Estimate:** 2 hours
+**Dependencies:** ST-10001 (merged), ST-10005 (merged)
+**Status:** In Review
+
+**Acceptance criteria:**
+- [ ] Example overview and index markdown targeted by the follow-up audit have decorative emoji removed from headings and similar navigation copy
+- [ ] Functional pass/fail markers and literal sample output remain intact where they convey real documented meaning
+- [ ] The cleanup does not change linked destinations, commands, example behavior, or code snippets beyond markdown presentation cleanup
+- [ ] Scope remains limited to overview/index markdown rather than per-example deep-dive READMEs or runtime code
+- [ ] Add or update story documentation at `docs/st10006-example-overview-docs-emoji-normalization.md`
+
+---
+
 ## Story Summary
 
-**Total Stories:** 81
+**Total Stories:** 82
 **By Priority:**
 - P0 (Critical): 17 stories
 - P1 (High): 27 stories
-- P2 (Medium): 37 stories
+- P2 (Medium): 38 stories
 
-**Total Estimated Effort:** ~291 hours (36.4 working days)
+**Total Estimated Effort:** ~293 hours (36.6 working days)
 
 **Dependency Chain:**
 1. Phase 1 (Foundation): ST-01001 → ST-01002 → ST-01003 → ST-01004
@@ -1663,4 +1680,4 @@
 7. Phase 7 (Skills Extraction): ST-07001 → ST-07002 → [ST-07003, ST-07004 parallel] → ST-07005; ST-07001 → ST-07006 (independent)
 8. Phase 8 (Type Safety Hardening): ST-08001 → [ST-08002, ST-08003, ST-08004 parallel]
 9. Phase 9 (SOLID Micro-Refactors): ST-09001 (Merged) → ST-09002 (Merged) → ST-09003 (Merged) → ST-09004 (Merged) → ST-09005 (Merged) → ST-09006 (Merged) → ST-09007 (Merged) → ST-09008 (Merged) → ST-09009 (Merged) → ST-09010 (Merged) → ST-09011 (Merged) → ST-09012 (Merged) → ST-09013 (Merged) → ST-09014 (Merged) → ST-09015 (Merged) → ST-09016 (Merged) → ST-09017 (Merged) → ST-09018 (Merged) → ST-09019 (Merged) → ST-09020 (Merged) → ST-09021 (Merged) → ST-09022 (Merged) → ST-09023 (Merged); ST-09025 (Merged) → ST-09026 (Merged) → ST-09031 (Merged); ST-09027 (Merged) → ST-09028 (Merged) → ST-09030 (Merged); ST-09032 → ST-09033; ST-09034 (Merged) → ST-09035 (Merged) → ST-09036 (Merged) → ST-09041; ST-09023 (Merged) and ST-09029 (Merged) → ST-09037; ST-09038 independent; ST-09023 (Merged) → ST-09039; ST-09024 (Merged) → ST-09040
-10. Phase 10 (Documentation Only Changes): ST-10001 → [ST-10002, ST-10003, ST-10004, ST-10005 parallel]; EP-10 remains evergreen and intentionally open for future docs-only stories even when no current stories are queued
+10. Phase 10 (Documentation Only Changes): ST-10001 → [ST-10002, ST-10003, ST-10004, ST-10005 parallel] → ST-10006; EP-10 remains evergreen and intentionally open for future docs-only stories even when no current stories are queued
