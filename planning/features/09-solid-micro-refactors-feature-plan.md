@@ -2,8 +2,8 @@
 
 **Epic Range:** EP-09 through EP-09
 **Status:** In Progress
-**Last Updated:** 2026-05-06
-**Active Story:** ST-09036 (In Review)
+**Last Updated:** 2026-05-05
+**Active Story:** ST-09037 (Ready)
 
 ---
 
@@ -32,7 +32,7 @@
 
 ## Current Hotspot Snapshot
 
-Current `@typescript-eslint/no-explicit-any` baseline check (`pnpm lint:explicit-any:baseline`, 2026-05-06):
+Current `@typescript-eslint/no-explicit-any` baseline check (`pnpm lint:explicit-any:baseline`, 2026-05-05):
 
 - Total: `133` warnings (`src/**`)
 - By package: `cli 6`, `core 44`, `patterns 15`, `testing 3`, `tools 65`
@@ -79,7 +79,8 @@ Recent improvement snapshot:
 - `ST-09033` merged after tightening database pool adapter query parameter/result contracts around exported unknown-first aliases, lowering the workspace explicit-`any` baseline from `153` to `144` and the `core` package from `53` to `44`.
 - `ST-09035` merged after tightening the agent test runner around exported unknown-first agent, state, result, and step contracts, lowering the workspace explicit-`any` baseline from `144` to `135` and the `testing` package from `14` to `5`, with follow-up fixes for timeout cleanup, malformed message guards, zero-timeout semantics, and validation-hook documentation accuracy.
 - `ST-09036` through `ST-09040` were added on 2026-05-03 as small SOLID/DRY follow-on slices covering conversation simulator contracts, ReAct builder/prompt boundaries, data transformer helper extraction, core mock-tool testing contracts, and human-in-loop streaming resume typing.
-- `ST-09041` was added on 2026-05-06 to move `ConversationSimulator` verbose diagnostics from direct `console.log` calls onto the repo's structured logging path without changing simulator behavior.
+- `ST-09036` merged on 2026-05-05 after tightening conversation simulator contracts around the shared `AgentTestAgent` and unknown-first message extraction seam, lowering the workspace explicit-`any` baseline from `135` to `133` and the `testing` package from `5` to `3`.
+- `ST-09041` was added on 2026-05-05 to move `ConversationSimulator` verbose diagnostics from direct `console.log` calls onto the repo's structured logging path without changing simulator behavior.
 - `EP-09` remains open as the daily hardening stream, with the active queue now centered on testing-contract follow-ons and small SOLID/DRY helper extractions.
 - A fresh follow-on slice is now queued behind current Ready work for testing runner type-boundary cleanup, ReAct boundary tightening, transformer DRY helper extraction, core testing-helper contracts, and streaming resume payload hardening.
 

@@ -1,20 +1,24 @@
 # Kanban Queue: AgentForge
 
-**Last Updated:** 2026-05-06
+**Last Updated:** 2026-05-05
 
 ## Queue Status Summary
 
-- **Ready:** 1 story
+- **Ready:** 5 stories
 - **In Progress:** 0 stories
-- **In Review:** 2 stories
+- **In Review:** 1 story
 - **Blocked:** 0 stories
-- **Backlog:** 5 stories
+- **Backlog:** 1 story
 
 ---
 
 ## Ready
 
 - `ST-10005` - Add Documentation Style Guardrails for Emoji Usage
+- `ST-09037` - Tighten ReAct Builder and Prompt Boundary Contracts
+- `ST-09038` - Extract Data Transformer Object Path Helpers
+- `ST-09039` - Tighten Core Mock Tool Testing Helper Contracts
+- `ST-09040` - Tighten Human-in-Loop Streaming Resume Contracts
 ---
 
 ## In Progress
@@ -25,7 +29,6 @@ _No stories currently in progress_
 
 ## In Review
 
-- `ST-09036` - Tighten Conversation Simulator Agent Contracts
 - `ST-10004` - Normalize Emoji Usage in Examples and Template Docs
 
 ---
@@ -38,10 +41,6 @@ _No stories currently blocked_
 
 ## Backlog
 
-- `ST-09037` - Tighten ReAct Builder and Prompt Boundary Contracts
-- `ST-09038` - Extract Data Transformer Object Path Helpers
-- `ST-09039` - Tighten Core Mock Tool Testing Helper Contracts
-- `ST-09040` - Tighten Human-in-Loop Streaming Resume Contracts
 - `ST-09041` - Adopt Structured Logger in Conversation Simulator
 
 ---
@@ -124,7 +123,8 @@ _No stories currently blocked_
 - Epic 09 (SOLID Micro-Refactors and Type Boundary Hardening) was expanded a fourth time on 2026-03-24 with the plan-execute node modularization follow-up story ST-09029
 - Epic 09 (SOLID Micro-Refactors and Type Boundary Hardening) was expanded a fifth time on 2026-04-16 with follow-on backlog stories ST-09030 through ST-09035
 - Epic 09 (SOLID Micro-Refactors and Type Boundary Hardening) was expanded a sixth time on 2026-05-03 with small SOLID/DRY follow-on stories ST-09036 through ST-09040
-- Epic 09 was expanded a seventh time on 2026-05-06 with `ST-09041` to move `ConversationSimulator` verbose diagnostics onto the structured logging path as a separate observability cleanup.
+- Complete: ST-09036 - conversation simulator contracts tightened and merged (PR #103, 2026-05-05)
+- Epic 09 was expanded a seventh time on 2026-05-05 with `ST-09041` to move `ConversationSimulator` verbose diagnostics onto the structured logging path as a separate observability cleanup.
 - Epic 10 (Documentation Only Changes) was opened on 2026-04-18 as an evergreen docs-only lane for markdown cleanup, style normalization, and future documentation maintenance stories
 - ST-10001 complete - markdown emoji usage audit merged (PR #97, 2026-05-03); ST-10002 through ST-10005 promoted to Ready as capacity became available
 - ST-10002 complete - public-facing docs emoji normalization merged (PR #100, 2026-05-04); ST-10003 remained next in Ready at that point

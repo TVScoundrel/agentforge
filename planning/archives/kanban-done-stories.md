@@ -2,11 +2,18 @@
 
 **Purpose:** Track completed and merged stories for the Relational Database Access Tool project.
 
-**Last Updated:** 2026-05-04
+**Last Updated:** 2026-05-05
 
 ---
 
 ## Completed Stories
+
+### ST-09036: Tighten Conversation Simulator Agent Contracts
+- **Merged:** 2026-05-05
+- **PR:** https://github.com/TVScoundrel/agentforge/pull/103 (commit 318683e)
+- **Epic:** EP-09 (SOLID Micro-Refactors and Type Boundary Hardening)
+- **Estimate:** 3 hours
+- **Outcome:** Tightened `@agentforge/testing` conversation simulator contracts by replacing broad agent/invoke-result seams with the shared generic `AgentTestAgent` surface and unknown-first message extraction from the agent test runner, preserving static/dynamic turn flow, max-turn handling, stop conditions, verbose mode, and captured error behavior with focused tests and a source-included type regression. The story lowered the workspace explicit-`any` baseline from `135/289` to `133/289` and reduced the `testing` package from `5/51` to `3/51`, and its follow-up review concern about structured logging was intentionally captured as new backlog story `ST-09041`.
 
 ### ST-10002: Normalize Emoji Usage in Public-Facing Docs
 - **Merged:** 2026-05-04

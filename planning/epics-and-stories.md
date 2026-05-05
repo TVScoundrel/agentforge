@@ -1462,7 +1462,7 @@
 **Priority:** P2 (Medium)
 **Estimate:** 3 hours
 **Dependencies:** ST-09035
-**Status:** In Review
+**Status:** Merged (PR #103, 2026-05-05)
 
 **Acceptance criteria:**
 - [ ] `packages/testing/src/runners/conversation-simulator.ts` replaces broad agent and invoke-result `any` contracts with reusable unknown-first or generic runner interfaces
@@ -1479,7 +1479,7 @@
 **Priority:** P2 (Medium)
 **Estimate:** 3 hours
 **Dependencies:** ST-09023, ST-09029
-**Status:** Backlog
+**Status:** Ready
 
 **Acceptance criteria:**
 - [ ] `packages/patterns/src/react/types.ts`, `builder.ts`, `agent.ts`, and `prompts.ts` replace broad tool/schema/checkpointer/compiled-graph `any` surfaces with exported aliases or unknown-first contracts where practical
@@ -1496,7 +1496,7 @@
 **Priority:** P2 (Medium)
 **Estimate:** 3 hours
 **Dependencies:** None
-**Status:** Backlog
+**Status:** Ready
 
 **Acceptance criteria:**
 - [ ] `packages/tools/src/data/transformer/tools/array-filter.ts`, `array-sort.ts`, `object-pick.ts`, and `object-omit.ts` share focused helper functions for nested value lookup and object projection/omission
@@ -1513,7 +1513,7 @@
 **Priority:** P2 (Medium)
 **Estimate:** 3 hours
 **Dependencies:** ST-09023
-**Status:** Backlog
+**Status:** Ready
 
 **Acceptance criteria:**
 - [ ] `packages/core/src/tools/testing.ts` replaces broad mock response, default response, invocation, and simulator input/output contracts with generic or unknown-first helper types
@@ -1530,7 +1530,7 @@
 **Priority:** P2 (Medium)
 **Estimate:** 2 hours
 **Dependencies:** ST-09024
-**Status:** Backlog
+**Status:** Ready
 
 **Acceptance criteria:**
 - [ ] `packages/core/src/streaming/human-in-loop.ts` replaces resume payload `any` contracts with an unknown-first or JSON-safe value type aligned with interrupt/resume boundaries
@@ -1662,5 +1662,5 @@
 6. Phase 6 (Agent Skills): ST-06001 → ST-06002 → ST-06003 → ST-06004 → ST-06005 → ST-06006
 7. Phase 7 (Skills Extraction): ST-07001 → ST-07002 → [ST-07003, ST-07004 parallel] → ST-07005; ST-07001 → ST-07006 (independent)
 8. Phase 8 (Type Safety Hardening): ST-08001 → [ST-08002, ST-08003, ST-08004 parallel]
-9. Phase 9 (SOLID Micro-Refactors): ST-09001 (Merged) → ST-09002 (Merged) → ST-09003 (Merged) → ST-09004 (Merged) → ST-09005 (Merged) → ST-09006 (Merged) → ST-09007 (Merged) → ST-09008 (Merged) → ST-09009 (Merged) → ST-09010 (Merged) → ST-09011 (Merged) → ST-09012 (Merged) → ST-09013 (Merged) → ST-09014 (Merged) → ST-09015 (Merged) → ST-09016 (Merged) → ST-09017 (Merged) → ST-09018 (Merged) → ST-09019 (Merged) → ST-09020 (Merged) → ST-09021 (Merged) → ST-09022 (Merged) → ST-09023 (Merged); ST-09025 (Merged) → ST-09026 (Merged) → ST-09031 (Merged); ST-09027 (Merged) → ST-09028 (Merged) → ST-09030 (Merged); ST-09032 → ST-09033; ST-09034 (Merged) → ST-09035 → ST-09036; ST-09023 (Merged) and ST-09029 (Merged) → ST-09037; ST-09038 independent; ST-09023 (Merged) → ST-09039; ST-09024 (Merged) → ST-09040
+9. Phase 9 (SOLID Micro-Refactors): ST-09001 (Merged) → ST-09002 (Merged) → ST-09003 (Merged) → ST-09004 (Merged) → ST-09005 (Merged) → ST-09006 (Merged) → ST-09007 (Merged) → ST-09008 (Merged) → ST-09009 (Merged) → ST-09010 (Merged) → ST-09011 (Merged) → ST-09012 (Merged) → ST-09013 (Merged) → ST-09014 (Merged) → ST-09015 (Merged) → ST-09016 (Merged) → ST-09017 (Merged) → ST-09018 (Merged) → ST-09019 (Merged) → ST-09020 (Merged) → ST-09021 (Merged) → ST-09022 (Merged) → ST-09023 (Merged); ST-09025 (Merged) → ST-09026 (Merged) → ST-09031 (Merged); ST-09027 (Merged) → ST-09028 (Merged) → ST-09030 (Merged); ST-09032 → ST-09033; ST-09034 (Merged) → ST-09035 (Merged) → ST-09036 (Merged) → ST-09041; ST-09023 (Merged) and ST-09029 (Merged) → ST-09037; ST-09038 independent; ST-09023 (Merged) → ST-09039; ST-09024 (Merged) → ST-09040
 10. Phase 10 (Documentation Only Changes): ST-10001 → [ST-10002, ST-10003, ST-10004, ST-10005 parallel]; EP-10 remains evergreen and intentionally open for future docs-only stories even when no current stories are queued
