@@ -171,7 +171,7 @@ pnpm preview
 - Do not add decorative emoji to project-owned markdown headings, bullets, status labels, or prose.
 - Keep emoji only when the character is part of literal sample output, demonstrated runtime behavior, or intentionally preserved user-facing content.
 - Meaningful non-emoji symbols such as arrows, comparison markers, or other plain Unicode text are acceptable when they add clarity instead of decoration.
-- If you find legacy markdown that still uses decorative emoji, capture the cleanup as a docs-only follow-up in Epic 10 instead of mixing it into unrelated runtime work.
+- If you find legacy markdown that still uses decorative emoji, capture the cleanup as a docs-only follow-up in EP-10 instead of mixing it into unrelated runtime work.
 
 ### Testing
 - Write tests for all new features
