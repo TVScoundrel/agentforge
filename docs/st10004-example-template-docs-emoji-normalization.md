@@ -23,6 +23,6 @@ No automated tests were added. This story is markdown-presentation-only and does
 ## Validation
 
 - Planned scope matched the ST-10001 audit entries for examples/templates.
-- Targeted emoji scan over the audited files confirmed decorative prose markers were removed while fenced-code/runtime-output cases were intentionally preserved.
-- `pnpm test --run`
-- `pnpm lint`
+- Targeted emoji scan over the audited files reported 36 remaining emoji-bearing lines, all intentional status markers, pass/fail indicators, or literal demo output.
+- `pnpm test --run` passed: 166 files, 2267 tests, 286 skipped.
+- `pnpm lint` passed with the existing repository warning baseline and no errors.

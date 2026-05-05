@@ -1581,7 +1581,7 @@
 **Priority:** P2 (Medium)
 **Estimate:** 3 hours
 **Dependencies:** ST-10001 (merged)
-**Status:** In Progress
+**Status:** In Review
 
 **Acceptance criteria:**
 - [ ] Planning docs, checklists, feature plans, and internal docs targeted by the audit have decorative emoji removed or replaced with plain-text status wording
