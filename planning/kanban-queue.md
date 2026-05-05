@@ -4,9 +4,9 @@
 
 ## Queue Status Summary
 
-- **Ready:** 5 stories
-- **In Progress:** 1 story
-- **In Review:** 1 story
+- **Ready:** 4 stories
+- **In Progress:** 0 stories
+- **In Review:** 2 stories
 - **Blocked:** 0 stories
 - **Backlog:** 1 story
 
@@ -22,12 +22,13 @@
 
 ## In Progress
 
-- `ST-10005` - Add Documentation Style Guardrails for Emoji Usage
+_No stories currently in progress_
 
 ---
 
 ## In Review
 
+- `ST-10005` - Add Documentation Style Guardrails for Emoji Usage
 - `ST-10004` - Normalize Emoji Usage in Examples and Template Docs
 
 ---

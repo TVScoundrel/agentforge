@@ -1632,7 +1632,7 @@
 **Priority:** P2 (Medium)
 **Estimate:** 2 hours
 **Dependencies:** ST-10001 (merged)
-**Status:** In Progress
+**Status:** In Review
 
 **Acceptance criteria:**
 - [ ] A contributor-facing or internal documentation style rule defines the expected policy for decorative emoji usage in project-owned markdown
