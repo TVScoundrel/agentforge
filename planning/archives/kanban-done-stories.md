@@ -8,6 +8,13 @@
 
 ## Completed Stories
 
+### ST-10004: Normalize Emoji Usage in Examples and Template Docs
+- **Merged:** 2026-05-05
+- **PR:** https://github.com/TVScoundrel/agentforge/pull/102 (commit 1a0436a)
+- **Epic:** EP-10 (Documentation Only Changes)
+- **Estimate:** 3 hours
+- **Outcome:** Removed remaining decorative emoji from project-owned example READMEs, template docs, and related supporting markdown while preserving functional status markers and literal runtime/demo output where the emoji carried meaning. The story also absorbed review follow-ups to finish the scoped cleanup and keep the EP-10 documentation normalization lane consistent across examples and templates.
+
 ### ST-10005: Add Documentation Style Guardrails for Emoji Usage
 - **Merged:** 2026-05-05
 - **PR:** https://github.com/TVScoundrel/agentforge/pull/104 (commit ba6e94b)
