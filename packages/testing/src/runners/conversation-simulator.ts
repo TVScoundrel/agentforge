@@ -1,4 +1,6 @@
-import { BaseMessage, HumanMessage, AIMessage } from '@langchain/core/messages';
+import { BaseMessage, HumanMessage } from '@langchain/core/messages';
+import type { AgentTestAgent } from './agent-test-runner.js';
+import { extractMessages } from './agent-test-runner.js';
 
 /**
  * Configuration for conversation simulator
@@ -60,6 +62,10 @@ export interface ConversationResult {
   error?: Error;
 }
 
+export interface ConversationSimulatorInput {
+  messages: BaseMessage[];
+}
+
 /**
  * Conversation simulator for testing multi-turn interactions
  * 
@@ -80,9 +86,9 @@ export interface ConversationResult {
  * expect(result.completed).toBe(true);
  * ```
  */
-export class ConversationSimulator {
+export class ConversationSimulator<TState = unknown> {
   constructor(
-    private agent: any,
+    private agent: AgentTestAgent<ConversationSimulatorInput, TState>,
     private config: ConversationSimulatorConfig = {}
   ) {}
   
@@ -116,7 +122,7 @@ export class ConversationSimulator {
         
         // Get agent response
         const result = await this.agent.invoke({ messages });
-        const aiMessage = result.messages[result.messages.length - 1];
+        const aiMessage = extractLatestMessage(result);
         messages.push(aiMessage);
         
         if (this.config.verbose) {
@@ -181,7 +187,7 @@ export class ConversationSimulator {
         messages.push(userMessage);
         
         const result = await this.agent.invoke({ messages });
-        const aiMessage = result.messages[result.messages.length - 1];
+        const aiMessage = extractLatestMessage(result);
         messages.push(aiMessage);
         
         turns++;
@@ -208,10 +214,20 @@ export class ConversationSimulator {
 /**
  * Create a conversation simulator
  */
-export function createConversationSimulator(
-  agent: any,
+export function createConversationSimulator<TState = unknown>(
+  agent: AgentTestAgent<ConversationSimulatorInput, TState>,
   config?: ConversationSimulatorConfig
-): ConversationSimulator {
+): ConversationSimulator<TState> {
   return new ConversationSimulator(agent, config);
 }
 
+function extractLatestMessage(state: unknown): BaseMessage {
+  const messages = extractMessages(state);
+  const latestMessage = messages[messages.length - 1];
+
+  if (!latestMessage) {
+    throw new Error('Agent response did not include any messages');
+  }
+
+  return latestMessage;
+}

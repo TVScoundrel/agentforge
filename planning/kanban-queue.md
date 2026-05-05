@@ -1,12 +1,12 @@
 # Kanban Queue: AgentForge
 
-**Last Updated:** 2026-05-05
+**Last Updated:** 2026-05-06
 
 ## Queue Status Summary
 
-- **Ready:** 2 stories
+- **Ready:** 1 story
 - **In Progress:** 0 stories
-- **In Review:** 1 story
+- **In Review:** 2 stories
 - **Blocked:** 0 stories
 - **Backlog:** 4 stories
 
@@ -15,8 +15,6 @@
 ## Ready
 
 - `ST-10005` - Add Documentation Style Guardrails for Emoji Usage
-- `ST-09036` - Tighten Conversation Simulator Agent Contracts
-
 ---
 
 ## In Progress
@@ -27,6 +25,7 @@ _No stories currently in progress_
 
 ## In Review
 
+- `ST-09036` - Tighten Conversation Simulator Agent Contracts
 - `ST-10004` - Normalize Emoji Usage in Examples and Template Docs
 
 ---
@@ -128,4 +127,4 @@ _No stories currently blocked_
 - ST-10001 complete - markdown emoji usage audit merged (PR #97, 2026-05-03); ST-10002 through ST-10005 promoted to Ready as capacity became available
 - ST-10002 complete - public-facing docs emoji normalization merged (PR #100, 2026-05-04); ST-10003 remained next in Ready at that point
 - Complete: ST-10003 - planning and internal docs emoji normalization merged (PR #101, 2026-05-04); ST-10004 moved into review on 2026-05-05
-- Current measured `no-explicit-any` baseline is `135` warnings (`cli 6`, `core 44`, `patterns 15`, `testing 5`, `tools 65`)
+- Current measured `no-explicit-any` baseline is `133` warnings (`cli 6`, `core 44`, `patterns 15`, `testing 3`, `tools 65`)
