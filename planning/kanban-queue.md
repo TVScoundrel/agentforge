@@ -5,7 +5,7 @@
 ## Queue Status Summary
 
 - **Ready:** 5 stories
-- **In Progress:** 0 stories
+- **In Progress:** 1 story
 - **In Review:** 1 story
 - **Blocked:** 0 stories
 - **Backlog:** 1 story
@@ -14,7 +14,6 @@
 
 ## Ready
 
-- `ST-10005` - Add Documentation Style Guardrails for Emoji Usage
 - `ST-09037` - Tighten ReAct Builder and Prompt Boundary Contracts
 - `ST-09038` - Extract Data Transformer Object Path Helpers
 - `ST-09039` - Tighten Core Mock Tool Testing Helper Contracts
@@ -23,7 +22,7 @@
 
 ## In Progress
 
-_No stories currently in progress_
+- `ST-10005` - Add Documentation Style Guardrails for Emoji Usage
 
 ---
 
