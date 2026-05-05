@@ -8,6 +8,13 @@
 
 ## Completed Stories
 
+### ST-10005: Add Documentation Style Guardrails for Emoji Usage
+- **Merged:** 2026-05-05
+- **PR:** https://github.com/TVScoundrel/agentforge/pull/104 (commit ba6e94b)
+- **Epic:** EP-10 (Documentation Only Changes)
+- **Estimate:** 2 hours
+- **Outcome:** Added contributor-facing markdown style guardrails in `docs-site/contributing.md` that ban decorative emoji in project-owned markdown while preserving clear exceptions for literal sample output, demonstrated runtime behavior, and meaningful non-emoji symbols. The story documented EP-10 as the evergreen home for future markdown normalization follow-ups, kept the policy in an existing contributor/process file instead of creating a redundant fragment, and passed full-suite and lint verification with the documented docs-only test-first rationale.
+
 ### ST-09036: Tighten Conversation Simulator Agent Contracts
 - **Merged:** 2026-05-05
 - **PR:** https://github.com/TVScoundrel/agentforge/pull/103 (commit 318683e)

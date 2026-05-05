@@ -4,11 +4,11 @@
 
 ## Queue Status Summary
 
-- **Ready:** 4 stories
+- **Ready:** 5 stories
 - **In Progress:** 0 stories
-- **In Review:** 2 stories
+- **In Review:** 1 story
 - **Blocked:** 0 stories
-- **Backlog:** 1 story
+- **Backlog:** 0 stories
 
 ---
 
@@ -18,6 +18,7 @@
 - `ST-09038` - Extract Data Transformer Object Path Helpers
 - `ST-09039` - Tighten Core Mock Tool Testing Helper Contracts
 - `ST-09040` - Tighten Human-in-Loop Streaming Resume Contracts
+- `ST-09041` - Adopt Structured Logger in Conversation Simulator
 ---
 
 ## In Progress
@@ -28,7 +29,6 @@ _No stories currently in progress_
 
 ## In Review
 
-- `ST-10005` - Add Documentation Style Guardrails for Emoji Usage
 - `ST-10004` - Normalize Emoji Usage in Examples and Template Docs
 
 ---
@@ -41,7 +41,7 @@ _No stories currently blocked_
 
 ## Backlog
 
-- `ST-09041` - Adopt Structured Logger in Conversation Simulator
+_No stories currently in backlog_
 
 ---
 
@@ -128,5 +128,6 @@ _No stories currently blocked_
 - Epic 10 (Documentation Only Changes) was opened on 2026-04-18 as an evergreen docs-only lane for markdown cleanup, style normalization, and future documentation maintenance stories
 - ST-10001 complete - markdown emoji usage audit merged (PR #97, 2026-05-03); ST-10002 through ST-10005 promoted to Ready as capacity became available
 - ST-10002 complete - public-facing docs emoji normalization merged (PR #100, 2026-05-04); ST-10003 remained next in Ready at that point
+- Complete: ST-10005 - documentation emoji guardrails added to contributor guidance (PR #104, 2026-05-05)
 - Complete: ST-10003 - planning and internal docs emoji normalization merged (PR #101, 2026-05-04); ST-10004 moved into review on 2026-05-05
 - Current measured `no-explicit-any` baseline is `133` warnings (`cli 6`, `core 44`, `patterns 15`, `testing 3`, `tools 65`)
