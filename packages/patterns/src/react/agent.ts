@@ -7,9 +7,15 @@
  */
 
 import { StateGraph, END } from '@langchain/langgraph';
-import type { CompiledStateGraph } from '@langchain/langgraph';
-import { ToolRegistry, type Tool } from '@agentforge/core';
-import type { ReActAgentConfig, ReActBuilderOptions } from './types.js';
+import { ToolRegistry } from '@agentforge/core';
+import type {
+  ReActAgentConfig,
+  ReActAgentGraph,
+  ReActBuilderOptions,
+  ReActCheckpointer,
+  ReActTool,
+  ReActToolInput,
+} from './types.js';
 import { ReActState, type ReActStateType } from './state.js';
 import { DEFAULT_REACT_SYSTEM_PROMPT } from './prompts.js';
 import { createReasoningNode, createActionNode, createObservationNode } from './nodes.js';
@@ -94,7 +100,7 @@ import { createReasoningNode, createActionNode, createObservationNode } from './
 export function createReActAgent(
   config: ReActAgentConfig,
   options?: ReActBuilderOptions
-): CompiledStateGraph<any, any> {
+): ReActAgentGraph {
   // Extract configuration with defaults
   const {
     model,
@@ -113,9 +119,11 @@ export function createReActAgent(
   } = options || {};
 
   // Convert tools to array if it's a registry
-  const toolArray: Tool[] = tools instanceof ToolRegistry
+  const toolArray: ReActTool[] = tools instanceof ToolRegistry
     ? tools.getAll()
-    : tools;
+    // Array-provided tools are already runtime-compatible Tool instances.
+    // This intersection cast only erases the public input type at compile time.
+    : tools as ReActToolInput[] & ReActTool[];
 
   // Node names (for debugging/observability)
   const REASONING_NODE = nodeNames.reasoning || 'reasoning';
@@ -174,7 +182,7 @@ export function createReActAgent(
     .addNode(ACTION_NODE, actionNode)
     .addNode(OBSERVATION_NODE, observationNode)
     .addEdge('__start__', REASONING_NODE)
-    .addConditionalEdges(REASONING_NODE, shouldContinue as any)
+    .addConditionalEdges(REASONING_NODE, shouldContinue)
     .addEdge(ACTION_NODE, OBSERVATION_NODE)
     .addEdge(OBSERVATION_NODE, REASONING_NODE);
 
@@ -182,11 +190,11 @@ export function createReActAgent(
   // - If checkpointer is a BaseCheckpointSaver instance, use it directly
   // - If checkpointer is `true`, use parent's checkpointer with separate namespace (for nested graphs)
   // - If checkpointer is undefined, no checkpointing
-  const checkpointerConfig = checkpointer === true
+  const checkpointerConfig: { checkpointer: ReActCheckpointer } | undefined = checkpointer === true
     ? { checkpointer: true }  // Use parent's checkpointer with separate namespace
     : checkpointer
     ? { checkpointer }  // Use provided checkpointer instance
     : undefined;  // No checkpointing
 
-  return workflow.compile(checkpointerConfig) as any;
+  return workflow.compile(checkpointerConfig) as unknown as ReActAgentGraph;
 }

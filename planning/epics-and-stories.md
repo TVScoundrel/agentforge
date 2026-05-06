@@ -1479,7 +1479,7 @@
 **Priority:** P2 (Medium)
 **Estimate:** 3 hours
 **Dependencies:** ST-09023, ST-09029
-**Status:** Ready
+**Status:** In Review
 
 **Acceptance criteria:**
 - [ ] `packages/patterns/src/react/types.ts`, `builder.ts`, `agent.ts`, and `prompts.ts` replace broad tool/schema/checkpointer/compiled-graph `any` surfaces with exported aliases or unknown-first contracts where practical

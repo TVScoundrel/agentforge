@@ -1414,21 +1414,39 @@ Implementation notes:
 **Branch:** `fix/st-09037-react-builder-prompt-boundary-contracts`
 
 ### Checklist
-- [ ] Create branch `fix/st-09037-react-builder-prompt-boundary-contracts`
-- [ ] Create draft PR with story ID in title
-- [ ] Define test strategy before implementation: cover builder validation, registry tools, array tools, checkpointer handling, custom stop conditions, and prompt formatting; first failing test should type-check the narrowed builder/prompt contracts
-- [ ] Write or update the failing automated test before production changes when practical; if not practical, record why before implementation
-- [ ] Replace broad tool/schema/checkpointer/compiled-graph `any` surfaces in `packages/patterns/src/react/types.ts`, `builder.ts`, `agent.ts`, and `prompts.ts` with exported aliases or unknown-first contracts where practical
-- [ ] Preserve existing ReAct builder usage, deprecated `withLLM(...)`, stop-condition routing, checkpointer handling, and tool prompt formatting behavior
-- [ ] Add/update production code until focused tests pass, keeping test evidence in checklist notes and PR body
-- [ ] Record explicit-`any` warning deltas for touched files in story docs
-- [ ] Add or update story documentation at `docs/st09037-react-builder-prompt-boundary-contracts.md` (or document why not required)
-- [ ] Assess residual test impact; add/update additional automated tests when needed, or document why no further tests are required
-- [ ] Run full test suite before finalizing the PR and record results
-- [ ] Run lint (`pnpm lint`) before finalizing the PR and record results
-- [ ] Commit completed checklist items as logical commits and push updates
-- [ ] Mark PR Ready only after all story tasks are complete
+- [x] Create branch `fix/st-09037-react-builder-prompt-boundary-contracts`
+- [x] Create draft PR with story ID in title
+- [x] Define test strategy before implementation: cover builder validation, registry tools, array tools, checkpointer handling, custom stop conditions, and prompt formatting; first failing test should type-check the narrowed builder/prompt contracts
+- [x] Write or update the failing automated test before production changes when practical; if not practical, record why before implementation
+- [x] Replace broad tool/schema/checkpointer/compiled-graph `any` surfaces in `packages/patterns/src/react/types.ts`, `builder.ts`, `agent.ts`, and `prompts.ts` with exported aliases or unknown-first contracts where practical
+- [x] Preserve existing ReAct builder usage, deprecated `withLLM(...)`, stop-condition routing, checkpointer handling, and tool prompt formatting behavior
+- [x] Add/update production code until focused tests pass, keeping test evidence in checklist notes and PR body
+- [x] Record explicit-`any` warning deltas for touched files in story docs
+- [x] Add or update story documentation at `docs/st09037-react-builder-prompt-boundary-contracts.md` (or document why not required)
+- [x] Assess residual test impact; add/update additional automated tests when needed, or document why no further tests are required
+- [x] Run full test suite before finalizing the PR and record results. (`pnpm test --run` passed: 168 files, 2277 tests, 286 skipped)
+- [x] Run lint (`pnpm lint`) before finalizing the PR and record results. (passed with existing warning baseline and no errors)
+- [x] Commit completed checklist items as logical commits and push updates
+- [x] Mark PR Ready only after all story tasks are complete
 - [ ] Wait for merge; do not merge directly from local branch
+
+### Notes
+
+- Test-first evidence:
+  - Initial contract gate failed as expected:
+    - `./node_modules/.bin/tsc --noEmit --strict --module NodeNext --moduleResolution NodeNext --target ES2022 --skipLibCheck --types node packages/patterns/tests/react/contracts.typecheck.ts`
+  - Failure mode before the refactor:
+    - broad ReAct builder/agent/prompt contracts failed exact type assertions
+    - `@ts-expect-error` checks for invalid builder checkpointer and invalid prompt schema were unused
+- Focused validation after the refactor:
+  - `./node_modules/.bin/tsc --noEmit --strict --module NodeNext --moduleResolution NodeNext --target ES2022 --skipLibCheck --types node packages/patterns/tests/react/contracts.typecheck.ts`
+  - `pnpm test --run packages/patterns/tests/react/builder.test.ts packages/patterns/tests/react/agent.test.ts packages/patterns/tests/react/integration.test.ts packages/patterns/tests/react/prompts.test.ts` -> `4` files, `44` tests passed
+  - `pnpm --filter @agentforge/patterns typecheck` passed
+- Explicit-`any` baseline:
+  - `pnpm lint:explicit-any:baseline` -> `121/289` warnings overall, `patterns 3/28`
+  - Touched ReAct files improved from `12 -> 0` explicit-`any` occurrences
+- PR:
+  - Draft PR #106 created: https://github.com/TVScoundrel/agentforge/pull/106
 
 ---
 

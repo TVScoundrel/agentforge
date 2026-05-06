@@ -5,9 +5,25 @@
  */
 
 import type { BaseChatModel } from '@langchain/core/language_models/chat_models';
-import type { BaseCheckpointSaver } from '@langchain/langgraph';
+import type { BaseCheckpointSaver, CompiledStateGraph } from '@langchain/langgraph';
 import type { ToolRegistry, Tool } from '@agentforge/core';
+import type { ZodSchema } from 'zod';
 import type { ReActStateType } from './state.js';
+
+export type ReActTool = Tool<unknown, unknown>;
+// Preserve assignability for heterogeneous Tool<TInput, TOutput> values at the public
+// boundary by deriving from Tool while erasing only the callable input parameter.
+export type ReActToolInput =
+  Omit<ReActTool, 'invoke' | 'execute'> &
+  Pick<Tool<never, unknown>, 'invoke' | 'execute'>;
+export type ReActToolSource = ToolRegistry | ReActToolInput[];
+export type ReActCheckpointer = BaseCheckpointSaver | true;
+export type ReActPromptToolDescriptor = {
+  name: string;
+  description: string;
+  schema: ZodSchema<unknown>;
+};
+export type ReActAgentGraph = CompiledStateGraph<ReActStateType, unknown>;
 
 /**
  * Configuration for creating a ReAct agent
@@ -22,7 +38,7 @@ export interface ReActAgentConfig {
    * Tools available to the agent
    * Can be a ToolRegistry or an array of Tools
    */
-  tools: ToolRegistry | Tool<any, any>[];
+  tools: ReActToolSource;
 
   /**
    * System prompt for the agent
@@ -79,7 +95,7 @@ export interface ReActAgentConfig {
    * });
    * ```
    */
-  checkpointer?: BaseCheckpointSaver | true;
+  checkpointer?: ReActCheckpointer;
 
   /**
    * Enable tool call deduplication to prevent calling the same tool with identical parameters multiple times
