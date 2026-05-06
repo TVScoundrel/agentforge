@@ -120,7 +120,7 @@ export function createReActAgent(
   // Convert tools to array if it's a registry
   const toolArray: ReActTool[] = tools instanceof ToolRegistry
     ? tools.getAll()
-    : tools;
+    : tools as unknown as ReActTool[];
 
   // Node names (for debugging/observability)
   const REASONING_NODE = nodeNames.reasoning || 'reasoning';

@@ -6,12 +6,20 @@
 
 import type { BaseChatModel } from '@langchain/core/language_models/chat_models';
 import type { BaseCheckpointSaver, CompiledStateGraph } from '@langchain/langgraph';
-import type { ToolRegistry, Tool } from '@agentforge/core';
+import type { ToolRegistry, Tool, ToolMetadata } from '@agentforge/core';
 import type { ZodSchema } from 'zod';
 import type { ReActStateType } from './state.js';
 
 export type ReActTool = Tool<unknown, unknown>;
-export type ReActToolSource = ToolRegistry | ReActTool[];
+// Preserve assignability for heterogeneous Tool<TInput, TOutput> values at the public
+// boundary by erasing the invoke parameter while keeping schema metadata readable.
+export interface ReActToolInput {
+  metadata: ToolMetadata;
+  schema: ZodSchema<unknown>;
+  invoke: (input: never) => Promise<unknown>;
+  execute?: (input: never) => Promise<unknown>;
+}
+export type ReActToolSource = ToolRegistry | ReActToolInput[];
 export type ReActCheckpointer = BaseCheckpointSaver | true;
 export type ReActPromptToolDescriptor = {
   name: string;

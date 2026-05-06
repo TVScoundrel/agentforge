@@ -4,6 +4,7 @@ import { ReActAgentBuilder } from '../../src/react/builder.js';
 import { createReActAgent } from '../../src/react/agent.js';
 import { formatToolsForPrompt } from '../../src/react/prompts.js';
 import type { ReActStateType } from '../../src/react/state.js';
+import type { ReActToolInput } from '../../src/react/types.js';
 import { z, type ZodSchema } from 'zod';
 
 type Equal<Left, Right> =
@@ -27,12 +28,16 @@ type _reactAgentUpdateIsUnknown = AssertTrue<
 type _builderCheckpointerMatchesContract = AssertTrue<
   Equal<BuilderCheckpointerArg, BaseCheckpointSaver | true>
 >;
-type _builderToolsArrayMatchesContract = AssertTrue<
-  Equal<BuilderToolArrayArg, Tool<unknown, unknown>[]>
+type _builderToolsArrayIsPublicToolInputArray = AssertTrue<
+  Equal<BuilderToolArrayArg, ReActToolInput[]>
 >;
 type _promptToolDescriptorSchemaMatchesContract = AssertTrue<
   Equal<PromptToolDescriptor['schema'], ZodSchema<unknown>>
 >;
+
+declare const typedTool: Tool<{ input: string }, { ok: boolean }>;
+const validToolArray: BuilderToolArrayArg = [typedTool];
+new ReActAgentBuilder().withTools(validToolArray);
 
 // @ts-expect-error invalid checkpointer values should be rejected by the builder contract
 new ReActAgentBuilder().withCheckpointer('invalid-checkpointer');
