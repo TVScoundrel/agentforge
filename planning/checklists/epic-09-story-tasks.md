@@ -1415,7 +1415,7 @@ Implementation notes:
 
 ### Checklist
 - [x] Create branch `fix/st-09037-react-builder-prompt-boundary-contracts`
-- [ ] Create draft PR with story ID in title
+- [x] Create draft PR with story ID in title
 - [x] Define test strategy before implementation: cover builder validation, registry tools, array tools, checkpointer handling, custom stop conditions, and prompt formatting; first failing test should type-check the narrowed builder/prompt contracts
 - [x] Write or update the failing automated test before production changes when practical; if not practical, record why before implementation
 - [x] Replace broad tool/schema/checkpointer/compiled-graph `any` surfaces in `packages/patterns/src/react/types.ts`, `builder.ts`, `agent.ts`, and `prompts.ts` with exported aliases or unknown-first contracts where practical
@@ -1426,8 +1426,8 @@ Implementation notes:
 - [x] Assess residual test impact; add/update additional automated tests when needed, or document why no further tests are required
 - [x] Run full test suite before finalizing the PR and record results. (`pnpm test --run` passed: 168 files, 2277 tests, 286 skipped)
 - [x] Run lint (`pnpm lint`) before finalizing the PR and record results. (passed with existing warning baseline and no errors)
-- [ ] Commit completed checklist items as logical commits and push updates
-- [ ] Mark PR Ready only after all story tasks are complete
+- [x] Commit completed checklist items as logical commits and push updates
+- [x] Mark PR Ready only after all story tasks are complete
 - [ ] Wait for merge; do not merge directly from local branch
 
 ### Notes
@@ -1445,6 +1445,8 @@ Implementation notes:
 - Explicit-`any` baseline:
   - `pnpm lint:explicit-any:baseline` -> `121/289` warnings overall, `patterns 3/28`
   - Touched ReAct files improved from `12 -> 0` explicit-`any` occurrences
+- PR:
+  - Draft PR #106 created: https://github.com/TVScoundrel/agentforge/pull/106
 
 ---
 

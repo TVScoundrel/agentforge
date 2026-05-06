@@ -2,7 +2,7 @@
 
 **Story:** ST-09037 - Tighten ReAct Builder and Prompt Boundary Contracts
 **Epic:** EP-09 - SOLID Micro-Refactors and Type Boundary Hardening
-**Status:** In Progress
+**Status:** In Review
 
 ## Scope
 
