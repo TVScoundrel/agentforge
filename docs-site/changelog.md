@@ -5,6 +5,38 @@ All notable changes to AgentForge will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.16.24] - 2026-05-06
+
+### Added
+
+#### @agentforge/patterns - ReAct Boundary Contract Coverage
+- Added source-included typecheck regression coverage in `packages/patterns/tests/react/contracts.typecheck.ts` for builder tool-array assignability, prompt schema boundaries, checkpointer contracts, and compiled graph typing
+- Added focused runtime coverage in `packages/patterns/tests/react/prompts.test.ts` for prompt formatting helpers alongside expanded ReAct builder and integration validation
+- Added story documentation in `docs/st09037-react-builder-prompt-boundary-contracts.md` covering the contract hardening, review follow-ups, validation record, and explicit-`any` delta
+
+### Changed
+
+#### @agentforge/patterns - ReAct Builder and Prompt Contract Hardening
+- Tightened ReAct tool source, checkpointer, prompt descriptor, and compiled graph contracts around exported ReAct-scoped aliases and unknown-first typing
+- Preserved existing ReAct builder usage including registry tools, array-provided tools, deprecated `withLLM(...)`, stop-condition routing, nested-graph `checkpointer: true`, and prompt formatting behavior
+- Clarified array-tool compatibility with a compile-time-only type adaptation that keeps runtime tool identity intact
+
+### Fixed
+
+#### @agentforge/patterns - ReAct Type Safety and Array Tool Compatibility
+- Replaced broad ReAct boundary `any` seams in `types.ts`, `builder.ts`, `agent.ts`, and `prompts.ts` without introducing the array-tool regressions caught in review
+- Preserved assignability for heterogeneous `toolBuilder()` tools passed as arrays while avoiding runtime wrappers that would alter tool identity or prototype behavior
+- Lowered the workspace explicit-`any` baseline from `133` to `121` and the `patterns` package baseline from `15` to `3`
+
+### Published
+- All packages published to npm registry at version 0.16.24:
+  - @agentforge/core@0.16.24
+  - @agentforge/skills@0.16.24
+  - @agentforge/patterns@0.16.24
+  - @agentforge/tools@0.16.24
+  - @agentforge/testing@0.16.24
+  - @agentforge/cli@0.16.24
+
 ## [0.16.23] - 2026-05-05
 
 ### Added
