@@ -122,7 +122,7 @@ export function createReActAgent(
   const toolArray: ReActTool[] = tools instanceof ToolRegistry
     ? tools.getAll()
     // Array-provided tools are already runtime-compatible Tool instances.
-    // This intersection cast preserves object identity and prototype behavior.
+    // This intersection cast only erases the public input type at compile time.
     : tools as ReActToolInput[] & ReActTool[];
 
   // Node names (for debugging/observability)
