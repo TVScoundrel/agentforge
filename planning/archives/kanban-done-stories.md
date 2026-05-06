@@ -2,11 +2,18 @@
 
 **Purpose:** Track completed and merged stories for the Relational Database Access Tool project.
 
-**Last Updated:** 2026-05-05
+**Last Updated:** 2026-05-06
 
 ---
 
 ## Completed Stories
+
+### ST-09037: Tighten ReAct Builder and Prompt Boundary Contracts
+- **Merged:** 2026-05-06
+- **PR:** https://github.com/TVScoundrel/agentforge/pull/106 (commit 8199b52)
+- **Epic:** EP-09 (SOLID Micro-Refactors and Type Boundary Hardening)
+- **Estimate:** 3 hours
+- **Outcome:** Tightened the public ReAct builder and prompt boundary contracts in `@agentforge/patterns` by replacing broad tool, checkpointer, prompt schema, and compiled-graph typing seams with ReAct-scoped aliases and unknown-first contracts while preserving existing runtime behavior. The story added focused runtime coverage plus a standalone typecheck regression fixture, reduced explicit-`any` usage in the touched ReAct files to zero, and absorbed multiple review follow-ups to preserve array-tool assignability, runtime tool identity, and tracker consistency.
 
 ### ST-10006: Normalize Emoji Usage in Example Overview Docs
 - **Merged:** 2026-05-05

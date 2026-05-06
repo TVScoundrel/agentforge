@@ -1428,7 +1428,7 @@ Implementation notes:
 - [x] Run lint (`pnpm lint`) before finalizing the PR and record results. (passed with existing warning baseline and no errors)
 - [x] Commit completed checklist items as logical commits and push updates
 - [x] Mark PR Ready only after all story tasks are complete
-- [ ] Wait for merge; do not merge directly from local branch
+- [x] Wait for merge; do not merge directly from local branch
 
 ### Notes
 
@@ -1447,6 +1447,7 @@ Implementation notes:
   - Touched ReAct files improved from `12 -> 0` explicit-`any` occurrences
 - PR:
   - Draft PR #106 created: https://github.com/TVScoundrel/agentforge/pull/106
+  - Merged via PR #106 on 2026-05-06; merge commit `8199b52`
 
 ---
 

@@ -1479,7 +1479,7 @@
 **Priority:** P2 (Medium)
 **Estimate:** 3 hours
 **Dependencies:** ST-09023, ST-09029
-**Status:** In Review
+**Status:** Merged (PR #106, 2026-05-06)
 
 **Acceptance criteria:**
 - [ ] `packages/patterns/src/react/types.ts`, `builder.ts`, `agent.ts`, and `prompts.ts` replace broad tool/schema/checkpointer/compiled-graph `any` surfaces with exported aliases or unknown-first contracts where practical
@@ -1547,7 +1547,7 @@
 **Priority:** P2 (Medium)
 **Estimate:** 2 hours
 **Dependencies:** ST-09036
-**Status:** Backlog
+**Status:** Ready
 
 **Acceptance criteria:**
 - [ ] `packages/testing/src/runners/conversation-simulator.ts` replaces direct verbose `console.log` calls with a testing-package structured logger or shared logger helper
