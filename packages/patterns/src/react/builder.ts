@@ -16,9 +16,14 @@
  */
 
 import type { BaseChatModel } from '@langchain/core/language_models/chat_models';
-import type { CompiledStateGraph } from '@langchain/langgraph';
-import { ToolRegistry, type Tool } from '@agentforge/core';
-import type { ReActAgentConfig, ReActBuilderOptions, StopConditionFn } from './types.js';
+import type {
+  ReActAgentConfig,
+  ReActAgentGraph,
+  ReActBuilderOptions,
+  ReActCheckpointer,
+  ReActToolSource,
+  StopConditionFn,
+} from './types.js';
 import { createReActAgent } from './agent.js';
 import { DEFAULT_REACT_SYSTEM_PROMPT } from './prompts.js';
 
@@ -54,7 +59,7 @@ export class ReActAgentBuilder {
    *
    * @param tools - Tool registry or array of tools
    */
-  withTools(tools: ToolRegistry | Tool<any, any>[]): this {
+  withTools(tools: ReActToolSource): this {
     this.config.tools = tools;
     return this;
   }
@@ -152,7 +157,7 @@ export class ReActAgentBuilder {
    *   .build();
    * ```
    */
-  withCheckpointer(checkpointer: any): this {
+  withCheckpointer(checkpointer: ReActCheckpointer): this {
     this.config.checkpointer = checkpointer;
     return this;
   }
@@ -163,7 +168,7 @@ export class ReActAgentBuilder {
    * @returns A compiled LangGraph StateGraph
    * @throws Error if required configuration is missing
    */
-  build(): CompiledStateGraph<any, any> {
+  build(): ReActAgentGraph {
     // Validate required fields
     if (!this.config.model) {
       throw new Error('ReActAgentBuilder: model is required. Use withModel() to set it.');
@@ -204,4 +209,3 @@ export class ReActAgentBuilder {
 export function createReActAgentBuilder(): ReActAgentBuilder {
   return new ReActAgentBuilder();
 }
-

@@ -4,6 +4,8 @@
  * @module langgraph/patterns/react/prompts
  */
 
+import type { ReActPromptToolDescriptor } from './types.js';
+
 /**
  * Default system prompt for ReAct agents
  */
@@ -64,7 +66,7 @@ Or if you have enough information to answer, respond with:
 /**
  * Format tools for prompt injection
  */
-export function formatToolsForPrompt(tools: Array<{ name: string; description: string; schema: any }>): string {
+export function formatToolsForPrompt(tools: ReActPromptToolDescriptor[]): string {
   return tools
     .map((tool, index) => {
       return `${index + 1}. ${tool.name}: ${tool.description}`;
@@ -103,4 +105,3 @@ export function formatThoughts(thoughts: Array<{ content: string }>): string {
     .map((thought, index) => `${index + 1}. ${thought.content}`)
     .join('\n');
 }
-

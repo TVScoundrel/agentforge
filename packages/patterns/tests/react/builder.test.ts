@@ -2,6 +2,7 @@ import { describe, it, expect, vi } from 'vitest';
 import { ReActAgentBuilder, createReActAgentBuilder } from '../../src/react/builder.js';
 import { ToolRegistry, toolBuilder, ToolCategory } from '@agentforge/core';
 import { createMockLLM } from '@agentforge/testing';
+import { MemorySaver } from '@langchain/langgraph';
 import { z } from 'zod';
 
 const mockLLM = createMockLLM({ responses: ['Mock response'] }) as any;
@@ -90,6 +91,16 @@ describe('ReActAgentBuilder', () => {
       });
       expect(builder).toBeInstanceOf(ReActAgentBuilder);
     });
+
+    it('should accept parent checkpointer mode', () => {
+      const builder = new ReActAgentBuilder().withCheckpointer(true);
+      expect(builder).toBeInstanceOf(ReActAgentBuilder);
+    });
+
+    it('should accept explicit checkpointer instances', () => {
+      const builder = new ReActAgentBuilder().withCheckpointer(new MemorySaver());
+      expect(builder).toBeInstanceOf(ReActAgentBuilder);
+    });
   });
 
   describe('Validation', () => {
@@ -165,4 +176,3 @@ describe('ReActAgentBuilder', () => {
     });
   });
 });
-
