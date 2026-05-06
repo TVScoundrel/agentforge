@@ -4,7 +4,6 @@
 
 ## Queue Status Summary
 
-- **Ready:** 5 stories
 - **Ready:** 4 stories
 - **In Progress:** 0 stories
 - **In Review:** 1 story
