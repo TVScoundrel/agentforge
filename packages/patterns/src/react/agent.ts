@@ -14,6 +14,7 @@ import type {
   ReActBuilderOptions,
   ReActCheckpointer,
   ReActTool,
+  ReActToolInput,
 } from './types.js';
 import { ReActState, type ReActStateType } from './state.js';
 import { DEFAULT_REACT_SYSTEM_PROMPT } from './prompts.js';
@@ -100,6 +101,14 @@ export function createReActAgent(
   config: ReActAgentConfig,
   options?: ReActBuilderOptions
 ): ReActAgentGraph {
+  const toRuntimeTool = (tool: ReActToolInput): ReActTool => ({
+    ...tool,
+    invoke: async (input) => tool.invoke(input as never),
+    execute: tool.execute
+      ? async (input) => tool.execute?.(input as never)
+      : undefined,
+  });
+
   // Extract configuration with defaults
   const {
     model,
@@ -120,7 +129,7 @@ export function createReActAgent(
   // Convert tools to array if it's a registry
   const toolArray: ReActTool[] = tools instanceof ToolRegistry
     ? tools.getAll()
-    : tools as unknown as ReActTool[];
+    : tools.map(toRuntimeTool);
 
   // Node names (for debugging/observability)
   const REASONING_NODE = nodeNames.reasoning || 'reasoning';
