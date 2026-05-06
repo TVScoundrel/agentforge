@@ -101,14 +101,6 @@ export function createReActAgent(
   config: ReActAgentConfig,
   options?: ReActBuilderOptions
 ): ReActAgentGraph {
-  const toRuntimeTool = (tool: ReActToolInput): ReActTool => ({
-    ...tool,
-    invoke: async (input) => tool.invoke(input as never),
-    execute: tool.execute
-      ? async (input) => tool.execute?.(input as never)
-      : undefined,
-  });
-
   // Extract configuration with defaults
   const {
     model,
@@ -129,7 +121,9 @@ export function createReActAgent(
   // Convert tools to array if it's a registry
   const toolArray: ReActTool[] = tools instanceof ToolRegistry
     ? tools.getAll()
-    : tools.map(toRuntimeTool);
+    // Array-provided tools are already runtime-compatible Tool instances.
+    // This intersection cast preserves object identity and prototype behavior.
+    : tools as ReActToolInput[] & ReActTool[];
 
   // Node names (for debugging/observability)
   const REASONING_NODE = nodeNames.reasoning || 'reasoning';
