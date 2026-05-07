@@ -1457,7 +1457,7 @@ Implementation notes:
 
 ### Checklist
 - [x] Create branch `refactor/st-09038-transformer-object-path-helpers`
-- [ ] Create draft PR with story ID in title
+- [x] Create draft PR with story ID in title
 - [x] Define test strategy before implementation: cover nested paths, missing paths, primitive values, object projection, and object omission; first failing test should target shared helper behavior currently duplicated in array filter/sort
 - [x] Write or update the failing automated test before production changes when practical; if not practical, record why before implementation
 - [x] Extract shared nested path lookup and object projection/omission helpers for `array-filter.ts`, `array-sort.ts`, `object-pick.ts`, and `object-omit.ts`
@@ -1469,8 +1469,8 @@ Implementation notes:
 - [x] Assess residual test impact; add/update additional automated tests when needed, or document why no further tests are required
 - [x] Run full test suite before finalizing the PR and record results
 - [x] Run lint (`pnpm lint`) before finalizing the PR and record results
-- [ ] Commit completed checklist items as logical commits and push updates
-- [ ] Mark PR Ready only after all story tasks are complete
+- [x] Commit completed checklist items as logical commits and push updates
+- [x] Mark PR Ready only after all story tasks are complete
 - [ ] Wait for merge; do not merge directly from local branch
 
 ### Notes
@@ -1490,6 +1490,8 @@ Implementation notes:
   - `pnpm lint` passed with the existing warning baseline and `0` errors
 - Explicit-`any` delta:
   - Touched transformer helper/tool files improved from `6 -> 0`
+- Draft PR:
+  - [#107](https://github.com/TVScoundrel/agentforge/pull/107) `ST-09038: Extract Data Transformer Object Path Helpers`
 
 ---
 
