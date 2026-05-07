@@ -5,6 +5,36 @@ All notable changes to AgentForge will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.16.25] - 2026-05-07
+
+### Added
+
+#### @agentforge/tools - Transformer Helper Regression Coverage
+- Added focused regression coverage in `packages/tools/tests/data/transformer/transformer-helpers.test.ts` for shared nested lookup behavior across nested objects, callable values, primitive boxing, and special-key projection hardening
+- Added story documentation in `docs/st09038-transformer-object-path-helpers.md` covering helper extraction, review-driven behavior fixes, validation evidence, and explicit-`any` delta tracking
+
+### Changed
+
+#### @agentforge/tools - Shared Transformer Helper Extraction
+- Extracted shared helper functions into `packages/tools/src/data/transformer/tools/shared.ts` for nested path lookup plus object pick/omit behavior used by `array-filter`, `array-sort`, `object-pick`, and `object-omit`
+- Preserved existing filter and sort behavior across nested objects, callable intermediates, and primitive property boxing while replacing duplicated local helper logic
+
+### Fixed
+
+#### @agentforge/tools - Transformer Helper Runtime and Type Safety
+- Restored prior nested lookup semantics for callable intermediates and primitive property access after review surfaced behavior regressions from the first helper extraction pass
+- Hardened `pickObjectProperties(...)` so projecting special keys such as `__proto__` creates an own data property instead of mutating the returned object's prototype
+- Replaced direct relational comparison on `unknown` values with a shared comparator helper, keeping `@agentforge/tools` strict typecheck green and lowering touched transformer helper/tool explicit-`any` usage from `6` to `0`
+
+### Published
+- All packages published to npm registry at version 0.16.25:
+  - @agentforge/core@0.16.25
+  - @agentforge/skills@0.16.25
+  - @agentforge/patterns@0.16.25
+  - @agentforge/tools@0.16.25
+  - @agentforge/testing@0.16.25
+  - @agentforge/cli@0.16.25
+
 ## [0.16.24] - 2026-05-06
 
 ### Added
