@@ -4,17 +4,17 @@
 
 type UnknownRecord = Record<string, unknown>;
 
-function isRecord(value: unknown): value is UnknownRecord {
-  return typeof value === 'object' && value !== null;
+function isIndexable(value: unknown): value is object | ((...args: never[]) => unknown) {
+  return (typeof value === 'object' && value !== null) || typeof value === 'function';
 }
 
 export function getNestedValue(value: unknown, path: string): unknown {
   return path.split('.').reduce<unknown>((current, key) => {
-    if (!isRecord(current)) {
+    if (!isIndexable(current)) {
       return undefined;
     }
 
-    return current[key];
+    return Reflect.get(current, key);
   }, value);
 }
 

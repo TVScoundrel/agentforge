@@ -13,9 +13,14 @@ import {
 
 describe('transformer shared helpers', () => {
   it('reads nested values and tolerates missing paths', () => {
+    const callable = Object.assign(() => 'ok', {
+      profile: { name: 'Function Ada' },
+    });
+
     expect(getNestedValue({ profile: { name: 'Ada' } }, 'profile.name')).toBe('Ada');
     expect(getNestedValue({ profile: null }, 'profile.name')).toBeUndefined();
     expect(getNestedValue('primitive', 'profile.name')).toBeUndefined();
+    expect(getNestedValue({ callable }, 'callable.profile.name')).toBe('Function Ada');
   });
 
   it('projects only the requested object properties', () => {
