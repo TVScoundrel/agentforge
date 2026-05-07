@@ -4,6 +4,7 @@
 
 import { toolBuilder, ToolCategory } from '@agentforge/core';
 import { arrayFilterSchema } from '../types.js';
+import { getNestedValue } from './shared.js';
 
 /**
  * Create array filter tool
@@ -16,10 +17,6 @@ export function createArrayFilterTool() {
     .tags(['array', 'filter', 'data', 'transform'])
     .schema(arrayFilterSchema)
     .implement(async (input) => {
-      const getNestedValue = (obj: any, path: string): any => {
-        return path.split('.').reduce((current, key) => current?.[key], obj);
-      };
-
       const filtered = input.array.filter((item) => {
         const itemValue = getNestedValue(item, input.property);
         
@@ -51,4 +48,3 @@ export function createArrayFilterTool() {
     })
     .build();
 }
-

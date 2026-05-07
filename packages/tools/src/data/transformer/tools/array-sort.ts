@@ -4,6 +4,7 @@
 
 import { toolBuilder, ToolCategory } from '@agentforge/core';
 import { arraySortSchema } from '../types.js';
+import { getNestedValue } from './shared.js';
 
 /**
  * Create array sort tool
@@ -16,10 +17,6 @@ export function createArraySortTool() {
     .tags(['array', 'sort', 'data', 'transform'])
     .schema(arraySortSchema)
     .implement(async (input) => {
-      const getNestedValue = (obj: any, path: string): any => {
-        return path.split('.').reduce((current, key) => current?.[key], obj);
-      };
-
       const sorted = [...input.array].sort((a, b) => {
         const aValue = getNestedValue(a, input.property);
         const bValue = getNestedValue(b, input.property);
@@ -36,4 +33,3 @@ export function createArraySortTool() {
     })
     .build();
 }
-
