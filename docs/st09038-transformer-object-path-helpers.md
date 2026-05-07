@@ -2,7 +2,7 @@
 
 ## Summary
 
-Extracted shared helper functions for nested path lookup plus object property pick/omit behavior in the transformer toolset. The change removes duplicated ad hoc logic from `array-filter`, `array-sort`, `object-pick`, and `object-omit` while keeping runtime behavior unchanged.
+Extracted shared helper functions for nested path lookup plus object property pick/omit behavior in the transformer toolset. The change removes duplicated ad hoc logic from `array-filter`, `array-sort`, `object-pick`, and `object-omit` while preserving prior nested lookup/comparison behavior and intentionally hardening special-key projection against prototype mutation.
 
 ## Scope
 
@@ -61,5 +61,8 @@ Preserved behavior includes:
 - ascending/descending sorting by nested property path
 - object projection based on listed properties using the existing `prop in object` lookup behavior
 - object omission based on listed properties
+
+Intentional hardening:
+- projecting special keys such as `__proto__` now creates an own data property on the returned object instead of mutating its prototype
 
 The new shared helper module only centralizes these behaviors; it does not broaden scope into `array-map` or `array-group-by`.

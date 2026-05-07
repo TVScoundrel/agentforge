@@ -19,6 +19,7 @@ describe('transformer shared helpers', () => {
 
     expect(getNestedValue({ profile: { name: 'Ada' } }, 'profile.name')).toBe('Ada');
     expect(getNestedValue({ profile: null }, 'profile.name')).toBeUndefined();
+    expect(getNestedValue('foo', 'length')).toBe(3);
     expect(getNestedValue('primitive', 'profile.name')).toBeUndefined();
     expect(getNestedValue({ callable }, 'callable.profile.name')).toBe('Function Ada');
   });

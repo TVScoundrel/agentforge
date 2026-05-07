@@ -5,17 +5,13 @@
 type UnknownRecord = Record<string, unknown>;
 type RelationalOperand = string | number | bigint | boolean;
 
-function isIndexable(value: unknown): value is object | ((...args: never[]) => unknown) {
-  return (typeof value === 'object' && value !== null) || typeof value === 'function';
-}
-
 export function getNestedValue(value: unknown, path: string): unknown {
   return path.split('.').reduce<unknown>((current, key) => {
-    if (!isIndexable(current)) {
+    if (current == null) {
       return undefined;
     }
 
-    return Reflect.get(current, key);
+    return Reflect.get(Object(current), key);
   }, value);
 }
 
@@ -44,6 +40,8 @@ export function pickObjectProperties(
 
   for (const property of properties) {
     if (property in source) {
+      // Intentionally harden special keys like "__proto__" so user-supplied
+      // property names cannot mutate the returned object's prototype.
       Object.defineProperty(picked, property, {
         value: source[property],
         enumerable: true,
