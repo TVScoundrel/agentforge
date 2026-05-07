@@ -4,7 +4,7 @@
 
 import { toolBuilder, ToolCategory } from '@agentforge/core';
 import { arraySortSchema } from '../types.js';
-import { getNestedValue } from './shared.js';
+import { compareRelationalValues, getNestedValue } from './shared.js';
 
 /**
  * Create array sort tool
@@ -20,10 +20,13 @@ export function createArraySortTool() {
       const sorted = [...input.array].sort((a, b) => {
         const aValue = getNestedValue(a, input.property);
         const bValue = getNestedValue(b, input.property);
-        
-        if (aValue < bValue) return input.order === 'asc' ? -1 : 1;
-        if (aValue > bValue) return input.order === 'asc' ? 1 : -1;
-        return 0;
+        const comparison = compareRelationalValues(aValue, bValue);
+
+        if (comparison === 0) {
+          return 0;
+        }
+
+        return input.order === 'asc' ? comparison : comparison * -1;
       });
 
       return {

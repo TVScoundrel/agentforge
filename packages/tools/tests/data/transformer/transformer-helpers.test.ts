@@ -24,12 +24,28 @@ describe('transformer shared helpers', () => {
   });
 
   it('projects only the requested object properties', () => {
-    expect(
-      pickObjectProperties(
-        { id: 1, profile: { name: 'Ada' }, active: true },
-        ['id', 'profile']
-      )
-    ).toEqual({ id: 1, profile: { name: 'Ada' } });
+    const source = {
+      id: 1,
+      profile: { name: 'Ada' },
+      active: true,
+    };
+
+    Object.defineProperty(source, '__proto__', {
+      value: 'safe',
+      enumerable: true,
+      configurable: true,
+      writable: true,
+    });
+
+    const picked = pickObjectProperties(
+      source,
+      ['id', 'profile', '__proto__']
+    );
+
+    expect(picked.id).toBe(1);
+    expect(picked.profile).toEqual({ name: 'Ada' });
+    expect(Object.getPrototypeOf(picked)).toBe(Object.prototype);
+    expect(Object.getOwnPropertyDescriptor(picked, '__proto__')?.value).toBe('safe');
   });
 
   it('omits only the requested object properties', () => {
