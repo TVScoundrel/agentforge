@@ -4,6 +4,7 @@
 
 import { toolBuilder, ToolCategory } from '@agentforge/core';
 import { objectOmitSchema } from '../types.js';
+import { omitObjectProperties } from './shared.js';
 
 /**
  * Create object omit tool
@@ -15,15 +16,6 @@ export function createObjectOmitTool() {
     .category(ToolCategory.UTILITY)
     .tags(['object', 'omit', 'data', 'transform'])
     .schema(objectOmitSchema)
-    .implement(async (input) => {
-      const omitted: Record<string, any> = { ...input.object };
-      
-      for (const prop of input.properties) {
-        delete omitted[prop];
-      }
-
-      return omitted;
-    })
+    .implement(async (input) => omitObjectProperties(input.object, input.properties))
     .build();
 }
-

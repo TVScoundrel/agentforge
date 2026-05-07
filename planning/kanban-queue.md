@@ -1,12 +1,12 @@
 # Kanban Queue: AgentForge
 
-**Last Updated:** 2026-05-06
+**Last Updated:** 2026-05-07
 
 ## Queue Status Summary
 
-- **Ready:** 4 stories
+- **Ready:** 3 stories
 - **In Progress:** 0 stories
-- **In Review:** 0 stories
+- **In Review:** 1 story
 - **Blocked:** 0 stories
 - **Backlog:** 0 stories
 
@@ -14,7 +14,6 @@
 
 ## Ready
 
-- `ST-09038` - Extract Data Transformer Object Path Helpers
 - `ST-09039` - Tighten Core Mock Tool Testing Helper Contracts
 - `ST-09040` - Tighten Human-in-Loop Streaming Resume Contracts
 - `ST-09041` - Adopt Structured Logger in Conversation Simulator
@@ -28,7 +27,7 @@ _No stories currently in progress_
 
 ## In Review
 
-_No stories currently in review_
+- `ST-09038` - Extract Data Transformer Object Path Helpers
 
 ---
 

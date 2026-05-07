@@ -4,6 +4,7 @@
 
 import { toolBuilder, ToolCategory } from '@agentforge/core';
 import { arrayFilterSchema } from '../types.js';
+import { compareRelationalValues, getNestedValue } from './shared.js';
 
 /**
  * Create array filter tool
@@ -16,10 +17,6 @@ export function createArrayFilterTool() {
     .tags(['array', 'filter', 'data', 'transform'])
     .schema(arrayFilterSchema)
     .implement(async (input) => {
-      const getNestedValue = (obj: any, path: string): any => {
-        return path.split('.').reduce((current, key) => current?.[key], obj);
-      };
-
       const filtered = input.array.filter((item) => {
         const itemValue = getNestedValue(item, input.property);
         
@@ -29,9 +26,9 @@ export function createArrayFilterTool() {
           case 'not-equals':
             return itemValue !== input.value;
           case 'greater-than':
-            return itemValue > input.value;
+            return compareRelationalValues(itemValue, input.value) > 0;
           case 'less-than':
-            return itemValue < input.value;
+            return compareRelationalValues(itemValue, input.value) < 0;
           case 'contains':
             return String(itemValue).includes(String(input.value));
           case 'starts-with':
@@ -51,4 +48,3 @@ export function createArrayFilterTool() {
     })
     .build();
 }
-

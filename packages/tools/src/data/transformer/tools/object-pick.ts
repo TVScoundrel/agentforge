@@ -4,6 +4,7 @@
 
 import { toolBuilder, ToolCategory } from '@agentforge/core';
 import { objectPickSchema } from '../types.js';
+import { pickObjectProperties } from './shared.js';
 
 /**
  * Create object pick tool
@@ -15,17 +16,6 @@ export function createObjectPickTool() {
     .category(ToolCategory.UTILITY)
     .tags(['object', 'pick', 'data', 'transform'])
     .schema(objectPickSchema)
-    .implement(async (input) => {
-      const picked: Record<string, any> = {};
-      
-      for (const prop of input.properties) {
-        if (prop in input.object) {
-          picked[prop] = input.object[prop];
-        }
-      }
-
-      return picked;
-    })
+    .implement(async (input) => pickObjectProperties(input.object, input.properties))
     .build();
 }
-

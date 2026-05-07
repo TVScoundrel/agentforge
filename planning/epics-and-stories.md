@@ -1496,7 +1496,7 @@
 **Priority:** P2 (Medium)
 **Estimate:** 3 hours
 **Dependencies:** None
-**Status:** Ready
+**Status:** In Review
 
 **Acceptance criteria:**
 - [ ] `packages/tools/src/data/transformer/tools/array-filter.ts`, `array-sort.ts`, `object-pick.ts`, and `object-omit.ts` share focused helper functions for nested value lookup and object projection/omission
