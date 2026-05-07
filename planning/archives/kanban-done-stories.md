@@ -549,6 +549,13 @@
 - **Estimate:** 3 hours
 - **Outcome:** Tightened the managed-tool lifecycle surface around unknown-first generic defaults, JSON-safe health metadata, optional context typing, and typed LangChain interop while preserving runtime compatibility. Added focused lifecycle runtime and type coverage, hardened initialization/cleanup concurrency, prevented stale health-check writes across reuse boundaries, and improved the explicit-`any` baseline from 180 to 170 workspace-wide and from 63 to 53 in `core`.
 
+### ST-09038: Extract Data Transformer Object Path Helpers
+- **Merged:** 2026-05-07
+- **PR:** https://github.com/TVScoundrel/agentforge/pull/107 (commit 8de6392)
+- **Epic:** EP-09 (SOLID Micro-Refactors and Type Boundary Hardening)
+- **Estimate:** 3 hours
+- **Outcome:** Extracted shared transformer helpers for nested value lookup plus object projection/omission, preserved filter and sort behavior across nested objects, functions, and primitive boxing, and intentionally hardened special-key projection against prototype mutation. Added focused regression coverage and reduced touched transformer helper/tool explicit-`any` usage from 6 to 0.
+
 ---
 
 ## Archive Format

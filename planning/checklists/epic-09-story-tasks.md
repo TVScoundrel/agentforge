@@ -1471,7 +1471,7 @@ Implementation notes:
 - [x] Run lint (`pnpm lint`) before finalizing the PR and record results
 - [x] Commit completed checklist items as logical commits and push updates
 - [x] Mark PR Ready only after all story tasks are complete
-- [ ] Wait for merge; do not merge directly from local branch
+- [x] Wait for merge; do not merge directly from local branch
 
 ### Notes
 
@@ -1492,6 +1492,8 @@ Implementation notes:
   - Touched transformer helper/tool files improved from `6 -> 0`
 - Draft PR:
   - [#107](https://github.com/TVScoundrel/agentforge/pull/107) `ST-09038: Extract Data Transformer Object Path Helpers`
+- Merge:
+  - Merged via PR #107 on 2026-05-07; merge commit `8de6392`
 
 ---
 
