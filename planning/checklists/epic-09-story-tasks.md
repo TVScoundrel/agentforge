@@ -1516,7 +1516,7 @@ Implementation notes:
 - [x] Run lint (`pnpm lint`) before finalizing the PR and record results
 - [x] Commit completed checklist items as logical commits and push updates
 - [x] Mark PR Ready only after all story tasks are complete
-- [ ] Wait for merge; do not merge directly from local branch
+- [x] Wait for merge; do not merge directly from local branch
 
 ### Notes
 
@@ -1535,11 +1535,13 @@ Implementation notes:
 - Residual impact assessment:
   - Added a dedicated runtime test file plus a source-included typecheck fixture because the story changes both public helper typing and simulator runtime bookkeeping.
 - Explicit-`any` delta:
-  - `packages/core/src/tools/testing.ts` improved from `8 -> 0`
+ - `packages/core/src/tools/testing.ts` improved from `8 -> 0`
   - `core` baseline improved from `44/119 -> 35/119`
   - workspace baseline improved from `115/289 -> 106/289`
  - PR workflow:
    - Draft PR created with story ID in title; branch is ready to be marked `Ready for review`
+ - Merge:
+   - Merged via PR #108 on 2026-05-08; merge commit `b9f3625`
 
 ---
 

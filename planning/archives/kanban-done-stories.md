@@ -2,11 +2,18 @@
 
 **Purpose:** Track completed and merged stories for the Relational Database Access Tool project.
 
-**Last Updated:** 2026-05-06
+**Last Updated:** 2026-05-08
 
 ---
 
 ## Completed Stories
+
+### ST-09039: Tighten Core Mock Tool Testing Helper Contracts
+- **Merged:** 2026-05-08
+- **PR:** https://github.com/TVScoundrel/agentforge/pull/108 (commit b9f3625)
+- **Epic:** EP-09 (SOLID Micro-Refactors and Type Boundary Hardening)
+- **Estimate:** 3 hours
+- **Outcome:** Tightened `@agentforge/core` mock-tool and tool-simulator testing helper contracts by replacing broad response, invocation, and simulator payload `any` seams with generic and unknown-first boundaries while preserving exact-match and predicate response matching, default responses, latency/error simulation, invocation recording, and missing-tool behavior. The story added focused runtime coverage plus a standalone typecheck regression fixture and reduced the `core` explicit-`any` baseline from `44/119` to `35/119`, with the touched helper file itself improving from `8` explicit `any` uses to `0`.
 
 ### ST-09037: Tighten ReAct Builder and Prompt Boundary Contracts
 - **Merged:** 2026-05-06
