@@ -1513,7 +1513,7 @@
 **Priority:** P2 (Medium)
 **Estimate:** 3 hours
 **Dependencies:** ST-09023
-**Status:** Ready
+**Status:** In Review
 
 **Acceptance criteria:**
 - [ ] `packages/core/src/tools/testing.ts` replaces broad mock response, default response, invocation, and simulator input/output contracts with generic or unknown-first helper types
