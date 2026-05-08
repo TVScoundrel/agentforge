@@ -5,6 +5,36 @@ All notable changes to AgentForge will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.16.26] - 2026-05-08
+
+### Added
+
+#### @agentforge/core - Mock Tool Contract Regression Coverage
+- Added focused runtime coverage in `packages/core/tests/tools/testing.test.ts` for predicate response matching, configured error recording, missing-tool failures, and invocation clearing in the mock-tool helpers
+- Added a standalone typecheck regression fixture in `packages/core/tests/tools/testing.typecheck.ts` covering generic `createMockTool(...)` usage plus named-tool simulator input/output inference
+- Added story documentation in `docs/st09039-core-mock-tool-testing-contracts.md` capturing the contract hardening, validation evidence, and explicit-`any` delta
+
+### Changed
+
+#### @agentforge/core - Mock Tool and Simulator Contract Hardening
+- Tightened `packages/core/src/tools/testing.ts` so mock-tool responses, default responses, invocation records, and simulator execution boundaries use generic and unknown-first helper types instead of broad `any`
+- Preserved existing runtime behavior for exact-match responses, predicate matching, default fallback, latency simulation, random errors, invocation timing, and missing-tool errors while making named simulator execution type-safe
+
+### Fixed
+
+#### @agentforge/core - Mock Tool Type Safety
+- Removed the remaining broad explicit-`any` seams from the core mock-tool testing helper file, reducing `packages/core/src/tools/testing.ts` from `8` explicit `any` uses to `0`
+- Lowered the `core` explicit-`any` baseline from `44/119` to `35/119` and the workspace baseline from `115/289` to `106/289` without widening runtime scope beyond the testing helper contracts
+
+### Published
+- All packages published to npm registry at version 0.16.26:
+  - @agentforge/core@0.16.26
+  - @agentforge/skills@0.16.26
+  - @agentforge/patterns@0.16.26
+  - @agentforge/tools@0.16.26
+  - @agentforge/testing@0.16.26
+  - @agentforge/cli@0.16.26
+
 ## [0.16.25] - 2026-05-07
 
 ### Added
