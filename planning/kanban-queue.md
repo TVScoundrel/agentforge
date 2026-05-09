@@ -1,11 +1,11 @@
 # Kanban Queue: AgentForge
 
-**Last Updated:** 2026-05-08
+**Last Updated:** 2026-05-09
 
 ## Queue Status Summary
 
-- **Ready:** 2 stories
-- **In Progress:** 0 stories
+- **Ready:** 1 story
+- **In Progress:** 1 story
 - **In Review:** 0 stories
 - **Blocked:** 0 stories
 - **Backlog:** 0 stories
@@ -14,13 +14,12 @@
 
 ## Ready
 
-- `ST-09040` - Tighten Human-in-Loop Streaming Resume Contracts
 - `ST-09041` - Adopt Structured Logger in Conversation Simulator
 ---
 
 ## In Progress
 
-_No stories currently in progress_
+- `ST-09040` - Tighten Human-in-Loop Streaming Resume Contracts
 
 ---
 
