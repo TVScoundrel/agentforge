@@ -1550,21 +1550,46 @@ Implementation notes:
 **Branch:** `fix/st-09040-human-in-loop-streaming-resume-contracts`
 
 ### Checklist
-- [ ] Create branch `fix/st-09040-human-in-loop-streaming-resume-contracts`
-- [ ] Create draft PR with story ID in title
-- [ ] Define test strategy before implementation: cover resume payload serialization, primitive/object resume values, and event ID stability; first failing test should assert resume value typing without public `any`
-- [ ] Write or update the failing automated test before production changes when practical; if not practical, record why before implementation
-- [ ] Replace resume payload `any` contracts in `packages/core/src/streaming/human-in-loop.ts` with an unknown-first or JSON-safe value type aligned with interrupt/resume boundaries
-- [ ] Preserve human request, response, interrupt, resume, waiting, and resumed SSE event formatting at runtime
-- [ ] Add/update production code until focused tests pass, keeping test evidence in checklist notes and PR body
-- [ ] Record explicit-`any` warning deltas for touched files in story docs
-- [ ] Add or update story documentation at `docs/st09040-human-in-loop-streaming-resume-contracts.md` (or document why not required)
-- [ ] Assess residual test impact; add/update additional automated tests when needed, or document why no further tests are required
-- [ ] Run full test suite before finalizing the PR and record results
-- [ ] Run lint (`pnpm lint`) before finalizing the PR and record results
-- [ ] Commit completed checklist items as logical commits and push updates
-- [ ] Mark PR Ready only after all story tasks are complete
+- [x] Create branch `fix/st-09040-human-in-loop-streaming-resume-contracts`
+- [x] Create draft PR with story ID in title
+- [x] Define test strategy before implementation: cover resume payload serialization, primitive/object resume values, and event ID stability; first failing test should assert resume value typing without public `any`
+- [x] Write or update the failing automated test before production changes when practical; if not practical, record why before implementation
+- [x] Replace resume payload `any` contracts in `packages/core/src/streaming/human-in-loop.ts` with an unknown-first or JSON-safe value type aligned with interrupt/resume boundaries
+- [x] Preserve human request, response, interrupt, resume, waiting, and resumed SSE event formatting at runtime
+- [x] Add/update production code until focused tests pass, keeping test evidence in checklist notes and PR body
+- [x] Record explicit-`any` warning deltas for touched files in story docs
+- [x] Add or update story documentation at `docs/st09040-human-in-loop-streaming-resume-contracts.md` (or document why not required)
+- [x] Assess residual test impact; add/update additional automated tests when needed, or document why no further tests are required
+- [x] Run full test suite before finalizing the PR and record results
+- [x] Run lint (`pnpm lint`) before finalizing the PR and record results
+- [x] Commit completed checklist items as logical commits and push updates
+- [x] Mark PR Ready only after all story tasks are complete
 - [ ] Wait for merge; do not merge directly from local branch
+
+### Notes
+
+- Test-first evidence:
+  - Initial standalone typecheck gate failed as expected:
+    - `./node_modules/.bin/tsc --noEmit --strict --module NodeNext --moduleResolution NodeNext --target ES2022 --skipLibCheck --types node packages/core/tests/streaming/human-in-loop.typecheck.ts`
+  - Failure mode before implementation included:
+    - `Unused '@ts-expect-error' directive.`
+- Focused validation after implementation:
+  - `./node_modules/.bin/tsc --noEmit --strict --module NodeNext --moduleResolution NodeNext --target ES2022 --skipLibCheck --types node packages/core/tests/streaming/human-in-loop.typecheck.ts` passed
+  - `pnpm test --run packages/core/tests/streaming/human-in-loop.test.ts` -> `1` file, `8` tests passed
+  - `pnpm --filter @agentforge/core typecheck` passed
+  - `pnpm lint:explicit-any:baseline` passed
+- Residual impact assessment:
+  - Added both a dedicated runtime test expansion and a standalone typecheck fixture because this story changes a public SSE payload contract and needs both serialization and type-boundary coverage.
+- Explicit-`any` delta:
+  - `packages/core/src/streaming/human-in-loop.ts` improved from `2 -> 0`
+  - `core` baseline improved from `35/119 -> 33/119`
+  - workspace baseline improved from `106/289 -> 104/289`
+- Final validation:
+  - `pnpm test --run` -> `170` files passed, `16` skipped; `2287` tests passed, `286` skipped
+  - `pnpm lint` passed with warnings only and `0` errors
+- PR workflow:
+  - Draft PR created with story ID in title: PR #109
+  - Branch is ready to be marked `Ready for review`
 
 ---
 
