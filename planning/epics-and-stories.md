@@ -1530,7 +1530,7 @@
 **Priority:** P2 (Medium)
 **Estimate:** 2 hours
 **Dependencies:** ST-09024
-**Status:** In Review
+**Status:** Merged
 
 **Acceptance criteria:**
 - [ ] `packages/core/src/streaming/human-in-loop.ts` replaces resume payload `any` contracts with an unknown-first or JSON-safe value type aligned with interrupt/resume boundaries

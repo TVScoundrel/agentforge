@@ -2,11 +2,18 @@
 
 **Purpose:** Track completed and merged stories for the Relational Database Access Tool project.
 
-**Last Updated:** 2026-05-08
+**Last Updated:** 2026-05-09
 
 ---
 
 ## Completed Stories
+
+### ST-09040: Tighten Human-in-Loop Streaming Resume Contracts
+- **Merged:** 2026-05-09
+- **PR:** https://github.com/TVScoundrel/agentforge/pull/109 (commit 4a41a42)
+- **Epic:** EP-09 (SOLID Micro-Refactors and Type Boundary Hardening)
+- **Estimate:** 2 hours
+- **Outcome:** Tightened the human-in-loop SSE resume event boundary in `@agentforge/core` by replacing broad resume payload `any` seams with the shared JSON-safe `InterruptPayload` contract already used by interrupt resume commands and options. The story preserved existing SSE event names, payload structure, and `resume-<interruptId>` IDs, added focused runtime coverage plus a standalone typecheck regression fixture, and reduced the `core` explicit-`any` baseline from `35/119` to `33/119` while lowering the workspace baseline from `106/289` to `104/289`.
 
 ### ST-09039: Tighten Core Mock Tool Testing Helper Contracts
 - **Merged:** 2026-05-08

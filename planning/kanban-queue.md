@@ -6,7 +6,7 @@
 
 - **Ready:** 1 story
 - **In Progress:** 0 stories
-- **In Review:** 1 story
+- **In Review:** 0 stories
 - **Blocked:** 0 stories
 - **Backlog:** 0 stories
 
@@ -25,7 +25,7 @@ _No stories currently in progress_
 
 ## In Review
 
-- `ST-09040` - Tighten Human-in-Loop Streaming Resume Contracts
+_No stories currently in review_
 
 ---
 
