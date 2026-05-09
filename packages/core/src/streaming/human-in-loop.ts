@@ -4,7 +4,7 @@
  */
 
 import type { SSEEvent } from './types.js';
-import type { HumanRequest, AnyInterrupt } from '../langgraph/interrupts/types.js';
+import type { HumanRequest, AnyInterrupt, InterruptPayload } from '../langgraph/interrupts/types.js';
 
 /**
  * Human-in-the-loop SSE event types
@@ -51,7 +51,7 @@ export interface InterruptEventData {
 export interface ResumeEventData {
   type: 'resume';
   interruptId: string;
-  value: any;
+  value: InterruptPayload;
   threadId: string;
 }
 
@@ -169,7 +169,7 @@ export function formatInterruptEvent(interrupt: AnyInterrupt, threadId: string):
  */
 export function formatResumeEvent(
   interruptId: string,
-  value: any,
+  value: InterruptPayload,
   threadId: string
 ): SSEEvent {
   const data: ResumeEventData = {
@@ -223,4 +223,3 @@ export function formatAgentResumedEvent(threadId: string): SSEEvent {
     data: JSON.stringify(data),
   };
 }
-

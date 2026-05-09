@@ -90,6 +90,25 @@ describe('Human-in-Loop SSE Utilities', () => {
       expect(data.value).toBe('resume value');
       expect(data.threadId).toBe('thread-456');
     });
+
+    it('should preserve object resume payloads and stable event ids', () => {
+      const resumeValue = {
+        approved: true,
+        actor: 'reviewer',
+        details: {
+          confidence: 0.9,
+          reasons: ['looks good'],
+        },
+      };
+
+      const event = formatResumeEvent('interrupt-456', resumeValue, 'thread-789');
+
+      expect(event.id).toBe('resume-interrupt-456');
+
+      const data = JSON.parse(event.data);
+      expect(data.value).toEqual(resumeValue);
+      expect(data.threadId).toBe('thread-789');
+    });
   });
 
   describe('formatAgentWaitingEvent', () => {
@@ -134,7 +153,7 @@ describe('Human-in-Loop SSE Utilities', () => {
         formatHumanRequestEvent(humanRequest, 'thread-1'),
         formatHumanResponseEvent('req-1', 'response', 'thread-1'),
         formatInterruptEvent(createHumanRequestInterrupt(humanRequest), 'thread-1'),
-        formatResumeEvent('int-1', 'value', 'thread-1'),
+        formatResumeEvent('int-1', { approved: true, reasons: ['ok'] }, 'thread-1'),
         formatAgentWaitingEvent('reason', 'thread-1'),
         formatAgentResumedEvent('thread-1'),
       ];
@@ -145,4 +164,3 @@ describe('Human-in-Loop SSE Utilities', () => {
     });
   });
 });
-
