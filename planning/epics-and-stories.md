@@ -121,7 +121,7 @@
 - Story slices are intentionally small (1 day each) so quality improvements can ship continuously
 - Lightweight quality-gate follow-ups keep release/build feedback tight by reducing stale warning caps and easy package metadata warnings
 
-**Stories:** ST-09001 through ST-09041
+**Stories:** ST-09001 through ST-09047
 
 ---
 
@@ -1558,6 +1558,108 @@
 
 ---
 
+#### ST-09042: Tighten SSE Formatter Generic Event Contracts
+**User story:** As a core maintainer, I want the shared SSE formatter contracts to use unknown-first generics instead of broad `any` so streaming integrations can keep type safety without changing SSE behavior.
+
+**Priority:** P2 (Medium)
+**Estimate:** 2 hours
+**Dependencies:** ST-09040
+**Status:** Ready
+
+**Acceptance criteria:**
+- [ ] `packages/core/src/streaming/types.ts` and `packages/core/src/streaming/sse.ts` replace broad SSE formatter generic `any` defaults with unknown-first event/value contracts
+- [ ] Default JSON serialization, mapper-driven event formatting, retry prelude behavior, heartbeat timing, and event ID sequencing remain unchanged at runtime
+- [ ] Focused tests are added or updated for typed event mappers, default JSON serialization, and retry/heartbeat behavior as needed
+- [ ] Touched files do not regress on explicit-`any` warning counts and the outcome is recorded in story documentation
+- [ ] Add or update story documentation at `docs/st09042-sse-formatter-generic-contracts.md`
+
+---
+
+#### ST-09043: Tighten Error Reporter Context Contracts
+**User story:** As a core maintainer, I want error reporter context and JSON serialization to use safer payload contracts so diagnostic reporting stays structured without broad `any` escape hatches.
+
+**Priority:** P2 (Medium)
+**Estimate:** 3 hours
+**Dependencies:** ST-09020
+**Status:** Ready
+
+**Acceptance criteria:**
+- [ ] `packages/core/src/langgraph/observability/errors.ts` replaces broad error-context `state`, `metadata`, and `toJSON()` value `any` contracts with unknown-first or JSON-safe payload aliases
+- [ ] `AgentError`, `createErrorReporter(...)`, wrapped-node reporting, and fallback reporting behavior remain unchanged at runtime
+- [ ] Focused tests are added or updated for serialized error payloads, optional state inclusion, and wrapped-node error propagation as needed
+- [ ] Touched files do not regress on explicit-`any` warning counts and the outcome is recorded in story documentation
+- [ ] Add or update story documentation at `docs/st09043-error-reporter-context-contracts.md`
+
+---
+
+#### ST-09044: Tighten Testing Mock Tool Factory Contracts
+**User story:** As a testing maintainer, I want mock tool factory helpers to infer schema input types safely so test doubles stay ergonomic without relying on broad `any`.
+
+**Priority:** P2 (Medium)
+**Estimate:** 2 hours
+**Dependencies:** ST-09018
+**Status:** Ready
+
+**Acceptance criteria:**
+- [ ] `packages/testing/src/mocks/mock-tool.ts` replaces broad schema/default implementation `any` seams with schema-driven generic input contracts
+- [ ] Mock tool defaults, delayed execution, forced errors, echo behavior, and calculator behavior remain unchanged at runtime
+- [ ] Focused tests are added or updated for inferred input typing, default behavior, delayed execution, and forced error behavior as needed
+- [ ] Touched files do not regress on explicit-`any` warning counts and the outcome is recorded in story documentation
+- [ ] Add or update story documentation at `docs/st09044-mock-tool-factory-contracts.md`
+
+---
+
+#### ST-09045: Tighten Multi-Agent Routing Decision Contracts
+**User story:** As a patterns maintainer, I want multi-agent routing to consume structured routing decisions without broad casts so supervisor routing stays extensible and type-safe.
+
+**Priority:** P2 (Medium)
+**Estimate:** 3 hours
+**Dependencies:** ST-09015
+**Status:** Ready
+
+**Acceptance criteria:**
+- [ ] `packages/patterns/src/multi-agent/routing.ts` and any directly coupled factory wiring replace broad routing-decision casts with schema-aligned or unknown-first contracts
+- [ ] LLM-based, round-robin, skill-based, load-balanced, and rule-based routing behavior remain unchanged at runtime
+- [ ] Focused tests are added or updated for structured routing decisions, fallback behavior, and parallel-target handling as needed
+- [ ] Touched files do not regress on explicit-`any` warning counts and the outcome is recorded in story documentation
+- [ ] Add or update story documentation at `docs/st09045-multi-agent-routing-decision-contracts.md`
+
+---
+
+#### ST-09046: Tighten Transformer Schema Value Contracts
+**User story:** As a tools maintainer, I want transformer tool schemas to use narrower unknown-first value contracts so array/object transformer inputs stay expressive without blanket `z.any()` boundaries.
+
+**Priority:** P2 (Medium)
+**Estimate:** 3 hours
+**Dependencies:** ST-09038
+**Status:** Backlog
+
+**Acceptance criteria:**
+- [ ] `packages/tools/src/data/transformer/types.ts` replaces broad `z.any()` schema boundaries with shared unknown-first or JSON-like value contracts where behavior allows
+- [ ] Array filter/map/sort/group-by and object pick/omit tool behavior remain unchanged at runtime
+- [ ] Focused tests are added or updated for primitive values, object values, and schema acceptance/rejection boundaries as needed
+- [ ] Touched files do not regress on explicit-`any` warning counts and the outcome is recorded in story documentation
+- [ ] Add or update story documentation at `docs/st09046-transformer-schema-value-contracts.md`
+
+---
+
+#### ST-09047: Tighten JSON and HTTP Payload Schema Contracts
+**User story:** As a tools maintainer, I want JSON and HTTP helper schemas to expose safer payload contracts so generic data tools remain flexible without broad `any` outputs and request bodies.
+
+**Priority:** P2 (Medium)
+**Estimate:** 3 hours
+**Dependencies:** ST-09042
+**Status:** Backlog
+
+**Acceptance criteria:**
+- [ ] `packages/tools/src/data/json/types.ts` and `packages/tools/src/web/http/types.ts` replace broad schema or response payload `any` seams with unknown-first or JSON-safe contracts
+- [ ] JSON parse/stringify/query/merge behavior and HTTP request/response helper behavior remain unchanged at runtime
+- [ ] Focused tests are added or updated for payload typing, request body serialization, and response data handling as needed
+- [ ] Touched files do not regress on explicit-`any` warning counts and the outcome is recorded in story documentation
+- [ ] Add or update story documentation at `docs/st09047-json-http-payload-schema-contracts.md`
+
+---
+
 #### ST-10001: Audit Markdown Emoji Usage Across Project-Owned Docs
 **User story:** As a maintainer, I want a clear inventory of markdown emoji usage so docs-only cleanup work can be prioritized and executed without noisy, repo-wide guesswork.
 
@@ -1679,5 +1781,5 @@
 6. Phase 6 (Agent Skills): ST-06001 → ST-06002 → ST-06003 → ST-06004 → ST-06005 → ST-06006
 7. Phase 7 (Skills Extraction): ST-07001 → ST-07002 → [ST-07003, ST-07004 parallel] → ST-07005; ST-07001 → ST-07006 (independent)
 8. Phase 8 (Type Safety Hardening): ST-08001 → [ST-08002, ST-08003, ST-08004 parallel]
-9. Phase 9 (SOLID Micro-Refactors): ST-09001 (Merged) → ST-09002 (Merged) → ST-09003 (Merged) → ST-09004 (Merged) → ST-09005 (Merged) → ST-09006 (Merged) → ST-09007 (Merged) → ST-09008 (Merged) → ST-09009 (Merged) → ST-09010 (Merged) → ST-09011 (Merged) → ST-09012 (Merged) → ST-09013 (Merged) → ST-09014 (Merged) → ST-09015 (Merged) → ST-09016 (Merged) → ST-09017 (Merged) → ST-09018 (Merged) → ST-09019 (Merged) → ST-09020 (Merged) → ST-09021 (Merged) → ST-09022 (Merged) → ST-09023 (Merged); ST-09025 (Merged) → ST-09026 (Merged) → ST-09031 (Merged); ST-09027 (Merged) → ST-09028 (Merged) → ST-09030 (Merged); ST-09032 → ST-09033; ST-09034 (Merged) → ST-09035 (Merged) → ST-09036 (Merged) → ST-09041; ST-09023 (Merged) and ST-09029 (Merged) → ST-09037; ST-09038 independent; ST-09023 (Merged) → ST-09039; ST-09024 (Merged) → ST-09040
+9. Phase 9 (SOLID Micro-Refactors): ST-09001 (Merged) → ST-09002 (Merged) → ST-09003 (Merged) → ST-09004 (Merged) → ST-09005 (Merged) → ST-09006 (Merged) → ST-09007 (Merged) → ST-09008 (Merged) → ST-09009 (Merged) → ST-09010 (Merged) → ST-09011 (Merged) → ST-09012 (Merged) → ST-09013 (Merged) → ST-09014 (Merged) → ST-09015 (Merged) → ST-09016 (Merged) → ST-09017 (Merged) → ST-09018 (Merged) → ST-09019 (Merged) → ST-09020 (Merged) → ST-09021 (Merged) → ST-09022 (Merged) → ST-09023 (Merged); ST-09025 (Merged) → ST-09026 (Merged) → ST-09031 (Merged); ST-09027 (Merged) → ST-09028 (Merged) → ST-09030 (Merged); ST-09032 → ST-09033; ST-09034 (Merged) → ST-09035 (Merged) → ST-09036 (Merged) → ST-09041; ST-09023 (Merged) and ST-09029 (Merged) → ST-09037; ST-09038 independent; ST-09023 (Merged) → ST-09039; ST-09024 (Merged) → ST-09040 → ST-09042 → ST-09047; ST-09020 (Merged) → ST-09043; ST-09018 (Merged) → ST-09044; ST-09015 (Merged) → ST-09045; ST-09038 (Merged) → ST-09046
 10. Phase 10 (Documentation Only Changes): ST-10001 → [ST-10002, ST-10003, ST-10004, ST-10005 parallel] → ST-10006; EP-10 remains evergreen and intentionally open for future docs-only stories even when no current stories are queued

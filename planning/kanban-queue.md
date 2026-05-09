@@ -4,17 +4,21 @@
 
 ## Queue Status Summary
 
-- **Ready:** 1 story
+- **Ready:** 5 stories
 - **In Progress:** 0 stories
 - **In Review:** 0 stories
 - **Blocked:** 0 stories
-- **Backlog:** 0 stories
+- **Backlog:** 2 stories
 
 ---
 
 ## Ready
 
 - `ST-09041` - Adopt Structured Logger in Conversation Simulator
+- `ST-09042` - Tighten SSE Formatter Generic Event Contracts
+- `ST-09043` - Tighten Error Reporter Context Contracts
+- `ST-09044` - Tighten Testing Mock Tool Factory Contracts
+- `ST-09045` - Tighten Multi-Agent Routing Decision Contracts
 ---
 
 ## In Progress
@@ -37,9 +41,8 @@ _No stories currently blocked_
 
 ## Backlog
 
-_No stories currently in backlog_
-
-_No stories currently in backlog_
+- `ST-09046` - Tighten Transformer Schema Value Contracts
+- `ST-09047` - Tighten JSON and HTTP Payload Schema Contracts
 
 ---
 
@@ -131,4 +134,4 @@ _No stories currently in backlog_
 - Complete: ST-10003 - planning and internal docs emoji normalization merged (PR #101, 2026-05-04)
 - EP-10 follow-up story `ST-10006` started on 2026-05-05 to clean remaining decorative emoji in example overview/index markdown while preserving functional status markers and literal sample output.
 - Complete: ST-10006 - example overview docs emoji normalization merged (PR #105, 2026-05-05)
-- Current measured `no-explicit-any` baseline is `133` warnings (`cli 6`, `core 44`, `patterns 15`, `testing 3`, `tools 65`)
+- Current measured `no-explicit-any` baseline is `104` warnings (`cli 6`, `core 33`, `patterns 3`, `testing 3`, `tools 59`)

@@ -1615,3 +1615,141 @@ Implementation notes:
 - [ ] Commit completed checklist items as logical commits and push updates
 - [ ] Mark PR Ready only after all story tasks are complete
 - [ ] Wait for merge; do not merge directly from local branch
+
+---
+
+## ST-09042: Tighten SSE Formatter Generic Event Contracts
+
+**Branch:** `fix/st-09042-sse-formatter-generic-contracts`
+
+### Checklist
+- [ ] Create branch `fix/st-09042-sse-formatter-generic-contracts`
+- [ ] Create draft PR with story ID in title
+- [ ] Define test strategy before implementation: cover typed event mappers, default JSON serialization, retry prelude behavior, and heartbeat stability; first failing test should assert SSE formatter generics reject broad `any` assumptions
+- [ ] Write or update the failing automated test before production changes when practical; if not practical, record why before implementation
+- [ ] Replace broad generic `any` defaults in `packages/core/src/streaming/types.ts` and `packages/core/src/streaming/sse.ts` with unknown-first SSE formatter contracts
+- [ ] Preserve default JSON serialization, mapper-driven event formatting, retry emission, heartbeat timing, and event ID sequencing
+- [ ] Add/update production code until focused tests pass, keeping test evidence in checklist notes and PR body
+- [ ] Record explicit-`any` warning deltas for touched files in story docs
+- [ ] Add or update story documentation at `docs/st09042-sse-formatter-generic-contracts.md` (or document why not required)
+- [ ] Assess residual test impact; add/update additional automated tests when needed, or document why no further tests are required
+- [ ] Run full test suite before finalizing the PR and record results
+- [ ] Run lint (`pnpm lint`) before finalizing the PR and record results
+- [ ] Commit completed checklist items as logical commits and push updates
+- [ ] Mark PR Ready only after all story tasks are complete
+- [ ] Wait for merge; do not merge directly from local branch
+
+---
+
+## ST-09043: Tighten Error Reporter Context Contracts
+
+**Branch:** `fix/st-09043-error-reporter-context-contracts`
+
+### Checklist
+- [ ] Create branch `fix/st-09043-error-reporter-context-contracts`
+- [ ] Create draft PR with story ID in title
+- [ ] Define test strategy before implementation: cover serialized error payloads, optional state inclusion, and wrapped-node propagation; first failing test should assert error context values no longer rely on broad `any`
+- [ ] Write or update the failing automated test before production changes when practical; if not practical, record why before implementation
+- [ ] Replace broad context/state/metadata/toJSON `any` seams in `packages/core/src/langgraph/observability/errors.ts` with unknown-first or JSON-safe payload contracts
+- [ ] Preserve `AgentError`, `createErrorReporter(...)`, wrapped-node reporting, and fallback reporting behavior
+- [ ] Add/update production code until focused tests pass, keeping test evidence in checklist notes and PR body
+- [ ] Record explicit-`any` warning deltas for touched files in story docs
+- [ ] Add or update story documentation at `docs/st09043-error-reporter-context-contracts.md` (or document why not required)
+- [ ] Assess residual test impact; add/update additional automated tests when needed, or document why no further tests are required
+- [ ] Run full test suite before finalizing the PR and record results
+- [ ] Run lint (`pnpm lint`) before finalizing the PR and record results
+- [ ] Commit completed checklist items as logical commits and push updates
+- [ ] Mark PR Ready only after all story tasks are complete
+- [ ] Wait for merge; do not merge directly from local branch
+
+---
+
+## ST-09044: Tighten Testing Mock Tool Factory Contracts
+
+**Branch:** `fix/st-09044-mock-tool-factory-contracts`
+
+### Checklist
+- [ ] Create branch `fix/st-09044-mock-tool-factory-contracts`
+- [ ] Create draft PR with story ID in title
+- [ ] Define test strategy before implementation: cover schema-driven input inference, default behavior, delayed execution, and forced errors; first failing test should assert mock tool input typing no longer depends on broad `any`
+- [ ] Write or update the failing automated test before production changes when practical; if not practical, record why before implementation
+- [ ] Replace broad schema/default implementation `any` seams in `packages/testing/src/mocks/mock-tool.ts` with schema-driven generic input contracts
+- [ ] Preserve mock tool defaults, delayed execution, forced errors, echo behavior, and calculator behavior
+- [ ] Add/update production code until focused tests pass, keeping test evidence in checklist notes and PR body
+- [ ] Record explicit-`any` warning deltas for touched files in story docs
+- [ ] Add or update story documentation at `docs/st09044-mock-tool-factory-contracts.md` (or document why not required)
+- [ ] Assess residual test impact; add/update additional automated tests when needed, or document why no further tests are required
+- [ ] Run full test suite before finalizing the PR and record results
+- [ ] Run lint (`pnpm lint`) before finalizing the PR and record results
+- [ ] Commit completed checklist items as logical commits and push updates
+- [ ] Mark PR Ready only after all story tasks are complete
+- [ ] Wait for merge; do not merge directly from local branch
+
+---
+
+## ST-09045: Tighten Multi-Agent Routing Decision Contracts
+
+**Branch:** `fix/st-09045-multi-agent-routing-decision-contracts`
+
+### Checklist
+- [ ] Create branch `fix/st-09045-multi-agent-routing-decision-contracts`
+- [ ] Create draft PR with story ID in title
+- [ ] Define test strategy before implementation: cover structured routing decisions, fallback behavior, and parallel-target handling; first failing test should assert routing decisions no longer pass through broad casts
+- [ ] Write or update the failing automated test before production changes when practical; if not practical, record why before implementation
+- [ ] Replace broad routing-decision casts in `packages/patterns/src/multi-agent/routing.ts` and directly coupled factory wiring with schema-aligned or unknown-first contracts
+- [ ] Preserve LLM-based, round-robin, skill-based, load-balanced, and rule-based routing behavior
+- [ ] Add/update production code until focused tests pass, keeping test evidence in checklist notes and PR body
+- [ ] Record explicit-`any` warning deltas for touched files in story docs
+- [ ] Add or update story documentation at `docs/st09045-multi-agent-routing-decision-contracts.md` (or document why not required)
+- [ ] Assess residual test impact; add/update additional automated tests when needed, or document why no further tests are required
+- [ ] Run full test suite before finalizing the PR and record results
+- [ ] Run lint (`pnpm lint`) before finalizing the PR and record results
+- [ ] Commit completed checklist items as logical commits and push updates
+- [ ] Mark PR Ready only after all story tasks are complete
+- [ ] Wait for merge; do not merge directly from local branch
+
+---
+
+## ST-09046: Tighten Transformer Schema Value Contracts
+
+**Branch:** `refactor/st-09046-transformer-schema-value-contracts`
+
+### Checklist
+- [ ] Create branch `refactor/st-09046-transformer-schema-value-contracts`
+- [ ] Create draft PR with story ID in title
+- [ ] Define test strategy before implementation: cover primitive values, object values, and schema acceptance/rejection boundaries; first failing test should assert transformer schema values no longer rely on blanket `z.any()`
+- [ ] Write or update the failing automated test before production changes when practical; if not practical, record why before implementation
+- [ ] Replace broad `z.any()` schema boundaries in `packages/tools/src/data/transformer/types.ts` with shared unknown-first or JSON-like value contracts where behavior allows
+- [ ] Preserve array filter/map/sort/group-by and object pick/omit behavior
+- [ ] Add/update production code until focused tests pass, keeping test evidence in checklist notes and PR body
+- [ ] Record explicit-`any` warning deltas for touched files in story docs
+- [ ] Add or update story documentation at `docs/st09046-transformer-schema-value-contracts.md` (or document why not required)
+- [ ] Assess residual test impact; add/update additional automated tests when needed, or document why no further tests are required
+- [ ] Run full test suite before finalizing the PR and record results
+- [ ] Run lint (`pnpm lint`) before finalizing the PR and record results
+- [ ] Commit completed checklist items as logical commits and push updates
+- [ ] Mark PR Ready only after all story tasks are complete
+- [ ] Wait for merge; do not merge directly from local branch
+
+---
+
+## ST-09047: Tighten JSON and HTTP Payload Schema Contracts
+
+**Branch:** `refactor/st-09047-json-http-payload-schema-contracts`
+
+### Checklist
+- [ ] Create branch `refactor/st-09047-json-http-payload-schema-contracts`
+- [ ] Create draft PR with story ID in title
+- [ ] Define test strategy before implementation: cover payload typing, request body serialization, and response data handling; first failing test should assert JSON/HTTP payload contracts no longer rely on broad `any`
+- [ ] Write or update the failing automated test before production changes when practical; if not practical, record why before implementation
+- [ ] Replace broad schema or response payload `any` seams in `packages/tools/src/data/json/types.ts` and `packages/tools/src/web/http/types.ts` with unknown-first or JSON-safe contracts
+- [ ] Preserve JSON parse/stringify/query/merge behavior and HTTP request/response helper behavior
+- [ ] Add/update production code until focused tests pass, keeping test evidence in checklist notes and PR body
+- [ ] Record explicit-`any` warning deltas for touched files in story docs
+- [ ] Add or update story documentation at `docs/st09047-json-http-payload-schema-contracts.md` (or document why not required)
+- [ ] Assess residual test impact; add/update additional automated tests when needed, or document why no further tests are required
+- [ ] Run full test suite before finalizing the PR and record results
+- [ ] Run lint (`pnpm lint`) before finalizing the PR and record results
+- [ ] Commit completed checklist items as logical commits and push updates
+- [ ] Mark PR Ready only after all story tasks are complete
+- [ ] Wait for merge; do not merge directly from local branch

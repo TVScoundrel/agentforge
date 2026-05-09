@@ -32,19 +32,21 @@
 
 ## Current Hotspot Snapshot
 
-Current `@typescript-eslint/no-explicit-any` baseline check (`pnpm lint:explicit-any:baseline`, 2026-05-05):
+Current `@typescript-eslint/no-explicit-any` baseline check (`pnpm lint:explicit-any:baseline`, 2026-05-09):
 
-- Total: `133` warnings (`src/**`)
-- By package: `cli 6`, `core 44`, `patterns 15`, `testing 3`, `tools 65`
+- Total: `104` warnings (`src/**`)
+- By package: `cli 6`, `core 33`, `patterns 3`, `testing 3`, `tools 59`
 
 Top runtime hotspots informing this feature slice:
 
-1. `packages/testing/src/runners/conversation-simulator.ts` duplicates the same broad agent/invoke-result seam that ST-09035 tightened in the agent test runner and can reuse the safer runner contracts next
-2. `packages/patterns/src/react/{types,builder,agent,prompts}.ts` still carries ReAct setup casts around tool arrays, checkpointers, prompt schemas, and compiled graph return typing
-3. `packages/tools/src/data/transformer/tools/{array-filter,array-sort,object-pick,object-omit}.ts` duplicate nested-path and object projection logic with local broad helper types
-4. `packages/core/src/tools/testing.ts` exposes broad mock-tool and simulator payload contracts that can be made generic without changing test helper behavior
-5. `packages/core/src/streaming/human-in-loop.ts` still has broad resume payload typing even after the interrupt boundary hardening work in ST-09024
-6. The next follow-on slice should keep EP-09 open for another short burst of small SOLID/DRY improvements rather than creating a new epic for the same quality lane
+1. `packages/testing/src/runners/conversation-simulator.ts` still uses direct verbose `console.log` calls instead of the repo's structured logger path
+2. `packages/core/src/streaming/{types,sse}.ts` still carries broad SSE formatter generic defaults around event mappers and formatter contracts
+3. `packages/core/src/langgraph/observability/errors.ts` still exposes broad error-context, metadata, and `toJSON()` payload seams
+4. `packages/testing/src/mocks/mock-tool.ts` still uses broad schema/default implementation seams in the testing mock-tool factory
+5. `packages/patterns/src/multi-agent/routing.ts` still relies on a broad cast for LLM routing decisions rather than schema-aligned structured output consumption
+6. `packages/tools/src/data/transformer/types.ts` still uses blanket `z.any()` boundaries for transformer value contracts
+7. `packages/tools/src/data/json/types.ts` and `packages/tools/src/web/http/types.ts` still expose broad payload/response seams on generic data-tool boundaries
+8. The next follow-on slices should keep EP-09 open for another short burst of small SOLID/DRY improvements rather than creating a new epic for the same quality lane
 
 Recent improvement snapshot:
 
@@ -81,8 +83,10 @@ Recent improvement snapshot:
 - `ST-09036` through `ST-09040` were added on 2026-05-03 as small SOLID/DRY follow-on slices covering conversation simulator contracts, ReAct builder/prompt boundaries, data transformer helper extraction, core mock-tool testing contracts, and human-in-loop streaming resume typing.
 - `ST-09036` merged on 2026-05-05 after tightening conversation simulator contracts around the shared `AgentTestAgent` and unknown-first message extraction seam, lowering the workspace explicit-`any` baseline from `135` to `133` and the `testing` package from `5` to `3`.
 - `ST-09041` was added on 2026-05-05 to move `ConversationSimulator` verbose diagnostics from direct `console.log` calls onto the repo's structured logging path without changing simulator behavior.
+- `ST-09040` merged on 2026-05-09 after tightening human-in-loop resume SSE payloads around the shared JSON-safe `InterruptPayload` contract, lowering the workspace explicit-`any` baseline from `106` to `104` and the `core` package from `35` to `33`.
+- `ST-09042` through `ST-09047` were added on 2026-05-09 to keep the EP-09 queue stocked with the next small hardening slices across SSE formatter contracts, error reporter payloads, testing mock-tool factories, multi-agent routing decisions, and schema-level tool payload boundaries.
 - `EP-09` remains open as the daily hardening stream, with the active queue now centered on testing-contract follow-ons and small SOLID/DRY helper extractions.
-- A fresh follow-on slice is now queued behind current Ready work for testing runner type-boundary cleanup, ReAct boundary tightening, transformer DRY helper extraction, core testing-helper contracts, and streaming resume payload hardening.
+- The refreshed follow-on queue now extends beyond the current Ready lane so another few weeks of small SOLID/DRY work can be pulled without re-planning the epic.
 
 ---
 
@@ -105,7 +109,7 @@ Recent improvement snapshot:
 
 ## Story Coverage by Epic
 
-- EP-09: ST-09001, ST-09002, ST-09003, ST-09004, ST-09005, ST-09006, ST-09007, ST-09008, ST-09009, ST-09010, ST-09011, ST-09012, ST-09013, ST-09014, ST-09015, ST-09016, ST-09017, ST-09018, ST-09019, ST-09020, ST-09021, ST-09022, ST-09023, ST-09024, ST-09025, ST-09026, ST-09027, ST-09028, ST-09029, ST-09030, ST-09031, ST-09032, ST-09033, ST-09034, ST-09035, ST-09036, ST-09037, ST-09038, ST-09039, ST-09040, ST-09041
+- EP-09: ST-09001, ST-09002, ST-09003, ST-09004, ST-09005, ST-09006, ST-09007, ST-09008, ST-09009, ST-09010, ST-09011, ST-09012, ST-09013, ST-09014, ST-09015, ST-09016, ST-09017, ST-09018, ST-09019, ST-09020, ST-09021, ST-09022, ST-09023, ST-09024, ST-09025, ST-09026, ST-09027, ST-09028, ST-09029, ST-09030, ST-09031, ST-09032, ST-09033, ST-09034, ST-09035, ST-09036, ST-09037, ST-09038, ST-09039, ST-09040, ST-09041, ST-09042, ST-09043, ST-09044, ST-09045, ST-09046, ST-09047
 
 ---
 
@@ -121,7 +125,7 @@ Recent improvement snapshot:
 
 ## Related Planning Documents
 
-- `planning/epics-and-stories.md` (EP-09 and ST-09001 through ST-09041)
+- `planning/epics-and-stories.md` (EP-09 and ST-09001 through ST-09047)
 - `planning/checklists/epic-09-story-tasks.md`
 - `planning/kanban-queue.md`
 - `scripts/no-explicit-any-baseline.json`
