@@ -5,6 +5,36 @@ All notable changes to AgentForge will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.16.27] - 2026-05-09
+
+### Added
+
+#### @agentforge/core - Human-in-Loop Resume Contract Coverage
+- Added focused runtime coverage in `packages/core/tests/streaming/human-in-loop.test.ts` for primitive and object resume payload serialization plus stable `resume-<interruptId>` event IDs
+- Added a standalone typecheck regression fixture in `packages/core/tests/streaming/human-in-loop.typecheck.ts` covering JSON-safe resume payload acceptance and rejection of non-serializable values
+- Added story documentation in `docs/st09040-human-in-loop-streaming-resume-contracts.md` capturing the contract tightening, validation evidence, and explicit-`any` delta
+
+### Changed
+
+#### @agentforge/core - Human-in-Loop Resume Boundary Hardening
+- Tightened `packages/core/src/streaming/human-in-loop.ts` so `ResumeEventData` and `formatResumeEvent(...)` use the shared JSON-safe `InterruptPayload` contract instead of broad `any`
+- Kept resume SSE event names, payload structure, and `resume-<interruptId>` ID formatting aligned with existing human-in-loop streaming behavior while matching the interrupt resume command/options boundary already used in LangGraph helpers
+
+### Fixed
+
+#### @agentforge/core - Resume Payload Type Safety
+- Removed the remaining broad resume payload `any` seams from the human-in-loop streaming helper file, reducing `packages/core/src/streaming/human-in-loop.ts` from `2` explicit `any` uses to `0`
+- Lowered the `core` explicit-`any` baseline from `35/119` to `33/119` and the workspace baseline from `106/289` to `104/289` without expanding scope beyond the shared resume-event helper contract
+
+### Published
+- All packages published to npm registry at version 0.16.27:
+  - @agentforge/core@0.16.27
+  - @agentforge/skills@0.16.27
+  - @agentforge/patterns@0.16.27
+  - @agentforge/tools@0.16.27
+  - @agentforge/testing@0.16.27
+  - @agentforge/cli@0.16.27
+
 ## [0.16.26] - 2026-05-08
 
 ### Added
