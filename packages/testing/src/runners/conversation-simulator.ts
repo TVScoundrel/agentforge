@@ -3,7 +3,9 @@ import { BaseMessage, HumanMessage } from '@langchain/core/messages';
 import type { AgentTestAgent } from './agent-test-runner.js';
 import { extractMessages } from './agent-test-runner.js';
 
-const conversationSimulatorLogger = createLogger('agentforge:testing:conversation-simulator');
+const conversationSimulatorLogger = createLogger(
+  'agentforge:testing:runners:conversation-simulator'
+);
 
 /**
  * Configuration for conversation simulator
