@@ -5,6 +5,36 @@ All notable changes to AgentForge will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.16.28] - 2026-05-12
+
+### Added
+
+#### @agentforge/testing - Structured Logger Regression Coverage
+- Added focused regression coverage in `packages/testing/tests/runners/conversation-simulator.test.ts` for verbose-enabled structured logger routing, verbose-disabled silence, and preserved user/AI turn output
+- Added story documentation in `docs/st09041-conversation-simulator-structured-logger.md` covering the logger verification approach, validation evidence, and explicit-`any` delta
+
+### Changed
+
+#### @agentforge/testing - Conversation Simulator Verbose Logging
+- Replaced the verbose `console.log` path in `packages/testing/src/runners/conversation-simulator.ts` with the shared structured logger from `@agentforge/core`
+- Added optional logger injection to `ConversationSimulatorConfig` so verbose output can be verified directly without coupling tests to global stdout
+- Preserved existing verbose turn text by continuing to emit the same `User: ...` and `AI: ...` strings through the structured logger path
+
+### Fixed
+
+#### @agentforge/testing - Logger Naming and Observability Consistency
+- Aligned the `ConversationSimulator` logger name with the repo convention as `agentforge:testing:runners:conversation-simulator`
+- Kept the `testing` explicit-`any` baseline stable at `3/51` and the workspace baseline stable at `104/289` while moving the verbose path onto the structured logging surface
+
+### Published
+- All packages published to npm registry at version 0.16.28:
+  - @agentforge/core@0.16.28
+  - @agentforge/skills@0.16.28
+  - @agentforge/patterns@0.16.28
+  - @agentforge/tools@0.16.28
+  - @agentforge/testing@0.16.28
+  - @agentforge/cli@0.16.28
+
 ## [0.16.27] - 2026-05-09
 
 ### Added
