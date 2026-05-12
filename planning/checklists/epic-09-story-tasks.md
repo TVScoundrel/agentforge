@@ -1600,18 +1600,18 @@ Implementation notes:
 **Branch:** `refactor/st-09041-conversation-simulator-structured-logger`
 
 ### Checklist
-- [ ] Create branch `refactor/st-09041-conversation-simulator-structured-logger`
-- [ ] Create draft PR with story ID in title
-- [ ] Define test strategy before implementation: cover verbose logging enabled/disabled paths and emitted user/AI turn content; first failing test should assert verbose output routes through the structured logger instead of `console.log`
-- [ ] Write or update the failing automated test before production changes when practical; if not practical, record why before implementation
-- [ ] Replace direct verbose `console.log` calls in `packages/testing/src/runners/conversation-simulator.ts` with a testing-package structured logger or shared logger helper
-- [ ] Preserve verbose opt-in behavior, emitted turn information, and all non-verbose simulator behavior
-- [ ] Add/update production code until focused tests pass, keeping test evidence in checklist notes and PR body
-- [ ] Record any observability/test-double approach used to verify logger output in story docs
-- [ ] Add or update story documentation at `docs/st09041-conversation-simulator-structured-logger.md` (or document why not required)
-- [ ] Assess residual test impact; add/update additional automated tests when needed, or document why no further tests are required
-- [ ] Run full test suite before finalizing the PR and record results
-- [ ] Run lint (`pnpm lint`) before finalizing the PR and record results
+- [x] Create branch `refactor/st-09041-conversation-simulator-structured-logger`
+- [x] Create draft PR with story ID in title
+- [x] Define test strategy before implementation: cover verbose logging enabled/disabled paths and emitted user/AI turn content; first failing test should assert verbose output routes through the structured logger instead of `console.log`
+- [x] Write or update the failing automated test before production changes when practical; if not practical, record why before implementation
+- [x] Replace direct verbose `console.log` calls in `packages/testing/src/runners/conversation-simulator.ts` with a testing-package structured logger or shared logger helper
+- [x] Preserve verbose opt-in behavior, emitted turn information, and all non-verbose simulator behavior
+- [x] Add/update production code until focused tests pass, keeping test evidence in checklist notes and PR body
+- [x] Record any observability/test-double approach used to verify logger output in story docs
+- [x] Add or update story documentation at `docs/st09041-conversation-simulator-structured-logger.md` (or document why not required)
+- [x] Assess residual test impact; add/update additional automated tests when needed, or document why no further tests are required
+- [x] Run full test suite before finalizing the PR and record results
+- [x] Run lint (`pnpm lint`) before finalizing the PR and record results
 - [ ] Commit completed checklist items as logical commits and push updates
 - [ ] Mark PR Ready only after all story tasks are complete
 - [ ] Wait for merge; do not merge directly from local branch
