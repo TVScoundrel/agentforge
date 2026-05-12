@@ -1,6 +1,9 @@
+import { createLogger, type Logger } from '@agentforge/core';
 import { BaseMessage, HumanMessage } from '@langchain/core/messages';
 import type { AgentTestAgent } from './agent-test-runner.js';
 import { extractMessages } from './agent-test-runner.js';
+
+const conversationSimulatorLogger = createLogger('agentforge:testing:conversation-simulator');
 
 /**
  * Configuration for conversation simulator
@@ -20,6 +23,11 @@ export interface ConversationSimulatorConfig {
    * Whether to log conversation
    */
   verbose?: boolean;
+
+  /**
+   * Structured logger used for verbose conversation output
+   */
+  logger?: Logger;
   
   /**
    * Stop condition
@@ -116,18 +124,14 @@ export class ConversationSimulator<TState = unknown> {
         const userMessage = new HumanMessage(input);
         messages.push(userMessage);
         
-        if (this.config.verbose) {
-          console.log(`User: ${input}`);
-        }
+        this.logVerboseTurn('User', input);
         
         // Get agent response
         const result = await this.agent.invoke({ messages });
         const aiMessage = extractLatestMessage(result);
         messages.push(aiMessage);
         
-        if (this.config.verbose) {
-          console.log(`AI: ${aiMessage.content}`);
-        }
+        this.logVerboseTurn('AI', aiMessage.content);
         
         turns++;
         
@@ -208,6 +212,15 @@ export class ConversationSimulator<TState = unknown> {
       stopReason,
       error,
     };
+  }
+
+  private logVerboseTurn(role: 'User' | 'AI', content: unknown): void {
+    if (!this.config.verbose) {
+      return;
+    }
+
+    const logger = this.config.logger ?? conversationSimulatorLogger;
+    logger.info(`${role}: ${String(content)}`);
   }
 }
 

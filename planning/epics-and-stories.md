@@ -1547,7 +1547,7 @@
 **Priority:** P2 (Medium)
 **Estimate:** 2 hours
 **Dependencies:** ST-09036
-**Status:** Ready
+**Status:** In Progress
 
 **Acceptance criteria:**
 - [ ] `packages/testing/src/runners/conversation-simulator.ts` replaces direct verbose `console.log` calls with a testing-package structured logger or shared logger helper

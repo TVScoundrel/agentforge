@@ -1,9 +1,24 @@
+import { createLogger } from '@agentforge/core';
 import { AIMessage, HumanMessage } from '@langchain/core/messages';
-import { describe, expect, it } from 'vitest';
+import { Writable } from 'stream';
+import { describe, expect, it, vi } from 'vitest';
 import {
   ConversationSimulator,
   createConversationSimulator,
 } from '../../src/runners/conversation-simulator.js';
+
+class CaptureStream extends Writable {
+  public output: string[] = [];
+
+  _write(
+    chunk: string | Uint8Array,
+    _encoding: BufferEncoding,
+    callback: (error?: Error | null) => void
+  ): void {
+    this.output.push(chunk.toString());
+    callback();
+  }
+}
 
 describe('conversation simulator', () => {
   it('simulates a static conversation and appends only the latest agent message each turn', async () => {
@@ -100,5 +115,64 @@ describe('conversation simulator', () => {
     expect(result.turns).toBe(0);
     expect(result.messages).toEqual([new HumanMessage('hello')]);
     expect(result.error).toBeInstanceOf(Error);
+  });
+
+  it('routes verbose turn output through the structured logger instead of console.log', async () => {
+    const stream = new CaptureStream();
+    const logger = createLogger('test-conversation-simulator', {
+      destination: stream,
+      includeTimestamp: false,
+    });
+    const consoleSpy = vi.spyOn(console, 'log').mockImplementation(() => {});
+
+    try {
+      const simulator = createConversationSimulator(
+        {
+          invoke: async (input: { messages: Array<HumanMessage | AIMessage> }) => ({
+            messages: [...input.messages, new AIMessage(`reply ${input.messages.length}`)],
+          }),
+        },
+        {
+          verbose: true,
+          logger,
+        }
+      );
+
+      await simulator.simulate(['hello']);
+    } finally {
+      consoleSpy.mockRestore();
+    }
+
+    expect(stream.output).toHaveLength(2);
+    expect(stream.output[0]).toContain('User: hello');
+    expect(stream.output[1]).toContain('AI: reply 1');
+    expect(consoleSpy).not.toHaveBeenCalled();
+  });
+
+  it('does not emit verbose logs when verbose mode is disabled', async () => {
+    const stream = new CaptureStream();
+    const logger = createLogger('test-conversation-simulator', {
+      destination: stream,
+      includeTimestamp: false,
+    });
+    const consoleSpy = vi.spyOn(console, 'log').mockImplementation(() => {});
+
+    try {
+      const simulator = createConversationSimulator(
+        {
+          invoke: async (input: { messages: Array<HumanMessage | AIMessage> }) => ({
+            messages: [...input.messages, new AIMessage(`reply ${input.messages.length}`)],
+          }),
+        },
+        { logger }
+      );
+
+      await simulator.simulate(['hello']);
+    } finally {
+      consoleSpy.mockRestore();
+    }
+
+    expect(stream.output).toEqual([]);
+    expect(consoleSpy).not.toHaveBeenCalled();
   });
 });
