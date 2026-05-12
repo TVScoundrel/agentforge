@@ -4,11 +4,11 @@
 
 ## Queue Status Summary
 
-- **Ready:** 4 stories
+- **Ready:** 5 stories
 - **In Progress:** 0 stories
-- **In Review:** 1 story
+- **In Review:** 0 stories
 - **Blocked:** 0 stories
-- **Backlog:** 2 stories
+- **Backlog:** 1 story
 
 ---
 
@@ -18,6 +18,7 @@
 - `ST-09043` - Tighten Error Reporter Context Contracts
 - `ST-09044` - Tighten Testing Mock Tool Factory Contracts
 - `ST-09045` - Tighten Multi-Agent Routing Decision Contracts
+- `ST-09046` - Tighten Transformer Schema Value Contracts
 ---
 
 ## In Progress
@@ -28,7 +29,7 @@ _No stories currently in progress_
 
 ## In Review
 
-- `ST-09041` - Adopt Structured Logger in Conversation Simulator
+_No stories currently in review_
 
 ---
 
@@ -40,7 +41,6 @@ _No stories currently blocked_
 
 ## Backlog
 
-- `ST-09046` - Tighten Transformer Schema Value Contracts
 - `ST-09047` - Tighten JSON and HTTP Payload Schema Contracts
 
 ---

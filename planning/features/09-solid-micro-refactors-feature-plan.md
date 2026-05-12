@@ -3,7 +3,7 @@
 **Epic Range:** EP-09 through EP-09
 **Status:** In Progress
 **Last Updated:** 2026-05-12
-**Active Story:** ST-09041
+**Active Story:** None
 
 ---
 
@@ -84,8 +84,9 @@ Recent improvement snapshot:
 - `ST-09036` merged on 2026-05-05 after tightening conversation simulator contracts around the shared `AgentTestAgent` and unknown-first message extraction seam, lowering the workspace explicit-`any` baseline from `135` to `133` and the `testing` package from `5` to `3`.
 - `ST-09041` was added on 2026-05-05 to move `ConversationSimulator` verbose diagnostics from direct `console.log` calls onto the repo's structured logging path without changing simulator behavior.
 - `ST-09040` merged on 2026-05-09 after tightening human-in-loop resume SSE payloads around the shared JSON-safe `InterruptPayload` contract, lowering the workspace explicit-`any` baseline from `106` to `104` and the `core` package from `35` to `33`.
+- `ST-09041` merged on 2026-05-12 after moving `ConversationSimulator` verbose output onto the shared structured logger path, preserving opt-in turn emission semantics and absorbing a review follow-up to align logger naming with the repo convention.
 - `ST-09042` through `ST-09047` were added on 2026-05-09 to keep the EP-09 queue stocked with the next small hardening slices across SSE formatter contracts, error reporter payloads, testing mock-tool factories, multi-agent routing decisions, and schema-level tool payload boundaries.
-- `EP-09` remains open as the daily hardening stream, with the active queue now centered on testing-contract follow-ons and small SOLID/DRY helper extractions.
+- `EP-09` remains open as the daily hardening stream, with the active queue now centered on the next type-boundary slices across SSE formatting, error reporter payloads, mock-tool factories, multi-agent routing, and schema-level tool contracts.
 - The refreshed follow-on queue now extends beyond the current Ready lane so another few weeks of small SOLID/DRY work can be pulled without re-planning the epic.
 
 ---

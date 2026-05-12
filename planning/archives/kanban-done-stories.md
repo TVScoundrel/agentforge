@@ -2,11 +2,18 @@
 
 **Purpose:** Track completed and merged stories for the Relational Database Access Tool project.
 
-**Last Updated:** 2026-05-09
+**Last Updated:** 2026-05-12
 
 ---
 
 ## Completed Stories
+
+### ST-09041: Adopt Structured Logger in Conversation Simulator
+- **Merged:** 2026-05-12
+- **PR:** https://github.com/TVScoundrel/agentforge/pull/110 (commit 69d2617)
+- **Epic:** EP-09 (SOLID Micro-Refactors and Type Boundary Hardening)
+- **Estimate:** 2 hours
+- **Outcome:** Replaced the verbose `console.log` path in `@agentforge/testing`'s `ConversationSimulator` with the shared structured logger from `@agentforge/core`, preserving opt-in verbose behavior and the existing `User: ...` and `AI: ...` turn text while adding optional logger injection for direct test verification. The story added focused regression coverage for verbose-enabled and verbose-disabled paths, documented the `CaptureStream` plus `console.log` spy verification approach, and absorbed a review follow-up to align the logger name with the repo's `agentforge:<package>:<module>:<component>` convention.
 
 ### ST-09040: Tighten Human-in-Loop Streaming Resume Contracts
 - **Merged:** 2026-05-09
