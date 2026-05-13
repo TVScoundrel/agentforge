@@ -1624,7 +1624,7 @@ Implementation notes:
 
 ### Checklist
 - [x] Create branch `fix/st-09042-sse-formatter-generic-contracts`
-- [ ] Create draft PR with story ID in title
+- [x] Create draft PR with story ID in title
 - [x] Define test strategy before implementation: cover typed event mappers, default JSON serialization, retry prelude behavior, and heartbeat stability; first failing test should assert SSE formatter generics reject broad `any` assumptions
 - [x] Write or update the failing automated test before production changes when practical; if not practical, record why before implementation
 - [x] Replace broad generic `any` defaults in `packages/core/src/streaming/types.ts` and `packages/core/src/streaming/sse.ts` with unknown-first SSE formatter contracts
@@ -1635,8 +1635,8 @@ Implementation notes:
 - [x] Assess residual test impact; add/update additional automated tests when needed, or document why no further tests are required
 - [x] Run full test suite before finalizing the PR and record results
 - [x] Run lint (`pnpm lint`) before finalizing the PR and record results
-- [ ] Commit completed checklist items as logical commits and push updates
-- [ ] Mark PR Ready only after all story tasks are complete
+- [x] Commit completed checklist items as logical commits and push updates
+- [x] Mark PR Ready only after all story tasks are complete
 - [ ] Wait for merge; do not merge directly from local branch
 
 ### Notes
@@ -1661,6 +1661,8 @@ Implementation notes:
   - `packages/core/src/streaming/types.ts` and `packages/core/src/streaming/sse.ts` improved from `3 -> 0`
   - `core` baseline improved from `33/119 -> 28/119`
   - workspace baseline improved from `104/289 -> 99/289`
+- PR workflow:
+  - Draft PR created as #111 and marked `Ready for review` after validation completed
 
 ---
 
