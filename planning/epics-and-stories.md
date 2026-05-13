@@ -1564,7 +1564,7 @@
 **Priority:** P2 (Medium)
 **Estimate:** 2 hours
 **Dependencies:** ST-09040
-**Status:** In Review
+**Status:** Merged (PR #111, 2026-05-13)
 
 **Acceptance criteria:**
 - [ ] `packages/core/src/streaming/types.ts` and `packages/core/src/streaming/sse.ts` replace broad SSE formatter generic `any` defaults with unknown-first event/value contracts
@@ -1632,7 +1632,7 @@
 **Priority:** P2 (Medium)
 **Estimate:** 3 hours
 **Dependencies:** ST-09038
-**Status:** Backlog
+**Status:** Ready
 
 **Acceptance criteria:**
 - [ ] `packages/tools/src/data/transformer/types.ts` replaces broad `z.any()` schema boundaries with shared unknown-first or JSON-like value contracts where behavior allows

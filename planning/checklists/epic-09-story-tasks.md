@@ -1637,7 +1637,7 @@ Implementation notes:
 - [x] Run lint (`pnpm lint`) before finalizing the PR and record results
 - [x] Commit completed checklist items as logical commits and push updates
 - [x] Mark PR Ready only after all story tasks are complete
-- [ ] Wait for merge; do not merge directly from local branch
+- [x] Wait for merge; do not merge directly from local branch
 
 ### Notes
 
@@ -1663,6 +1663,8 @@ Implementation notes:
   - workspace baseline improved from `104/289 -> 99/289`
 - PR workflow:
   - Draft PR created as #111 and marked `Ready for review` after validation completed
+- Merge:
+  - Merged via PR #111 on 2026-05-13; merge commit `b7eedcc`
 
 ---
 

@@ -577,6 +577,13 @@
 - **Estimate:** 3 hours
 - **Outcome:** Extracted shared transformer helpers for nested value lookup plus object projection/omission, preserved filter and sort behavior across nested objects, functions, and primitive boxing, and intentionally hardened special-key projection against prototype mutation. Added focused regression coverage and reduced touched transformer helper/tool explicit-`any` usage from 6 to 0.
 
+### ST-09042: Tighten SSE Formatter Generic Event Contracts
+- **Merged:** 2026-05-13
+- **PR:** https://github.com/TVScoundrel/agentforge/pull/111 (commit b7eedcc)
+- **Epic:** EP-09 (SOLID Micro-Refactors and Type Boundary Hardening)
+- **Estimate:** 2 hours
+- **Outcome:** Tightened the shared SSE formatter contracts around unknown-first generic defaults, preserved JSON fallback, retry prelude, heartbeat timing, and event ID sequencing, and added a dedicated typecheck regression plus typed runtime mapper coverage while reducing touched SSE explicit-`any` usage from 3 to 0.
+
 ---
 
 ## Archive Format
