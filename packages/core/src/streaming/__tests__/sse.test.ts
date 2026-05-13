@@ -33,9 +33,9 @@ describe('SSE Support', () => {
     });
 
     it('should use custom event types', async () => {
-      const formatter = createSSEFormatter({
+      const formatter = createSSEFormatter<{ content: string }>({
         eventTypes: {
-          token: (data: any) => ({
+          token: (data) => ({
             event: 'token',
             data: data.content,
           }),
@@ -59,9 +59,9 @@ describe('SSE Support', () => {
     });
 
     it('should handle multi-line data', async () => {
-      const formatter = createSSEFormatter({
+      const formatter = createSSEFormatter<{ type: string }>({
         eventTypes: {
-          message: (data: any) => ({
+          message: (_data) => ({
             event: 'message',
             data: 'line1\nline2\nline3',
           }),
@@ -145,4 +145,3 @@ describe('SSE Support', () => {
     });
   });
 });
-

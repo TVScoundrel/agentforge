@@ -103,9 +103,11 @@ export interface SSEEvent {
 /**
  * SSE formatter options
  */
-export interface SSEFormatterOptions<T = any> {
+export type SSEEventMapper<TData = unknown> = (data: TData) => SSEEvent;
+
+export interface SSEFormatterOptions<T = unknown> {
   /** Event type mappers */
-  eventTypes?: Record<string, (data: T) => SSEEvent>;
+  eventTypes?: Record<string, SSEEventMapper<T>>;
   /** Heartbeat interval (ms) */
   heartbeat?: number;
   /** Default retry interval (ms) */
@@ -115,7 +117,7 @@ export interface SSEFormatterOptions<T = any> {
 /**
  * SSE formatter interface
  */
-export interface SSEFormatter<T = any> {
+export interface SSEFormatter<T = unknown> {
   /** Format stream as SSE events */
   format(stream: AsyncIterable<T>): AsyncIterable<string>;
 }
