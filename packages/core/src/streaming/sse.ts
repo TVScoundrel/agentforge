@@ -58,7 +58,7 @@ function formatSSEEvent(event: SSEEvent): string {
  * res.end();
  * ```
  */
-export function createSSEFormatter<T = any>(
+export function createSSEFormatter<T = unknown>(
   options: SSEFormatterOptions<T> = {}
 ): SSEFormatter<T> {
   const { eventTypes = {}, heartbeat = 0, retry } = options;
@@ -83,19 +83,17 @@ export function createSSEFormatter<T = any>(
 
         for await (const item of stream) {
           // Determine event type
-          let event: SSEEvent;
+          let matchedEvent: SSEEvent | undefined;
 
           // Try to match event type
-          let matched = false;
-          for (const [type, mapper] of Object.entries(eventTypes)) {
+          for (const [, mapper] of Object.entries(eventTypes)) {
             try {
               const mapped = mapper(item);
               if (mapped) {
-                event = {
+                matchedEvent = {
                   ...mapped,
                   id: String(++lastEventId),
                 };
-                matched = true;
                 break;
               }
             } catch {
@@ -104,14 +102,14 @@ export function createSSEFormatter<T = any>(
           }
 
           // Default: serialize as JSON
-          if (!matched) {
-            event = {
+          const event =
+            matchedEvent ??
+            ({
               data: JSON.stringify(item),
               id: String(++lastEventId),
-            };
-          }
+            } satisfies SSEEvent);
 
-          yield formatSSEEvent(event!);
+          yield formatSSEEvent(event);
 
           // Reset heartbeat timer
           if (heartbeatInterval) {
@@ -162,4 +160,3 @@ export function parseSSEEvent(eventString: string): SSEEvent | null {
 
   return event.data !== undefined ? (event as SSEEvent) : null;
 }
-

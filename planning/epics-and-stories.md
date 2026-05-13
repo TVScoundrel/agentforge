@@ -1564,7 +1564,7 @@
 **Priority:** P2 (Medium)
 **Estimate:** 2 hours
 **Dependencies:** ST-09040
-**Status:** Ready
+**Status:** In Review
 
 **Acceptance criteria:**
 - [ ] `packages/core/src/streaming/types.ts` and `packages/core/src/streaming/sse.ts` replace broad SSE formatter generic `any` defaults with unknown-first event/value contracts
