@@ -5,6 +5,36 @@ All notable changes to AgentForge will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.16.29] - 2026-05-13
+
+### Added
+
+#### @agentforge/core - SSE Formatter Contract Regression Coverage
+- Added focused typed runtime coverage in `packages/core/src/streaming/__tests__/sse.test.ts` for explicit event-mapper payload typing, default JSON serialization, retry prelude emission, and multi-line SSE formatting
+- Added a standalone typecheck regression fixture in `packages/core/tests/streaming/sse.typecheck.ts` covering unknown-first mapper input and rejection of direct property access without an explicit payload type
+- Added story documentation in `docs/st09042-sse-formatter-generic-contracts.md` capturing the contract tightening, validation evidence, and explicit-`any` delta
+
+### Changed
+
+#### @agentforge/core - SSE Formatter Generic Hardening
+- Tightened `packages/core/src/streaming/types.ts` and `packages/core/src/streaming/sse.ts` so `SSEFormatterOptions`, `SSEFormatter`, and `createSSEFormatter(...)` use unknown-first generic defaults instead of broad `any`
+- Preserved default JSON fallback, mapper-driven event formatting, retry prelude behavior, heartbeat timing, and event ID sequencing while making untyped mapper inputs require narrowing or explicit payload annotation
+
+### Fixed
+
+#### @agentforge/core - SSE Formatter Type Safety
+- Removed the remaining broad explicit-`any` seams from the shared SSE formatter source files, reducing touched SSE explicit-`any` usage from `3` to `0`
+- Lowered the `core` explicit-`any` baseline from `33/119` to `28/119` and the workspace baseline from `104/289` to `99/289` without changing SSE runtime semantics
+
+### Published
+- All packages published to npm registry at version 0.16.29:
+  - @agentforge/core@0.16.29
+  - @agentforge/skills@0.16.29
+  - @agentforge/patterns@0.16.29
+  - @agentforge/tools@0.16.29
+  - @agentforge/testing@0.16.29
+  - @agentforge/cli@0.16.29
+
 ## [0.16.28] - 2026-05-12
 
 ### Added
