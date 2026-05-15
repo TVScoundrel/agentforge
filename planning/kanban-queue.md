@@ -14,7 +14,6 @@
 
 ## Ready
 
-- `ST-09043` - Tighten Error Reporter Context Contracts
 - `ST-09044` - Tighten Testing Mock Tool Factory Contracts
 - `ST-09045` - Tighten Multi-Agent Routing Decision Contracts
 - `ST-09046` - Tighten Transformer Schema Value Contracts

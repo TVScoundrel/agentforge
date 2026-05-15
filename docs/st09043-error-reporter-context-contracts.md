@@ -8,14 +8,14 @@ Tightened the public error-reporter contracts in `packages/core/src/langgraph/ob
 
 Touched files:
 - `packages/core/src/langgraph/observability/errors.ts`
-- `packages/core/tests/langgraph/observability/errors.typecheck.ts`
+- `packages/core/src/langgraph/observability/errors.contracts.typecheck.ts`
 
 ## Test Strategy
 
 Test-first path used.
 
 The first failing automated gate was a standalone typecheck fixture for `AgentError` and `createErrorReporter(...)`:
-- `./node_modules/.bin/tsc --noEmit --strict --module NodeNext --moduleResolution NodeNext --target ES2022 --skipLibCheck --types node packages/core/tests/langgraph/observability/errors.typecheck.ts`
+- `./node_modules/.bin/tsc --noEmit --strict --module NodeNext --moduleResolution NodeNext --target ES2022 --skipLibCheck --types node packages/core/src/langgraph/observability/errors.contracts.typecheck.ts`
 - initial failure included:
   - `Unused '@ts-expect-error' directive.`
 
@@ -24,7 +24,7 @@ That failure proved the public error state and metadata contracts were still wid
 ## Validation
 
 Focused validation after implementation:
-- `./node_modules/.bin/tsc --noEmit --strict --module NodeNext --moduleResolution NodeNext --target ES2022 --skipLibCheck --types node packages/core/tests/langgraph/observability/errors.typecheck.ts`
+- `./node_modules/.bin/tsc --noEmit --strict --module NodeNext --moduleResolution NodeNext --target ES2022 --skipLibCheck --types node packages/core/src/langgraph/observability/errors.contracts.typecheck.ts`
 - `pnpm test --run packages/core/tests/langgraph/observability/errors.test.ts`
 - `pnpm --filter @agentforge/core typecheck`
 - `pnpm lint:explicit-any:baseline`

@@ -85,37 +85,17 @@ export class AgentError extends Error {
    * Convert error to JSON for logging/reporting
    */
   toJSON(): SerializedAgentError {
-    const serializedError: SerializedAgentError = {
+    return {
       name: this.name,
       message: this.message,
+      code: this.code,
+      node: this.node,
+      state: this.state,
+      metadata: this.metadata,
       timestamp: this.timestamp,
+      stack: this.stack,
+      cause: this.cause ? toSerializedErrorCause(this.cause) : undefined,
     };
-
-    if (this.code !== undefined) {
-      serializedError.code = this.code;
-    }
-
-    if (this.node !== undefined) {
-      serializedError.node = this.node;
-    }
-
-    if (this.state !== undefined) {
-      serializedError.state = this.state;
-    }
-
-    if (this.metadata !== undefined) {
-      serializedError.metadata = this.metadata;
-    }
-
-    if (this.stack !== undefined) {
-      serializedError.stack = this.stack;
-    }
-
-    if (this.cause !== undefined) {
-      serializedError.cause = toSerializedErrorCause(this.cause);
-    }
-
-    return serializedError;
   }
 
   /**
@@ -139,17 +119,13 @@ export class AgentError extends Error {
     return parts.join('\n');
   }
 }
+
 function toSerializedErrorCause(cause: Error): SerializedErrorCause {
-  const serializedCause: SerializedErrorCause = {
+  return {
     name: cause.name,
     message: cause.message,
+    stack: cause.stack,
   };
-
-  if (cause.stack !== undefined) {
-    serializedCause.stack = cause.stack;
-  }
-
-  return serializedCause;
 }
 
 /**

@@ -1693,11 +1693,11 @@ Implementation notes:
 
 - Test-first evidence:
   - Initial standalone typecheck gate failed as expected:
-    - `./node_modules/.bin/tsc --noEmit --strict --module NodeNext --moduleResolution NodeNext --target ES2022 --skipLibCheck --types node packages/core/tests/langgraph/observability/errors.typecheck.ts`
+    - `./node_modules/.bin/tsc --noEmit --strict --module NodeNext --moduleResolution NodeNext --target ES2022 --skipLibCheck --types node packages/core/src/langgraph/observability/errors.contracts.typecheck.ts`
   - Failure mode before implementation included:
     - `Unused '@ts-expect-error' directive.`
 - Focused validation after implementation:
-  - `./node_modules/.bin/tsc --noEmit --strict --module NodeNext --moduleResolution NodeNext --target ES2022 --skipLibCheck --types node packages/core/tests/langgraph/observability/errors.typecheck.ts` passed
+  - `./node_modules/.bin/tsc --noEmit --strict --module NodeNext --moduleResolution NodeNext --target ES2022 --skipLibCheck --types node packages/core/src/langgraph/observability/errors.contracts.typecheck.ts` passed
   - `pnpm test --run packages/core/tests/langgraph/observability/errors.test.ts` -> `1` file, `19` tests passed
   - `pnpm --filter @agentforge/core typecheck` passed
   - `pnpm lint:explicit-any:baseline` -> `core 23/119`, workspace `94/289`
