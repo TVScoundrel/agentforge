@@ -5,6 +5,27 @@ All notable changes to AgentForge will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.16.30] - 2026-05-15
+
+### Added
+
+#### @agentforge/core - Error Reporter Contract Regression Coverage
+- Added a source-included typecheck regression fixture in `packages/core/src/langgraph/observability/errors.contracts.typecheck.ts` covering unknown-first `state`, JSON-safe `metadata`, and typed serialized error payload access
+- Kept focused runtime coverage in `packages/core/tests/langgraph/observability/errors.test.ts` validating serialized payloads, optional state inclusion, wrapped-node propagation, async error paths, and manual reporting
+- Added story documentation in `docs/st09043-error-reporter-context-contracts.md` capturing the contract tightening, review follow-ups, validation evidence, and explicit-`any` delta
+
+### Changed
+
+#### @agentforge/core - Error Reporter Context Hardening
+- Tightened `packages/core/src/langgraph/observability/errors.ts` so error reporter state, metadata, and `toJSON()` payload contracts use unknown-first and JSON-safe aliases instead of broad `any`
+- Preserved `AgentError`, `createErrorReporter(...)`, wrapped-node reporting, optional state inclusion, and fallback reporting behavior while keeping serialized optional keys present for runtime compatibility
+
+### Fixed
+
+#### @agentforge/core - Error Payload Type Safety
+- Removed the remaining broad explicit-`any` seams from `packages/core/src/langgraph/observability/errors.ts`, reducing the touched file from `5` explicit `any` uses to `0`
+- Lowered the `core` explicit-`any` baseline from `28/119` to `23/119` and the workspace baseline from `99/289` to `94/289` without expanding scope beyond the shared observability error boundary
+
 ## [0.16.29] - 2026-05-13
 
 ### Added
