@@ -24,12 +24,13 @@ void serializedMessage;
 void serializedTimestamp;
 
 // @ts-expect-error state should be unknown-first and require narrowing
-error.state.count;
+void error.state.count;
 
 // @ts-expect-error serialized result should not expose arbitrary indexed properties
-serialized.randomField;
+void serialized.randomField;
 
-new AgentError('Invalid metadata', {
+const invalidMetadataError = new AgentError('Invalid metadata', {
   // @ts-expect-error metadata should be JSON-safe
   metadata: { callback: () => 'nope' },
 });
+void invalidMetadataError;
