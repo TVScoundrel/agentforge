@@ -4,6 +4,26 @@
  * Provides enhanced error classes and error reporting for better debugging.
  */
 
+import type { JsonObject } from './payload.js';
+
+type SerializedErrorCause = {
+  name: string;
+  message: string;
+  stack?: string;
+};
+
+type SerializedAgentError = {
+  name: string;
+  message: string;
+  code?: string;
+  node?: string;
+  state?: unknown;
+  metadata?: JsonObject;
+  timestamp: number;
+  stack?: string;
+  cause?: SerializedErrorCause;
+};
+
 /**
  * Error context information
  */
@@ -21,12 +41,12 @@ export interface ErrorContext {
   /**
    * Current state when the error occurred
    */
-  state?: any;
+  state?: unknown;
 
   /**
    * Additional metadata
    */
-  metadata?: Record<string, any>;
+  metadata?: JsonObject;
 
   /**
    * Original error that caused this error
@@ -40,8 +60,8 @@ export interface ErrorContext {
 export class AgentError extends Error {
   public readonly code?: string;
   public readonly node?: string;
-  public readonly state?: any;
-  public readonly metadata?: Record<string, any>;
+  public readonly state?: unknown;
+  public readonly metadata?: JsonObject;
   public readonly cause?: Error;
   public readonly timestamp: number;
 
@@ -64,24 +84,38 @@ export class AgentError extends Error {
   /**
    * Convert error to JSON for logging/reporting
    */
-  toJSON(): Record<string, any> {
-    return {
+  toJSON(): SerializedAgentError {
+    const serializedError: SerializedAgentError = {
       name: this.name,
       message: this.message,
-      code: this.code,
-      node: this.node,
-      state: this.state,
-      metadata: this.metadata,
       timestamp: this.timestamp,
-      stack: this.stack,
-      cause: this.cause
-        ? {
-            name: this.cause.name,
-            message: this.cause.message,
-            stack: this.cause.stack,
-          }
-        : undefined,
     };
+
+    if (this.code !== undefined) {
+      serializedError.code = this.code;
+    }
+
+    if (this.node !== undefined) {
+      serializedError.node = this.node;
+    }
+
+    if (this.state !== undefined) {
+      serializedError.state = this.state;
+    }
+
+    if (this.metadata !== undefined) {
+      serializedError.metadata = this.metadata;
+    }
+
+    if (this.stack !== undefined) {
+      serializedError.stack = this.stack;
+    }
+
+    if (this.cause !== undefined) {
+      serializedError.cause = toSerializedErrorCause(this.cause);
+    }
+
+    return serializedError;
   }
 
   /**
@@ -104,6 +138,18 @@ export class AgentError extends Error {
 
     return parts.join('\n');
   }
+}
+function toSerializedErrorCause(cause: Error): SerializedErrorCause {
+  const serializedCause: SerializedErrorCause = {
+    name: cause.name,
+    message: cause.message,
+  };
+
+  if (cause.stack !== undefined) {
+    serializedCause.stack = cause.stack;
+  }
+
+  return serializedCause;
 }
 
 /**
@@ -240,4 +286,3 @@ class ErrorReporterImpl implements ErrorReporter {
 export function createErrorReporter(options: ErrorReporterOptions): ErrorReporter {
   return new ErrorReporterImpl(options);
 }
-
