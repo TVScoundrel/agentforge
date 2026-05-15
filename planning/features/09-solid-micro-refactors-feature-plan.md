@@ -3,7 +3,7 @@
 **Epic Range:** EP-09 through EP-09
 **Status:** In Progress
 **Last Updated:** 2026-05-15
-**Active Story:** ST-09043
+**Active Story:** None
 
 ---
 
@@ -32,19 +32,18 @@
 
 ## Current Hotspot Snapshot
 
-Current `@typescript-eslint/no-explicit-any` baseline check (`pnpm lint:explicit-any:baseline`, 2026-05-13):
+Current `@typescript-eslint/no-explicit-any` baseline check (`pnpm lint:explicit-any:baseline`, 2026-05-15):
 
-- Total: `99` warnings (`src/**`)
-- By package: `cli 6`, `core 28`, `patterns 3`, `testing 3`, `tools 59`
+- Total: `94` warnings (`src/**`)
+- By package: `cli 6`, `core 23`, `patterns 3`, `testing 3`, `tools 59`
 
 Top runtime hotspots informing this feature slice:
 
-1. `packages/core/src/langgraph/observability/errors.ts` still exposes broad error-context, metadata, and `toJSON()` payload seams
-2. `packages/testing/src/mocks/mock-tool.ts` still uses broad schema/default implementation seams in the testing mock-tool factory
-3. `packages/patterns/src/multi-agent/routing.ts` still relies on a broad cast for LLM routing decisions rather than schema-aligned structured output consumption
-4. `packages/tools/src/data/transformer/types.ts` still uses blanket `z.any()` boundaries for transformer value contracts
-5. `packages/tools/src/data/json/types.ts` and `packages/tools/src/web/http/types.ts` still expose broad payload/response seams on generic data-tool boundaries
-6. The next follow-on slices should keep EP-09 open for another short burst of small SOLID/DRY improvements rather than creating a new epic for the same quality lane
+1. `packages/testing/src/mocks/mock-tool.ts` still uses broad schema/default implementation seams in the testing mock-tool factory
+2. `packages/patterns/src/multi-agent/routing.ts` still relies on a broad cast for LLM routing decisions rather than schema-aligned structured output consumption
+3. `packages/tools/src/data/transformer/types.ts` still uses blanket `z.any()` boundaries for transformer value contracts
+4. `packages/tools/src/data/json/types.ts` and `packages/tools/src/web/http/types.ts` still expose broad payload/response seams on generic data-tool boundaries
+5. The next follow-on slices should keep EP-09 open for another short burst of small SOLID/DRY improvements rather than creating a new epic for the same quality lane
 
 Recent improvement snapshot:
 
@@ -85,6 +84,7 @@ Recent improvement snapshot:
 - `ST-09041` merged on 2026-05-12 after moving `ConversationSimulator` verbose output onto the shared structured logger path, preserving opt-in turn emission semantics and absorbing a review follow-up to align logger naming with the repo convention.
 - `ST-09042` through `ST-09047` were added on 2026-05-09 to keep the EP-09 queue stocked with the next small hardening slices across SSE formatter contracts, error reporter payloads, testing mock-tool factories, multi-agent routing decisions, and schema-level tool payload boundaries.
 - `ST-09042` merged on 2026-05-13 after tightening the shared SSE formatter generics around unknown-first defaults, preserving retry, heartbeat, JSON fallback, and event sequencing behavior while lowering the workspace explicit-`any` baseline from `104` to `99` and the `core` package from `33` to `28`.
+- `ST-09043` merged on 2026-05-15 after tightening error reporter state, metadata, and serialized payload contracts around unknown-first and JSON-safe boundaries, preserving runtime behavior while lowering the workspace explicit-`any` baseline from `99` to `94` and the `core` package from `28` to `23`.
 - `EP-09` remains open as the daily hardening stream, with the active queue now centered on the next type-boundary slices across SSE formatting, error reporter payloads, mock-tool factories, multi-agent routing, and schema-level tool contracts.
 - The refreshed follow-on queue now extends beyond the current Ready lane so another few weeks of small SOLID/DRY work can be pulled without re-planning the epic.
 

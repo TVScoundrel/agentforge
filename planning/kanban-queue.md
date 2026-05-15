@@ -5,7 +5,7 @@
 ## Queue Status Summary
 
 - **Ready:** 4 stories
-- **In Progress:** 1 story
+- **In Progress:** 0 stories
 - **In Review:** 0 stories
 - **Blocked:** 0 stories
 - **Backlog:** 0 stories
@@ -22,7 +22,7 @@
 
 ## In Progress
 
-- `ST-09043` - Tighten Error Reporter Context Contracts
+_No stories currently in progress_
 
 ---
 

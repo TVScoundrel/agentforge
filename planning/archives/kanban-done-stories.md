@@ -584,6 +584,13 @@
 - **Estimate:** 2 hours
 - **Outcome:** Tightened the shared SSE formatter contracts around unknown-first generic defaults, preserved JSON fallback, retry prelude, heartbeat timing, and event ID sequencing, and added a dedicated typecheck regression plus typed runtime mapper coverage while reducing touched SSE explicit-`any` usage from 3 to 0.
 
+### ST-09043: Tighten Error Reporter Context Contracts
+- **Merged:** 2026-05-15
+- **PR:** https://github.com/TVScoundrel/agentforge/pull/112 (commit da3b408)
+- **Epic:** EP-09 (SOLID Micro-Refactors and Type Boundary Hardening)
+- **Estimate:** 3 hours
+- **Outcome:** Tightened shared error reporter state, metadata, and serialized payload contracts around unknown-first and JSON-safe boundaries, added a source-included typecheck regression for the public error surface, preserved existing runtime error-reporting behavior, and reduced `packages/core/src/langgraph/observability/errors.ts` explicit-`any` usage from 5 to 0.
+
 ---
 
 ## Archive Format

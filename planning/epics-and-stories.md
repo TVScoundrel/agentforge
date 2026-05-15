@@ -1581,7 +1581,7 @@
 **Priority:** P2 (Medium)
 **Estimate:** 3 hours
 **Dependencies:** ST-09020
-**Status:** In Progress
+**Status:** Merged (PR #112, 2026-05-15)
 
 **Acceptance criteria:**
 - [ ] `packages/core/src/langgraph/observability/errors.ts` replaces broad error-context `state`, `metadata`, and `toJSON()` value `any` contracts with unknown-first or JSON-safe payload aliases
@@ -1649,7 +1649,7 @@
 **Priority:** P2 (Medium)
 **Estimate:** 3 hours
 **Dependencies:** ST-09042
-**Status:** Backlog
+**Status:** Ready
 
 **Acceptance criteria:**
 - [ ] `packages/tools/src/data/json/types.ts` and `packages/tools/src/web/http/types.ts` replace broad schema or response payload `any` seams with unknown-first or JSON-safe contracts
