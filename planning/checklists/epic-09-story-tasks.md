@@ -1673,21 +1673,44 @@ Implementation notes:
 **Branch:** `fix/st-09043-error-reporter-context-contracts`
 
 ### Checklist
-- [ ] Create branch `fix/st-09043-error-reporter-context-contracts`
+- [x] Create branch `fix/st-09043-error-reporter-context-contracts`
 - [ ] Create draft PR with story ID in title
-- [ ] Define test strategy before implementation: cover serialized error payloads, optional state inclusion, and wrapped-node propagation; first failing test should assert error context values no longer rely on broad `any`
-- [ ] Write or update the failing automated test before production changes when practical; if not practical, record why before implementation
-- [ ] Replace broad context/state/metadata/toJSON `any` seams in `packages/core/src/langgraph/observability/errors.ts` with unknown-first or JSON-safe payload contracts
-- [ ] Preserve `AgentError`, `createErrorReporter(...)`, wrapped-node reporting, and fallback reporting behavior
-- [ ] Add/update production code until focused tests pass, keeping test evidence in checklist notes and PR body
-- [ ] Record explicit-`any` warning deltas for touched files in story docs
-- [ ] Add or update story documentation at `docs/st09043-error-reporter-context-contracts.md` (or document why not required)
-- [ ] Assess residual test impact; add/update additional automated tests when needed, or document why no further tests are required
-- [ ] Run full test suite before finalizing the PR and record results
-- [ ] Run lint (`pnpm lint`) before finalizing the PR and record results
+- [x] Define test strategy before implementation: cover serialized error payloads, optional state inclusion, and wrapped-node propagation; first failing test should assert error context values no longer rely on broad `any`
+- [x] Write or update the failing automated test before production changes when practical; if not practical, record why before implementation
+- [x] Replace broad context/state/metadata/toJSON `any` seams in `packages/core/src/langgraph/observability/errors.ts` with unknown-first or JSON-safe payload contracts
+- [x] Preserve `AgentError`, `createErrorReporter(...)`, wrapped-node reporting, and fallback reporting behavior
+- [x] Add/update production code until focused tests pass, keeping test evidence in checklist notes and PR body
+- [x] Record explicit-`any` warning deltas for touched files in story docs
+- [x] Add or update story documentation at `docs/st09043-error-reporter-context-contracts.md` (or document why not required)
+- [x] Assess residual test impact; add/update additional automated tests when needed, or document why no further tests are required
+- [x] Run full test suite before finalizing the PR and record results
+- [x] Run lint (`pnpm lint`) before finalizing the PR and record results
 - [ ] Commit completed checklist items as logical commits and push updates
 - [ ] Mark PR Ready only after all story tasks are complete
 - [ ] Wait for merge; do not merge directly from local branch
+
+### Notes
+
+- Test-first evidence:
+  - Initial standalone typecheck gate failed as expected:
+    - `./node_modules/.bin/tsc --noEmit --strict --module NodeNext --moduleResolution NodeNext --target ES2022 --skipLibCheck --types node packages/core/tests/langgraph/observability/errors.typecheck.ts`
+  - Failure mode before implementation included:
+    - `Unused '@ts-expect-error' directive.`
+- Focused validation after implementation:
+  - `./node_modules/.bin/tsc --noEmit --strict --module NodeNext --moduleResolution NodeNext --target ES2022 --skipLibCheck --types node packages/core/tests/langgraph/observability/errors.typecheck.ts` passed
+  - `pnpm test --run packages/core/tests/langgraph/observability/errors.test.ts` -> `1` file, `19` tests passed
+  - `pnpm --filter @agentforge/core typecheck` passed
+  - `pnpm lint:explicit-any:baseline` -> `core 23/119`, workspace `94/289`
+- Full validation before review:
+  - `pnpm test --run` -> `170` files passed, `16` skipped; `2289` tests passed, `286` skipped
+  - `pnpm lint` passed with warnings only and `0` errors
+  - `git diff --check` passed
+- Residual impact assessment:
+  - Added a dedicated source-included typecheck fixture for the public error boundary. Existing runtime tests already covered serialized payloads, optional state inclusion, wrapped-node propagation, async errors, and manual reporting, so no extra runtime file was needed.
+- Explicit-`any` delta:
+  - `packages/core/src/langgraph/observability/errors.ts` improved from `5 -> 0`
+  - `core` baseline improved from `28/119 -> 23/119`
+  - workspace baseline improved from `99/289 -> 94/289`
 
 ---
 
