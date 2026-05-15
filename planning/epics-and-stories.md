@@ -1581,7 +1581,7 @@
 **Priority:** P2 (Medium)
 **Estimate:** 3 hours
 **Dependencies:** ST-09020
-**Status:** Ready
+**Status:** In Progress
 
 **Acceptance criteria:**
 - [ ] `packages/core/src/langgraph/observability/errors.ts` replaces broad error-context `state`, `metadata`, and `toJSON()` value `any` contracts with unknown-first or JSON-safe payload aliases

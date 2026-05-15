@@ -1,11 +1,11 @@
 # Kanban Queue: AgentForge
 
-**Last Updated:** 2026-05-13
+**Last Updated:** 2026-05-15
 
 ## Queue Status Summary
 
-- **Ready:** 5 stories
-- **In Progress:** 0 stories
+- **Ready:** 4 stories
+- **In Progress:** 1 story
 - **In Review:** 0 stories
 - **Blocked:** 0 stories
 - **Backlog:** 0 stories
@@ -14,7 +14,6 @@
 
 ## Ready
 
-- `ST-09043` - Tighten Error Reporter Context Contracts
 - `ST-09044` - Tighten Testing Mock Tool Factory Contracts
 - `ST-09045` - Tighten Multi-Agent Routing Decision Contracts
 - `ST-09046` - Tighten Transformer Schema Value Contracts
@@ -23,7 +22,7 @@
 
 ## In Progress
 
-_No stories currently in progress_
+- `ST-09043` - Tighten Error Reporter Context Contracts
 
 ---
 

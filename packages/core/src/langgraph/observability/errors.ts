@@ -4,6 +4,26 @@
  * Provides enhanced error classes and error reporting for better debugging.
  */
 
+import type { JsonObject } from './payload.js';
+
+type SerializedErrorCause = {
+  name: string;
+  message: string;
+  stack?: string;
+};
+
+type SerializedAgentError = {
+  name: string;
+  message: string;
+  code?: string;
+  node?: string;
+  state?: unknown;
+  metadata?: JsonObject;
+  timestamp: number;
+  stack?: string;
+  cause?: SerializedErrorCause;
+};
+
 /**
  * Error context information
  */
@@ -21,12 +41,12 @@ export interface ErrorContext {
   /**
    * Current state when the error occurred
    */
-  state?: any;
+  state?: unknown;
 
   /**
    * Additional metadata
    */
-  metadata?: Record<string, any>;
+  metadata?: JsonObject;
 
   /**
    * Original error that caused this error
@@ -40,8 +60,8 @@ export interface ErrorContext {
 export class AgentError extends Error {
   public readonly code?: string;
   public readonly node?: string;
-  public readonly state?: any;
-  public readonly metadata?: Record<string, any>;
+  public readonly state?: unknown;
+  public readonly metadata?: JsonObject;
   public readonly cause?: Error;
   public readonly timestamp: number;
 
@@ -64,7 +84,7 @@ export class AgentError extends Error {
   /**
    * Convert error to JSON for logging/reporting
    */
-  toJSON(): Record<string, any> {
+  toJSON(): SerializedAgentError {
     return {
       name: this.name,
       message: this.message,
@@ -74,13 +94,7 @@ export class AgentError extends Error {
       metadata: this.metadata,
       timestamp: this.timestamp,
       stack: this.stack,
-      cause: this.cause
-        ? {
-            name: this.cause.name,
-            message: this.cause.message,
-            stack: this.cause.stack,
-          }
-        : undefined,
+      cause: this.cause ? toSerializedErrorCause(this.cause) : undefined,
     };
   }
 
@@ -104,6 +118,14 @@ export class AgentError extends Error {
 
     return parts.join('\n');
   }
+}
+
+function toSerializedErrorCause(cause: Error): SerializedErrorCause {
+  return {
+    name: cause.name,
+    message: cause.message,
+    stack: cause.stack,
+  };
 }
 
 /**
@@ -240,4 +262,3 @@ class ErrorReporterImpl implements ErrorReporter {
 export function createErrorReporter(options: ErrorReporterOptions): ErrorReporter {
   return new ErrorReporterImpl(options);
 }
-
