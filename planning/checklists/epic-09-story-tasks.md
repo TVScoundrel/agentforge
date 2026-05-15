@@ -1674,7 +1674,7 @@ Implementation notes:
 
 ### Checklist
 - [x] Create branch `fix/st-09043-error-reporter-context-contracts`
-- [ ] Create draft PR with story ID in title
+- [x] Create draft PR with story ID in title
 - [x] Define test strategy before implementation: cover serialized error payloads, optional state inclusion, and wrapped-node propagation; first failing test should assert error context values no longer rely on broad `any`
 - [x] Write or update the failing automated test before production changes when practical; if not practical, record why before implementation
 - [x] Replace broad context/state/metadata/toJSON `any` seams in `packages/core/src/langgraph/observability/errors.ts` with unknown-first or JSON-safe payload contracts
@@ -1685,8 +1685,8 @@ Implementation notes:
 - [x] Assess residual test impact; add/update additional automated tests when needed, or document why no further tests are required
 - [x] Run full test suite before finalizing the PR and record results
 - [x] Run lint (`pnpm lint`) before finalizing the PR and record results
-- [ ] Commit completed checklist items as logical commits and push updates
-- [ ] Mark PR Ready only after all story tasks are complete
+- [x] Commit completed checklist items as logical commits and push updates
+- [x] Mark PR Ready only after all story tasks are complete
 - [ ] Wait for merge; do not merge directly from local branch
 
 ### Notes
@@ -1711,6 +1711,8 @@ Implementation notes:
   - `packages/core/src/langgraph/observability/errors.ts` improved from `5 -> 0`
   - `core` baseline improved from `28/119 -> 23/119`
   - workspace baseline improved from `99/289 -> 94/289`
+- PR workflow:
+  - Draft PR created as #112 with a validated body file and marked `Ready for review` after validation completed
 
 ---
 
