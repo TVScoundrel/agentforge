@@ -1,4 +1,4 @@
-import { describe, expect, it } from 'vitest';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 import {
   createCalculatorTool,
   createDelayedTool,
@@ -8,6 +8,10 @@ import {
 } from '../src/index.js';
 
 describe('mock tool factory', () => {
+  afterEach(() => {
+    vi.useRealTimers();
+  });
+
   it('uses the default schema and stringifies input when no implementation is provided', async () => {
     const tool = createMockTool();
 
@@ -26,9 +30,17 @@ describe('mock tool factory', () => {
   });
 
   it('preserves delayed tool behavior', async () => {
+    vi.useFakeTimers();
     const tool = createDelayedTool('delayed_tool', 5);
+    const resultPromise = tool.invoke({ input: 'hello' });
 
-    await expect(tool.invoke({ input: 'hello' })).resolves.toBe('Delayed result: hello');
+    await vi.advanceTimersByTimeAsync(4);
+    expect(await Promise.race([resultPromise.then(() => 'resolved'), Promise.resolve('pending')])).toBe(
+      'pending',
+    );
+
+    await vi.advanceTimersByTimeAsync(1);
+    await expect(resultPromise).resolves.toBe('Delayed result: hello');
   });
 
   it('preserves forced error behavior', async () => {
@@ -45,5 +57,16 @@ describe('mock tool factory', () => {
     await expect(
       calculatorTool.invoke({ operation: 'multiply', a: 6, b: 7 }),
     ).resolves.toBe('42');
+  });
+
+  it('applies shouldError even when a custom implementation is provided', async () => {
+    const tool = createMockTool({
+      schema: createEchoTool().schema,
+      shouldError: true,
+      errorMessage: 'forced failure',
+      implementation: async ({ message }) => `Handled: ${message}`,
+    });
+
+    await expect(tool.invoke({ message: 'hello' })).rejects.toThrow('forced failure');
   });
 });

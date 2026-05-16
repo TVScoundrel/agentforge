@@ -67,12 +67,12 @@ export interface MockToolConfig<TSchema extends MockToolSchema = DefaultMockTool
  * @example
  * ```typescript
  * const tool = createMockTool({
- *   name: 'test_tool',
+ *   name: 'test-tool',
  *   schema: z.object({ input: z.string().describe('Input') }),
  *   implementation: async ({ input }) => `Processed: ${input}`
  * });
  *
- * const result = await tool.execute({ input: 'test' });
+ * const result = await tool.invoke({ input: 'test' });
  * console.log(result); // 'Processed: test'
  * ```
  */
@@ -90,6 +90,10 @@ function buildMockTool<TSchema extends MockToolSchema>(config: {
     config;
 
   const defaultImplementation = async (input: MockToolInput<TSchema>): Promise<string> => {
+    return `Mock result: ${JSON.stringify(input)}`;
+  };
+
+  const actualImplementation = async (input: MockToolInput<TSchema>): Promise<string> => {
     if (delay > 0) {
       await new Promise((resolve) => setTimeout(resolve, delay));
     }
@@ -98,10 +102,6 @@ function buildMockTool<TSchema extends MockToolSchema>(config: {
       throw new Error(errorMessage);
     }
 
-    return `Mock result: ${JSON.stringify(input)}`;
-  };
-
-  const actualImplementation = async (input: MockToolInput<TSchema>): Promise<string> => {
     if (implementation) {
       const result = await Promise.resolve(implementation(input));
       return result;
