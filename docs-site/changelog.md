@@ -5,6 +5,36 @@ All notable changes to AgentForge will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.16.31] - 2026-05-16
+
+### Added
+
+#### @agentforge/testing - Mock Tool Contract Regression Coverage
+- Added a source-included typecheck regression fixture in `packages/testing/src/mocks/mock-tool.typecheck.ts` covering schema-driven input inference, no-schema behavior, and the tightened overload boundary
+- Added focused runtime coverage in `packages/testing/tests/mock-tool.test.ts` for delayed execution, forced errors, helper defaults, and custom implementation semantics
+- Added story documentation in `docs/st09044-mock-tool-factory-contracts.md` capturing the contract tightening, review follow-ups, validation evidence, and explicit-`any` delta
+
+### Changed
+
+#### @agentforge/testing - Mock Tool Factory Contract Hardening
+- Tightened `packages/testing/src/mocks/mock-tool.ts` so schema-driven mock-tool helpers infer input types safely without relying on broad `any`
+- Preserved mock tool defaults, echo/error/delayed helper behavior, and custom implementation support while routing delayed/error semantics consistently through the helper prelude
+
+### Fixed
+
+#### @agentforge/testing - Mock Helper Type and Metadata Safety
+- Removed the remaining explicit-`any` seams from `packages/testing/src/mocks/mock-tool.ts`, reducing the touched file from `3` explicit `any` uses to `0`
+- Corrected built-in helper default names to valid kebab-case and lowered the `testing` explicit-`any` baseline from `3/51` to `0/51`, with the workspace baseline improving from `94/289` to `91/289`
+
+### Published
+- All packages published to npm registry at version 0.16.31:
+  - @agentforge/core@0.16.31
+  - @agentforge/skills@0.16.31
+  - @agentforge/patterns@0.16.31
+  - @agentforge/tools@0.16.31
+  - @agentforge/testing@0.16.31
+  - @agentforge/cli@0.16.31
+
 ## [0.16.30] - 2026-05-15
 
 ### Added
