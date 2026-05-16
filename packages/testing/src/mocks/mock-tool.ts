@@ -1,10 +1,22 @@
 import { z } from 'zod';
-import { toolBuilder, ToolCategory } from '@agentforge/core';
+import { toolBuilder, ToolCategory, type Tool } from '@agentforge/core';
+
+const defaultMockToolSchema = z.object({
+  input: z.string().describe('Input parameter'),
+});
+
+type DefaultMockToolSchema = typeof defaultMockToolSchema;
+type MockToolSchema = z.ZodTypeAny;
+type MockToolInput<TSchema extends MockToolSchema> = z.infer<TSchema>;
+type MockToolInstance<TSchema extends MockToolSchema> = Tool<MockToolInput<TSchema>, string>;
+type MockToolConfigWithoutSchema = Omit<MockToolConfig<DefaultMockToolSchema>, 'schema'> & {
+  schema?: undefined;
+};
 
 /**
  * Configuration for mock tool
  */
-export interface MockToolConfig<T extends z.ZodType = z.ZodType> {
+export interface MockToolConfig<TSchema extends MockToolSchema = DefaultMockToolSchema> {
   /**
    * Tool name
    */
@@ -23,12 +35,12 @@ export interface MockToolConfig<T extends z.ZodType = z.ZodType> {
   /**
    * Input schema
    */
-  schema?: T;
+  schema?: TSchema;
 
   /**
    * Implementation function
    */
-  implementation?: (input: z.infer<T>) => Promise<string> | string;
+  implementation?: (input: MockToolInput<TSchema>) => Promise<string> | string;
 
   /**
    * Whether to throw an error
@@ -61,11 +73,16 @@ export interface MockToolConfig<T extends z.ZodType = z.ZodType> {
  * console.log(result); // 'Processed: test'
  * ```
  */
-export function createMockTool<T extends z.ZodType = any>(
-  config: MockToolConfig<T> = {}
-) {
+export function createMockTool(): MockToolInstance<DefaultMockToolSchema>;
+export function createMockTool(config: MockToolConfigWithoutSchema): MockToolInstance<DefaultMockToolSchema>;
+export function createMockTool<TSchema extends MockToolSchema>(
+  config: MockToolConfig<TSchema> & { schema: TSchema }
+): MockToolInstance<TSchema>;
+export function createMockTool<TSchema extends MockToolSchema = DefaultMockToolSchema>(
+  config: MockToolConfig<TSchema> = {}
+): MockToolInstance<TSchema> {
   const {
-    name = 'mock_tool',
+    name = 'mock-tool',
     description = 'A mock tool for testing',
     category = ToolCategory.UTILITY,
     schema,
@@ -75,9 +92,9 @@ export function createMockTool<T extends z.ZodType = any>(
     delay = 0,
   } = config;
 
-  const actualSchema = schema || z.object({ input: z.string().describe('Input parameter') });
+  const actualSchema = (schema ?? defaultMockToolSchema) as TSchema;
 
-  const defaultImplementation = async (input: any): Promise<string> => {
+  const defaultImplementation = async (input: MockToolInput<TSchema>): Promise<string> => {
     if (delay > 0) {
       await new Promise((resolve) => setTimeout(resolve, delay));
     }
@@ -89,7 +106,7 @@ export function createMockTool<T extends z.ZodType = any>(
     return `Mock result: ${JSON.stringify(input)}`;
   };
 
-  const actualImplementation = async (input: any): Promise<string> => {
+  const actualImplementation = async (input: MockToolInput<TSchema>): Promise<string> => {
     if (implementation) {
       const result = await Promise.resolve(implementation(input));
       return result;
@@ -103,15 +120,15 @@ export function createMockTool<T extends z.ZodType = any>(
     .category(category)
     .schema(actualSchema)
     .implement(actualImplementation)
-    .build();
+    .build() as MockToolInstance<TSchema>;
 }
 
 /**
  * Create a mock tool that echoes its input
  */
-export function createEchoTool(name = 'echo_tool') {
+export function createEchoTool(name = 'echo-tool') {
   return createMockTool({
-    name,
+    name: name.replace(/_/g, '-'),
     description: 'Echoes the input',
     schema: z.object({ message: z.string().describe('Message to echo') }),
     implementation: async ({ message }) => `Echo: ${message}`,
@@ -121,9 +138,9 @@ export function createEchoTool(name = 'echo_tool') {
 /**
  * Create a mock tool that always errors
  */
-export function createErrorTool(name = 'error_tool', errorMessage = 'Tool error') {
+export function createErrorTool(name = 'error-tool', errorMessage = 'Tool error') {
   return createMockTool({
-    name,
+    name: name.replace(/_/g, '-'),
     description: 'A tool that always errors',
     shouldError: true,
     errorMessage,
@@ -133,9 +150,9 @@ export function createErrorTool(name = 'error_tool', errorMessage = 'Tool error'
 /**
  * Create a mock tool with delay
  */
-export function createDelayedTool(name = 'delayed_tool', delay = 100) {
+export function createDelayedTool(name = 'delayed-tool', delay = 100) {
   return createMockTool({
-    name,
+    name: name.replace(/_/g, '-'),
     description: 'A tool with artificial delay',
     delay,
     schema: z.object({ input: z.string().describe('Input parameter') }),
@@ -170,4 +187,3 @@ export function createCalculatorTool() {
     },
   });
 }
-
