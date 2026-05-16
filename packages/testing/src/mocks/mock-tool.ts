@@ -12,6 +12,9 @@ type MockToolInstance<TSchema extends MockToolSchema> = Tool<MockToolInput<TSche
 type MockToolConfigWithoutSchema = Omit<MockToolConfig<DefaultMockToolSchema>, 'schema'> & {
   schema?: undefined;
 };
+type SchemaBackedMockToolConfig<TSchema extends MockToolSchema> = MockToolConfig<TSchema> & {
+  schema: TSchema;
+};
 
 /**
  * Configuration for mock tool
@@ -73,26 +76,18 @@ export interface MockToolConfig<TSchema extends MockToolSchema = DefaultMockTool
  * console.log(result); // 'Processed: test'
  * ```
  */
-export function createMockTool(): MockToolInstance<DefaultMockToolSchema>;
-export function createMockTool(config: MockToolConfigWithoutSchema): MockToolInstance<DefaultMockToolSchema>;
-export function createMockTool<TSchema extends MockToolSchema>(
-  config: MockToolConfig<TSchema> & { schema: TSchema }
-): MockToolInstance<TSchema>;
-export function createMockTool<TSchema extends MockToolSchema = DefaultMockToolSchema>(
-  config: MockToolConfig<TSchema> = {}
-): MockToolInstance<TSchema> {
-  const {
-    name = 'mock-tool',
-    description = 'A mock tool for testing',
-    category = ToolCategory.UTILITY,
-    schema,
-    implementation,
-    shouldError = false,
-    errorMessage = 'Mock tool error',
-    delay = 0,
-  } = config;
-
-  const actualSchema = (schema ?? defaultMockToolSchema) as TSchema;
+function buildMockTool<TSchema extends MockToolSchema>(config: {
+  name: string;
+  description: string;
+  category: ToolCategory;
+  schema: TSchema;
+  implementation?: (input: MockToolInput<TSchema>) => Promise<string> | string;
+  shouldError: boolean;
+  errorMessage: string;
+  delay: number;
+}): MockToolInstance<TSchema> {
+  const { name, description, category, schema, implementation, shouldError, errorMessage, delay } =
+    config;
 
   const defaultImplementation = async (input: MockToolInput<TSchema>): Promise<string> => {
     if (delay > 0) {
@@ -118,9 +113,49 @@ export function createMockTool<TSchema extends MockToolSchema = DefaultMockToolS
     .name(name)
     .description(description)
     .category(category)
-    .schema(actualSchema)
+    .schema(schema)
     .implement(actualImplementation)
     .build() as MockToolInstance<TSchema>;
+}
+
+export function createMockTool(): MockToolInstance<DefaultMockToolSchema>;
+export function createMockTool(config: MockToolConfigWithoutSchema): MockToolInstance<DefaultMockToolSchema>;
+export function createMockTool<TSchema extends MockToolSchema>(
+  config: SchemaBackedMockToolConfig<TSchema>
+): MockToolInstance<TSchema>;
+export function createMockTool(
+  config: MockToolConfigWithoutSchema | SchemaBackedMockToolConfig<MockToolSchema> = {}
+): MockToolInstance<DefaultMockToolSchema> | MockToolInstance<MockToolSchema> {
+  const name = config.name ?? 'mock-tool';
+  const description = config.description ?? 'A mock tool for testing';
+  const category = config.category ?? ToolCategory.UTILITY;
+  const shouldError = config.shouldError ?? false;
+  const errorMessage = config.errorMessage ?? 'Mock tool error';
+  const delay = config.delay ?? 0;
+
+  if ('schema' in config && config.schema) {
+    return buildMockTool({
+      name,
+      description,
+      category,
+      schema: config.schema,
+      implementation: config.implementation,
+      shouldError,
+      errorMessage,
+      delay,
+    });
+  }
+
+  return buildMockTool({
+    name,
+    description,
+    category,
+    schema: defaultMockToolSchema,
+    implementation: config.implementation,
+    shouldError,
+    errorMessage,
+    delay,
+  });
 }
 
 /**

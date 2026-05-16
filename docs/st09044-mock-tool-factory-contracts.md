@@ -6,14 +6,14 @@ This story hardens the `@agentforge/testing` mock tool factory so schema-driven 
 
 ## What Changed
 
-- introduced a shared default mock-tool schema constant in [packages/testing/src/mocks/mock-tool.ts](/Users/tomvanschoor/Projects/Paymentology/agents/langgraph/learning/deepagents/packages/testing/src/mocks/mock-tool.ts)
+- introduced a shared default mock-tool schema constant in [packages/testing/src/mocks/mock-tool.ts](../packages/testing/src/mocks/mock-tool.ts)
 - replaced broad generic defaults and implementation/input `any` seams with schema-driven aliases and explicit overloads for:
   - no-schema default mock tools
   - schema-driven mock tools
 - kept the runtime default implementation behavior intact by continuing to stringify the validated input payload
 - corrected the built-in helper default names from underscore variants to kebab-case while preserving underscore compatibility in helper name overrides for delayed/error/echo tools
-- added a source-included typecheck regression in [packages/testing/src/mocks/mock-tool.typecheck.ts](/Users/tomvanschoor/Projects/Paymentology/agents/langgraph/learning/deepagents/packages/testing/src/mocks/mock-tool.typecheck.ts)
-- added focused runtime coverage in [packages/testing/tests/mock-tool.test.ts](/Users/tomvanschoor/Projects/Paymentology/agents/langgraph/learning/deepagents/packages/testing/tests/mock-tool.test.ts)
+- added a source-included typecheck regression in [packages/testing/src/mocks/mock-tool.typecheck.ts](../packages/testing/src/mocks/mock-tool.typecheck.ts)
+- added focused runtime coverage in [packages/testing/tests/mock-tool.test.ts](../packages/testing/tests/mock-tool.test.ts)
 
 ## Test-First Evidence
 
@@ -37,7 +37,7 @@ This story hardens the `@agentforge/testing` mock tool factory so schema-driven 
 
 ## Explicit-`any` Delta
 
-- [packages/testing/src/mocks/mock-tool.ts](/Users/tomvanschoor/Projects/Paymentology/agents/langgraph/learning/deepagents/packages/testing/src/mocks/mock-tool.ts): `3 -> 0`
+- [packages/testing/src/mocks/mock-tool.ts](../packages/testing/src/mocks/mock-tool.ts): `3 -> 0`
 - `testing` baseline: `3/51 -> 0/51`
 - workspace baseline: `94/289 -> 91/289`
 
