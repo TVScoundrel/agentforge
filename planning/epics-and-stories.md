@@ -1598,7 +1598,7 @@
 **Priority:** P2 (Medium)
 **Estimate:** 2 hours
 **Dependencies:** ST-09018
-**Status:** In Review
+**Status:** Merged (PR #113, 2026-05-16)
 
 **Acceptance criteria:**
 - [ ] `packages/testing/src/mocks/mock-tool.ts` replaces broad schema/default implementation `any` seams with schema-driven generic input contracts

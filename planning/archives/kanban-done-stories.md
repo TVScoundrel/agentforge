@@ -2,11 +2,18 @@
 
 **Purpose:** Track completed and merged stories for the Relational Database Access Tool project.
 
-**Last Updated:** 2026-05-12
+**Last Updated:** 2026-05-16
 
 ---
 
 ## Completed Stories
+
+### ST-09044: Tighten Testing Mock Tool Factory Contracts
+- **Merged:** 2026-05-16
+- **PR:** https://github.com/TVScoundrel/agentforge/pull/113 (commit 233b5f0)
+- **Epic:** EP-09 (SOLID Micro-Refactors and Type Boundary Hardening)
+- **Estimate:** 2 hours
+- **Outcome:** Tightened schema-driven mock-tool factory input contracts in `@agentforge/testing`, removed the remaining explicit-`any` seams from `packages/testing/src/mocks/mock-tool.ts`, added a source-included typecheck regression plus focused runtime coverage, and preserved delayed/error helper semantics while fixing built-in default helper-name validity.
 
 ### ST-09041: Adopt Structured Logger in Conversation Simulator
 - **Merged:** 2026-05-12
