@@ -1724,21 +1724,52 @@ Implementation notes:
 **Branch:** `fix/st-09044-mock-tool-factory-contracts`
 
 ### Checklist
-- [ ] Create branch `fix/st-09044-mock-tool-factory-contracts`
-- [ ] Create draft PR with story ID in title
-- [ ] Define test strategy before implementation: cover schema-driven input inference, default behavior, delayed execution, and forced errors; first failing test should assert mock tool input typing no longer depends on broad `any`
-- [ ] Write or update the failing automated test before production changes when practical; if not practical, record why before implementation
-- [ ] Replace broad schema/default implementation `any` seams in `packages/testing/src/mocks/mock-tool.ts` with schema-driven generic input contracts
-- [ ] Preserve mock tool defaults, delayed execution, forced errors, echo behavior, and calculator behavior
-- [ ] Add/update production code until focused tests pass, keeping test evidence in checklist notes and PR body
-- [ ] Record explicit-`any` warning deltas for touched files in story docs
-- [ ] Add or update story documentation at `docs/st09044-mock-tool-factory-contracts.md` (or document why not required)
-- [ ] Assess residual test impact; add/update additional automated tests when needed, or document why no further tests are required
-- [ ] Run full test suite before finalizing the PR and record results
-- [ ] Run lint (`pnpm lint`) before finalizing the PR and record results
-- [ ] Commit completed checklist items as logical commits and push updates
-- [ ] Mark PR Ready only after all story tasks are complete
+- [x] Create branch `fix/st-09044-mock-tool-factory-contracts`
+- [x] Create draft PR with story ID in title
+- [x] Define test strategy before implementation: cover schema-driven input inference, default behavior, delayed execution, and forced errors; first failing test should assert mock tool input typing no longer depends on broad `any`
+- [x] Write or update the failing automated test before production changes when practical; if not practical, record why before implementation
+- [x] Replace broad schema/default implementation `any` seams in `packages/testing/src/mocks/mock-tool.ts` with schema-driven generic input contracts
+- [x] Preserve mock tool defaults, delayed execution, forced errors, echo behavior, and calculator behavior
+- [x] Add/update production code until focused tests pass, keeping test evidence in checklist notes and PR body
+- [x] Record explicit-`any` warning deltas for touched files in story docs
+- [x] Add or update story documentation at `docs/st09044-mock-tool-factory-contracts.md` (or document why not required)
+- [x] Assess residual test impact; add/update additional automated tests when needed, or document why no further tests are required
+- [x] Run full test suite before finalizing the PR and record results
+- [x] Run lint (`pnpm lint`) before finalizing the PR and record results
+- [x] Commit completed checklist items as logical commits and push updates
+- [x] Mark PR Ready only after all story tasks are complete
 - [ ] Wait for merge; do not merge directly from local branch
+
+### Notes
+
+- Test-first evidence:
+  - Initial standalone typecheck gate failed as expected:
+    - `./node_modules/.bin/tsc --noEmit --strict --module NodeNext --moduleResolution NodeNext --target ES2022 --skipLibCheck --types node packages/testing/src/mocks/mock-tool.typecheck.ts`
+  - Failure mode before implementation included:
+    - `Unused '@ts-expect-error' directive.`
+  - Focused runtime regression also failed before implementation:
+    - `pnpm test --run packages/testing/tests/mock-tool.test.ts`
+  - Failure mode before implementation included:
+    - invalid mock helper default names such as `mock_tool`, `error_tool`, and `delayed_tool` failing tool metadata validation
+- Focused validation after implementation:
+  - `./node_modules/.bin/tsc --noEmit --strict --module NodeNext --moduleResolution NodeNext --target ES2022 --skipLibCheck --types node packages/testing/src/mocks/mock-tool.typecheck.ts` passed
+  - `pnpm test --run packages/testing/tests/mock-tool.test.ts` -> `1` file, `5` tests passed
+  - `pnpm --filter @agentforge/testing typecheck` passed
+  - `pnpm lint:explicit-any:baseline` -> `testing 0/51`, workspace `91/289`
+- Full validation before review:
+  - `pnpm test --run` -> `171` files passed, `16` skipped; `2294` tests passed, `286` skipped
+  - `pnpm lint` passed with warnings only and `0` errors
+  - `git diff --check` passed
+- Residual impact assessment:
+  - Added both a source-included typecheck fixture and focused runtime coverage because the story touched a public helper contract and helper runtime defaults. No additional test file beyond `packages/testing/tests/mock-tool.test.ts` was needed.
+- Explicit-`any` delta:
+  - `packages/testing/src/mocks/mock-tool.ts` improved from `3 -> 0`
+  - `testing` baseline improved from `3/51 -> 0/51`
+  - workspace baseline improved from `94/289 -> 91/289`
+- PR workflow:
+  - Draft PR created with story ID in title: PR #113
+  - Validated body file prepared at `.pr-body-st-09044.md`
+  - Story is ready to be marked `Ready for review`
 
 ---
 
