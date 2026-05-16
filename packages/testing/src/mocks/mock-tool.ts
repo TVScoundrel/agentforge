@@ -73,7 +73,7 @@ export interface MockToolConfig<TSchema extends MockToolSchema = DefaultMockTool
  * });
  *
  * const result = await tool.invoke({ input: 'test' });
- * console.log(result); // 'Processed: test'
+ * // result === 'Processed: test'
  * ```
  */
 function buildMockTool<TSchema extends MockToolSchema>(config: {
@@ -190,7 +190,7 @@ export function createDelayedTool(name = 'delayed-tool', delay = 100) {
     name: name.replace(/_/g, '-'),
     description: 'A tool with artificial delay',
     delay,
-    schema: z.object({ input: z.string().describe('Input parameter') }),
+    schema: defaultMockToolSchema,
     implementation: async ({ input }) => `Delayed result: ${input}`,
   });
 }
