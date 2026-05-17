@@ -46,19 +46,23 @@ function serializeRoutingContent(content: unknown): string {
   }
 
   if (Array.isArray(content)) {
-    return content
-      .map((part) => {
-        if (typeof part === 'string') {
-          return part;
-        }
+    const textParts = content.flatMap((part) => {
+      if (typeof part === 'string') {
+        return [part];
+      }
 
-        if (isRecord(part) && typeof part.text === 'string') {
-          return part.text;
-        }
+      if (isRecord(part) && typeof part.text === 'string') {
+        return [part.text];
+      }
 
-        return JSON.stringify(part);
-      })
-      .join('\n');
+      return [];
+    });
+
+    if (textParts.length > 0) {
+      return textParts.join('\n');
+    }
+
+    return JSON.stringify(content);
   }
 
   return JSON.stringify(content);
@@ -98,8 +102,13 @@ async function invokeRoutingDecision(
   messages: [SystemMessage, HumanMessage]
 ): Promise<RoutingDecision> {
   if (hasStructuredOutput(model)) {
-    const decision = await model.withStructuredOutput(RoutingDecisionSchema).invoke(messages);
-    return finalizeLlmRoutingDecision(decision);
+    try {
+      const decision = await model.withStructuredOutput(RoutingDecisionSchema).invoke(messages);
+      return finalizeLlmRoutingDecision(decision);
+    } catch {
+      // Some LangChain models expose withStructuredOutput without actually supporting it.
+      // Fall back to direct invocation so routing still works for those models.
+    }
   }
 
   const decision = await model.invoke(messages);

@@ -1808,8 +1808,8 @@ Implementation notes:
   - Failure mode before implementation:
     - `withStructuredOutput` was never called by `llmBasedRouting`, proving the structured decision surface was being bypassed.
 - Focused validation after implementation:
-  - `pnpm test --run packages/patterns/tests/multi-agent/routing.test.ts` -> `1` file, `16` tests passed
-  - `pnpm test --run packages/patterns/tests/multi-agent/routing.test.ts packages/patterns/tests/multi-agent/nodes.test.ts` -> `2` files, `48` tests passed
+  - `pnpm test --run packages/patterns/tests/multi-agent/routing.test.ts` -> `1` file, `21` tests passed
+  - `pnpm test --run packages/patterns/tests/multi-agent/routing.test.ts packages/patterns/tests/multi-agent/nodes.test.ts` -> `2` files, `54` tests passed
   - `pnpm --filter @agentforge/patterns typecheck` passed
   - `pnpm lint:explicit-any:baseline` -> `patterns 2/28`, workspace `90/289`
 - Full validation before review:
@@ -1866,6 +1866,31 @@ Implementation notes:
 - [ ] Add/update production code until focused tests pass, keeping test evidence in checklist notes and PR body
 - [ ] Record explicit-`any` warning deltas for touched files in story docs
 - [ ] Add or update story documentation at `docs/st09047-json-http-payload-schema-contracts.md` (or document why not required)
+- [ ] Assess residual test impact; add/update additional automated tests when needed, or document why no further tests are required
+- [ ] Run full test suite before finalizing the PR and record results
+- [ ] Run lint (`pnpm lint`) before finalizing the PR and record results
+- [ ] Commit completed checklist items as logical commits and push updates
+- [ ] Mark PR Ready only after all story tasks are complete
+- [ ] Wait for merge; do not merge directly from local branch
+
+
+---
+
+## ST-09048: Modularize Multi-Agent Routing Strategies and Tests
+
+**Branch:** `refactor/st-09048-modularize-multi-agent-routing-strategies-and-tests`
+
+### Checklist
+- [ ] Create branch `refactor/st-09048-modularize-multi-agent-routing-strategies-and-tests`
+- [ ] Create draft PR with story ID in title
+- [ ] Define test strategy before implementation: cover both production modularization and test-file modularization; first failing test should prove routing behavior remains stable while strategy/test boundaries are split
+- [ ] Write or update the failing automated test before production changes when practical; if not practical, record why before implementation
+- [ ] Extract focused internal modules for the LLM, round-robin, skill-based, load-balanced, and rule-based strategies while keeping the public routing entrypoint backward compatible
+- [ ] Split `packages/patterns/tests/multi-agent/routing.test.ts` into focused strategy-oriented test modules so the tests mirror the production boundaries
+- [ ] Move any shared routing helpers behind explicit boundaries instead of leaving them mixed across strategy implementations
+- [ ] Add/update production code until focused tests pass, keeping test evidence in checklist notes and PR body
+- [ ] Record explicit-`any` warning deltas and file-size/responsibility improvements for touched routing and test modules in story docs
+- [ ] Add or update story documentation at `docs/st09048-modularize-multi-agent-routing-strategies-and-tests.md` (or document why not required)
 - [ ] Assess residual test impact; add/update additional automated tests when needed, or document why no further tests are required
 - [ ] Run full test suite before finalizing the PR and record results
 - [ ] Run lint (`pnpm lint`) before finalizing the PR and record results

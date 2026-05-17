@@ -8,7 +8,7 @@
 - **In Progress:** 0 stories
 - **In Review:** 1 story
 - **Blocked:** 0 stories
-- **Backlog:** 0 stories
+- **Backlog:** 1 story
 
 ---
 
@@ -38,7 +38,7 @@ _No stories currently blocked_
 
 ## Backlog
 
-_No stories currently in backlog_
+- `ST-09048` - Modularize Multi-Agent Routing Strategies and Tests
 
 ---
 
