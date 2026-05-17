@@ -8,9 +8,125 @@
  */
 
 import { HumanMessage, SystemMessage } from '@langchain/core/messages';
+import { createPatternLogger } from '../shared/deduplication.js';
 import type { MultiAgentStateType } from './state.js';
 import type { SupervisorConfig, RoutingStrategyImpl } from './types.js';
-import type { RoutingDecision, WorkerCapabilities } from './schemas.js';
+import { RoutingDecisionSchema } from './schemas.js';
+import type { RoutingDecision } from './schemas.js';
+
+type RoutingModelLike = NonNullable<SupervisorConfig['model']>;
+type RoutingDecisionInvoker = {
+  invoke: (input: unknown) => Promise<unknown>;
+};
+
+type StructuredOutputCapableRoutingModel = RoutingDecisionInvoker & {
+  withStructuredOutput?: (schema: typeof RoutingDecisionSchema) => RoutingDecisionInvoker;
+};
+
+type ContentCarrier = {
+  content?: unknown;
+};
+
+export const logger = createPatternLogger('agentforge:patterns:multi-agent:routing');
+
+function hasStructuredOutput(
+  model: RoutingModelLike
+): model is RoutingModelLike & StructuredOutputCapableRoutingModel {
+  return typeof (model as Partial<StructuredOutputCapableRoutingModel>).withStructuredOutput === 'function';
+}
+
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return typeof value === 'object' && value !== null;
+}
+
+function isContentCarrier(value: unknown): value is ContentCarrier {
+  return isRecord(value) && 'content' in value;
+}
+
+function serializeRoutingContent(content: unknown): string {
+  if (typeof content === 'string') {
+    return content;
+  }
+
+  if (Array.isArray(content)) {
+    const textParts = content.flatMap((part) => {
+      if (typeof part === 'string') {
+        return [part];
+      }
+
+      if (isRecord(part) && typeof part.text === 'string') {
+        return [part.text];
+      }
+
+      return [];
+    });
+
+    if (textParts.length > 0) {
+      return textParts.join('\n');
+    }
+
+    return JSON.stringify(content);
+  }
+
+  return JSON.stringify(content);
+}
+
+function normalizeRoutingDecisionInput(decision: unknown): unknown {
+  if (isContentCarrier(decision)) {
+    return JSON.parse(serializeRoutingContent(decision.content));
+  }
+
+  return decision;
+}
+
+function parseRoutingDecision(decision: unknown): RoutingDecision {
+  try {
+    return RoutingDecisionSchema.parse(normalizeRoutingDecisionInput(decision));
+  } catch (error) {
+    const message = error instanceof Error ? error.message : String(error);
+    throw new Error(`Invalid LLM routing decision: ${message}`);
+  }
+}
+
+function finalizeLlmRoutingDecision(decision: unknown): RoutingDecision {
+  const parsed = parseRoutingDecision(decision);
+  return {
+    targetAgent: parsed.targetAgent,
+    targetAgents: parsed.targetAgents,
+    reasoning: parsed.reasoning,
+    confidence: parsed.confidence,
+    strategy: 'llm-based',
+    timestamp: Date.now(),
+  };
+}
+
+async function invokeRoutingDecision(
+  model: RoutingModelLike,
+  messages: [SystemMessage, HumanMessage]
+): Promise<RoutingDecision> {
+  if (hasStructuredOutput(model)) {
+    let structuredModel: RoutingDecisionInvoker;
+    try {
+      structuredModel = model.withStructuredOutput(RoutingDecisionSchema);
+    } catch (error) {
+      // Some LangChain models expose withStructuredOutput without actually supporting it.
+      // Fall back to direct invocation so routing still works for those models.
+      logger.warn('Structured output unavailable, using direct routing fallback', {
+        strategy: 'llm-based',
+        fallback: 'direct-model-invoke',
+        error: error instanceof Error ? error.message : String(error),
+      });
+      const decision = await model.invoke(messages);
+      return finalizeLlmRoutingDecision(decision);
+    }
+
+    const decision = await structuredModel.invoke(messages);
+    return finalizeLlmRoutingDecision(decision);
+  }
+
+  const decision = await model.invoke(messages);
+  return finalizeLlmRoutingDecision(decision);
+}
 
 /**
  * Default system prompt for LLM-based routing
@@ -83,25 +199,13 @@ ${workerInfo}
 
 Select the best worker(s) for this task and explain your reasoning.`;
 
-    // Invoke LLM with structured output
-    const messages = [
+    // Prefer schema-bound structured output when the model exposes it.
+    const messages: [SystemMessage, HumanMessage] = [
       new SystemMessage(systemPrompt),
       new HumanMessage(userPrompt),
     ];
 
-    // When using withStructuredOutput, the response IS the structured RoutingDecision object
-    const decision = await config.model.invoke(messages) as any;
-
-    // Support both single and parallel routing
-    // If targetAgents is provided, use it; otherwise use targetAgent
-    return {
-      targetAgent: decision.targetAgent,
-      targetAgents: decision.targetAgents,
-      reasoning: decision.reasoning,
-      confidence: decision.confidence,
-      strategy: 'llm-based',
-      timestamp: Date.now(),
-    };
+    return await invokeRoutingDecision(config.model, messages);
   },
 };
 
@@ -112,7 +216,7 @@ Select the best worker(s) for this task and explain your reasoning.`;
 export const roundRobinRouting: RoutingStrategyImpl = {
   name: 'round-robin',
 
-  async route(state: MultiAgentStateType, config: SupervisorConfig): Promise<RoutingDecision> {
+  async route(state: MultiAgentStateType, _config: SupervisorConfig): Promise<RoutingDecision> {
     const availableWorkers = Object.entries(state.workers)
       .filter(([_, caps]) => caps.available)
       .map(([id]) => id);
@@ -143,7 +247,7 @@ export const roundRobinRouting: RoutingStrategyImpl = {
 export const skillBasedRouting: RoutingStrategyImpl = {
   name: 'skill-based',
 
-  async route(state: MultiAgentStateType, config: SupervisorConfig): Promise<RoutingDecision> {
+  async route(state: MultiAgentStateType, _config: SupervisorConfig): Promise<RoutingDecision> {
     // Extract keywords from the current task
     const lastMessage = state.messages[state.messages.length - 1];
     const taskContent = (lastMessage?.content || state.input).toLowerCase();
@@ -206,7 +310,7 @@ export const skillBasedRouting: RoutingStrategyImpl = {
 export const loadBalancedRouting: RoutingStrategyImpl = {
   name: 'load-balanced',
 
-  async route(state: MultiAgentStateType, config: SupervisorConfig): Promise<RoutingDecision> {
+  async route(state: MultiAgentStateType, _config: SupervisorConfig): Promise<RoutingDecision> {
     const availableWorkers = Object.entries(state.workers)
       .filter(([_, caps]) => caps.available)
       .map(([id, caps]) => ({ id, workload: caps.currentWorkload }))
@@ -266,4 +370,3 @@ export function getRoutingStrategy(name: string): RoutingStrategyImpl {
       throw new Error(`Unknown routing strategy: ${name}`);
   }
 }
-
