@@ -324,6 +324,33 @@ describe('Multi-Agent Routing Strategies', () => {
       expect(decision.confidence).toBe(0.7);
       expect(decision.strategy).toBe('llm-based');
     });
+
+    it('should parse JSON returned in model content when structured output is unavailable', async () => {
+      const invoke = vi.fn().mockResolvedValue({
+        content: JSON.stringify({
+          targetAgent: null,
+          targetAgents: ['researcher', 'writer'],
+          reasoning: 'Fallback JSON content',
+          confidence: 0.85,
+        }),
+      });
+
+      const config: SupervisorConfig = {
+        strategy: 'llm-based',
+        model: {
+          invoke,
+        } as unknown as NonNullable<SupervisorConfig['model']>,
+      };
+
+      const decision = await llmBasedRouting.route(mockState, config);
+
+      expect(invoke).toHaveBeenCalledOnce();
+      expect(decision.targetAgent).toBeNull();
+      expect(decision.targetAgents).toEqual(['researcher', 'writer']);
+      expect(decision.reasoning).toBe('Fallback JSON content');
+      expect(decision.confidence).toBe(0.85);
+      expect(decision.strategy).toBe('llm-based');
+    });
   });
 
   describe('getRoutingStrategy', () => {

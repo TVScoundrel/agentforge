@@ -22,14 +22,58 @@ type StructuredOutputCapableRoutingModel = RoutingDecisionInvoker & {
   withStructuredOutput?: (schema: typeof RoutingDecisionSchema) => RoutingDecisionInvoker;
 };
 
+type ContentCarrier = {
+  content?: unknown;
+};
+
 function hasStructuredOutput(
   model: RoutingModelLike
 ): model is RoutingModelLike & StructuredOutputCapableRoutingModel {
   return typeof (model as Partial<StructuredOutputCapableRoutingModel>).withStructuredOutput === 'function';
 }
 
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return typeof value === 'object' && value !== null;
+}
+
+function isContentCarrier(value: unknown): value is ContentCarrier {
+  return isRecord(value) && 'content' in value;
+}
+
+function serializeRoutingContent(content: unknown): string {
+  if (typeof content === 'string') {
+    return content;
+  }
+
+  if (Array.isArray(content)) {
+    return content
+      .map((part) => {
+        if (typeof part === 'string') {
+          return part;
+        }
+
+        if (isRecord(part) && typeof part.text === 'string') {
+          return part.text;
+        }
+
+        return JSON.stringify(part);
+      })
+      .join('\n');
+  }
+
+  return JSON.stringify(content);
+}
+
+function normalizeRoutingDecisionInput(decision: unknown): unknown {
+  if (isContentCarrier(decision)) {
+    return JSON.parse(serializeRoutingContent(decision.content));
+  }
+
+  return decision;
+}
+
 function finalizeLlmRoutingDecision(decision: unknown): RoutingDecision {
-  const parsed = RoutingDecisionSchema.parse(decision);
+  const parsed = RoutingDecisionSchema.parse(normalizeRoutingDecisionInput(decision));
   return {
     targetAgent: parsed.targetAgent,
     targetAgents: parsed.targetAgents,
