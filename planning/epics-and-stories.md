@@ -1615,7 +1615,7 @@
 **Priority:** P2 (Medium)
 **Estimate:** 3 hours
 **Dependencies:** ST-09015
-**Status:** Ready
+**Status:** In Progress
 
 **Acceptance criteria:**
 - [ ] `packages/patterns/src/multi-agent/routing.ts` and any directly coupled factory wiring replace broad routing-decision casts with schema-aligned or unknown-first contracts

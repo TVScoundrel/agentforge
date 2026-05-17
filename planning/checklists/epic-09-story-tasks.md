@@ -1781,21 +1781,47 @@ Implementation notes:
 **Branch:** `fix/st-09045-multi-agent-routing-decision-contracts`
 
 ### Checklist
-- [ ] Create branch `fix/st-09045-multi-agent-routing-decision-contracts`
+- [x] Create branch `fix/st-09045-multi-agent-routing-decision-contracts`
 - [ ] Create draft PR with story ID in title
-- [ ] Define test strategy before implementation: cover structured routing decisions, fallback behavior, and parallel-target handling; first failing test should assert routing decisions no longer pass through broad casts
-- [ ] Write or update the failing automated test before production changes when practical; if not practical, record why before implementation
-- [ ] Replace broad routing-decision casts in `packages/patterns/src/multi-agent/routing.ts` and directly coupled factory wiring with schema-aligned or unknown-first contracts
-- [ ] Preserve LLM-based, round-robin, skill-based, load-balanced, and rule-based routing behavior
-- [ ] Add/update production code until focused tests pass, keeping test evidence in checklist notes and PR body
-- [ ] Record explicit-`any` warning deltas for touched files in story docs
-- [ ] Add or update story documentation at `docs/st09045-multi-agent-routing-decision-contracts.md` (or document why not required)
-- [ ] Assess residual test impact; add/update additional automated tests when needed, or document why no further tests are required
-- [ ] Run full test suite before finalizing the PR and record results
-- [ ] Run lint (`pnpm lint`) before finalizing the PR and record results
+- [x] Define test strategy before implementation: cover structured routing decisions, fallback behavior, and parallel-target handling; first failing test should assert routing decisions no longer pass through broad casts
+- [x] Write or update the failing automated test before production changes when practical; if not practical, record why before implementation
+- [x] Replace broad routing-decision casts in `packages/patterns/src/multi-agent/routing.ts` and directly coupled factory wiring with schema-aligned or unknown-first contracts
+- [x] Preserve LLM-based, round-robin, skill-based, load-balanced, and rule-based routing behavior
+- [x] Add/update production code until focused tests pass, keeping test evidence in checklist notes and PR body
+- [x] Record explicit-`any` warning deltas for touched files in story docs
+- [x] Add or update story documentation at `docs/st09045-multi-agent-routing-decision-contracts.md` (or document why not required)
+- [x] Assess residual test impact; add/update additional automated tests when needed, or document why no further tests are required
+- [x] Run full test suite before finalizing the PR and record results
+- [x] Run lint (`pnpm lint`) before finalizing the PR and record results
 - [ ] Commit completed checklist items as logical commits and push updates
 - [ ] Mark PR Ready only after all story tasks are complete
 - [ ] Wait for merge; do not merge directly from local branch
+
+### Notes
+
+- Test strategy:
+  - Used a practical test-first runtime seam instead of a source-included typecheck fixture because the concrete risk was the runtime routing-decision boundary.
+  - Planned coverage: structured routing decisions, fallback parsing when `withStructuredOutput` is unavailable, and parallel-target handling.
+- Test-first evidence:
+  - Initial focused regression failed as expected:
+    - `pnpm test --run packages/patterns/tests/multi-agent/routing.test.ts`
+  - Failure mode before implementation:
+    - `withStructuredOutput` was never called by `llmBasedRouting`, proving the structured decision surface was being bypassed.
+- Focused validation after implementation:
+  - `pnpm test --run packages/patterns/tests/multi-agent/routing.test.ts` -> `1` file, `16` tests passed
+  - `pnpm test --run packages/patterns/tests/multi-agent/routing.test.ts packages/patterns/tests/multi-agent/nodes.test.ts` -> `2` files, `48` tests passed
+  - `pnpm --filter @agentforge/patterns typecheck` passed
+  - `pnpm lint:explicit-any:baseline` -> `patterns 2/28`, workspace `90/289`
+- Full validation before review:
+  - `pnpm test --run` -> `171` files passed, `16` skipped; `2297` tests passed, `286` skipped
+  - `pnpm lint` passed with warnings only and `0` errors
+  - `git diff --check` passed
+- Residual impact assessment:
+  - Added focused runtime coverage rather than a separate contracts fixture because the implementation tightened an internal routing decision seam instead of a reusable generic surface. Existing node-level multi-agent coverage already exercises the downstream supervisor behavior.
+- Explicit-`any` delta:
+  - `packages/patterns/src/multi-agent/routing.ts` improved from `1 -> 0`
+  - `patterns` baseline improved from `3/28 -> 2/28`
+  - workspace baseline improved from `91/289 -> 90/289`
 
 ---
 

@@ -1,11 +1,11 @@
 # Kanban Queue: AgentForge
 
-**Last Updated:** 2026-05-16
+**Last Updated:** 2026-05-17
 
 ## Queue Status Summary
 
-- **Ready:** 3 stories
-- **In Progress:** 0 stories
+- **Ready:** 2 stories
+- **In Progress:** 1 story
 - **In Review:** 0 stories
 - **Blocked:** 0 stories
 - **Backlog:** 0 stories
@@ -14,14 +14,13 @@
 
 ## Ready
 
-- `ST-09045` - Tighten Multi-Agent Routing Decision Contracts
 - `ST-09046` - Tighten Transformer Schema Value Contracts
 - `ST-09047` - Tighten JSON and HTTP Payload Schema Contracts
 ---
 
 ## In Progress
 
-_No stories currently in progress_
+- `ST-09045` - Tighten Multi-Agent Routing Decision Contracts
 
 ---
 
