@@ -436,44 +436,24 @@ describe('Multi-Agent Routing Strategies', () => {
       );
     });
 
-    it('should fall back to direct invocation when structured output is exposed but unsupported', async () => {
+    it('should surface structured invocation failures instead of retrying unstructured routing', async () => {
       const structuredInvoke = vi.fn().mockRejectedValue(new Error('Structured output unsupported'));
-      const invoke = vi.fn().mockResolvedValue({
-        targetAgent: 'researcher',
-        targetAgents: null,
-        reasoning: 'Fallback after structured output failure',
-        confidence: 0.8,
-      });
 
       const config: SupervisorConfig = {
         strategy: 'llm-based',
         model: {
-          invoke,
+          invoke: vi.fn(),
           withStructuredOutput: vi.fn().mockReturnValue({
             invoke: structuredInvoke,
           }),
         } as unknown as NonNullable<SupervisorConfig['model']>,
       };
 
-      const warnSpy = vi.spyOn(logger, 'warn').mockImplementation(() => undefined);
-      const decision = await llmBasedRouting.route(mockState, config);
-
-      expect(structuredInvoke).toHaveBeenCalledOnce();
-      expect(invoke).toHaveBeenCalledOnce();
-      expect(warnSpy).toHaveBeenCalledWith(
-        'Structured output unavailable, using direct routing fallback',
-        expect.objectContaining({
-          strategy: 'llm-based',
-          fallback: 'direct-model-invoke',
-          error: 'Structured output unsupported',
-        })
+      await expect(llmBasedRouting.route(mockState, config)).rejects.toThrow(
+        'Structured output unsupported'
       );
-      expect(decision.targetAgent).toBe('researcher');
-      expect(decision.targetAgents).toBeNull();
-      expect(decision.reasoning).toBe('Fallback after structured output failure');
-      expect(decision.confidence).toBe(0.8);
-      expect(decision.strategy).toBe('llm-based');
-      warnSpy.mockRestore();
+      expect(structuredInvoke).toHaveBeenCalledOnce();
+      expect(config.model?.invoke).not.toHaveBeenCalled();
     });
 
     it('should fall back to direct invocation when withStructuredOutput setup throws', async () => {

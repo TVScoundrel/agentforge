@@ -105,10 +105,9 @@ async function invokeRoutingDecision(
   messages: [SystemMessage, HumanMessage]
 ): Promise<RoutingDecision> {
   if (hasStructuredOutput(model)) {
-    let decision: unknown;
+    let structuredModel: RoutingDecisionInvoker;
     try {
-      const structuredModel = model.withStructuredOutput(RoutingDecisionSchema);
-      decision = await structuredModel.invoke(messages);
+      structuredModel = model.withStructuredOutput(RoutingDecisionSchema);
     } catch (error) {
       // Some LangChain models expose withStructuredOutput without actually supporting it.
       // Fall back to direct invocation so routing still works for those models.
@@ -117,12 +116,12 @@ async function invokeRoutingDecision(
         fallback: 'direct-model-invoke',
         error: error instanceof Error ? error.message : String(error),
       });
-      decision = undefined;
-    }
-
-    if (decision !== undefined) {
+      const decision = await model.invoke(messages);
       return finalizeLlmRoutingDecision(decision);
     }
+
+    const decision = await structuredModel.invoke(messages);
+    return finalizeLlmRoutingDecision(decision);
   }
 
   const decision = await model.invoke(messages);
