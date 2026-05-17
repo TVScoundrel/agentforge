@@ -1782,7 +1782,7 @@ Implementation notes:
 
 ### Checklist
 - [x] Create branch `fix/st-09045-multi-agent-routing-decision-contracts`
-- [ ] Create draft PR with story ID in title
+- [x] Create draft PR with story ID in title
 - [x] Define test strategy before implementation: cover structured routing decisions, fallback behavior, and parallel-target handling; first failing test should assert routing decisions no longer pass through broad casts
 - [x] Write or update the failing automated test before production changes when practical; if not practical, record why before implementation
 - [x] Replace broad routing-decision casts in `packages/patterns/src/multi-agent/routing.ts` and directly coupled factory wiring with schema-aligned or unknown-first contracts
@@ -1793,8 +1793,8 @@ Implementation notes:
 - [x] Assess residual test impact; add/update additional automated tests when needed, or document why no further tests are required
 - [x] Run full test suite before finalizing the PR and record results
 - [x] Run lint (`pnpm lint`) before finalizing the PR and record results
-- [ ] Commit completed checklist items as logical commits and push updates
-- [ ] Mark PR Ready only after all story tasks are complete
+- [x] Commit completed checklist items as logical commits and push updates
+- [x] Mark PR Ready only after all story tasks are complete
 - [ ] Wait for merge; do not merge directly from local branch
 
 ### Notes
@@ -1822,6 +1822,10 @@ Implementation notes:
   - `packages/patterns/src/multi-agent/routing.ts` improved from `1 -> 0`
   - `patterns` baseline improved from `3/28 -> 2/28`
   - workspace baseline improved from `91/289 -> 90/289`
+- PR workflow:
+  - Draft PR created with story ID in title: PR #114
+  - Validated body file prepared at `.pr-body-st-09045.md`
+  - PR marked ready for review after final self-review and validation
 
 ---
 
