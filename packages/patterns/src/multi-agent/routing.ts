@@ -8,6 +8,7 @@
  */
 
 import { HumanMessage, SystemMessage } from '@langchain/core/messages';
+import type { BaseLanguageModelInput } from '@langchain/core/language_models/base';
 import { createPatternLogger } from '../shared/deduplication.js';
 import type { MultiAgentStateType } from './state.js';
 import type { SupervisorConfig, RoutingStrategyImpl } from './types.js';
@@ -16,7 +17,7 @@ import type { RoutingDecision } from './schemas.js';
 
 type RoutingModelLike = NonNullable<SupervisorConfig['model']>;
 type RoutingDecisionInvoker = {
-  invoke: (input: unknown) => Promise<unknown>;
+  invoke: (input: BaseLanguageModelInput) => Promise<unknown>;
 };
 
 type StructuredOutputCapableRoutingModel = RoutingDecisionInvoker & {

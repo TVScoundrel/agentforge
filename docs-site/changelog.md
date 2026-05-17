@@ -5,6 +5,28 @@ All notable changes to AgentForge will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.16.32] - 2026-05-17
+
+### Added
+
+#### @agentforge/patterns - Multi-Agent Routing Regression Coverage
+- Added focused routing coverage in `packages/patterns/tests/multi-agent/routing.test.ts` for structured-output setup failure fallback, direct-content JSON fallback, mixed content arrays, routing-specific fallback diagnostics, and invalid structured-response hard failures
+- Kept combined multi-agent routing and node coverage green in `packages/patterns/tests/multi-agent/nodes.test.ts`, validating the tightened routing boundary against the surrounding supervisor flow
+- Added story documentation in `docs/st09045-multi-agent-routing-decision-contracts.md` capturing the contract hardening, review-driven fallback refinements, validation evidence, and explicit-`any` delta
+
+### Changed
+
+#### @agentforge/patterns - Multi-Agent Routing Decision Hardening
+- Tightened `packages/patterns/src/multi-agent/routing.ts` so LLM routing decisions are parsed through `RoutingDecisionSchema` instead of a broad cast from `model.invoke(...)`
+- Centralized the structured-output decision boundary inside the routing module, preferring `withStructuredOutput(RoutingDecisionSchema)` when supported and using direct-output parsing only as a compatibility fallback for structured-output setup failures
+- Preserved existing routing behavior for valid decisions while adding routing-specific warning logs and clearer invalid-decision errors for unsupported or malformed model output
+
+### Fixed
+
+#### @agentforge/patterns - Routing Fallback Contract Safety
+- Removed the remaining explicit `any` seam from `packages/patterns/src/multi-agent/routing.ts`, reducing the `patterns` baseline from `3/28` to `2/28` and the workspace baseline from `91/289` to `90/289`
+- Corrected fallback behavior so mixed content arrays ignore non-text blocks for JSON parsing, invalid structured responses fail fast instead of silently retrying unstructured routing, and only structured-output setup failures trigger direct-output fallback
+
 ## [0.16.31] - 2026-05-16
 
 ### Added
