@@ -72,8 +72,17 @@ function normalizeRoutingDecisionInput(decision: unknown): unknown {
   return decision;
 }
 
+function parseRoutingDecision(decision: unknown): RoutingDecision {
+  try {
+    return RoutingDecisionSchema.parse(normalizeRoutingDecisionInput(decision));
+  } catch (error) {
+    const message = error instanceof Error ? error.message : String(error);
+    throw new Error(`Invalid LLM routing decision: ${message}`);
+  }
+}
+
 function finalizeLlmRoutingDecision(decision: unknown): RoutingDecision {
-  const parsed = RoutingDecisionSchema.parse(normalizeRoutingDecisionInput(decision));
+  const parsed = parseRoutingDecision(decision);
   return {
     targetAgent: parsed.targetAgent,
     targetAgents: parsed.targetAgents,

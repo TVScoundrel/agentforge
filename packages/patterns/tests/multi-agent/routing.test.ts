@@ -351,6 +351,52 @@ describe('Multi-Agent Routing Strategies', () => {
       expect(decision.confidence).toBe(0.85);
       expect(decision.strategy).toBe('llm-based');
     });
+
+
+    it('should parse array-based text content when structured output is unavailable', async () => {
+      const invoke = vi.fn().mockResolvedValue({
+        content: [
+          {
+            type: 'text',
+            text: JSON.stringify({
+              targetAgent: 'researcher',
+              targetAgents: null,
+              reasoning: 'Fallback array content',
+              confidence: 0.65,
+            }),
+          },
+        ],
+      });
+
+      const config: SupervisorConfig = {
+        strategy: 'llm-based',
+        model: {
+          invoke,
+        } as unknown as NonNullable<SupervisorConfig['model']>,
+      };
+
+      const decision = await llmBasedRouting.route(mockState, config);
+
+      expect(invoke).toHaveBeenCalledOnce();
+      expect(decision.targetAgent).toBe('researcher');
+      expect(decision.targetAgents).toBeNull();
+      expect(decision.reasoning).toBe('Fallback array content');
+      expect(decision.confidence).toBe(0.65);
+      expect(decision.strategy).toBe('llm-based');
+    });
+
+    it('should surface routing-specific context for invalid fallback content', async () => {
+      const config: SupervisorConfig = {
+        strategy: 'llm-based',
+        model: {
+          invoke: vi.fn().mockResolvedValue({ content: '{invalid json' }),
+        } as unknown as NonNullable<SupervisorConfig['model']>,
+      };
+
+      await expect(llmBasedRouting.route(mockState, config)).rejects.toThrow(
+        /Invalid LLM routing decision:/
+      );
+    });
   });
 
   describe('getRoutingStrategy', () => {

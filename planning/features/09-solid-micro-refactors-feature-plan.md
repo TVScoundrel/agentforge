@@ -32,17 +32,16 @@
 
 ## Current Hotspot Snapshot
 
-Current `@typescript-eslint/no-explicit-any` baseline check (`pnpm lint:explicit-any:baseline`, 2026-05-16):
+Current `@typescript-eslint/no-explicit-any` baseline check (`pnpm lint:explicit-any:baseline`, 2026-05-17):
 
 - Total: `91` warnings (`src/**`)
 - By package: `cli 6`, `core 23`, `patterns 3`, `testing 0`, `tools 59`
 
 Top runtime hotspots informing this feature slice:
 
-1. `packages/patterns/src/multi-agent/routing.ts` still relies on a broad cast for LLM routing decisions rather than schema-aligned structured output consumption
-2. `packages/tools/src/data/transformer/types.ts` still uses blanket `z.any()` boundaries for transformer value contracts
-3. `packages/tools/src/data/json/types.ts` and `packages/tools/src/web/http/types.ts` still expose broad payload/response seams on generic data-tool boundaries
-4. The next follow-on slices should keep EP-09 open for another short burst of small SOLID/DRY improvements rather than creating a new epic for the same quality lane
+1. `packages/tools/src/data/transformer/types.ts` still uses blanket `z.any()` boundaries for transformer value contracts
+2. `packages/tools/src/data/json/types.ts` and `packages/tools/src/web/http/types.ts` still expose broad payload/response seams on generic data-tool boundaries
+3. The next follow-on slices should keep EP-09 open for another short burst of small SOLID/DRY improvements rather than creating a new epic for the same quality lane
 
 Recent improvement snapshot:
 
