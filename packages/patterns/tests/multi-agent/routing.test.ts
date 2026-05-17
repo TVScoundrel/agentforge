@@ -476,6 +476,44 @@ describe('Multi-Agent Routing Strategies', () => {
       warnSpy.mockRestore();
     });
 
+    it('should fall back to direct invocation when withStructuredOutput setup throws', async () => {
+      const invoke = vi.fn().mockResolvedValue({
+        targetAgent: 'writer',
+        targetAgents: null,
+        reasoning: 'Fallback after structured setup failure',
+        confidence: 0.72,
+      });
+      const warnSpy = vi.spyOn(logger, 'warn').mockImplementation(() => undefined);
+
+      const config: SupervisorConfig = {
+        strategy: 'llm-based',
+        model: {
+          invoke,
+          withStructuredOutput: vi.fn().mockImplementation(() => {
+            throw new Error('Structured output setup unsupported');
+          }),
+        } as unknown as NonNullable<SupervisorConfig['model']>,
+      };
+
+      const decision = await llmBasedRouting.route(mockState, config);
+
+      expect(invoke).toHaveBeenCalledOnce();
+      expect(warnSpy).toHaveBeenCalledWith(
+        'Structured output unavailable, using direct routing fallback',
+        expect.objectContaining({
+          strategy: 'llm-based',
+          fallback: 'direct-model-invoke',
+          error: 'Structured output setup unsupported',
+        })
+      );
+      expect(decision.targetAgent).toBe('writer');
+      expect(decision.targetAgents).toBeNull();
+      expect(decision.reasoning).toBe('Fallback after structured setup failure');
+      expect(decision.confidence).toBe(0.72);
+      expect(decision.strategy).toBe('llm-based');
+      warnSpy.mockRestore();
+    });
+
     it('should not retry direct invocation when structured output returns an invalid decision', async () => {
       const structuredInvoke = vi.fn().mockResolvedValue({
         targetAgent: 123,

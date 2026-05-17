@@ -18,6 +18,7 @@
   - direct-output fallback parsing when `withStructuredOutput` is unavailable
   - array-based content with mixed non-text blocks
   - unsupported structured-output models that require direct-output fallback
+  - unsupported `withStructuredOutput(...)` setup that throws before invocation
   - invalid structured-output decisions that must surface without retry
 
 ## Test Strategy

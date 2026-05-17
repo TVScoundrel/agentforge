@@ -105,9 +105,9 @@ async function invokeRoutingDecision(
   messages: [SystemMessage, HumanMessage]
 ): Promise<RoutingDecision> {
   if (hasStructuredOutput(model)) {
-    const structuredModel = model.withStructuredOutput(RoutingDecisionSchema);
     let decision: unknown;
     try {
+      const structuredModel = model.withStructuredOutput(RoutingDecisionSchema);
       decision = await structuredModel.invoke(messages);
     } catch (error) {
       // Some LangChain models expose withStructuredOutput without actually supporting it.
