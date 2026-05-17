@@ -10,10 +10,15 @@
   - prefers `withStructuredOutput(RoutingDecisionSchema)` when the model exposes it
   - falls back to parsing direct model output through `RoutingDecisionSchema`
   - normalizes the final decision back onto the existing `llm-based` runtime shape
+  - warns when structured output is unavailable and the direct-output fallback path is used
+  - preserves structured-output parse/schema failures as hard errors instead of silently retrying unstructured routing
 - Removed the direct structured-output rewiring from [`packages/patterns/src/multi-agent/agent.ts`](../packages/patterns/src/multi-agent/agent.ts) so the routing module owns the decision boundary instead of the system factory.
 - Added focused regression coverage in [`packages/patterns/tests/multi-agent/routing.test.ts`](../packages/patterns/tests/multi-agent/routing.test.ts) for:
   - structured-output routing with parallel targets
   - direct-output fallback parsing when `withStructuredOutput` is unavailable
+  - array-based content with mixed non-text blocks
+  - unsupported structured-output models that require direct-output fallback
+  - invalid structured-output decisions that must surface without retry
 
 ## Test Strategy
 

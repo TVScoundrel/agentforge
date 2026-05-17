@@ -8,6 +8,7 @@
  */
 
 import { HumanMessage, SystemMessage } from '@langchain/core/messages';
+import { createPatternLogger } from '../shared/deduplication.js';
 import type { MultiAgentStateType } from './state.js';
 import type { SupervisorConfig, RoutingStrategyImpl } from './types.js';
 import { RoutingDecisionSchema } from './schemas.js';
@@ -25,6 +26,8 @@ type StructuredOutputCapableRoutingModel = RoutingDecisionInvoker & {
 type ContentCarrier = {
   content?: unknown;
 };
+
+export const logger = createPatternLogger('agentforge:patterns:multi-agent:routing');
 
 function hasStructuredOutput(
   model: RoutingModelLike
@@ -102,12 +105,23 @@ async function invokeRoutingDecision(
   messages: [SystemMessage, HumanMessage]
 ): Promise<RoutingDecision> {
   if (hasStructuredOutput(model)) {
+    const structuredModel = model.withStructuredOutput(RoutingDecisionSchema);
+    let decision: unknown;
     try {
-      const decision = await model.withStructuredOutput(RoutingDecisionSchema).invoke(messages);
-      return finalizeLlmRoutingDecision(decision);
-    } catch {
+      decision = await structuredModel.invoke(messages);
+    } catch (error) {
       // Some LangChain models expose withStructuredOutput without actually supporting it.
       // Fall back to direct invocation so routing still works for those models.
+      logger.warn('Structured output unavailable, using direct routing fallback', {
+        strategy: 'llm-based',
+        fallback: 'direct-model-invoke',
+        error: error instanceof Error ? error.message : String(error),
+      });
+      decision = undefined;
+    }
+
+    if (decision !== undefined) {
+      return finalizeLlmRoutingDecision(decision);
     }
   }
 

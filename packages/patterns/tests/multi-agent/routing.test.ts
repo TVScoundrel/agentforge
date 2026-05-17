@@ -10,6 +10,7 @@ import {
   loadBalancedRouting,
   ruleBasedRouting,
   getRoutingStrategy,
+  logger,
 } from '../../src/multi-agent/routing.js';
 import type { MultiAgentStateType } from '../../src/multi-agent/state.js';
 import type { SupervisorConfig } from '../../src/multi-agent/types.js';
@@ -454,15 +455,51 @@ describe('Multi-Agent Routing Strategies', () => {
         } as unknown as NonNullable<SupervisorConfig['model']>,
       };
 
+      const warnSpy = vi.spyOn(logger, 'warn').mockImplementation(() => undefined);
       const decision = await llmBasedRouting.route(mockState, config);
 
       expect(structuredInvoke).toHaveBeenCalledOnce();
       expect(invoke).toHaveBeenCalledOnce();
+      expect(warnSpy).toHaveBeenCalledWith(
+        'Structured output unavailable, using direct routing fallback',
+        expect.objectContaining({
+          strategy: 'llm-based',
+          fallback: 'direct-model-invoke',
+          error: 'Structured output unsupported',
+        })
+      );
       expect(decision.targetAgent).toBe('researcher');
       expect(decision.targetAgents).toBeNull();
       expect(decision.reasoning).toBe('Fallback after structured output failure');
       expect(decision.confidence).toBe(0.8);
       expect(decision.strategy).toBe('llm-based');
+      warnSpy.mockRestore();
+    });
+
+    it('should not retry direct invocation when structured output returns an invalid decision', async () => {
+      const structuredInvoke = vi.fn().mockResolvedValue({
+        targetAgent: 123,
+        targetAgents: null,
+        reasoning: 'Invalid structured output',
+        confidence: 0.8,
+      });
+      const invoke = vi.fn();
+
+      const config: SupervisorConfig = {
+        strategy: 'llm-based',
+        model: {
+          invoke,
+          withStructuredOutput: vi.fn().mockReturnValue({
+            invoke: structuredInvoke,
+          }),
+        } as unknown as NonNullable<SupervisorConfig['model']>,
+      };
+
+      await expect(llmBasedRouting.route(mockState, config)).rejects.toThrow(
+        /Invalid LLM routing decision:/
+      );
+      expect(structuredInvoke).toHaveBeenCalledOnce();
+      expect(invoke).not.toHaveBeenCalled();
     });
   });
 

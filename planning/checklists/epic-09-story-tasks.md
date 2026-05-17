@@ -1808,8 +1808,8 @@ Implementation notes:
   - Failure mode before implementation:
     - `withStructuredOutput` was never called by `llmBasedRouting`, proving the structured decision surface was being bypassed.
 - Focused validation after implementation:
-  - `pnpm test --run packages/patterns/tests/multi-agent/routing.test.ts` -> `1` file, `21` tests passed
-  - `pnpm test --run packages/patterns/tests/multi-agent/routing.test.ts packages/patterns/tests/multi-agent/nodes.test.ts` -> `2` files, `54` tests passed
+  - `pnpm test --run packages/patterns/tests/multi-agent/routing.test.ts` -> `1` file, `22` tests passed
+  - `pnpm test --run packages/patterns/tests/multi-agent/routing.test.ts packages/patterns/tests/multi-agent/nodes.test.ts` -> `2` files, `55` tests passed
   - `pnpm --filter @agentforge/patterns typecheck` passed
   - `pnpm lint:explicit-any:baseline` -> `patterns 2/28`, workspace `90/289`
 - Full validation before review:
