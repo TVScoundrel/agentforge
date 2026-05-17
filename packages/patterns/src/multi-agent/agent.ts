@@ -14,7 +14,6 @@ import type { MultiAgentStateType } from './state.js';
 import type { MultiAgentSystemConfig, MultiAgentRouter, WorkerConfig } from './types.js';
 import { createSupervisorNode, createWorkerNode, createAggregatorNode } from './nodes.js';
 import type { WorkerCapabilities } from './schemas.js';
-import { RoutingDecisionSchema } from './schemas.js';
 
 const logger = createPatternLogger('agentforge:patterns:multi-agent:system');
 
@@ -152,18 +151,7 @@ export function createMultiAgentSystem(config: MultiAgentSystemConfig): MultiAge
   // Create the graph
   const workflow = new StateGraph(MultiAgentState);
 
-  // Configure supervisor model with structured output
   const supervisorConfig = { ...supervisor, maxIterations, verbose };
-  if (supervisor.model) {
-    let configuredModel = supervisor.model;
-
-    // Add structured output for routing decisions (forces JSON response)
-    if (supervisor.strategy === 'llm-based') {
-      configuredModel = configuredModel.withStructuredOutput!(RoutingDecisionSchema) as unknown as typeof configuredModel;
-    }
-
-    supervisorConfig.model = configuredModel;
-  }
 
   // Add supervisor node
   const supervisorNode = createSupervisorNode(supervisorConfig);

@@ -13,6 +13,7 @@ import {
 } from '../../src/multi-agent/routing.js';
 import type { MultiAgentStateType } from '../../src/multi-agent/state.js';
 import type { SupervisorConfig } from '../../src/multi-agent/types.js';
+import { RoutingDecisionSchema } from '../../src/multi-agent/schemas.js';
 
 describe('Multi-Agent Routing Strategies', () => {
   const mockState: MultiAgentStateType = {
@@ -263,6 +264,66 @@ describe('Multi-Agent Routing Strategies', () => {
       await expect(llmBasedRouting.route(mockState, config))
         .rejects.toThrow('requires a model');
     });
+
+    it('should use structured output when available and preserve parallel targets', async () => {
+      const structuredDecision = RoutingDecisionSchema.parse({
+        targetAgent: null,
+        targetAgents: ['researcher', 'writer'],
+        reasoning: 'Parallel research and writing',
+        confidence: 0.9,
+        strategy: 'llm-based',
+        timestamp: 123,
+      });
+
+      const structuredInvoke = vi.fn().mockResolvedValue(structuredDecision);
+      const withStructuredOutput = vi.fn().mockReturnValue({
+        invoke: structuredInvoke,
+      });
+      const invoke = vi.fn().mockResolvedValue('unstructured fallback should not be used');
+
+      const config: SupervisorConfig = {
+        strategy: 'llm-based',
+        model: {
+          invoke,
+          withStructuredOutput,
+        } as unknown as NonNullable<SupervisorConfig['model']>,
+      };
+
+      const decision = await llmBasedRouting.route(mockState, config);
+
+      expect(withStructuredOutput).toHaveBeenCalledWith(RoutingDecisionSchema);
+      expect(structuredInvoke).toHaveBeenCalledOnce();
+      expect(invoke).not.toHaveBeenCalled();
+      expect(decision.targetAgents).toEqual(['researcher', 'writer']);
+      expect(decision.targetAgent).toBeNull();
+      expect(decision.reasoning).toBe('Parallel research and writing');
+      expect(decision.strategy).toBe('llm-based');
+    });
+
+    it('should fall back to parsing direct model output when structured output is unavailable', async () => {
+      const invoke = vi.fn().mockResolvedValue({
+        targetAgent: 'researcher',
+        targetAgents: null,
+        reasoning: 'Fallback direct output',
+        confidence: 0.7,
+      });
+
+      const config: SupervisorConfig = {
+        strategy: 'llm-based',
+        model: {
+          invoke,
+        } as unknown as NonNullable<SupervisorConfig['model']>,
+      };
+
+      const decision = await llmBasedRouting.route(mockState, config);
+
+      expect(invoke).toHaveBeenCalledOnce();
+      expect(decision.targetAgent).toBe('researcher');
+      expect(decision.targetAgents).toBeNull();
+      expect(decision.reasoning).toBe('Fallback direct output');
+      expect(decision.confidence).toBe(0.7);
+      expect(decision.strategy).toBe('llm-based');
+    });
   });
 
   describe('getRoutingStrategy', () => {
@@ -280,4 +341,3 @@ describe('Multi-Agent Routing Strategies', () => {
     });
   });
 });
-
