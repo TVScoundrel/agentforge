@@ -1795,7 +1795,7 @@ Implementation notes:
 - [x] Run lint (`pnpm lint`) before finalizing the PR and record results
 - [x] Commit completed checklist items as logical commits and push updates
 - [x] Mark PR Ready only after all story tasks are complete
-- [ ] Wait for merge; do not merge directly from local branch
+- [x] Wait for merge; do not merge directly from local branch
 
 ### Notes
 
@@ -1826,6 +1826,7 @@ Implementation notes:
   - Draft PR created with story ID in title: PR #114
   - Validated body file prepared at `.pr-body-st-09045.md`
   - PR marked ready for review after final self-review and validation
+  - Merged on 2026-05-17 as commit `b1c07f5`
 
 ---
 

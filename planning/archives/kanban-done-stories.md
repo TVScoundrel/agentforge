@@ -2,11 +2,18 @@
 
 **Purpose:** Track completed and merged stories for the Relational Database Access Tool project.
 
-**Last Updated:** 2026-05-16
+**Last Updated:** 2026-05-17
 
 ---
 
 ## Completed Stories
+
+### ST-09045: Tighten Multi-Agent Routing Decision Contracts
+- **Merged:** 2026-05-17
+- **PR:** https://github.com/TVScoundrel/agentforge/pull/114 (commit b1c07f5)
+- **Epic:** EP-09 (SOLID Micro-Refactors and Type Boundary Hardening)
+- **Estimate:** 3 hours
+- **Outcome:** Tightened `@agentforge/patterns` multi-agent routing decision handling by replacing the broad LLM routing cast with schema-aligned structured-output parsing, while preserving LLM-based, round-robin, skill-based, load-balanced, and rule-based routing behavior. The story added focused routing regressions plus follow-up fixes for content-based fallback parsing, routing-specific invalid-decision diagnostics, setup-only structured-output fallback with warn-level observability, and explicit hard-failure behavior for invalid structured responses, and it lowered the `patterns` explicit-`any` baseline from `3/28` to `2/28` while lowering the workspace baseline from `91/289` to `90/289`.
 
 ### ST-09044: Tighten Testing Mock Tool Factory Contracts
 - **Merged:** 2026-05-16

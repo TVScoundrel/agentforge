@@ -1615,7 +1615,7 @@
 **Priority:** P2 (Medium)
 **Estimate:** 3 hours
 **Dependencies:** ST-09015
-**Status:** In Review
+**Status:** Merged (PR #114, 2026-05-17)
 
 **Acceptance criteria:**
 - [ ] `packages/patterns/src/multi-agent/routing.ts` and any directly coupled factory wiring replace broad routing-decision casts with schema-aligned or unknown-first contracts
@@ -1666,7 +1666,7 @@
 **Priority:** P2 (Medium)
 **Estimate:** 4 hours
 **Dependencies:** ST-09045
-**Status:** Backlog
+**Status:** Ready
 
 **Acceptance criteria:**
 - [ ] `packages/patterns/src/multi-agent/routing.ts` is reduced to a thin public facade or registry, with the LLM, round-robin, skill-based, load-balanced, and rule-based strategies extracted into focused internal modules.

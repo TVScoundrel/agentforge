@@ -4,11 +4,11 @@
 
 ## Queue Status Summary
 
-- **Ready:** 2 stories
+- **Ready:** 3 stories
 - **In Progress:** 0 stories
-- **In Review:** 1 story
+- **In Review:** 0 stories
 - **Blocked:** 0 stories
-- **Backlog:** 1 story
+- **Backlog:** 0 stories
 
 ---
 
@@ -16,6 +16,7 @@
 
 - `ST-09046` - Tighten Transformer Schema Value Contracts
 - `ST-09047` - Tighten JSON and HTTP Payload Schema Contracts
+- `ST-09048` - Modularize Multi-Agent Routing Strategies and Tests
 ---
 
 ## In Progress
@@ -26,7 +27,7 @@ _No stories currently in progress_
 
 ## In Review
 
-- `ST-09045` - Tighten Multi-Agent Routing Decision Contracts
+_No stories currently in review_
 
 ---
 
@@ -38,7 +39,7 @@ _No stories currently blocked_
 
 ## Backlog
 
-- `ST-09048` - Modularize Multi-Agent Routing Strategies and Tests
+_No stories currently in backlog_
 
 ---
 
