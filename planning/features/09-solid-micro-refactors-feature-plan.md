@@ -2,8 +2,8 @@
 
 **Epic Range:** EP-09 through EP-09
 **Status:** In Progress
-**Last Updated:** 2026-05-17
-**Active Story:** None
+**Last Updated:** 2026-05-19
+**Active Story:** ST-09048
 
 ---
 
@@ -41,7 +41,7 @@ Top runtime hotspots informing this feature slice:
 
 1. `packages/tools/src/data/transformer/types.ts` still uses blanket `z.any()` boundaries for transformer value contracts
 2. `packages/tools/src/data/json/types.ts` and `packages/tools/src/web/http/types.ts` still expose broad payload/response seams on generic data-tool boundaries
-3. `packages/patterns/src/multi-agent/routing.ts` is now functionally hardened but still concentrated in a single growing strategy file with a coupled routing test file, making it the next obvious modularization target once `ST-09045` lands.
+3. `packages/patterns/src/multi-agent/routing.ts` has moved into the active modularization lane under `ST-09048`, where the remaining goal is to keep the new split review-friendly and merge it without regressing the hardened routing behavior.
 4. The next follow-on slices should keep EP-09 open for another short burst of small SOLID/DRY improvements rather than creating a new epic for the same quality lane
 
 Recent improvement snapshot:
@@ -87,6 +87,7 @@ Recent improvement snapshot:
 - `ST-09044` merged on 2026-05-16 after tightening schema-driven mock-tool factory contracts, preserving delayed/error helper semantics while lowering the workspace explicit-`any` baseline from `94` to `91` and the `testing` package from `3` to `0`.
 - `ST-09045` merged on 2026-05-17 after tightening the multi-agent routing decision boundary around schema-aligned structured output, preserving routing behavior while adding review-driven follow-up fixes for content-based fallback parsing, routing-specific parse diagnostics, structured-output compatibility fallbacks, warn-level observability, and a dedicated modularization follow-on story for the growing routing module and its coupled tests.
 - `ST-09048` was added on 2026-05-17 to modularize `packages/patterns/src/multi-agent/routing.ts` and its coupled routing tests after the routing decision contract work, keeping both files from becoming the next oversized multi-responsibility hotspot.
+- `ST-09048` is now in review after reducing `packages/patterns/src/multi-agent/routing.ts` from `373` lines to a `51` line facade, extracting focused internal routing modules, and replacing the `538` line routing test monolith with focused strategy test files plus a shared fixture while keeping the explicit-`any` baseline flat at `workspace 90/289` and `patterns 2/28`.
 - `EP-09` remains open as the daily hardening stream, with the active queue now centered on the next type-boundary slices across multi-agent routing plus transformer and payload schema contracts.
 - The refreshed follow-on queue now extends beyond the current Ready lane so another few weeks of small SOLID/DRY work can be pulled without re-planning the epic.
 
