@@ -5,6 +5,38 @@ All notable changes to AgentForge will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.16.33] - 2026-05-19
+
+### Added
+
+#### @agentforge/patterns - Modular Routing Regression Coverage
+- Added focused routing coverage in `packages/patterns/tests/multi-agent/routing-worker-selection.test.ts`, `routing-rule-based.test.ts`, `routing-llm.test.ts`, and `routing-registry.test.ts`, with shared fixture support in `routing.fixtures.ts`
+- Kept combined routing and node-path verification green in `packages/patterns/tests/multi-agent/nodes.test.ts`, validating the modularized strategy split against the surrounding multi-agent flow
+- Added story documentation in `docs/st09048-modularize-multi-agent-routing-strategies-and-tests.md` capturing the modularization scope, file-size reduction, validation evidence, and review-driven hardening follow-ups
+
+### Changed
+
+#### @agentforge/patterns - Multi-Agent Routing Modularization
+- Reduced `packages/patterns/src/multi-agent/routing.ts` from a mixed-responsibility `373` line implementation to a `51` line public facade
+- Extracted focused internal routing modules for LLM, round-robin, skill-based, load-balanced, and rule-based strategies plus shared worker-selection helpers under `packages/patterns/src/multi-agent/routing-internal/`
+- Preserved public routing exports and existing runtime behavior while making the routing layer easier to review, extend, and test in smaller slices
+
+### Fixed
+
+#### @agentforge/patterns - Routing Registry and Test Contract Hardening
+- Hardened routing strategy lookup so inherited object keys such as `toString` and `__proto__` cannot bypass the unknown-strategy guard
+- Aligned shared routing test fixtures with schema-required message `id` fields and kept tracker/checklist state consistent through the modularization review cycle
+- Kept the explicit-`any` baseline flat at `workspace 90/289` and `patterns 2/28` while modularizing both production and test code
+
+### Published
+- All packages published to npm registry at version 0.16.33:
+  - @agentforge/core@0.16.33
+  - @agentforge/skills@0.16.33
+  - @agentforge/patterns@0.16.33
+  - @agentforge/tools@0.16.33
+  - @agentforge/testing@0.16.33
+  - @agentforge/cli@0.16.33
+
 ## [0.16.32] - 2026-05-17
 
 ### Added
