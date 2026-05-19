@@ -4,11 +4,11 @@
 
 ## Queue Status Summary
 
-- **Ready:** 2 stories
+- **Ready:** 5 stories
 - **In Progress:** 0 stories
 - **In Review:** 0 stories
 - **Blocked:** 0 stories
-- **Backlog:** 0 stories
+- **Backlog:** 3 stories
 
 ---
 
@@ -16,6 +16,9 @@
 
 - `ST-09046` - Tighten Transformer Schema Value Contracts
 - `ST-09047` - Tighten JSON and HTTP Payload Schema Contracts
+- `ST-09049` - Modularize Core Tool Registry and Tests
+- `ST-09050` - Modularize Core Tool Builder and Tests
+- `ST-09051` - Modularize Multi-Agent Orchestration Agent and Tests
 ---
 
 ## In Progress
@@ -38,7 +41,9 @@ _No stories currently blocked_
 
 ## Backlog
 
-_No stories currently in backlog_
+- `ST-09052` - Modularize Relational Query Builder and Tests
+- `ST-09053` - Modularize Relational Connection Manager and Tests
+- `ST-09054` - Modularize Reflection Nodes and Tests
 
 ---
 

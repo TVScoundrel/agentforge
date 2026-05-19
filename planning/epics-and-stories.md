@@ -121,7 +121,7 @@
 - Story slices are intentionally small (1 day each) so quality improvements can ship continuously
 - Lightweight quality-gate follow-ups keep release/build feedback tight by reducing stale warning caps and easy package metadata warnings
 
-**Stories:** ST-09001 through ST-09048
+**Stories:** ST-09001 through ST-09054
 
 ---
 
@@ -1632,7 +1632,7 @@
 **Priority:** P2 (Medium)
 **Estimate:** 3 hours
 **Dependencies:** ST-09038
-**Status:** Merged (PR #115, 2026-05-19)
+**Status:** Ready
 
 **Acceptance criteria:**
 - [ ] `packages/tools/src/data/transformer/types.ts` replaces broad `z.any()` schema boundaries with shared unknown-first or JSON-like value contracts where behavior allows
@@ -1666,7 +1666,7 @@
 **Priority:** P2 (Medium)
 **Estimate:** 4 hours
 **Dependencies:** ST-09045
-**Status:** Ready
+**Status:** Merged (PR #115, 2026-05-19)
 
 **Acceptance criteria:**
 - [ ] `packages/patterns/src/multi-agent/routing.ts` is reduced to a thin public facade or registry, with the LLM, round-robin, skill-based, load-balanced, and rule-based strategies extracted into focused internal modules.
@@ -1675,6 +1675,108 @@
 - [ ] Shared helpers for routing decision parsing or worker selection are colocated behind clear boundaries instead of mixing all strategy logic in one file.
 - [ ] Focused tests confirm extracted modules preserve current routing behavior and fallback semantics, and `pnpm --filter @agentforge/patterns typecheck`, `pnpm test --run`, and `pnpm lint:explicit-any:baseline` pass with no baseline regression.
 - [ ] Add or update story documentation at `docs/st09048-modularize-multi-agent-routing-strategies-and-tests.md`
+
+---
+
+#### ST-09049: Modularize Core Tool Registry and Tests
+**User story:** As a core maintainer, I want `packages/core/src/tools/registry.ts` and its coupled registry tests split into focused modules so the registry can keep evolving without a single 400+ line runtime file and 800+ line test file carrying too many responsibilities.
+
+**Priority:** P2 (Medium)
+**Estimate:** 4 hours
+**Dependencies:** ST-09031
+**Status:** Ready
+
+**Acceptance criteria:**
+- [ ] `packages/core/src/tools/registry.ts` is reduced below the 300 line planning cutoff by extracting focused internal modules for registration flow, mutation flow, lookup/query flow, and shared registry normalization/helpers behind a stable public facade.
+- [ ] Registry coverage is modularized alongside the production split so strategy-specific and mutation-specific behavior no longer depends on a single oversized `packages/core/tests/tools/registry.test.ts` file.
+- [ ] Existing `ToolRegistry` public behavior, emitted events, mutation error semantics, and imports remain backward compatible.
+- [ ] Focused tests confirm extracted modules preserve current registration, lookup, update, remove, and bulk-registration behavior, and `pnpm --filter @agentforge/core typecheck`, `pnpm test --run`, and `pnpm lint:explicit-any:baseline` pass with no baseline regression.
+- [ ] Add or update story documentation at `docs/st09049-tool-registry-modularization.md`
+
+---
+
+#### ST-09050: Modularize Core Tool Builder and Tests
+**User story:** As a core maintainer, I want `packages/core/src/tools/builder.ts` and its coupled builder tests split into focused modules so fluent tool construction stays reviewable and SOLID as the builder surface grows.
+
+**Priority:** P2 (Medium)
+**Estimate:** 4 hours
+**Dependencies:** ST-09023
+**Status:** Ready
+
+**Acceptance criteria:**
+- [ ] `packages/core/src/tools/builder.ts` is reduced below the 300 line planning cutoff by extracting focused internal modules for metadata configuration, schema/input handling, middleware/execution wiring, and clone/finalization helpers behind the stable public builder facade.
+- [ ] Builder coverage is modularized alongside the production split so fluent configuration, clone semantics, and invocation behavior no longer depend on a single oversized `packages/core/tests/tools/builder.test.ts` file.
+- [ ] Existing `ToolBuilder` public behavior, fluent chaining semantics, metadata isolation, and invoke compatibility remain backward compatible.
+- [ ] Focused tests confirm extracted modules preserve builder behavior and type/runtime contracts, and `pnpm --filter @agentforge/core typecheck`, `pnpm test --run`, and `pnpm lint:explicit-any:baseline` pass with no baseline regression.
+- [ ] Add or update story documentation at `docs/st09050-tool-builder-modularization.md`
+
+---
+
+#### ST-09051: Modularize Multi-Agent Orchestration Agent and Tests
+**User story:** As a patterns maintainer, I want `packages/patterns/src/multi-agent/agent.ts` and its coupled agent tests split into focused modules so orchestration setup stays composable after the routing layer has already been modularized.
+
+**Priority:** P2 (Medium)
+**Estimate:** 4 hours
+**Dependencies:** ST-09048
+**Status:** Ready
+
+**Acceptance criteria:**
+- [ ] `packages/patterns/src/multi-agent/agent.ts` is reduced below the 300 line planning cutoff by extracting focused internal modules for config normalization, worker registration, graph assembly, and orchestration defaults behind the stable public multi-agent facade.
+- [ ] Multi-agent agent coverage is modularized alongside the production split so configuration, orchestration, and integration-path assertions no longer depend on a single oversized `packages/patterns/tests/multi-agent/agent.test.ts` file.
+- [ ] Existing public multi-agent builder/agent behavior, exports, and runtime orchestration semantics remain backward compatible.
+- [ ] Focused tests confirm extracted modules preserve current orchestration behavior and surrounding routing/node integration assumptions, and `pnpm --filter @agentforge/patterns typecheck`, `pnpm test --run`, and `pnpm lint:explicit-any:baseline` pass with no baseline regression.
+- [ ] Add or update story documentation at `docs/st09051-multi-agent-agent-modularization.md`
+
+---
+
+#### ST-09052: Modularize Relational Query Builder and Tests
+**User story:** As a tools maintainer, I want `packages/tools/src/data/relational/query/query-builder.ts` and its coupled query-builder tests split into focused modules so relational SQL construction remains DRY and reviewable instead of accumulating all builder rules in one 700+ line file.
+
+**Priority:** P2 (Medium)
+**Estimate:** 5 hours
+**Dependencies:** ST-09038
+**Status:** Backlog
+
+**Acceptance criteria:**
+- [ ] `packages/tools/src/data/relational/query/query-builder.ts` is reduced below the 300 line planning cutoff by extracting focused internal modules for SELECT/INSERT/UPDATE/DELETE assembly, condition building, identifier/value helpers, and shared SQL fragments behind the stable public builder facade.
+- [ ] Query-builder coverage is modularized alongside the production split so SQL-construction behavior no longer depends on a single oversized `packages/tools/tests/data/relational/query/query-builder.test.ts` file.
+- [ ] Existing SQL output, parameter ordering, identifier quoting, and public query-builder behavior remain backward compatible.
+- [ ] Focused tests confirm extracted modules preserve current query-building behavior, and `pnpm --filter @agentforge/tools typecheck`, `pnpm test --run`, and `pnpm lint:explicit-any:baseline` pass with no baseline regression.
+- [ ] Add or update story documentation at `docs/st09052-relational-query-builder-modularization.md`
+
+---
+
+#### ST-09053: Modularize Relational Connection Manager and Tests
+**User story:** As a tools maintainer, I want `packages/tools/src/data/relational/connection/connection-manager.ts` and its coupled connection-manager tests split into focused modules so connection lifecycle logic stays SOLID and easier to verify as vendor behavior keeps growing.
+
+**Priority:** P2 (Medium)
+**Estimate:** 5 hours
+**Dependencies:** ST-09027
+**Status:** Backlog
+
+**Acceptance criteria:**
+- [ ] `packages/tools/src/data/relational/connection/connection-manager.ts` is reduced below the 300 line planning cutoff by extracting focused internal modules for initialization, lifecycle transitions, health/cleanup, and vendor/session-specific coordination behind the stable public manager facade.
+- [ ] Connection-manager coverage is modularized alongside the production split so lifecycle, vendor, and failure-path assertions no longer depend on the current oversized connection-manager test cluster.
+- [ ] Existing connection-manager behavior, session handling, lifecycle semantics, and public imports remain backward compatible.
+- [ ] Focused tests confirm extracted modules preserve current relational connection behavior, and `pnpm --filter @agentforge/tools typecheck`, `pnpm test --run`, and `pnpm lint:explicit-any:baseline` pass with no baseline regression.
+- [ ] Add or update story documentation at `docs/st09053-connection-manager-modularization.md`
+
+---
+
+#### ST-09054: Modularize Reflection Nodes and Tests
+**User story:** As a patterns maintainer, I want `packages/patterns/src/reflection/nodes.ts` and its coupled node tests split into focused modules so the reflection workflow stays modular instead of concentrating generator, reflector, reviser, and finisher behavior in one large file.
+
+**Priority:** P2 (Medium)
+**Estimate:** 4 hours
+**Dependencies:** ST-09019
+**Status:** Backlog
+
+**Acceptance criteria:**
+- [ ] `packages/patterns/src/reflection/nodes.ts` is reduced below the 300 line planning cutoff by extracting focused internal modules for generator, reflector, reviser, and shared node helpers behind the stable public reflection-node facade.
+- [ ] Reflection node coverage is modularized alongside the production split so node-specific assertions no longer depend on a single oversized `packages/patterns/tests/reflection/nodes.test.ts` file.
+- [ ] Existing reflection-node behavior, logging/iteration semantics, and public imports remain backward compatible.
+- [ ] Focused tests confirm extracted modules preserve current reflection workflow behavior, and `pnpm --filter @agentforge/patterns typecheck`, `pnpm test --run`, and `pnpm lint:explicit-any:baseline` pass with no baseline regression.
+- [ ] Add or update story documentation at `docs/st09054-reflection-node-modularization.md`
 
 ---
 
