@@ -22,7 +22,7 @@
   - `pnpm test --run` -> `147 passed | 16 skipped` files; `2084 passed | 286 skipped` tests
 - [x] Run lint (`pnpm lint`) before finalizing the PR and record results
   - `pnpm lint` -> exit `0`; warnings only (`0` errors)
-- [ ] Commit completed checklist items as logical commits and push updates
+- [x] Commit completed checklist items as logical commits and push updates
   - `bcdb705` refactor(st-09001): harden core tool composition typing
   - `e8f3698` docs(st-09001): record validation and move story to in-review
   - `0cd76de` chore(st-09001): finalize checklist and ready status
@@ -1870,7 +1870,11 @@ Implementation notes:
 - [ ] Assess residual test impact; add/update additional automated tests when needed, or document why no further tests are required
 - [ ] Run full test suite before finalizing the PR and record results
 - [ ] Run lint (`pnpm lint`) before finalizing the PR and record results
-- [ ] Commit completed checklist items as logical commits and push updates
+- [x] Commit completed checklist items as logical commits and push updates
+  - `1509546` refactor(st-09048): modularize multi-agent routing
+  - `4b07c8a` docs(st-09048): capture review metadata
+  - `cf12350` fix(st-09048): harden routing strategy lookup
+  - `7820bc8` fix(st-09048): align routing fixtures and tracker state
 - [ ] Mark PR Ready only after all story tasks are complete
 - [ ] Wait for merge; do not merge directly from local branch
 
@@ -1895,7 +1899,11 @@ Implementation notes:
 - [x] Assess residual test impact; add/update additional automated tests when needed, or document why no further tests are required
 - [x] Run full test suite before finalizing the PR and record results
 - [x] Run lint (`pnpm lint`) before finalizing the PR and record results
-- [ ] Commit completed checklist items as logical commits and push updates
+- [x] Commit completed checklist items as logical commits and push updates
+  - `1509546` refactor(st-09048): modularize multi-agent routing
+  - `4b07c8a` docs(st-09048): capture review metadata
+  - `cf12350` fix(st-09048): harden routing strategy lookup
+  - `7820bc8` fix(st-09048): align routing fixtures and tracker state
 - [x] Mark PR Ready only after all story tasks are complete
 - [ ] Wait for merge; do not merge directly from local branch
 
