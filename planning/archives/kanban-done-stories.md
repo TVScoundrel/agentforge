@@ -2,11 +2,18 @@
 
 **Purpose:** Track completed and merged stories for the Relational Database Access Tool project.
 
-**Last Updated:** 2026-05-17
+**Last Updated:** 2026-05-19
 
 ---
 
 ## Completed Stories
+
+### ST-09048: Modularize Multi-Agent Routing Strategies and Tests
+- **Merged:** 2026-05-19
+- **PR:** https://github.com/TVScoundrel/agentforge/pull/115 (commit 4a48f66)
+- **Epic:** EP-09 (SOLID Micro-Refactors and Type Boundary Hardening)
+- **Estimate:** 4 hours
+- **Outcome:** Modularized `@agentforge/patterns` multi-agent routing by shrinking `packages/patterns/src/multi-agent/routing.ts` from a `373` line mixed-responsibility file to a `51` line public facade, extracting focused internal strategy modules for LLM, round-robin, skill-based, load-balanced, and rule-based routing plus shared worker-selection helpers. The story also split the `538` line routing test monolith into focused strategy test files with a shared fixture, preserved the public routing exports and runtime behavior, and absorbed review-driven hardening for own-key strategy lookup, schema-aligned message fixtures, and checklist/tracker consistency while keeping the explicit-`any` baseline flat at `workspace 90/289` and `patterns 2/28`.
 
 ### ST-09045: Tighten Multi-Agent Routing Decision Contracts
 - **Merged:** 2026-05-17

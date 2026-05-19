@@ -1904,8 +1904,10 @@ Implementation notes:
   - `4b07c8a` docs(st-09048): capture review metadata
   - `cf12350` fix(st-09048): harden routing strategy lookup
   - `7820bc8` fix(st-09048): align routing fixtures and tracker state
+  - `eac567f` docs(st-09048): align checklist completion state
 - [x] Mark PR Ready only after all story tasks are complete
-- [ ] Wait for merge; do not merge directly from local branch
+- [x] Wait for merge; do not merge directly from local branch
+  - Merged on `2026-05-19` via `4a48f66`
 
 Focused validation notes:
 
