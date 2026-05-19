@@ -41,11 +41,9 @@ export {
  * Get routing strategy implementation by name.
  */
 export function getRoutingStrategy(name: string): RoutingStrategyImpl {
-  const strategy = routingStrategies[name];
-
-  if (!strategy) {
+  if (!Object.hasOwn(routingStrategies, name)) {
     throw new Error(`Unknown routing strategy: ${name}`);
   }
 
-  return strategy;
+  return routingStrategies[name]!;
 }

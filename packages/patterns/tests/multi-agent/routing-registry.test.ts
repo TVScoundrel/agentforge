@@ -21,4 +21,11 @@ describe('Multi-Agent Routing Strategy Registry', () => {
     expect(() => getRoutingStrategy('unknown'))
       .toThrow('Unknown routing strategy');
   });
+
+  it('should reject inherited object keys as unknown strategies', () => {
+    expect(() => getRoutingStrategy('toString'))
+      .toThrow('Unknown routing strategy');
+    expect(() => getRoutingStrategy('__proto__'))
+      .toThrow('Unknown routing strategy');
+  });
 });
