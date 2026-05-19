@@ -1,15 +1,20 @@
 import type { MultiAgentStateType } from '../../src/multi-agent/state.js';
 
+export function createRoutingUserMessage(content: string) {
+  return {
+    id: `msg-${content.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '') || 'user-input'}`,
+    from: 'user',
+    to: ['supervisor'],
+    type: 'user_input' as const,
+    content,
+    timestamp: Date.now(),
+  };
+}
+
 export function createMockRoutingState(): MultiAgentStateType {
   return {
     input: 'Test task requiring research and analysis',
-    messages: [{
-      from: 'user',
-      to: ['supervisor'],
-      type: 'user_input',
-      content: 'Test task requiring research and analysis',
-      timestamp: Date.now(),
-    }],
+    messages: [createRoutingUserMessage('Test task requiring research and analysis')],
     workers: {
       researcher: {
         skills: ['research', 'analysis'],

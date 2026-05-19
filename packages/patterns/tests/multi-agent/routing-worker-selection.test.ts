@@ -6,7 +6,7 @@ import {
 } from '../../src/multi-agent/routing.js';
 import type { MultiAgentStateType } from '../../src/multi-agent/state.js';
 import type { SupervisorConfig } from '../../src/multi-agent/types.js';
-import { createMockRoutingState } from './routing.fixtures.js';
+import { createMockRoutingState, createRoutingUserMessage } from './routing.fixtures.js';
 
 describe('Multi-Agent Routing Worker Selection Strategies', () => {
   describe('Round-Robin Routing', () => {
@@ -101,13 +101,7 @@ describe('Multi-Agent Routing Worker Selection Strategies', () => {
       const stateWithToolMatch: MultiAgentStateType = {
         ...createMockRoutingState(),
         input: 'Use the compiler tool',
-        messages: [{
-          from: 'user',
-          to: ['supervisor'],
-          type: 'user_input',
-          content: 'Use the compiler tool',
-          timestamp: Date.now(),
-        }],
+        messages: [createRoutingUserMessage('Use the compiler tool')],
       };
 
       const config: SupervisorConfig = {
@@ -122,13 +116,7 @@ describe('Multi-Agent Routing Worker Selection Strategies', () => {
       const stateNoMatch: MultiAgentStateType = {
         ...createMockRoutingState(),
         input: 'Something completely unrelated',
-        messages: [{
-          from: 'user',
-          to: ['supervisor'],
-          type: 'user_input',
-          content: 'Something completely unrelated',
-          timestamp: Date.now(),
-        }],
+        messages: [createRoutingUserMessage('Something completely unrelated')],
       };
 
       const config: SupervisorConfig = {
