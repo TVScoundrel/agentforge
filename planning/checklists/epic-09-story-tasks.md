@@ -1847,7 +1847,7 @@ Implementation notes:
 - [ ] Assess residual test impact; add/update additional automated tests when needed, or document why no further tests are required
 - [ ] Run full test suite before finalizing the PR and record results
 - [ ] Run lint (`pnpm lint`) before finalizing the PR and record results
-- [ ] Commit completed checklist items as logical commits and push updates
+- [x] Commit completed checklist items as logical commits and push updates
 - [ ] Mark PR Ready only after all story tasks are complete
 - [ ] Wait for merge; do not merge directly from local branch
 
@@ -1870,7 +1870,11 @@ Implementation notes:
 - [ ] Assess residual test impact; add/update additional automated tests when needed, or document why no further tests are required
 - [ ] Run full test suite before finalizing the PR and record results
 - [ ] Run lint (`pnpm lint`) before finalizing the PR and record results
-- [ ] Commit completed checklist items as logical commits and push updates
+- [x] Commit completed checklist items as logical commits and push updates
+  - `1509546` refactor(st-09048): modularize multi-agent routing
+  - `4b07c8a` docs(st-09048): capture review metadata
+  - `cf12350` fix(st-09048): harden routing strategy lookup
+  - `7820bc8` fix(st-09048): align routing fixtures and tracker state
 - [ ] Mark PR Ready only after all story tasks are complete
 - [ ] Wait for merge; do not merge directly from local branch
 
@@ -1882,19 +1886,36 @@ Implementation notes:
 **Branch:** `refactor/st-09048-modularize-multi-agent-routing-strategies-and-tests`
 
 ### Checklist
-- [ ] Create branch `refactor/st-09048-modularize-multi-agent-routing-strategies-and-tests`
-- [ ] Create draft PR with story ID in title
-- [ ] Define test strategy before implementation: cover both production modularization and test-file modularization; first failing test should prove routing behavior remains stable while strategy/test boundaries are split
-- [ ] Write or update the failing automated test before production changes when practical; if not practical, record why before implementation
-- [ ] Extract focused internal modules for the LLM, round-robin, skill-based, load-balanced, and rule-based strategies while keeping the public routing entrypoint backward compatible
-- [ ] Split `packages/patterns/tests/multi-agent/routing.test.ts` into focused strategy-oriented test modules so the tests mirror the production boundaries
-- [ ] Move any shared routing helpers behind explicit boundaries instead of leaving them mixed across strategy implementations
-- [ ] Add/update production code until focused tests pass, keeping test evidence in checklist notes and PR body
-- [ ] Record explicit-`any` warning deltas and file-size/responsibility improvements for touched routing and test modules in story docs
-- [ ] Add or update story documentation at `docs/st09048-modularize-multi-agent-routing-strategies-and-tests.md` (or document why not required)
-- [ ] Assess residual test impact; add/update additional automated tests when needed, or document why no further tests are required
-- [ ] Run full test suite before finalizing the PR and record results
-- [ ] Run lint (`pnpm lint`) before finalizing the PR and record results
-- [ ] Commit completed checklist items as logical commits and push updates
-- [ ] Mark PR Ready only after all story tasks are complete
+- [x] Create branch `refactor/st-09048-modularize-multi-agent-routing-strategies-and-tests`
+- [x] Create draft PR with story ID in title
+- [x] Define test strategy before implementation: cover both production modularization and test-file modularization; first failing test should prove routing behavior remains stable while strategy/test boundaries are split
+- [x] Write or update the failing automated test before production changes when practical; if not practical, record why before implementation
+- [x] Extract focused internal modules for the LLM, round-robin, skill-based, load-balanced, and rule-based strategies while keeping the public routing entrypoint backward compatible
+- [x] Split `packages/patterns/tests/multi-agent/routing.test.ts` into focused strategy-oriented test modules so the tests mirror the production boundaries
+- [x] Move any shared routing helpers behind explicit boundaries instead of leaving them mixed across strategy implementations
+- [x] Add/update production code until focused tests pass, keeping test evidence in checklist notes and PR body
+- [x] Record explicit-`any` warning deltas and file-size/responsibility improvements for touched routing and test modules in story docs
+- [x] Add or update story documentation at `docs/st09048-modularize-multi-agent-routing-strategies-and-tests.md` (or document why not required)
+- [x] Assess residual test impact; add/update additional automated tests when needed, or document why no further tests are required
+- [x] Run full test suite before finalizing the PR and record results
+- [x] Run lint (`pnpm lint`) before finalizing the PR and record results
+- [x] Commit completed checklist items as logical commits and push updates
+  - `1509546` refactor(st-09048): modularize multi-agent routing
+  - `4b07c8a` docs(st-09048): capture review metadata
+  - `cf12350` fix(st-09048): harden routing strategy lookup
+  - `7820bc8` fix(st-09048): align routing fixtures and tracker state
+- [x] Mark PR Ready only after all story tasks are complete
 - [ ] Wait for merge; do not merge directly from local branch
+
+Focused validation notes:
+
+- First behavior-preserving modularization gate:
+  - `pnpm test --run packages/patterns/tests/multi-agent/routing-worker-selection.test.ts packages/patterns/tests/multi-agent/routing-rule-based.test.ts packages/patterns/tests/multi-agent/routing-llm.test.ts packages/patterns/tests/multi-agent/routing-registry.test.ts packages/patterns/tests/multi-agent/nodes.test.ts`
+  - `5` files passed, `56` tests passed
+- Package checks:
+  - `pnpm --filter @agentforge/patterns typecheck`
+  - `pnpm lint:explicit-any:baseline` -> workspace `90/289`, patterns `2/28`
+- Full checks:
+  - `pnpm test --run` -> `174` files passed, `16` skipped; `2304` tests passed, `286` skipped
+  - `pnpm lint` -> passed with warnings only
+  - `git diff --check`
