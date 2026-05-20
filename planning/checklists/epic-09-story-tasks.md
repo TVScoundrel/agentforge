@@ -1835,21 +1835,37 @@ Implementation notes:
 **Branch:** `refactor/st-09046-transformer-schema-value-contracts`
 
 ### Checklist
-- [ ] Create branch `refactor/st-09046-transformer-schema-value-contracts`
+- [x] Create branch `refactor/st-09046-transformer-schema-value-contracts`
 - [ ] Create draft PR with story ID in title
-- [ ] Define test strategy before implementation: cover primitive values, object values, and schema acceptance/rejection boundaries; first failing test should assert transformer schema values no longer rely on blanket `z.any()`
-- [ ] Write or update the failing automated test before production changes when practical; if not practical, record why before implementation
-- [ ] Replace broad `z.any()` schema boundaries in `packages/tools/src/data/transformer/types.ts` with shared unknown-first or JSON-like value contracts where behavior allows
-- [ ] Preserve array filter/map/sort/group-by and object pick/omit behavior
-- [ ] Add/update production code until focused tests pass, keeping test evidence in checklist notes and PR body
-- [ ] Record explicit-`any` warning deltas for touched files in story docs
-- [ ] Add or update story documentation at `docs/st09046-transformer-schema-value-contracts.md` (or document why not required)
-- [ ] Assess residual test impact; add/update additional automated tests when needed, or document why no further tests are required
-- [ ] Run full test suite before finalizing the PR and record results
-- [ ] Run lint (`pnpm lint`) before finalizing the PR and record results
+- [x] Define test strategy before implementation: cover primitive values, object values, and schema acceptance/rejection boundaries; first failing test should assert transformer schema values no longer rely on blanket `z.any()`
+- [x] Write or update the failing automated test before production changes when practical; if not practical, record why before implementation
+- [x] Replace broad `z.any()` schema boundaries in `packages/tools/src/data/transformer/types.ts` with shared unknown-first or JSON-like value contracts where behavior allows
+- [x] Preserve array filter/map/sort/group-by and object pick/omit behavior
+- [x] Add/update production code until focused tests pass, keeping test evidence in checklist notes and PR body
+- [x] Record explicit-`any` warning deltas for touched files in story docs
+- [x] Add or update story documentation at `docs/st09046-transformer-schema-value-contracts.md` (or document why not required)
+- [x] Assess residual test impact; add/update additional automated tests when needed, or document why no further tests are required
+- [x] Run full test suite before finalizing the PR and record results
+- [x] Run lint (`pnpm lint`) before finalizing the PR and record results
 - [x] Commit completed checklist items as logical commits and push updates
 - [ ] Mark PR Ready only after all story tasks are complete
 - [ ] Wait for merge; do not merge directly from local branch
+
+Focused validation notes:
+
+- First failing schema gate:
+  - `pnpm test --run packages/tools/tests/data/transformer/transformer-types.test.ts`
+  - failed because transformer schemas still exposed `ZodAny` boundaries
+- Focused follow-up validation:
+  - `pnpm test --run packages/tools/tests/data/transformer/transformer-types.test.ts packages/tools/tests/data/transformer/transformer-helpers.test.ts`
+  - `2` files passed, `9` tests passed
+- Package checks:
+  - `pnpm --filter @agentforge/tools typecheck`
+  - `pnpm lint:explicit-any:baseline` -> workspace `90/289`, tools `59/67`
+- Full checks:
+  - `pnpm test --run` -> `175` files passed, `16` skipped; `2308` tests passed, `286` skipped
+  - `pnpm lint` -> passed with warnings only
+  - `git diff --check`
 
 ---
 

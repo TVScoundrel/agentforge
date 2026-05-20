@@ -1,6 +1,8 @@
 import { describe, expect, it } from 'vitest';
 import {
   arrayFilter,
+  arrayGroupBy,
+  arrayMap,
   arraySort,
   objectOmit,
   objectPick,
@@ -90,6 +92,43 @@ describe('transformer tool behavior', () => {
 
     expect(result.sorted.map((item) => item.id)).toEqual([2, 3, 1]);
     expect(result.count).toBe(3);
+  });
+
+  it('maps arrays using nested values and preserves unknown-first behavior', async () => {
+    const result = await arrayMap.invoke({
+      array: [
+        { id: 1, profile: { name: 'Ada' } },
+        { id: 2, profile: { name: 'Grace' } },
+      ],
+      properties: ['id', 'profile.name'],
+    });
+
+    expect(result.mapped).toEqual([
+      { id: 1, 'profile.name': 'Ada' },
+      { id: 2, 'profile.name': 'Grace' },
+    ]);
+    expect(result.count).toBe(2);
+  });
+
+  it('groups arrays by property value without changing public behavior', async () => {
+    const result = await arrayGroupBy.invoke({
+      array: [
+        { team: 'a', id: 1 },
+        { team: 'b', id: 2 },
+        { team: 'a', id: 3 },
+      ],
+      property: 'team',
+    });
+
+    expect(result.groups).toEqual({
+      a: [
+        { team: 'a', id: 1 },
+        { team: 'a', id: 3 },
+      ],
+      b: [{ team: 'b', id: 2 }],
+    });
+    expect(result.groupCount).toBe(2);
+    expect(result.totalItems).toBe(3);
   });
 
   it('picks and omits object properties without changing public behavior', async () => {

@@ -16,10 +16,12 @@ export function createArrayGroupByTool() {
     .tags(['array', 'group', 'data', 'transform'])
     .schema(arrayGroupBySchema)
     .implement(async (input) => {
-      const groups: Record<string, any[]> = {};
+      const groups: Record<string, unknown[]> = {};
       
       for (const item of input.array) {
-        const key = String(item[input.property]);
+        const key = item == null
+          ? 'undefined'
+          : String(Reflect.get(Object(item), input.property));
         if (!groups[key]) {
           groups[key] = [];
         }
@@ -34,4 +36,3 @@ export function createArrayGroupByTool() {
     })
     .build();
 }
-
