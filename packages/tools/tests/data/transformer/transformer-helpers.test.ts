@@ -116,7 +116,7 @@ describe('transformer tool behavior', () => {
       properties: ['__proto__'],
     });
 
-    expect(Object.getPrototypeOf(result.mapped[0])).toBeNull();
+    expect(Object.getPrototypeOf(result.mapped[0])).toBe(Object.prototype);
     expect(
       Object.getOwnPropertyDescriptor(result.mapped[0], '__proto__')
     ).toBeDefined();
@@ -141,7 +141,7 @@ describe('transformer tool behavior', () => {
     });
     expect(result.groupCount).toBe(2);
     expect(result.totalItems).toBe(3);
-    expect(Object.getPrototypeOf(result.groups)).toBeNull();
+    expect(Object.getPrototypeOf(result.groups)).toBe(Object.prototype);
   });
 
   it('groups arrays safely for special keys and preserves nullish failure semantics', async () => {
@@ -150,7 +150,7 @@ describe('transformer tool behavior', () => {
       property: 'team',
     });
 
-    expect(Object.getPrototypeOf(result.groups)).toBeNull();
+    expect(Object.getPrototypeOf(result.groups)).toBe(Object.prototype);
     expect(result.groups.__proto__).toEqual([{ team: '__proto__', id: 1 }]);
 
     await expect(

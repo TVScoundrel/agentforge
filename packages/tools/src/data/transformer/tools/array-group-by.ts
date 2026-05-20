@@ -16,7 +16,7 @@ export function createArrayGroupByTool() {
     .tags(['array', 'group', 'data', 'transform'])
     .schema(arrayGroupBySchema)
     .implement(async (input) => {
-      const groups = Object.create(null) as Record<string, unknown[]>;
+      const groups: Record<string, unknown[]> = {};
       
       for (const item of input.array) {
         if (item == null) {
@@ -25,7 +25,12 @@ export function createArrayGroupByTool() {
 
         const key = String(Reflect.get(Object(item), input.property));
         if (!Object.hasOwn(groups, key)) {
-          groups[key] = [];
+          Object.defineProperty(groups, key, {
+            value: [],
+            enumerable: true,
+            configurable: true,
+            writable: true,
+          });
         }
         groups[key].push(item);
       }
