@@ -5,6 +5,37 @@ All notable changes to AgentForge will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.16.34] - 2026-05-20
+
+### Added
+
+#### @agentforge/tools - Transformer Schema Contract Regression Coverage
+- Added focused schema coverage in `packages/tools/tests/data/transformer/transformer-types.test.ts` to verify transformer schemas no longer depend on blanket `ZodAny` boundaries
+- Extended `packages/tools/tests/data/transformer/transformer-helpers.test.ts` with regressions for nested mapping/grouping behavior, special-key safety, preserved nullish failure semantics, and public output-shape compatibility
+- Added story documentation in `docs/st09046-transformer-schema-value-contracts.md` capturing the schema tightening, review follow-ups, validation evidence, and explicit-`any` outcome
+
+### Changed
+
+#### @agentforge/tools - Transformer Schema Value Hardening
+- Tightened `packages/tools/src/data/transformer/types.ts` by replacing blanket `z.any()` seams with shared unknown-first transformer value, array, and object schemas
+- Updated `array-map` and `array-group-by` to use explicit unknown-first narrowing exposed by the schema tightening while preserving existing transformer behavior
+- Preserved normal object output shape for mapped entries and group buckets while still safely handling special keys like `__proto__`
+
+### Fixed
+
+#### @agentforge/tools - Transformer Special-Key and Contract Safety
+- Hardened `array-map` and `array-group-by` against prototype-mutation hazards from user-controlled property keys without changing the public prototype contract of returned objects
+- Kept the explicit-`any` baseline flat at `workspace 90/289` and `tools 59/67` while tightening transformer schema boundaries and adding focused regression coverage
+
+### Published
+- All packages published to npm registry at version 0.16.34:
+  - @agentforge/core@0.16.34
+  - @agentforge/skills@0.16.34
+  - @agentforge/patterns@0.16.34
+  - @agentforge/tools@0.16.34
+  - @agentforge/testing@0.16.34
+  - @agentforge/cli@0.16.34
+
 ## [0.16.33] - 2026-05-19
 
 ### Added
