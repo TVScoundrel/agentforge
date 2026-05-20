@@ -1632,7 +1632,7 @@
 **Priority:** P2 (Medium)
 **Estimate:** 3 hours
 **Dependencies:** ST-09038
-**Status:** In Review
+**Status:** Merged (PR #116, 2026-05-20)
 
 **Acceptance criteria:**
 - [ ] `packages/tools/src/data/transformer/types.ts` replaces broad `z.any()` schema boundaries with shared unknown-first or JSON-like value contracts where behavior allows
@@ -1735,7 +1735,7 @@
 **Priority:** P2 (Medium)
 **Estimate:** 5 hours
 **Dependencies:** ST-09038
-**Status:** Backlog
+**Status:** Ready
 
 **Acceptance criteria:**
 - [ ] `packages/tools/src/data/relational/query/query-builder.ts` is reduced below the 300 line planning cutoff by extracting focused internal modules for SELECT/INSERT/UPDATE/DELETE assembly, condition building, identifier/value helpers, and shared SQL fragments behind the stable public builder facade.

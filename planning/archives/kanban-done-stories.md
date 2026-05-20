@@ -2,11 +2,18 @@
 
 **Purpose:** Track completed and merged stories for the Relational Database Access Tool project.
 
-**Last Updated:** 2026-05-19
+**Last Updated:** 2026-05-20
 
 ---
 
 ## Completed Stories
+
+### ST-09046: Tighten Transformer Schema Value Contracts
+- **Merged:** 2026-05-20
+- **PR:** https://github.com/TVScoundrel/agentforge/pull/116 (commit 8e3b1e0)
+- **Epic:** EP-09 (SOLID Micro-Refactors and Type Boundary Hardening)
+- **Estimate:** 3 hours
+- **Outcome:** Tightened transformer schema value contracts in `@agentforge/tools` by replacing blanket `z.any()` seams in `packages/tools/src/data/transformer/types.ts` with shared unknown-first schemas, while preserving array filter/map/sort/group-by and object pick/omit behavior. The story added focused schema and helper regressions, hardened special-key handling for `array-map` and `array-group-by`, and absorbed review-driven follow-up fixes to preserve normal object prototype behavior while still preventing prototype-mutation hazards, keeping the explicit-`any` baseline flat at `workspace 90/289` and `tools 59/67`.
 
 ### ST-09048: Modularize Multi-Agent Routing Strategies and Tests
 - **Merged:** 2026-05-19

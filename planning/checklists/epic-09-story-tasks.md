@@ -1849,7 +1849,8 @@ Implementation notes:
 - [x] Run lint (`pnpm lint`) before finalizing the PR and record results
 - [x] Commit completed checklist items as logical commits and push updates
 - [x] Mark PR Ready only after all story tasks are complete
-- [ ] Wait for merge; do not merge directly from local branch
+- [x] Wait for merge; do not merge directly from local branch
+  - Merged on `2026-05-20` via `8e3b1e0`
 
 Focused validation notes:
 
@@ -1867,6 +1868,7 @@ Focused validation notes:
   - `pnpm lint` -> passed with warnings only
   - `git diff --check`
   - Draft PR created as `#116` with validated body file and ready to be marked `Ready for review`
+  - Review follow-up fixes merged in `2dac1d0` and `2e7f50b` before PR merge
 
 ---
 
