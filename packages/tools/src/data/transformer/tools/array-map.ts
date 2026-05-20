@@ -4,6 +4,7 @@
 
 import { toolBuilder, ToolCategory } from '@agentforge/core';
 import { arrayMapSchema } from '../types.js';
+import { getNestedValue } from './shared.js';
 
 /**
  * Create array map tool
@@ -17,11 +18,14 @@ export function createArrayMapTool() {
     .schema(arrayMapSchema)
     .implement(async (input) => {
       const mapped = input.array.map((item) => {
-        const result: any = {};
+        const result: Record<string, unknown> = {};
         for (const prop of input.properties) {
-          // Support dot notation
-          const value = prop.split('.').reduce((current, key) => current?.[key], item);
-          result[prop] = value;
+          Object.defineProperty(result, prop, {
+            value: getNestedValue(item, prop),
+            enumerable: true,
+            configurable: true,
+            writable: true,
+          });
         }
         return result;
       });
@@ -33,4 +37,3 @@ export function createArrayMapTool() {
     })
     .build();
 }
-

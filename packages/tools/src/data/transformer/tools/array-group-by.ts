@@ -16,12 +16,21 @@ export function createArrayGroupByTool() {
     .tags(['array', 'group', 'data', 'transform'])
     .schema(arrayGroupBySchema)
     .implement(async (input) => {
-      const groups: Record<string, any[]> = {};
+      const groups: Record<string, unknown[]> = {};
       
       for (const item of input.array) {
-        const key = String(item[input.property]);
-        if (!groups[key]) {
-          groups[key] = [];
+        if (item == null) {
+          throw new TypeError(`Cannot read properties of ${item} (reading '${input.property}')`);
+        }
+
+        const key = String(Reflect.get(Object(item), input.property));
+        if (!Object.hasOwn(groups, key)) {
+          Object.defineProperty(groups, key, {
+            value: [],
+            enumerable: true,
+            configurable: true,
+            writable: true,
+          });
         }
         groups[key].push(item);
       }
@@ -34,4 +43,3 @@ export function createArrayGroupByTool() {
     })
     .build();
 }
-

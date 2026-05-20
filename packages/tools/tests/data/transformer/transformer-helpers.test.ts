@@ -1,6 +1,8 @@
 import { describe, expect, it } from 'vitest';
 import {
   arrayFilter,
+  arrayGroupBy,
+  arrayMap,
   arraySort,
   objectOmit,
   objectPick,
@@ -90,6 +92,73 @@ describe('transformer tool behavior', () => {
 
     expect(result.sorted.map((item) => item.id)).toEqual([2, 3, 1]);
     expect(result.count).toBe(3);
+  });
+
+  it('maps arrays using nested values and preserves unknown-first behavior', async () => {
+    const result = await arrayMap.invoke({
+      array: [
+        { id: 1, profile: { name: 'Ada' } },
+        { id: 2, profile: { name: 'Grace' } },
+      ],
+      properties: ['id', 'profile.name'],
+    });
+
+    expect(result.mapped).toEqual([
+      { id: 1, 'profile.name': 'Ada' },
+      { id: 2, 'profile.name': 'Grace' },
+    ]);
+    expect(result.count).toBe(2);
+  });
+
+  it('maps arrays safely when property names include special keys', async () => {
+    const result = await arrayMap.invoke({
+      array: [{ id: 1 }],
+      properties: ['__proto__'],
+    });
+
+    expect(Object.getPrototypeOf(result.mapped[0])).toBe(Object.prototype);
+    expect(
+      Object.getOwnPropertyDescriptor(result.mapped[0], '__proto__')
+    ).toBeDefined();
+  });
+
+  it('groups arrays by property value without changing public behavior', async () => {
+    const result = await arrayGroupBy.invoke({
+      array: [
+        { team: 'a', id: 1 },
+        { team: 'b', id: 2 },
+        { team: 'a', id: 3 },
+      ],
+      property: 'team',
+    });
+
+    expect(result.groups).toEqual({
+      a: [
+        { team: 'a', id: 1 },
+        { team: 'a', id: 3 },
+      ],
+      b: [{ team: 'b', id: 2 }],
+    });
+    expect(result.groupCount).toBe(2);
+    expect(result.totalItems).toBe(3);
+    expect(Object.getPrototypeOf(result.groups)).toBe(Object.prototype);
+  });
+
+  it('groups arrays safely for special keys and preserves nullish failure semantics', async () => {
+    const result = await arrayGroupBy.invoke({
+      array: [{ team: '__proto__', id: 1 }],
+      property: 'team',
+    });
+
+    expect(Object.getPrototypeOf(result.groups)).toBe(Object.prototype);
+    expect(result.groups.__proto__).toEqual([{ team: '__proto__', id: 1 }]);
+
+    await expect(
+      arrayGroupBy.invoke({
+        array: [null],
+        property: 'team',
+      })
+    ).rejects.toThrow("Cannot read properties of null");
   });
 
   it('picks and omits object properties without changing public behavior', async () => {
