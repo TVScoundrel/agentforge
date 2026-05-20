@@ -53,7 +53,18 @@ describe('transformer schemas', () => {
     expect(arrayMapSchema.shape.array.element).toBeInstanceOf(z.ZodUnknown);
     expect(arraySortSchema.shape.array.element).toBeInstanceOf(z.ZodUnknown);
     expect(arrayGroupBySchema.shape.array.element).toBeInstanceOf(z.ZodUnknown);
-    expect(objectPickSchema.shape.object._def.valueType).toBeInstanceOf(z.ZodUnknown);
-    expect(objectOmitSchema.shape.object._def.valueType).toBeInstanceOf(z.ZodUnknown);
+    expect(() =>
+      objectPickSchema.parse({
+        object: null,
+        properties: ['id'],
+      })
+    ).toThrow();
+
+    expect(() =>
+      objectOmitSchema.parse({
+        object: null,
+        properties: ['id'],
+      })
+    ).toThrow();
   });
 });

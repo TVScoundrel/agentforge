@@ -18,9 +18,14 @@ export function createArrayMapTool() {
     .schema(arrayMapSchema)
     .implement(async (input) => {
       const mapped = input.array.map((item) => {
-        const result: Record<string, unknown> = {};
+        const result = Object.create(null) as Record<string, unknown>;
         for (const prop of input.properties) {
-          result[prop] = getNestedValue(item, prop);
+          Object.defineProperty(result, prop, {
+            value: getNestedValue(item, prop),
+            enumerable: true,
+            configurable: true,
+            writable: true,
+          });
         }
         return result;
       });

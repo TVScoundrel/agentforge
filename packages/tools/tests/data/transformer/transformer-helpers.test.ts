@@ -110,6 +110,18 @@ describe('transformer tool behavior', () => {
     expect(result.count).toBe(2);
   });
 
+  it('maps arrays safely when property names include special keys', async () => {
+    const result = await arrayMap.invoke({
+      array: [{ id: 1 }],
+      properties: ['__proto__'],
+    });
+
+    expect(Object.getPrototypeOf(result.mapped[0])).toBeNull();
+    expect(
+      Object.getOwnPropertyDescriptor(result.mapped[0], '__proto__')
+    ).toBeDefined();
+  });
+
   it('groups arrays by property value without changing public behavior', async () => {
     const result = await arrayGroupBy.invoke({
       array: [
@@ -129,6 +141,24 @@ describe('transformer tool behavior', () => {
     });
     expect(result.groupCount).toBe(2);
     expect(result.totalItems).toBe(3);
+    expect(Object.getPrototypeOf(result.groups)).toBeNull();
+  });
+
+  it('groups arrays safely for special keys and preserves nullish failure semantics', async () => {
+    const result = await arrayGroupBy.invoke({
+      array: [{ team: '__proto__', id: 1 }],
+      property: 'team',
+    });
+
+    expect(Object.getPrototypeOf(result.groups)).toBeNull();
+    expect(result.groups.__proto__).toEqual([{ team: '__proto__', id: 1 }]);
+
+    await expect(
+      arrayGroupBy.invoke({
+        array: [null],
+        property: 'team',
+      })
+    ).rejects.toThrow("Cannot read properties of null");
   });
 
   it('picks and omits object properties without changing public behavior', async () => {
