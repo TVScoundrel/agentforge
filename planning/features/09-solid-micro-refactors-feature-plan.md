@@ -3,7 +3,7 @@
 **Epic Range:** EP-09 through EP-09
 **Status:** In Progress
 **Last Updated:** 2026-05-21
-**Active Story:** ST-09047 - Tighten JSON and HTTP Payload Schema Contracts (In Review)
+**Active Story:** None
 
 ---
 
@@ -32,17 +32,16 @@
 
 ## Current Hotspot Snapshot
 
-Current `@typescript-eslint/no-explicit-any` baseline check (`pnpm lint:explicit-any:baseline`, 2026-05-19):
+Current `@typescript-eslint/no-explicit-any` baseline check (`pnpm lint:explicit-any:baseline`, 2026-05-21):
 
-- Total: `90` warnings (`src/**`)
-- By package: `cli 6`, `core 23`, `patterns 2`, `testing 0`, `tools 59`
+- Total: `84` warnings (`src/**`)
+- By package: `cli 6`, `core 23`, `patterns 2`, `testing 0`, `tools 53`
 
 Top runtime hotspots informing this feature slice:
 
-1. `packages/tools/src/data/json/types.ts` and `packages/tools/src/web/http/types.ts` still expose broad payload/response seams on generic data-tool boundaries
-2. Runtime files above the planning cutoff of `300` lines are now the clearest modularization triggers, especially `packages/core/src/tools/registry.ts` (`446`), `packages/core/src/tools/builder.ts` (`434`), `packages/patterns/src/multi-agent/agent.ts` (`535`), `packages/tools/src/data/relational/query/query-builder.ts` (`731`), `packages/tools/src/data/relational/connection/connection-manager.ts` (`640`), and `packages/patterns/src/reflection/nodes.ts` (`350`).
-3. Their coupled test files are also oversized and should be modularized in the same stories so production and verification boundaries stay aligned.
-4. The next follow-on slices should keep EP-09 open for another short burst of small SOLID/DRY improvements rather than creating a new epic for the same quality lane.
+1. Runtime files above the planning cutoff of `300` lines are now the clearest modularization triggers, especially `packages/core/src/tools/registry.ts` (`446`), `packages/core/src/tools/builder.ts` (`434`), `packages/patterns/src/multi-agent/agent.ts` (`535`), `packages/tools/src/data/relational/query/query-builder.ts` (`731`), `packages/tools/src/data/relational/connection/connection-manager.ts` (`640`), and `packages/patterns/src/reflection/nodes.ts` (`350`).
+2. Their coupled test files are also oversized and should be modularized in the same stories so production and verification boundaries stay aligned.
+3. The next follow-on slices should keep EP-09 open for another short burst of small SOLID/DRY improvements rather than creating a new epic for the same quality lane.
 
 Recent improvement snapshot:
 
@@ -89,6 +88,7 @@ Recent improvement snapshot:
 - `ST-09048` was added on 2026-05-17 to modularize `packages/patterns/src/multi-agent/routing.ts` and its coupled routing tests after the routing decision contract work, keeping both files from becoming the next oversized multi-responsibility hotspot.
 - `ST-09048` merged on 2026-05-19 after reducing `packages/patterns/src/multi-agent/routing.ts` from `373` lines to a `51` line facade, extracting focused internal routing modules, and replacing the `538` line routing test monolith with focused strategy test files plus a shared fixture while keeping the explicit-`any` baseline flat at `workspace 90/289` and `patterns 2/28`.
 - `ST-09046` merged on 2026-05-20 after replacing blanket transformer `z.any()` schema seams with shared unknown-first contracts, preserving array/object transformer runtime behavior through review-driven special-key hardening and output-shape compatibility fixes while keeping the explicit-`any` baseline flat at `workspace 90/289` and `tools 59/67`.
+- `ST-09047` merged on 2026-05-21 after tightening JSON and HTTP payload schema boundaries, preserving JSON query/merge and HTTP helper behavior while incorporating review-driven array-guard and prototype-pollution hardening. This lowered the workspace explicit-`any` baseline from `90` to `84` and the `tools` package from `59` to `53`.
 - `ST-09049` through `ST-09054` were added on 2026-05-19 to keep EP-09 stocked with modularization work driven by the new `300` line cutoff rule for runtime and test files, covering core tool registry/builder, multi-agent orchestration, relational query/connection management, and reflection nodes.
 - `EP-09` remains open as the daily hardening stream, with the active queue now centered on the next type-boundary slices plus the newly promoted modularization stories.
 - The refreshed follow-on queue now extends beyond the current Ready lane so another few weeks of small SOLID/DRY and modularization work can be pulled without re-planning the epic.

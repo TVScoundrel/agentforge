@@ -1893,7 +1893,8 @@ Focused validation notes:
   - `2249eb1` refactor(st-09047): tighten json and http payload contracts
   - `c296911` docs(st-09047): capture validation and tracker state
 - [x] Mark PR Ready only after all story tasks are complete
-- [ ] Wait for merge; do not merge directly from local branch
+- [x] Wait for merge; do not merge directly from local branch
+  - Merged via PR #117 on 2026-05-21 (merge commit `6322719`)
 
 Focused validation notes:
 
@@ -1913,6 +1914,7 @@ Focused validation notes:
    - `pnpm lint:explicit-any:baseline` -> workspace `84/289`, tools `53/67`
    - `git diff --check`
    - Draft PR created as `#117`
+   - Follow-up review hardening merged in `bc8aeb4` before PR merge
 
 
 ---

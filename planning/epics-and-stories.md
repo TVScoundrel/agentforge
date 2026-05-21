@@ -1649,7 +1649,7 @@
 **Priority:** P2 (Medium)
 **Estimate:** 3 hours
 **Dependencies:** ST-09042
-**Status:** Ready
+**Status:** Merged (PR #117, 2026-05-21)
 
 **Acceptance criteria:**
 - [ ] `packages/tools/src/data/json/types.ts` and `packages/tools/src/web/http/types.ts` replace broad schema or response payload `any` seams with unknown-first or JSON-safe contracts
@@ -1752,7 +1752,7 @@
 **Priority:** P2 (Medium)
 **Estimate:** 5 hours
 **Dependencies:** ST-09027
-**Status:** Backlog
+**Status:** Ready
 
 **Acceptance criteria:**
 - [ ] `packages/tools/src/data/relational/connection/connection-manager.ts` is reduced below the 300 line planning cutoff by extracting focused internal modules for initialization, lifecycle transitions, health/cleanup, and vendor/session-specific coordination behind the stable public manager facade.

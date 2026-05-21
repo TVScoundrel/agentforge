@@ -619,6 +619,13 @@
 - **Estimate:** 3 hours
 - **Outcome:** Tightened shared error reporter state, metadata, and serialized payload contracts around unknown-first and JSON-safe boundaries, added a source-included typecheck regression for the public error surface, preserved existing runtime error-reporting behavior, and reduced `packages/core/src/langgraph/observability/errors.ts` explicit-`any` usage from 5 to 0.
 
+### ST-09047: Tighten JSON and HTTP Payload Schema Contracts
+- **Merged:** 2026-05-21
+- **PR:** https://github.com/TVScoundrel/agentforge/pull/117 (commit 6322719)
+- **Epic:** EP-09 (SOLID Micro-Refactors and Type Boundary Hardening)
+- **Estimate:** 3 hours
+- **Outcome:** Tightened JSON and HTTP payload schema boundaries around unknown-first contracts, preserved JSON query/merge and HTTP helper behavior, and incorporated review-driven hardening for array traversal and prototype-pollution-sensitive merge keys. Improved the workspace explicit-`any` baseline from 90 to 84 and the `tools` package from 59 to 53.
+
 ---
 
 ## Archive Format
