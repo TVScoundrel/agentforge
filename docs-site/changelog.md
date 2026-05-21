@@ -5,6 +5,37 @@ All notable changes to AgentForge will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.16.35] - 2026-05-21
+
+### Added
+
+#### @agentforge/tools - JSON and HTTP Contract Regression Coverage
+- Added focused schema coverage in `packages/tools/tests/data/json/json-types.test.ts` and `packages/tools/tests/web/http-types.test.ts` to verify JSON and HTTP payload boundaries no longer rely on broad `ZodAny` seams
+- Added direct JSON query and merge regressions covering array-traversal rejection plus shallow/deep special-key merge hardening for `__proto__`, `constructor`, and `prototype`
+- Added story documentation in `docs/st09047-json-http-payload-schema-contracts.md` capturing the contract tightening, validation evidence, and review-driven hardening follow-up
+
+### Changed
+
+#### @agentforge/tools - JSON and HTTP Payload Boundary Hardening
+- Tightened `packages/tools/src/data/json/types.ts` and `packages/tools/src/web/http/types.ts` so JSON payloads, HTTP request bodies, and `HttpResponse.data` use unknown-first contracts instead of broad `any`
+- Updated `packages/tools/src/data/json/tools/json-query.ts` and `packages/tools/src/data/json/tools/json-merge.ts` to narrow and merge unknown values explicitly while preserving JSON query/merge and HTTP helper runtime behavior
+
+### Fixed
+
+#### @agentforge/tools - Merge Key and Traversal Safety
+- Corrected the JSON query record guard so arrays are no longer narrowed as `Record<string, unknown>` during path traversal
+- Hardened both deep and shallow JSON merge paths against prototype-mutation-sensitive keys using explicit property definition, keeping special keys as data without mutating object prototypes
+- Lowered the explicit-`any` baseline from `workspace 90/289` and `tools 59/67` to `workspace 84/289` and `tools 53/67`
+
+### Published
+- All packages published to npm registry at version 0.16.35:
+  - @agentforge/core@0.16.35
+  - @agentforge/skills@0.16.35
+  - @agentforge/patterns@0.16.35
+  - @agentforge/tools@0.16.35
+  - @agentforge/testing@0.16.35
+  - @agentforge/cli@0.16.35
+
 ## [0.16.34] - 2026-05-20
 
 ### Added
