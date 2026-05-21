@@ -1877,25 +1877,40 @@ Focused validation notes:
 **Branch:** `refactor/st-09047-json-http-payload-schema-contracts`
 
 ### Checklist
-- [ ] Create branch `refactor/st-09047-json-http-payload-schema-contracts`
-- [ ] Create draft PR with story ID in title
-- [ ] Define test strategy before implementation: cover payload typing, request body serialization, and response data handling; first failing test should assert JSON/HTTP payload contracts no longer rely on broad `any`
-- [ ] Write or update the failing automated test before production changes when practical; if not practical, record why before implementation
-- [ ] Replace broad schema or response payload `any` seams in `packages/tools/src/data/json/types.ts` and `packages/tools/src/web/http/types.ts` with unknown-first or JSON-safe contracts
-- [ ] Preserve JSON parse/stringify/query/merge behavior and HTTP request/response helper behavior
-- [ ] Add/update production code until focused tests pass, keeping test evidence in checklist notes and PR body
-- [ ] Record explicit-`any` warning deltas for touched files in story docs
-- [ ] Add or update story documentation at `docs/st09047-json-http-payload-schema-contracts.md` (or document why not required)
-- [ ] Assess residual test impact; add/update additional automated tests when needed, or document why no further tests are required
-- [ ] Run full test suite before finalizing the PR and record results
-- [ ] Run lint (`pnpm lint`) before finalizing the PR and record results
-- [x] Commit completed checklist items as logical commits and push updates
-  - `1509546` refactor(st-09048): modularize multi-agent routing
-  - `4b07c8a` docs(st-09048): capture review metadata
-  - `cf12350` fix(st-09048): harden routing strategy lookup
-  - `7820bc8` fix(st-09048): align routing fixtures and tracker state
+- [x] Create branch `refactor/st-09047-json-http-payload-schema-contracts`
+- [x] Create draft PR with story ID in title
+- [x] Define test strategy before implementation: cover payload typing, request body serialization, and response data handling; first failing test should assert JSON/HTTP payload contracts no longer rely on broad `any`
+- [x] Write or update the failing automated test before production changes when practical; if not practical, record why before implementation
+- [x] Replace broad schema or response payload `any` seams in `packages/tools/src/data/json/types.ts` and `packages/tools/src/web/http/types.ts` with unknown-first or JSON-safe contracts
+- [x] Preserve JSON parse/stringify/query/merge behavior and HTTP request/response helper behavior
+- [x] Add/update production code until focused tests pass, keeping test evidence in checklist notes and PR body
+- [x] Record explicit-`any` warning deltas for touched files in story docs
+- [x] Add or update story documentation at `docs/st09047-json-http-payload-schema-contracts.md` (or document why not required)
+- [x] Assess residual test impact; add/update additional automated tests when needed, or document why no further tests are required
+- [x] Run full test suite before finalizing the PR and record results
+- [x] Run lint (`pnpm lint`) before finalizing the PR and record results
+- [ ] Commit completed checklist items as logical commits and push updates
 - [ ] Mark PR Ready only after all story tasks are complete
 - [ ] Wait for merge; do not merge directly from local branch
+
+Focused validation notes:
+
+- First failing schema gates:
+  - `pnpm test --run packages/tools/tests/data/json/json-types.test.ts`
+  - failed because JSON schemas still exposed `ZodAny` payload seams
+  - `pnpm test --run packages/tools/tests/web/http-types.test.ts`
+  - failed initially on the new test import path before the production assertion ran; corrected the harness, then the HTTP schema test exposed the `ZodAny` body seam as intended
+- Focused follow-up validation:
+  - `pnpm test --run packages/tools/tests/data/json/json-types.test.ts packages/tools/tests/web/http-types.test.ts`
+  - `2` files passed, `3` tests passed
+  - `pnpm --filter @agentforge/tools typecheck`
+  - `pnpm --filter @agentforge/tools exec eslint src/data/json/types.ts src/data/json/tools/json-query.ts src/data/json/tools/json-merge.ts src/web/http/types.ts tests/data/json/json-types.test.ts tests/web/http-types.test.ts`
+ - Full validation:
+   - `pnpm test --run` -> `177` files passed, `16` skipped; `2313` tests passed, `286` skipped
+   - `pnpm lint` -> passed with warnings only
+   - `pnpm lint:explicit-any:baseline` -> workspace `84/289`, tools `53/67`
+   - `git diff --check`
+   - Draft PR created as `#117`
 
 
 ---

@@ -2,8 +2,8 @@
 
 **Epic Range:** EP-09 through EP-09
 **Status:** In Progress
-**Last Updated:** 2026-05-20
-**Active Story:** None
+**Last Updated:** 2026-05-21
+**Active Story:** ST-09047 - Tighten JSON and HTTP Payload Schema Contracts
 
 ---
 
