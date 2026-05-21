@@ -18,7 +18,7 @@ export const httpRequestSchema = z.object({
   url: z.string().url().describe('The URL to make the request to'),
   method: HttpMethod.default('GET').describe('HTTP method to use'),
   headers: z.record(z.string()).optional().describe('Optional HTTP headers'),
-  body: z.any().optional().describe('Optional request body (for POST, PUT, PATCH)'),
+  body: z.unknown().optional().describe('Optional request body (for POST, PUT, PATCH)'),
   timeout: z.number().default(30000).describe('Request timeout in milliseconds'),
   params: z.record(z.string()).optional().describe('Optional URL query parameters'),
 });
@@ -30,7 +30,7 @@ export interface HttpResponse {
   status: number;
   statusText: string;
   headers: Record<string, string>;
-  data: any;
+  data: unknown;
   url: string;
   method: string;
 }
@@ -49,7 +49,7 @@ export const httpGetSchema = z.object({
  */
 export const httpPostSchema = z.object({
   url: z.string().url().describe('The URL to post to'),
-  body: z.any().describe('The request body (will be sent as JSON)'),
+  body: z.unknown().describe('The request body (will be sent as JSON)'),
   headers: z.record(z.string()).optional().describe('Optional HTTP headers'),
 });
 
@@ -60,4 +60,3 @@ export interface HttpToolsConfig {
   defaultTimeout?: number;
   defaultHeaders?: Record<string, string>;
 }
-
