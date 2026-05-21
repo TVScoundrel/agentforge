@@ -1889,8 +1889,10 @@ Focused validation notes:
 - [x] Assess residual test impact; add/update additional automated tests when needed, or document why no further tests are required
 - [x] Run full test suite before finalizing the PR and record results
 - [x] Run lint (`pnpm lint`) before finalizing the PR and record results
-- [ ] Commit completed checklist items as logical commits and push updates
-- [ ] Mark PR Ready only after all story tasks are complete
+- [x] Commit completed checklist items as logical commits and push updates
+  - `2249eb1` refactor(st-09047): tighten json and http payload contracts
+  - `c296911` docs(st-09047): capture validation and tracker state
+- [x] Mark PR Ready only after all story tasks are complete
 - [ ] Wait for merge; do not merge directly from local branch
 
 Focused validation notes:
