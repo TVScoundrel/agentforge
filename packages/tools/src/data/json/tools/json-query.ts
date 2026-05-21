@@ -5,6 +5,33 @@
 import { toolBuilder, ToolCategory } from '@agentforge/core';
 import { jsonQuerySchema } from '../types.js';
 
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return typeof value === 'object' && value !== null && !Array.isArray(value);
+}
+
+function getPathValue(current: unknown, part: string): unknown {
+  const arrayMatch = part.match(/^(\w+)\[(\d+)\]$/);
+  if (arrayMatch) {
+    const [, key, index] = arrayMatch;
+    if (!isRecord(current)) {
+      return undefined;
+    }
+
+    const candidate = current[key];
+    if (!Array.isArray(candidate)) {
+      return undefined;
+    }
+
+    return candidate[parseInt(index, 10)];
+  }
+
+  if (!isRecord(current)) {
+    return undefined;
+  }
+
+  return current[part];
+}
+
 /**
  * Create JSON query tool
  */
@@ -20,15 +47,7 @@ export function createJsonQueryTool() {
       let current = input.data;
 
       for (const part of parts) {
-        // Handle array indexing: items[0]
-        const arrayMatch = part.match(/^(\w+)\[(\d+)\]$/);
-        if (arrayMatch) {
-          const [, key, index] = arrayMatch;
-          current = current[key][parseInt(index, 10)];
-        } else {
-          current = current[part];
-        }
-
+        current = getPathValue(current, part);
         if (current === undefined) {
           throw new Error(`Path not found: ${input.path}`);
         }
@@ -41,4 +60,3 @@ export function createJsonQueryTool() {
     })
     .build();
 }
-
