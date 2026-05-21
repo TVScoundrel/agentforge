@@ -94,4 +94,49 @@ describe('json schemas', () => {
       status: 'ok',
     });
   });
+
+  it('reject array traversal as object records and harden merge special keys', async () => {
+    const jsonQueryTool = createJsonQueryTool();
+    const jsonMergeTool = createJsonMergeTool();
+
+    await expect(jsonQueryTool.invoke({
+      data: [['Ada']],
+      path: '0.name',
+    })).resolves.toMatchObject({
+      success: false,
+      error: 'Path not found: 0.name',
+    });
+
+    const polluted = await jsonMergeTool.invoke({
+      objects: [
+        {
+          safe: true,
+          ['__proto__']: { polluted: true },
+          constructor: 'ctor',
+          prototype: 'proto',
+        },
+      ],
+      deep: false,
+    });
+
+    expect(Object.getPrototypeOf(polluted)).toBe(Object.prototype);
+    expect(Object.getOwnPropertyDescriptor(polluted, '__proto__')?.value).toEqual({ polluted: true });
+    expect(Object.getOwnPropertyDescriptor(polluted, 'constructor')?.value).toBe('ctor');
+    expect(Object.getOwnPropertyDescriptor(polluted, 'prototype')?.value).toBe('proto');
+    expect(({} as { polluted?: boolean }).polluted).toBeUndefined();
+
+    const deepPolluted = await jsonMergeTool.invoke({
+      objects: [
+        { nested: { ['__proto__']: { polluted: true } } },
+        { nested: { safe: true } },
+      ],
+      deep: true,
+    });
+
+    expect(Object.getPrototypeOf(deepPolluted.nested as object)).toBe(Object.prototype);
+    expect(
+      Object.getOwnPropertyDescriptor(deepPolluted.nested as Record<string, unknown>, '__proto__')?.value
+    ).toEqual({ polluted: true });
+    expect(({} as { polluted?: boolean }).polluted).toBeUndefined();
+  });
 });
