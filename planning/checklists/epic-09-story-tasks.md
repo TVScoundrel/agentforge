@@ -1967,24 +1967,45 @@ Focused validation notes:
 **Branch:** `refactor/st-09049-tool-registry-modularization`
 
 ### Checklist
-- [ ] Create branch `refactor/st-09049-tool-registry-modularization`
-- [ ] Create draft PR with story ID in title
-- [ ] Define test strategy before implementation: cover runtime modularization and test-file modularization; first failing test should prove registry behavior is preserved while the oversized runtime and test files are split
-- [ ] Write or update the failing automated test before production changes when practical; if not practical, record why before implementation
-- [ ] Reduce `packages/core/src/tools/registry.ts` below the 300 line planning cutoff by extracting focused internal modules for registration, mutation, lookup/query behavior, and shared registry helpers behind a stable facade
-- [ ] Split `packages/core/tests/tools/registry.test.ts` into focused registry test modules so lookup, mutation, and edge-case behavior no longer depend on a single monolithic file
-- [ ] Preserve `ToolRegistry` runtime behavior, emitted events, mutation semantics, and public imports
-- [ ] Add/update production code until focused tests pass, keeping test evidence in checklist notes and PR body
-- [ ] Record explicit-`any` warning deltas and file-size/responsibility improvements for touched registry modules in story docs
-- [ ] Add or update story documentation at `docs/st09049-tool-registry-modularization.md` (or document why not required)
-- [ ] Assess residual test impact; add/update additional automated tests when needed, or document why no further tests are required
-- [ ] Run full test suite before finalizing the PR and record results
-- [ ] Run lint (`pnpm lint`) before finalizing the PR and record results
-- [ ] Commit completed checklist items as logical commits and push updates
-- [ ] Mark PR Ready only after all story tasks are complete
+- [x] Create branch `refactor/st-09049-tool-registry-modularization`
+- [x] Create draft PR with story ID in title
+- [x] Define test strategy before implementation: cover runtime modularization and test-file modularization; first failing test should prove registry behavior is preserved while the oversized runtime and test files are split
+  - Existing registry behavior is already heavily covered; the closest practical regression gate is to split the public-API coverage into focused suites first, then modularize the runtime facade behind those same behavior seams.
+- [x] Write or update the failing automated test before production changes when practical; if not practical, record why before implementation
+  - A structurally failing test for "this file is still too large" would only assert repo layout, not product behavior. For this story, preserving the current registry API and event semantics is the real contract, so the test-first substitute is focused suite decomposition plus targeted regression runs while the facade is split.
+- [x] Reduce `packages/core/src/tools/registry.ts` below the 300 line planning cutoff by extracting focused internal modules for registration, mutation, lookup/query behavior, and shared registry helpers behind a stable facade
+- [x] Split `packages/core/tests/tools/registry.test.ts` into focused registry test modules so lookup, mutation, and edge-case behavior no longer depend on a single monolithic file
+- [x] Preserve `ToolRegistry` runtime behavior, emitted events, mutation semantics, and public imports
+- [x] Add/update production code until focused tests pass, keeping test evidence in checklist notes and PR body
+- [x] Record explicit-`any` warning deltas and file-size/responsibility improvements for touched registry modules in story docs
+- [x] Add or update story documentation at `docs/st09049-tool-registry-modularization.md` (or document why not required)
+- [x] Assess residual test impact; add/update additional automated tests when needed, or document why no further tests are required
+  - Additional focused public-API coverage was not needed beyond the test split because the story preserved behavior; the split suites now cover the same CRUD, query, bulk mutation, event, LangChain, and prompt surfaces against the modularized facade.
+- [x] Run full test suite before finalizing the PR and record results
+- [x] Run lint (`pnpm lint`) before finalizing the PR and record results
+- [x] Commit completed checklist items as logical commits and push updates
+  - `ceaeda0` refactor(st-09049): modularize tool registry
+  - `2144a62` docs(st-09049): capture modularization evidence
+- [x] Mark PR Ready only after all story tasks are complete
 - [ ] Wait for merge; do not merge directly from local branch
 
 ---
+
+Focused validation notes:
+
+- Behavior-preserving modularization gate:
+  - `pnpm test --run packages/core/tests/tools/registry-crud.test.ts packages/core/tests/tools/registry-query-api.test.ts packages/core/tests/tools/registry-bulk-api.test.ts packages/core/tests/tools/registry-events-api.test.ts packages/core/tests/tools/registry-langchain-api.test.ts packages/core/tests/tools/registry-prompt-api.test.ts`
+  - `6` files passed, `43` tests passed
+- Package checks:
+  - `pnpm --filter @agentforge/core typecheck`
+  - `pnpm --filter @agentforge/core exec eslint src/tools/registry.ts src/tools/registry-types.ts src/tools/registry-query-api.ts src/tools/registry-mutation-api.ts tests/tools/registry-crud.test.ts tests/tools/registry-query-api.test.ts tests/tools/registry-bulk-api.test.ts tests/tools/registry-events-api.test.ts tests/tools/registry-langchain-api.test.ts tests/tools/registry-prompt-api.test.ts`
+  - `pnpm lint:explicit-any:baseline` -> workspace `84/289`, core `23/119`
+- Full checks:
+  - `pnpm test --run` -> `182` files passed, `16` skipped; `2314` tests passed, `286` skipped
+  - `pnpm lint` -> passed with warnings only
+  - `git diff --check`
+  - Draft PR created as `#118`
+
 
 ## ST-09050: Modularize Core Tool Builder and Tests
 

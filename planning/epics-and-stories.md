@@ -1684,7 +1684,7 @@
 **Priority:** P2 (Medium)
 **Estimate:** 4 hours
 **Dependencies:** ST-09031
-**Status:** Ready
+**Status:** In Review
 
 **Acceptance criteria:**
 - [ ] `packages/core/src/tools/registry.ts` is reduced below the 300 line planning cutoff by extracting focused internal modules for registration flow, mutation flow, lookup/query flow, and shared registry normalization/helpers behind a stable public facade.

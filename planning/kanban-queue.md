@@ -1,12 +1,12 @@
 # Kanban Queue: AgentForge
 
-**Last Updated:** 2026-05-21
+**Last Updated:** 2026-05-22
 
 ## Queue Status Summary
 
-- **Ready:** 5 stories
+- **Ready:** 4 stories
 - **In Progress:** 0 stories
-- **In Review:** 0 stories
+- **In Review:** 1 story
 - **Blocked:** 0 stories
 - **Backlog:** 1 story
 
@@ -14,7 +14,6 @@
 
 ## Ready
 
-- `ST-09049` - Modularize Core Tool Registry and Tests
 - `ST-09050` - Modularize Core Tool Builder and Tests
 - `ST-09051` - Modularize Multi-Agent Orchestration Agent and Tests
 - `ST-09052` - Modularize Relational Query Builder and Tests
@@ -29,7 +28,7 @@ _No stories currently in progress_
 
 ## In Review
 
-_No stories currently in review_
+- `ST-09049` - Modularize Core Tool Registry and Tests
 
 ---
 
