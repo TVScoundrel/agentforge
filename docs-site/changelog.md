@@ -5,6 +5,36 @@ All notable changes to AgentForge will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.16.36] - 2026-05-22
+
+### Added
+
+#### @agentforge/core - Tool Registry Modularization Coverage
+- Added focused registry public-API coverage in `packages/core/tests/tools/registry-crud.test.ts`, `registry-query-api.test.ts`, `registry-bulk-api.test.ts`, `registry-events-api.test.ts`, `registry-langchain-api.test.ts`, and `registry-prompt-api.test.ts`
+- Added story documentation in `docs/st09049-tool-registry-modularization.md` capturing the file-size reduction, validation evidence, and no-regression baseline outcome
+
+### Changed
+
+#### @agentforge/core - Tool Registry Modularization
+- Reduced `packages/core/src/tools/registry.ts` from a mixed-responsibility `446` line implementation to a `107` line public facade
+- Extracted focused internal registry query, mutation, and public-type modules in `packages/core/src/tools/registry-query-api.ts`, `packages/core/src/tools/registry-mutation-api.ts`, and `packages/core/src/tools/registry-types.ts`
+- Preserved the public `ToolRegistry`, `RegistryEvent`, `EventHandler`, and `PromptOptions` export surface while making the registry easier to review and evolve in smaller slices
+
+### Fixed
+
+#### @agentforge/core - Registry Test and Maintenance Boundaries
+- Replaced the `832` line `packages/core/tests/tools/registry.test.ts` monolith with focused suites that mirror CRUD, query, bulk mutation, event, LangChain, and prompt boundaries
+- Kept registry behavior, emitted events, mutation semantics, and explicit-`any` baseline stable at `workspace 84/289` and `core 23/119` while modularizing both runtime and tests
+
+### Published
+- All packages published to npm registry at version 0.16.36:
+  - @agentforge/core@0.16.36
+  - @agentforge/skills@0.16.36
+  - @agentforge/patterns@0.16.36
+  - @agentforge/tools@0.16.36
+  - @agentforge/testing@0.16.36
+  - @agentforge/cli@0.16.36
+
 ## [0.16.35] - 2026-05-21
 
 ### Added
