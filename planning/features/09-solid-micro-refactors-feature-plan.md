@@ -3,7 +3,7 @@
 **Epic Range:** EP-09 through EP-09
 **Status:** In Progress
 **Last Updated:** 2026-05-22
-**Active Story:** ST-09049
+**Active Story:** None
 
 ---
 
@@ -90,6 +90,7 @@ Recent improvement snapshot:
 - `ST-09046` merged on 2026-05-20 after replacing blanket transformer `z.any()` schema seams with shared unknown-first contracts, preserving array/object transformer runtime behavior through review-driven special-key hardening and output-shape compatibility fixes while keeping the explicit-`any` baseline flat at `workspace 90/289` and `tools 59/67`.
 - `ST-09047` merged on 2026-05-21 after tightening JSON and HTTP payload schema boundaries, preserving JSON query/merge and HTTP helper behavior while incorporating review-driven array-guard and prototype-pollution hardening. This lowered the workspace explicit-`any` baseline from `90` to `84` and the `tools` package from `59` to `53`.
 - `ST-09049` through `ST-09054` were added on 2026-05-19 to keep EP-09 stocked with modularization work driven by the new `300` line cutoff rule for runtime and test files, covering core tool registry/builder, multi-agent orchestration, relational query/connection management, and reflection nodes.
+- `ST-09049` merged on 2026-05-22 after reducing `packages/core/src/tools/registry.ts` from `446` lines to a `107` line public facade, extracting focused query/mutation/type modules, and replacing the `832` line registry test monolith with focused API suites while keeping the explicit-`any` baseline flat at `workspace 84/289` and `core 23/119`.
 - `EP-09` remains open as the daily hardening stream, with the active queue now centered on the next type-boundary slices plus the newly promoted modularization stories.
 - The refreshed follow-on queue now extends beyond the current Ready lane so another few weeks of small SOLID/DRY and modularization work can be pulled without re-planning the epic.
 

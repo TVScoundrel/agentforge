@@ -2,11 +2,18 @@
 
 **Purpose:** Track completed and merged stories for the Relational Database Access Tool project.
 
-**Last Updated:** 2026-05-20
+**Last Updated:** 2026-05-22
 
 ---
 
 ## Completed Stories
+
+### ST-09049: Modularize Core Tool Registry and Tests
+- **Merged:** 2026-05-22
+- **PR:** https://github.com/TVScoundrel/agentforge/pull/118 (commit a37b582)
+- **Epic:** EP-09 (SOLID Micro-Refactors and Type Boundary Hardening)
+- **Estimate:** 4 hours
+- **Outcome:** Modularized `@agentforge/core` tool registry by shrinking `packages/core/src/tools/registry.ts` from a `446` line mixed-responsibility file to a `107` line public facade, extracting focused internal query, mutation, and public-type modules while preserving the stable `ToolRegistry` API, emitted events, mutation semantics, and exports. The story also replaced the `832` line `packages/core/tests/tools/registry.test.ts` monolith with focused CRUD, query, bulk mutation, event, LangChain, and prompt suites, kept the explicit-`any` baseline flat at `workspace 84/289` and `core 23/119`, and promoted `ST-09054` into `Ready` during post-merge queue grooming because its dependency `ST-09019` was already merged.
 
 ### ST-09046: Tighten Transformer Schema Value Contracts
 - **Merged:** 2026-05-20

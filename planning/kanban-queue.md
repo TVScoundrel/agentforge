@@ -4,11 +4,11 @@
 
 ## Queue Status Summary
 
-- **Ready:** 4 stories
+- **Ready:** 5 stories
 - **In Progress:** 0 stories
-- **In Review:** 1 story
+- **In Review:** 0 stories
 - **Blocked:** 0 stories
-- **Backlog:** 1 story
+- **Backlog:** 0 stories
 
 ---
 
@@ -18,6 +18,7 @@
 - `ST-09051` - Modularize Multi-Agent Orchestration Agent and Tests
 - `ST-09052` - Modularize Relational Query Builder and Tests
 - `ST-09053` - Modularize Relational Connection Manager and Tests (dependency satisfied: `ST-09027` merged)
+- `ST-09054` - Modularize Reflection Nodes and Tests (dependency satisfied: `ST-09019` merged)
 ---
 
 ## In Progress
@@ -28,7 +29,7 @@ _No stories currently in progress_
 
 ## In Review
 
-- `ST-09049` - Modularize Core Tool Registry and Tests
+_No stories currently in review_
 
 ---
 
@@ -40,7 +41,7 @@ _No stories currently blocked_
 
 ## Backlog
 
-- `ST-09054` - Modularize Reflection Nodes and Tests
+_No stories currently in backlog_
 
 ---
 
@@ -133,4 +134,5 @@ _No stories currently blocked_
 - EP-10 follow-up story `ST-10006` started on 2026-05-05 to clean remaining decorative emoji in example overview/index markdown while preserving functional status markers and literal sample output.
 - Complete: ST-10006 - example overview docs emoji normalization merged (PR #105, 2026-05-05)
 - Complete: ST-09047 - JSON and HTTP payload schema contracts tightened (merged 2026-05-21, PR #117)
+- Complete: ST-09049 - core tool registry modularized into focused runtime and test modules (merged 2026-05-22, PR #118)
 - Current measured `no-explicit-any` baseline is `84` warnings (`cli 6`, `core 23`, `patterns 2`, `testing 0`, `tools 53`)

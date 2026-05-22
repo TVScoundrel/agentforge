@@ -1987,7 +1987,8 @@ Focused validation notes:
   - `ceaeda0` refactor(st-09049): modularize tool registry
   - `2144a62` docs(st-09049): capture modularization evidence
 - [x] Mark PR Ready only after all story tasks are complete
-- [ ] Wait for merge; do not merge directly from local branch
+- [x] Wait for merge; do not merge directly from local branch
+  - Merged via PR #118 on 2026-05-22 (merge commit `a37b582`)
 
 ---
 
