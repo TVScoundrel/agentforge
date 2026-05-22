@@ -1968,7 +1968,7 @@ Focused validation notes:
 
 ### Checklist
 - [x] Create branch `refactor/st-09049-tool-registry-modularization`
-- [ ] Create draft PR with story ID in title
+- [x] Create draft PR with story ID in title
 - [x] Define test strategy before implementation: cover runtime modularization and test-file modularization; first failing test should prove registry behavior is preserved while the oversized runtime and test files are split
   - Existing registry behavior is already heavily covered; the closest practical regression gate is to split the public-API coverage into focused suites first, then modularize the runtime facade behind those same behavior seams.
 - [x] Write or update the failing automated test before production changes when practical; if not practical, record why before implementation
@@ -1983,8 +1983,10 @@ Focused validation notes:
   - Additional focused public-API coverage was not needed beyond the test split because the story preserved behavior; the split suites now cover the same CRUD, query, bulk mutation, event, LangChain, and prompt surfaces against the modularized facade.
 - [x] Run full test suite before finalizing the PR and record results
 - [x] Run lint (`pnpm lint`) before finalizing the PR and record results
-- [ ] Commit completed checklist items as logical commits and push updates
-- [ ] Mark PR Ready only after all story tasks are complete
+- [x] Commit completed checklist items as logical commits and push updates
+  - `ceaeda0` refactor(st-09049): modularize tool registry
+  - `2144a62` docs(st-09049): capture modularization evidence
+- [x] Mark PR Ready only after all story tasks are complete
 - [ ] Wait for merge; do not merge directly from local branch
 
 ---
@@ -2002,6 +2004,7 @@ Focused validation notes:
   - `pnpm test --run` -> `182` files passed, `16` skipped; `2314` tests passed, `286` skipped
   - `pnpm lint` -> passed with warnings only
   - `git diff --check`
+  - Draft PR created as `#118`
 
 
 ## ST-09050: Modularize Core Tool Builder and Tests
