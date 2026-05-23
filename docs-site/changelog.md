@@ -5,6 +5,39 @@ All notable changes to AgentForge will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.16.37] - 2026-05-23
+
+### Added
+
+#### @agentforge/core - Tool Builder Modularization Coverage
+- Added focused builder public-behavior coverage in `packages/core/tests/tools/builder-basic.test.ts`, `builder-metadata.test.ts`, `builder-validation.test.ts`, `builder-typing.test.ts`, `builder-safe.test.ts`, and `builder-relations.test.ts`
+- Added story documentation in `docs/st09050-tool-builder-modularization.md` capturing the file split, validation evidence, and no-regression baseline outcome
+- Added targeted metadata regressions covering `.tags(...).tag(...)`, `.limitations(...).limitation(...)`, and repeated `.example(...)` accumulation so builder append semantics stay stable after the modularization split
+
+### Changed
+
+#### @agentforge/core - Tool Builder Modularization
+- Reduced `packages/core/src/tools/builder.ts` from a mixed-responsibility `434` line implementation to a small public facade below the `300` line planning cutoff
+- Extracted focused internal builder modules in `packages/core/src/tools/builder-metadata.ts`, `builder-implementation.ts`, and `builder-finalize.ts`
+- Preserved the public `ToolBuilder` and `toolBuilder` export surface while making metadata cloning, invoke wrapping, and build-time validation easier to review and evolve in smaller slices
+
+### Fixed
+
+#### @agentforge/core - Builder Follow-Up Contract Preservation
+- Replaced the `697` line `packages/core/tests/tools/builder.test.ts` monolith with focused suites that mirror builder metadata, validation, typing, safe execution, and relation boundaries
+- Switched the new builder internals to explicit type-only imports to keep the module boundaries aligned with the rest of `packages/core/src/tools`
+- Removed brittle hard-coded line counts from the story evidence doc and restored in-place append semantics for tags, limitations, and examples in the extracted metadata helpers
+- Kept builder behavior and the explicit-`any` baseline stable at `workspace 84/289` and `core 23/119`
+
+### Published
+- All packages published to npm registry at version 0.16.37:
+  - @agentforge/core@0.16.37
+  - @agentforge/skills@0.16.37
+  - @agentforge/patterns@0.16.37
+  - @agentforge/tools@0.16.37
+  - @agentforge/testing@0.16.37
+  - @agentforge/cli@0.16.37
+
 ## [0.16.36] - 2026-05-22
 
 ### Added
