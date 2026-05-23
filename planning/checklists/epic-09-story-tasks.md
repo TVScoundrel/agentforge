@@ -2014,7 +2014,7 @@ Focused validation notes:
 
 ### Checklist
 - [x] Create branch `refactor/st-09050-tool-builder-modularization`
-- [ ] Create draft PR with story ID in title
+- [x] Create draft PR with story ID in title
 - [x] Define test strategy before implementation: cover runtime modularization and test-file modularization; first failing test should prove fluent builder behavior is preserved while the oversized runtime and test files are split
 - [x] Write or update the failing automated test before production changes when practical; if not practical, record why before implementation
 - [x] Reduce `packages/core/src/tools/builder.ts` below the 300 line planning cutoff by extracting focused internal modules for metadata configuration, schema/input handling, middleware wiring, and builder finalization behind a stable facade
