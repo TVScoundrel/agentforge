@@ -1701,7 +1701,7 @@
 **Priority:** P2 (Medium)
 **Estimate:** 4 hours
 **Dependencies:** ST-09023
-**Status:** Ready
+**Status:** In Progress
 
 **Acceptance criteria:**
 - [ ] `packages/core/src/tools/builder.ts` is reduced below the 300 line planning cutoff by extracting focused internal modules for metadata configuration, schema/input handling, middleware/execution wiring, and clone/finalization helpers behind the stable public builder facade.

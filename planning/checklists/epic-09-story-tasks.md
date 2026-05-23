@@ -2013,22 +2013,40 @@ Focused validation notes:
 **Branch:** `refactor/st-09050-tool-builder-modularization`
 
 ### Checklist
-- [ ] Create branch `refactor/st-09050-tool-builder-modularization`
+- [x] Create branch `refactor/st-09050-tool-builder-modularization`
 - [ ] Create draft PR with story ID in title
-- [ ] Define test strategy before implementation: cover runtime modularization and test-file modularization; first failing test should prove fluent builder behavior is preserved while the oversized runtime and test files are split
-- [ ] Write or update the failing automated test before production changes when practical; if not practical, record why before implementation
-- [ ] Reduce `packages/core/src/tools/builder.ts` below the 300 line planning cutoff by extracting focused internal modules for metadata configuration, schema/input handling, middleware wiring, and builder finalization behind a stable facade
-- [ ] Split `packages/core/tests/tools/builder.test.ts` into focused builder test modules so fluent configuration, clone semantics, and invoke behavior no longer depend on a single monolithic file
-- [ ] Preserve `ToolBuilder` fluent behavior, metadata isolation, clone semantics, and public imports
-- [ ] Add/update production code until focused tests pass, keeping test evidence in checklist notes and PR body
-- [ ] Record explicit-`any` warning deltas and file-size/responsibility improvements for touched builder modules in story docs
-- [ ] Add or update story documentation at `docs/st09050-tool-builder-modularization.md` (or document why not required)
-- [ ] Assess residual test impact; add/update additional automated tests when needed, or document why no further tests are required
-- [ ] Run full test suite before finalizing the PR and record results
-- [ ] Run lint (`pnpm lint`) before finalizing the PR and record results
+- [x] Define test strategy before implementation: cover runtime modularization and test-file modularization; first failing test should prove fluent builder behavior is preserved while the oversized runtime and test files are split
+- [x] Write or update the failing automated test before production changes when practical; if not practical, record why before implementation
+- [x] Reduce `packages/core/src/tools/builder.ts` below the 300 line planning cutoff by extracting focused internal modules for metadata configuration, schema/input handling, middleware wiring, and builder finalization behind a stable facade
+- [x] Split `packages/core/tests/tools/builder.test.ts` into focused builder test modules so fluent configuration, clone semantics, and invoke behavior no longer depend on a single monolithic file
+- [x] Preserve `ToolBuilder` fluent behavior, metadata isolation, clone semantics, and public imports
+- [x] Add/update production code until focused tests pass, keeping test evidence in checklist notes and PR body
+- [x] Record explicit-`any` warning deltas and file-size/responsibility improvements for touched builder modules in story docs
+- [x] Add or update story documentation at `docs/st09050-tool-builder-modularization.md` (or document why not required)
+- [x] Assess residual test impact; add/update additional automated tests when needed, or document why no further tests are required
+- [x] Run full test suite before finalizing the PR and record results
+- [x] Run lint (`pnpm lint`) before finalizing the PR and record results
 - [ ] Commit completed checklist items as logical commits and push updates
 - [ ] Mark PR Ready only after all story tasks are complete
 - [ ] Wait for merge; do not merge directly from local branch
+
+Implementation notes:
+
+- A size-based failing test would only assert repository structure, not `ToolBuilder` behavior. For this story, the meaningful contract is preserving fluent chaining, metadata cloning, and invoke semantics while splitting the oversized runtime and test files. The test-first substitute is focused suite decomposition plus targeted regression runs against the split builder facade before broader validation.
+
+Focused validation notes:
+
+- Behavior-preserving modularization gate:
+  - `pnpm test --run packages/core/tests/tools/builder-basic.test.ts packages/core/tests/tools/builder-metadata.test.ts packages/core/tests/tools/builder-validation.test.ts packages/core/tests/tools/builder-typing.test.ts packages/core/tests/tools/builder-safe.test.ts packages/core/tests/tools/builder-relations.test.ts`
+  - `6` files passed, `34` tests passed
+- Package checks:
+  - `pnpm --filter @agentforge/core typecheck`
+  - `pnpm --filter @agentforge/core exec eslint src/tools/builder.ts src/tools/builder-metadata.ts src/tools/builder-implementation.ts src/tools/builder-finalize.ts tests/tools/builder-basic.test.ts tests/tools/builder-metadata.test.ts tests/tools/builder-validation.test.ts tests/tools/builder-typing.test.ts tests/tools/builder-safe.test.ts tests/tools/builder-relations.test.ts`
+  - `pnpm lint:explicit-any:baseline` -> workspace `84/289`, core `23/119`
+- Full checks:
+  - `pnpm test --run` -> `187` files passed, `16` skipped; `2314` tests passed, `286` skipped
+  - `pnpm lint` -> passed with warnings only
+  - `git diff --check`
 
 ---
 
