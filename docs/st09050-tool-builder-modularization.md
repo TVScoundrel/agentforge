@@ -2,7 +2,7 @@
 
 ## Summary
 
-`packages/core/src/tools/builder.ts` was reduced from `434` lines to a `124` line public facade by moving the remaining responsibilities into focused internal modules:
+`packages/core/src/tools/builder.ts` was reduced from `434` lines to a small public facade well below the `300` line planning cutoff by moving the remaining responsibilities into focused internal modules:
 
 - `packages/core/src/tools/builder-metadata.ts`
 - `packages/core/src/tools/builder-implementation.ts`
@@ -12,14 +12,14 @@ The builder entry point still owns the public fluent API, while metadata cloning
 
 ## Test Modularization
 
-The monolithic `packages/core/tests/tools/builder.test.ts` (`697` lines) was replaced with focused public-behavior suites:
+The monolithic `packages/core/tests/tools/builder.test.ts` was replaced with focused public-behavior suites:
 
-- `packages/core/tests/tools/builder-basic.test.ts` (`65` lines)
-- `packages/core/tests/tools/builder-metadata.test.ts` (`127` lines)
-- `packages/core/tests/tools/builder-validation.test.ts` (`108` lines)
-- `packages/core/tests/tools/builder-typing.test.ts` (`126` lines)
-- `packages/core/tests/tools/builder-safe.test.ts` (`171` lines)
-- `packages/core/tests/tools/builder-relations.test.ts` (`134` lines)
+- `packages/core/tests/tools/builder-basic.test.ts`
+- `packages/core/tests/tools/builder-metadata.test.ts`
+- `packages/core/tests/tools/builder-validation.test.ts`
+- `packages/core/tests/tools/builder-typing.test.ts`
+- `packages/core/tests/tools/builder-safe.test.ts`
+- `packages/core/tests/tools/builder-relations.test.ts`
 
 This keeps builder creation, metadata mutation, validation, type behavior, safe execution, and relation helpers independently reviewable instead of coupling every public behavior to one file.
 
