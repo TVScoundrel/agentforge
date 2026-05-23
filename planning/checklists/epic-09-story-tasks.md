@@ -2026,7 +2026,9 @@ Focused validation notes:
 - [x] Assess residual test impact; add/update additional automated tests when needed, or document why no further tests are required
 - [x] Run full test suite before finalizing the PR and record results
 - [x] Run lint (`pnpm lint`) before finalizing the PR and record results
-- [ ] Commit completed checklist items as logical commits and push updates
+- [x] Commit completed checklist items as logical commits and push updates
+  - `3062a40` `refactor(st-09050): modularize tool builder`
+  - `53deb95` `docs(st-09050): capture modularization evidence`
 - [ ] Mark PR Ready only after all story tasks are complete
 - [ ] Wait for merge; do not merge directly from local branch
 
