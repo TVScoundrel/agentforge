@@ -48,12 +48,19 @@ export function cloneMetadata(metadata: Partial<ToolMetadata>): Partial<ToolMeta
 }
 
 export function appendMetadataList(metadata: Partial<ToolMetadata>, key: MetadataListKey, value: string): void {
-  const items = metadata[key] ?? [];
-  metadata[key] = [...items, value];
+  if (!metadata[key]) {
+    metadata[key] = [];
+  }
+
+  metadata[key].push(value);
 }
 
 export function appendExample(metadata: Partial<ToolMetadata>, example: ToolExample): void {
-  metadata.examples = [...(metadata.examples ?? []), example];
+  if (!metadata.examples) {
+    metadata.examples = [];
+  }
+
+  metadata.examples.push(example);
 }
 
 export function setRelation(

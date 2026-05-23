@@ -40,6 +40,48 @@ describe('ToolBuilder metadata API', () => {
     expect(tool.metadata.limitations).toEqual(['Limit 1', 'Limit 2']);
   });
 
+  it('preserves prior tag append semantics after tags()', () => {
+    const providedTags = ['tag1'];
+
+    const tool = toolBuilder()
+      .name('tag-semantics-test')
+      .description('Testing tag append semantics')
+      .category(ToolCategory.UTILITY)
+      .tags(providedTags)
+      .tag('tag2')
+      .schema(
+        z.object({
+          input: z.string().describe('Input'),
+        }),
+      )
+      .implement(async ({ input }) => input)
+      .build();
+
+    expect(tool.metadata.tags).toEqual(['tag1', 'tag2']);
+    expect(providedTags).toEqual(['tag1', 'tag2']);
+  });
+
+  it('preserves prior limitation append semantics after limitations()', () => {
+    const providedLimitations = ['Limit 1'];
+
+    const tool = toolBuilder()
+      .name('limitation-semantics-test')
+      .description('Testing limitation append semantics')
+      .category(ToolCategory.UTILITY)
+      .limitations(providedLimitations)
+      .limitation('Limit 2')
+      .schema(
+        z.object({
+          input: z.string().describe('Input'),
+        }),
+      )
+      .implement(async ({ input }) => input)
+      .build();
+
+    expect(tool.metadata.limitations).toEqual(['Limit 1', 'Limit 2']);
+    expect(providedLimitations).toEqual(['Limit 1', 'Limit 2']);
+  });
+
   it('supports adding examples', () => {
     const tool = toolBuilder()
       .name('example-test')
@@ -63,6 +105,35 @@ describe('ToolBuilder metadata API', () => {
 
     expect(tool.metadata.examples).toHaveLength(2);
     expect(tool.metadata.examples?.[0].description).toBe('Example 1');
+    expect(tool.metadata.examples?.[1].description).toBe('Example 2');
+  });
+
+  it('preserves in-place example accumulation semantics', () => {
+    const providedExamples = [
+      {
+        description: 'Example 1',
+        input: { value: 'test1' },
+      },
+    ];
+
+    const tool = toolBuilder()
+      .name('example-semantics-test')
+      .description('Testing example append semantics')
+      .category(ToolCategory.UTILITY)
+      .example(providedExamples[0])
+      .example({
+        description: 'Example 2',
+        input: { value: 'test2' },
+      })
+      .schema(
+        z.object({
+          value: z.string().describe('Value'),
+        }),
+      )
+      .implement(async ({ value }) => value)
+      .build();
+
+    expect(tool.metadata.examples).toHaveLength(2);
     expect(tool.metadata.examples?.[1].description).toBe('Example 2');
   });
 
