@@ -1,7 +1,9 @@
 import { z } from 'zod';
-import { Tool, ToolCategory, ToolExample, ToolMetadata } from './types.js';
+import { ToolCategory } from './types.js';
+import type { Tool, ToolExample, ToolMetadata } from './types.js';
 import { buildTool } from './builder-finalize.js';
-import { SafeToolResult, ToolInvoke, wrapInvoke, wrapSafeInvoke } from './builder-implementation.js';
+import { wrapInvoke, wrapSafeInvoke } from './builder-implementation.js';
+import type { SafeToolResult, ToolInvoke } from './builder-implementation.js';
 import { appendExample, appendMetadataList, cloneMetadata, setRelation } from './builder-metadata.js';
 
 export class ToolBuilder<TInput = unknown, TOutput = unknown> {

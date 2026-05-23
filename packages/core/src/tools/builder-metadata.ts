@@ -1,4 +1,4 @@
-import { ToolExample, ToolMetadata } from './types.js';
+import type { ToolExample, ToolMetadata } from './types.js';
 
 type RelationKey = keyof NonNullable<ToolMetadata['relations']>;
 type MetadataListKey = 'tags' | 'limitations';

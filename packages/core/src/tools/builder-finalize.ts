@@ -1,7 +1,7 @@
 import { z } from 'zod';
 import { createTool } from './helpers.js';
-import { Tool, ToolMetadata } from './types.js';
-import { ToolInvoke } from './builder-implementation.js';
+import type { Tool, ToolMetadata } from './types.js';
+import type { ToolInvoke } from './builder-implementation.js';
 
 function assertBuildable<TInput, TOutput>(
   metadata: Partial<ToolMetadata>,
