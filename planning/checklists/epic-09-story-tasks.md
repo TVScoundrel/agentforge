@@ -2030,7 +2030,8 @@ Focused validation notes:
   - `3062a40` `refactor(st-09050): modularize tool builder`
   - `53deb95` `docs(st-09050): capture modularization evidence`
 - [x] Mark PR Ready only after all story tasks are complete
-- [ ] Wait for merge; do not merge directly from local branch
+- [x] Wait for merge; do not merge directly from local branch
+  - Merged via PR #119 on 2026-05-23 (merge commit `08e2b06`)
 
 Implementation notes:
 

@@ -2,11 +2,18 @@
 
 **Purpose:** Track completed and merged stories for the Relational Database Access Tool project.
 
-**Last Updated:** 2026-05-22
+**Last Updated:** 2026-05-23
 
 ---
 
 ## Completed Stories
+
+### ST-09050: Modularize Core Tool Builder and Tests
+- **Merged:** 2026-05-23
+- **PR:** https://github.com/TVScoundrel/agentforge/pull/119 (commit 08e2b06)
+- **Epic:** EP-09 (SOLID Micro-Refactors and Type Boundary Hardening)
+- **Estimate:** 4 hours
+- **Outcome:** Modularized `@agentforge/core` tool builder by shrinking `packages/core/src/tools/builder.ts` from a `434` line mixed-responsibility file to a small facade below the `300` line cutoff, extracting focused metadata, invoke-wrapping, and finalization helpers while preserving the public `ToolBuilder` and `toolBuilder` API, fluent chaining semantics, metadata isolation, clone behavior, and invoke compatibility. The story also replaced the `697` line `packages/core/tests/tools/builder.test.ts` monolith with focused basic, metadata, validation, typing, safe-execution, and relations suites, then absorbed review follow-ups for explicit type-only imports, stale documentation line counts, and restored in-place append semantics for tags, limitations, and examples while keeping the explicit-`any` baseline flat at `workspace 84/289` and `core 23/119`.
 
 ### ST-09049: Modularize Core Tool Registry and Tests
 - **Merged:** 2026-05-22
