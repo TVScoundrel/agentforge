@@ -5,6 +5,37 @@ All notable changes to AgentForge will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.16.38] - 2026-05-26
+
+### Added
+
+#### @agentforge/patterns - Multi-Agent Agent Modularization Coverage
+- Added focused multi-agent orchestration coverage in `packages/patterns/tests/multi-agent/agent-system.test.ts`, `agent-register-workers.test.ts`, `agent-tools.test.ts`, and `agent-builder.test.ts`
+- Added story documentation in `docs/st09051-multi-agent-agent-modularization.md` capturing the runtime split, validation evidence, and no-regression explicit-`any` outcome
+
+### Changed
+
+#### @agentforge/patterns - Multi-Agent Orchestration Modularization
+- Reduced `packages/patterns/src/multi-agent/agent.ts` from a mixed-responsibility `535` line implementation to a `155` line public facade below the `300` line planning cutoff
+- Extracted focused internal modules in `packages/patterns/src/multi-agent/agent-graph.ts`, `agent-runtime.ts`, `agent-workers.ts`, `agent-builder.ts`, and `agent-types.ts`
+- Preserved `createMultiAgentSystem`, `registerWorkers`, `createWorkersRegistry`, and `MultiAgentSystemBuilder` behavior and export paths while making graph assembly, worker normalization, and runtime injection reviewable in smaller seams
+
+### Fixed
+
+#### @agentforge/patterns - Multi-Agent Review and Logging Follow-Up
+- Replaced the `655` line `packages/patterns/tests/multi-agent/agent.test.ts` monolith with focused suites that mirror system creation, compiled-system registration, tool-name mapping, stream wrapping, and builder registration boundaries
+- Routed the deprecated compiled-system `registerWorkers()` warning through the shared patterns logger instead of `console.warn` so framework logging stays filterable and consistent with repo standards
+- Kept multi-agent behavior and the explicit-`any` baseline stable at `workspace 84/289` and `patterns 2/28`
+
+### Published
+- All packages published to npm registry at version 0.16.38:
+  - @agentforge/core@0.16.38
+  - @agentforge/skills@0.16.38
+  - @agentforge/patterns@0.16.38
+  - @agentforge/tools@0.16.38
+  - @agentforge/testing@0.16.38
+  - @agentforge/cli@0.16.38
+
 ## [0.16.37] - 2026-05-23
 
 ### Added
