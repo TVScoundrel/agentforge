@@ -6,6 +6,7 @@
  * @module patterns/multi-agent/agent
  */
 
+import { createPatternLogger } from '../shared/deduplication.js';
 import { createCompiledMultiAgentSystem } from './agent-graph.js';
 import { registerWorkerCapabilities } from './agent-runtime.js';
 import type { MultiAgentSystemWithRegistry, RegisterWorkerInput } from './agent-types.js';
@@ -14,6 +15,8 @@ import type { MultiAgentSystemConfig } from './types.js';
 
 export { MultiAgentSystemBuilder } from './agent-builder.js';
 export type { MultiAgentSystemWithRegistry, RegisterWorkerInput } from './agent-types.js';
+
+const logger = createPatternLogger('agentforge:patterns:multi-agent:system');
 
 /**
  * Create a multi-agent coordination system
@@ -134,7 +137,7 @@ export function registerWorkers(
   system: MultiAgentSystemWithRegistry,
   workers: RegisterWorkerInput[],
 ): void {
-  console.warn(
+  logger.warn(
     '[AgentForge] registerWorkers() on a compiled system only updates worker capabilities in state.\n' +
     'It does NOT add worker nodes to the graph. Use MultiAgentSystemBuilder for proper worker registration.\n' +
     'See: https://github.com/TVScoundrel/agentforge/blob/main/packages/patterns/docs/multi-agent-pattern.md'
