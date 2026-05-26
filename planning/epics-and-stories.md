@@ -1718,7 +1718,7 @@
 **Priority:** P2 (Medium)
 **Estimate:** 4 hours
 **Dependencies:** ST-09048
-**Status:** In Review
+**Status:** Merged (PR #120, 2026-05-26)
 
 **Acceptance criteria:**
 - [ ] `packages/patterns/src/multi-agent/agent.ts` is reduced below the 300 line planning cutoff by extracting focused internal modules for config normalization, worker registration, graph assembly, and orchestration defaults behind the stable public multi-agent facade.

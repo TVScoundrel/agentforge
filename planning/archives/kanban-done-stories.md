@@ -2,11 +2,18 @@
 
 **Purpose:** Track completed and merged stories for the Relational Database Access Tool project.
 
-**Last Updated:** 2026-05-23
+**Last Updated:** 2026-05-26
 
 ---
 
 ## Completed Stories
+
+### ST-09051: Modularize Multi-Agent Orchestration Agent and Tests
+- **Merged:** 2026-05-26
+- **PR:** https://github.com/TVScoundrel/agentforge/pull/120 (commit 96eef82)
+- **Epic:** EP-09 (SOLID Micro-Refactors and Type Boundary Hardening)
+- **Estimate:** 4 hours
+- **Outcome:** Modularized `@agentforge/patterns` multi-agent orchestration by shrinking `packages/patterns/src/multi-agent/agent.ts` from a `535` line mixed-responsibility file to a `155` line public facade, extracting focused graph-assembly, runtime worker-injection, worker-normalization, builder, and shared-type modules while preserving `createMultiAgentSystem`, `registerWorkers`, `createWorkersRegistry`, and `MultiAgentSystemBuilder` behavior and export paths. The story also replaced the `655` line `packages/patterns/tests/multi-agent/agent.test.ts` monolith with focused system, registration, tool-mapping, and builder suites, kept the explicit-`any` baseline flat at `workspace 84/289` and `patterns 2/28`, and absorbed a review follow-up to route the deprecated compiled-system registration warning through the shared patterns logger.
 
 ### ST-09050: Modularize Core Tool Builder and Tests
 - **Merged:** 2026-05-23

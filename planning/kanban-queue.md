@@ -6,7 +6,7 @@
 
 - **Ready:** 3 stories
 - **In Progress:** 0 stories
-- **In Review:** 1 story
+- **In Review:** 0 stories
 - **Blocked:** 0 stories
 - **Backlog:** 0 stories
 
@@ -22,12 +22,6 @@
 ## In Progress
 
 _No stories currently in progress_
-
-## In Review
-
-- `ST-09051` - Modularize Multi-Agent Orchestration Agent and Tests
-
----
 
 ## Blocked
 
