@@ -2058,22 +2058,42 @@ Focused validation notes:
 **Branch:** `refactor/st-09051-multi-agent-agent-modularization`
 
 ### Checklist
-- [ ] Create branch `refactor/st-09051-multi-agent-agent-modularization`
-- [ ] Create draft PR with story ID in title
-- [ ] Define test strategy before implementation: cover runtime modularization and test-file modularization; first failing test should prove multi-agent orchestration behavior is preserved while the oversized runtime and test files are split
-- [ ] Write or update the failing automated test before production changes when practical; if not practical, record why before implementation
-- [ ] Reduce `packages/patterns/src/multi-agent/agent.ts` below the 300 line planning cutoff by extracting focused internal modules for config normalization, worker registration, graph assembly, and orchestration defaults behind a stable facade
-- [ ] Split `packages/patterns/tests/multi-agent/agent.test.ts` into focused orchestration test modules so configuration, wiring, and integration-path behavior no longer depend on a single monolithic file
-- [ ] Preserve existing multi-agent public behavior, exports, and orchestration semantics
-- [ ] Add/update production code until focused tests pass, keeping test evidence in checklist notes and PR body
-- [ ] Record explicit-`any` warning deltas and file-size/responsibility improvements for touched multi-agent modules in story docs
-- [ ] Add or update story documentation at `docs/st09051-multi-agent-agent-modularization.md` (or document why not required)
-- [ ] Assess residual test impact; add/update additional automated tests when needed, or document why no further tests are required
-- [ ] Run full test suite before finalizing the PR and record results
-- [ ] Run lint (`pnpm lint`) before finalizing the PR and record results
-- [ ] Commit completed checklist items as logical commits and push updates
-- [ ] Mark PR Ready only after all story tasks are complete
+- [x] Create branch `refactor/st-09051-multi-agent-agent-modularization`
+- [x] Create draft PR with story ID in title
+- [x] Define test strategy before implementation: cover runtime modularization and test-file modularization; first failing test should prove multi-agent orchestration behavior is preserved while the oversized runtime and test files are split
+- [x] Write or update the failing automated test before production changes when practical; if not practical, record why before implementation
+- [x] Reduce `packages/patterns/src/multi-agent/agent.ts` below the 300 line planning cutoff by extracting focused internal modules for config normalization, worker registration, graph assembly, and orchestration defaults behind a stable facade
+- [x] Split `packages/patterns/tests/multi-agent/agent.test.ts` into focused orchestration test modules so configuration, wiring, and integration-path behavior no longer depend on a single monolithic file
+- [x] Preserve existing multi-agent public behavior, exports, and orchestration semantics
+- [x] Add/update production code until focused tests pass, keeping test evidence in checklist notes and PR body
+- [x] Record explicit-`any` warning deltas and file-size/responsibility improvements for touched multi-agent modules in story docs
+- [x] Add or update story documentation at `docs/st09051-multi-agent-agent-modularization.md` (or document why not required)
+- [x] Assess residual test impact; add/update additional automated tests when needed, or document why no further tests are required
+- [x] Run full test suite before finalizing the PR and record results
+- [x] Run lint (`pnpm lint`) before finalizing the PR and record results
+- [x] Commit completed checklist items as logical commits and push updates
+- [x] Mark PR Ready only after all story tasks are complete
 - [ ] Wait for merge; do not merge directly from local branch
+
+Implementation notes:
+
+- A size-based failing test would only assert repository structure, not multi-agent orchestration behavior. For this story, the meaningful contract is preserving public system creation, worker capability registration, tool-name extraction, and wrapped runtime semantics while splitting the runtime and test files. The test-first substitute is focused suite decomposition plus targeted regression runs against the split orchestration facade.
+- Additional focused automated coverage was not needed beyond the suite split because the story preserved public behavior; the split suites now isolate system creation, compiled-system registration, tool normalization, stream wrapping, and builder registration against the modularized facade.
+
+Focused validation notes:
+
+- Behavior-preserving modularization gate:
+  - `pnpm test --run packages/patterns/tests/multi-agent/agent-system.test.ts packages/patterns/tests/multi-agent/agent-register-workers.test.ts packages/patterns/tests/multi-agent/agent-tools.test.ts packages/patterns/tests/multi-agent/agent-builder.test.ts`
+  - `4` files passed, `17` tests passed
+- Package checks:
+  - `pnpm --filter @agentforge/patterns typecheck`
+  - `pnpm --filter @agentforge/patterns exec eslint src/multi-agent/agent.ts src/multi-agent/agent-types.ts src/multi-agent/agent-workers.ts src/multi-agent/agent-runtime.ts src/multi-agent/agent-graph.ts src/multi-agent/agent-builder.ts tests/multi-agent/agent-system.test.ts tests/multi-agent/agent-register-workers.test.ts tests/multi-agent/agent-tools.test.ts tests/multi-agent/agent-builder.test.ts`
+  - `pnpm lint:explicit-any:baseline` -> workspace `84/289`, patterns `2/28`
+- Full checks:
+  - `pnpm test --run` -> `190` files passed, `16` skipped; `2317` tests passed, `286` skipped
+  - `pnpm lint` -> passed with warnings only
+  - `git diff --check`
+  - Draft PR created as `#120`
 
 ---
 
