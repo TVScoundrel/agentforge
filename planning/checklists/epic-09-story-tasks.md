@@ -2071,13 +2071,14 @@ Focused validation notes:
 - [x] Assess residual test impact; add/update additional automated tests when needed, or document why no further tests are required
 - [x] Run full test suite before finalizing the PR and record results
 - [x] Run lint (`pnpm lint`) before finalizing the PR and record results
-- [ ] Commit completed checklist items as logical commits and push updates
-- [ ] Mark PR Ready only after all story tasks are complete
+- [x] Commit completed checklist items as logical commits and push updates
+- [x] Mark PR Ready only after all story tasks are complete
 - [ ] Wait for merge; do not merge directly from local branch
 
 Implementation notes:
 
 - A size-based failing test would only assert repository structure, not multi-agent orchestration behavior. For this story, the meaningful contract is preserving public system creation, worker capability registration, tool-name extraction, and wrapped runtime semantics while splitting the runtime and test files. The test-first substitute is focused suite decomposition plus targeted regression runs against the split orchestration facade.
+- Additional focused automated coverage was not needed beyond the suite split because the story preserved public behavior; the split suites now isolate system creation, compiled-system registration, tool normalization, stream wrapping, and builder registration against the modularized facade.
 
 Focused validation notes:
 
