@@ -2103,22 +2103,26 @@ Focused validation notes:
 **Branch:** `refactor/st-09052-relational-query-builder-modularization`
 
 ### Checklist
-- [ ] Create branch `refactor/st-09052-relational-query-builder-modularization`
-- [ ] Create draft PR with story ID in title
-- [ ] Define test strategy before implementation: cover runtime modularization and test-file modularization; first failing test should prove SQL output remains stable while the oversized runtime and test files are split
-- [ ] Write or update the failing automated test before production changes when practical; if not practical, record why before implementation
-- [ ] Reduce `packages/tools/src/data/relational/query/query-builder.ts` below the 300 line planning cutoff by extracting focused internal modules for SELECT/INSERT/UPDATE/DELETE assembly, condition building, and shared SQL fragments behind a stable facade
-- [ ] Split `packages/tools/tests/data/relational/query/query-builder.test.ts` into focused query-builder test modules so SQL-construction behavior no longer depends on a single monolithic file
-- [ ] Preserve SQL output, parameter ordering, identifier quoting, and public query-builder behavior
-- [ ] Add/update production code until focused tests pass, keeping test evidence in checklist notes and PR body
-- [ ] Record explicit-`any` warning deltas and file-size/responsibility improvements for touched relational query modules in story docs
-- [ ] Add or update story documentation at `docs/st09052-relational-query-builder-modularization.md` (or document why not required)
-- [ ] Assess residual test impact; add/update additional automated tests when needed, or document why no further tests are required
-- [ ] Run full test suite before finalizing the PR and record results
-- [ ] Run lint (`pnpm lint`) before finalizing the PR and record results
-- [ ] Commit completed checklist items as logical commits and push updates
-- [ ] Mark PR Ready only after all story tasks are complete
+- [x] Create branch `refactor/st-09052-relational-query-builder-modularization`
+- [x] Create draft PR with story ID in title
+- [x] Define test strategy before implementation: cover runtime modularization and test-file modularization; first failing test should prove SQL output remains stable while the oversized runtime and test files are split
+- [x] Write or update the failing automated test before production changes when practical; if not practical, record why before implementation
+- [x] Reduce `packages/tools/src/data/relational/query/query-builder.ts` below the 300 line planning cutoff by extracting focused internal modules for SELECT/INSERT/UPDATE/DELETE assembly, condition building, and shared SQL fragments behind a stable facade
+- [x] Split `packages/tools/tests/data/relational/query/query-builder.test.ts` into focused query-builder test modules so SQL-construction behavior no longer depends on a single monolithic file
+- [x] Preserve SQL output, parameter ordering, identifier quoting, and public query-builder behavior
+- [x] Add/update production code until focused tests pass, keeping test evidence in checklist notes and PR body
+- [x] Record explicit-`any` warning deltas and file-size/responsibility improvements for touched relational query modules in story docs
+- [x] Add or update story documentation at `docs/st09052-relational-query-builder-modularization.md` (or document why not required)
+- [x] Assess residual test impact; add/update additional automated tests when needed, or document why no further tests are required
+- [x] Run full test suite before finalizing the PR and record results
+- [x] Run lint (`pnpm lint`) before finalizing the PR and record results
+- [x] Commit completed checklist items as logical commits and push updates
+- [x] Mark PR Ready only after all story tasks are complete
 - [ ] Wait for merge; do not merge directly from local branch
+
+Implementation notes:
+
+- A size-based failing test would only assert repository structure, not relational query behavior. For this story, the real contract is preserving SQL output, parameter ordering, identifier quoting, and vendor-specific query semantics while splitting the oversized runtime and test files. The practical test-first substitute is focused suite decomposition plus targeted regression runs against the split query-builder facade.
 
 ---
 

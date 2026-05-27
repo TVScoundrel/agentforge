@@ -1735,14 +1735,14 @@
 **Priority:** P2 (Medium)
 **Estimate:** 5 hours
 **Dependencies:** ST-09038
-**Status:** Ready
+**Status:** In Review
 
 **Acceptance criteria:**
-- [ ] `packages/tools/src/data/relational/query/query-builder.ts` is reduced below the 300 line planning cutoff by extracting focused internal modules for SELECT/INSERT/UPDATE/DELETE assembly, condition building, identifier/value helpers, and shared SQL fragments behind the stable public builder facade.
-- [ ] Query-builder coverage is modularized alongside the production split so SQL-construction behavior no longer depends on a single oversized `packages/tools/tests/data/relational/query/query-builder.test.ts` file.
-- [ ] Existing SQL output, parameter ordering, identifier quoting, and public query-builder behavior remain backward compatible.
-- [ ] Focused tests confirm extracted modules preserve current query-building behavior, and `pnpm --filter @agentforge/tools typecheck`, `pnpm test --run`, and `pnpm lint:explicit-any:baseline` pass with no baseline regression.
-- [ ] Add or update story documentation at `docs/st09052-relational-query-builder-modularization.md`
+- [x] `packages/tools/src/data/relational/query/query-builder.ts` is reduced below the 300 line planning cutoff by extracting focused internal modules for SELECT/INSERT/UPDATE/DELETE assembly, condition building, identifier/value helpers, and shared SQL fragments behind the stable public builder facade.
+- [x] Query-builder coverage is modularized alongside the production split so SQL-construction behavior no longer depends on a single oversized `packages/tools/tests/data/relational/query/query-builder.test.ts` file.
+- [x] Existing SQL output, parameter ordering, identifier quoting, and public query-builder behavior remain backward compatible.
+- [x] Focused tests confirm extracted modules preserve current query-building behavior, and `pnpm --filter @agentforge/tools typecheck`, `pnpm test --run`, and `pnpm lint:explicit-any:baseline` pass with no baseline regression.
+- [x] Add or update story documentation at `docs/st09052-relational-query-builder-modularization.md`
 
 ---
 
