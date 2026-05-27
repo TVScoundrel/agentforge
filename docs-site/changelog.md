@@ -5,6 +5,36 @@ All notable changes to AgentForge will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.16.39] - 2026-05-27
+
+### Added
+
+#### @agentforge/tools - Relational Query Builder Modularization Coverage
+- Added focused relational query-builder coverage in `packages/tools/tests/data/relational/query/query-builder-insert.test.ts`, `query-builder-update.test.ts`, `query-builder-delete.test.ts`, and `query-builder-select.test.ts`
+- Added story documentation in `docs/st09052-relational-query-builder-modularization.md` capturing the runtime split, validation evidence, and no-regression explicit-`any` outcome
+
+### Changed
+
+#### @agentforge/tools - Relational Query Builder Modularization
+- Reduced `packages/tools/src/data/relational/query/query-builder.ts` from a mixed-responsibility `731` line implementation to a `43` line public facade below the `300` line planning cutoff
+- Extracted focused internal modules in `packages/tools/src/data/relational/query/query-builder-types.ts`, `query-builder-conditions.ts`, `query-builder-insert.ts`, `query-builder-mutation.ts`, and `query-builder-select.ts`
+- Preserved public query-builder exports, SQL output, parameter ordering, identifier quoting, and vendor-specific query behavior while making insert, mutation, select, and shared WHERE-clause logic reviewable in smaller seams
+
+### Fixed
+
+#### @agentforge/tools - Query Builder Test and Contract Boundaries
+- Replaced the `688` line `packages/tools/tests/data/relational/query/query-builder.test.ts` monolith with focused suites that mirror insert, update, delete, and select query-construction boundaries
+- Kept the explicit-`any` baseline stable at `workspace 84/289` and `tools 53/67` while modularizing both runtime and tests
+
+### Published
+- All packages published to npm registry at version 0.16.39:
+  - @agentforge/core@0.16.39
+  - @agentforge/skills@0.16.39
+  - @agentforge/patterns@0.16.39
+  - @agentforge/tools@0.16.39
+  - @agentforge/testing@0.16.39
+  - @agentforge/cli@0.16.39
+
 ## [0.16.38] - 2026-05-26
 
 ### Added
