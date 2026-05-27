@@ -2,11 +2,18 @@
 
 **Purpose:** Track completed and merged stories for the Relational Database Access Tool project.
 
-**Last Updated:** 2026-05-26
+**Last Updated:** 2026-05-27
 
 ---
 
 ## Completed Stories
+
+### ST-09052: Modularize Relational Query Builder and Tests
+- **Merged:** 2026-05-27
+- **PR:** https://github.com/TVScoundrel/agentforge/pull/121 (commit 9b0a2ac)
+- **Epic:** EP-09 (SOLID Micro-Refactors and Type Boundary Hardening)
+- **Estimate:** 5 hours
+- **Outcome:** Modularized `@agentforge/tools` relational query building by shrinking `packages/tools/src/data/relational/query/query-builder.ts` from a `731` line mixed-responsibility file to a `43` line public facade, extracting focused internal type, condition, insert, mutation, and select modules while preserving public builder exports, SQL output, parameter ordering, identifier quoting, and vendor-specific behavior. The story also replaced the `688` line `packages/tools/tests/data/relational/query/query-builder.test.ts` monolith with focused insert, update, delete, and select suites, kept the explicit-`any` baseline flat at `workspace 84/289` and `tools 53/67`, and required no queue promotion because `Backlog` remained empty after merge.
 
 ### ST-09051: Modularize Multi-Agent Orchestration Agent and Tests
 - **Merged:** 2026-05-26
