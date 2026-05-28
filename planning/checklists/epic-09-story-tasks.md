@@ -2170,6 +2170,7 @@ Implementation notes:
 - [ ] Define test strategy before implementation: cover runtime modularization and test-file modularization; first failing test should prove reflection workflow behavior is preserved while the oversized runtime and test files are split
 - [ ] Write or update the failing automated test before production changes when practical; if not practical, record why before implementation
 - [ ] Reduce `packages/patterns/src/reflection/nodes.ts` below the 300 line planning cutoff by extracting focused internal modules for generator, reflector, reviser, and shared node helpers behind a stable facade
+- [ ] Keep extracted production modules below the 300 line planning cutoff as well; do not satisfy the story by only shrinking the public facade and moving the bulk into a new oversized helper unless an explicit exception is documented in the story notes
 - [ ] Split `packages/patterns/tests/reflection/nodes.test.ts` into focused reflection-node test modules so node-specific behavior no longer depends on a single monolithic file
 - [ ] Preserve existing reflection-node behavior, iteration semantics, and public imports
 - [ ] Add/update production code until focused tests pass, keeping test evidence in checklist notes and PR body
@@ -2194,6 +2195,7 @@ Implementation notes:
 - [ ] Define test strategy before implementation: cover runtime modularization and test-file modularization; first failing test should prove schema inspection behavior remains stable while the oversized runtime and test files are split
 - [ ] Write or update the failing automated test before production changes when practical; if not practical, record why before implementation
 - [ ] Reduce `packages/tools/src/data/relational/schema/schema-inspector.ts` below the 300 line planning cutoff by extracting focused internal modules for vendor inspection, schema normalization, cache/refresh orchestration, and shared metadata helpers behind a stable facade
+- [ ] Keep extracted production modules below the 300 line planning cutoff as well; do not satisfy the story by only shrinking the public facade and moving the bulk into a new oversized helper unless an explicit exception is documented in the story notes
 - [ ] Split the schema-inspector coverage into focused test modules so vendor-specific, normalization, and caching-path behavior no longer depend on a single oversized test surface
 - [ ] Preserve existing schema-inspector behavior, metadata shape, caching semantics, and public imports
 - [ ] Add/update production code until focused tests pass, keeping test evidence in checklist notes and PR body
@@ -2218,6 +2220,7 @@ Implementation notes:
 - [ ] Define test strategy before implementation: cover runtime modularization and test-file modularization; first failing test should prove skill registry behavior remains stable while the oversized runtime and test files are split
 - [ ] Write or update the failing automated test before production changes when practical; if not practical, record why before implementation
 - [ ] Reduce `packages/skills/src/registry.ts` below the 300 line planning cutoff by extracting focused internal modules for registry hydration, duplicate precedence, prompt rendering, and event/warning flow behind a stable facade
+- [ ] Keep extracted production modules below the 300 line planning cutoff as well; do not satisfy the story by only shrinking the public facade and moving the bulk into a new oversized helper unless an explicit exception is documented in the story notes
 - [ ] Split skills-registry coverage into focused test modules so prompt generation, warning flow, and discovery-path behavior no longer depend on a single oversized test surface
 - [ ] Preserve existing `SkillRegistry` behavior, prompt output, precedence rules, event semantics, and public imports
 - [ ] Add/update production code until focused tests pass, keeping test evidence in checklist notes and PR body
@@ -2242,6 +2245,7 @@ Implementation notes:
 - [ ] Define test strategy before implementation: cover runtime modularization and test-file modularization; first failing test should prove transaction behavior remains stable while the oversized runtime and test files are split
 - [ ] Write or update the failing automated test before production changes when practical; if not practical, record why before implementation
 - [ ] Reduce `packages/tools/src/data/relational/query/transaction.ts` below the 300 line planning cutoff by extracting focused internal modules for transaction lifecycle, savepoint handling, timeout/rollback flow, and vendor/session helpers behind a stable facade
+- [ ] Keep extracted production modules below the 300 line planning cutoff as well; do not satisfy the story by only shrinking the public facade and moving the bulk into a new oversized helper unless an explicit exception is documented in the story notes
 - [ ] Split transaction coverage into focused test modules so lifecycle, timeout, and savepoint-path behavior no longer depend on a single oversized test surface
 - [ ] Preserve existing transaction behavior, rollback semantics, timeout handling, and public imports
 - [ ] Add/update production code until focused tests pass, keeping test evidence in checklist notes and PR body
@@ -2266,6 +2270,7 @@ Implementation notes:
 - [ ] Define test strategy before implementation: cover runtime modularization and test-file modularization; first failing test should prove lifecycle behavior remains stable while the oversized runtime and test files are split
 - [ ] Write or update the failing automated test before production changes when practical; if not practical, record why before implementation
 - [ ] Reduce `packages/core/src/tools/lifecycle.ts` below the 300 line planning cutoff by extracting focused internal modules for startup, shutdown, health/liveness coordination, and lifecycle state helpers behind a stable facade
+- [ ] Keep extracted production modules below the 300 line planning cutoff as well; do not satisfy the story by only shrinking the public facade and moving the bulk into a new oversized helper unless an explicit exception is documented in the story notes
 - [ ] Split lifecycle coverage into focused test modules so startup, cleanup, and failure-path behavior no longer depend on a single oversized test surface
 - [ ] Preserve existing lifecycle behavior, state-transition semantics, and public imports
 - [ ] Add/update production code until focused tests pass, keeping test evidence in checklist notes and PR body

@@ -41,8 +41,9 @@ Top runtime hotspots informing this feature slice:
 
 1. Runtime files above the planning cutoff of `300` lines remain first-class modularization candidates, especially `packages/tools/src/data/relational/schema/schema-inspector.ts` (`725`), `packages/tools/src/data/relational/connection/connection-manager.ts` (`640`), `packages/skills/src/registry.ts` (`506`), `packages/tools/src/data/relational/query/transaction.ts` (`419`), `packages/core/src/tools/lifecycle.ts` (`405`), `packages/patterns/src/reflection/nodes.ts` (`350`), and `packages/patterns/src/multi-agent/nodes/worker.ts` (`357`).
 2. Their coupled test files are also oversized and should be modularized in the same stories so production and verification boundaries stay aligned.
-3. Smaller unknown-first schema and payload seams remain viable EP-09 slices when they remove broad `z.any()` boundaries without changing runtime behavior, especially in `packages/patterns/src/react/schemas.ts` and `packages/patterns/src/multi-agent/schemas.ts`.
-4. The next follow-on slices should keep EP-09 open for another short burst of small SOLID/DRY improvements rather than creating a new epic for the same quality lane.
+3. Modularization stories are only complete when they avoid the "shrink the facade, move the blob" failure mode: newly extracted production modules should also stay below the `300` line cutoff unless a documented exception is explicitly accepted in the story notes.
+4. Smaller unknown-first schema and payload seams remain viable EP-09 slices when they remove broad `z.any()` boundaries without changing runtime behavior, especially in `packages/patterns/src/react/schemas.ts` and `packages/patterns/src/multi-agent/schemas.ts`.
+5. The next follow-on slices should keep EP-09 open for another short burst of small SOLID/DRY improvements rather than creating a new epic for the same quality lane.
 
 Recent improvement snapshot:
 

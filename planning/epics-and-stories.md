@@ -1772,7 +1772,7 @@
 **Status:** Ready
 
 **Acceptance criteria:**
-- [ ] `packages/patterns/src/reflection/nodes.ts` is reduced below the 300 line planning cutoff by extracting focused internal modules for generator, reflector, reviser, and shared node helpers behind the stable public reflection-node facade.
+- [ ] `packages/patterns/src/reflection/nodes.ts` is reduced below the 300 line planning cutoff by extracting focused internal modules for generator, reflector, reviser, and shared node helpers behind the stable public reflection-node facade, and the extracted production modules must also stay below `300` lines unless the story documents and justifies an explicit exception.
 - [ ] Reflection node coverage is modularized alongside the production split so node-specific assertions no longer depend on a single oversized `packages/patterns/tests/reflection/nodes.test.ts` file.
 - [ ] Existing reflection-node behavior, logging/iteration semantics, and public imports remain backward compatible.
 - [ ] Focused tests confirm extracted modules preserve current reflection workflow behavior, and `pnpm --filter @agentforge/patterns typecheck`, `pnpm test --run`, and `pnpm lint:explicit-any:baseline` pass with no baseline regression.
@@ -1789,7 +1789,7 @@
 **Status:** Ready
 
 **Acceptance criteria:**
-- [ ] `packages/tools/src/data/relational/schema/schema-inspector.ts` is reduced below the 300 line planning cutoff by extracting focused internal modules for vendor-specific inspection, schema normalization, cache/refresh orchestration, and shared metadata helpers behind a stable public facade.
+- [ ] `packages/tools/src/data/relational/schema/schema-inspector.ts` is reduced below the 300 line planning cutoff by extracting focused internal modules for vendor-specific inspection, schema normalization, cache/refresh orchestration, and shared metadata helpers behind a stable public facade, and the extracted production modules must also stay below `300` lines unless the story documents and justifies an explicit exception.
 - [ ] Schema-inspector coverage is modularized alongside the production split so vendor-specific and normalization-path assertions no longer depend on a single oversized test file or tightly coupled helper cluster.
 - [ ] Existing schema inspection behavior, metadata shape, caching semantics, and public imports remain backward compatible.
 - [ ] Focused tests confirm extracted modules preserve current schema discovery behavior, and `pnpm --filter @agentforge/tools typecheck`, `pnpm test --run`, and `pnpm lint:explicit-any:baseline` pass with no baseline regression.
@@ -1806,7 +1806,7 @@
 **Status:** Ready
 
 **Acceptance criteria:**
-- [ ] `packages/skills/src/registry.ts` is reduced below the 300 line planning cutoff by extracting focused internal modules for registry hydration, duplicate-resolution policy, prompt rendering, and event/warning flow behind a stable public facade.
+- [ ] `packages/skills/src/registry.ts` is reduced below the 300 line planning cutoff by extracting focused internal modules for registry hydration, duplicate-resolution policy, prompt rendering, and event/warning flow behind a stable public facade, and the extracted production modules must also stay below `300` lines unless the story documents and justifies an explicit exception.
 - [ ] Skills-registry coverage is modularized alongside the production split so prompt generation, warning flow, and discovery-path assertions no longer depend on a single oversized test surface.
 - [ ] Existing `SkillRegistry` public behavior, prompt output, precedence rules, event semantics, and imports remain backward compatible.
 - [ ] Focused tests confirm extracted modules preserve current skill registry behavior, and `pnpm --filter @agentforge/skills typecheck`, `pnpm test --run`, and `pnpm lint:explicit-any:baseline` pass with no baseline regression.
@@ -1823,7 +1823,7 @@
 **Status:** Ready
 
 **Acceptance criteria:**
-- [ ] `packages/tools/src/data/relational/query/transaction.ts` is reduced below the 300 line planning cutoff by extracting focused internal modules for transaction lifecycle, savepoint flow, timeout/rollback handling, and vendor/session helpers behind a stable public facade.
+- [ ] `packages/tools/src/data/relational/query/transaction.ts` is reduced below the 300 line planning cutoff by extracting focused internal modules for transaction lifecycle, savepoint flow, timeout/rollback handling, and vendor/session helpers behind a stable public facade, and the extracted production modules must also stay below `300` lines unless the story documents and justifies an explicit exception.
 - [ ] Transaction coverage is modularized alongside the production split so lifecycle, timeout, and savepoint assertions no longer depend on a single oversized test surface.
 - [ ] Existing transaction behavior, rollback semantics, timeout handling, and public imports remain backward compatible.
 - [ ] Focused tests confirm extracted modules preserve current transaction behavior, and `pnpm --filter @agentforge/tools typecheck`, `pnpm test --run`, and `pnpm lint:explicit-any:baseline` pass with no baseline regression.
@@ -1840,7 +1840,7 @@
 **Status:** Backlog
 
 **Acceptance criteria:**
-- [ ] `packages/core/src/tools/lifecycle.ts` is reduced below the 300 line planning cutoff by extracting focused internal modules for startup, shutdown, health/liveness coordination, and lifecycle state helpers behind a stable public facade.
+- [ ] `packages/core/src/tools/lifecycle.ts` is reduced below the 300 line planning cutoff by extracting focused internal modules for startup, shutdown, health/liveness coordination, and lifecycle state helpers behind a stable public facade, and the extracted production modules must also stay below `300` lines unless the story documents and justifies an explicit exception.
 - [ ] Lifecycle coverage is modularized alongside the production split so startup, cleanup, and failure-path assertions no longer depend on a single oversized test surface.
 - [ ] Existing tool lifecycle behavior, state-transition semantics, and public imports remain backward compatible.
 - [ ] Focused tests confirm extracted modules preserve current lifecycle behavior, and `pnpm --filter @agentforge/core typecheck`, `pnpm test --run`, and `pnpm lint:explicit-any:baseline` pass with no baseline regression.
