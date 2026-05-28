@@ -13,7 +13,11 @@ Before:
 After:
 
 - `packages/tools/src/data/relational/connection/connection-manager.ts`: `255` lines
-- `packages/tools/src/data/relational/connection/connection-manager-runtime.ts`: extracted initialization, close/cleanup, health-probe, SQLite non-query detection, and pool-metrics helpers
+- `packages/tools/src/data/relational/connection/connection-manager-runtime.ts`: `12` line barrel for runtime helper exports
+- `packages/tools/src/data/relational/connection/connection-manager-runtime-types.ts`: `37` lines
+- `packages/tools/src/data/relational/connection/connection-initialization.ts`: `155` lines
+- `packages/tools/src/data/relational/connection/connection-cleanup.ts`: `80` lines
+- `packages/tools/src/data/relational/connection/connection-health.ts`: `87` lines
 
 The public facade now keeps:
 
@@ -21,7 +25,7 @@ The public facade now keeps:
 - query/session public methods (`execute`, `executeInConnection`)
 - state/reconnection wiring
 
-The extracted runtime helper now owns:
+The extracted runtime modules now own:
 
 - initialization success/error flow
 - partial-connection cleanup
