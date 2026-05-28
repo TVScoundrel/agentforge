@@ -4,8 +4,8 @@
 
 ## Queue Status Summary
 
-- **Ready:** 5 stories
-- **In Progress:** 0 stories
+- **Ready:** 4 stories
+- **In Progress:** 1 story
 - **In Review:** 0 stories
 - **Blocked:** 0 stories
 - **Backlog:** 3 stories
@@ -14,7 +14,6 @@
 
 ## Ready
 
-- `ST-09053` - Modularize Relational Connection Manager and Tests (dependency satisfied: `ST-09027` merged)
 - `ST-09054` - Modularize Reflection Nodes and Tests (dependency satisfied: `ST-09019` merged)
 - `ST-09055` - Modularize Relational Schema Inspector and Tests
 - `ST-09056` - Modularize Skills Registry and Tests
@@ -23,7 +22,7 @@
 
 ## In Progress
 
-_No stories currently in progress_
+- `ST-09053` - Modularize Relational Connection Manager and Tests (dependency satisfied: `ST-09027` merged)
 
 ---
 
