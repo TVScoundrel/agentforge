@@ -1752,7 +1752,7 @@
 **Priority:** P2 (Medium)
 **Estimate:** 5 hours
 **Dependencies:** ST-09027
-**Status:** In Review
+**Status:** Merged (PR #122, 2026-05-28)
 
 **Acceptance criteria:**
 - [ ] `packages/tools/src/data/relational/connection/connection-manager.ts` is reduced below the 300 line planning cutoff by extracting focused internal modules for initialization, lifecycle transitions, health/cleanup, and vendor/session-specific coordination behind the stable public manager facade.

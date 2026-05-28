@@ -2,11 +2,18 @@
 
 **Purpose:** Track completed and merged stories for the Relational Database Access Tool project.
 
-**Last Updated:** 2026-05-27
+**Last Updated:** 2026-05-28
 
 ---
 
 ## Completed Stories
+
+### ST-09053: Modularize Relational Connection Manager and Tests
+- **Merged:** 2026-05-28
+- **PR:** https://github.com/TVScoundrel/agentforge/pull/122 (commit 34390b9)
+- **Epic:** EP-09 (SOLID Micro-Refactors and Type Boundary Hardening)
+- **Estimate:** 5 hours
+- **Outcome:** Modularized `@agentforge/tools` relational connection management by shrinking `packages/tools/src/data/relational/connection/connection-manager.ts` from a `640` line mixed-responsibility file to a `255` line public facade, then splitting the extracted runtime logic into focused initialization, cleanup, health, and runtime-type modules instead of leaving a second oversized helper. The story also replaced three monolithic connection-manager and lifecycle suites with focused connection, lifecycle, config, operations, and SQLite runtime tests, preserved public `ConnectionManager` behavior and imports, kept the explicit-`any` baseline flat at `workspace 84/289` and `tools 53/67`, and promoted `ST-09058` from `Backlog` to `Ready` to keep the lane at capacity after merge.
 
 ### ST-09052: Modularize Relational Query Builder and Tests
 - **Merged:** 2026-05-27

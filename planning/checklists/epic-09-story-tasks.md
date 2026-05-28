@@ -2146,13 +2146,13 @@ Implementation notes:
 - [x] Run lint (`pnpm lint`) before finalizing the PR and record results
 - [x] Commit completed checklist items as logical commits and push updates
 - [x] Mark PR Ready only after all story tasks are complete
-- [ ] Wait for merge; do not merge directly from local branch
+- [x] Wait for merge; do not merge directly from local branch
 
 ### Implementation Notes
 - Test-first path: split the oversized connection-manager test cluster first, then use `pnpm test --run packages/tools/tests/data/relational/connection/*.test.ts` as the focused safety net before and during runtime extraction.
-- Runtime size result: `packages/tools/src/data/relational/connection/connection-manager.ts` reduced from `640` lines to `255` lines; extracted `connection-manager-runtime.ts` now owns initialization, cleanup, health, SQLite non-query detection, and pool-metric helpers.
+- Runtime size result: `packages/tools/src/data/relational/connection/connection-manager.ts` reduced from `640` lines to `255` lines; the former `355` line runtime helper was then split into `connection-initialization.ts` (`155`), `connection-cleanup.ts` (`80`), `connection-health.ts` (`87`), and `connection-manager-runtime-types.ts` (`37`), leaving `connection-manager-runtime.ts` as a `12` line export barrel.
 - Test modularization result: replaced the three monolithic suites with focused connection-manager and lifecycle test files under `packages/tools/tests/data/relational/connection/`.
-- Focused validation: `pnpm test --run packages/tools/tests/data/relational/connection/*.test.ts` -> `9` files passed, `2` skipped; `77` passed, `27` skipped.
+- Focused validation: `pnpm test --run packages/tools/tests/data/relational/connection/*.test.ts` -> `9` files passed, `2` skipped; `78` passed, `26` skipped.
 - Typecheck: `pnpm --filter @agentforge/tools typecheck` passed.
 - Explicit-any baseline: `pnpm lint:explicit-any:baseline` -> workspace `84/289`, tools `53/67` with no regression.
 - Full suite: `pnpm test --run` -> `197` files passed, `18` skipped; `2312` tests passed, `287` skipped.
