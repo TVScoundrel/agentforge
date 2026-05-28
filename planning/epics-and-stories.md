@@ -121,7 +121,7 @@
 - Story slices are intentionally small (1 day each) so quality improvements can ship continuously
 - Lightweight quality-gate follow-ups keep release/build feedback tight by reducing stale warning caps and easy package metadata warnings
 
-**Stories:** ST-09001 through ST-09054
+**Stories:** ST-09001 through ST-09060
 
 ---
 
@@ -1769,7 +1769,7 @@
 **Priority:** P2 (Medium)
 **Estimate:** 4 hours
 **Dependencies:** ST-09019
-**Status:** Backlog
+**Status:** Ready
 
 **Acceptance criteria:**
 - [ ] `packages/patterns/src/reflection/nodes.ts` is reduced below the 300 line planning cutoff by extracting focused internal modules for generator, reflector, reviser, and shared node helpers behind the stable public reflection-node facade.
@@ -1777,6 +1777,108 @@
 - [ ] Existing reflection-node behavior, logging/iteration semantics, and public imports remain backward compatible.
 - [ ] Focused tests confirm extracted modules preserve current reflection workflow behavior, and `pnpm --filter @agentforge/patterns typecheck`, `pnpm test --run`, and `pnpm lint:explicit-any:baseline` pass with no baseline regression.
 - [ ] Add or update story documentation at `docs/st09054-reflection-node-modularization.md`
+
+---
+
+#### ST-09055: Modularize Relational Schema Inspector and Tests
+**User story:** As a tools maintainer, I want `packages/tools/src/data/relational/schema/schema-inspector.ts` and its coupled schema-inspector tests split into focused modules so schema discovery logic stays reviewable instead of concentrating vendor inspection, normalization, and caching flow in one oversized file.
+
+**Priority:** P2 (Medium)
+**Estimate:** 5 hours
+**Dependencies:** ST-03002
+**Status:** Ready
+
+**Acceptance criteria:**
+- [ ] `packages/tools/src/data/relational/schema/schema-inspector.ts` is reduced below the 300 line planning cutoff by extracting focused internal modules for vendor-specific inspection, schema normalization, cache/refresh orchestration, and shared metadata helpers behind a stable public facade.
+- [ ] Schema-inspector coverage is modularized alongside the production split so vendor-specific and normalization-path assertions no longer depend on a single oversized test file or tightly coupled helper cluster.
+- [ ] Existing schema inspection behavior, metadata shape, caching semantics, and public imports remain backward compatible.
+- [ ] Focused tests confirm extracted modules preserve current schema discovery behavior, and `pnpm --filter @agentforge/tools typecheck`, `pnpm test --run`, and `pnpm lint:explicit-any:baseline` pass with no baseline regression.
+- [ ] Add or update story documentation at `docs/st09055-schema-inspector-modularization.md`
+
+---
+
+#### ST-09056: Modularize Skills Registry and Tests
+**User story:** As a skills maintainer, I want `packages/skills/src/registry.ts` and its coupled registry tests split into focused modules so skill discovery, prompt generation, and event/reporting flow do not keep accreting in one large runtime file.
+
+**Priority:** P2 (Medium)
+**Estimate:** 4 hours
+**Dependencies:** ST-06005
+**Status:** Ready
+
+**Acceptance criteria:**
+- [ ] `packages/skills/src/registry.ts` is reduced below the 300 line planning cutoff by extracting focused internal modules for registry hydration, duplicate-resolution policy, prompt rendering, and event/warning flow behind a stable public facade.
+- [ ] Skills-registry coverage is modularized alongside the production split so prompt generation, warning flow, and discovery-path assertions no longer depend on a single oversized test surface.
+- [ ] Existing `SkillRegistry` public behavior, prompt output, precedence rules, event semantics, and imports remain backward compatible.
+- [ ] Focused tests confirm extracted modules preserve current skill registry behavior, and `pnpm --filter @agentforge/skills typecheck`, `pnpm test --run`, and `pnpm lint:explicit-any:baseline` pass with no baseline regression.
+- [ ] Add or update story documentation at `docs/st09056-skills-registry-modularization.md`
+
+---
+
+#### ST-09057: Modularize Relational Transaction Flow and Tests
+**User story:** As a tools maintainer, I want `packages/tools/src/data/relational/query/transaction.ts` and its coupled transaction tests split into focused modules so transaction orchestration, savepoint handling, timeout flow, and vendor coordination are easier to review and extend.
+
+**Priority:** P2 (Medium)
+**Estimate:** 4 hours
+**Dependencies:** ST-04001
+**Status:** Ready
+
+**Acceptance criteria:**
+- [ ] `packages/tools/src/data/relational/query/transaction.ts` is reduced below the 300 line planning cutoff by extracting focused internal modules for transaction lifecycle, savepoint flow, timeout/rollback handling, and vendor/session helpers behind a stable public facade.
+- [ ] Transaction coverage is modularized alongside the production split so lifecycle, timeout, and savepoint assertions no longer depend on a single oversized test surface.
+- [ ] Existing transaction behavior, rollback semantics, timeout handling, and public imports remain backward compatible.
+- [ ] Focused tests confirm extracted modules preserve current transaction behavior, and `pnpm --filter @agentforge/tools typecheck`, `pnpm test --run`, and `pnpm lint:explicit-any:baseline` pass with no baseline regression.
+- [ ] Add or update story documentation at `docs/st09057-transaction-flow-modularization.md`
+
+---
+
+#### ST-09058: Modularize Core Tool Lifecycle and Tests
+**User story:** As a core maintainer, I want `packages/core/src/tools/lifecycle.ts` and its coupled lifecycle tests split into focused modules so initialization, cleanup, and state-transition responsibilities stay SOLID instead of accumulating in one large runtime file.
+
+**Priority:** P2 (Medium)
+**Estimate:** 4 hours
+**Dependencies:** ST-09032
+**Status:** Backlog
+
+**Acceptance criteria:**
+- [ ] `packages/core/src/tools/lifecycle.ts` is reduced below the 300 line planning cutoff by extracting focused internal modules for startup, shutdown, health/liveness coordination, and lifecycle state helpers behind a stable public facade.
+- [ ] Lifecycle coverage is modularized alongside the production split so startup, cleanup, and failure-path assertions no longer depend on a single oversized test surface.
+- [ ] Existing tool lifecycle behavior, state-transition semantics, and public imports remain backward compatible.
+- [ ] Focused tests confirm extracted modules preserve current lifecycle behavior, and `pnpm --filter @agentforge/core typecheck`, `pnpm test --run`, and `pnpm lint:explicit-any:baseline` pass with no baseline regression.
+- [ ] Add or update story documentation at `docs/st09058-tool-lifecycle-modularization.md`
+
+---
+
+#### ST-09059: Tighten ReAct Schema Payload Contracts
+**User story:** As a patterns maintainer, I want ReAct runtime schemas to use safer unknown-first payload contracts so tool arguments, metadata, and results stay flexible without relying on broad `z.any()` seams.
+
+**Priority:** P2 (Medium)
+**Estimate:** 3 hours
+**Dependencies:** ST-09037
+**Status:** Backlog
+
+**Acceptance criteria:**
+- [ ] `packages/patterns/src/react/schemas.ts` replaces broad `z.any()` metadata, arguments, and result payload seams with unknown-first or JSON-safe contracts where behavior allows.
+- [ ] ReAct reasoning, action, observation, and prompt behavior remain unchanged at runtime.
+- [ ] Focused tests are added or updated for schema acceptance/rejection boundaries, tool-call payload handling, and result serialization compatibility as needed.
+- [ ] Touched files do not regress on explicit-`any` warning counts and the outcome is recorded in story documentation.
+- [ ] Add or update story documentation at `docs/st09059-react-schema-payload-contracts.md`
+
+---
+
+#### ST-09060: Tighten Multi-Agent Schema Payload Contracts
+**User story:** As a patterns maintainer, I want multi-agent message and handoff schemas to use safer unknown-first payload contracts so metadata and context stay extensible without broad `z.any()` seams.
+
+**Priority:** P2 (Medium)
+**Estimate:** 3 hours
+**Dependencies:** ST-09045
+**Status:** Backlog
+
+**Acceptance criteria:**
+- [ ] `packages/patterns/src/multi-agent/schemas.ts` replaces broad metadata/context `z.any()` seams with unknown-first or JSON-safe contracts where behavior allows.
+- [ ] Multi-agent routing, worker handoff, execution metadata, and context-passing behavior remain unchanged at runtime.
+- [ ] Focused tests are added or updated for schema acceptance/rejection boundaries, context payload handling, and metadata compatibility as needed.
+- [ ] Touched files do not regress on explicit-`any` warning counts and the outcome is recorded in story documentation.
+- [ ] Add or update story documentation at `docs/st09060-multi-agent-schema-payload-contracts.md`
 
 ---
 
@@ -1884,13 +1986,13 @@
 
 ## Story Summary
 
-**Total Stories:** 82
+**Total Stories:** 88
 **By Priority:**
 - P0 (Critical): 17 stories
 - P1 (High): 27 stories
-- P2 (Medium): 38 stories
+- P2 (Medium): 44 stories
 
-**Total Estimated Effort:** ~293 hours (36.6 working days)
+**Total Estimated Effort:** ~316 hours (39.5 working days)
 
 **Dependency Chain:**
 1. Phase 1 (Foundation): ST-01001 → ST-01002 → ST-01003 → ST-01004
@@ -1901,5 +2003,5 @@
 6. Phase 6 (Agent Skills): ST-06001 → ST-06002 → ST-06003 → ST-06004 → ST-06005 → ST-06006
 7. Phase 7 (Skills Extraction): ST-07001 → ST-07002 → [ST-07003, ST-07004 parallel] → ST-07005; ST-07001 → ST-07006 (independent)
 8. Phase 8 (Type Safety Hardening): ST-08001 → [ST-08002, ST-08003, ST-08004 parallel]
-9. Phase 9 (SOLID Micro-Refactors): ST-09001 (Merged) → ST-09002 (Merged) → ST-09003 (Merged) → ST-09004 (Merged) → ST-09005 (Merged) → ST-09006 (Merged) → ST-09007 (Merged) → ST-09008 (Merged) → ST-09009 (Merged) → ST-09010 (Merged) → ST-09011 (Merged) → ST-09012 (Merged) → ST-09013 (Merged) → ST-09014 (Merged) → ST-09015 (Merged) → ST-09016 (Merged) → ST-09017 (Merged) → ST-09018 (Merged) → ST-09019 (Merged) → ST-09020 (Merged) → ST-09021 (Merged) → ST-09022 (Merged) → ST-09023 (Merged); ST-09025 (Merged) → ST-09026 (Merged) → ST-09031 (Merged); ST-09027 (Merged) → ST-09028 (Merged) → ST-09030 (Merged); ST-09032 → ST-09033; ST-09034 (Merged) → ST-09035 (Merged) → ST-09036 (Merged) → ST-09041; ST-09023 (Merged) and ST-09029 (Merged) → ST-09037; ST-09038 independent; ST-09023 (Merged) → ST-09039; ST-09024 (Merged) → ST-09040 → ST-09042 → ST-09047; ST-09020 (Merged) → ST-09043; ST-09018 (Merged) → ST-09044; ST-09015 (Merged) → ST-09045 → ST-09048; ST-09038 (Merged) → ST-09046
+9. Phase 9 (SOLID Micro-Refactors): ST-09001 (Merged) → ST-09002 (Merged) → ST-09003 (Merged) → ST-09004 (Merged) → ST-09005 (Merged) → ST-09006 (Merged) → ST-09007 (Merged) → ST-09008 (Merged) → ST-09009 (Merged) → ST-09010 (Merged) → ST-09011 (Merged) → ST-09012 (Merged) → ST-09013 (Merged) → ST-09014 (Merged) → ST-09015 (Merged) → ST-09016 (Merged) → ST-09017 (Merged) → ST-09018 (Merged) → ST-09019 (Merged) → ST-09020 (Merged) → ST-09021 (Merged) → ST-09022 (Merged) → ST-09023 (Merged); ST-09025 (Merged) → ST-09026 (Merged) → ST-09031 (Merged); ST-09027 (Merged) → ST-09028 (Merged) → ST-09030 (Merged); ST-09032 → ST-09033; ST-09034 (Merged) → ST-09035 (Merged) → ST-09036 (Merged) → ST-09041; ST-09023 (Merged) and ST-09029 (Merged) → ST-09037; ST-09038 independent; ST-09023 (Merged) → ST-09039; ST-09024 (Merged) → ST-09040 → ST-09042 → ST-09047; ST-09020 (Merged) → ST-09043; ST-09018 (Merged) → ST-09044; ST-09015 (Merged) → ST-09045 → ST-09048; ST-09038 (Merged) → ST-09046; ST-03002 (Merged) → ST-09055; ST-06005 (Merged) → ST-09056; ST-04001 (Merged) → ST-09057; ST-09032 (Merged) → ST-09058; ST-09037 (Merged) → ST-09059; ST-09045 (Merged) → ST-09060
 10. Phase 10 (Documentation Only Changes): ST-10001 → [ST-10002, ST-10003, ST-10004, ST-10005 parallel] → ST-10006; EP-10 remains evergreen and intentionally open for future docs-only stories even when no current stories are queued

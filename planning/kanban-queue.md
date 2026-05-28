@@ -1,14 +1,14 @@
 # Kanban Queue: AgentForge
 
-**Last Updated:** 2026-05-27
+**Last Updated:** 2026-05-28
 
 ## Queue Status Summary
 
-- **Ready:** 2 stories
+- **Ready:** 5 stories
 - **In Progress:** 0 stories
 - **In Review:** 0 stories
 - **Blocked:** 0 stories
-- **Backlog:** 0 stories
+- **Backlog:** 3 stories
 
 ---
 
@@ -16,6 +16,9 @@
 
 - `ST-09053` - Modularize Relational Connection Manager and Tests (dependency satisfied: `ST-09027` merged)
 - `ST-09054` - Modularize Reflection Nodes and Tests (dependency satisfied: `ST-09019` merged)
+- `ST-09055` - Modularize Relational Schema Inspector and Tests
+- `ST-09056` - Modularize Skills Registry and Tests
+- `ST-09057` - Modularize Relational Transaction Flow and Tests
 ---
 
 ## In Progress
@@ -36,7 +39,9 @@ _No stories currently blocked_
 
 ## Backlog
 
-_No stories currently in backlog_
+- `ST-09058` - Modularize Core Tool Lifecycle and Tests
+- `ST-09059` - Tighten ReAct Schema Payload Contracts
+- `ST-09060` - Tighten Multi-Agent Schema Payload Contracts
 
 ---
 

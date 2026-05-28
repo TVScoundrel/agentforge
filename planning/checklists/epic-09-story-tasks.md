@@ -2171,3 +2171,145 @@ Implementation notes:
 - [ ] Commit completed checklist items as logical commits and push updates
 - [ ] Mark PR Ready only after all story tasks are complete
 - [ ] Wait for merge; do not merge directly from local branch
+
+---
+
+## ST-09055: Modularize Relational Schema Inspector and Tests
+
+**Branch:** `refactor/st-09055-schema-inspector-modularization`
+
+### Checklist
+- [ ] Create branch `refactor/st-09055-schema-inspector-modularization`
+- [ ] Create draft PR with story ID in title
+- [ ] Define test strategy before implementation: cover runtime modularization and test-file modularization; first failing test should prove schema inspection behavior remains stable while the oversized runtime and test files are split
+- [ ] Write or update the failing automated test before production changes when practical; if not practical, record why before implementation
+- [ ] Reduce `packages/tools/src/data/relational/schema/schema-inspector.ts` below the 300 line planning cutoff by extracting focused internal modules for vendor inspection, schema normalization, cache/refresh orchestration, and shared metadata helpers behind a stable facade
+- [ ] Split the schema-inspector coverage into focused test modules so vendor-specific, normalization, and caching-path behavior no longer depend on a single oversized test surface
+- [ ] Preserve existing schema-inspector behavior, metadata shape, caching semantics, and public imports
+- [ ] Add/update production code until focused tests pass, keeping test evidence in checklist notes and PR body
+- [ ] Record explicit-`any` warning deltas and file-size/responsibility improvements for touched schema-inspector modules in story docs
+- [ ] Add or update story documentation at `docs/st09055-schema-inspector-modularization.md` (or document why not required)
+- [ ] Assess residual test impact; add/update additional automated tests when needed, or document why no further tests are required
+- [ ] Run full test suite before finalizing the PR and record results
+- [ ] Run lint (`pnpm lint`) before finalizing the PR and record results
+- [ ] Commit completed checklist items as logical commits and push updates
+- [ ] Mark PR Ready only after all story tasks are complete
+- [ ] Wait for merge; do not merge directly from local branch
+
+---
+
+## ST-09056: Modularize Skills Registry and Tests
+
+**Branch:** `refactor/st-09056-skills-registry-modularization`
+
+### Checklist
+- [ ] Create branch `refactor/st-09056-skills-registry-modularization`
+- [ ] Create draft PR with story ID in title
+- [ ] Define test strategy before implementation: cover runtime modularization and test-file modularization; first failing test should prove skill registry behavior remains stable while the oversized runtime and test files are split
+- [ ] Write or update the failing automated test before production changes when practical; if not practical, record why before implementation
+- [ ] Reduce `packages/skills/src/registry.ts` below the 300 line planning cutoff by extracting focused internal modules for registry hydration, duplicate precedence, prompt rendering, and event/warning flow behind a stable facade
+- [ ] Split skills-registry coverage into focused test modules so prompt generation, warning flow, and discovery-path behavior no longer depend on a single oversized test surface
+- [ ] Preserve existing `SkillRegistry` behavior, prompt output, precedence rules, event semantics, and public imports
+- [ ] Add/update production code until focused tests pass, keeping test evidence in checklist notes and PR body
+- [ ] Record explicit-`any` warning deltas and file-size/responsibility improvements for touched skills-registry modules in story docs
+- [ ] Add or update story documentation at `docs/st09056-skills-registry-modularization.md` (or document why not required)
+- [ ] Assess residual test impact; add/update additional automated tests when needed, or document why no further tests are required
+- [ ] Run full test suite before finalizing the PR and record results
+- [ ] Run lint (`pnpm lint`) before finalizing the PR and record results
+- [ ] Commit completed checklist items as logical commits and push updates
+- [ ] Mark PR Ready only after all story tasks are complete
+- [ ] Wait for merge; do not merge directly from local branch
+
+---
+
+## ST-09057: Modularize Relational Transaction Flow and Tests
+
+**Branch:** `refactor/st-09057-transaction-flow-modularization`
+
+### Checklist
+- [ ] Create branch `refactor/st-09057-transaction-flow-modularization`
+- [ ] Create draft PR with story ID in title
+- [ ] Define test strategy before implementation: cover runtime modularization and test-file modularization; first failing test should prove transaction behavior remains stable while the oversized runtime and test files are split
+- [ ] Write or update the failing automated test before production changes when practical; if not practical, record why before implementation
+- [ ] Reduce `packages/tools/src/data/relational/query/transaction.ts` below the 300 line planning cutoff by extracting focused internal modules for transaction lifecycle, savepoint handling, timeout/rollback flow, and vendor/session helpers behind a stable facade
+- [ ] Split transaction coverage into focused test modules so lifecycle, timeout, and savepoint-path behavior no longer depend on a single oversized test surface
+- [ ] Preserve existing transaction behavior, rollback semantics, timeout handling, and public imports
+- [ ] Add/update production code until focused tests pass, keeping test evidence in checklist notes and PR body
+- [ ] Record explicit-`any` warning deltas and file-size/responsibility improvements for touched transaction modules in story docs
+- [ ] Add or update story documentation at `docs/st09057-transaction-flow-modularization.md` (or document why not required)
+- [ ] Assess residual test impact; add/update additional automated tests when needed, or document why no further tests are required
+- [ ] Run full test suite before finalizing the PR and record results
+- [ ] Run lint (`pnpm lint`) before finalizing the PR and record results
+- [ ] Commit completed checklist items as logical commits and push updates
+- [ ] Mark PR Ready only after all story tasks are complete
+- [ ] Wait for merge; do not merge directly from local branch
+
+---
+
+## ST-09058: Modularize Core Tool Lifecycle and Tests
+
+**Branch:** `refactor/st-09058-tool-lifecycle-modularization`
+
+### Checklist
+- [ ] Create branch `refactor/st-09058-tool-lifecycle-modularization`
+- [ ] Create draft PR with story ID in title
+- [ ] Define test strategy before implementation: cover runtime modularization and test-file modularization; first failing test should prove lifecycle behavior remains stable while the oversized runtime and test files are split
+- [ ] Write or update the failing automated test before production changes when practical; if not practical, record why before implementation
+- [ ] Reduce `packages/core/src/tools/lifecycle.ts` below the 300 line planning cutoff by extracting focused internal modules for startup, shutdown, health/liveness coordination, and lifecycle state helpers behind a stable facade
+- [ ] Split lifecycle coverage into focused test modules so startup, cleanup, and failure-path behavior no longer depend on a single oversized test surface
+- [ ] Preserve existing lifecycle behavior, state-transition semantics, and public imports
+- [ ] Add/update production code until focused tests pass, keeping test evidence in checklist notes and PR body
+- [ ] Record explicit-`any` warning deltas and file-size/responsibility improvements for touched lifecycle modules in story docs
+- [ ] Add or update story documentation at `docs/st09058-tool-lifecycle-modularization.md` (or document why not required)
+- [ ] Assess residual test impact; add/update additional automated tests when needed, or document why no further tests are required
+- [ ] Run full test suite before finalizing the PR and record results
+- [ ] Run lint (`pnpm lint`) before finalizing the PR and record results
+- [ ] Commit completed checklist items as logical commits and push updates
+- [ ] Mark PR Ready only after all story tasks are complete
+- [ ] Wait for merge; do not merge directly from local branch
+
+---
+
+## ST-09059: Tighten ReAct Schema Payload Contracts
+
+**Branch:** `fix/st-09059-react-schema-payload-contracts`
+
+### Checklist
+- [ ] Create branch `fix/st-09059-react-schema-payload-contracts`
+- [ ] Create draft PR with story ID in title
+- [ ] Define test strategy before implementation: cover schema acceptance/rejection boundaries, tool-call payload handling, and result serialization compatibility; first failing test should assert ReAct schemas no longer rely on broad `z.any()` payload seams
+- [ ] Write or update the failing automated test before production changes when practical; if not practical, record why before implementation
+- [ ] Replace broad metadata, arguments, and result `z.any()` seams in `packages/patterns/src/react/schemas.ts` with unknown-first or JSON-safe payload contracts where behavior allows
+- [ ] Preserve ReAct reasoning, action, observation, and prompt behavior
+- [ ] Add/update production code until focused tests pass, keeping test evidence in checklist notes and PR body
+- [ ] Record explicit-`any` warning deltas for touched files in story docs
+- [ ] Add or update story documentation at `docs/st09059-react-schema-payload-contracts.md` (or document why not required)
+- [ ] Assess residual test impact; add/update additional automated tests when needed, or document why no further tests are required
+- [ ] Run full test suite before finalizing the PR and record results
+- [ ] Run lint (`pnpm lint`) before finalizing the PR and record results
+- [ ] Commit completed checklist items as logical commits and push updates
+- [ ] Mark PR Ready only after all story tasks are complete
+- [ ] Wait for merge; do not merge directly from local branch
+
+---
+
+## ST-09060: Tighten Multi-Agent Schema Payload Contracts
+
+**Branch:** `fix/st-09060-multi-agent-schema-payload-contracts`
+
+### Checklist
+- [ ] Create branch `fix/st-09060-multi-agent-schema-payload-contracts`
+- [ ] Create draft PR with story ID in title
+- [ ] Define test strategy before implementation: cover schema acceptance/rejection boundaries, context payload handling, and metadata compatibility; first failing test should assert multi-agent schemas no longer rely on broad `z.any()` payload seams
+- [ ] Write or update the failing automated test before production changes when practical; if not practical, record why before implementation
+- [ ] Replace broad metadata/context `z.any()` seams in `packages/patterns/src/multi-agent/schemas.ts` with unknown-first or JSON-safe payload contracts where behavior allows
+- [ ] Preserve multi-agent routing, worker handoff, execution metadata, and context-passing behavior
+- [ ] Add/update production code until focused tests pass, keeping test evidence in checklist notes and PR body
+- [ ] Record explicit-`any` warning deltas for touched files in story docs
+- [ ] Add or update story documentation at `docs/st09060-multi-agent-schema-payload-contracts.md` (or document why not required)
+- [ ] Assess residual test impact; add/update additional automated tests when needed, or document why no further tests are required
+- [ ] Run full test suite before finalizing the PR and record results
+- [ ] Run lint (`pnpm lint`) before finalizing the PR and record results
+- [ ] Commit completed checklist items as logical commits and push updates
+- [ ] Mark PR Ready only after all story tasks are complete
+- [ ] Wait for merge; do not merge directly from local branch

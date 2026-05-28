@@ -32,16 +32,17 @@
 
 ## Current Hotspot Snapshot
 
-Current `@typescript-eslint/no-explicit-any` baseline check (`pnpm lint:explicit-any:baseline`, 2026-05-21):
+Current `@typescript-eslint/no-explicit-any` baseline check (`pnpm lint:explicit-any:baseline`, 2026-05-28):
 
 - Total: `84` warnings (`src/**`)
 - By package: `cli 6`, `core 23`, `patterns 2`, `testing 0`, `tools 53`
 
 Top runtime hotspots informing this feature slice:
 
-1. Runtime files above the planning cutoff of `300` lines are now the clearest modularization triggers, especially `packages/core/src/tools/registry.ts` (`446`), `packages/core/src/tools/builder.ts` (`434`), `packages/patterns/src/multi-agent/agent.ts` (`535`), `packages/tools/src/data/relational/query/query-builder.ts` (`731`), `packages/tools/src/data/relational/connection/connection-manager.ts` (`640`), and `packages/patterns/src/reflection/nodes.ts` (`350`).
+1. Runtime files above the planning cutoff of `300` lines remain first-class modularization candidates, especially `packages/tools/src/data/relational/schema/schema-inspector.ts` (`725`), `packages/tools/src/data/relational/connection/connection-manager.ts` (`640`), `packages/skills/src/registry.ts` (`506`), `packages/tools/src/data/relational/query/transaction.ts` (`419`), `packages/core/src/tools/lifecycle.ts` (`405`), `packages/patterns/src/reflection/nodes.ts` (`350`), and `packages/patterns/src/multi-agent/nodes/worker.ts` (`357`).
 2. Their coupled test files are also oversized and should be modularized in the same stories so production and verification boundaries stay aligned.
-3. The next follow-on slices should keep EP-09 open for another short burst of small SOLID/DRY improvements rather than creating a new epic for the same quality lane.
+3. Smaller unknown-first schema and payload seams remain viable EP-09 slices when they remove broad `z.any()` boundaries without changing runtime behavior, especially in `packages/patterns/src/react/schemas.ts` and `packages/patterns/src/multi-agent/schemas.ts`.
+4. The next follow-on slices should keep EP-09 open for another short burst of small SOLID/DRY improvements rather than creating a new epic for the same quality lane.
 
 Recent improvement snapshot:
 
@@ -91,6 +92,7 @@ Recent improvement snapshot:
 - `ST-09047` merged on 2026-05-21 after tightening JSON and HTTP payload schema boundaries, preserving JSON query/merge and HTTP helper behavior while incorporating review-driven array-guard and prototype-pollution hardening. This lowered the workspace explicit-`any` baseline from `90` to `84` and the `tools` package from `59` to `53`.
 - `ST-09049` through `ST-09054` were added on 2026-05-19 to keep EP-09 stocked with modularization work driven by the new `300` line cutoff rule for runtime and test files, covering core tool registry/builder, multi-agent orchestration, relational query/connection management, and reflection nodes.
 - `ST-09049` merged on 2026-05-22 after reducing `packages/core/src/tools/registry.ts` from `446` lines to a `107` line public facade, extracting focused query/mutation/type modules, and replacing the `832` line registry test monolith with focused API suites while keeping the explicit-`any` baseline flat at `workspace 84/289` and `core 23/119`.
+- `ST-09055` through `ST-09060` were added on 2026-05-28 to keep EP-09 stocked with the next concrete modularization and schema-hardening slices, using the `300` line cutoff as an explicit trigger for runtime/test decomposition and reserving smaller stories for remaining unknown-first schema payload seams.
 - `EP-09` remains open as the daily hardening stream, with the active queue now centered on the next type-boundary slices plus the newly promoted modularization stories.
 - The refreshed follow-on queue now extends beyond the current Ready lane so another few weeks of small SOLID/DRY and modularization work can be pulled without re-planning the epic.
 
@@ -115,7 +117,7 @@ Recent improvement snapshot:
 
 ## Story Coverage by Epic
 
-- EP-09: ST-09001, ST-09002, ST-09003, ST-09004, ST-09005, ST-09006, ST-09007, ST-09008, ST-09009, ST-09010, ST-09011, ST-09012, ST-09013, ST-09014, ST-09015, ST-09016, ST-09017, ST-09018, ST-09019, ST-09020, ST-09021, ST-09022, ST-09023, ST-09024, ST-09025, ST-09026, ST-09027, ST-09028, ST-09029, ST-09030, ST-09031, ST-09032, ST-09033, ST-09034, ST-09035, ST-09036, ST-09037, ST-09038, ST-09039, ST-09040, ST-09041, ST-09042, ST-09043, ST-09044, ST-09045, ST-09046, ST-09047, ST-09048, ST-09049, ST-09050, ST-09051, ST-09052, ST-09053, ST-09054
+- EP-09: ST-09001, ST-09002, ST-09003, ST-09004, ST-09005, ST-09006, ST-09007, ST-09008, ST-09009, ST-09010, ST-09011, ST-09012, ST-09013, ST-09014, ST-09015, ST-09016, ST-09017, ST-09018, ST-09019, ST-09020, ST-09021, ST-09022, ST-09023, ST-09024, ST-09025, ST-09026, ST-09027, ST-09028, ST-09029, ST-09030, ST-09031, ST-09032, ST-09033, ST-09034, ST-09035, ST-09036, ST-09037, ST-09038, ST-09039, ST-09040, ST-09041, ST-09042, ST-09043, ST-09044, ST-09045, ST-09046, ST-09047, ST-09048, ST-09049, ST-09050, ST-09051, ST-09052, ST-09053, ST-09054, ST-09055, ST-09056, ST-09057, ST-09058, ST-09059, ST-09060
 
 ---
 
@@ -131,7 +133,7 @@ Recent improvement snapshot:
 
 ## Related Planning Documents
 
-- `planning/epics-and-stories.md` (EP-09 and ST-09001 through ST-09054)
+- `planning/epics-and-stories.md` (EP-09 and ST-09001 through ST-09060)
 - `planning/checklists/epic-09-story-tasks.md`
 - `planning/kanban-queue.md`
 - `scripts/no-explicit-any-baseline.json`
