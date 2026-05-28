@@ -2131,22 +2131,32 @@ Implementation notes:
 **Branch:** `refactor/st-09053-connection-manager-modularization`
 
 ### Checklist
-- [ ] Create branch `refactor/st-09053-connection-manager-modularization`
-- [ ] Create draft PR with story ID in title
-- [ ] Define test strategy before implementation: cover runtime modularization and test-file modularization; first failing test should prove connection lifecycle behavior is preserved while the oversized runtime and test files are split
-- [ ] Write or update the failing automated test before production changes when practical; if not practical, record why before implementation
-- [ ] Reduce `packages/tools/src/data/relational/connection/connection-manager.ts` below the 300 line planning cutoff by extracting focused internal modules for initialization, lifecycle transitions, cleanup/health, and vendor/session coordination behind a stable facade
-- [ ] Split the current oversized relational connection-manager test cluster into focused connection-manager test modules so lifecycle, vendor, and failure-path behavior no longer depend on a small set of monolithic files
-- [ ] Preserve existing connection-manager behavior, lifecycle semantics, vendor handling, and public imports
-- [ ] Add/update production code until focused tests pass, keeping test evidence in checklist notes and PR body
-- [ ] Record explicit-`any` warning deltas and file-size/responsibility improvements for touched connection-manager modules in story docs
-- [ ] Add or update story documentation at `docs/st09053-connection-manager-modularization.md` (or document why not required)
-- [ ] Assess residual test impact; add/update additional automated tests when needed, or document why no further tests are required
-- [ ] Run full test suite before finalizing the PR and record results
-- [ ] Run lint (`pnpm lint`) before finalizing the PR and record results
-- [ ] Commit completed checklist items as logical commits and push updates
-- [ ] Mark PR Ready only after all story tasks are complete
+- [x] Create branch `refactor/st-09053-connection-manager-modularization`
+- [x] Create draft PR with story ID in title
+- [x] Define test strategy before implementation: cover runtime modularization and test-file modularization; first failing test should prove connection lifecycle behavior is preserved while the oversized runtime and test files are split
+- [x] Write or update the failing automated test before production changes when practical; if not practical, record why before implementation
+- [x] Reduce `packages/tools/src/data/relational/connection/connection-manager.ts` below the 300 line planning cutoff by extracting focused internal modules for initialization, lifecycle transitions, cleanup/health, and vendor/session coordination behind a stable facade
+- [x] Split the current oversized relational connection-manager test cluster into focused connection-manager test modules so lifecycle, vendor, and failure-path behavior no longer depend on a small set of monolithic files
+- [x] Preserve existing connection-manager behavior, lifecycle semantics, vendor handling, and public imports
+- [x] Add/update production code until focused tests pass, keeping test evidence in checklist notes and PR body
+- [x] Record explicit-`any` warning deltas and file-size/responsibility improvements for touched connection-manager modules in story docs
+- [x] Add or update story documentation at `docs/st09053-connection-manager-modularization.md` (or document why not required)
+- [x] Assess residual test impact; add/update additional automated tests when needed, or document why no further tests are required
+- [x] Run full test suite before finalizing the PR and record results
+- [x] Run lint (`pnpm lint`) before finalizing the PR and record results
+- [x] Commit completed checklist items as logical commits and push updates
+- [x] Mark PR Ready only after all story tasks are complete
 - [ ] Wait for merge; do not merge directly from local branch
+
+### Implementation Notes
+- Test-first path: split the oversized connection-manager test cluster first, then use `pnpm test --run packages/tools/tests/data/relational/connection/*.test.ts` as the focused safety net before and during runtime extraction.
+- Runtime size result: `packages/tools/src/data/relational/connection/connection-manager.ts` reduced from `640` lines to `255` lines; extracted `connection-manager-runtime.ts` now owns initialization, cleanup, health, SQLite non-query detection, and pool-metric helpers.
+- Test modularization result: replaced the three monolithic suites with focused connection-manager and lifecycle test files under `packages/tools/tests/data/relational/connection/`.
+- Focused validation: `pnpm test --run packages/tools/tests/data/relational/connection/*.test.ts` -> `9` files passed, `2` skipped; `77` passed, `27` skipped.
+- Typecheck: `pnpm --filter @agentforge/tools typecheck` passed.
+- Explicit-any baseline: `pnpm lint:explicit-any:baseline` -> workspace `84/289`, tools `53/67` with no regression.
+- Full suite: `pnpm test --run` -> `197` files passed, `18` skipped; `2312` tests passed, `287` skipped.
+- Lint: `pnpm lint` passed with existing warning baseline only and no new story-specific warnings.
 
 ---
 
