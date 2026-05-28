@@ -40,13 +40,13 @@ Before:
 
 After:
 
-- `packages/tools/tests/data/relational/connection/connection-manager-config.test.ts`: `225` lines
+- `packages/tools/tests/data/relational/connection/connection-manager-config.test.ts`: `202` lines
 - `packages/tools/tests/data/relational/connection/connection-manager-sqlite-runtime.test.ts`: `176` lines
-- `packages/tools/tests/data/relational/connection/connection-manager-lifecycle.mocked.test.ts`: `253` lines
+- `packages/tools/tests/data/relational/connection/connection-manager-lifecycle.mocked.test.ts`: `283` lines
 - `packages/tools/tests/data/relational/connection/connection-manager-operations.mocked.test.ts`: `268` lines
 - `packages/tools/tests/data/relational/connection/query-session-extraction.test.ts`: retained focused query/session coverage
 - `packages/tools/tests/data/relational/connection/vendor-initialization.test.ts`: retained focused vendor initialization coverage
-- `packages/tools/tests/data/relational/connection/connection-lifecycle-state.test.ts`: `52` lines
+- `packages/tools/tests/data/relational/connection/connection-lifecycle-state.test.ts`: `51` lines
 - `packages/tools/tests/data/relational/connection/connection-lifecycle-events.test.ts`: `47` lines
 - `packages/tools/tests/data/relational/connection/connection-lifecycle-behavior.test.ts`: `72` lines
 - `packages/tools/tests/data/relational/connection/connection-lifecycle-reconnection.test.ts`: `167` lines

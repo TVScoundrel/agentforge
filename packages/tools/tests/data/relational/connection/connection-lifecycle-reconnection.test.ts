@@ -146,22 +146,25 @@ describe('Connection lifecycle reconnection', () => {
       );
 
       vi.useFakeTimers();
-      const reconnecting = vi.fn();
-      manager.on('reconnecting', reconnecting);
+      try {
+        const reconnecting = vi.fn();
+        manager.on('reconnecting', reconnecting);
 
-      const connectPromise = manager.connect().catch(() => undefined);
-      vi.runOnlyPendingTimers();
-      expect(reconnecting).toHaveBeenCalled();
+        const connectPromise = manager.connect().catch(() => undefined);
+        vi.runOnlyPendingTimers();
+        expect(reconnecting).toHaveBeenCalled();
 
-      await manager.disconnect();
-      expect(manager.getState()).toBe(ConnectionState.DISCONNECTED);
+        await manager.disconnect();
+        expect(manager.getState()).toBe(ConnectionState.DISCONNECTED);
 
-      reconnecting.mockClear();
-      vi.runAllTimers();
-      expect(reconnecting).not.toHaveBeenCalled();
+        reconnecting.mockClear();
+        vi.runAllTimers();
+        expect(reconnecting).not.toHaveBeenCalled();
 
-      await connectPromise;
-      vi.useRealTimers();
+        await connectPromise;
+      } finally {
+        vi.useRealTimers();
+      }
     }
   );
 });
