@@ -5,6 +5,38 @@ All notable changes to AgentForge will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.16.40] - 2026-05-28
+
+### Added
+
+#### @agentforge/tools - Connection Manager Modularization Coverage
+- Added focused connection-manager coverage in `packages/tools/tests/data/relational/connection/connection-manager-config.test.ts`, `connection-manager-lifecycle.mocked.test.ts`, `connection-manager-operations.mocked.test.ts`, `connection-manager-sqlite-runtime.test.ts`, `connection-lifecycle-state.test.ts`, `connection-lifecycle-events.test.ts`, `connection-lifecycle-behavior.test.ts`, `connection-lifecycle-reconnection.test.ts`, and `connection-lifecycle-edge-cases.test.ts`
+- Added story documentation in `docs/st09053-connection-manager-modularization.md` capturing the final runtime split, focused validation evidence, and no-regression explicit-`any` outcome
+
+### Changed
+
+#### @agentforge/tools - Relational Connection Manager Modularization
+- Reduced `packages/tools/src/data/relational/connection/connection-manager.ts` from a mixed-responsibility `640` line implementation to a `255` line public facade below the `300` line planning cutoff
+- Split the extracted runtime logic into focused modules in `packages/tools/src/data/relational/connection/connection-initialization.ts`, `connection-cleanup.ts`, `connection-health.ts`, and `connection-manager-runtime-types.ts`, leaving `connection-manager-runtime.ts` as a small export barrel
+- Preserved public `ConnectionManager` imports, lifecycle semantics, session behavior, vendor-specific handling, and health/metrics behavior while making the runtime easier to review and evolve in smaller seams
+
+### Fixed
+
+#### @agentforge/tools - Connection Manager Runtime and Test Boundaries
+- Replaced the `465` line `packages/tools/tests/data/relational/connection-manager.test.ts`, the `525` line `packages/tools/tests/data/relational/connection-lifecycle.test.ts`, and the `695` line `packages/tools/tests/data/relational/connection/connection-manager.test.ts` monoliths with focused suites that mirror config, lifecycle, operations, SQLite runtime, and reconnection boundaries
+- Decoupled PostgreSQL pool-configuration coverage from unrelated SQLite native-binding availability by moving that assertion onto the mocked PostgreSQL harness
+- Hardened the reconnection fake-timer test cleanup so timers are always restored with `try/finally`
+- Kept the explicit-`any` baseline stable at `workspace 84/289` and `tools 53/67`
+
+### Published
+- All packages published to npm registry at version 0.16.40:
+  - @agentforge/core@0.16.40
+  - @agentforge/skills@0.16.40
+  - @agentforge/patterns@0.16.40
+  - @agentforge/tools@0.16.40
+  - @agentforge/testing@0.16.40
+  - @agentforge/cli@0.16.40
+
 ## [0.16.39] - 2026-05-27
 
 ### Added
