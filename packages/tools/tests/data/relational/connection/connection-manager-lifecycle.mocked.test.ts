@@ -43,6 +43,36 @@ describe('ConnectionManager mocked lifecycle', () => {
   });
 
   describe('connect and disconnect', () => {
+    it('accepts valid PostgreSQL pool configuration', async () => {
+      const manager = new ConnectionManager({
+        vendor: 'postgresql',
+        connection: {
+          host: 'localhost',
+          port: 5432,
+          database: 'test',
+          user: 'testuser',
+          password: 'testpass',
+          pool: {
+            max: 10,
+            acquireTimeoutMillis: 30000,
+            idleTimeoutMillis: 10000,
+          },
+        },
+      });
+
+      await manager.connect();
+
+      expect(mockPool).toHaveBeenCalledWith(
+        expect.objectContaining({
+          max: 10,
+          connectionTimeoutMillis: 30000,
+          idleTimeoutMillis: 10000,
+        })
+      );
+
+      await manager.disconnect();
+    });
+
     it('connects to PostgreSQL and disconnects cleanly', async () => {
       const manager = new ConnectionManager({
         vendor: 'postgresql',

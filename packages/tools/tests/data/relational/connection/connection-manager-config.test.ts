@@ -1,7 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { ConnectionManager } from '../../../../src/data/relational/connection/connection-manager.js';
 import type { ConnectionConfig } from '../../../../src/data/relational/connection/types.js';
-import { hasSQLiteBindings } from './sqlite-bindings.js';
 
 describe('ConnectionManager configuration', () => {
   describe('constructor', () => {
@@ -198,28 +197,6 @@ describe('ConnectionManager configuration', () => {
       });
 
       await expect(manager.connect()).rejects.toThrow('Pool idle timeout must be >= 0');
-    });
-
-    it.skipIf(!hasSQLiteBindings)('accepts valid pool configuration', async () => {
-      const manager = new ConnectionManager({
-        vendor: 'postgresql',
-        connection: {
-          host: 'localhost',
-          port: 5432,
-          database: 'test',
-          user: 'testuser',
-          password: 'testpass',
-          pool: {
-            max: 10,
-            acquireTimeoutMillis: 30000,
-            idleTimeoutMillis: 10000,
-          },
-        },
-      });
-
-      await expect(manager.connect()).rejects.toThrow(
-        /Failed to (initialize postgresql connection|establish healthy connection)/
-      );
     });
   });
 });
