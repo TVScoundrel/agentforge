@@ -5,6 +5,36 @@ All notable changes to AgentForge will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.16.41] - 2026-05-29
+
+### Added
+
+#### @agentforge/patterns - Reflection Node Modularization Coverage
+- Added focused reflection-node coverage in `packages/patterns/tests/reflection/generator-node.test.ts`, `reflector-node.test.ts`, `reviser-node.test.ts`, and `finisher-node.test.ts`
+- Added story documentation in `docs/st09054-reflection-node-modularization.md` capturing the runtime split, validation evidence, and no-regression explicit-`any` outcome
+
+### Changed
+
+#### @agentforge/patterns - Reflection Node Modularization
+- Reduced `packages/patterns/src/reflection/nodes.ts` from a mixed-responsibility `350` line implementation to a `13` line public facade below the `300` line planning cutoff
+- Extracted focused internal modules in `packages/patterns/src/reflection/generator-node.ts`, `reflector-node.ts`, `reviser-node.ts`, `finisher-node.ts`, and `node-shared.ts`
+- Preserved public reflection node exports, generation/review/revision flow, and shared state handling while making each node boundary easier to review and evolve in smaller seams
+
+### Fixed
+
+#### @agentforge/patterns - Reflection Node Test Boundaries
+- Replaced the `298` line `packages/patterns/tests/reflection/nodes.test.ts` monolith with focused suites that mirror generator, reflector, reviser, and finisher boundaries
+- Kept the explicit-`any` baseline stable at `workspace 84/289` and `patterns 2/28`
+
+### Published
+- All packages published to npm registry at version 0.16.41:
+  - @agentforge/core@0.16.41
+  - @agentforge/skills@0.16.41
+  - @agentforge/patterns@0.16.41
+  - @agentforge/tools@0.16.41
+  - @agentforge/testing@0.16.41
+  - @agentforge/cli@0.16.41
+
 ## [0.16.40] - 2026-05-28
 
 ### Added
