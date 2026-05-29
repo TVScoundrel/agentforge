@@ -2183,6 +2183,11 @@ Implementation notes:
 - [ ] Mark PR Ready only after all story tasks are complete
 - [ ] Wait for merge; do not merge directly from local branch
 
+Implementation notes:
+
+- A structure-only failing test would mostly prove file layout rather than reflection behavior. For this story, the real contract is preserving generator, reflector, reviser, finisher, iteration, and logging semantics while splitting the oversized runtime and test files. The practical test-first path is focused suite decomposition plus targeted regression runs against the stable reflection-node facade.
+- CI impact assessment: no CI workflow change is required if the extracted modules stay inside the existing `pnpm --filter @agentforge/patterns typecheck`, `pnpm test --run`, `pnpm lint`, and explicit-`any` baseline coverage already enforced for the package.
+
 ---
 
 ## ST-09055: Modularize Relational Schema Inspector and Tests
