@@ -1769,14 +1769,14 @@
 **Priority:** P2 (Medium)
 **Estimate:** 4 hours
 **Dependencies:** ST-09019
-**Status:** In Progress
+**Status:** In Review
 
 **Acceptance criteria:**
-- [ ] `packages/patterns/src/reflection/nodes.ts` is reduced below the 300 line planning cutoff by extracting focused internal modules for generator, reflector, reviser, and shared node helpers behind the stable public reflection-node facade, and the extracted production modules must also stay below `300` lines unless the story documents and justifies an explicit exception.
-- [ ] Reflection node coverage is modularized alongside the production split so node-specific assertions no longer depend on a single oversized `packages/patterns/tests/reflection/nodes.test.ts` file.
-- [ ] Existing reflection-node behavior, logging/iteration semantics, and public imports remain backward compatible.
-- [ ] Focused tests confirm extracted modules preserve current reflection workflow behavior, and `pnpm --filter @agentforge/patterns typecheck`, `pnpm test --run`, and `pnpm lint:explicit-any:baseline` pass with no baseline regression.
-- [ ] Add or update story documentation at `docs/st09054-reflection-node-modularization.md`
+- [x] `packages/patterns/src/reflection/nodes.ts` is reduced below the 300 line planning cutoff by extracting focused internal modules for generator, reflector, reviser, and shared node helpers behind the stable public reflection-node facade, and the extracted production modules must also stay below `300` lines unless the story documents and justifies an explicit exception.
+- [x] Reflection node coverage is modularized alongside the production split so node-specific assertions no longer depend on a single oversized `packages/patterns/tests/reflection/nodes.test.ts` file.
+- [x] Existing reflection-node behavior, logging/iteration semantics, and public imports remain backward compatible.
+- [x] Focused tests confirm extracted modules preserve current reflection workflow behavior, and `pnpm --filter @agentforge/patterns typecheck`, `pnpm test --run`, and `pnpm lint:explicit-any:baseline` pass with no baseline regression.
+- [x] Add or update story documentation at `docs/st09054-reflection-node-modularization.md`
 
 ---
 
