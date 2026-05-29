@@ -2165,23 +2165,28 @@ Implementation notes:
 **Branch:** `refactor/st-09054-reflection-node-modularization`
 
 ### Checklist
-- [ ] Create branch `refactor/st-09054-reflection-node-modularization`
-- [ ] Create draft PR with story ID in title
-- [ ] Define test strategy before implementation: cover runtime modularization and test-file modularization; first failing test should prove reflection workflow behavior is preserved while the oversized runtime and test files are split
-- [ ] Write or update the failing automated test before production changes when practical; if not practical, record why before implementation
-- [ ] Reduce `packages/patterns/src/reflection/nodes.ts` below the 300 line planning cutoff by extracting focused internal modules for generator, reflector, reviser, and shared node helpers behind a stable facade
-- [ ] Keep extracted production modules below the 300 line planning cutoff as well; do not satisfy the story by only shrinking the public facade and moving the bulk into a new oversized helper unless an explicit exception is documented in the story notes
-- [ ] Split `packages/patterns/tests/reflection/nodes.test.ts` into focused reflection-node test modules so node-specific behavior no longer depends on a single monolithic file
-- [ ] Preserve existing reflection-node behavior, iteration semantics, and public imports
-- [ ] Add/update production code until focused tests pass, keeping test evidence in checklist notes and PR body
-- [ ] Record explicit-`any` warning deltas and file-size/responsibility improvements for touched reflection modules in story docs
-- [ ] Add or update story documentation at `docs/st09054-reflection-node-modularization.md` (or document why not required)
-- [ ] Assess residual test impact; add/update additional automated tests when needed, or document why no further tests are required
-- [ ] Run full test suite before finalizing the PR and record results
-- [ ] Run lint (`pnpm lint`) before finalizing the PR and record results
-- [ ] Commit completed checklist items as logical commits and push updates
-- [ ] Mark PR Ready only after all story tasks are complete
+- [x] Create branch `refactor/st-09054-reflection-node-modularization`
+- [x] Create draft PR with story ID in title
+- [x] Define test strategy before implementation: cover runtime modularization and test-file modularization; first failing test should prove reflection workflow behavior is preserved while the oversized runtime and test files are split
+- [x] Write or update the failing automated test before production changes when practical; if not practical, record why before implementation
+- [x] Reduce `packages/patterns/src/reflection/nodes.ts` below the 300 line planning cutoff by extracting focused internal modules for generator, reflector, reviser, and shared node helpers behind a stable facade
+- [x] Keep extracted production modules below the 300 line planning cutoff as well; do not satisfy the story by only shrinking the public facade and moving the bulk into a new oversized helper unless an explicit exception is documented in the story notes
+- [x] Split `packages/patterns/tests/reflection/nodes.test.ts` into focused reflection-node test modules so node-specific behavior no longer depends on a single monolithic file
+- [x] Preserve existing reflection-node behavior, iteration semantics, and public imports
+- [x] Add/update production code until focused tests pass, keeping test evidence in checklist notes and PR body
+- [x] Record explicit-`any` warning deltas and file-size/responsibility improvements for touched reflection modules in story docs
+- [x] Add or update story documentation at `docs/st09054-reflection-node-modularization.md` (or document why not required)
+- [x] Assess residual test impact; add/update additional automated tests when needed, or document why no further tests are required
+- [x] Run full test suite before finalizing the PR and record results
+- [x] Run lint (`pnpm lint`) before finalizing the PR and record results
+- [x] Commit completed checklist items as logical commits and push updates
+- [x] Mark PR Ready only after all story tasks are complete
 - [ ] Wait for merge; do not merge directly from local branch
+
+Implementation notes:
+
+- A structure-only failing test would mostly prove file layout rather than reflection behavior. For this story, the real contract is preserving generator, reflector, reviser, finisher, iteration, and logging semantics while splitting the oversized runtime and test files. The practical test-first path is focused suite decomposition plus targeted regression runs against the stable reflection-node facade.
+- CI impact assessment: no CI workflow change is required if the extracted modules stay inside the existing `pnpm --filter @agentforge/patterns typecheck`, `pnpm test --run`, `pnpm lint`, and explicit-`any` baseline coverage already enforced for the package.
 
 ---
 
