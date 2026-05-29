@@ -1769,7 +1769,7 @@
 **Priority:** P2 (Medium)
 **Estimate:** 4 hours
 **Dependencies:** ST-09019
-**Status:** In Review
+**Status:** Merged
 
 **Acceptance criteria:**
 - [x] `packages/patterns/src/reflection/nodes.ts` is reduced below the 300 line planning cutoff by extracting focused internal modules for generator, reflector, reviser, and shared node helpers behind the stable public reflection-node facade, and the extracted production modules must also stay below `300` lines unless the story documents and justifies an explicit exception.
