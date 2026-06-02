@@ -1,25 +1,12 @@
 /**
- * Unit tests for SchemaInspector.
+ * PostgreSQL-focused SchemaInspector coverage.
  */
 
-import { beforeEach, describe, expect, it, vi } from 'vitest';
-import type { ConnectionManager } from '../../../src/data/relational/connection/connection-manager.js';
+import { beforeEach, describe, expect, it } from 'vitest';
 import { SchemaInspector } from '../../../src/data/relational/schema/schema-inspector.js';
+import { createMockManager } from './schema-inspector.test-utils.js';
 
-function createMockManager(queue: Array<{ rows: unknown[] }>): {
-  manager: ConnectionManager;
-  executeMock: ReturnType<typeof vi.fn>;
-} {
-  const executeMock = vi.fn();
-  for (const result of queue) {
-    executeMock.mockResolvedValueOnce(result);
-  }
-
-  const manager = { execute: executeMock } as unknown as ConnectionManager;
-  return { manager, executeMock };
-}
-
-describe('SchemaInspector', () => {
+describe('SchemaInspector PostgreSQL introspection', () => {
   beforeEach(() => {
     SchemaInspector.clearCache();
   });
@@ -95,58 +82,5 @@ describe('SchemaInspector', () => {
     ]);
     expect(schema.tables[0].columns.find((column) => column.name === 'id')?.isPrimaryKey).toBe(true);
     expect(executeMock).toHaveBeenCalledTimes(5);
-  });
-
-  it('should use cache and support explicit cache invalidation', async () => {
-    const queue = [
-      { rows: [{ schema_name: 'public', table_name: 'users' }] },
-      { rows: [] },
-      { rows: [] },
-      { rows: [] },
-      { rows: [] },
-      { rows: [{ schema_name: 'public', table_name: 'users' }] },
-      { rows: [] },
-      { rows: [] },
-      { rows: [] },
-      { rows: [] },
-    ];
-    const { manager, executeMock } = createMockManager(queue);
-    const inspector = new SchemaInspector(manager, 'postgresql', {
-      cacheKey: 'pg:cache-test',
-      cacheTtlMs: 60_000,
-    });
-
-    await inspector.inspect();
-    await inspector.inspect();
-    expect(executeMock).toHaveBeenCalledTimes(5);
-
-    inspector.invalidateCache();
-    await inspector.inspect();
-    expect(executeMock).toHaveBeenCalledTimes(10);
-  });
-
-  it('should filter tables and validate table filter syntax', async () => {
-    const { manager, executeMock } = createMockManager([
-      {
-        rows: [
-          { schema_name: 'public', table_name: 'users' },
-          { schema_name: 'public', table_name: 'orders' },
-        ],
-      },
-      { rows: [] },
-      { rows: [] },
-      { rows: [] },
-      { rows: [] },
-    ]);
-    const inspector = new SchemaInspector(manager, 'postgresql');
-
-    await expect(
-      inspector.inspect({ tables: ['invalid-table-name!'] }),
-    ).rejects.toThrow(/contains invalid characters/);
-    expect(executeMock).toHaveBeenCalledTimes(0);
-
-    const filtered = await inspector.inspect({ tables: ['public.orders'] });
-    expect(filtered.tables).toHaveLength(1);
-    expect(filtered.tables[0].name).toBe('orders');
   });
 });
