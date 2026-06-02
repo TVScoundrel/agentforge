@@ -112,6 +112,8 @@ export class SchemaInspector {
         return inspectMySQL((query) => this.runQueryRows(query));
       case 'sqlite':
         return inspectSQLite((query) => this.runQueryRows(query));
+      default:
+        throw new Error(`Unsupported database vendor: ${String(this.vendor)}`);
     }
   }
 

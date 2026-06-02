@@ -42,16 +42,15 @@ export async function inspectSQLite(
         primaryKeyColumns.push({ position: pkPosition, column: columnName });
       }
 
-      table.columns.push(
-        createColumnSchema(row, {
-          name: 'name',
-          type: 'type',
-          nullable: 'notnull',
-          defaultValue: 'dflt_value',
-          primaryKey: pkPosition > 0,
-        }),
-      );
-      table.columns[table.columns.length - 1].isNullable = !toBooleanValue(row.notnull);
+      const column = createColumnSchema(row, {
+        name: 'name',
+        type: 'type',
+        nullable: 'notnull',
+        defaultValue: 'dflt_value',
+        primaryKey: pkPosition > 0,
+      });
+      column.isNullable = !toBooleanValue(row.notnull);
+      table.columns.push(column);
     }
 
     table.primaryKey = sortColumnsByPosition(primaryKeyColumns);

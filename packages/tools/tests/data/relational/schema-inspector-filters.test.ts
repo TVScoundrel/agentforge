@@ -3,6 +3,7 @@
  */
 
 import { beforeEach, describe, expect, it } from 'vitest';
+import type { DatabaseVendor } from '../../../src/data/relational/types.js';
 import { SchemaInspector } from '../../../src/data/relational/schema/schema-inspector.js';
 import { createMockManager } from './schema-inspector.test-utils.js';
 
@@ -34,5 +35,13 @@ describe('SchemaInspector table filtering', () => {
     const filtered = await inspector.inspect({ tables: ['public.orders'] });
     expect(filtered.tables).toHaveLength(1);
     expect(filtered.tables[0].name).toBe('orders');
+  });
+
+  it('should fail fast for unsupported runtime vendors', async () => {
+    const { manager, executeMock } = createMockManager([]);
+    const inspector = new SchemaInspector(manager, 'oracle' as DatabaseVendor);
+
+    await expect(inspector.inspect()).rejects.toThrow('Unsupported database vendor: oracle');
+    expect(executeMock).toHaveBeenCalledTimes(0);
   });
 });
