@@ -2195,23 +2195,46 @@ Implementation notes:
 **Branch:** `refactor/st-09055-schema-inspector-modularization`
 
 ### Checklist
-- [ ] Create branch `refactor/st-09055-schema-inspector-modularization`
-- [ ] Create draft PR with story ID in title
-- [ ] Define test strategy before implementation: cover runtime modularization and test-file modularization; first failing test should prove schema inspection behavior remains stable while the oversized runtime and test files are split
-- [ ] Write or update the failing automated test before production changes when practical; if not practical, record why before implementation
-- [ ] Reduce `packages/tools/src/data/relational/schema/schema-inspector.ts` below the 300 line planning cutoff by extracting focused internal modules for vendor inspection, schema normalization, cache/refresh orchestration, and shared metadata helpers behind a stable facade
-- [ ] Keep extracted production modules below the 300 line planning cutoff as well; do not satisfy the story by only shrinking the public facade and moving the bulk into a new oversized helper unless an explicit exception is documented in the story notes
-- [ ] Split the schema-inspector coverage into focused test modules so vendor-specific, normalization, and caching-path behavior no longer depend on a single oversized test surface
-- [ ] Preserve existing schema-inspector behavior, metadata shape, caching semantics, and public imports
-- [ ] Add/update production code until focused tests pass, keeping test evidence in checklist notes and PR body
-- [ ] Record explicit-`any` warning deltas and file-size/responsibility improvements for touched schema-inspector modules in story docs
-- [ ] Add or update story documentation at `docs/st09055-schema-inspector-modularization.md` (or document why not required)
-- [ ] Assess residual test impact; add/update additional automated tests when needed, or document why no further tests are required
-- [ ] Run full test suite before finalizing the PR and record results
-- [ ] Run lint (`pnpm lint`) before finalizing the PR and record results
-- [ ] Commit completed checklist items as logical commits and push updates
-- [ ] Mark PR Ready only after all story tasks are complete
+- [x] Create branch `refactor/st-09055-schema-inspector-modularization`
+- [x] Create draft PR with story ID in title
+  - Draft PR #124: https://github.com/TVScoundrel/agentforge/pull/124
+- [x] Define test strategy before implementation: cover runtime modularization and test-file modularization; first failing test should prove schema inspection behavior remains stable while the oversized runtime and test files are split
+  - A structure-only failing test would mostly prove repository layout instead of schema behavior. The practical test-first substitute was splitting focused PostgreSQL, cache, and filter suites first, then using those suites as the regression net while extracting vendor-specific and shared runtime responsibilities.
+- [x] Write or update the failing automated test before production changes when practical; if not practical, record why before implementation
+  - A failing structure-only test was not practical for proving schema behavior. Focused suite decomposition was used as the closest behavior-preserving automated safety net before runtime extraction.
+- [x] Reduce `packages/tools/src/data/relational/schema/schema-inspector.ts` below the 300 line planning cutoff by extracting focused internal modules for vendor inspection, schema normalization, cache/refresh orchestration, and shared metadata helpers behind a stable facade
+  - `schema-inspector.ts` reduced from `725` lines to `126` lines with new focused runtime modules in `schema-inspector-shared.ts`, `schema-inspector-postgresql.ts`, `schema-inspector-mysql.ts`, and `schema-inspector-sqlite.ts`
+- [x] Keep extracted production modules below the 300 line planning cutoff as well; do not satisfy the story by only shrinking the public facade and moving the bulk into a new oversized helper unless an explicit exception is documented in the story notes
+  - Extracted runtime modules are `249`, `155`, `135`, and `95` lines respectively; no exception required
+- [x] Split the schema-inspector coverage into focused test modules so vendor-specific, normalization, and caching-path behavior no longer depend on a single oversized test surface
+  - Replaced `packages/tools/tests/data/relational/schema-inspector.test.ts` with focused PostgreSQL, cache, and filter suites plus `schema-inspector.test-utils.ts`
+- [x] Preserve existing schema-inspector behavior, metadata shape, caching semantics, and public imports
+- [x] Add/update production code until focused tests pass, keeping test evidence in checklist notes and PR body
+  - `pnpm test --run packages/tools/tests/data/relational/schema-inspector-postgresql.test.ts packages/tools/tests/data/relational/schema-inspector-cache.test.ts packages/tools/tests/data/relational/schema-inspector-filters.test.ts` -> `3` files passed, `3` tests passed
+- [x] Record explicit-`any` warning deltas and file-size/responsibility improvements for touched schema-inspector modules in story docs
+  - Recorded in `docs/st09055-schema-inspector-modularization.md`; explicit-`any` baseline remained stable at `workspace 84/289`, `tools 53/67`
+- [x] Add or update story documentation at `docs/st09055-schema-inspector-modularization.md` (or document why not required)
+- [x] Assess residual test impact; add/update additional automated tests when needed, or document why no further tests are required
+  - The focused suite split now covers the modularized facade's PostgreSQL metadata shape, cache invalidation flow, and filter validation boundary. No further story-local automated coverage was required for this behavior-preserving split.
+- [x] Run full test suite before finalizing the PR and record results
+  - `pnpm test --run` -> `202` files passed, `18` skipped; `2313` tests passed, `286` skipped
+- [x] Run lint (`pnpm lint`) before finalizing the PR and record results
+  - `pnpm lint` -> passed with warnings only (`0` errors)
+- [x] Commit completed checklist items as logical commits and push updates
+  - `4c230ce` `refactor(st-09055): modularize schema inspector runtime`
+- [x] Mark PR Ready only after all story tasks are complete
 - [ ] Wait for merge; do not merge directly from local branch
+
+Implementation notes:
+
+- Focused package validation:
+  - `pnpm --filter @agentforge/tools typecheck`
+  - `pnpm --filter @agentforge/tools exec eslint src/data/relational/schema/schema-inspector.ts src/data/relational/schema/schema-inspector-shared.ts src/data/relational/schema/schema-inspector-postgresql.ts src/data/relational/schema/schema-inspector-mysql.ts src/data/relational/schema/schema-inspector-sqlite.ts tests/data/relational/schema-inspector.test-utils.ts tests/data/relational/schema-inspector-postgresql.test.ts tests/data/relational/schema-inspector-cache.test.ts tests/data/relational/schema-inspector-filters.test.ts`
+- Baseline/quality gates:
+  - `pnpm lint:explicit-any:baseline` -> `84/289` workspace, `53/67` tools
+  - `git diff --check`
+- CI impact assessment:
+  - No CI workflow change required. Existing package typecheck, explicit-`any` baseline, workspace tests, and lint gates already cover the extracted runtime and test surfaces.
 
 ---
 

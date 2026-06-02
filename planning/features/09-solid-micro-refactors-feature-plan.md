@@ -2,8 +2,8 @@
 
 **Epic Range:** EP-09 through EP-09
 **Status:** In Progress
-**Last Updated:** 2026-05-29
-**Active Story:** None
+**Last Updated:** 2026-06-02
+**Active Story:** ST-09055 - Modularize Relational Schema Inspector and Tests (In Review)
 
 ---
 
