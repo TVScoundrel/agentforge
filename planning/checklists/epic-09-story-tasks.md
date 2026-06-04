@@ -2210,7 +2210,7 @@ Implementation notes:
   - Replaced `packages/tools/tests/data/relational/schema-inspector.test.ts` with focused PostgreSQL, cache, and filter suites plus `schema-inspector.test-utils.ts`
 - [x] Preserve existing schema-inspector behavior, metadata shape, caching semantics, and public imports
 - [x] Add/update production code until focused tests pass, keeping test evidence in checklist notes and PR body
-  - `pnpm test --run packages/tools/tests/data/relational/schema-inspector-postgresql.test.ts packages/tools/tests/data/relational/schema-inspector-cache.test.ts packages/tools/tests/data/relational/schema-inspector-filters.test.ts` -> `3` files passed, `3` tests passed
+  - `pnpm test --run packages/tools/tests/data/relational/schema-inspector-postgresql.test.ts packages/tools/tests/data/relational/schema-inspector-cache.test.ts packages/tools/tests/data/relational/schema-inspector-filters.test.ts` -> `3` files passed, `4` tests passed
 - [x] Record explicit-`any` warning deltas and file-size/responsibility improvements for touched schema-inspector modules in story docs
   - Recorded in `docs/st09055-schema-inspector-modularization.md`; explicit-`any` baseline remained stable at `workspace 84/289`, `tools 53/67`
 - [x] Add or update story documentation at `docs/st09055-schema-inspector-modularization.md` (or document why not required)

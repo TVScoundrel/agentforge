@@ -49,7 +49,7 @@ No additional CI automation was required because the existing `@agentforge/tools
 
 - Focused schema-inspector suites:
   - `pnpm test --run packages/tools/tests/data/relational/schema-inspector-postgresql.test.ts packages/tools/tests/data/relational/schema-inspector-cache.test.ts packages/tools/tests/data/relational/schema-inspector-filters.test.ts`
-  - `3` files passed, `3` tests passed
+  - `3` files passed, `4` tests passed
 - Package checks:
   - `pnpm --filter @agentforge/tools typecheck`
   - `pnpm --filter @agentforge/tools exec eslint src/data/relational/schema/schema-inspector.ts src/data/relational/schema/schema-inspector-shared.ts src/data/relational/schema/schema-inspector-postgresql.ts src/data/relational/schema/schema-inspector-mysql.ts src/data/relational/schema/schema-inspector-sqlite.ts tests/data/relational/schema-inspector.test-utils.ts tests/data/relational/schema-inspector-postgresql.test.ts tests/data/relational/schema-inspector-cache.test.ts tests/data/relational/schema-inspector-filters.test.ts`
