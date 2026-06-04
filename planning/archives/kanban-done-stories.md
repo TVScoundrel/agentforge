@@ -2,11 +2,18 @@
 
 **Purpose:** Track completed and merged stories for the Relational Database Access Tool project.
 
-**Last Updated:** 2026-06-04
+**Last Updated:** 2026-06-05
 
 ---
 
 ## Completed Stories
+
+### ST-09056: Modularize Skills Registry and Tests
+- **Merged:** 2026-06-05
+- **PR:** https://github.com/TVScoundrel/agentforge/pull/125 (commit ed8ed92)
+- **Epic:** EP-09 (SOLID Micro-Refactors and Type Boundary Hardening)
+- **Estimate:** 4 hours
+- **Outcome:** Modularized `@agentforge/skills` registry handling by shrinking `packages/skills/src/registry.ts` from a `506` line mixed-responsibility file to a `101` line public facade, extracting focused discovery, event, prompt, query, and shared-type helpers while preserving `SkillRegistry` discovery order, duplicate precedence, prompt output, event semantics, and public imports. The story also replaced the `419` line `packages/skills/tests/registry.test.ts` monolith with focused discovery, query, event, and rescan suites plus shared test utilities, absorbed review follow-ups for per-test temp-dir cleanup, public type alignment, and documentation accuracy, and kept the explicit-`any` baseline flat at `workspace 84/289` and `skills 0/0`.
 
 ### ST-09055: Modularize Relational Schema Inspector and Tests
 - **Merged:** 2026-06-04
