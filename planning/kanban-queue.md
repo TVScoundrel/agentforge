@@ -1,12 +1,12 @@
 # Kanban Queue: AgentForge
 
-**Last Updated:** 2026-06-04
+**Last Updated:** 2026-06-05
 
 ## Queue Status Summary
 
-- **Ready:** 5 stories
+- **Ready:** 4 stories
 - **In Progress:** 0 stories
-- **In Review:** 0 stories
+- **In Review:** 1 story
 - **Blocked:** 0 stories
 - **Backlog:** 0 stories
 
@@ -14,7 +14,6 @@
 
 ## Ready
 
-- `ST-09056` - Modularize Skills Registry and Tests
 - `ST-09057` - Modularize Relational Transaction Flow and Tests
 - `ST-09058` - Modularize Core Tool Lifecycle and Tests
 - `ST-09059` - Tighten ReAct Schema Payload Contracts (dependency satisfied: `ST-09037` merged)
@@ -29,7 +28,7 @@ None currently.
 
 ## In Review
 
-None currently.
+- `ST-09056` - Modularize Skills Registry and Tests
 
 ## Blocked
 
