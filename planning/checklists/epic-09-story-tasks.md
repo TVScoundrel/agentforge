@@ -2244,23 +2244,42 @@ Implementation notes:
 **Branch:** `refactor/st-09056-skills-registry-modularization`
 
 ### Checklist
-- [ ] Create branch `refactor/st-09056-skills-registry-modularization`
+- [x] Create branch `refactor/st-09056-skills-registry-modularization`
 - [ ] Create draft PR with story ID in title
-- [ ] Define test strategy before implementation: cover runtime modularization and test-file modularization; first failing test should prove skill registry behavior remains stable while the oversized runtime and test files are split
-- [ ] Write or update the failing automated test before production changes when practical; if not practical, record why before implementation
-- [ ] Reduce `packages/skills/src/registry.ts` below the 300 line planning cutoff by extracting focused internal modules for registry hydration, duplicate precedence, prompt rendering, and event/warning flow behind a stable facade
-- [ ] Keep extracted production modules below the 300 line planning cutoff as well; do not satisfy the story by only shrinking the public facade and moving the bulk into a new oversized helper unless an explicit exception is documented in the story notes
-- [ ] Split skills-registry coverage into focused test modules so prompt generation, warning flow, and discovery-path behavior no longer depend on a single oversized test surface
-- [ ] Preserve existing `SkillRegistry` behavior, prompt output, precedence rules, event semantics, and public imports
-- [ ] Add/update production code until focused tests pass, keeping test evidence in checklist notes and PR body
-- [ ] Record explicit-`any` warning deltas and file-size/responsibility improvements for touched skills-registry modules in story docs
-- [ ] Add or update story documentation at `docs/st09056-skills-registry-modularization.md` (or document why not required)
-- [ ] Assess residual test impact; add/update additional automated tests when needed, or document why no further tests are required
-- [ ] Run full test suite before finalizing the PR and record results
-- [ ] Run lint (`pnpm lint`) before finalizing the PR and record results
+- [x] Define test strategy before implementation: cover runtime modularization and test-file modularization; first failing test should prove skill registry behavior remains stable while the oversized runtime and test files are split
+- [x] Write or update the failing automated test before production changes when practical; if not practical, record why before implementation
+- [x] Reduce `packages/skills/src/registry.ts` below the 300 line planning cutoff by extracting focused internal modules for registry hydration, duplicate precedence, prompt rendering, and event/warning flow behind a stable facade
+- [x] Keep extracted production modules below the 300 line planning cutoff as well; do not satisfy the story by only shrinking the public facade and moving the bulk into a new oversized helper unless an explicit exception is documented in the story notes
+- [x] Split skills-registry coverage into focused test modules so prompt generation, warning flow, and discovery-path behavior no longer depend on a single oversized test surface
+- [x] Preserve existing `SkillRegistry` behavior, prompt output, precedence rules, event semantics, and public imports
+- [x] Add/update production code until focused tests pass, keeping test evidence in checklist notes and PR body
+- [x] Record explicit-`any` warning deltas and file-size/responsibility improvements for touched skills-registry modules in story docs
+- [x] Add or update story documentation at `docs/st09056-skills-registry-modularization.md` (or document why not required)
+- [x] Assess residual test impact; add/update additional automated tests when needed, or document why no further tests are required
+- [x] Run full test suite before finalizing the PR and record results
+- [x] Run lint (`pnpm lint`) before finalizing the PR and record results
 - [ ] Commit completed checklist items as logical commits and push updates
 - [ ] Mark PR Ready only after all story tasks are complete
 - [ ] Wait for merge; do not merge directly from local branch
+
+Implementation notes:
+
+- Test-first rationale:
+  - A structure-only failing test would mostly prove file layout rather than `SkillRegistry` behavior. The practical test-first substitute was splitting the monolithic registry suite into focused discovery, query, event, and rescan suites first, then using those suites together with existing prompt, trust, activation, and conformance coverage as the regression net during runtime extraction.
+- Focused package validation:
+  - `pnpm test --run packages/skills/tests/registry-discovery.test.ts packages/skills/tests/registry-query.test.ts packages/skills/tests/registry-events.test.ts packages/skills/tests/registry-rescan.test.ts packages/skills/tests/prompt.test.ts packages/skills/tests/trust.test.ts packages/skills/tests/activation.test.ts packages/skills/tests/conformance.test.ts` -> `8` files passed, `164` tests passed
+  - `pnpm --filter @agentforge/skills typecheck`
+  - `pnpm --filter @agentforge/skills exec eslint src/registry.ts src/registry-discovery.ts src/registry-events.ts src/registry-prompt.ts src/registry-query-api.ts tests/registry-discovery.test.ts tests/registry-query.test.ts tests/registry-events.test.ts tests/registry-rescan.test.ts tests/registry.test-utils.ts`
+- Baseline/quality gates:
+  - `pnpm lint:explicit-any:baseline` -> `84/289` workspace, `skills 0/0`
+- Residual test impact:
+  - No additional automated tests were needed beyond the focused registry split because the extracted responsibilities are fully covered by the new discovery/query/event/rescan suites plus existing prompt, trust, activation, and conformance coverage.
+- Final full-suite validation:
+  - `pnpm test --run` -> `205` files passed, `18` skipped; `2307` tests passed, `286` skipped
+- Final lint validation:
+  - `pnpm lint` -> passed with warnings only
+- CI impact assessment:
+  - No CI workflow change required. Existing package typecheck, focused tests, workspace test suite, lint, and explicit-`any` baseline gates already cover the extracted runtime and test surfaces.
 
 ---
 
