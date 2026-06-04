@@ -5,6 +5,38 @@ All notable changes to AgentForge will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.16.42] - 2026-06-04
+
+### Added
+
+#### @agentforge/tools - Schema Inspector Modularization Coverage
+- Added focused relational schema-inspector coverage in `packages/tools/tests/data/relational/schema-inspector-postgresql.test.ts`, `schema-inspector-cache.test.ts`, and `schema-inspector-filters.test.ts`
+- Added shared schema-inspector test utilities in `packages/tools/tests/data/relational/schema-inspector.test-utils.ts`
+- Added story documentation in `docs/st09055-schema-inspector-modularization.md` capturing the runtime split, validation evidence, and no-regression explicit-`any` outcome
+
+### Changed
+
+#### @agentforge/tools - Relational Schema Inspector Modularization
+- Reduced `packages/tools/src/data/relational/schema/schema-inspector.ts` from a mixed-responsibility `725` line implementation to a `126` line public facade below the `300` line planning cutoff
+- Extracted focused internal modules in `packages/tools/src/data/relational/schema/schema-inspector-shared.ts`, `schema-inspector-postgresql.ts`, `schema-inspector-mysql.ts`, and `schema-inspector-sqlite.ts`
+- Preserved schema metadata shape, cache invalidation flow, vendor-specific inspection behavior, and public imports while making vendor adapters and shared normalization logic easier to review in smaller seams
+
+### Fixed
+
+#### @agentforge/tools - Schema Inspector Review Follow-Ups
+- Replaced the old schema-inspector monolith with focused PostgreSQL, cache, and filter suites that mirror the extracted runtime boundaries
+- Hardened unsupported-vendor failure handling and made SQLite column assembly safer during modularization follow-up review
+- Kept the explicit-`any` baseline stable at `workspace 84/289` and `tools 53/67`
+
+### Published
+- All packages published to npm registry at version 0.16.42:
+  - @agentforge/core@0.16.42
+  - @agentforge/skills@0.16.42
+  - @agentforge/patterns@0.16.42
+  - @agentforge/tools@0.16.42
+  - @agentforge/testing@0.16.42
+  - @agentforge/cli@0.16.42
+
 ## [0.16.41] - 2026-05-29
 
 ### Added
