@@ -2223,7 +2223,8 @@ Implementation notes:
 - [x] Commit completed checklist items as logical commits and push updates
   - `4c230ce` `refactor(st-09055): modularize schema inspector runtime`
 - [x] Mark PR Ready only after all story tasks are complete
-- [ ] Wait for merge; do not merge directly from local branch
+- [x] Wait for merge; do not merge directly from local branch
+  - Merged via PR #124 on 2026-06-04 (`798d1aa`)
 
 Implementation notes:
 

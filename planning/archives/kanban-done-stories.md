@@ -2,11 +2,18 @@
 
 **Purpose:** Track completed and merged stories for the Relational Database Access Tool project.
 
-**Last Updated:** 2026-05-29
+**Last Updated:** 2026-06-04
 
 ---
 
 ## Completed Stories
+
+### ST-09055: Modularize Relational Schema Inspector and Tests
+- **Merged:** 2026-06-04
+- **PR:** https://github.com/TVScoundrel/agentforge/pull/124 (commit 798d1aa)
+- **Epic:** EP-09 (SOLID Micro-Refactors and Type Boundary Hardening)
+- **Estimate:** 5 hours
+- **Outcome:** Modularized `@agentforge/tools` relational schema inspection by shrinking `packages/tools/src/data/relational/schema/schema-inspector.ts` from a `725` line mixed-responsibility file to a `126` line public facade, extracting focused shared, PostgreSQL, MySQL, and SQLite runtime helpers while preserving schema metadata shape, cache invalidation behavior, vendor-specific inspection results, and public imports. The story also replaced the old schema-inspector test monolith with focused PostgreSQL, cache, and filter suites plus shared test utilities, absorbed review follow-ups for unsupported-vendor failure hardening, safer SQLite column assembly, and corrected documentation test counts, and kept the explicit-`any` baseline flat at `workspace 84/289` and `tools 53/67`.
 
 ### ST-09054: Modularize Reflection Nodes and Tests
 - **Merged:** 2026-05-29

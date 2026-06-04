@@ -2,8 +2,8 @@
 
 **Epic Range:** EP-09 through EP-09
 **Status:** In Progress
-**Last Updated:** 2026-06-02
-**Active Story:** ST-09055 - Modularize Relational Schema Inspector and Tests (In Review)
+**Last Updated:** 2026-06-04
+**Active Story:** None
 
 ---
 
@@ -96,7 +96,8 @@ Recent improvement snapshot:
 - `ST-09054` merged on 2026-05-29 after reducing `packages/patterns/src/reflection/nodes.ts` from `350` lines to a `13` line public facade, extracting focused generator, reflector, reviser, finisher, and shared-helper modules while replacing the reflection node test monolith with focused node suites and keeping the explicit-`any` baseline flat at `workspace 84/289` and `patterns 2/28`.
 - `ST-09049` merged on 2026-05-22 after reducing `packages/core/src/tools/registry.ts` from `446` lines to a `107` line public facade, extracting focused query/mutation/type modules, and replacing the `832` line registry test monolith with focused API suites while keeping the explicit-`any` baseline flat at `workspace 84/289` and `core 23/119`.
 - `ST-09055` through `ST-09060` were added on 2026-05-28 to keep EP-09 stocked with the next concrete modularization and schema-hardening slices, using the `300` line cutoff as an explicit trigger for runtime/test decomposition and reserving smaller stories for remaining unknown-first schema payload seams.
-- `EP-09` remains open as the daily hardening stream, with the active queue now centered on the next type-boundary slices plus the newly promoted modularization stories.
+- `ST-09055` merged on 2026-06-04 after reducing `packages/tools/src/data/relational/schema/schema-inspector.ts` from `725` lines to a `126` line public facade, extracting focused shared, PostgreSQL, MySQL, and SQLite runtime helpers while replacing the schema-inspector test monolith with focused PostgreSQL, cache, and filter suites and keeping the explicit-`any` baseline flat at `workspace 84/289` and `tools 53/67`.
+- `EP-09` remains open as the daily hardening stream, with the active queue now centered on `ST-09056` through `ST-09060`.
 - The refreshed follow-on queue now extends beyond the current Ready lane so another few weeks of small SOLID/DRY and modularization work can be pulled without re-planning the epic.
 
 ---
