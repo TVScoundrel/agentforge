@@ -1803,7 +1803,7 @@
 **Priority:** P2 (Medium)
 **Estimate:** 4 hours
 **Dependencies:** ST-06005
-**Status:** In Progress
+**Status:** In Review
 
 **Acceptance criteria:**
 - [ ] `packages/skills/src/registry.ts` is reduced below the 300 line planning cutoff by extracting focused internal modules for registry hydration, duplicate-resolution policy, prompt rendering, and event/warning flow behind a stable public facade, and the extracted production modules must also stay below `300` lines unless the story documents and justifies an explicit exception.
