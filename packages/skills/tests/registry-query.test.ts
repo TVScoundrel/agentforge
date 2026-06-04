@@ -1,12 +1,18 @@
-import { beforeEach, describe, expect, it } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import { SkillRegistry } from '../src/registry.js';
 import { cleanupTempDirs, createSkillFixture, createTempDir } from './registry.test-utils.js';
 
 describe('SkillRegistry query api', () => {
-  const tempDir = createTempDir('skill-registry-query-test');
+  let tempDir: string;
+  let tempDirs: string[] = [];
 
   beforeEach(() => {
-    cleanupTempDirs([tempDir]);
+    tempDir = createTempDir('skill-registry-query-test');
+    tempDirs = [tempDir];
+  });
+
+  afterEach(() => {
+    cleanupTempDirs(tempDirs);
   });
 
   it('returns discovered skills and metadata through the query helpers', () => {

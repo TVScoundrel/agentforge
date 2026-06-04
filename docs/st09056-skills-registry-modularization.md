@@ -24,7 +24,7 @@ No additional CI automation was required because the existing `@agentforge/skill
 - Added `packages/skills/src/registry-events.ts`: `52` lines
 - Added `packages/skills/src/registry-prompt.ts`: `73` lines
 - Added `packages/skills/src/registry-query-api.ts`: `30` lines
-- Added `packages/skills/src/registry-internal.ts`: `20` lines
+- Added `packages/skills/src/registry-internal.ts`: `10` lines
 
 ### Tests
 

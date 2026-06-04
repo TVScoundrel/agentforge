@@ -3,16 +3,16 @@ import { createLogger, LogLevel } from '@agentforge/core';
 import { parseSkillContent } from './parser.js';
 import { scanAllSkillRoots, expandHome } from './scanner.js';
 import { normalizeRootConfig } from './trust.js';
-import type { Skill } from './types.js';
+import type { Skill, SkillRegistryConfig, TrustLevel } from './types.js';
 import { SkillRegistryEvent } from './types.js';
 import type { RegistryEmit, ScanError } from './registry-internal.js';
 
 const logger = createLogger('agentforge:skills:registry', { level: LogLevel.INFO });
 
 export function discoverSkills(
-  config: { skillRoots: Array<string | { path: string; trust: Skill['trustLevel'] }>; },
+  config: Pick<SkillRegistryConfig, 'skillRoots'>,
   skills: Map<string, Skill>,
-  rootTrustMap: Map<string, Skill['trustLevel']>,
+  rootTrustMap: Map<string, TrustLevel>,
   emit: RegistryEmit,
 ): ScanError[] {
   skills.clear();
