@@ -19,6 +19,8 @@ No additional CI automation was required because the existing `@agentforge/tools
 
 ### Production
 
+Current PR-head counts:
+
 - `packages/tools/src/data/relational/query/transaction.ts`: `419` -> `14` lines
 - Added `packages/tools/src/data/relational/query/transaction-types.ts`: `30` lines
 - Added `packages/tools/src/data/relational/query/transaction-options.ts`: `64` lines
@@ -26,6 +28,8 @@ No additional CI automation was required because the existing `@agentforge/tools
 - Added `packages/tools/src/data/relational/query/transaction-runner.ts`: `83` lines
 
 ### Tests
+
+Current PR-head counts:
 
 - Replaced `packages/tools/tests/data/relational/query/transaction.test.ts`: `338` lines
 - Added `packages/tools/tests/data/relational/query/transaction-lifecycle.test.ts`: `117` lines

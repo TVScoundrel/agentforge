@@ -1,4 +1,5 @@
 import { vi } from 'vitest';
+import type { SQL } from 'drizzle-orm';
 import type { ConnectionManager } from '../../../../src/data/relational/connection/connection-manager.js';
 
 export function createMockManager(
@@ -9,7 +10,7 @@ export function createMockManager(
   return {
     getVendor: vi.fn().mockReturnValue(vendor),
     executeInConnection: vi.fn().mockImplementation(
-      async (callback: (execute: (query: unknown) => Promise<unknown>) => Promise<unknown>) => {
+      async (callback: (execute: (query: SQL) => Promise<unknown>) => Promise<unknown>) => {
         return callback(executeQuery);
       }
     ),
