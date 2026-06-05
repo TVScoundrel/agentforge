@@ -4,8 +4,8 @@
 
 ## Queue Status Summary
 
-- **Ready:** 5 stories
-- **In Progress:** 0 stories
+- **Ready:** 4 stories
+- **In Progress:** 1 story
 - **In Review:** 0 stories
 - **Blocked:** 0 stories
 - **Backlog:** 5 stories
@@ -14,7 +14,6 @@
 
 ## Ready
 
-- `ST-09057` - Modularize Relational Transaction Flow and Tests
 - `ST-09058` - Modularize Core Tool Lifecycle and Tests
 - `ST-09061` - Modularize Core Tool Types and Tests
 - `ST-09062` - Modularize Core Tool Executor and Tests
@@ -29,7 +28,7 @@ None currently.
 
 ## In Review
 
-None currently.
+- `ST-09057` - Modularize Relational Transaction Flow and Tests
 
 ## Blocked
 

@@ -1820,7 +1820,7 @@
 **Priority:** P2 (Medium)
 **Estimate:** 4 hours
 **Dependencies:** ST-04001
-**Status:** Ready
+**Status:** In Review
 
 **Acceptance criteria:**
 - [ ] `packages/tools/src/data/relational/query/transaction.ts` is reduced below the 300 line planning cutoff by extracting focused internal modules for transaction lifecycle, savepoint flow, timeout/rollback handling, and vendor/session helpers behind a stable public facade, and the extracted production modules must also stay below `300` lines unless the story documents and justifies an explicit exception.
