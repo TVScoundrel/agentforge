@@ -5,6 +5,38 @@ All notable changes to AgentForge will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.16.43] - 2026-06-05
+
+### Added
+
+#### @agentforge/skills - Skills Registry Modularization Coverage
+- Added focused skills-registry coverage in `packages/skills/tests/registry-discovery.test.ts`, `registry-query.test.ts`, `registry-events.test.ts`, and `registry-rescan.test.ts`
+- Added shared registry test utilities in `packages/skills/tests/registry.test-utils.ts`
+- Added story documentation in `docs/st09056-skills-registry-modularization.md` capturing the runtime split, validation evidence, and no-regression explicit-`any` outcome
+
+### Changed
+
+#### @agentforge/skills - Skills Registry Modularization
+- Reduced `packages/skills/src/registry.ts` from a mixed-responsibility `506` line implementation to a `101` line public facade below the `300` line planning cutoff
+- Extracted focused internal modules in `packages/skills/src/registry-discovery.ts`, `registry-events.ts`, `registry-prompt.ts`, `registry-query-api.ts`, and `registry-internal.ts`
+- Preserved `SkillRegistry` discovery order, duplicate precedence, prompt output, event semantics, and public imports while making discovery, prompt rendering, and event/reporting boundaries smaller and easier to review
+
+### Fixed
+
+#### @agentforge/skills - Registry Review Follow-Ups
+- Replaced the `419` line `packages/skills/tests/registry.test.ts` monolith with focused suites that mirror discovery, query, event, and rescan boundaries
+- Aligned the extracted discovery helper with shared public config and trust types, corrected story evidence counts, and moved query-suite temp directories to per-test setup/cleanup
+- Kept the explicit-`any` baseline stable at `workspace 84/289` and `skills 0/0`
+
+### Published
+- All packages published to npm registry at version 0.16.43:
+  - @agentforge/core@0.16.43
+  - @agentforge/skills@0.16.43
+  - @agentforge/patterns@0.16.43
+  - @agentforge/tools@0.16.43
+  - @agentforge/testing@0.16.43
+  - @agentforge/cli@0.16.43
+
 ## [0.16.42] - 2026-06-04
 
 ### Added
