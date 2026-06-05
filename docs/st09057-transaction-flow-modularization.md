@@ -35,7 +35,7 @@ Current PR-head counts:
 - Added `packages/tools/tests/data/relational/query/transaction-lifecycle.test.ts`: `117` lines
 - Added `packages/tools/tests/data/relational/query/transaction-options.test.ts`: `64` lines
 - Added `packages/tools/tests/data/relational/query/transaction-savepoints.test.ts`: `97` lines
-- Added shared helper `packages/tools/tests/data/relational/query/transaction.test-utils.ts`: `18` lines
+- Added shared helper `packages/tools/tests/data/relational/query/transaction.test-utils.ts`: `19` lines
 
 ## Behavior Preserved
 
