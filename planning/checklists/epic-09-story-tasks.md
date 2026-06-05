@@ -2289,7 +2289,7 @@ Implementation notes:
 
 ### Checklist
 - [x] Create branch `refactor/st-09057-transaction-flow-modularization`
-- [ ] Create draft PR with story ID in title
+- [x] Create draft PR with story ID in title
 - [x] Define test strategy before implementation: cover runtime modularization and test-file modularization; first failing test should prove transaction behavior remains stable while the oversized runtime and test files are split
 - [x] Write or update the failing automated test before production changes when practical; if not practical, record why before implementation
 - [x] Reduce `packages/tools/src/data/relational/query/transaction.ts` below the 300 line planning cutoff by extracting focused internal modules for transaction lifecycle, savepoint handling, timeout/rollback flow, and vendor/session helpers behind a stable facade
@@ -2302,8 +2302,8 @@ Implementation notes:
 - [x] Assess residual test impact; add/update additional automated tests when needed, or document why no further tests are required
 - [x] Run full test suite before finalizing the PR and record results
 - [x] Run lint (`pnpm lint`) before finalizing the PR and record results
-- [ ] Commit completed checklist items as logical commits and push updates
-- [ ] Mark PR Ready only after all story tasks are complete
+- [x] Commit completed checklist items as logical commits and push updates
+- [x] Mark PR Ready only after all story tasks are complete
 - [ ] Wait for merge; do not merge directly from local branch
 
 Implementation notes:
@@ -2319,6 +2319,9 @@ Implementation notes:
 - Full workspace validation:
   - `pnpm test --run` -> `207` files passed, `18` skipped; `2307` tests passed, `286` skipped
   - `pnpm lint` -> exit `0`; warnings only (`0` errors)
+- PR handoff:
+  - Draft PR created with story ID in title: `#126` `refactor: ST-09057 modularize transaction flow and tests`
+  - PR marked ready for review after validation completed
 - Residual test impact:
   - No additional automated tests were needed beyond the focused query transaction split because lifecycle, option handling, timeout cancellation, and savepoint behavior are already covered by the new focused unit suites plus the existing relational integration tests. The full-suite count moved from `2313` to `2307` because the old monolithic query transaction test file was replaced by three narrower suites with less duplicated coverage while preserving the behavior contract.
 - CI impact assessment:
