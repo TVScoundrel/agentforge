@@ -6,7 +6,7 @@
 
 - **Ready:** 4 stories
 - **In Progress:** 0 stories
-- **In Review:** 1 story
+- **In Review:** 0 stories
 - **Blocked:** 0 stories
 - **Backlog:** 5 stories
 
@@ -28,7 +28,7 @@ None currently.
 
 ## In Review
 
-- `ST-09057` - Modularize Relational Transaction Flow and Tests
+None currently.
 
 ## Blocked
 

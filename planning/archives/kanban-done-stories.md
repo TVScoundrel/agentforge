@@ -8,6 +8,13 @@
 
 ## Completed Stories
 
+### ST-09057: Modularize Relational Transaction Flow and Tests
+- **Merged:** 2026-06-05
+- **PR:** https://github.com/TVScoundrel/agentforge/pull/126 (commit f6bbb9f)
+- **Epic:** EP-09 (SOLID Micro-Refactors and Type Boundary Hardening)
+- **Estimate:** 4 hours
+- **Outcome:** Modularized `@agentforge/tools` transaction handling by shrinking `packages/tools/src/data/relational/query/transaction.ts` from a `419` line mixed-responsibility file to a `14` line public facade, extracting focused transaction type, option-resolution, managed-lifecycle, and orchestration helpers while preserving `withTransaction()` behavior, savepoint flow, timeout cancellation, vendor-specific isolation handling, and public imports. The story also replaced the `338` line query transaction test monolith with focused lifecycle, options, and savepoint suites plus shared test utilities, absorbed review follow-ups for tracker accuracy, SQL-aligned helper typing, and refreshed evidence counts, and kept the explicit-`any` baseline flat at `workspace 84/289` and `tools 53/67`.
+
 ### ST-09056: Modularize Skills Registry and Tests
 - **Merged:** 2026-06-05
 - **PR:** https://github.com/TVScoundrel/agentforge/pull/125 (commit ed8ed92)
