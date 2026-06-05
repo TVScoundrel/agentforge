@@ -98,7 +98,8 @@ Recent improvement snapshot:
 - `ST-09055` through `ST-09060` were added on 2026-05-28 to keep EP-09 stocked with the next concrete modularization and schema-hardening slices, using the `300` line cutoff as an explicit trigger for runtime/test decomposition and reserving smaller stories for remaining unknown-first schema payload seams.
 - `ST-09055` merged on 2026-06-04 after reducing `packages/tools/src/data/relational/schema/schema-inspector.ts` from `725` lines to a `126` line public facade, extracting focused shared, PostgreSQL, MySQL, and SQLite runtime helpers while replacing the schema-inspector test monolith with focused PostgreSQL, cache, and filter suites and keeping the explicit-`any` baseline flat at `workspace 84/289` and `tools 53/67`.
 - `ST-09056` merged on 2026-06-05 after reducing `packages/skills/src/registry.ts` from `506` lines to a `101` line public facade, extracting focused discovery, event, prompt, query, and shared-type helpers while replacing the `419` line registry test monolith with focused discovery, query, event, and rescan suites. The story preserved `SkillRegistry` public behavior, absorbed review follow-ups for temp-dir cleanup, shared-type alignment, and documentation accuracy, and kept the explicit-`any` baseline flat at `workspace 84/289` and `skills 0/0`.
-- `EP-09` remains open as the daily hardening stream, with the current ready lane centered on `ST-09057` through `ST-09060`.
+- `ST-09061` through `ST-09066` were added on 2026-06-05 to keep EP-09 stocked beyond the current lane with another modularization-first batch, prioritizing large runtime files in `core` and `patterns` before the remaining schema-hardening slices so future fixes land on smaller modules instead of monoliths.
+- `EP-09` remains open as the daily hardening stream, with the current ready lane centered on `ST-09057`, `ST-09058`, and `ST-09061` through `ST-09063`, while `ST-09064` through `ST-09066` and the schema-tightening `ST-09059` and `ST-09060` sit behind them in backlog order.
 - The refreshed follow-on queue now extends beyond the current Ready lane so another few weeks of small SOLID/DRY and modularization work can be pulled without re-planning the epic.
 
 ---
@@ -122,7 +123,7 @@ Recent improvement snapshot:
 
 ## Story Coverage by Epic
 
-- EP-09: ST-09001, ST-09002, ST-09003, ST-09004, ST-09005, ST-09006, ST-09007, ST-09008, ST-09009, ST-09010, ST-09011, ST-09012, ST-09013, ST-09014, ST-09015, ST-09016, ST-09017, ST-09018, ST-09019, ST-09020, ST-09021, ST-09022, ST-09023, ST-09024, ST-09025, ST-09026, ST-09027, ST-09028, ST-09029, ST-09030, ST-09031, ST-09032, ST-09033, ST-09034, ST-09035, ST-09036, ST-09037, ST-09038, ST-09039, ST-09040, ST-09041, ST-09042, ST-09043, ST-09044, ST-09045, ST-09046, ST-09047, ST-09048, ST-09049, ST-09050, ST-09051, ST-09052, ST-09053, ST-09054, ST-09055, ST-09056, ST-09057, ST-09058, ST-09059, ST-09060
+- EP-09: ST-09001, ST-09002, ST-09003, ST-09004, ST-09005, ST-09006, ST-09007, ST-09008, ST-09009, ST-09010, ST-09011, ST-09012, ST-09013, ST-09014, ST-09015, ST-09016, ST-09017, ST-09018, ST-09019, ST-09020, ST-09021, ST-09022, ST-09023, ST-09024, ST-09025, ST-09026, ST-09027, ST-09028, ST-09029, ST-09030, ST-09031, ST-09032, ST-09033, ST-09034, ST-09035, ST-09036, ST-09037, ST-09038, ST-09039, ST-09040, ST-09041, ST-09042, ST-09043, ST-09044, ST-09045, ST-09046, ST-09047, ST-09048, ST-09049, ST-09050, ST-09051, ST-09052, ST-09053, ST-09054, ST-09055, ST-09056, ST-09057, ST-09058, ST-09059, ST-09060, ST-09061, ST-09062, ST-09063, ST-09064, ST-09065, ST-09066
 
 ---
 
@@ -138,7 +139,7 @@ Recent improvement snapshot:
 
 ## Related Planning Documents
 
-- `planning/epics-and-stories.md` (EP-09 and ST-09001 through ST-09060)
+- `planning/epics-and-stories.md` (EP-09 and ST-09001 through ST-09066)
 - `planning/checklists/epic-09-story-tasks.md`
 - `planning/kanban-queue.md`
 - `scripts/no-explicit-any-baseline.json`

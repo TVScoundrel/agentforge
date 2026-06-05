@@ -121,7 +121,7 @@
 - Story slices are intentionally small (1 day each) so quality improvements can ship continuously
 - Lightweight quality-gate follow-ups keep release/build feedback tight by reducing stale warning caps and easy package metadata warnings
 
-**Stories:** ST-09001 through ST-09060
+**Stories:** ST-09001 through ST-09066
 
 ---
 
@@ -1882,6 +1882,108 @@
 
 ---
 
+#### ST-09061: Modularize Core Tool Types and Tests
+**User story:** As a core maintainer, I want `packages/core/src/tools/types.ts` and its coupled tests split into focused modules so tool type contracts, execution payloads, and shared utility types stop growing as a single multi-responsibility file.
+
+**Priority:** P2 (Medium)
+**Estimate:** 4 hours
+**Dependencies:** ST-09050
+**Status:** Backlog
+
+**Acceptance criteria:**
+- [ ] `packages/core/src/tools/types.ts` is reduced below the 300 line planning cutoff by extracting focused internal modules for tool result types, execution/input contracts, schema-facing shared helpers, and public utility types behind a stable facade, and the extracted production modules must also stay below `300` lines unless the story documents and justifies an explicit exception.
+- [ ] Tool-type coverage is modularized alongside the production split so schema, invocation, and result-shape assertions no longer depend on a single oversized test surface.
+- [ ] Existing tool typing behavior, public imports, and downstream package compatibility remain backward compatible.
+- [ ] Focused tests confirm extracted modules preserve current type/runtime expectations, and `pnpm --filter @agentforge/core typecheck`, `pnpm test --run`, and `pnpm lint:explicit-any:baseline` pass with no baseline regression.
+- [ ] Add or update story documentation at `docs/st09061-tool-types-modularization.md`
+
+---
+
+#### ST-09062: Modularize Core Tool Executor and Tests
+**User story:** As a core maintainer, I want `packages/core/src/tools/executor.ts` and its coupled executor tests split into focused modules so execution flow, error handling, and result normalization stay SOLID instead of accreting in one runtime file.
+
+**Priority:** P2 (Medium)
+**Estimate:** 4 hours
+**Dependencies:** ST-09050
+**Status:** Backlog
+
+**Acceptance criteria:**
+- [ ] `packages/core/src/tools/executor.ts` is reduced below the 300 line planning cutoff by extracting focused internal modules for execution orchestration, timeout/error handling, result normalization, and callback/reporting helpers behind a stable public facade, and the extracted production modules must also stay below `300` lines unless the story documents and justifies an explicit exception.
+- [ ] Executor coverage is modularized alongside the production split so success, failure, timeout, and callback assertions no longer depend on a single oversized test surface.
+- [ ] Existing executor behavior, error semantics, callback behavior, and public imports remain backward compatible.
+- [ ] Focused tests confirm extracted modules preserve current executor behavior, and `pnpm --filter @agentforge/core typecheck`, `pnpm test --run`, and `pnpm lint:explicit-any:baseline` pass with no baseline regression.
+- [ ] Add or update story documentation at `docs/st09062-tool-executor-modularization.md`
+
+---
+
+#### ST-09063: Modularize Multi-Agent Worker Node and Tests
+**User story:** As a patterns maintainer, I want `packages/patterns/src/multi-agent/nodes/worker.ts` and its coupled worker-node tests split into focused modules so worker execution, handoff coordination, and shared response shaping stay easier to reason about.
+
+**Priority:** P2 (Medium)
+**Estimate:** 4 hours
+**Dependencies:** ST-09051
+**Status:** Backlog
+
+**Acceptance criteria:**
+- [ ] `packages/patterns/src/multi-agent/nodes/worker.ts` is reduced below the 300 line planning cutoff by extracting focused internal modules for worker execution flow, handoff/result shaping, callback/event helpers, and shared node types behind a stable public facade, and the extracted production modules must also stay below `300` lines unless the story documents and justifies an explicit exception.
+- [ ] Worker-node coverage is modularized alongside the production split so execution, handoff, and failure-path assertions no longer depend on a single oversized test surface.
+- [ ] Existing worker-node behavior, event semantics, routing handoff integration, and public imports remain backward compatible.
+- [ ] Focused tests confirm extracted modules preserve current worker-node behavior, and `pnpm --filter @agentforge/patterns typecheck`, `pnpm test --run`, and `pnpm lint:explicit-any:baseline` pass with no baseline regression.
+- [ ] Add or update story documentation at `docs/st09063-multi-agent-worker-node-modularization.md`
+
+---
+
+#### ST-09064: Modularize LangGraph Middleware Presets and Tests
+**User story:** As a core maintainer, I want `packages/core/src/langgraph/middleware/presets.ts` and its coupled preset tests split into focused modules so logging, retry, timing, and composition helpers do not keep growing in one file.
+
+**Priority:** P2 (Medium)
+**Estimate:** 4 hours
+**Dependencies:** ST-09043
+**Status:** Backlog
+
+**Acceptance criteria:**
+- [ ] `packages/core/src/langgraph/middleware/presets.ts` is reduced below the 300 line planning cutoff by extracting focused internal modules for logging presets, retry/timing presets, composition helpers, and shared preset types behind a stable public facade, and the extracted production modules must also stay below `300` lines unless the story documents and justifies an explicit exception.
+- [ ] Middleware preset coverage is modularized alongside the production split so logging, retry, timing, and composition assertions no longer depend on a single oversized test surface.
+- [ ] Existing preset behavior, middleware ordering, and public imports remain backward compatible.
+- [ ] Focused tests confirm extracted modules preserve current preset behavior, and `pnpm --filter @agentforge/core typecheck`, `pnpm test --run`, and `pnpm lint:explicit-any:baseline` pass with no baseline regression.
+- [ ] Add or update story documentation at `docs/st09064-middleware-presets-modularization.md`
+
+---
+
+#### ST-09065: Modularize LangGraph State Helpers and Tests
+**User story:** As a core maintainer, I want `packages/core/src/langgraph/state.ts` and its coupled state-helper tests split into focused modules so annotation, schema, and reducer helpers stay easier to evolve without one oversized utility file.
+
+**Priority:** P2 (Medium)
+**Estimate:** 4 hours
+**Dependencies:** ST-09043
+**Status:** Backlog
+
+**Acceptance criteria:**
+- [ ] `packages/core/src/langgraph/state.ts` is reduced below the 300 line planning cutoff by extracting focused internal modules for annotation helpers, reducer helpers, schema/state utilities, and shared public types behind a stable public facade, and the extracted production modules must also stay below `300` lines unless the story documents and justifies an explicit exception.
+- [ ] State-helper coverage is modularized alongside the production split so annotation, reducer, and schema assertions no longer depend on a single oversized test surface.
+- [ ] Existing state-helper behavior, reducer semantics, and public imports remain backward compatible.
+- [ ] Focused tests confirm extracted modules preserve current state-helper behavior, and `pnpm --filter @agentforge/core typecheck`, `pnpm test --run`, and `pnpm lint:explicit-any:baseline` pass with no baseline regression.
+- [ ] Add or update story documentation at `docs/st09065-langgraph-state-modularization.md`
+
+---
+
+#### ST-09066: Modularize Core Resource Pool and Tests
+**User story:** As a core maintainer, I want `packages/core/src/resources/pool.ts` and its coupled pooling tests split into focused modules so acquisition, eviction, metrics, and lifecycle responsibilities are no longer concentrated in one large resource helper.
+
+**Priority:** P2 (Medium)
+**Estimate:** 4 hours
+**Dependencies:** None
+**Status:** Backlog
+
+**Acceptance criteria:**
+- [ ] `packages/core/src/resources/pool.ts` is reduced below the 300 line planning cutoff by extracting focused internal modules for acquisition/release flow, eviction/reaping behavior, metrics/introspection helpers, and shared pool types behind a stable public facade, and the extracted production modules must also stay below `300` lines unless the story documents and justifies an explicit exception.
+- [ ] Resource-pool coverage is modularized alongside the production split so acquisition, eviction, and lifecycle assertions no longer depend on a single oversized test surface.
+- [ ] Existing pool behavior, lifecycle semantics, and public imports remain backward compatible.
+- [ ] Focused tests confirm extracted modules preserve current pool behavior, and `pnpm --filter @agentforge/core typecheck`, `pnpm test --run`, and `pnpm lint:explicit-any:baseline` pass with no baseline regression.
+- [ ] Add or update story documentation at `docs/st09066-resource-pool-modularization.md`
+
+---
+
 #### ST-10001: Audit Markdown Emoji Usage Across Project-Owned Docs
 **User story:** As a maintainer, I want a clear inventory of markdown emoji usage so docs-only cleanup work can be prioritized and executed without noisy, repo-wide guesswork.
 
@@ -2003,5 +2105,5 @@
 6. Phase 6 (Agent Skills): ST-06001 → ST-06002 → ST-06003 → ST-06004 → ST-06005 → ST-06006
 7. Phase 7 (Skills Extraction): ST-07001 → ST-07002 → [ST-07003, ST-07004 parallel] → ST-07005; ST-07001 → ST-07006 (independent)
 8. Phase 8 (Type Safety Hardening): ST-08001 → [ST-08002, ST-08003, ST-08004 parallel]
-9. Phase 9 (SOLID Micro-Refactors): ST-09001 (Merged) → ST-09002 (Merged) → ST-09003 (Merged) → ST-09004 (Merged) → ST-09005 (Merged) → ST-09006 (Merged) → ST-09007 (Merged) → ST-09008 (Merged) → ST-09009 (Merged) → ST-09010 (Merged) → ST-09011 (Merged) → ST-09012 (Merged) → ST-09013 (Merged) → ST-09014 (Merged) → ST-09015 (Merged) → ST-09016 (Merged) → ST-09017 (Merged) → ST-09018 (Merged) → ST-09019 (Merged) → ST-09020 (Merged) → ST-09021 (Merged) → ST-09022 (Merged) → ST-09023 (Merged); ST-09025 (Merged) → ST-09026 (Merged) → ST-09031 (Merged); ST-09027 (Merged) → ST-09028 (Merged) → ST-09030 (Merged); ST-09032 → ST-09033; ST-09034 (Merged) → ST-09035 (Merged) → ST-09036 (Merged) → ST-09041; ST-09023 (Merged) and ST-09029 (Merged) → ST-09037; ST-09038 independent; ST-09023 (Merged) → ST-09039; ST-09024 (Merged) → ST-09040 → ST-09042 → ST-09047; ST-09020 (Merged) → ST-09043; ST-09018 (Merged) → ST-09044; ST-09015 (Merged) → ST-09045 → ST-09048; ST-09038 (Merged) → ST-09046; ST-03002 (Merged) → ST-09055; ST-06005 (Merged) → ST-09056; ST-04001 (Merged) → ST-09057; ST-09032 (Merged) → ST-09058; ST-09037 (Merged) → ST-09059; ST-09045 (Merged) → ST-09060
+9. Phase 9 (SOLID Micro-Refactors): ST-09001 (Merged) → ST-09002 (Merged) → ST-09003 (Merged) → ST-09004 (Merged) → ST-09005 (Merged) → ST-09006 (Merged) → ST-09007 (Merged) → ST-09008 (Merged) → ST-09009 (Merged) → ST-09010 (Merged) → ST-09011 (Merged) → ST-09012 (Merged) → ST-09013 (Merged) → ST-09014 (Merged) → ST-09015 (Merged) → ST-09016 (Merged) → ST-09017 (Merged) → ST-09018 (Merged) → ST-09019 (Merged) → ST-09020 (Merged) → ST-09021 (Merged) → ST-09022 (Merged) → ST-09023 (Merged); ST-09025 (Merged) → ST-09026 (Merged) → ST-09031 (Merged); ST-09027 (Merged) → ST-09028 (Merged) → ST-09030 (Merged); ST-09032 → ST-09033; ST-09034 (Merged) → ST-09035 (Merged) → ST-09036 (Merged) → ST-09041; ST-09023 (Merged) and ST-09029 (Merged) → ST-09037; ST-09038 independent; ST-09023 (Merged) → ST-09039; ST-09024 (Merged) → ST-09040 → ST-09042 → ST-09047; ST-09020 (Merged) → ST-09043; ST-09018 (Merged) → ST-09044; ST-09015 (Merged) → ST-09045 → ST-09048; ST-09038 (Merged) → ST-09046; ST-03002 (Merged) → ST-09055; ST-06005 (Merged) → ST-09056; ST-04001 (Merged) → ST-09057; ST-09032 (Merged) → ST-09058; ST-09037 (Merged) → ST-09059; ST-09045 (Merged) → ST-09060; ST-09050 (Merged) → ST-09061 → ST-09062; ST-09051 (Merged) → ST-09063; ST-09043 (Merged) → ST-09064 → ST-09065; ST-09010 (Merged) → ST-09066
 10. Phase 10 (Documentation Only Changes): ST-10001 → [ST-10002, ST-10003, ST-10004, ST-10005 parallel] → ST-10006; EP-10 remains evergreen and intentionally open for future docs-only stories even when no current stories are queued

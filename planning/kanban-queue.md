@@ -4,11 +4,11 @@
 
 ## Queue Status Summary
 
-- **Ready:** 4 stories
+- **Ready:** 5 stories
 - **In Progress:** 0 stories
 - **In Review:** 0 stories
 - **Blocked:** 0 stories
-- **Backlog:** 0 stories
+- **Backlog:** 5 stories
 
 ---
 
@@ -16,8 +16,9 @@
 
 - `ST-09057` - Modularize Relational Transaction Flow and Tests
 - `ST-09058` - Modularize Core Tool Lifecycle and Tests
-- `ST-09059` - Tighten ReAct Schema Payload Contracts (dependency satisfied: `ST-09037` merged)
-- `ST-09060` - Tighten Multi-Agent Schema Payload Contracts (dependency satisfied: `ST-09045` merged)
+- `ST-09061` - Modularize Core Tool Types and Tests
+- `ST-09062` - Modularize Core Tool Executor and Tests
+- `ST-09063` - Modularize Multi-Agent Worker Node and Tests
 ---
 
 ## In Progress
@@ -38,7 +39,11 @@ _No stories currently blocked_
 
 ## Backlog
 
-_No stories currently in backlog_
+- `ST-09064` - Modularize LangGraph Middleware Presets and Tests
+- `ST-09065` - Modularize LangGraph State Helpers and Tests
+- `ST-09066` - Modularize Core Resource Pool and Tests
+- `ST-09059` - Tighten ReAct Schema Payload Contracts (dependency satisfied: `ST-09037` merged)
+- `ST-09060` - Tighten Multi-Agent Schema Payload Contracts (dependency satisfied: `ST-09045` merged)
 
 ---
 
