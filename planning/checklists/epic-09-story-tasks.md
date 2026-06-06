@@ -2334,23 +2334,42 @@ Implementation notes:
 **Branch:** `refactor/st-09058-tool-lifecycle-modularization`
 
 ### Checklist
-- [ ] Create branch `refactor/st-09058-tool-lifecycle-modularization`
-- [ ] Create draft PR with story ID in title
-- [ ] Define test strategy before implementation: cover runtime modularization and test-file modularization; first failing test should prove lifecycle behavior remains stable while the oversized runtime and test files are split
-- [ ] Write or update the failing automated test before production changes when practical; if not practical, record why before implementation
-- [ ] Reduce `packages/core/src/tools/lifecycle.ts` below the 300 line planning cutoff by extracting focused internal modules for startup, shutdown, health/liveness coordination, and lifecycle state helpers behind a stable facade
-- [ ] Keep extracted production modules below the 300 line planning cutoff as well; do not satisfy the story by only shrinking the public facade and moving the bulk into a new oversized helper unless an explicit exception is documented in the story notes
-- [ ] Split lifecycle coverage into focused test modules so startup, cleanup, and failure-path behavior no longer depend on a single oversized test surface
-- [ ] Preserve existing lifecycle behavior, state-transition semantics, and public imports
-- [ ] Add/update production code until focused tests pass, keeping test evidence in checklist notes and PR body
-- [ ] Record explicit-`any` warning deltas and file-size/responsibility improvements for touched lifecycle modules in story docs
-- [ ] Add or update story documentation at `docs/st09058-tool-lifecycle-modularization.md` (or document why not required)
-- [ ] Assess residual test impact; add/update additional automated tests when needed, or document why no further tests are required
-- [ ] Run full test suite before finalizing the PR and record results
-- [ ] Run lint (`pnpm lint`) before finalizing the PR and record results
-- [ ] Commit completed checklist items as logical commits and push updates
-- [ ] Mark PR Ready only after all story tasks are complete
+- [x] Create branch `refactor/st-09058-tool-lifecycle-modularization`
+- [x] Create draft PR with story ID in title
+- [x] Define test strategy before implementation: cover runtime modularization and test-file modularization; first failing test should prove lifecycle behavior remains stable while the oversized runtime and test files are split
+- [x] Write or update the failing automated test before production changes when practical; if not practical, record why before implementation
+- [x] Reduce `packages/core/src/tools/lifecycle.ts` below the 300 line planning cutoff by extracting focused internal modules for startup, shutdown, health/liveness coordination, and lifecycle state helpers behind a stable facade
+- [x] Keep extracted production modules below the 300 line planning cutoff as well; do not satisfy the story by only shrinking the public facade and moving the bulk into a new oversized helper unless an explicit exception is documented in the story notes
+- [x] Split lifecycle coverage into focused test modules so startup, cleanup, and failure-path behavior no longer depend on a single oversized test surface
+- [x] Preserve existing lifecycle behavior, state-transition semantics, and public imports
+- [x] Add/update production code until focused tests pass, keeping test evidence in checklist notes and PR body
+- [x] Record explicit-`any` warning deltas and file-size/responsibility improvements for touched lifecycle modules in story docs
+- [x] Add or update story documentation at `docs/st09058-tool-lifecycle-modularization.md` (or document why not required)
+- [x] Assess residual test impact; add/update additional automated tests when needed, or document why no further tests are required
+- [x] Run full test suite before finalizing the PR and record results
+- [x] Run lint (`pnpm lint`) before finalizing the PR and record results
+- [x] Commit completed checklist items as logical commits and push updates
+- [x] Mark PR Ready only after all story tasks are complete
 - [ ] Wait for merge; do not merge directly from local branch
+
+Implementation notes:
+
+- Test-first rationale:
+  - A structure-only failing test would mostly prove file layout rather than lifecycle behavior. The practical test-first substitute for this story is splitting the oversized lifecycle test monolith into focused suites first, then using those suites as the regression net during runtime extraction.
+- Focused lifecycle suites:
+  - `pnpm test --run packages/core/tests/tools/lifecycle-initialization.test.ts packages/core/tests/tools/lifecycle-execution.test.ts packages/core/tests/tools/lifecycle-cleanup.test.ts packages/core/tests/tools/lifecycle-health.test.ts`
+  - `4` files passed, `18` tests passed
+- Package checks:
+  - `pnpm --filter @agentforge/core typecheck`
+  - `pnpm --filter @agentforge/core exec eslint src/tools/lifecycle.ts src/tools/lifecycle-managed-tool.ts src/tools/lifecycle-types.ts src/tools/lifecycle-internal-types.ts src/tools/lifecycle-error.ts src/tools/lifecycle-health.ts src/tools/lifecycle-hooks.ts tests/tools/lifecycle-initialization.test.ts tests/tools/lifecycle-execution.test.ts tests/tools/lifecycle-cleanup.test.ts tests/tools/lifecycle-health.test.ts`
+- Explicit-`any` baseline:
+  - `pnpm lint:explicit-any:baseline` -> workspace `84/289`, `core 23/119`
+- Workspace checks:
+  - `pnpm test --run` -> `210` files passed, `18` skipped; `2307` tests passed, `286` skipped
+  - `pnpm lint` -> passed with warnings only
+  - `git diff --check`
+- Residual impact:
+  - The workspace passed test-file count increased from `207` to `210` because the lifecycle monolith was replaced by four focused suites. The total test count remained `2307`, and no additional CI workflow change is required.
 
 ---
 
