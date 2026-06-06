@@ -75,12 +75,10 @@ export class ManagedTool<TContext = undefined, TInput = unknown, TOutput = unkno
     }
 
     const initializePromise = performManagedInitialize({
-      autoCleanup: this.autoCleanup,
       ensureBeforeExitHandler: () => this.ensureBeforeExitHandler(),
       healthCheckFn: this.healthCheckFn,
       healthCheckInterval: this.healthCheckInterval,
       initializeFn: this.initializeFn,
-      name: this.name,
       runPeriodicHealthCheck: () => this.runPeriodicHealthCheck(),
       state: this.state,
     });

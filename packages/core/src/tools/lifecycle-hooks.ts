@@ -4,12 +4,10 @@ import type { ToolHealthCheckResult } from './lifecycle-types.js';
 import { getErrorMessage } from './lifecycle-error.js';
 
 interface InitializeDeps<TContext> {
-  autoCleanup: boolean;
   ensureBeforeExitHandler: () => void;
   healthCheckFn?: () => Promise<ToolHealthCheckResult>;
   healthCheckInterval?: number;
   initializeFn?: () => Promise<void>;
-  name: string;
   runPeriodicHealthCheck: () => Promise<void>;
   state: ManagedToolState<TContext>;
 }

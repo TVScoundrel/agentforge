@@ -1,5 +1,5 @@
 import type { JsonObject } from '../langgraph/observability/payload.js';
-import type { ManagedTool } from './lifecycle.js';
+import type { ManagedTool } from './lifecycle-managed-tool.js';
 
 export interface ToolHealthCheckResult {
   healthy: boolean;
