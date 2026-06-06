@@ -5,6 +5,38 @@ All notable changes to AgentForge will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.16.44] - 2026-06-06
+
+### Added
+
+#### @agentforge/tools - Transaction Flow Modularization Coverage
+- Added focused relational transaction coverage in `packages/tools/tests/data/relational/query/transaction-lifecycle.test.ts`, `transaction-options.test.ts`, and `transaction-savepoints.test.ts`
+- Added shared transaction test utilities in `packages/tools/tests/data/relational/query/transaction.test-utils.ts`
+- Added story documentation in `docs/st09057-transaction-flow-modularization.md` capturing the runtime split, validation evidence, and no-regression explicit-`any` outcome
+
+### Changed
+
+#### @agentforge/tools - Relational Transaction Flow Modularization
+- Reduced `packages/tools/src/data/relational/query/transaction.ts` from a mixed-responsibility `419` line implementation to a `14` line public facade below the `300` line planning cutoff
+- Extracted focused internal modules in `packages/tools/src/data/relational/query/transaction-types.ts`, `transaction-options.ts`, `transaction-managed.ts`, and `transaction-runner.ts`
+- Preserved `withTransaction()` behavior, savepoint flow, timeout cancellation, vendor-specific isolation handling, and public imports while making transaction orchestration boundaries smaller and easier to review
+
+### Fixed
+
+#### @agentforge/tools - Transaction Modularization Review Follow-Ups
+- Replaced the old query transaction test monolith with focused lifecycle, options, and savepoint suites that mirror the extracted runtime boundaries
+- Tightened the shared transaction test helper to the production `SQL` callback shape and refreshed story evidence counts during review follow-up
+- Kept the explicit-`any` baseline stable at `workspace 84/289` and `tools 53/67`
+
+### Published
+- All packages published to npm registry at version 0.16.44:
+  - @agentforge/core@0.16.44
+  - @agentforge/skills@0.16.44
+  - @agentforge/patterns@0.16.44
+  - @agentforge/tools@0.16.44
+  - @agentforge/testing@0.16.44
+  - @agentforge/cli@0.16.44
+
 ## [0.16.43] - 2026-06-05
 
 ### Added
