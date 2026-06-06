@@ -1837,7 +1837,7 @@
 **Priority:** P2 (Medium)
 **Estimate:** 4 hours
 **Dependencies:** ST-09032
-**Status:** In Review
+**Status:** Merged
 
 **Acceptance criteria:**
 - [ ] `packages/core/src/tools/lifecycle.ts` is reduced below the 300 line planning cutoff by extracting focused internal modules for startup, shutdown, health/liveness coordination, and lifecycle state helpers behind a stable public facade, and the extracted production modules must also stay below `300` lines unless the story documents and justifies an explicit exception.
@@ -1854,7 +1854,7 @@
 **Priority:** P2 (Medium)
 **Estimate:** 3 hours
 **Dependencies:** ST-09037
-**Status:** Backlog
+**Status:** Ready
 
 **Acceptance criteria:**
 - [ ] `packages/patterns/src/react/schemas.ts` replaces broad `z.any()` metadata, arguments, and result payload seams with unknown-first or JSON-safe contracts where behavior allows.
@@ -1871,7 +1871,7 @@
 **Priority:** P2 (Medium)
 **Estimate:** 3 hours
 **Dependencies:** ST-09045
-**Status:** Backlog
+**Status:** Ready
 
 **Acceptance criteria:**
 - [ ] `packages/patterns/src/multi-agent/schemas.ts` replaces broad metadata/context `z.any()` seams with unknown-first or JSON-safe contracts where behavior allows.
@@ -1888,7 +1888,7 @@
 **Priority:** P2 (Medium)
 **Estimate:** 4 hours
 **Dependencies:** ST-09050
-**Status:** Backlog
+**Status:** Ready
 
 **Acceptance criteria:**
 - [ ] `packages/core/src/tools/types.ts` is reduced below the 300 line planning cutoff by extracting focused internal modules for tool result types, execution/input contracts, schema-facing shared helpers, and public utility types behind a stable facade, and the extracted production modules must also stay below `300` lines unless the story documents and justifies an explicit exception.
@@ -1905,7 +1905,7 @@
 **Priority:** P2 (Medium)
 **Estimate:** 4 hours
 **Dependencies:** ST-09050
-**Status:** Backlog
+**Status:** Ready
 
 **Acceptance criteria:**
 - [ ] `packages/core/src/tools/executor.ts` is reduced below the 300 line planning cutoff by extracting focused internal modules for execution orchestration, timeout/error handling, result normalization, and callback/reporting helpers behind a stable public facade, and the extracted production modules must also stay below `300` lines unless the story documents and justifies an explicit exception.
@@ -1922,7 +1922,7 @@
 **Priority:** P2 (Medium)
 **Estimate:** 4 hours
 **Dependencies:** ST-09051
-**Status:** Backlog
+**Status:** Ready
 
 **Acceptance criteria:**
 - [ ] `packages/patterns/src/multi-agent/nodes/worker.ts` is reduced below the 300 line planning cutoff by extracting focused internal modules for worker execution flow, handoff/result shaping, callback/event helpers, and shared node types behind a stable public facade, and the extracted production modules must also stay below `300` lines unless the story documents and justifies an explicit exception.
@@ -1939,7 +1939,7 @@
 **Priority:** P2 (Medium)
 **Estimate:** 4 hours
 **Dependencies:** ST-09043
-**Status:** Backlog
+**Status:** Ready
 
 **Acceptance criteria:**
 - [ ] `packages/core/src/langgraph/middleware/presets.ts` is reduced below the 300 line planning cutoff by extracting focused internal modules for logging presets, retry/timing presets, composition helpers, and shared preset types behind a stable public facade, and the extracted production modules must also stay below `300` lines unless the story documents and justifies an explicit exception.
@@ -1956,7 +1956,7 @@
 **Priority:** P2 (Medium)
 **Estimate:** 4 hours
 **Dependencies:** ST-09043
-**Status:** Backlog
+**Status:** Ready
 
 **Acceptance criteria:**
 - [ ] `packages/core/src/langgraph/state.ts` is reduced below the 300 line planning cutoff by extracting focused internal modules for annotation helpers, reducer helpers, schema/state utilities, and shared public types behind a stable public facade, and the extracted production modules must also stay below `300` lines unless the story documents and justifies an explicit exception.
@@ -1973,7 +1973,7 @@
 **Priority:** P2 (Medium)
 **Estimate:** 4 hours
 **Dependencies:** None
-**Status:** Backlog
+**Status:** Ready
 
 **Acceptance criteria:**
 - [ ] `packages/core/src/resources/pool.ts` is reduced below the 300 line planning cutoff by extracting focused internal modules for acquisition/release flow, eviction/reaping behavior, metrics/introspection helpers, and shared pool types behind a stable public facade, and the extracted production modules must also stay below `300` lines unless the story documents and justifies an explicit exception.

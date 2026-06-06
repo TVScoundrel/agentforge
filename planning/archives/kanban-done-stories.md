@@ -2,11 +2,18 @@
 
 **Purpose:** Track completed and merged stories for the Relational Database Access Tool project.
 
-**Last Updated:** 2026-06-05
+**Last Updated:** 2026-06-06
 
 ---
 
 ## Completed Stories
+
+### ST-09058: Modularize Core Tool Lifecycle and Tests
+- **Merged:** 2026-06-06
+- **PR:** https://github.com/TVScoundrel/agentforge/pull/127 (commit ea26ba1)
+- **Epic:** EP-09 (SOLID Micro-Refactors and Type Boundary Hardening)
+- **Estimate:** 4 hours
+- **Outcome:** Modularized `@agentforge/core` managed-tool lifecycle handling by shrinking `packages/core/src/tools/lifecycle.ts` from a `405` line mixed-responsibility file to an `11` line public facade, extracting focused managed-tool orchestration, hook, health, internal-state, and error helper modules while preserving `ManagedTool` initialization, execution, cleanup, health-check, auto-cleanup, and public import behavior. The story also replaced the `574` line lifecycle test monolith with focused initialization, execution, cleanup, and health suites, absorbed review follow-ups for direct implementation-type imports and a tighter internal initialize dependency shape, kept the explicit-`any` baseline flat at `workspace 84/289` and `core 23/119`, and promoted `ST-09059`, `ST-09060`, `ST-09064`, `ST-09065`, and `ST-09066` from `Backlog` to `Ready` because all remaining backlog dependencies are now satisfied.
 
 ### ST-09057: Modularize Relational Transaction Flow and Tests
 - **Merged:** 2026-06-05
