@@ -2335,7 +2335,7 @@ Implementation notes:
 
 ### Checklist
 - [x] Create branch `refactor/st-09058-tool-lifecycle-modularization`
-- [ ] Create draft PR with story ID in title
+- [x] Create draft PR with story ID in title
 - [x] Define test strategy before implementation: cover runtime modularization and test-file modularization; first failing test should prove lifecycle behavior remains stable while the oversized runtime and test files are split
 - [x] Write or update the failing automated test before production changes when practical; if not practical, record why before implementation
 - [x] Reduce `packages/core/src/tools/lifecycle.ts` below the 300 line planning cutoff by extracting focused internal modules for startup, shutdown, health/liveness coordination, and lifecycle state helpers behind a stable facade
@@ -2348,8 +2348,8 @@ Implementation notes:
 - [x] Assess residual test impact; add/update additional automated tests when needed, or document why no further tests are required
 - [x] Run full test suite before finalizing the PR and record results
 - [x] Run lint (`pnpm lint`) before finalizing the PR and record results
-- [ ] Commit completed checklist items as logical commits and push updates
-- [ ] Mark PR Ready only after all story tasks are complete
+- [x] Commit completed checklist items as logical commits and push updates
+- [x] Mark PR Ready only after all story tasks are complete
 - [ ] Wait for merge; do not merge directly from local branch
 
 Implementation notes:
