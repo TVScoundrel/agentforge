@@ -5,6 +5,37 @@ All notable changes to AgentForge will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.16.45] - 2026-06-07
+
+### Added
+
+#### @agentforge/core - Tool Lifecycle Modularization Coverage
+- Added focused managed-tool lifecycle coverage in `packages/core/tests/tools/lifecycle-initialization.test.ts`, `lifecycle-execution.test.ts`, `lifecycle-cleanup.test.ts`, and `lifecycle-health.test.ts`
+- Added story documentation in `docs/st09058-tool-lifecycle-modularization.md` capturing the runtime split, validation evidence, and no-regression explicit-`any` outcome
+
+### Changed
+
+#### @agentforge/core - Managed Tool Lifecycle Modularization
+- Reduced `packages/core/src/tools/lifecycle.ts` from a mixed-responsibility `405` line implementation to an `11` line public facade below the `300` line planning cutoff
+- Extracted focused internal modules in `packages/core/src/tools/lifecycle-managed-tool.ts`, `lifecycle-types.ts`, `lifecycle-health.ts`, `lifecycle-hooks.ts`, `lifecycle-internal-types.ts`, and `lifecycle-error.ts`
+- Preserved `ManagedTool` initialization, execution, cleanup, health-check, auto-cleanup, and public import behavior while making lifecycle orchestration boundaries smaller and easier to review
+
+### Fixed
+
+#### @agentforge/core - Lifecycle Modularization Review Follow-Ups
+- Replaced the old lifecycle test monolith with focused suites that mirror initialization, execution, cleanup, and health boundaries
+- Removed the extracted lifecycle type-cycle through the public facade and tightened the internal initialize dependency shape during review follow-up
+- Kept the explicit-`any` baseline stable at `workspace 84/289` and `core 23/119`
+
+### Published
+- All packages published to npm registry at version 0.16.45:
+  - @agentforge/core@0.16.45
+  - @agentforge/skills@0.16.45
+  - @agentforge/patterns@0.16.45
+  - @agentforge/tools@0.16.45
+  - @agentforge/testing@0.16.45
+  - @agentforge/cli@0.16.45
+
 ## [0.16.44] - 2026-06-06
 
 ### Added
