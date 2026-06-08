@@ -8,21 +8,8 @@
  * @module patterns/multi-agent/schemas
  */
 
-import type { JsonObject, JsonValue } from '@agentforge/core';
+import { JsonObjectSchema } from '../shared/json-schemas.js';
 import { z } from 'zod';
-
-const JsonValueSchema: z.ZodType<JsonValue> = z.lazy(() =>
-  z.union([
-    z.string(),
-    z.number().finite(),
-    z.boolean(),
-    z.null(),
-    z.array(JsonValueSchema),
-    z.record(JsonValueSchema),
-  ])
-);
-
-const JsonObjectSchema: z.ZodType<JsonObject> = z.record(JsonValueSchema);
 
 /**
  * Schema for agent roles in the system
