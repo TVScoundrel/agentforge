@@ -2441,7 +2441,8 @@ Implementation notes:
 - [x] Run lint (`pnpm lint`) before finalizing the PR and record results
 - [x] Commit completed checklist items as logical commits and push updates
 - [x] Mark PR Ready only after all story tasks are complete
-- [ ] Wait for merge; do not merge directly from local branch
+- [x] Wait for merge; do not merge directly from local branch
+  - Merged via PR #129 on 2026-06-08 (merge commit `f29629b`)
 
 Implementation notes:
 
@@ -2468,7 +2469,7 @@ Implementation notes:
 - PR workflow:
   - Draft PR created with story ID in title: PR #129
   - Branch pushed with implementation commit `be2cb272`
-  - Branch is ready to be marked `Ready for review`
+  - Branch marked ready for review, review follow-ups landed in `51cb08b8`, `cc73f399`, `bf5e3824`, and `02374728`
 
 ---
 

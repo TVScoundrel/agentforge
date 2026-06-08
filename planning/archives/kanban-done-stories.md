@@ -8,6 +8,13 @@
 
 ## Completed Stories
 
+### ST-09060: Tighten Multi-Agent Schema Payload Contracts
+- **Merged:** 2026-06-08
+- **PR:** https://github.com/TVScoundrel/agentforge/pull/129 (commit f29629b)
+- **Epic:** EP-09 (SOLID Micro-Refactors and Type Boundary Hardening)
+- **Estimate:** 3 hours
+- **Outcome:** Tightened `@agentforge/patterns` multi-agent runtime schema payload boundaries by replacing broad metadata `z.any()` seams with shared JSON-safe metadata objects and narrowing handoff context to unknown-first while preserving worker handoff flexibility. The story added focused multi-agent schema acceptance/rejection tests plus package-enforced typecheck assertions, then absorbed review follow-ups to extract a shared JSON-safe helper, reject non-plain runtime objects, preserve `Object.create(null)` JSON-map compatibility, and document the resulting ReAct metadata validation tightening, all while keeping the explicit-`any` baseline flat at `workspace 84/289` and `patterns 2/28`.
+
 ### ST-09059: Tighten ReAct Schema Payload Contracts
 - **Merged:** 2026-06-08
 - **PR:** https://github.com/TVScoundrel/agentforge/pull/128 (commit 754a0ff)
