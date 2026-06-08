@@ -1,12 +1,12 @@
 # Kanban Queue: AgentForge
 
-**Last Updated:** 2026-06-06
+**Last Updated:** 2026-06-08
 
 ## Queue Status Summary
 
-- **Ready:** 8 stories
+- **Ready:** 7 stories
 - **In Progress:** 0 stories
-- **In Review:** 0 stories
+- **In Review:** 1 story
 - **Blocked:** 0 stories
 - **Backlog:** 0 stories
 
@@ -14,7 +14,6 @@
 
 ## Ready
 
-- `ST-09059` - Tighten ReAct Schema Payload Contracts
 - `ST-09060` - Tighten Multi-Agent Schema Payload Contracts
 - `ST-09061` - Modularize Core Tool Types and Tests
 - `ST-09062` - Modularize Core Tool Executor and Tests
@@ -33,7 +32,7 @@ None currently.
 
 ## In Review
 
-None currently.
+- `ST-09059` - Tighten ReAct Schema Payload Contracts
 
 ## Blocked
 
