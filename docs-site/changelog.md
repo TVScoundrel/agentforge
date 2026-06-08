@@ -5,6 +5,37 @@ All notable changes to AgentForge will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.16.46] - 2026-06-08
+
+### Added
+
+#### @agentforge/patterns - ReAct Schema Contract Coverage
+- Added focused ReAct schema contract coverage in `packages/patterns/tests/react/state.test.ts` for JSON-safe metadata acceptance and rejection boundaries
+- Added `packages/patterns/tests/react/contracts.typecheck.ts` and wired it into package typecheck validation so ReAct metadata and tool payload contract assertions are compiled during release verification
+- Added story documentation in `docs/st09059-react-schema-payload-contracts.md` capturing the contract changes, validation evidence, and no-regression explicit-`any` outcome
+
+### Changed
+
+#### @agentforge/patterns - ReAct Schema Payload Hardening
+- Tightened `packages/patterns/src/react/schemas.ts` so message and thought metadata now use JSON-safe object contracts while tool-call arguments and tool-result payloads stay unknown-first
+- Preserved ReAct reasoning, action, observation, and prompt behavior while making metadata boundaries safer for downstream serialization and validation consumers
+
+### Fixed
+
+#### @agentforge/patterns - ReAct Schema Review Follow-Ups
+- Rejected non-finite metadata numbers such as `Infinity` and `-Infinity` from the JSON-safe metadata branch during review follow-up
+- Corrected the package typecheck wiring and release documentation so the new compile-time contract assertions are actually enforced and the story notes no longer overstate validation coverage
+- Kept the explicit-`any` baseline stable at `workspace 84/289` and `patterns 2/28`
+
+### Published
+- All packages published to npm registry at version 0.16.46:
+  - @agentforge/core@0.16.46
+  - @agentforge/skills@0.16.46
+  - @agentforge/patterns@0.16.46
+  - @agentforge/tools@0.16.46
+  - @agentforge/testing@0.16.46
+  - @agentforge/cli@0.16.46
+
 ## [0.16.45] - 2026-06-07
 
 ### Added
