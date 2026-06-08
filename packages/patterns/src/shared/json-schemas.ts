@@ -1,6 +1,15 @@
 import type { JsonObject, JsonValue } from '@agentforge/core';
 import { z } from 'zod';
 
+function isPlainJsonObject(value: unknown): value is JsonObject {
+  return (
+    typeof value === 'object' &&
+    value !== null &&
+    !Array.isArray(value) &&
+    Object.getPrototypeOf(value) === Object.prototype
+  );
+}
+
 export const JsonValueSchema: z.ZodType<JsonValue> = z.lazy(() =>
   z.union([
     z.string(),
@@ -8,8 +17,12 @@ export const JsonValueSchema: z.ZodType<JsonValue> = z.lazy(() =>
     z.boolean(),
     z.null(),
     z.array(JsonValueSchema),
-    z.record(JsonValueSchema),
+    JsonObjectSchema,
   ])
 );
 
-export const JsonObjectSchema: z.ZodType<JsonObject> = z.record(JsonValueSchema);
+export const JsonObjectSchema: z.ZodType<JsonObject> = z
+  .custom<JsonObject>(isPlainJsonObject, {
+    message: 'Expected a plain JSON object',
+  })
+  .pipe(z.record(JsonValueSchema));

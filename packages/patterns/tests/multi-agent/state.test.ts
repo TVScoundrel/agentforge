@@ -311,8 +311,8 @@ describe('Multi-Agent State', () => {
       const messagesReducer = MultiAgentStateConfig.messages.reducer;
       expect(messagesReducer).toBeDefined();
       if (messagesReducer) {
-        const left: AgentMessage[] = [{ id: '1', type: 'user_input', from: 'user', to: 'supervisor', content: 'test', timestamp: new Date().toISOString() }];
-        const right: AgentMessage[] = [{ id: '2', type: 'task_assignment', from: 'supervisor', to: 'worker-1', content: 'task', timestamp: new Date().toISOString() }];
+        const left: AgentMessage[] = [{ id: '1', type: 'user_input', from: 'user', to: 'supervisor', content: 'test', timestamp: Date.now() }];
+        const right: AgentMessage[] = [{ id: '2', type: 'task_assignment', from: 'supervisor', to: 'worker-1', content: 'task', timestamp: Date.now() }];
         const result = messagesReducer(left, right);
         expect(result).toHaveLength(2);
         expect(result[0].id).toBe('1');
