@@ -4,9 +4,9 @@
 
 ## Queue Status Summary
 
-- **Ready:** 7 stories
+- **Ready:** 6 stories
 - **In Progress:** 0 stories
-- **In Review:** 0 stories
+- **In Review:** 1 story
 - **Blocked:** 0 stories
 - **Backlog:** 0 stories
 
@@ -14,7 +14,6 @@
 
 ## Ready
 
-- `ST-09060` - Tighten Multi-Agent Schema Payload Contracts
 - `ST-09061` - Modularize Core Tool Types and Tests
 - `ST-09062` - Modularize Core Tool Executor and Tests
 - `ST-09063` - Modularize Multi-Agent Worker Node and Tests
@@ -32,7 +31,7 @@ None currently.
 
 ## In Review
 
-None currently.
+- `ST-09060` - Tighten Multi-Agent Schema Payload Contracts
 
 ## Blocked
 

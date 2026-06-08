@@ -8,6 +8,7 @@
  * @module patterns/multi-agent/schemas
  */
 
+import { JsonObjectSchema } from '../shared/json-schemas.js';
 import { z } from 'zod';
 
 /**
@@ -63,7 +64,7 @@ export const AgentMessageSchema = z.object({
   /**
    * Optional metadata
    */
-  metadata: z.record(z.any()).optional().describe('Additional message metadata'),
+  metadata: JsonObjectSchema.optional().describe('Additional message metadata'),
 
   /**
    * Timestamp when message was created
@@ -237,7 +238,7 @@ export const TaskResultSchema = z.object({
   /**
    * Optional metadata about execution
    */
-  metadata: z.record(z.any()).optional().describe('Execution metadata'),
+  metadata: JsonObjectSchema.optional().describe('Execution metadata'),
 });
 
 export type TaskResult = z.infer<typeof TaskResultSchema>;
@@ -279,7 +280,7 @@ export const HandoffRequestSchema = z.object({
   /**
    * Context to pass to next agent
    */
-  context: z.any().describe('Context to pass to next agent'),
+  context: z.unknown().describe('Context to pass to next agent'),
 
   /**
    * Timestamp of handoff request
@@ -288,4 +289,3 @@ export const HandoffRequestSchema = z.object({
 });
 
 export type HandoffRequest = z.infer<typeof HandoffRequestSchema>;
-
