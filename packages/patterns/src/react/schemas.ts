@@ -7,7 +7,21 @@
  * @module langgraph/patterns/react/schemas
  */
 
+import type { JsonObject, JsonValue } from '@agentforge/core';
 import { z } from 'zod';
+
+const JsonValueSchema: z.ZodType<JsonValue> = z.lazy(() =>
+  z.union([
+    z.string(),
+    z.number(),
+    z.boolean(),
+    z.null(),
+    z.array(JsonValueSchema),
+    z.record(JsonValueSchema),
+  ])
+);
+
+const JsonObjectSchema: z.ZodType<JsonObject> = z.record(JsonValueSchema);
 
 /**
  * Message role types
@@ -26,7 +40,7 @@ export const MessageSchema = z.object({
   content: z.string(),
   name: z.string().optional(),
   tool_call_id: z.string().optional(),
-  metadata: z.record(z.any()).optional(),
+  metadata: JsonObjectSchema.optional(),
 });
 
 export type Message = z.infer<typeof MessageSchema>;
@@ -37,7 +51,7 @@ export type Message = z.infer<typeof MessageSchema>;
 export const ThoughtSchema = z.object({
   content: z.string(),
   timestamp: z.number().optional(),
-  metadata: z.record(z.any()).optional(),
+  metadata: JsonObjectSchema.optional(),
 });
 
 export type Thought = z.infer<typeof ThoughtSchema>;
@@ -48,7 +62,7 @@ export type Thought = z.infer<typeof ThoughtSchema>;
 export const ToolCallSchema = z.object({
   id: z.string(),
   name: z.string(),
-  arguments: z.record(z.any()),
+  arguments: z.record(z.unknown()),
   timestamp: z.number().optional(),
 });
 
@@ -59,7 +73,7 @@ export type ToolCall = z.infer<typeof ToolCallSchema>;
  */
 export const ToolResultSchema = z.object({
   toolCallId: z.string(),
-  result: z.any(),
+  result: z.unknown(),
   error: z.string().optional(),
   timestamp: z.number().optional(),
   isDuplicate: z.boolean().optional(), // Flag indicating this was a duplicate tool call
@@ -79,4 +93,3 @@ export const ScratchpadEntrySchema = z.object({
 });
 
 export type ScratchpadEntry = z.infer<typeof ScratchpadEntrySchema>;
-

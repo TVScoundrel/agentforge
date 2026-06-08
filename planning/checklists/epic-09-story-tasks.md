@@ -2378,21 +2378,44 @@ Implementation notes:
 **Branch:** `fix/st-09059-react-schema-payload-contracts`
 
 ### Checklist
-- [ ] Create branch `fix/st-09059-react-schema-payload-contracts`
+- [x] Create branch `fix/st-09059-react-schema-payload-contracts`
 - [ ] Create draft PR with story ID in title
-- [ ] Define test strategy before implementation: cover schema acceptance/rejection boundaries, tool-call payload handling, and result serialization compatibility; first failing test should assert ReAct schemas no longer rely on broad `z.any()` payload seams
-- [ ] Write or update the failing automated test before production changes when practical; if not practical, record why before implementation
-- [ ] Replace broad metadata, arguments, and result `z.any()` seams in `packages/patterns/src/react/schemas.ts` with unknown-first or JSON-safe payload contracts where behavior allows
-- [ ] Preserve ReAct reasoning, action, observation, and prompt behavior
-- [ ] Add/update production code until focused tests pass, keeping test evidence in checklist notes and PR body
-- [ ] Record explicit-`any` warning deltas for touched files in story docs
-- [ ] Add or update story documentation at `docs/st09059-react-schema-payload-contracts.md` (or document why not required)
-- [ ] Assess residual test impact; add/update additional automated tests when needed, or document why no further tests are required
-- [ ] Run full test suite before finalizing the PR and record results
-- [ ] Run lint (`pnpm lint`) before finalizing the PR and record results
+- [x] Define test strategy before implementation: cover schema acceptance/rejection boundaries, tool-call payload handling, and result serialization compatibility; first failing test should assert ReAct schemas no longer rely on broad `z.any()` payload seams
+- [x] Write or update the failing automated test before production changes when practical; if not practical, record why before implementation
+- [x] Replace broad metadata, arguments, and result `z.any()` seams in `packages/patterns/src/react/schemas.ts` with unknown-first or JSON-safe payload contracts where behavior allows
+- [x] Preserve ReAct reasoning, action, observation, and prompt behavior
+- [x] Add/update production code until focused tests pass, keeping test evidence in checklist notes and PR body
+- [x] Record explicit-`any` warning deltas for touched files in story docs
+- [x] Add or update story documentation at `docs/st09059-react-schema-payload-contracts.md` (or document why not required)
+- [x] Assess residual test impact; add/update additional automated tests when needed, or document why no further tests are required
+- [x] Run full test suite before finalizing the PR and record results
+- [x] Run lint (`pnpm lint`) before finalizing the PR and record results
 - [ ] Commit completed checklist items as logical commits and push updates
 - [ ] Mark PR Ready only after all story tasks are complete
 - [ ] Wait for merge; do not merge directly from local branch
+
+Implementation notes:
+
+- Test-first plan:
+  - Add focused ReAct schema runtime tests for JSON-safe metadata acceptance/rejection boundaries in `packages/patterns/tests/react/state.test.ts`.
+  - Add type-level assertions in `packages/patterns/tests/react/contracts.typecheck.ts` so message metadata, thought metadata, tool-call arguments, and tool-result payload inference no longer flow through broad `any`.
+- Focused failing test:
+  - `pnpm test --run packages/patterns/tests/react/state.test.ts`
+  - initial failure: `should reject non-JSON-safe metadata values`
+- Focused passing test:
+  - `pnpm test --run packages/patterns/tests/react/state.test.ts`
+  - `1` file passed, `15` tests passed
+- Package checks:
+  - `pnpm --filter @agentforge/patterns typecheck`
+  - `pnpm --filter @agentforge/patterns exec eslint src/react/schemas.ts tests/react/state.test.ts tests/react/contracts.typecheck.ts`
+- Explicit-`any` baseline:
+  - `pnpm lint:explicit-any:baseline` -> workspace `84/289`, `patterns 2/28`
+- Workspace checks:
+  - `pnpm test --run` -> `210` files passed, `18` skipped; `2310` tests passed, `286` skipped
+  - `pnpm lint` -> passed with warnings only
+  - `git diff --check`
+- Residual impact:
+  - Added three focused ReAct schema assertions in `packages/patterns/tests/react/state.test.ts`; no additional CI workflow change is required.
 
 ---
 

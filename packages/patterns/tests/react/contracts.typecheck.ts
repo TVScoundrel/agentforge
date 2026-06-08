@@ -1,10 +1,14 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
+
 import type { CompiledStateGraph, BaseCheckpointSaver } from '@langchain/langgraph';
+import type { JsonObject } from '@agentforge/core';
 import type { Tool, ToolRegistry } from '@agentforge/core';
 import { ReActAgentBuilder } from '../../src/react/builder.js';
 import { createReActAgent } from '../../src/react/agent.js';
 import { formatToolsForPrompt } from '../../src/react/prompts.js';
 import type { ReActStateType } from '../../src/react/state.js';
 import type { ReActToolInput } from '../../src/react/types.js';
+import type { Message, Thought, ToolCall, ToolResult } from '../../src/react/index.js';
 import { z, type ZodSchema } from 'zod';
 
 type Equal<Left, Right> =
@@ -33,6 +37,18 @@ type _builderToolsArrayIsPublicToolInputArray = AssertTrue<
 >;
 type _promptToolDescriptorSchemaMatchesContract = AssertTrue<
   Equal<PromptToolDescriptor['schema'], ZodSchema<unknown>>
+>;
+type _messageMetadataIsJsonObject = AssertTrue<
+  Equal<Message['metadata'], JsonObject | undefined>
+>;
+type _thoughtMetadataIsJsonObject = AssertTrue<
+  Equal<Thought['metadata'], JsonObject | undefined>
+>;
+type _toolCallArgumentsAreUnknownFirst = AssertTrue<
+  Equal<ToolCall['arguments'], Record<string, unknown>>
+>;
+type _toolResultPayloadIsUnknownFirst = AssertTrue<
+  Equal<ToolResult['result'], unknown>
 >;
 
 declare const typedTool: Tool<{ input: string }, { ok: boolean }>;

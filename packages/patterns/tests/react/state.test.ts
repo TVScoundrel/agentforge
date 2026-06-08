@@ -30,7 +30,7 @@ describe('ReAct State Definition', () => {
 
   it('should work with LangGraph StateGraph', () => {
     // This tests that our state annotation is compatible with LangGraph
-    const testNode = (state: ReActStateType) => ({
+    const testNode = (_state: ReActStateType) => ({
       messages: [{ role: 'assistant' as const, content: 'test' }],
       iteration: 1,
     });
@@ -175,6 +175,48 @@ describe('ReAct Schemas', () => {
     expect(parsed.tool_call_id).toBe('call_123');
   });
 
+  it('should allow JSON-safe metadata on messages and thoughts', () => {
+    const messageWithMetadata = {
+      role: 'assistant',
+      content: 'Structured message',
+      metadata: {
+        tags: ['react', 'schema'],
+        nested: { score: 0.9, ok: true },
+      },
+    };
+
+    const thoughtWithMetadata = {
+      content: 'I should preserve nested JSON-safe metadata',
+      metadata: {
+        source: 'unit-test',
+        details: { attempts: 2, complete: false },
+      },
+    };
+
+    expect(() => MessageSchema.parse(messageWithMetadata)).not.toThrow();
+    expect(() => ThoughtSchema.parse(thoughtWithMetadata)).not.toThrow();
+  });
+
+  it('should reject non-JSON-safe metadata values', () => {
+    const invalidMessage = {
+      role: 'assistant',
+      content: 'Bad metadata',
+      metadata: {
+        callback: () => 'nope',
+      },
+    };
+
+    const invalidThought = {
+      content: 'This should fail',
+      metadata: {
+        symbol: Symbol('bad'),
+      },
+    };
+
+    expect(() => MessageSchema.parse(invalidMessage)).toThrow();
+    expect(() => ThoughtSchema.parse(invalidThought)).toThrow();
+  });
+
   it('should validate Thought schema', () => {
     const validThought = {
       content: 'I need to search for information',
@@ -203,6 +245,22 @@ describe('ReAct Schemas', () => {
     expect(() => ToolResultSchema.parse(validResult)).not.toThrow();
   });
 
+  it('should keep tool-call arguments and tool results unknown-first', () => {
+    const bigintToolCall = {
+      id: 'call_bigint',
+      name: 'calculator',
+      arguments: { input: 1n },
+    };
+
+    const bigintResult = {
+      toolCallId: 'call_bigint',
+      result: 1n,
+    };
+
+    expect(() => ToolCallSchema.parse(bigintToolCall)).not.toThrow();
+    expect(() => ToolResultSchema.parse(bigintResult)).not.toThrow();
+  });
+
   it('should validate ScratchpadEntry schema', () => {
     const validEntry = {
       step: 1,
@@ -214,4 +272,3 @@ describe('ReAct Schemas', () => {
     expect(() => ScratchpadEntrySchema.parse(validEntry)).not.toThrow();
   });
 });
-
