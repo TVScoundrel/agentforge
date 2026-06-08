@@ -8,7 +8,21 @@
  * @module patterns/multi-agent/schemas
  */
 
+import type { JsonObject, JsonValue } from '@agentforge/core';
 import { z } from 'zod';
+
+const JsonValueSchema: z.ZodType<JsonValue> = z.lazy(() =>
+  z.union([
+    z.string(),
+    z.number().finite(),
+    z.boolean(),
+    z.null(),
+    z.array(JsonValueSchema),
+    z.record(JsonValueSchema),
+  ])
+);
+
+const JsonObjectSchema: z.ZodType<JsonObject> = z.record(JsonValueSchema);
 
 /**
  * Schema for agent roles in the system
@@ -63,7 +77,7 @@ export const AgentMessageSchema = z.object({
   /**
    * Optional metadata
    */
-  metadata: z.record(z.any()).optional().describe('Additional message metadata'),
+  metadata: JsonObjectSchema.optional().describe('Additional message metadata'),
 
   /**
    * Timestamp when message was created
@@ -237,7 +251,7 @@ export const TaskResultSchema = z.object({
   /**
    * Optional metadata about execution
    */
-  metadata: z.record(z.any()).optional().describe('Execution metadata'),
+  metadata: JsonObjectSchema.optional().describe('Execution metadata'),
 });
 
 export type TaskResult = z.infer<typeof TaskResultSchema>;
@@ -279,7 +293,7 @@ export const HandoffRequestSchema = z.object({
   /**
    * Context to pass to next agent
    */
-  context: z.any().describe('Context to pass to next agent'),
+  context: z.unknown().describe('Context to pass to next agent'),
 
   /**
    * Timestamp of handoff request
@@ -288,4 +302,3 @@ export const HandoffRequestSchema = z.object({
 });
 
 export type HandoffRequest = z.infer<typeof HandoffRequestSchema>;
-

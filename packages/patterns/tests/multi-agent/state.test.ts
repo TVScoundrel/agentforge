@@ -2,15 +2,16 @@ import { describe, it, expect } from 'vitest';
 import {
   MultiAgentState,
   MultiAgentStateConfig,
-  type MultiAgentStateType,
 } from '../../src/multi-agent/state.js';
 import {
   AgentRoleSchema,
+  type AgentMessage,
   MessageTypeSchema,
   AgentMessageSchema,
   RoutingStrategySchema,
   RoutingDecisionSchema,
   WorkerCapabilitiesSchema,
+  type WorkerCapabilities,
   TaskAssignmentSchema,
   TaskResultSchema,
   MultiAgentStatusSchema,
@@ -100,6 +101,43 @@ describe('Multi-Agent State', () => {
 
       const result = AgentMessageSchema.safeParse(validMessage);
       expect(result.success).toBe(true);
+    });
+
+    it('should reject non-JSON-safe metadata while preserving unknown-first handoff context', () => {
+      const invalidMessage = {
+        id: 'msg-4',
+        type: 'task_result',
+        from: 'worker-1',
+        to: 'supervisor',
+        content: 'Task completed',
+        metadata: {
+          callback: () => 'not-json-safe',
+        },
+        timestamp: Date.now(),
+      };
+
+      const invalidTaskResult = {
+        assignmentId: 'assignment-3',
+        workerId: 'worker-1',
+        success: true,
+        result: 'Completed',
+        completedAt: Date.now(),
+        metadata: {
+          score: Number.POSITIVE_INFINITY,
+        },
+      };
+
+      const flexibleHandoff = {
+        from: 'worker-1',
+        to: 'worker-2',
+        reason: 'Pass through rich runtime context',
+        context: { symbolToken: Symbol('handoff') },
+        timestamp: new Date().toISOString(),
+      };
+
+      expect(AgentMessageSchema.safeParse(invalidMessage).success).toBe(false);
+      expect(TaskResultSchema.safeParse(invalidTaskResult).success).toBe(false);
+      expect(HandoffRequestSchema.safeParse(flexibleHandoff).success).toBe(true);
     });
 
     it('should validate RoutingStrategy enum', () => {
@@ -273,9 +311,9 @@ describe('Multi-Agent State', () => {
       const messagesReducer = MultiAgentStateConfig.messages.reducer;
       expect(messagesReducer).toBeDefined();
       if (messagesReducer) {
-        const left = [{ id: '1', type: 'user_input', from: 'user', to: 'supervisor', content: 'test', timestamp: new Date().toISOString() }];
-        const right = [{ id: '2', type: 'task_assignment', from: 'supervisor', to: 'worker-1', content: 'task', timestamp: new Date().toISOString() }];
-        const result = messagesReducer(left as any, right as any);
+        const left: AgentMessage[] = [{ id: '1', type: 'user_input', from: 'user', to: 'supervisor', content: 'test', timestamp: new Date().toISOString() }];
+        const right: AgentMessage[] = [{ id: '2', type: 'task_assignment', from: 'supervisor', to: 'worker-1', content: 'task', timestamp: new Date().toISOString() }];
+        const result = messagesReducer(left, right);
         expect(result).toHaveLength(2);
         expect(result[0].id).toBe('1');
         expect(result[1].id).toBe('2');
@@ -293,29 +331,23 @@ describe('Multi-Agent State', () => {
       const workersReducer = MultiAgentStateConfig.workers.reducer;
       expect(workersReducer).toBeDefined();
       if (workersReducer) {
-        const left = {
+        const left: Record<string, WorkerCapabilities> = {
           'worker-1': {
-            agentId: 'worker-1',
-            name: 'Worker 1',
-            description: 'Test',
             skills: [],
             tools: [],
             available: true,
-            workload: 0,
+            currentWorkload: 0,
           },
         };
-        const right = {
+        const right: Record<string, WorkerCapabilities> = {
           'worker-2': {
-            agentId: 'worker-2',
-            name: 'Worker 2',
-            description: 'Test',
             skills: [],
             tools: [],
             available: true,
-            workload: 0,
+            currentWorkload: 0,
           },
         };
-        const result = workersReducer(left as any, right as any);
+        const result = workersReducer(left, right);
         expect(Object.keys(result)).toHaveLength(2);
         expect(result['worker-1']).toBeDefined();
         expect(result['worker-2']).toBeDefined();
@@ -323,4 +355,3 @@ describe('Multi-Agent State', () => {
     });
   });
 });
-

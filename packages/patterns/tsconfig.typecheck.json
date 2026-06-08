@@ -3,6 +3,6 @@
   "compilerOptions": {
     "rootDir": "."
   },
-  "include": ["src/**/*", "tests/react/contracts.typecheck.ts"],
+  "include": ["src/**/*", "tests/react/contracts.typecheck.ts", "tests/multi-agent/contracts.typecheck.ts"],
   "exclude": ["node_modules", "dist"]
 }
