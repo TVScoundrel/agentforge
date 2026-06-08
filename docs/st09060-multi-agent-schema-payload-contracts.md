@@ -2,7 +2,7 @@
 
 ## Summary
 
-`ST-09060` tightens the multi-agent runtime schemas around message metadata, task-result metadata, and handoff context without changing multi-agent routing or execution behavior. Message and task-result metadata now require JSON-safe structures, while handoff context remains unknown-first so worker-to-worker coordination can still pass through richer runtime values when needed.
+`ST-09060` tightens the multi-agent runtime schemas around message metadata, task-result metadata, and handoff context without changing multi-agent routing or execution behavior. Message and task-result metadata now require JSON-safe structures, while handoff context remains unknown-first so worker-to-worker coordination can still pass through richer runtime values when needed. During review, the JSON-safe object validator was extracted into a shared helper and ReAct message/thought metadata now use that same contract, which also rejects non-plain runtime objects while still allowing normal objects and null-prototype JSON maps.
 
 ## Test Strategy
 
@@ -18,12 +18,14 @@ No CI change was required because the existing focused multi-agent state test, p
 - `AgentMessageSchema.metadata` now uses a JSON-safe object contract instead of `z.record(z.any())`
 - `TaskResultSchema.metadata` now uses a JSON-safe object contract instead of `z.record(z.any())`
 - `HandoffRequestSchema.context` now uses `z.unknown()` instead of `z.any()`
+- ReAct `MessageSchema.metadata` and `ThoughtSchema.metadata` now use the shared JSON-safe object contract as part of the review-driven helper extraction
 
 ## Behavior Preserved
 
 - Multi-agent routing, worker handoff, execution metadata, and context-passing behavior remain unchanged
 - handoff context remains unknown-first and continues to accept non-JSON values when runtime coordination needs that flexibility
 - message flow, task completion flow, and supervisor/worker coordination semantics remain unchanged
+- ReAct message and thought metadata remain optional, but now reject non-JSON-safe runtime objects such as class instances while accepting plain objects and null-prototype JSON maps
 
 ## Explicit-`any` Baseline
 
@@ -49,3 +51,4 @@ No CI change was required because the existing focused multi-agent state test, p
 
 - The story added one focused runtime regression in `packages/patterns/tests/multi-agent/state.test.ts` plus a dedicated type-level contract assertion file for the multi-agent schema boundary.
 - The workspace test count increased from `2310` to `2311` because this story added one focused multi-agent schema assertion in `packages/patterns/tests/multi-agent/state.test.ts`.
+- Review follow-ups extracted `packages/patterns/src/shared/json-schemas.ts`, switched ReAct metadata fields to that helper, tightened plain-object enforcement, and then widened it to preserve support for `Object.create(null)` JSON maps.
