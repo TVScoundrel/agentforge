@@ -2,11 +2,18 @@
 
 **Purpose:** Track completed and merged stories for the Relational Database Access Tool project.
 
-**Last Updated:** 2026-06-06
+**Last Updated:** 2026-06-08
 
 ---
 
 ## Completed Stories
+
+### ST-09059: Tighten ReAct Schema Payload Contracts
+- **Merged:** 2026-06-08
+- **PR:** https://github.com/TVScoundrel/agentforge/pull/128 (commit 754a0ff)
+- **Epic:** EP-09 (SOLID Micro-Refactors and Type Boundary Hardening)
+- **Estimate:** 3 hours
+- **Outcome:** Tightened `@agentforge/patterns` ReAct runtime schema payload boundaries by replacing broad metadata/result `z.any()` seams with JSON-safe metadata objects plus unknown-first tool payload contracts, then absorbing review follow-ups to reject non-finite metadata numbers and to wire the new `contracts.typecheck.ts` assertions into `@agentforge/patterns` package typecheck coverage. The story added focused ReAct schema acceptance/rejection tests, preserved runtime reasoning/action/observation behavior and non-JSON tool payload flexibility, kept the explicit-`any` baseline flat at `workspace 84/289` and `patterns 2/28`, and required no additional queue promotion because the ready lane was already dependency-satisfied.
 
 ### ST-09058: Modularize Core Tool Lifecycle and Tests
 - **Merged:** 2026-06-06

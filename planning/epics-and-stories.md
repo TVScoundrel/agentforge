@@ -1854,7 +1854,7 @@
 **Priority:** P2 (Medium)
 **Estimate:** 3 hours
 **Dependencies:** ST-09037
-**Status:** In Review
+**Status:** Merged (PR #128, 2026-06-08)
 
 **Acceptance criteria:**
 - [ ] `packages/patterns/src/react/schemas.ts` replaces broad `z.any()` metadata, arguments, and result payload seams with unknown-first or JSON-safe contracts where behavior allows.

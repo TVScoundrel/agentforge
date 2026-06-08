@@ -2392,7 +2392,7 @@ Implementation notes:
 - [x] Run lint (`pnpm lint`) before finalizing the PR and record results
 - [x] Commit completed checklist items as logical commits and push updates
 - [x] Mark PR Ready only after all story tasks are complete
-- [ ] Wait for merge; do not merge directly from local branch
+- [x] Wait for merge; do not merge directly from local branch
 
 Implementation notes:
 
@@ -2416,6 +2416,8 @@ Implementation notes:
   - `git diff --check`
 - Residual impact:
   - Added three focused ReAct schema assertions in `packages/patterns/tests/react/state.test.ts`; no additional CI workflow change is required.
+- Merge:
+  - Merged via PR #128 on 2026-06-08; merge commit `754a0ff`
 
 ---
 
