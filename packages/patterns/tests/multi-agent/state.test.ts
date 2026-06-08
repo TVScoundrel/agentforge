@@ -104,15 +104,28 @@ describe('Multi-Agent State', () => {
     });
 
     it('should reject non-JSON-safe metadata while preserving unknown-first handoff context', () => {
+      const nullPrototypeMetadata = Object.assign(Object.create(null), {
+        duration: 1500,
+        tokensUsed: 250,
+      });
+
       const invalidMessage = {
         id: 'msg-4',
         type: 'task_result',
         from: 'worker-1',
         to: 'supervisor',
         content: 'Task completed',
-        metadata: {
-          callback: () => 'not-json-safe',
-        },
+        metadata: { callback: () => 'not-json-safe' },
+        timestamp: Date.now(),
+      };
+
+      const validNullPrototypeMessage = {
+        id: 'msg-4b',
+        type: 'task_result',
+        from: 'worker-1',
+        to: 'supervisor',
+        content: 'Task completed',
+        metadata: nullPrototypeMetadata,
         timestamp: Date.now(),
       };
 
@@ -136,6 +149,7 @@ describe('Multi-Agent State', () => {
       };
 
       expect(AgentMessageSchema.safeParse(invalidMessage).success).toBe(false);
+      expect(AgentMessageSchema.safeParse(validNullPrototypeMessage).success).toBe(true);
       expect(TaskResultSchema.safeParse(invalidTaskResult).success).toBe(false);
       expect(HandoffRequestSchema.safeParse(flexibleHandoff).success).toBe(true);
     });

@@ -2,11 +2,14 @@ import type { JsonObject, JsonValue } from '@agentforge/core';
 import { z } from 'zod';
 
 function isPlainJsonObject(value: unknown): value is JsonObject {
+  const prototype =
+    typeof value === 'object' && value !== null ? Object.getPrototypeOf(value) : null;
+
   return (
     typeof value === 'object' &&
     value !== null &&
     !Array.isArray(value) &&
-    Object.getPrototypeOf(value) === Object.prototype
+    (prototype === Object.prototype || prototype === null)
   );
 }
 
