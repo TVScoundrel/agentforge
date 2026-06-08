@@ -2379,7 +2379,7 @@ Implementation notes:
 
 ### Checklist
 - [x] Create branch `fix/st-09059-react-schema-payload-contracts`
-- [ ] Create draft PR with story ID in title
+- [x] Create draft PR with story ID in title
 - [x] Define test strategy before implementation: cover schema acceptance/rejection boundaries, tool-call payload handling, and result serialization compatibility; first failing test should assert ReAct schemas no longer rely on broad `z.any()` payload seams
 - [x] Write or update the failing automated test before production changes when practical; if not practical, record why before implementation
 - [x] Replace broad metadata, arguments, and result `z.any()` seams in `packages/patterns/src/react/schemas.ts` with unknown-first or JSON-safe payload contracts where behavior allows
@@ -2390,8 +2390,8 @@ Implementation notes:
 - [x] Assess residual test impact; add/update additional automated tests when needed, or document why no further tests are required
 - [x] Run full test suite before finalizing the PR and record results
 - [x] Run lint (`pnpm lint`) before finalizing the PR and record results
-- [ ] Commit completed checklist items as logical commits and push updates
-- [ ] Mark PR Ready only after all story tasks are complete
+- [x] Commit completed checklist items as logical commits and push updates
+- [x] Mark PR Ready only after all story tasks are complete
 - [ ] Wait for merge; do not merge directly from local branch
 
 Implementation notes:

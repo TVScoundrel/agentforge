@@ -3,7 +3,7 @@
 **Epic Range:** EP-09 through EP-09
 **Status:** In Progress
 **Last Updated:** 2026-06-08
-**Active Story:** ST-09059 - Tighten ReAct Schema Payload Contracts (In Progress)
+**Active Story:** ST-09059 - Tighten ReAct Schema Payload Contracts (In Review)
 
 ---
 
@@ -100,7 +100,7 @@ Recent improvement snapshot:
 - `ST-09056` merged on 2026-06-05 after reducing `packages/skills/src/registry.ts` from `506` lines to a `101` line public facade, extracting focused discovery, event, prompt, query, and shared-type helpers while replacing the `419` line registry test monolith with focused discovery, query, event, and rescan suites. The story preserved `SkillRegistry` public behavior, absorbed review follow-ups for temp-dir cleanup, shared-type alignment, and documentation accuracy, and kept the explicit-`any` baseline flat at `workspace 84/289` and `skills 0/0`.
 - `ST-09061` through `ST-09066` were added on 2026-06-05 to keep EP-09 stocked beyond the current lane with another modularization-first batch, prioritizing large runtime files in `core` and `patterns` before the remaining schema-hardening slices so future fixes land on smaller modules instead of monoliths.
 - `ST-09058` merged on 2026-06-06 after shrinking `packages/core/src/tools/lifecycle.ts` from a `405` line mixed-responsibility runtime to an `11` line public facade, extracting focused managed-tool, hook, health, and shared-type modules, replacing the `574` line lifecycle test monolith with focused initialization, execution, cleanup, and health suites, and absorbing review follow-ups for direct implementation-type imports and cleaner internal initialize dependencies while keeping the explicit-`any` baseline flat at `workspace 84/289` and `core 23/119`.
-- `EP-09` remains open as the daily hardening stream, with `ST-09059` now active as the next schema-hardening slice, and the remaining ready lane still covering `ST-09060` through `ST-09066`.
+- `EP-09` remains open as the daily hardening stream, with `ST-09059` now in review as the current schema-hardening slice, and the remaining ready lane still covering `ST-09060` through `ST-09066`.
 - The refreshed follow-on queue now extends beyond the current Ready lane so another few weeks of small SOLID/DRY and modularization work can be pulled without re-planning the epic.
 
 ---
