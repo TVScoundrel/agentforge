@@ -210,6 +210,7 @@ describe('ReAct Schemas', () => {
       content: 'This should fail',
       metadata: {
         symbol: Symbol('bad'),
+        infiniteScore: Number.POSITIVE_INFINITY,
       },
     };
 

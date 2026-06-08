@@ -9,9 +9,9 @@
 This story had a practical test-first seam, so the implementation started with focused schema tests before production changes:
 
 - add runtime schema assertions in `packages/patterns/tests/react/state.test.ts` for JSON-safe metadata acceptance/rejection boundaries
-- add compile-time assertions in `packages/patterns/tests/react/contracts.typecheck.ts` so inferred metadata, arguments, and result types no longer flow through broad `any`
+- add compile-time assertions in `packages/patterns/tests/react/contracts.typecheck.ts` and wire them into the package typecheck config so inferred metadata, arguments, and result types no longer flow through broad `any`
 
-No CI change was required because the existing focused React state test, `@agentforge/patterns` typecheck, workspace test suite, lint, and explicit-`any` baseline gate already cover the touched surfaces.
+No CI change was required because the existing focused ReAct state test, package typecheck, workspace test suite, lint, and explicit-`any` baseline gate already cover the touched surfaces once the compile-time assertions are included in `packages/patterns/tsconfig.typecheck.json`.
 
 ## Contract Changes
 
