@@ -1871,7 +1871,7 @@
 **Priority:** P2 (Medium)
 **Estimate:** 3 hours
 **Dependencies:** ST-09045
-**Status:** In Progress
+**Status:** In Review
 
 **Acceptance criteria:**
 - [ ] `packages/patterns/src/multi-agent/schemas.ts` replaces broad metadata/context `z.any()` seams with unknown-first or JSON-safe contracts where behavior allows.
