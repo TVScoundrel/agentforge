@@ -5,6 +5,39 @@ All notable changes to AgentForge will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.16.47] - 2026-06-09
+
+### Added
+
+#### @agentforge/patterns - Multi-Agent Schema Contract Coverage
+- Added focused multi-agent schema contract coverage in `packages/patterns/tests/multi-agent/state.test.ts` for JSON-safe metadata acceptance and rejection boundaries, including null-prototype JSON-map compatibility
+- Added `packages/patterns/tests/multi-agent/contracts.typecheck.ts` and wired it into package typecheck validation so multi-agent metadata and handoff context contract assertions compile during release verification
+- Added story documentation in `docs/st09060-multi-agent-schema-payload-contracts.md` capturing the contract changes, validation evidence, and no-regression explicit-`any` outcome
+
+### Changed
+
+#### @agentforge/patterns - Multi-Agent Schema Payload Hardening
+- Tightened `packages/patterns/src/multi-agent/schemas.ts` so message and task-result metadata now use shared JSON-safe object contracts while handoff context stays unknown-first
+- Extracted `packages/patterns/src/shared/json-schemas.ts` so the JSON-safe object contract is shared between multi-agent and ReAct schemas instead of duplicated
+- Preserved multi-agent routing, worker handoff, execution metadata, and runtime context-passing behavior while making metadata boundaries safer for downstream serialization and validation consumers
+
+### Fixed
+
+#### @agentforge/patterns - Multi-Agent Schema Review Follow-Ups
+- Rejected non-plain runtime objects such as `Date` and `Map` from the shared JSON-safe object branch during review follow-up
+- Restored compatibility for `Object.create(null)` JSON maps so null-prototype objects that are still JSON-serializable remain valid metadata payloads
+- Clarified the release documentation and story notes to call out the shared helper extraction and the resulting ReAct metadata validation tightening
+- Kept the explicit-`any` baseline stable at `workspace 84/289` and `patterns 2/28`
+
+### Published
+- All packages published to npm registry at version 0.16.47:
+  - @agentforge/core@0.16.47
+  - @agentforge/skills@0.16.47
+  - @agentforge/patterns@0.16.47
+  - @agentforge/tools@0.16.47
+  - @agentforge/testing@0.16.47
+  - @agentforge/cli@0.16.47
+
 ## [0.16.46] - 2026-06-08
 
 ### Added
