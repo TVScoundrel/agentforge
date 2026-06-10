@@ -2,11 +2,18 @@
 
 **Purpose:** Track completed and merged stories for the Relational Database Access Tool project.
 
-**Last Updated:** 2026-06-08
+**Last Updated:** 2026-06-10
 
 ---
 
 ## Completed Stories
+
+### ST-09061: Modularize Core Tool Types and Tests
+- **Merged:** 2026-06-10
+- **PR:** https://github.com/TVScoundrel/agentforge/pull/130 (commit 32c56006)
+- **Epic:** EP-09 (SOLID Micro-Refactors and Type Boundary Hardening)
+- **Estimate:** 4 hours
+- **Outcome:** Modularized `@agentforge/core` tool type contracts by shrinking `packages/core/src/tools/types.ts` from a `387` line mixed-responsibility file to a `13` line public facade, extracting focused category, example, relations, metadata, and core-tool contract modules while preserving the stable `./types.js` import surface. The story also replaced the monolithic `packages/core/tests/tools/types.test.ts` coverage with focused suites behind the same public entrypoint, absorbed review follow-ups to restore the deprecated `execute` typing contract, switch the Zod dependency to a type-only import, and correct the final documentation evidence, kept the explicit-`any` baseline flat at `workspace 84/289` and `core 23/119`, and required no additional queue promotion because the ready lane was already dependency-satisfied.
 
 ### ST-09060: Tighten Multi-Agent Schema Payload Contracts
 - **Merged:** 2026-06-08
