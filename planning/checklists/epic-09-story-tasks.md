@@ -2492,8 +2492,8 @@ Implementation notes:
 - [x] Assess residual test impact; add/update additional automated tests when needed, or document why no further tests are required
 - [x] Run full test suite before finalizing the PR and record results
 - [x] Run lint (`pnpm lint`) before finalizing the PR and record results
-- [ ] Commit completed checklist items as logical commits and push updates
-- [ ] Mark PR Ready only after all story tasks are complete
+- [x] Commit completed checklist items as logical commits and push updates
+- [x] Mark PR Ready only after all story tasks are complete
 - [ ] Wait for merge; do not merge directly from local branch
 
 Implementation notes:
@@ -2527,6 +2527,12 @@ Implementation notes:
   - `pnpm test --run` -> `210` files passed, `18` skipped; `2311` tests passed, `286` skipped
   - `pnpm lint` -> exit `0`; warnings only (`0` errors)
   - `git diff --check`
+- Commit and push record:
+  - `046c577c` refactor(st-09061): split tool type contracts
+  - `bbc74583` test(st-09061): avoid duplicate suite discovery
+  - `84bddc57` docs(st-09061): record validation and move story to in-review
+- PR ready record:
+  - PR #130 marked ready for review: https://github.com/TVScoundrel/agentforge/pull/130
 
 ---
 
