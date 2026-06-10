@@ -5,6 +5,37 @@ All notable changes to AgentForge will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.16.48] - 2026-06-10
+
+### Added
+
+#### @agentforge/core - Tool Types Modularization Coverage
+- Added focused tool-types coverage in `packages/core/tests/tools/types/tool-category.ts`, `tool-name-and-example.ts`, `tool-metadata.ts`, `tool-interface.ts`, and `tool-relations.ts` behind the stable `packages/core/tests/tools/types.test.ts` public entrypoint
+- Added story documentation in `docs/st09061-tool-types-modularization.md` capturing the runtime split, validation evidence, and no-regression explicit-`any` outcome
+
+### Changed
+
+#### @agentforge/core - Tool Type Contract Modularization
+- Split `packages/core/src/tools/types.ts` into a small stable facade that re-exports focused category, example, relations, metadata, and core-tool contract modules
+- Preserved the public `./types.js` import surface and the existing public tool-types test entrypoint while reducing review and maintenance pressure on the old monolithic files
+
+### Fixed
+
+#### @agentforge/core - Tool Type Review Follow-Ups
+- Restored the deprecated `Tool.execute` typing annotation so downstream TypeScript consumers continue seeing the existing deprecation guidance
+- Switched the Zod dependency in the extracted tool contract module to a type-only import so compiled output does not carry an unnecessary runtime import
+- Corrected the final line-count evidence in the story documentation and planning checklist after the modularized files settled into their merged shape
+- Kept the explicit-`any` baseline stable at `workspace 84/289` and `core 23/119`
+
+### Published
+- All packages published to npm registry at version 0.16.48:
+  - @agentforge/core@0.16.48
+  - @agentforge/skills@0.16.48
+  - @agentforge/patterns@0.16.48
+  - @agentforge/tools@0.16.48
+  - @agentforge/testing@0.16.48
+  - @agentforge/cli@0.16.48
+
 ## [0.16.47] - 2026-06-09
 
 ### Added
