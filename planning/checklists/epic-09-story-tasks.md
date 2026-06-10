@@ -2507,8 +2507,8 @@ Implementation notes:
   - `pnpm test --run packages/core/tests/tools/types.test.ts`
   - `1` file passed, `24` tests passed
 - Runtime file-size result:
-  - `packages/core/src/tools/types.ts`: `387 -> 12` lines
-  - extracted modules: `13`, `9`, `10`, `22`, and `12` lines
+  - `packages/core/src/tools/types.ts`: `387 -> 13` lines
+  - extracted modules: `14`, `10`, `11`, `23`, and `13` lines
 - Focused validation after production split:
   - `pnpm test --run packages/core/tests/tools/types.test.ts`
   - `1` file passed, `24` tests passed

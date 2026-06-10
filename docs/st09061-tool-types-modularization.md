@@ -6,11 +6,12 @@
 
 The extracted runtime modules are each focused on one responsibility and also remain below the planning cutoff:
 
-- `packages/core/src/tools/types-category.ts` (`13` lines)
-- `packages/core/src/tools/types-example.ts` (`9` lines)
-- `packages/core/src/tools/types-relations.ts` (`10` lines)
-- `packages/core/src/tools/types-metadata.ts` (`22` lines)
-- `packages/core/src/tools/types-tool.ts` (`12` lines)
+- `packages/core/src/tools/types.ts` (`13` lines)
+- `packages/core/src/tools/types-category.ts` (`14` lines)
+- `packages/core/src/tools/types-example.ts` (`10` lines)
+- `packages/core/src/tools/types-relations.ts` (`11` lines)
+- `packages/core/src/tools/types-metadata.ts` (`23` lines)
+- `packages/core/src/tools/types-tool.ts` (`13` lines)
 
 The public facade now only re-exports those focused contracts, so downstream imports continue to target the same file even though the implementation responsibility is split internally.
 
