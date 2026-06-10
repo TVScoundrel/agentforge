@@ -3,7 +3,7 @@
 **Epic Range:** EP-09 through EP-09
 **Status:** In Progress
 **Last Updated:** 2026-06-10
-**Active Story:** ST-09061 - Modularize Core Tool Types and Tests (In Progress)
+**Active Story:** ST-09061 - Modularize Core Tool Types and Tests (In Review)
 
 ---
 
