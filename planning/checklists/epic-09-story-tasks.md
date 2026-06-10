@@ -2478,23 +2478,61 @@ Implementation notes:
 **Branch:** `refactor/st-09061-tool-types-modularization`
 
 ### Checklist
-- [ ] Create branch `refactor/st-09061-tool-types-modularization`
-- [ ] Create draft PR with story ID in title
-- [ ] Define test strategy before implementation: cover runtime modularization and test-file modularization; first failing test should prove tool-type behavior remains stable while the oversized runtime and test files are split
-- [ ] Write or update the failing automated test before production changes when practical; if not practical, record why before implementation
-- [ ] Reduce `packages/core/src/tools/types.ts` below the 300 line planning cutoff by extracting focused internal modules for tool result types, execution/input contracts, schema-facing shared helpers, and public utility types behind a stable facade
-- [ ] Keep extracted production modules below the 300 line planning cutoff as well; do not satisfy the story by only shrinking the public facade and moving the bulk into a new oversized helper unless an explicit exception is documented in the story notes
-- [ ] Split tool-type coverage into focused test modules so schema, invocation, and result-shape behavior no longer depends on a single oversized test surface
-- [ ] Preserve existing tool typing behavior, public imports, and downstream package compatibility
-- [ ] Add/update production code until focused tests pass, keeping test evidence in checklist notes and PR body
-- [ ] Record explicit-`any` warning deltas and file-size/responsibility improvements for touched tool-type modules in story docs
-- [ ] Add or update story documentation at `docs/st09061-tool-types-modularization.md` (or document why not required)
-- [ ] Assess residual test impact; add/update additional automated tests when needed, or document why no further tests are required
-- [ ] Run full test suite before finalizing the PR and record results
-- [ ] Run lint (`pnpm lint`) before finalizing the PR and record results
-- [ ] Commit completed checklist items as logical commits and push updates
-- [ ] Mark PR Ready only after all story tasks are complete
+- [x] Create branch `refactor/st-09061-tool-types-modularization`
+- [x] Create draft PR with story ID in title
+- [x] Define test strategy before implementation: cover runtime modularization and test-file modularization; first failing test should prove tool-type behavior remains stable while the oversized runtime and test files are split
+- [x] Write or update the failing automated test before production changes when practical; if not practical, record why before implementation
+- [x] Reduce `packages/core/src/tools/types.ts` below the 300 line planning cutoff by extracting focused internal modules for tool result types, execution/input contracts, schema-facing shared helpers, and public utility types behind a stable facade
+- [x] Keep extracted production modules below the 300 line planning cutoff as well; do not satisfy the story by only shrinking the public facade and moving the bulk into a new oversized helper unless an explicit exception is documented in the story notes
+- [x] Split tool-type coverage into focused test modules so schema, invocation, and result-shape behavior no longer depends on a single oversized test surface
+- [x] Preserve existing tool typing behavior, public imports, and downstream package compatibility
+- [x] Add/update production code until focused tests pass, keeping test evidence in checklist notes and PR body
+- [x] Record explicit-`any` warning deltas and file-size/responsibility improvements for touched tool-type modules in story docs
+- [x] Add or update story documentation at `docs/st09061-tool-types-modularization.md` (or document why not required)
+- [x] Assess residual test impact; add/update additional automated tests when needed, or document why no further tests are required
+- [x] Run full test suite before finalizing the PR and record results
+- [x] Run lint (`pnpm lint`) before finalizing the PR and record results
+- [x] Commit completed checklist items as logical commits and push updates
+- [x] Mark PR Ready only after all story tasks are complete
 - [ ] Wait for merge; do not merge directly from local branch
+
+Implementation notes:
+
+- Branch created from `main`: `refactor/st-09061-tool-types-modularization`
+- Draft PR created with story ID in title: PR #130
+- Test-first strategy:
+  - This story is behavior-preserving modularization, so a literal failing test for "file got smaller" would only assert repo structure rather than product behavior.
+  - Practical substitute: split `packages/core/tests/tools/types.test.ts` into focused public-entry suites first, run that entrypoint unchanged, then modularize `packages/core/src/tools/types.ts` behind the same `./types.js` facade.
+- Focused validation before production split:
+  - `pnpm test --run packages/core/tests/tools/types.test.ts`
+  - `1` file passed, `24` tests passed
+- Runtime file-size result:
+  - `packages/core/src/tools/types.ts`: `387 -> 13` lines
+  - extracted modules: `14`, `10`, `11`, `23`, and `13` lines
+- Focused validation after production split:
+  - `pnpm test --run packages/core/tests/tools/types.test.ts`
+  - `1` file passed, `24` tests passed
+- Compatibility validation:
+  - `pnpm --filter @agentforge/core typecheck`
+- Targeted lint validation:
+  - `pnpm --filter @agentforge/core exec eslint src/tools/types.ts src/tools/types-category.ts src/tools/types-example.ts src/tools/types-relations.ts src/tools/types-metadata.ts src/tools/types-tool.ts tests/tools/types.test.ts tests/tools/types/tool-category.ts tests/tools/types/tool-name-and-example.ts tests/tools/types/tool-metadata.ts tests/tools/types/tool-interface.ts tests/tools/types/tool-relations.ts`
+- Explicit-`any` baseline check:
+  - `pnpm lint:explicit-any:baseline`
+  - `84/289` warnings overall; `23/119` in `core`; no regression from this story
+- Test modularization note:
+  - Focused suites were renamed from `*.test.ts` to plain `.ts` after Vitest started discovering them both directly and through the public wrapper import.
+- Additional test impact:
+  - No new behavior-specific tests were required because the story preserves the public tool-type surface; the residual risk was duplicate suite discovery, which was addressed by the final plain-`.ts` suite layout.
+- Full validation:
+  - `pnpm test --run` -> `210` files passed, `18` skipped; `2311` tests passed, `286` skipped
+  - `pnpm lint` -> exit `0`; warnings only (`0` errors)
+  - `git diff --check`
+- Commit and push record:
+  - `046c577c` refactor(st-09061): split tool type contracts
+  - `bbc74583` test(st-09061): avoid duplicate suite discovery
+  - `84bddc57` docs(st-09061): record validation and move story to in-review
+- PR ready record:
+  - PR #130 marked ready for review: https://github.com/TVScoundrel/agentforge/pull/130
 
 ---
 
