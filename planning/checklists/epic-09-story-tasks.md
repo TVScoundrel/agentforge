@@ -2478,13 +2478,13 @@ Implementation notes:
 **Branch:** `refactor/st-09061-tool-types-modularization`
 
 ### Checklist
-- [ ] Create branch `refactor/st-09061-tool-types-modularization`
+- [x] Create branch `refactor/st-09061-tool-types-modularization`
 - [ ] Create draft PR with story ID in title
-- [ ] Define test strategy before implementation: cover runtime modularization and test-file modularization; first failing test should prove tool-type behavior remains stable while the oversized runtime and test files are split
-- [ ] Write or update the failing automated test before production changes when practical; if not practical, record why before implementation
+- [x] Define test strategy before implementation: cover runtime modularization and test-file modularization; first failing test should prove tool-type behavior remains stable while the oversized runtime and test files are split
+- [x] Write or update the failing automated test before production changes when practical; if not practical, record why before implementation
 - [ ] Reduce `packages/core/src/tools/types.ts` below the 300 line planning cutoff by extracting focused internal modules for tool result types, execution/input contracts, schema-facing shared helpers, and public utility types behind a stable facade
 - [ ] Keep extracted production modules below the 300 line planning cutoff as well; do not satisfy the story by only shrinking the public facade and moving the bulk into a new oversized helper unless an explicit exception is documented in the story notes
-- [ ] Split tool-type coverage into focused test modules so schema, invocation, and result-shape behavior no longer depends on a single oversized test surface
+- [x] Split tool-type coverage into focused test modules so schema, invocation, and result-shape behavior no longer depends on a single oversized test surface
 - [ ] Preserve existing tool typing behavior, public imports, and downstream package compatibility
 - [ ] Add/update production code until focused tests pass, keeping test evidence in checklist notes and PR body
 - [ ] Record explicit-`any` warning deltas and file-size/responsibility improvements for touched tool-type modules in story docs
@@ -2495,6 +2495,16 @@ Implementation notes:
 - [ ] Commit completed checklist items as logical commits and push updates
 - [ ] Mark PR Ready only after all story tasks are complete
 - [ ] Wait for merge; do not merge directly from local branch
+
+Implementation notes:
+
+- Branch created from `main`: `refactor/st-09061-tool-types-modularization`
+- Test-first strategy:
+  - This story is behavior-preserving modularization, so a literal failing test for "file got smaller" would only assert repo structure rather than product behavior.
+  - Practical substitute: split `packages/core/tests/tools/types.test.ts` into focused public-entry suites first, run that entrypoint unchanged, then modularize `packages/core/src/tools/types.ts` behind the same `./types.js` facade.
+- Focused validation before production split:
+  - `pnpm test --run packages/core/tests/tools/types.test.ts`
+  - `1` file passed, `24` tests passed
 
 ---
 
