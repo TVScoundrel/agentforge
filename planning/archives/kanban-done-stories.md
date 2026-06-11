@@ -2,11 +2,18 @@
 
 **Purpose:** Track completed and merged stories for the Relational Database Access Tool project.
 
-**Last Updated:** 2026-06-10
+**Last Updated:** 2026-06-11
 
 ---
 
 ## Completed Stories
+
+### ST-09062: Modularize Core Tool Executor and Tests
+- **Merged:** 2026-06-11
+- **PR:** https://github.com/TVScoundrel/agentforge/pull/131 (commit 71497951)
+- **Epic:** EP-09 (SOLID Micro-Refactors and Type Boundary Hardening)
+- **Estimate:** 4 hours
+- **Outcome:** Modularized `@agentforge/core` tool execution by shrinking `packages/core/src/tools/executor.ts` from a `356` line mixed-responsibility runtime to a roughly `175` line public facade, extracting focused retry, metrics, and shared-type helpers while preserving the stable `./executor.js` import surface, invoke-first dispatch, deprecated execute fallback, timeout/error semantics, callbacks, and queue status behavior. The story also replaced the `293` line executor test monolith with focused method-handling, retry-policy, and metrics suites behind the same public entrypoint, then absorbed review follow-ups for timeout cleanup, logger naming, top-level tool-name compatibility, tracker/documentation accuracy, and the synchronous internal queue helper while keeping the explicit-`any` baseline flat at `workspace 84/289` and `core 23/119`.
 
 ### ST-09061: Modularize Core Tool Types and Tests
 - **Merged:** 2026-06-10
