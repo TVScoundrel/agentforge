@@ -2543,15 +2543,15 @@ Implementation notes:
 **Branch:** `refactor/st-09062-tool-executor-modularization`
 
 ### Checklist
-- [ ] Create branch `refactor/st-09062-tool-executor-modularization`
+- [x] Create branch `refactor/st-09062-tool-executor-modularization`
 - [ ] Create draft PR with story ID in title
-- [ ] Define test strategy before implementation: cover runtime modularization and test-file modularization; first failing test should prove executor behavior remains stable while the oversized runtime and test files are split
-- [ ] Write or update the failing automated test before production changes when practical; if not practical, record why before implementation
-- [ ] Reduce `packages/core/src/tools/executor.ts` below the 300 line planning cutoff by extracting focused internal modules for execution orchestration, timeout/error handling, result normalization, and callback/reporting helpers behind a stable facade
-- [ ] Keep extracted production modules below the 300 line planning cutoff as well; do not satisfy the story by only shrinking the public facade and moving the bulk into a new oversized helper unless an explicit exception is documented in the story notes
-- [ ] Split executor coverage into focused test modules so success, failure, timeout, and callback behavior no longer depends on a single oversized test surface
-- [ ] Preserve existing executor behavior, error semantics, callback behavior, and public imports
-- [ ] Add/update production code until focused tests pass, keeping test evidence in checklist notes and PR body
+- [x] Define test strategy before implementation: cover runtime modularization and test-file modularization; first failing test should prove executor behavior remains stable while the oversized runtime and test files are split
+- [x] Write or update the failing automated test before production changes when practical; if not practical, record why before implementation
+- [x] Reduce `packages/core/src/tools/executor.ts` below the 300 line planning cutoff by extracting focused internal modules for execution orchestration, timeout/error handling, result normalization, and callback/reporting helpers behind a stable facade
+- [x] Keep extracted production modules below the 300 line planning cutoff as well; do not satisfy the story by only shrinking the public facade and moving the bulk into a new oversized helper unless an explicit exception is documented in the story notes
+- [x] Split executor coverage into focused test modules so success, failure, timeout, and callback behavior no longer depends on a single oversized test surface
+- [x] Preserve existing executor behavior, error semantics, callback behavior, and public imports
+- [x] Add/update production code until focused tests pass, keeping test evidence in checklist notes and PR body
 - [ ] Record explicit-`any` warning deltas and file-size/responsibility improvements for touched executor modules in story docs
 - [ ] Add or update story documentation at `docs/st09062-tool-executor-modularization.md` (or document why not required)
 - [ ] Assess residual test impact; add/update additional automated tests when needed, or document why no further tests are required
@@ -2560,6 +2560,27 @@ Implementation notes:
 - [ ] Commit completed checklist items as logical commits and push updates
 - [ ] Mark PR Ready only after all story tasks are complete
 - [ ] Wait for merge; do not merge directly from local branch
+
+Implementation notes:
+
+- Branch created from `main`: `refactor/st-09062-tool-executor-modularization`
+- Test-first strategy:
+  - This story is behavior-preserving modularization, so a literal failing test for "the file got smaller" would only assert repo structure rather than executor behavior.
+  - Practical substitute: split `packages/core/tests/tools/executor.test.ts` into focused public-entry suites first, run that entrypoint unchanged, then modularize `packages/core/src/tools/executor.ts` behind the same public facade.
+- Focused validation before production split:
+  - `pnpm test --run packages/core/tests/tools/executor.test.ts`
+  - `1` file passed, `13` tests passed
+- Runtime file-size result:
+  - `packages/core/src/tools/executor.ts`: `356 -> 170` lines
+  - extracted modules: `68`, `46`, and `100` lines
+- Test modularization result:
+  - `packages/core/tests/tools/executor.test.ts`: `293 -> 3` lines
+  - focused suites: `92`, `79`, and `110` lines
+- Focused validation after production split:
+  - `pnpm test --run packages/core/tests/tools/executor.test.ts`
+  - `1` file passed, `13` tests passed
+- Compatibility validation:
+  - `pnpm --filter @agentforge/core typecheck`
 
 ---
 
