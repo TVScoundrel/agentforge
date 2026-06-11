@@ -5,6 +5,37 @@ All notable changes to AgentForge will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.16.49] - 2026-06-11
+
+### Added
+
+#### @agentforge/core - Tool Executor Modularization Coverage
+- Added focused executor coverage in `packages/core/tests/tools/executor/method-handling.ts`, `retry-policy.ts`, and `metrics.ts` behind the stable `packages/core/tests/tools/executor.test.ts` public entrypoint
+- Added story documentation in `docs/st09062-tool-executor-modularization.md` capturing the runtime split, validation evidence, and no-regression explicit-`any` outcome
+
+### Changed
+
+#### @agentforge/core - Tool Executor Runtime Modularization
+- Split `packages/core/src/tools/executor.ts` into a smaller stable facade with focused `executor-types.ts`, `executor-retry.ts`, and `executor-metrics.ts` helper modules
+- Preserved the public `./executor.js` import surface and existing executor behavior while reducing the maintenance pressure on the old monolithic runtime and test files
+
+### Fixed
+
+#### @agentforge/core - Tool Executor Review Follow-Ups
+- Hardened executor timeout cleanup so finished executions do not leave a trailing timeout rejection behind
+- Restored tool-name compatibility for deprecation logging and aligned the executor logger name with the `agentforge:core:...` convention
+- Converted the internal queue pump to a synchronous helper so queue processing does not return an ignored Promise, and corrected the final tracker and documentation evidence after the modularized files settled into their merged shape
+- Kept the explicit-`any` baseline stable at `workspace 84/289` and `core 23/119`
+
+### Published
+- All packages published to npm registry at version 0.16.49:
+  - @agentforge/core@0.16.49
+  - @agentforge/skills@0.16.49
+  - @agentforge/patterns@0.16.49
+  - @agentforge/tools@0.16.49
+  - @agentforge/testing@0.16.49
+  - @agentforge/cli@0.16.49
+
 ## [0.16.48] - 2026-06-10
 
 ### Added
