@@ -4,10 +4,10 @@ import { createToolExecutor } from '../../../src/tools/executor.js';
 import { toolBuilder, ToolCategory } from '../../../src/tools/index.js';
 
 describe('Tool Executor method handling', () => {
-  it('should execute tool with only execute method', async () => {
+  it('should execute tool built with toolBuilder via invoke-first dispatch', async () => {
     const tool = toolBuilder()
       .name('execute-only-tool')
-      .description('Tool with only execute method')
+      .description('Tool built via toolBuilder')
       .category(ToolCategory.UTILITY)
       .schema(
         z.object({
