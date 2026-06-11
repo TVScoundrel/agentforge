@@ -11,6 +11,7 @@ export interface RetryPolicy {
 }
 
 export interface ExecutableTool<TInput = unknown, TOutput = unknown> {
+  name?: string;
   metadata?: {
     name?: string;
   };

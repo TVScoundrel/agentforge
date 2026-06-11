@@ -45,7 +45,7 @@ function resolveExecutionMethod(tool: ExecutableTool, logger: WarnLogger) {
 
   if (!tool.invoke && tool.execute) {
     logger.warn(
-      `Tool "${tool.metadata?.name || 'unknown'}" only implements execute() which is deprecated. ` +
+      `Tool "${tool.metadata?.name ?? tool.name ?? 'unknown'}" only implements execute() which is deprecated. ` +
         'Please update to implement invoke() as the primary method. ' +
         'execute() will be removed in v1.0.0.'
     );

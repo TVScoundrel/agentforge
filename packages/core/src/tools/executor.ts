@@ -21,7 +21,7 @@ import {
   type ToolExecutorConfig,
 } from './executor-types.js';
 
-const logger = createLogger('agentforge:tools:executor');
+const logger = createLogger('agentforge:core:tools:executor');
 
 export type {
   BackoffStrategy,
@@ -57,15 +57,16 @@ export function createToolExecutor(config: ToolExecutorConfig = {}) {
     priority: Priority
   ): Promise<unknown> {
     const startTime = Date.now();
+    let timeoutId: ReturnType<typeof setTimeout> | undefined;
 
     try {
       onExecutionStart?.(tool, input);
 
       const result = await Promise.race([
         executeWithRetry(tool, input, retryPolicy, logger),
-        new Promise((_, reject) =>
-          setTimeout(() => reject(new Error('Tool execution timeout')), timeout)
-        ),
+        new Promise((_, reject) => {
+          timeoutId = setTimeout(() => reject(new Error('Tool execution timeout')), timeout);
+        }),
       ]);
 
       const duration = Date.now() - startTime;
@@ -80,6 +81,10 @@ export function createToolExecutor(config: ToolExecutorConfig = {}) {
       recordExecutionResult(metrics, priority, duration, false);
       onExecutionError?.(tool, input, normalizedError, duration);
       throw normalizedError;
+    } finally {
+      if (timeoutId) {
+        clearTimeout(timeoutId);
+      }
     }
   }
 
