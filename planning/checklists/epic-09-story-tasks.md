@@ -2572,8 +2572,8 @@ Implementation notes:
   - `pnpm test --run packages/core/tests/tools/executor.test.ts`
   - `1` file passed, `13` tests passed
 - Runtime file-size result:
-  - `packages/core/src/tools/executor.ts`: `356 -> 170` lines
-  - extracted modules: `68`, `46`, and `100` lines
+  - `packages/core/src/tools/executor.ts`: `356 -> 175` lines
+  - extracted modules: `69`, `46`, and `100` lines
 - Test modularization result:
   - `packages/core/tests/tools/executor.test.ts`: `293 -> 3` lines
   - focused suites: `92`, `79`, and `110` lines

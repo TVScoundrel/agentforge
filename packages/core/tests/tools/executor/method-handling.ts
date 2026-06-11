@@ -6,7 +6,7 @@ import { toolBuilder, ToolCategory } from '../../../src/tools/index.js';
 describe('Tool Executor method handling', () => {
   it('should execute tool built with toolBuilder via invoke-first dispatch', async () => {
     const tool = toolBuilder()
-      .name('execute-only-tool')
+      .name('toolbuilder-tool')
       .description('Tool built via toolBuilder')
       .category(ToolCategory.UTILITY)
       .schema(
