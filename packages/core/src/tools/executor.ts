@@ -4,77 +4,34 @@
  */
 
 import { createLogger } from '../langgraph/observability/logger.js';
+import {
+  createExecutionMetrics,
+  recordExecutionResult,
+  resetExecutionMetrics,
+  snapshotExecutionMetrics,
+} from './executor-metrics.js';
+import { executeWithRetry, toError } from './executor-retry.js';
+import {
+  PRIORITY_ORDER,
+  type ExecutableTool,
+  type ExecutionMetrics,
+  type Priority,
+  type QueuedExecution,
+  type ToolExecution,
+  type ToolExecutorConfig,
+} from './executor-types.js';
 
-const logger = createLogger('agentforge:tools:executor');
+const logger = createLogger('agentforge:core:tools:executor');
 
-export type Priority = 'low' | 'normal' | 'high' | 'critical';
-
-export type BackoffStrategy = 'linear' | 'exponential' | 'fixed';
-
-export interface RetryPolicy {
-  maxAttempts: number;
-  backoff: BackoffStrategy;
-  initialDelay?: number;
-  maxDelay?: number;
-  retryableErrors?: string[];
-}
-
-export interface ToolExecutorConfig {
-  maxConcurrent?: number;
-  timeout?: number;
-  retryPolicy?: RetryPolicy;
-  priorityFn?: (tool: ExecutableTool) => Priority;
-  onExecutionStart?: (tool: ExecutableTool, input: unknown) => void;
-  onExecutionComplete?: (
-    tool: ExecutableTool,
-    input: unknown,
-    result: unknown,
-    duration: number
-  ) => void;
-  onExecutionError?: (
-    tool: ExecutableTool,
-    input: unknown,
-    error: Error,
-    duration: number
-  ) => void;
-}
-
-export interface ToolExecution {
-  tool: ExecutableTool;
-  input: unknown;
-  priority?: Priority;
-}
-
-export interface ExecutionMetrics {
-  totalExecutions: number;
-  successfulExecutions: number;
-  failedExecutions: number;
-  totalDuration: number;
-  averageDuration: number;
-  byPriority: Record<Priority, number>;
-}
-
-interface QueuedExecution extends ToolExecution {
-  resolve: (value: unknown) => void;
-  reject: (error: Error) => void;
-  priority: Priority;
-  timestamp: number;
-}
-
-export interface ExecutableTool<TInput = unknown, TOutput = unknown> {
-  metadata?: {
-    name?: string;
-  };
-  invoke?: (input: TInput) => Promise<TOutput>;
-  execute?: (input: TInput) => Promise<TOutput>;
-}
-
-const PRIORITY_ORDER: Record<Priority, number> = {
-  critical: 0,
-  high: 1,
-  normal: 2,
-  low: 3,
-};
+export type {
+  BackoffStrategy,
+  ExecutableTool,
+  ExecutionMetrics,
+  Priority,
+  RetryPolicy,
+  ToolExecution,
+  ToolExecutorConfig,
+} from './executor-types.js';
 
 /**
  * Create a tool executor with resource management
@@ -92,144 +49,28 @@ export function createToolExecutor(config: ToolExecutorConfig = {}) {
 
   let activeExecutions = 0;
   const queue: QueuedExecution[] = [];
-  const metrics: ExecutionMetrics = {
-    totalExecutions: 0,
-    successfulExecutions: 0,
-    failedExecutions: 0,
-    totalDuration: 0,
-    averageDuration: 0,
-    byPriority: { low: 0, normal: 0, high: 0, critical: 0 },
-  };
+  const metrics = createExecutionMetrics();
 
-  /**
-   * Calculate backoff delay for retry
-   */
-  function calculateBackoff(attempt: number, policy: RetryPolicy): number {
-    const initialDelay = policy.initialDelay || 1000;
-    const maxDelay = policy.maxDelay || 30000;
-
-    let delay: number;
-    switch (policy.backoff) {
-      case 'linear':
-        delay = initialDelay * attempt;
-        break;
-      case 'exponential':
-        delay = initialDelay * Math.pow(2, attempt - 1);
-        break;
-      case 'fixed':
-      default:
-        delay = initialDelay;
-    }
-
-    return Math.min(delay, maxDelay);
-  }
-
-  function toError(error: unknown): Error {
-    if (error instanceof Error) {
-      return error;
-    }
-
-    return new Error(String(error));
-  }
-
-  /**
-   * Execute a tool with retry logic
-   */
-  async function executeWithRetry(
-    tool: ExecutableTool,
-    input: unknown,
-    policy?: RetryPolicy
-  ): Promise<unknown> {
-    // Require invoke() as the primary method (industry standard)
-    // Fall back to execute() only for backward compatibility with tools created before v0.11.0
-    const executeFn = tool.invoke || tool.execute;
-
-    if (!executeFn) {
-      throw new Error(
-        'Tool must implement invoke() method. ' +
-        'Tools created with createTool() or toolBuilder automatically have this method. ' +
-        'If you are manually constructing a tool, ensure it has an invoke() method.'
-      );
-    }
-
-    // Warn if tool only has execute() (violates the type contract since v0.11.0)
-    if (!tool.invoke && tool.execute) {
-      logger.warn(
-        `Tool "${tool.metadata?.name || 'unknown'}" only implements execute() which is deprecated. ` +
-        'Please update to implement invoke() as the primary method. ' +
-        'execute() will be removed in v1.0.0.'
-      );
-    }
-
-    if (!policy) {
-      return await executeFn.call(tool, input);
-    }
-
-    if (!Number.isInteger(policy.maxAttempts) || policy.maxAttempts < 1) {
-      throw new Error(
-        `Invalid retry policy: maxAttempts must be an integer >= 1 (received ${String(policy.maxAttempts)})`
-      );
-    }
-
-    let lastError: Error | undefined;
-    for (let attempt = 1; attempt <= policy.maxAttempts; attempt++) {
-      try {
-        return await executeFn.call(tool, input);
-      } catch (error) {
-        const currentError = toError(error);
-        lastError = currentError;
-
-        // Check if error is retryable
-        if (policy.retryableErrors && policy.retryableErrors.length > 0) {
-          const isRetryable = policy.retryableErrors.some((msg) =>
-            currentError.message.includes(msg)
-          );
-          if (!isRetryable) {
-            throw currentError;
-          }
-        }
-
-        // Don't wait after last attempt
-        if (attempt < policy.maxAttempts) {
-          const delay = calculateBackoff(attempt, policy);
-          await new Promise((resolve) => setTimeout(resolve, delay));
-        }
-      }
-    }
-
-    throw lastError ?? new Error('Tool execution failed after retries');
-  }
-
-  /**
-   * Execute a single tool
-   */
   async function executeSingle(
     tool: ExecutableTool,
     input: unknown,
     priority: Priority
   ): Promise<unknown> {
     const startTime = Date.now();
+    let timeoutId: ReturnType<typeof setTimeout> | undefined;
 
     try {
       onExecutionStart?.(tool, input);
 
-      // Execute with timeout
       const result = await Promise.race([
-        executeWithRetry(tool, input, retryPolicy),
-        new Promise((_, reject) =>
-          setTimeout(() => reject(new Error('Tool execution timeout')), timeout)
-        ),
+        executeWithRetry(tool, input, retryPolicy, logger),
+        new Promise((_, reject) => {
+          timeoutId = setTimeout(() => reject(new Error('Tool execution timeout')), timeout);
+        }),
       ]);
 
       const duration = Date.now() - startTime;
-
-      // Update metrics
-      metrics.totalExecutions++;
-      metrics.successfulExecutions++;
-      metrics.totalDuration += duration;
-      metrics.averageDuration = metrics.totalDuration / metrics.totalExecutions;
-      metrics.byPriority[priority]++;
-
+      recordExecutionResult(metrics, priority, duration, true);
       onExecutionComplete?.(tool, input, result, duration);
 
       return result;
@@ -237,36 +78,34 @@ export function createToolExecutor(config: ToolExecutorConfig = {}) {
       const duration = Date.now() - startTime;
       const normalizedError = toError(error);
 
-      // Update metrics
-      metrics.totalExecutions++;
-      metrics.failedExecutions++;
-      metrics.totalDuration += duration;
-      metrics.averageDuration = metrics.totalDuration / metrics.totalExecutions;
-      metrics.byPriority[priority]++;
-
+      recordExecutionResult(metrics, priority, duration, false);
       onExecutionError?.(tool, input, normalizedError, duration);
       throw normalizedError;
+    } finally {
+      if (timeoutId) {
+        clearTimeout(timeoutId);
+      }
     }
   }
 
-  /**
-   * Process the queue
-   */
-  async function processQueue() {
+  function processQueue(): void {
     while (queue.length > 0 && activeExecutions < maxConcurrent) {
-      // Sort queue by priority
       queue.sort((a, b) => {
         const priorityDiff = PRIORITY_ORDER[a.priority] - PRIORITY_ORDER[b.priority];
-        if (priorityDiff !== 0) return priorityDiff;
-        return a.timestamp - b.timestamp; // FIFO for same priority
+        if (priorityDiff !== 0) {
+          return priorityDiff;
+        }
+
+        return a.timestamp - b.timestamp;
       });
 
       const execution = queue.shift();
-      if (!execution) break;
+      if (!execution) {
+        break;
+      }
 
       activeExecutions++;
 
-      // Execute asynchronously
       executeSingle(execution.tool, execution.input, execution.priority)
         .then((result) => {
           execution.resolve(result);
@@ -276,14 +115,11 @@ export function createToolExecutor(config: ToolExecutorConfig = {}) {
         })
         .finally(() => {
           activeExecutions--;
-          processQueue(); // Process next item
+          processQueue();
         });
     }
   }
 
-  /**
-   * Execute a tool
-   */
   async function execute(
     tool: ExecutableTool,
     input: unknown,
@@ -305,39 +141,22 @@ export function createToolExecutor(config: ToolExecutorConfig = {}) {
     });
   }
 
-  /**
-   * Execute multiple tools in parallel
-   */
   async function executeParallel(executions: ToolExecution[]): Promise<unknown[]> {
     return Promise.all(
-      executions.map((exec) =>
-        execute(exec.tool, exec.input, { priority: exec.priority })
+      executions.map((execution) =>
+        execute(execution.tool, execution.input, { priority: execution.priority })
       )
     );
   }
 
-  /**
-   * Get execution metrics
-   */
   function getMetrics(): ExecutionMetrics {
-    return { ...metrics };
+    return snapshotExecutionMetrics(metrics);
   }
 
-  /**
-   * Reset metrics
-   */
   function resetMetrics(): void {
-    metrics.totalExecutions = 0;
-    metrics.successfulExecutions = 0;
-    metrics.failedExecutions = 0;
-    metrics.totalDuration = 0;
-    metrics.averageDuration = 0;
-    metrics.byPriority = { low: 0, normal: 0, high: 0, critical: 0 };
+    resetExecutionMetrics(metrics);
   }
 
-  /**
-   * Get queue status
-   */
   function getQueueStatus() {
     return {
       queueLength: queue.length,
