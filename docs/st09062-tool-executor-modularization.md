@@ -2,7 +2,7 @@
 
 ## Summary
 
-`packages/core/src/tools/executor.ts` was reduced from `356` lines to a `175` line public executor that stays below the `300` line planning cutoff while preserving the stable `./executor.js` import surface.
+`packages/core/src/tools/executor.ts` was reduced from `356` lines to roughly `175` lines in the public executor, staying below the `300` line planning cutoff while preserving the stable `./executor.js` import surface.
 
 The extracted runtime modules are each focused on one responsibility and also remain below the planning cutoff:
 

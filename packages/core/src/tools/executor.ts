@@ -88,7 +88,7 @@ export function createToolExecutor(config: ToolExecutorConfig = {}) {
     }
   }
 
-  async function processQueue() {
+  function processQueue(): void {
     while (queue.length > 0 && activeExecutions < maxConcurrent) {
       queue.sort((a, b) => {
         const priorityDiff = PRIORITY_ORDER[a.priority] - PRIORITY_ORDER[b.priority];
@@ -115,7 +115,7 @@ export function createToolExecutor(config: ToolExecutorConfig = {}) {
         })
         .finally(() => {
           activeExecutions--;
-          void processQueue();
+          processQueue();
         });
     }
   }
@@ -137,7 +137,7 @@ export function createToolExecutor(config: ToolExecutorConfig = {}) {
         timestamp: Date.now(),
       });
 
-      void processQueue();
+      processQueue();
     });
   }
 
