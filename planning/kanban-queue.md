@@ -6,7 +6,7 @@
 
 - **Ready:** 3 stories
 - **In Progress:** 0 stories
-- **In Review:** 1 story
+- **In Review:** 0 stories
 - **Blocked:** 0 stories
 - **Backlog:** 0 stories
 
@@ -28,7 +28,7 @@ None currently.
 
 ## In Review
 
-- `ST-09063` - Modularize Multi-Agent Worker Node and Tests
+None currently.
 
 ## Blocked
 
@@ -134,4 +134,5 @@ _No stories currently in backlog_
 - Complete: ST-09049 - core tool registry modularized into focused runtime and test modules (merged 2026-05-22, PR #118)
 - Complete: ST-09060 - multi-agent schema payload contracts hardened (merged 2026-06-08, PR #129)
 - Complete: ST-09062 - core tool executor and tests modularized (merged 2026-06-11, PR #131)
+- Complete: ST-09063 - multi-agent worker node and tests modularized (merged 2026-06-12, PR #132)
 - Current measured `no-explicit-any` baseline is `84` warnings (`cli 6`, `core 23`, `patterns 2`, `testing 0`, `tools 53`)

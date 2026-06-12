@@ -1922,7 +1922,7 @@
 **Priority:** P2 (Medium)
 **Estimate:** 4 hours
 **Dependencies:** ST-09051
-**Status:** In Review
+**Status:** Merged
 
 **Acceptance criteria:**
 - [ ] `packages/patterns/src/multi-agent/nodes/worker.ts` is reduced below the 300 line planning cutoff by extracting focused internal modules for worker execution flow, handoff/result shaping, callback/event helpers, and shared node types behind a stable public facade, and the extracted production modules must also stay below `300` lines unless the story documents and justifies an explicit exception.

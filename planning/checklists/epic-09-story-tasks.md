@@ -2629,7 +2629,7 @@ Implementation notes:
   - `95c82032` `docs(st-09063): record validation and move story to in-review`
 - [x] Mark PR Ready only after all story tasks are complete
   - PR #132 marked ready: https://github.com/TVScoundrel/agentforge/pull/132
-- [ ] Wait for merge; do not merge directly from local branch
+- [x] Wait for merge; do not merge directly from local branch
 
 Implementation notes:
 
@@ -2660,6 +2660,8 @@ Implementation notes:
   - `pnpm test --run` -> `210` files passed, `18` skipped; `2311` tests passed, `286` skipped
   - `pnpm lint` -> passed with warnings only
   - `git diff --check`
+- Merge record:
+  - Merged to `main` via PR #132 on `2026-06-12` (merge commit `5daa6ee55458ceb5f4cbbe641335927977cac060`)
 
 ---
 

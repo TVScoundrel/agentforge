@@ -3,7 +3,7 @@
 **Epic Range:** EP-09 through EP-09
 **Status:** In Progress
 **Last Updated:** 2026-06-12
-**Active Story:** ST-09063 - Modularize Multi-Agent Worker Node and Tests (In Review)
+**Active Story:** ST-09064 - Modularize LangGraph Middleware Presets and Tests (Ready)
 
 ---
 
@@ -104,7 +104,7 @@ Recent improvement snapshot:
 - `ST-09060` merged on 2026-06-08 after tightening multi-agent schema payload contracts around JSON-safe metadata objects and unknown-first handoff context, then folding the review-driven shared JSON-safe helper extraction, plain-object enforcement, null-prototype map compatibility, and ReAct metadata documentation follow-up into the final PR while keeping the explicit-`any` baseline flat at `workspace 84/289` and `patterns 2/28`.
 - `ST-09061` merged on 2026-06-10 after shrinking `packages/core/src/tools/types.ts` to a stable facade, splitting the coupled tests into focused suites behind the same public entrypoint, and absorbing follow-up typing and documentation accuracy fixes without changing queue readiness.
 - `ST-09062` merged on 2026-06-11 after shrinking `packages/core/src/tools/executor.ts` from `356` lines to a roughly `175` line public facade, extracting focused retry, metrics, and shared-type helpers, replacing the executor test monolith with focused method-handling, retry-policy, and metrics suites, and absorbing review follow-ups for timeout cleanup, logger naming, tool-name compatibility, tracker/documentation accuracy, and the synchronous queue helper while keeping the explicit-`any` baseline flat at `workspace 84/289` and `core 23/119`.
-- `EP-09` remains open as the daily hardening stream, with `ST-09063` now in review and `ST-09064` through `ST-09066` still queued behind it in the ready lane.
+- `EP-09` remains open as the daily hardening stream, with `ST-09063` now merged and `ST-09064` through `ST-09066` queued in the ready lane.
 - The refreshed follow-on queue now extends beyond the current Ready lane so another few weeks of small SOLID/DRY and modularization work can be pulled without re-planning the epic.
 
 ---

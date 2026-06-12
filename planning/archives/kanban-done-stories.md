@@ -2,11 +2,18 @@
 
 **Purpose:** Track completed and merged stories for the Relational Database Access Tool project.
 
-**Last Updated:** 2026-06-11
+**Last Updated:** 2026-06-12
 
 ---
 
 ## Completed Stories
+
+### ST-09063: Modularize Multi-Agent Worker Node and Tests
+- **Merged:** 2026-06-12
+- **PR:** https://github.com/TVScoundrel/agentforge/pull/132 (commit 5daa6ee5)
+- **Epic:** EP-09 (SOLID Micro-Refactors and Type Boundary Hardening)
+- **Estimate:** 4 hours
+- **Outcome:** Modularized `@agentforge/patterns` multi-agent worker-node handling by shrinking `packages/patterns/src/multi-agent/nodes/worker.ts` from a `357` line mixed-responsibility runtime to a `140` line public worker facade, extracting focused model-invocation, workload/error-bookkeeping, and shared worker-type helpers while preserving `createWorkerNode(...)`, handoff propagation, workload ownership, error handling, and public imports. The story also replaced the `1156` line `packages/patterns/tests/multi-agent/nodes.test.ts` monolith with focused supervisor, worker, and aggregator suites behind the same public entrypoint, absorbed review follow-ups for split-test type imports, a flaky aggregator assertion, and a redundant worker-model cast, and kept the explicit-`any` baseline flat at `workspace 84/289` and `patterns 2/28`.
 
 ### ST-09062: Modularize Core Tool Executor and Tests
 - **Merged:** 2026-06-11
