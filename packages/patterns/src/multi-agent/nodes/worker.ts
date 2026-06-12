@@ -1,4 +1,3 @@
-import type { BaseChatModel } from '@langchain/core/language_models/chat_models';
 import type { MultiAgentStateType } from '../state.js';
 import type { WorkerConfig, WorkerExecutionConfig } from '../types.js';
 import { isReActAgent, wrapReActAgent } from '../utils.js';
@@ -26,8 +25,7 @@ import {
  * ownership inside the framework.
  */
 export function createWorkerNode(config: WorkerConfig) {
-  const { id, executeFn, agent } = config;
-  const model = config.model as BaseChatModel | undefined;
+  const { id, executeFn, agent, model } = config;
 
   return async (
     state: MultiAgentStateType,
