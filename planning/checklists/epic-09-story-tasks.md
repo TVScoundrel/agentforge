@@ -2670,23 +2670,58 @@ Implementation notes:
 **Branch:** `refactor/st-09064-middleware-presets-modularization`
 
 ### Checklist
-- [ ] Create branch `refactor/st-09064-middleware-presets-modularization`
-- [ ] Create draft PR with story ID in title
-- [ ] Define test strategy before implementation: cover runtime modularization and test-file modularization; first failing test should prove middleware preset behavior remains stable while the oversized runtime and test files are split
-- [ ] Write or update the failing automated test before production changes when practical; if not practical, record why before implementation
-- [ ] Reduce `packages/core/src/langgraph/middleware/presets.ts` below the 300 line planning cutoff by extracting focused internal modules for logging presets, retry/timing presets, composition helpers, and shared preset types behind a stable facade
-- [ ] Keep extracted production modules below the 300 line planning cutoff as well; do not satisfy the story by only shrinking the public facade and moving the bulk into a new oversized helper unless an explicit exception is documented in the story notes
-- [ ] Split middleware preset coverage into focused test modules so logging, retry, timing, and composition behavior no longer depends on a single oversized test surface
-- [ ] Preserve existing preset behavior, middleware ordering, and public imports
-- [ ] Add/update production code until focused tests pass, keeping test evidence in checklist notes and PR body
-- [ ] Record explicit-`any` warning deltas and file-size/responsibility improvements for touched middleware preset modules in story docs
-- [ ] Add or update story documentation at `docs/st09064-middleware-presets-modularization.md` (or document why not required)
-- [ ] Assess residual test impact; add/update additional automated tests when needed, or document why no further tests are required
-- [ ] Run full test suite before finalizing the PR and record results
-- [ ] Run lint (`pnpm lint`) before finalizing the PR and record results
+- [x] Create branch `refactor/st-09064-middleware-presets-modularization`
+- [x] Create draft PR with story ID in title
+  - PR #133: https://github.com/TVScoundrel/agentforge/pull/133
+- [x] Define test strategy before implementation: cover runtime modularization and test-file modularization; first failing test should prove middleware preset behavior remains stable while the oversized runtime and test files are split
+- [x] Write or update the failing automated test before production changes when practical; if not practical, record why before implementation
+- [x] Reduce `packages/core/src/langgraph/middleware/presets.ts` below the 300 line planning cutoff by extracting focused internal modules for logging presets, retry/timing presets, composition helpers, and shared preset types behind a stable facade
+- [x] Keep extracted production modules below the 300 line planning cutoff as well; do not satisfy the story by only shrinking the public facade and moving the bulk into a new oversized helper unless an explicit exception is documented in the story notes
+- [x] Split middleware preset coverage into focused test modules so logging, retry, timing, and composition behavior no longer depends on a single oversized test surface
+- [x] Preserve existing preset behavior, middleware ordering, and public imports
+- [x] Add/update production code until focused tests pass, keeping test evidence in checklist notes and PR body
+- [x] Record explicit-`any` warning deltas and file-size/responsibility improvements for touched middleware preset modules in story docs
+- [x] Add or update story documentation at `docs/st09064-middleware-presets-modularization.md` (or document why not required)
+- [x] Assess residual test impact; add/update additional automated tests when needed, or document why no further tests are required
+- [x] Run full test suite before finalizing the PR and record results
+- [x] Run lint (`pnpm lint`) before finalizing the PR and record results
 - [ ] Commit completed checklist items as logical commits and push updates
 - [ ] Mark PR Ready only after all story tasks are complete
 - [ ] Wait for merge; do not merge directly from local branch
+
+Implementation notes:
+
+- Branch created from `main`: `refactor/st-09064-middleware-presets-modularization`
+- Test-first strategy:
+  - This story is behavior-preserving modularization, so a literal failing test for "the presets file got smaller" would only assert repository structure instead of middleware behavior.
+  - Practical substitute: split `packages/core/src/langgraph/middleware/__tests__/presets.test.ts` into focused suites first, keep the public entrypoint stable, run that unchanged entrypoint before the production refactor, then modularize `packages/core/src/langgraph/middleware/presets.ts` behind the same public facade.
+- Runtime file-size result:
+  - `packages/core/src/langgraph/middleware/presets.ts`: `365 -> 23` lines
+  - extracted modules: `37`, `9`, `24`, `81`, `42`, and `31` lines
+- Test modularization result:
+  - `packages/core/src/langgraph/middleware/__tests__/presets.test.ts`: `286 -> 8` lines
+  - focused suites/helpers: `107`, `93`, `73`, `12`, and `13` lines
+- Focused validation before production split:
+  - `pnpm test --run packages/core/src/langgraph/middleware/__tests__/presets.test.ts`
+  - `1` file passed, `16` tests passed
+- Focused validation after production split:
+  - `pnpm test --run packages/core/src/langgraph/middleware/__tests__/presets.test.ts`
+  - `1` file passed, `16` tests passed
+- Compatibility validation:
+  - `pnpm test --run packages/core/src/langgraph/middleware/__tests__/integration.test.ts`
+  - `1` file passed, `18` tests passed
+  - `pnpm --filter @agentforge/core typecheck`
+  - `pnpm --filter @agentforge/core exec eslint src/langgraph/middleware/presets.ts src/langgraph/middleware/preset-adapters.ts src/langgraph/middleware/preset-collection.ts src/langgraph/middleware/preset-development.ts src/langgraph/middleware/preset-production.ts src/langgraph/middleware/preset-testing.ts src/langgraph/middleware/preset-types.ts src/langgraph/middleware/__tests__/presets.test.ts src/langgraph/middleware/__tests__/presets/shared.ts src/langgraph/middleware/__tests__/presets/production.ts src/langgraph/middleware/__tests__/presets/development.ts src/langgraph/middleware/__tests__/presets/testing.ts src/langgraph/middleware/__tests__/presets/exports.ts`
+- Explicit-`any` baseline check:
+  - `pnpm lint:explicit-any:baseline`
+  - `84/289` warnings overall; `23/119` in `core`; no regression from this story
+- Residual test impact:
+  - Additional behavior-specific tests were not required beyond the suite split because the story preserved the public preset facade; the new suites keep production, development, testing, and export-surface coverage isolated behind the same `presets.test.ts` entrypoint.
+- CI impact:
+  - No CI change required; the story keeps the existing public entrypoints and validation commands intact.
+- Full validation:
+  - `pnpm test --run` -> `210` files passed, `18` skipped; `2311` tests passed, `286` skipped
+  - `pnpm lint` -> exit `0`; warnings only (`0` errors)
 
 ---
 
@@ -2731,6 +2766,206 @@ Implementation notes:
 - [ ] Add/update production code until focused tests pass, keeping test evidence in checklist notes and PR body
 - [ ] Record explicit-`any` warning deltas and file-size/responsibility improvements for touched pool modules in story docs
 - [ ] Add or update story documentation at `docs/st09066-resource-pool-modularization.md` (or document why not required)
+- [ ] Assess residual test impact; add/update additional automated tests when needed, or document why no further tests are required
+- [ ] Run full test suite before finalizing the PR and record results
+- [ ] Run lint (`pnpm lint`) before finalizing the PR and record results
+- [ ] Commit completed checklist items as logical commits and push updates
+- [ ] Mark PR Ready only after all story tasks are complete
+- [ ] Wait for merge; do not merge directly from local branch
+
+---
+
+## ST-09067: Modularize Relational Batch Executor and Tests
+
+**Branch:** `refactor/st-09067-batch-executor-modularization`
+
+### Checklist
+- [ ] Create branch `refactor/st-09067-batch-executor-modularization`
+- [ ] Create draft PR with story ID in title
+- [ ] Define test strategy before implementation: cover runtime modularization and test-file modularization; first failing test should prove batch execution behavior remains stable while the oversized runtime and test files are split
+- [ ] Write or update the failing automated test before production changes when practical; if not practical, record why before implementation
+- [ ] Reduce `packages/tools/src/data/relational/query/batch-executor.ts` below the 300 line planning cutoff by extracting focused internal modules for option resolution/chunking, retry/progress flow, benchmark helpers, and shared batch types behind a stable facade
+- [ ] Keep extracted production modules below the 300 line planning cutoff as well; do not satisfy the story by only shrinking the public facade and moving the bulk into a new oversized helper unless an explicit exception is documented in the story notes
+- [ ] Split batch-executor coverage into focused test modules so chunking, retry, failure, and benchmark behavior no longer depends on a single oversized test surface
+- [ ] Preserve existing batch execution behavior, failure semantics, progress callbacks, and public imports
+- [ ] Add/update production code until focused tests pass, keeping test evidence in checklist notes and PR body
+- [ ] Record explicit-`any` warning deltas and file-size/responsibility improvements for touched batch-executor modules in story docs
+- [ ] Add or update story documentation at `docs/st09067-batch-executor-modularization.md` (or document why not required)
+- [ ] Assess residual test impact; add/update additional automated tests when needed, or document why no further tests are required
+- [ ] Run full test suite before finalizing the PR and record results
+- [ ] Run lint (`pnpm lint`) before finalizing the PR and record results
+- [ ] Commit completed checklist items as logical commits and push updates
+- [ ] Mark PR Ready only after all story tasks are complete
+- [ ] Wait for merge; do not merge directly from local branch
+
+---
+
+## ST-09068: Modularize LangGraph Caching Middleware and Tests
+
+**Branch:** `refactor/st-09068-middleware-caching-modularization`
+
+### Checklist
+- [ ] Create branch `refactor/st-09068-middleware-caching-modularization`
+- [ ] Create draft PR with story ID in title
+- [ ] Define test strategy before implementation: cover runtime modularization and test-file modularization; first failing test should prove caching middleware behavior remains stable while the oversized runtime and test files are split
+- [ ] Write or update the failing automated test before production changes when practical; if not practical, record why before implementation
+- [ ] Reduce `packages/core/src/langgraph/middleware/caching.ts` below the 300 line planning cutoff by extracting focused internal modules for cache-store internals, cache-entry lifecycle helpers, node-wrapper execution flow, and shared-cache facade helpers behind a stable facade
+- [ ] Keep extracted production modules below the 300 line planning cutoff as well; do not satisfy the story by only shrinking the public facade and moving the bulk into a new oversized helper unless an explicit exception is documented in the story notes
+- [ ] Split caching middleware coverage into focused test modules so cache hit/miss, TTL, eviction, and shared-cache behavior no longer depends on a single oversized test surface
+- [ ] Preserve existing caching middleware behavior, shared-cache semantics, callback hooks, and public imports
+- [ ] Add/update production code until focused tests pass, keeping test evidence in checklist notes and PR body
+- [ ] Record explicit-`any` warning deltas and file-size/responsibility improvements for touched caching middleware modules in story docs
+- [ ] Add or update story documentation at `docs/st09068-middleware-caching-modularization.md` (or document why not required)
+- [ ] Assess residual test impact; add/update additional automated tests when needed, or document why no further tests are required
+- [ ] Run full test suite before finalizing the PR and record results
+- [ ] Run lint (`pnpm lint`) before finalizing the PR and record results
+- [ ] Commit completed checklist items as logical commits and push updates
+- [ ] Mark PR Ready only after all story tasks are complete
+- [ ] Wait for merge; do not merge directly from local branch
+
+---
+
+## ST-09069: Modularize Neo4j Embedding Manager and Tests
+
+**Branch:** `refactor/st-09069-neo4j-embedding-manager-modularization`
+
+### Checklist
+- [ ] Create branch `refactor/st-09069-neo4j-embedding-manager-modularization`
+- [ ] Create draft PR with story ID in title
+- [ ] Define test strategy before implementation: cover runtime modularization and test-file modularization; first failing test should prove embedding-manager behavior remains stable while the oversized runtime and test files are split
+- [ ] Write or update the failing automated test before production changes when practical; if not practical, record why before implementation
+- [ ] Reduce `packages/tools/src/data/neo4j/embeddings/embedding-manager.ts` below the 300 line planning cutoff by extracting focused internal modules for provider creation/default-model resolution, environment initialization, and single/batch generation flow behind a stable facade
+- [ ] Keep extracted production modules below the 300 line planning cutoff as well; do not satisfy the story by only shrinking the public facade and moving the bulk into a new oversized helper unless an explicit exception is documented in the story notes
+- [ ] Split embedding-manager coverage into focused test modules so initialization, provider-selection, and batch-generation behavior no longer depends on a single oversized test surface
+- [ ] Preserve existing embedding-manager behavior, provider defaults, environment variable semantics, and public imports
+- [ ] Add/update production code until focused tests pass, keeping test evidence in checklist notes and PR body
+- [ ] Record explicit-`any` warning deltas and file-size/responsibility improvements for touched embedding-manager modules in story docs
+- [ ] Add or update story documentation at `docs/st09069-neo4j-embedding-manager-modularization.md` (or document why not required)
+- [ ] Assess residual test impact; add/update additional automated tests when needed, or document why no further tests are required
+- [ ] Run full test suite before finalizing the PR and record results
+- [ ] Run lint (`pnpm lint`) before finalizing the PR and record results
+- [ ] Commit completed checklist items as logical commits and push updates
+- [ ] Mark PR Ready only after all story tasks are complete
+- [ ] Wait for merge; do not merge directly from local branch
+
+---
+
+## ST-09070: Modularize Multi-Agent Utilities and Tests
+
+**Branch:** `refactor/st-09070-multi-agent-utils-modularization`
+
+### Checklist
+- [ ] Create branch `refactor/st-09070-multi-agent-utils-modularization`
+- [ ] Create draft PR with story ID in title
+- [ ] Define test strategy before implementation: cover runtime modularization and test-file modularization; first failing test should prove multi-agent utility behavior remains stable while the oversized runtime and test files are split
+- [ ] Write or update the failing automated test before production changes when practical; if not practical, record why before implementation
+- [ ] Reduce `packages/patterns/src/multi-agent/utils.ts` below the 300 line planning cutoff by extracting focused internal modules for ReAct agent detection, result-shape extraction/serialization, and wrapped worker execution helpers behind a stable facade
+- [ ] Keep extracted production modules below the 300 line planning cutoff as well; do not satisfy the story by only shrinking the public facade and moving the bulk into a new oversized helper unless an explicit exception is documented in the story notes
+- [ ] Split multi-agent utility coverage into focused test modules so detection, assignment, serialization, and wrapped-agent behavior no longer depends on a single oversized test surface
+- [ ] Preserve existing multi-agent utility behavior, wrapped ReAct execution semantics, and public imports
+- [ ] Add/update production code until focused tests pass, keeping test evidence in checklist notes and PR body
+- [ ] Record explicit-`any` warning deltas and file-size/responsibility improvements for touched multi-agent utility modules in story docs
+- [ ] Add or update story documentation at `docs/st09070-multi-agent-utils-modularization.md` (or document why not required)
+- [ ] Assess residual test impact; add/update additional automated tests when needed, or document why no further tests are required
+- [ ] Run full test suite before finalizing the PR and record results
+- [ ] Run lint (`pnpm lint`) before finalizing the PR and record results
+- [ ] Commit completed checklist items as logical commits and push updates
+- [ ] Mark PR Ready only after all story tasks are complete
+- [ ] Wait for merge; do not merge directly from local branch
+
+---
+
+## ST-09071: Modularize Skill Activation Runtime and Tests
+
+**Branch:** `refactor/st-09071-skill-activation-modularization`
+
+### Checklist
+- [ ] Create branch `refactor/st-09071-skill-activation-modularization`
+- [ ] Create draft PR with story ID in title
+- [ ] Define test strategy before implementation: cover runtime modularization and test-file modularization; first failing test should prove skill activation behavior remains stable while the oversized runtime and test files are split
+- [ ] Write or update the failing automated test before production changes when practical; if not practical, record why before implementation
+- [ ] Reduce `packages/skills/src/activation.ts` below the 300 line planning cutoff by extracting focused internal modules for activation-tool creation, resource path/trust-policy evaluation, and resource loading/event emission behind a stable facade
+- [ ] Keep extracted production modules below the 300 line planning cutoff as well; do not satisfy the story by only shrinking the public facade and moving the bulk into a new oversized helper unless an explicit exception is documented in the story notes
+- [ ] Split skill-activation coverage into focused test modules so activation, trust-policy, and resource-loading behavior no longer depends on a single oversized test surface
+- [ ] Preserve existing skill activation behavior, trust-policy decisions, emitted events, and public imports
+- [ ] Add/update production code until focused tests pass, keeping test evidence in checklist notes and PR body
+- [ ] Record explicit-`any` warning deltas and file-size/responsibility improvements for touched skill-activation modules in story docs
+- [ ] Add or update story documentation at `docs/st09071-skill-activation-modularization.md` (or document why not required)
+- [ ] Assess residual test impact; add/update additional automated tests when needed, or document why no further tests are required
+- [ ] Run full test suite before finalizing the PR and record results
+- [ ] Run lint (`pnpm lint`) before finalizing the PR and record results
+- [ ] Commit completed checklist items as logical commits and push updates
+- [ ] Mark PR Ready only after all story tasks are complete
+- [ ] Wait for merge; do not merge directly from local branch
+
+---
+
+## ST-09072: Modularize Relational Insert Executor and Tests
+
+**Branch:** `refactor/st-09072-relational-insert-executor-modularization`
+
+### Checklist
+- [ ] Create branch `refactor/st-09072-relational-insert-executor-modularization`
+- [ ] Create draft PR with story ID in title
+- [ ] Define test strategy before implementation: cover runtime modularization and test-file modularization; first failing test should prove relational insert executor behavior remains stable while the oversized runtime and test files are split
+- [ ] Write or update the failing automated test before production changes when practical; if not practical, record why before implementation
+- [ ] Reduce `packages/tools/src/data/relational/tools/relational-insert/executor.ts` below the 300 line planning cutoff by extracting focused internal modules for row normalization, batch orchestration, benchmark/result shaping, and insert error helpers behind a stable facade
+- [ ] Keep extracted production modules below the 300 line planning cutoff as well; do not satisfy the story by only shrinking the public facade and moving the bulk into a new oversized helper unless an explicit exception is documented in the story notes
+- [ ] Split insert-executor coverage into focused test modules so normalization, batch, and error-path behavior no longer depends on a single oversized test surface
+- [ ] Preserve existing relational insert behavior, batch semantics, benchmark output, and public imports
+- [ ] Add/update production code until focused tests pass, keeping test evidence in checklist notes and PR body
+- [ ] Record explicit-`any` warning deltas and file-size/responsibility improvements for touched insert-executor modules in story docs
+- [ ] Add or update story documentation at `docs/st09072-relational-insert-executor-modularization.md` (or document why not required)
+- [ ] Assess residual test impact; add/update additional automated tests when needed, or document why no further tests are required
+- [ ] Run full test suite before finalizing the PR and record results
+- [ ] Run lint (`pnpm lint`) before finalizing the PR and record results
+- [ ] Commit completed checklist items as logical commits and push updates
+- [ ] Mark PR Ready only after all story tasks are complete
+- [ ] Wait for merge; do not merge directly from local branch
+
+---
+
+## ST-09073: Modularize Relational Update Executor and Tests
+
+**Branch:** `refactor/st-09073-relational-update-executor-modularization`
+
+### Checklist
+- [ ] Create branch `refactor/st-09073-relational-update-executor-modularization`
+- [ ] Create draft PR with story ID in title
+- [ ] Define test strategy before implementation: cover runtime modularization and test-file modularization; first failing test should prove relational update executor behavior remains stable while the oversized runtime and test files are split
+- [ ] Write or update the failing automated test before production changes when practical; if not practical, record why before implementation
+- [ ] Reduce `packages/tools/src/data/relational/tools/relational-update/executor.ts` below the 300 line planning cutoff by extracting focused internal modules for condition normalization, batch orchestration, benchmark/result shaping, and update error helpers behind a stable facade
+- [ ] Keep extracted production modules below the 300 line planning cutoff as well; do not satisfy the story by only shrinking the public facade and moving the bulk into a new oversized helper unless an explicit exception is documented in the story notes
+- [ ] Split update-executor coverage into focused test modules so normalization, batch, and error-path behavior no longer depends on a single oversized test surface
+- [ ] Preserve existing relational update behavior, batch semantics, benchmark output, and public imports
+- [ ] Add/update production code until focused tests pass, keeping test evidence in checklist notes and PR body
+- [ ] Record explicit-`any` warning deltas and file-size/responsibility improvements for touched update-executor modules in story docs
+- [ ] Add or update story documentation at `docs/st09073-relational-update-executor-modularization.md` (or document why not required)
+- [ ] Assess residual test impact; add/update additional automated tests when needed, or document why no further tests are required
+- [ ] Run full test suite before finalizing the PR and record results
+- [ ] Run lint (`pnpm lint`) before finalizing the PR and record results
+- [ ] Commit completed checklist items as logical commits and push updates
+- [ ] Mark PR Ready only after all story tasks are complete
+- [ ] Wait for merge; do not merge directly from local branch
+
+---
+
+## ST-09074: Modularize Relational Delete Executor and Tests
+
+**Branch:** `refactor/st-09074-relational-delete-executor-modularization`
+
+### Checklist
+- [ ] Create branch `refactor/st-09074-relational-delete-executor-modularization`
+- [ ] Create draft PR with story ID in title
+- [ ] Define test strategy before implementation: cover runtime modularization and test-file modularization; first failing test should prove relational delete executor behavior remains stable while the oversized runtime and test files are split
+- [ ] Write or update the failing automated test before production changes when practical; if not practical, record why before implementation
+- [ ] Reduce `packages/tools/src/data/relational/tools/relational-delete/executor.ts` below the 300 line planning cutoff by extracting focused internal modules for condition normalization, batch orchestration, benchmark/result shaping, and delete error helpers behind a stable facade
+- [ ] Keep extracted production modules below the 300 line planning cutoff as well; do not satisfy the story by only shrinking the public facade and moving the bulk into a new oversized helper unless an explicit exception is documented in the story notes
+- [ ] Split delete-executor coverage into focused test modules so normalization, batch, and error-path behavior no longer depends on a single oversized test surface
+- [ ] Preserve existing relational delete behavior, batch semantics, benchmark output, and public imports
+- [ ] Add/update production code until focused tests pass, keeping test evidence in checklist notes and PR body
+- [ ] Record explicit-`any` warning deltas and file-size/responsibility improvements for touched delete-executor modules in story docs
+- [ ] Add or update story documentation at `docs/st09074-relational-delete-executor-modularization.md` (or document why not required)
 - [ ] Assess residual test impact; add/update additional automated tests when needed, or document why no further tests are required
 - [ ] Run full test suite before finalizing the PR and record results
 - [ ] Run lint (`pnpm lint`) before finalizing the PR and record results

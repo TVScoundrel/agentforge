@@ -121,7 +121,7 @@
 - Story slices are intentionally small (1 day each) so quality improvements can ship continuously
 - Lightweight quality-gate follow-ups keep release/build feedback tight by reducing stale warning caps and easy package metadata warnings
 
-**Stories:** ST-09001 through ST-09066
+**Stories:** ST-09001 through ST-09074
 
 ---
 
@@ -1939,7 +1939,7 @@
 **Priority:** P2 (Medium)
 **Estimate:** 4 hours
 **Dependencies:** ST-09043
-**Status:** Ready
+**Status:** In Progress
 
 **Acceptance criteria:**
 - [ ] `packages/core/src/langgraph/middleware/presets.ts` is reduced below the 300 line planning cutoff by extracting focused internal modules for logging presets, retry/timing presets, composition helpers, and shared preset types behind a stable public facade, and the extracted production modules must also stay below `300` lines unless the story documents and justifies an explicit exception.
@@ -1981,6 +1981,142 @@
 - [ ] Existing pool behavior, lifecycle semantics, and public imports remain backward compatible.
 - [ ] Focused tests confirm extracted modules preserve current pool behavior, and `pnpm --filter @agentforge/core typecheck`, `pnpm test --run`, and `pnpm lint:explicit-any:baseline` pass with no baseline regression.
 - [ ] Add or update story documentation at `docs/st09066-resource-pool-modularization.md`
+
+---
+
+#### ST-09067: Modularize Relational Batch Executor and Tests
+**User story:** As a tools maintainer, I want `packages/tools/src/data/relational/query/batch-executor.ts` and its coupled batch execution tests split into focused modules so chunking, retry, benchmarking, and progress-reporting responsibilities do not keep growing in one shared helper.
+
+**Priority:** P2 (Medium)
+**Estimate:** 4 hours
+**Dependencies:** None
+**Status:** Backlog
+
+**Acceptance criteria:**
+- [ ] `packages/tools/src/data/relational/query/batch-executor.ts` is reduced below the 300 line planning cutoff by extracting focused internal modules for option resolution/chunking, retry/progress flow, benchmark helpers, and shared batch types behind a stable public facade, and the extracted production modules must also stay below `300` lines unless the story documents and justifies an explicit exception.
+- [ ] Batch-executor coverage is modularized alongside the production split so chunking, retry, failure, and benchmark assertions no longer depend on a single oversized test surface.
+- [ ] Existing batch execution behavior, failure semantics, progress callbacks, and public imports remain backward compatible.
+- [ ] Focused tests confirm extracted modules preserve current batch-executor behavior, and `pnpm --filter @agentforge/tools typecheck`, `pnpm test --run`, and `pnpm lint:explicit-any:baseline` pass with no baseline regression.
+- [ ] Add or update story documentation at `docs/st09067-batch-executor-modularization.md`
+
+---
+
+#### ST-09068: Modularize LangGraph Caching Middleware and Tests
+**User story:** As a core maintainer, I want `packages/core/src/langgraph/middleware/caching.ts` and its coupled caching tests split into focused modules so cache-store internals, node wrappers, and shared-cache helpers are easier to evolve without duplicating logic.
+
+**Priority:** P2 (Medium)
+**Estimate:** 4 hours
+**Dependencies:** None
+**Status:** Backlog
+
+**Acceptance criteria:**
+- [ ] `packages/core/src/langgraph/middleware/caching.ts` is reduced below the 300 line planning cutoff by extracting focused internal modules for cache-store internals, cache-entry lifecycle helpers, node-wrapper execution flow, and shared-cache facade helpers behind a stable public facade, and the extracted production modules must also stay below `300` lines unless the story documents and justifies an explicit exception.
+- [ ] Caching middleware coverage is modularized alongside the production split so cache hit/miss, TTL, eviction, and shared-cache assertions no longer depend on a single oversized test surface.
+- [ ] Existing caching behavior, shared-cache semantics, callback hooks, and public imports remain backward compatible.
+- [ ] Focused tests confirm extracted modules preserve current caching middleware behavior, and `pnpm --filter @agentforge/core typecheck`, `pnpm test --run`, and `pnpm lint:explicit-any:baseline` pass with no baseline regression.
+- [ ] Add or update story documentation at `docs/st09068-middleware-caching-modularization.md`
+
+---
+
+#### ST-09069: Modularize Neo4j Embedding Manager and Tests
+**User story:** As a tools maintainer, I want `packages/tools/src/data/neo4j/embeddings/embedding-manager.ts` and its embedding-manager coverage split into focused modules so provider selection, environment initialization, and batch generation logic are easier to reason about.
+
+**Priority:** P2 (Medium)
+**Estimate:** 4 hours
+**Dependencies:** None
+**Status:** Backlog
+
+**Acceptance criteria:**
+- [ ] `packages/tools/src/data/neo4j/embeddings/embedding-manager.ts` is reduced below the 300 line planning cutoff by extracting focused internal modules for provider creation/default-model resolution, environment-based initialization, and single/batch generation flow behind a stable public facade, and the extracted production modules must also stay below `300` lines unless the story documents and justifies an explicit exception.
+- [ ] Embedding-manager coverage is modularized alongside the production split so initialization, provider-selection, and batch-generation assertions no longer depend on a single oversized test surface.
+- [ ] Existing embedding-manager behavior, provider defaults, environment variable semantics, and public imports remain backward compatible.
+- [ ] Focused tests confirm extracted modules preserve current embedding-manager behavior, and `pnpm --filter @agentforge/tools typecheck`, `pnpm test --run`, and `pnpm lint:explicit-any:baseline` pass with no baseline regression.
+- [ ] Add or update story documentation at `docs/st09069-neo4j-embedding-manager-modularization.md`
+
+---
+
+#### ST-09070: Modularize Multi-Agent Utilities and Tests
+**User story:** As a patterns maintainer, I want `packages/patterns/src/multi-agent/utils.ts` and its coupled utility tests split into focused modules so ReAct detection, assignment extraction, serialization, and wrapped worker execution do not stay concentrated in one file.
+
+**Priority:** P2 (Medium)
+**Estimate:** 4 hours
+**Dependencies:** ST-09063
+**Status:** Backlog
+
+**Acceptance criteria:**
+- [ ] `packages/patterns/src/multi-agent/utils.ts` is reduced below the 300 line planning cutoff by extracting focused internal modules for ReAct agent detection, result-shape extraction/serialization, and wrapped worker execution helpers behind a stable public facade, and the extracted production modules must also stay below `300` lines unless the story documents and justifies an explicit exception.
+- [ ] Multi-agent utility coverage is modularized alongside the production split so detection, assignment, serialization, and wrapped-agent assertions no longer depend on a single oversized test surface.
+- [ ] Existing multi-agent utility behavior, wrapped ReAct execution semantics, and public imports remain backward compatible.
+- [ ] Focused tests confirm extracted modules preserve current multi-agent utility behavior, and `pnpm --filter @agentforge/patterns typecheck`, `pnpm test --run`, and `pnpm lint:explicit-any:baseline` pass with no baseline regression.
+- [ ] Add or update story documentation at `docs/st09070-multi-agent-utils-modularization.md`
+
+---
+
+#### ST-09071: Modularize Skill Activation Runtime and Tests
+**User story:** As a skills maintainer, I want `packages/skills/src/activation.ts` and its coupled activation tests split into focused modules so activation, trust-policy, and resource-loading paths are easier to review and extend independently.
+
+**Priority:** P2 (Medium)
+**Estimate:** 4 hours
+**Dependencies:** ST-09056
+**Status:** Backlog
+
+**Acceptance criteria:**
+- [ ] `packages/skills/src/activation.ts` is reduced below the 300 line planning cutoff by extracting focused internal modules for activation-tool creation, resource path/trust-policy evaluation, and resource loading/event emission behind a stable public facade, and the extracted production modules must also stay below `300` lines unless the story documents and justifies an explicit exception.
+- [ ] Skill-activation coverage is modularized alongside the production split so activation, trust-policy, and resource-loading assertions no longer depend on a single oversized test surface.
+- [ ] Existing skill activation behavior, trust-policy decisions, emitted events, and public imports remain backward compatible.
+- [ ] Focused tests confirm extracted modules preserve current skill-activation behavior, and `pnpm --filter @agentforge/skills typecheck`, `pnpm test --run`, and `pnpm lint:explicit-any:baseline` pass with no baseline regression.
+- [ ] Add or update story documentation at `docs/st09071-skill-activation-modularization.md`
+
+---
+
+#### ST-09072: Modularize Relational Insert Executor and Tests
+**User story:** As a tools maintainer, I want `packages/tools/src/data/relational/tools/relational-insert/executor.ts` and its coupled insert-executor tests split into focused modules so row normalization, batch execution, and result/error shaping stay easier to change safely.
+
+**Priority:** P2 (Medium)
+**Estimate:** 4 hours
+**Dependencies:** ST-09067
+**Status:** Backlog
+
+**Acceptance criteria:**
+- [ ] `packages/tools/src/data/relational/tools/relational-insert/executor.ts` is reduced below the 300 line planning cutoff by extracting focused internal modules for row normalization, batch orchestration, benchmark/result shaping, and insert error helpers behind a stable public facade, and the extracted production modules must also stay below `300` lines unless the story documents and justifies an explicit exception.
+- [ ] Insert-executor coverage is modularized alongside the production split so normalization, batch, and error-path assertions no longer depend on a single oversized test surface.
+- [ ] Existing relational insert behavior, batch semantics, benchmark output, and public imports remain backward compatible.
+- [ ] Focused tests confirm extracted modules preserve current insert-executor behavior, and `pnpm --filter @agentforge/tools typecheck`, `pnpm test --run`, and `pnpm lint:explicit-any:baseline` pass with no baseline regression.
+- [ ] Add or update story documentation at `docs/st09072-relational-insert-executor-modularization.md`
+
+---
+
+#### ST-09073: Modularize Relational Update Executor and Tests
+**User story:** As a tools maintainer, I want `packages/tools/src/data/relational/tools/relational-update/executor.ts` and its coupled update-executor tests split into focused modules so condition handling, batch orchestration, and result/error shaping are no longer concentrated in one executor file.
+
+**Priority:** P2 (Medium)
+**Estimate:** 4 hours
+**Dependencies:** ST-09067
+**Status:** Backlog
+
+**Acceptance criteria:**
+- [ ] `packages/tools/src/data/relational/tools/relational-update/executor.ts` is reduced below the 300 line planning cutoff by extracting focused internal modules for condition normalization, batch orchestration, benchmark/result shaping, and update error helpers behind a stable public facade, and the extracted production modules must also stay below `300` lines unless the story documents and justifies an explicit exception.
+- [ ] Update-executor coverage is modularized alongside the production split so normalization, batch, and error-path assertions no longer depend on a single oversized test surface.
+- [ ] Existing relational update behavior, batch semantics, benchmark output, and public imports remain backward compatible.
+- [ ] Focused tests confirm extracted modules preserve current update-executor behavior, and `pnpm --filter @agentforge/tools typecheck`, `pnpm test --run`, and `pnpm lint:explicit-any:baseline` pass with no baseline regression.
+- [ ] Add or update story documentation at `docs/st09073-relational-update-executor-modularization.md`
+
+---
+
+#### ST-09074: Modularize Relational Delete Executor and Tests
+**User story:** As a tools maintainer, I want `packages/tools/src/data/relational/tools/relational-delete/executor.ts` and its coupled delete-executor tests split into focused modules so condition handling, batch orchestration, and result/error shaping are no longer concentrated in one executor file.
+
+**Priority:** P2 (Medium)
+**Estimate:** 4 hours
+**Dependencies:** ST-09067
+**Status:** Backlog
+
+**Acceptance criteria:**
+- [ ] `packages/tools/src/data/relational/tools/relational-delete/executor.ts` is reduced below the 300 line planning cutoff by extracting focused internal modules for condition normalization, batch orchestration, benchmark/result shaping, and delete error helpers behind a stable public facade, and the extracted production modules must also stay below `300` lines unless the story documents and justifies an explicit exception.
+- [ ] Delete-executor coverage is modularized alongside the production split so normalization, batch, and error-path assertions no longer depend on a single oversized test surface.
+- [ ] Existing relational delete behavior, batch semantics, benchmark output, and public imports remain backward compatible.
+- [ ] Focused tests confirm extracted modules preserve current delete-executor behavior, and `pnpm --filter @agentforge/tools typecheck`, `pnpm test --run`, and `pnpm lint:explicit-any:baseline` pass with no baseline regression.
+- [ ] Add or update story documentation at `docs/st09074-relational-delete-executor-modularization.md`
 
 ---
 

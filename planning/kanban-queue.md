@@ -4,17 +4,16 @@
 
 ## Queue Status Summary
 
-- **Ready:** 3 stories
-- **In Progress:** 0 stories
+- **Ready:** 2 stories
+- **In Progress:** 1 stories
 - **In Review:** 0 stories
 - **Blocked:** 0 stories
-- **Backlog:** 0 stories
+- **Backlog:** 8 stories
 
 ---
 
 ## Ready
 
-- `ST-09064` - Modularize LangGraph Middleware Presets and Tests
 - `ST-09065` - Modularize LangGraph State Helpers and Tests
 - `ST-09066` - Modularize Core Resource Pool and Tests
 
@@ -22,7 +21,7 @@
 
 ## In Progress
 
-None currently.
+- `ST-09064` - Modularize LangGraph Middleware Presets and Tests
 
 ---
 
@@ -38,7 +37,14 @@ _No stories currently blocked_
 
 ## Backlog
 
-_No stories currently in backlog_
+- `ST-09067` - Modularize Relational Batch Executor and Tests
+- `ST-09068` - Modularize LangGraph Caching Middleware and Tests
+- `ST-09069` - Modularize Neo4j Embedding Manager and Tests
+- `ST-09070` - Modularize Multi-Agent Utilities and Tests
+- `ST-09071` - Modularize Skill Activation Runtime and Tests
+- `ST-09072` - Modularize Relational Insert Executor and Tests
+- `ST-09073` - Modularize Relational Update Executor and Tests
+- `ST-09074` - Modularize Relational Delete Executor and Tests
 
 ---
 
@@ -135,4 +141,5 @@ _No stories currently in backlog_
 - Complete: ST-09060 - multi-agent schema payload contracts hardened (merged 2026-06-08, PR #129)
 - Complete: ST-09062 - core tool executor and tests modularized (merged 2026-06-11, PR #131)
 - Complete: ST-09063 - multi-agent worker node and tests modularized (merged 2026-06-12, PR #132)
+- Epic 09 (SOLID Micro-Refactors and Type Boundary Hardening) was expanded on 2026-06-12 with follow-on backlog stories ST-09067 through ST-09074 to keep the daily modularization lane stocked after the current ready queue
 - Current measured `no-explicit-any` baseline is `84` warnings (`cli 6`, `core 23`, `patterns 2`, `testing 0`, `tools 53`)
