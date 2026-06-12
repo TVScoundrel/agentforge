@@ -1,6 +1,7 @@
 import { describe, expect, it, vi } from 'vitest';
 import { createAggregatorNode } from '../../../src/multi-agent/nodes.js';
-import type { AggregatorConfig, MultiAgentStateType } from '../../../src/multi-agent/types.js';
+import type { MultiAgentStateType } from '../../../src/multi-agent/state.js';
+import type { AggregatorConfig } from '../../../src/multi-agent/types.js';
 import { createMockState, GraphInterrupt } from './shared.js';
 
 describe('Multi-Agent Nodes', () => {
@@ -18,11 +19,12 @@ describe('Multi-Agent Nodes', () => {
       const config: AggregatorConfig = {
         aggregateFn,
       };
+      const state = createMockState();
 
       const node = createAggregatorNode(config);
-      const result = await node(createMockState());
+      const result = await node(state);
 
-      expect(aggregateFn).toHaveBeenCalledWith(createMockState());
+      expect(aggregateFn).toHaveBeenCalledWith(state);
       expect(result.response).toBe('Custom aggregated result');
       expect(result.status).toBe('completed');
     });

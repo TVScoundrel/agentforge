@@ -1,6 +1,7 @@
 import { describe, expect, it, vi } from 'vitest';
 import { createWorkerNode } from '../../../src/multi-agent/nodes.js';
-import type { MultiAgentStateType, WorkerConfig } from '../../../src/multi-agent/types.js';
+import type { MultiAgentStateType } from '../../../src/multi-agent/state.js';
+import type { WorkerConfig } from '../../../src/multi-agent/types.js';
 import { createMockState } from './shared.js';
 
 describe('Multi-Agent Nodes', () => {
