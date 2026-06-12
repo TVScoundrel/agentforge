@@ -5,6 +5,36 @@ All notable changes to AgentForge will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.16.50] - 2026-06-12
+
+### Added
+
+#### @agentforge/patterns - Multi-Agent Worker Modularization Coverage
+- Added focused multi-agent node coverage in `packages/patterns/tests/multi-agent/nodes/supervisor-routing.ts`, `supervisor-workload.ts`, `worker-core.ts`, `worker-workload.ts`, `worker-overrides.ts`, and `aggregator-node.ts` behind the stable `packages/patterns/tests/multi-agent/nodes.test.ts` public entrypoint
+- Added story documentation in `docs/st09063-multi-agent-worker-node-modularization.md` capturing the worker-node split, validation evidence, and no-regression explicit-`any` outcome
+
+### Changed
+
+#### @agentforge/patterns - Multi-Agent Worker Runtime Modularization
+- Split `packages/patterns/src/multi-agent/nodes/worker.ts` into a smaller stable worker facade with focused `worker-model.ts`, `worker-workload.ts`, and `worker-types.ts` helper modules
+- Preserved the public `createWorkerNode(...)` surface, worker handoff propagation, framework-owned workload handling, and the existing multi-agent node test entrypoint while reducing maintenance pressure on the old monolithic runtime and test files
+
+### Fixed
+
+#### @agentforge/patterns - Multi-Agent Worker Review Follow-Ups
+- Corrected split test imports so `MultiAgentStateType` resolves from `src/multi-agent/state.js` in the extracted worker and aggregator suites
+- Removed a flaky aggregator assertion by capturing the generated state instance once before asserting the custom aggregate callback arguments
+- Removed a redundant worker-model type cast in the public worker facade and kept the explicit-`any` baseline stable at `workspace 84/289` and `patterns 2/28`
+
+### Published
+- All packages published to npm registry at version 0.16.50:
+  - @agentforge/core@0.16.50
+  - @agentforge/skills@0.16.50
+  - @agentforge/patterns@0.16.50
+  - @agentforge/tools@0.16.50
+  - @agentforge/testing@0.16.50
+  - @agentforge/cli@0.16.50
+
 ## [0.16.49] - 2026-06-11
 
 ### Added
