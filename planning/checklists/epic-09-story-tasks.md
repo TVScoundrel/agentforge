@@ -2610,7 +2610,8 @@ Implementation notes:
 
 ### Checklist
 - [x] Create branch `refactor/st-09063-multi-agent-worker-node-modularization`
-- [ ] Create draft PR with story ID in title
+- [x] Create draft PR with story ID in title
+  - PR #132: https://github.com/TVScoundrel/agentforge/pull/132
 - [x] Define test strategy before implementation: cover runtime modularization and test-file modularization; first failing test should prove worker-node behavior remains stable while the oversized runtime and test files are split
 - [x] Write or update the failing automated test before production changes when practical; if not practical, record why before implementation
 - [x] Reduce `packages/patterns/src/multi-agent/nodes/worker.ts` below the 300 line planning cutoff by extracting focused internal modules for worker execution flow, handoff/result shaping, callback/event helpers, and shared node types behind a stable facade
@@ -2623,7 +2624,8 @@ Implementation notes:
 - [x] Assess residual test impact; add/update additional automated tests when needed, or document why no further tests are required
 - [x] Run full test suite before finalizing the PR and record results
 - [x] Run lint (`pnpm lint`) before finalizing the PR and record results
-- [ ] Commit completed checklist items as logical commits and push updates
+- [x] Commit completed checklist items as logical commits and push updates
+  - `c86f1387` `refactor(st-09063): modularize multi-agent worker node`
 - [ ] Mark PR Ready only after all story tasks are complete
 - [ ] Wait for merge; do not merge directly from local branch
 

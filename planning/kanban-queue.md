@@ -4,9 +4,9 @@
 
 ## Queue Status Summary
 
-- **Ready:** 4 stories
-- **In Progress:** 1 story
-- **In Review:** 0 stories
+- **Ready:** 3 stories
+- **In Progress:** 0 stories
+- **In Review:** 1 story
 - **Blocked:** 0 stories
 - **Backlog:** 0 stories
 
@@ -22,13 +22,13 @@
 
 ## In Progress
 
-- `ST-09063` - Modularize Multi-Agent Worker Node and Tests
+None currently.
 
 ---
 
 ## In Review
 
-None currently.
+- `ST-09063` - Modularize Multi-Agent Worker Node and Tests
 
 ## Blocked
 
