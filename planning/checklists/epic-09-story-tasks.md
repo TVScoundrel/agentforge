@@ -2626,7 +2626,9 @@ Implementation notes:
 - [x] Run lint (`pnpm lint`) before finalizing the PR and record results
 - [x] Commit completed checklist items as logical commits and push updates
   - `c86f1387` `refactor(st-09063): modularize multi-agent worker node`
-- [ ] Mark PR Ready only after all story tasks are complete
+  - `95c82032` `docs(st-09063): record validation and move story to in-review`
+- [x] Mark PR Ready only after all story tasks are complete
+  - PR #132 marked ready: https://github.com/TVScoundrel/agentforge/pull/132
 - [ ] Wait for merge; do not merge directly from local branch
 
 Implementation notes:
