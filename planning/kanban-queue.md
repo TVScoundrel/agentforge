@@ -1,11 +1,11 @@
 # Kanban Queue: AgentForge
 
-**Last Updated:** 2026-06-11
+**Last Updated:** 2026-06-12
 
 ## Queue Status Summary
 
 - **Ready:** 4 stories
-- **In Progress:** 0 stories
+- **In Progress:** 1 story
 - **In Review:** 0 stories
 - **Blocked:** 0 stories
 - **Backlog:** 0 stories
@@ -14,7 +14,6 @@
 
 ## Ready
 
-- `ST-09063` - Modularize Multi-Agent Worker Node and Tests
 - `ST-09064` - Modularize LangGraph Middleware Presets and Tests
 - `ST-09065` - Modularize LangGraph State Helpers and Tests
 - `ST-09066` - Modularize Core Resource Pool and Tests
@@ -23,7 +22,7 @@
 
 ## In Progress
 
-None currently.
+- `ST-09063` - Modularize Multi-Agent Worker Node and Tests
 
 ---
 
