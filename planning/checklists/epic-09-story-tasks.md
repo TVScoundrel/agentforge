@@ -2609,23 +2609,57 @@ Implementation notes:
 **Branch:** `refactor/st-09063-multi-agent-worker-node-modularization`
 
 ### Checklist
-- [ ] Create branch `refactor/st-09063-multi-agent-worker-node-modularization`
-- [ ] Create draft PR with story ID in title
-- [ ] Define test strategy before implementation: cover runtime modularization and test-file modularization; first failing test should prove worker-node behavior remains stable while the oversized runtime and test files are split
-- [ ] Write or update the failing automated test before production changes when practical; if not practical, record why before implementation
-- [ ] Reduce `packages/patterns/src/multi-agent/nodes/worker.ts` below the 300 line planning cutoff by extracting focused internal modules for worker execution flow, handoff/result shaping, callback/event helpers, and shared node types behind a stable facade
-- [ ] Keep extracted production modules below the 300 line planning cutoff as well; do not satisfy the story by only shrinking the public facade and moving the bulk into a new oversized helper unless an explicit exception is documented in the story notes
-- [ ] Split worker-node coverage into focused test modules so execution, handoff, and failure-path behavior no longer depends on a single oversized test surface
-- [ ] Preserve existing worker-node behavior, routing handoff integration, event semantics, and public imports
-- [ ] Add/update production code until focused tests pass, keeping test evidence in checklist notes and PR body
-- [ ] Record explicit-`any` warning deltas and file-size/responsibility improvements for touched worker-node modules in story docs
-- [ ] Add or update story documentation at `docs/st09063-multi-agent-worker-node-modularization.md` (or document why not required)
-- [ ] Assess residual test impact; add/update additional automated tests when needed, or document why no further tests are required
-- [ ] Run full test suite before finalizing the PR and record results
-- [ ] Run lint (`pnpm lint`) before finalizing the PR and record results
-- [ ] Commit completed checklist items as logical commits and push updates
-- [ ] Mark PR Ready only after all story tasks are complete
+- [x] Create branch `refactor/st-09063-multi-agent-worker-node-modularization`
+- [x] Create draft PR with story ID in title
+  - PR #132: https://github.com/TVScoundrel/agentforge/pull/132
+- [x] Define test strategy before implementation: cover runtime modularization and test-file modularization; first failing test should prove worker-node behavior remains stable while the oversized runtime and test files are split
+- [x] Write or update the failing automated test before production changes when practical; if not practical, record why before implementation
+- [x] Reduce `packages/patterns/src/multi-agent/nodes/worker.ts` below the 300 line planning cutoff by extracting focused internal modules for worker execution flow, handoff/result shaping, callback/event helpers, and shared node types behind a stable facade
+- [x] Keep extracted production modules below the 300 line planning cutoff as well; do not satisfy the story by only shrinking the public facade and moving the bulk into a new oversized helper unless an explicit exception is documented in the story notes
+- [x] Split worker-node coverage into focused test modules so execution, handoff, and failure-path behavior no longer depends on a single oversized test surface
+- [x] Preserve existing worker-node behavior, routing handoff integration, event semantics, and public imports
+- [x] Add/update production code until focused tests pass, keeping test evidence in checklist notes and PR body
+- [x] Record explicit-`any` warning deltas and file-size/responsibility improvements for touched worker-node modules in story docs
+- [x] Add or update story documentation at `docs/st09063-multi-agent-worker-node-modularization.md` (or document why not required)
+- [x] Assess residual test impact; add/update additional automated tests when needed, or document why no further tests are required
+- [x] Run full test suite before finalizing the PR and record results
+- [x] Run lint (`pnpm lint`) before finalizing the PR and record results
+- [x] Commit completed checklist items as logical commits and push updates
+  - `c86f1387` `refactor(st-09063): modularize multi-agent worker node`
+  - `95c82032` `docs(st-09063): record validation and move story to in-review`
+- [x] Mark PR Ready only after all story tasks are complete
+  - PR #132 marked ready: https://github.com/TVScoundrel/agentforge/pull/132
 - [ ] Wait for merge; do not merge directly from local branch
+
+Implementation notes:
+
+- Branch created from `main`: `refactor/st-09063-multi-agent-worker-node-modularization`
+- Test-first strategy:
+  - This story is behavior-preserving modularization, so a literal failing test for "the worker file got smaller" would only assert repo structure rather than worker-node behavior.
+  - Practical substitute: extract the `createWorkerNode` block from `packages/patterns/tests/multi-agent/nodes.test.ts` into focused worker-node suites first, keep `packages/patterns/tests/multi-agent/nodes.test.ts` as the stable public entrypoint, run that entrypoint unchanged, then modularize `packages/patterns/src/multi-agent/nodes/worker.ts` behind the same public facade.
+- Focused validation before production split:
+  - `pnpm test --run packages/patterns/tests/multi-agent/nodes.test.ts`
+  - `1` file passed, `33` tests passed
+- Runtime file-size result:
+  - `packages/patterns/src/multi-agent/nodes/worker.ts`: `357 -> 140` lines
+  - extracted modules: `86`, `134`, and `10` lines
+- Test modularization result:
+  - `packages/patterns/tests/multi-agent/nodes.test.ts`: `1156 -> 6` lines
+  - focused suites/helpers: `125`, `144`, `215`, `198`, `213`, `128`, and `41` lines
+- Focused validation after production split:
+  - `pnpm test --run packages/patterns/tests/multi-agent/nodes.test.ts`
+  - `1` file passed, `33` tests passed
+- Compatibility validation:
+  - `pnpm --filter @agentforge/patterns typecheck`
+- Explicit-`any` baseline check:
+  - `pnpm lint:explicit-any:baseline`
+  - `84/289` warnings overall; `2/28` in `patterns`; no regression from this story
+- Residual test impact:
+  - Additional focused behavior tests were not needed beyond the suite split because the story preserved the public worker-node facade; the new suites keep execution, workload, override, and failure-path coverage isolated behind the same `nodes.test.ts` entrypoint.
+- Full validation:
+  - `pnpm test --run` -> `210` files passed, `18` skipped; `2311` tests passed, `286` skipped
+  - `pnpm lint` -> passed with warnings only
+  - `git diff --check`
 
 ---
 
