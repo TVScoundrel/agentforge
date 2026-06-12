@@ -3,7 +3,7 @@
 **Epic Range:** EP-09 through EP-09
 **Status:** In Progress
 **Last Updated:** 2026-06-12
-**Active Story:** ST-09064 - Modularize LangGraph Middleware Presets and Tests (In Progress)
+**Active Story:** ST-09064 - Modularize LangGraph Middleware Presets and Tests (In Review)
 
 ---
 
