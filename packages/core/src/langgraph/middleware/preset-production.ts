@@ -58,13 +58,15 @@ export function production<State>(
   );
 
   if (enableMetrics) {
+    const metricsOptions = {
+      name: nodeName,
+      trackDuration: true,
+      trackErrors: true,
+      trackInvocations: true,
+    } satisfies MetricsNodeOptions;
+
     middleware.push(
-      withMetrics({
-        name: nodeName,
-        trackDuration: true,
-        trackErrors: true,
-        trackInvocations: true,
-      } as MetricsNodeOptions)
+      withMetrics(metricsOptions)
     );
   }
 
