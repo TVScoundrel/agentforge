@@ -2749,7 +2749,7 @@ Implementation notes:
 - [x] Run lint (`pnpm lint`) before finalizing the PR and record results
 - [x] Commit completed checklist items as logical commits and push updates
 - [x] Mark PR Ready only after all story tasks are complete
-- [ ] Wait for merge; do not merge directly from local branch
+- [x] Wait for merge; do not merge directly from local branch
 
 Implementation notes:
 
@@ -2788,6 +2788,8 @@ Implementation notes:
   - `31c11729` `docs(st-09065): record validation and move story to in-review`
 - PR readiness:
   - PR #134 marked ready for review: https://github.com/TVScoundrel/agentforge/pull/134
+- Merge record:
+  - Merged to `main` via PR #134 on `2026-06-13` (merge commit `caf8512ad9e3d58f5bfbdd591096e3af0bc36050`)
 
 ---
 

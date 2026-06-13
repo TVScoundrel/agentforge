@@ -8,6 +8,13 @@
 
 ## Completed Stories
 
+### ST-09065: Modularize LangGraph State Helpers and Tests
+- **Merged:** 2026-06-13
+- **PR:** https://github.com/TVScoundrel/agentforge/pull/134 (commit caf8512a)
+- **Epic:** EP-09 (SOLID Micro-Refactors and Type Boundary Hardening)
+- **Estimate:** 4 hours
+- **Outcome:** Modularized `@agentforge/core` LangGraph state helpers by shrinking `packages/core/src/langgraph/state.ts` from a `361` line mixed-responsibility runtime to a `13` line public facade, extracting focused annotation, validation, merge, reducer/default, and shared-type modules while preserving public imports and reducer semantics. The story also replaced the `507` line `packages/core/tests/langgraph/state.test.ts` monolith with focused annotation, validation, merge, and workflow suites behind the same public entrypoint, kept the explicit-`any` baseline flat at `workspace 84/289` and `core 23/119`, and required no CI changes because the existing validation commands and public facade remained intact.
+
 ### ST-09064: Modularize LangGraph Middleware Presets and Tests
 - **Merged:** 2026-06-13
 - **PR:** https://github.com/TVScoundrel/agentforge/pull/133 (commit aa6ca8e6)
