@@ -4,20 +4,20 @@
 
 `packages/core/src/langgraph/middleware/presets.ts` was reduced from `365` lines to a roughly `25` line public facade that keeps the existing `production(...)`, `development(...)`, `testing(...)`, and `presets` exports stable while moving the internal preset responsibilities behind focused modules.
 
-The extracted runtime modules stay below the `300` line planning cutoff:
+The extracted runtime modules stay below the `300` line planning cutoff and remain small, reviewable helpers:
 
-- `packages/core/src/langgraph/middleware/preset-adapters.ts` (`37` lines)
-- `packages/core/src/langgraph/middleware/preset-collection.ts` (`9` lines)
-- `packages/core/src/langgraph/middleware/preset-development.ts` (`24` lines)
-- `packages/core/src/langgraph/middleware/preset-production.ts` (`81` lines)
-- `packages/core/src/langgraph/middleware/preset-testing.ts` (`42` lines)
-- `packages/core/src/langgraph/middleware/preset-types.ts` (`31` lines)
+- `packages/core/src/langgraph/middleware/preset-adapters.ts` (about `40` lines)
+- `packages/core/src/langgraph/middleware/preset-collection.ts` (about `10` lines)
+- `packages/core/src/langgraph/middleware/preset-development.ts` (about `25` lines)
+- `packages/core/src/langgraph/middleware/preset-production.ts` (about `80` lines)
+- `packages/core/src/langgraph/middleware/preset-testing.ts` (about `40` lines)
+- `packages/core/src/langgraph/middleware/preset-types.ts` (about `30` lines)
 
 This leaves the facade responsible only for the public export surface, while logging/retry/timeout adapter wrapping, preset option types, production stack assembly, development logging defaults, testing invocation helpers, and the `presets` collection each live behind separate internal seams.
 
 ## Test Modularization
 
-The monolithic `packages/core/src/langgraph/middleware/__tests__/presets.test.ts` was reduced from `286` lines to an `8` line public entrypoint that imports focused suites:
+The monolithic `packages/core/src/langgraph/middleware/__tests__/presets.test.ts` was reduced from `286` lines to a roughly `8` line public entrypoint that imports focused suites:
 
 - `packages/core/src/langgraph/middleware/__tests__/presets/production.ts`
 - `packages/core/src/langgraph/middleware/__tests__/presets/development.ts`
