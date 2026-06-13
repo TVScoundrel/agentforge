@@ -1956,7 +1956,7 @@
 **Priority:** P2 (Medium)
 **Estimate:** 4 hours
 **Dependencies:** ST-09043
-**Status:** Ready
+**Status:** In Review
 
 **Acceptance criteria:**
 - [ ] `packages/core/src/langgraph/state.ts` is reduced below the 300 line planning cutoff by extracting focused internal modules for annotation helpers, reducer helpers, schema/state utilities, and shared public types behind a stable public facade, and the extracted production modules must also stay below `300` lines unless the story documents and justifies an explicit exception.
