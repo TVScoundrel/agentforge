@@ -2,11 +2,18 @@
 
 **Purpose:** Track completed and merged stories for the Relational Database Access Tool project.
 
-**Last Updated:** 2026-06-12
+**Last Updated:** 2026-06-13
 
 ---
 
 ## Completed Stories
+
+### ST-09064: Modularize LangGraph Middleware Presets and Tests
+- **Merged:** 2026-06-13
+- **PR:** https://github.com/TVScoundrel/agentforge/pull/133 (commit aa6ca8e6)
+- **Epic:** EP-09 (SOLID Micro-Refactors and Type Boundary Hardening)
+- **Estimate:** 4 hours
+- **Outcome:** Modularized `@agentforge/core` middleware presets by shrinking `packages/core/src/langgraph/middleware/presets.ts` from a `365` line mixed-responsibility runtime to a small public facade, extracting focused logging, retry/timing, composition, and shared preset-type helpers while preserving preset ordering, public imports, and behavior. The story also replaced the `286` line preset test monolith with focused production, development, testing, and export-surface suites, absorbed follow-up review fixes before merge, kept the explicit-`any` baseline flat at `workspace 84/289` and `core 23/119`, and promoted `ST-09067` through `ST-09071` from `Backlog` to `Ready` because their dependencies were already satisfied.
 
 ### ST-09063: Modularize Multi-Agent Worker Node and Tests
 - **Merged:** 2026-06-12

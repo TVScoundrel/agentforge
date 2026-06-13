@@ -2687,8 +2687,8 @@ Implementation notes:
 - [x] Run lint (`pnpm lint`) before finalizing the PR and record results
 - [x] Commit completed checklist items as logical commits and push updates
 - [x] Mark PR Ready only after all story tasks are complete
-  - PR #133 will be marked ready after this tracker-sync commit is pushed
-- [ ] Wait for merge; do not merge directly from local branch
+  - PR #133 marked ready: https://github.com/TVScoundrel/agentforge/pull/133
+- [x] Wait for merge; do not merge directly from local branch
 
 Implementation notes:
 
@@ -2723,6 +2723,8 @@ Implementation notes:
 - Full validation:
   - `pnpm test --run` -> `210` files passed, `18` skipped; `2311` tests passed, `286` skipped
   - `pnpm lint` -> exit `0`; warnings only (`0` errors)
+- Merge record:
+  - Merged to `main` via PR #133 on `2026-06-13` (merge commit `aa6ca8e676b05ef5d5ce3b5b527a7b96cc0f3bcf`)
 
 ---
 
