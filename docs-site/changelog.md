@@ -5,6 +5,34 @@ All notable changes to AgentForge will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.16.51] - 2026-06-13
+
+### Added
+
+#### @agentforge/core - Middleware Preset Modularization Coverage
+- Added focused middleware preset coverage in `packages/core/src/langgraph/middleware/__tests__/presets/production.ts`, `development.ts`, `testing.ts`, and `exports.ts` behind the stable `packages/core/src/langgraph/middleware/__tests__/presets.test.ts` public entrypoint
+- Added story documentation in `docs/st09064-middleware-presets-modularization.md` capturing the preset split, validation evidence, and no-regression explicit-`any` outcome
+
+### Changed
+
+#### @agentforge/core - Middleware Preset Runtime Modularization
+- Split `packages/core/src/langgraph/middleware/presets.ts` into a smaller stable facade with focused `preset-production.ts`, `preset-development.ts`, `preset-testing.ts`, `preset-collection.ts`, `preset-adapters.ts`, and `preset-types.ts` helper modules
+- Preserved the public middleware preset imports, preset ordering, and runtime behavior while reducing maintenance pressure on the old monolithic runtime and test files
+
+### Fixed
+
+#### @agentforge/core - Middleware Preset Review Follow-Ups
+- Folded in the final review-driven follow-ups before merge while keeping the explicit-`any` baseline stable at `workspace 84/289` and `core 23/119`
+
+### Published
+- All packages published to npm registry at version 0.16.51:
+  - @agentforge/core@0.16.51
+  - @agentforge/skills@0.16.51
+  - @agentforge/patterns@0.16.51
+  - @agentforge/tools@0.16.51
+  - @agentforge/testing@0.16.51
+  - @agentforge/cli@0.16.51
+
 ## [0.16.50] - 2026-06-12
 
 ### Added
