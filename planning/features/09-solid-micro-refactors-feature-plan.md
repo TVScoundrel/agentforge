@@ -3,7 +3,7 @@
 **Epic Range:** EP-09 through EP-09
 **Status:** In Progress
 **Last Updated:** 2026-06-13
-**Active Story:** ST-09065 - Modularize LangGraph State Helpers and Tests (Ready)
+**Active Story:** ST-09065 - Modularize LangGraph State Helpers and Tests (In Review)
 
 ---
 
@@ -107,7 +107,7 @@ Recent improvement snapshot:
 - `ST-09063` merged on 2026-06-12 after shrinking `packages/patterns/src/multi-agent/nodes/worker.ts` from `357` lines to a `140` line public worker facade, extracting focused model-invocation, workload/error-bookkeeping, and shared worker-type helpers, then splitting the `1156` line multi-agent node test monolith into focused suites while absorbing review follow-ups for split-test imports, a flaky aggregator assertion, and a redundant worker-model cast with the explicit-`any` baseline flat at `workspace 84/289` and `patterns 2/28`.
 - `ST-09067` through `ST-09074` were added on 2026-06-12 to replenish EP-09 beyond the current ready lane with another dependency-safe batch of modularization-first slices across relational batch/executor helpers, middleware caching, Neo4j embeddings, multi-agent utilities, and skill activation.
 - `ST-09064` merged on 2026-06-13 after shrinking `packages/core/src/langgraph/middleware/presets.ts` from `365` lines to a small public facade, extracting focused logging, retry/timing, composition, and shared preset modules, and replacing the `286` line preset test monolith with focused suites while keeping the explicit-`any` baseline flat at `workspace 84/289` and `core 23/119`.
-- `EP-09` remains open as the daily hardening stream, with `ST-09065` through `ST-09071` now queued in the ready lane and `ST-09072` through `ST-09074` still parked in backlog behind `ST-09067`.
+- `EP-09` remains open as the daily hardening stream, with `ST-09065` now in review, `ST-09066` through `ST-09071` queued in the ready lane, and `ST-09072` through `ST-09074` still parked in backlog behind `ST-09067`.
 - The refreshed follow-on queue now extends beyond the current Ready lane so another few weeks of small SOLID/DRY and modularization work can be pulled without re-planning the epic.
 
 ---
