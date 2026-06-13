@@ -2,7 +2,7 @@
 
 ## Summary
 
-`packages/core/src/langgraph/middleware/presets.ts` was reduced from `365` lines to a `25` line public facade that keeps the existing `production(...)`, `development(...)`, `testing(...)`, and `presets` exports stable while moving the internal preset responsibilities behind focused modules.
+`packages/core/src/langgraph/middleware/presets.ts` was reduced from `365` lines to a roughly `25` line public facade that keeps the existing `production(...)`, `development(...)`, `testing(...)`, and `presets` exports stable while moving the internal preset responsibilities behind focused modules.
 
 The extracted runtime modules stay below the `300` line planning cutoff:
 

@@ -2697,7 +2697,7 @@ Implementation notes:
   - This story is behavior-preserving modularization, so a literal failing test for "the presets file got smaller" would only assert repository structure instead of middleware behavior.
   - Practical substitute: split `packages/core/src/langgraph/middleware/__tests__/presets.test.ts` into focused suites first, keep the public entrypoint stable, run that unchanged entrypoint before the production refactor, then modularize `packages/core/src/langgraph/middleware/presets.ts` behind the same public facade.
 - Runtime file-size result:
-  - `packages/core/src/langgraph/middleware/presets.ts`: `365 -> 25` lines
+  - `packages/core/src/langgraph/middleware/presets.ts`: `365 -> roughly 25` lines
   - extracted modules: `37`, `9`, `24`, `81`, `42`, and `31` lines
 - Test modularization result:
   - `packages/core/src/langgraph/middleware/__tests__/presets.test.ts`: `286 -> 8` lines
