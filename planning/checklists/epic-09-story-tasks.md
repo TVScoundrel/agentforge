@@ -2754,7 +2754,7 @@ Implementation notes:
 Implementation notes:
 
 - Branch created from `main`: `refactor/st-09065-langgraph-state-modularization`
-- Draft PR:
+- PR:
   - PR #134: https://github.com/TVScoundrel/agentforge/pull/134
 - Test-first strategy:
   - This story is behavior-preserving modularization, so a literal failing test for "the state helper file got smaller" would only assert repository structure rather than state-helper behavior.
@@ -2785,9 +2785,9 @@ Implementation notes:
   - `pnpm lint` -> exit `0`; warnings only (`0` errors)
 - Commit history:
   - `70f835e4` `refactor(st-09065): modularize langgraph state helpers`
-  - final tracker/body refresh commit pending push from this branch
+  - `31c11729` `docs(st-09065): record validation and move story to in-review`
 - PR readiness:
-  - PR #134 will be marked ready after this tracker/body refresh commit is pushed
+  - PR #134 marked ready for review: https://github.com/TVScoundrel/agentforge/pull/134
 
 ---
 
