@@ -5,6 +5,34 @@ All notable changes to AgentForge will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.16.52] - 2026-06-14
+
+### Added
+
+#### @agentforge/core - LangGraph State Helper Modularization Coverage
+- Added focused LangGraph state-helper coverage in `packages/core/tests/langgraph/state-annotation.test.ts`, `state-validation.test.ts`, `state-merge.test.ts`, and `state-workflows.test.ts` behind the stable `packages/core/tests/langgraph/state.test.ts` public entrypoint
+- Added story documentation in `docs/st09065-langgraph-state-modularization.md` capturing the state-helper split, validation evidence, and no-regression explicit-`any` outcome
+
+### Changed
+
+#### @agentforge/core - LangGraph State Helper Runtime Modularization
+- Split `packages/core/src/langgraph/state.ts` into a smaller stable facade with focused `state-annotation.ts`, `state-validation.ts`, `state-merge.ts`, `state-shared.ts`, and reducer/default helper modules
+- Preserved the public state-helper imports, reducer semantics, and existing `state.test.ts` entrypoint while reducing maintenance pressure on the old monolithic runtime and test files
+
+### Fixed
+
+#### @agentforge/core - LangGraph State Helper Review Follow-Ups
+- Aligned the split state test suites with the public `packages/core/src/langgraph/state.js` entrypoint imports and kept the explicit-`any` baseline stable at `workspace 84/289` and `core 23/119`
+
+### Published
+- All packages published to npm registry at version 0.16.52:
+  - @agentforge/core@0.16.52
+  - @agentforge/skills@0.16.52
+  - @agentforge/patterns@0.16.52
+  - @agentforge/tools@0.16.52
+  - @agentforge/testing@0.16.52
+  - @agentforge/cli@0.16.52
+
 ## [0.16.51] - 2026-06-13
 
 ### Added
