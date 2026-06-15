@@ -43,6 +43,8 @@ Modularized the shared resource-pool runtime in `packages/core/src/resources/poo
 
 - Current test file sizes:
 - `packages/core/tests/resources/pool.test.ts`: `3` line public entrypoint
+- Shared fixture:
+  - `packages/core/tests/resources/pool/shared.ts`: `57` lines
 - Focused suites:
   - `packages/core/tests/resources/pool/acquisition.ts`: `81` lines
   - `packages/core/tests/resources/pool/eviction.ts`: `42` lines
