@@ -179,4 +179,33 @@ describe('ConnectionPool lifecycle flow', () => {
       await pool.clear();
     }
   });
+
+  it('normalizes health-check failures before invoking onHealthCheckFail', async () => {
+    vi.useFakeTimers();
+
+    let receivedError: Error | undefined;
+    const pool = createConnectionPool({
+      factory: async () => ({ id: 1 }),
+      destroyer: async () => {
+        throw 'health-check exploded';
+      },
+      validator: async () => false,
+      pool: { max: 1 },
+      healthCheck: { enabled: true, interval: 1 },
+      onHealthCheckFail: (error) => {
+        receivedError = error;
+      },
+    });
+
+    try {
+      const connection = await pool.acquire();
+      await pool.release(connection);
+      await vi.advanceTimersByTimeAsync(1);
+
+      expect(receivedError).toBeInstanceOf(Error);
+      expect(receivedError?.message).toBe('health-check exploded');
+    } finally {
+      await pool.clear();
+    }
+  });
 });

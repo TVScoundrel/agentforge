@@ -31,6 +31,14 @@ function toErrorPayload(error: unknown): { error: string; stack?: string } {
   return { error: String(error) };
 }
 
+function toError(error: unknown): Error {
+  if (error instanceof Error) {
+    return error;
+  }
+
+  return new Error(String(error));
+}
+
 export class ConnectionPool<T> {
   private readonly runtime: ConnectionPoolRuntime<T>;
 
@@ -64,8 +72,9 @@ export class ConnectionPool<T> {
       const interval = healthCheck.interval || 30000;
       this.runtime.healthCheckTimer = setInterval(() => {
         performHealthChecks(this.runtime).catch((error) => {
-          logger.error('Health check failed', toErrorPayload(error));
-          options.onHealthCheckFail?.(error);
+          const normalizedError = toError(error);
+          logger.error('Health check failed', toErrorPayload(normalizedError));
+          options.onHealthCheckFail?.(normalizedError);
         });
       }, interval);
     }
