@@ -124,4 +124,40 @@ describe('ConnectionPool acquisition flow', () => {
       await pool.clear();
     }
   });
+
+  it('rejects an acquire whose connection finishes creating after the pool starts clearing', async () => {
+    let resolveFactory: ((connection: { id: number }) => void) | undefined;
+    const destroyed: Array<{ id: number }> = [];
+    const pool = createConnectionPool({
+      factory: async () =>
+        new Promise<{ id: number }>((resolve) => {
+          resolveFactory = resolve;
+        }),
+      destroyer: async (connection) => {
+        destroyed.push(connection);
+      },
+      pool: { max: 1, acquireTimeout: 100 },
+    });
+
+    try {
+      const pendingAcquire = pool.acquire();
+      await Promise.resolve();
+
+      const clearPromise = pool.clear();
+      resolveFactory?.({ id: 1 });
+
+      await expect(pendingAcquire).rejects.toThrow('Pool is draining');
+      await clearPromise;
+
+      expect(destroyed).toEqual([{ id: 1 }]);
+      expect(pool.getStats()).toMatchObject({
+        size: 0,
+        available: 0,
+        acquired: 0,
+        destroyed: 1,
+      });
+    } finally {
+      await pool.clear();
+    }
+  });
 });

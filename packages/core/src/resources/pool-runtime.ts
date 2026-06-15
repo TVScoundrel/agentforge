@@ -21,6 +21,15 @@ export async function initializeConnections<T>(
   const promises = Array.from({ length: count }, async () => {
     try {
       const connection = await createConnection(runtime);
+      const pooled = runtime.connections.find((item) => item.connection === connection);
+      if (!pooled) {
+        throw new Error('Newly created connection not found in pool');
+      }
+      if (runtime.draining) {
+        await destroyConnection(runtime, pooled);
+        return;
+      }
+
       assignConnectionToPendingAcquire(runtime, connection);
     } finally {
       runtime.creating--;
@@ -84,7 +93,9 @@ export async function destroyConnection<T>(
   runtime.options.onDestroy?.(pooled.connection);
   runtime.stats.destroyed++;
   runtime.stats.size--;
-  if (!pooled.inUse) {
+  if (pooled.inUse) {
+    runtime.stats.acquired--;
+  } else {
     runtime.stats.available--;
   }
 }

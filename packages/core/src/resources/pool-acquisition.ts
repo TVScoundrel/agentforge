@@ -1,5 +1,5 @@
 import type { ConnectionPoolRuntime } from './pool-types.js';
-import { createConnection, getPoolConfig } from './pool-runtime.js';
+import { createConnection, destroyConnection, getPoolConfig } from './pool-runtime.js';
 
 export async function acquireConnection<T>(runtime: ConnectionPoolRuntime<T>): Promise<T> {
   if (runtime.draining) {
@@ -25,6 +25,10 @@ export async function acquireConnection<T>(runtime: ConnectionPoolRuntime<T>): P
       const pooled = runtime.connections.find((item) => item.connection === connection);
       if (!pooled) {
         throw new Error('Newly created connection not found in pool');
+      }
+      if (runtime.draining) {
+        await destroyConnection(runtime, pooled);
+        throw new Error('Pool is draining');
       }
 
       pooled.inUse = true;

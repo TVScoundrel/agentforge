@@ -1,3 +1,4 @@
+import { createConnectionPool } from '../../../src/resources/index.js';
 import { performHealthChecks } from '../../../src/resources/pool-health.js';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { createMockPool } from './shared.js';
@@ -45,6 +46,81 @@ describe('ConnectionPool lifecycle flow', () => {
 
       await expect(pool.acquire()).rejects.toThrow('Pool is draining');
       await expect(pool.release(first)).rejects.toThrow('Connection not found in pool');
+    } finally {
+      await pool.clear();
+    }
+  });
+
+  it('destroys late min-size connections that finish creating after clear starts', async () => {
+    let releaseInitialConnection: (() => void) | undefined;
+    const destroyed: Array<{ id: number }> = [];
+    const pool = createConnectionPool({
+      factory: async () => {
+        const connection = { id: 1 };
+        await new Promise<void>((resolve) => {
+          releaseInitialConnection = resolve;
+        });
+        return connection;
+      },
+      destroyer: async (connection) => {
+        destroyed.push(connection);
+      },
+      pool: { min: 1, max: 1 },
+    });
+
+    try {
+      const runtime = (pool as unknown as {
+        runtime: {
+          creating: number;
+        };
+      }).runtime;
+
+      await Promise.resolve();
+
+      const clearPromise = pool.clear();
+      releaseInitialConnection?.();
+      await clearPromise;
+
+      for (let attempt = 0; attempt < 10 && runtime.creating > 0; attempt++) {
+        await new Promise((resolve) => setTimeout(resolve, 0));
+      }
+
+      expect(destroyed).toEqual([{ id: 1 }]);
+      expect(pool.getStats()).toMatchObject({
+        size: 0,
+        available: 0,
+        acquired: 0,
+        destroyed: 1,
+      });
+    } finally {
+      releaseInitialConnection?.();
+      await pool.clear();
+    }
+  });
+
+  it('resets acquired stats when clearing an in-use connection', async () => {
+    const { pool, destroyed } = await createMockPool({
+      pool: { max: 1, acquireTimeout: 100 },
+    });
+
+    try {
+      const connection = await pool.acquire();
+
+      expect(pool.getStats()).toMatchObject({
+        size: 1,
+        available: 0,
+        acquired: 1,
+      });
+
+      await pool.clear();
+
+      expect(destroyed).toEqual([connection]);
+      expect(pool.getStats()).toMatchObject({
+        size: 0,
+        available: 0,
+        acquired: 0,
+        destroyed: 1,
+      });
     } finally {
       await pool.clear();
     }
