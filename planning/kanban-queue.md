@@ -1,12 +1,12 @@
 # Kanban Queue: AgentForge
 
-**Last Updated:** 2026-06-13
+**Last Updated:** 2026-06-15
 
 ## Queue Status Summary
 
 - **Ready:** 5 stories
-- **In Progress:** 1 story
-- **In Review:** 0 stories
+- **In Progress:** 0 stories
+- **In Review:** 1 story
 - **Blocked:** 0 stories
 - **Backlog:** 3 stories
 
@@ -24,13 +24,13 @@
 
 ## In Progress
 
-- `ST-09066` - Modularize Core Resource Pool and Tests
+None currently.
 
 ---
 
 ## In Review
 
-None currently.
+- `ST-09066` - Modularize Core Resource Pool and Tests
 
 ## Blocked
 
