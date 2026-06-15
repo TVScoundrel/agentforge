@@ -10,6 +10,19 @@ export interface MockPoolContext {
   destroyed: MockConnection[];
 }
 
+async function waitForMinimumConnections(
+  pool: ConnectionPool<MockConnection>,
+  min: number
+): Promise<void> {
+  for (let attempt = 0; attempt < 10; attempt++) {
+    if (pool.getStats().size >= min) {
+      return;
+    }
+
+    await Promise.resolve();
+  }
+}
+
 export async function createMockPool(options: {
   pool?: PoolConfig;
   healthCheck?: HealthCheckConfig;
@@ -33,8 +46,10 @@ export async function createMockPool(options: {
     healthCheck: options.healthCheck,
   });
 
-  await Promise.resolve();
-  await Promise.resolve();
+  const min = options.pool?.min || 0;
+  if (min > 0) {
+    await waitForMinimumConnections(pool, min);
+  }
 
   return { pool, created, destroyed };
 }
