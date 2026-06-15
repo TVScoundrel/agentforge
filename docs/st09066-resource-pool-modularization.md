@@ -28,19 +28,21 @@ Modularized the shared resource-pool runtime in `packages/core/src/resources/poo
 
 ## File Size Results
 
-- `packages/core/src/resources/pool.ts`: `316 -> 79` lines
+- Current post-split file sizes:
+- `packages/core/src/resources/pool.ts`: `316 -> 82` lines
 - Extracted modules:
   - `pool-types.ts`: `60` lines
   - `pool-runtime.ts`: `72` lines
   - `pool-acquisition.ts`: `84` lines
   - `pool-eviction.ts`: `27` lines
-  - `pool-health.ts`: `44` lines
+  - `pool-health.ts`: `60` lines
   - `pool-lifecycle.ts`: `34` lines
 
 ## Test Modularization Results
 
-- Added `packages/core/tests/resources/pool.test.ts`: `3` line public entrypoint
-- Added focused suites:
+- Current test file sizes:
+- `packages/core/tests/resources/pool.test.ts`: `3` line public entrypoint
+- Focused suites:
   - `packages/core/tests/resources/pool/acquisition.ts`: `35` lines
   - `packages/core/tests/resources/pool/eviction.ts`: `40` lines
   - `packages/core/tests/resources/pool/lifecycle.ts`: `29` lines

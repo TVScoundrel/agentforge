@@ -20,7 +20,7 @@ export type { ConnectionPoolOptions, HealthCheckConfig, PoolConfig, PoolStats } 
 export class ConnectionPool<T> {
   private readonly runtime: ConnectionPoolRuntime<T>;
 
-  constructor(private readonly options: ConnectionPoolOptions<T>) {
+  constructor(options: ConnectionPoolOptions<T>) {
     this.runtime = {
       connections: [],
       pending: [],

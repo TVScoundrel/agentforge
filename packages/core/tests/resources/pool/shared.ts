@@ -21,6 +21,8 @@ async function waitForMinimumConnections(
 
     await Promise.resolve();
   }
+
+  throw new Error(`Pool failed to initialize the configured minimum size of ${min}`);
 }
 
 export async function createMockPool(options: {
