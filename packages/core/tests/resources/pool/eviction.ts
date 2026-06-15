@@ -18,23 +18,25 @@ describe('ConnectionPool eviction flow', () => {
       },
     });
 
-    const first = await pool.acquire();
-    const second = await pool.acquire();
-    const third = await pool.acquire();
+    try {
+      const first = await pool.acquire();
+      const second = await pool.acquire();
+      const third = await pool.acquire();
 
-    await pool.release(first);
-    await pool.release(second);
-    await pool.release(third);
+      await pool.release(first);
+      await pool.release(second);
+      await pool.release(third);
 
-    await vi.advanceTimersByTimeAsync(25);
+      await vi.advanceTimersByTimeAsync(25);
 
-    expect(pool.getStats()).toMatchObject({
-      size: 1,
-      available: 1,
-      acquired: 0,
-    });
-    expect(destroyed).toHaveLength(2);
-
-    await pool.clear();
+      expect(pool.getStats()).toMatchObject({
+        size: 1,
+        available: 1,
+        acquired: 0,
+      });
+      expect(destroyed).toHaveLength(2);
+    } finally {
+      await pool.clear();
+    }
   });
 });

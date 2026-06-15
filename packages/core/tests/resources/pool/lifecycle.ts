@@ -11,19 +11,21 @@ describe('ConnectionPool lifecycle flow', () => {
       pool: { max: 1, acquireTimeout: 100 },
     });
 
-    const first = await pool.acquire();
-    const pendingAcquire = pool.acquire();
-    await Promise.resolve();
+    try {
+      const first = await pool.acquire();
+      const pendingAcquire = pool.acquire();
+      await Promise.resolve();
 
-    const drainPromise = pool.drain();
+      const drainPromise = pool.drain();
 
-    await expect(pendingAcquire).rejects.toThrow('Pool is draining');
+      await expect(pendingAcquire).rejects.toThrow('Pool is draining');
 
-    await pool.release(first);
-    await drainPromise;
+      await pool.release(first);
+      await drainPromise;
 
-    await expect(pool.acquire()).rejects.toThrow('Pool is draining');
-
-    await pool.clear();
+      await expect(pool.acquire()).rejects.toThrow('Pool is draining');
+    } finally {
+      await pool.clear();
+    }
   });
 });

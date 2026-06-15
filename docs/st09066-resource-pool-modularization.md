@@ -25,15 +25,16 @@ Modularized the shared resource-pool runtime in `packages/core/src/resources/poo
   - `packages/core/src/resources/pool-lifecycle.ts`
 - Kept the public `packages/core/src/resources/pool.ts` file as a thin facade over the extracted helpers.
 - Fixed the idle-eviction bug by limiting evictions to `connections.length - min` eligible idle connections instead of computing a fully-evictable set up front.
+- Follow-up review fixes also hardened concurrent `acquire()` calls so in-flight connection creation still respects the configured pool `max`.
 
 ## File Size Results
 
 - Current post-split file sizes:
-- `packages/core/src/resources/pool.ts`: `316 -> 82` lines
+- `packages/core/src/resources/pool.ts`: `316 -> 83` lines
 - Extracted modules:
-  - `pool-types.ts`: `60` lines
+  - `pool-types.ts`: `61` lines
   - `pool-runtime.ts`: `72` lines
-  - `pool-acquisition.ts`: `84` lines
+  - `pool-acquisition.ts`: `89` lines
   - `pool-eviction.ts`: `27` lines
   - `pool-health.ts`: `60` lines
   - `pool-lifecycle.ts`: `34` lines
@@ -43,9 +44,9 @@ Modularized the shared resource-pool runtime in `packages/core/src/resources/poo
 - Current test file sizes:
 - `packages/core/tests/resources/pool.test.ts`: `3` line public entrypoint
 - Focused suites:
-  - `packages/core/tests/resources/pool/acquisition.ts`: `35` lines
-  - `packages/core/tests/resources/pool/eviction.ts`: `40` lines
-  - `packages/core/tests/resources/pool/lifecycle.ts`: `29` lines
+  - `packages/core/tests/resources/pool/acquisition.ts`: `81` lines
+  - `packages/core/tests/resources/pool/eviction.ts`: `42` lines
+  - `packages/core/tests/resources/pool/lifecycle.ts`: `31` lines
 
 ## Residual Test Impact
 

@@ -26,6 +26,7 @@ export class ConnectionPool<T> {
       pending: [],
       stats: createInitialPoolStats(),
       draining: false,
+      creating: 0,
       options,
     };
 

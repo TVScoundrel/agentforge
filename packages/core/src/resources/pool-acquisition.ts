@@ -18,19 +18,24 @@ export async function acquireConnection<T>(runtime: ConnectionPoolRuntime<T>): P
 
   const poolConfig = getPoolConfig(runtime);
   const max = poolConfig.max || 10;
-  if (runtime.connections.length < max) {
-    const connection = await createConnection(runtime);
-    const pooled = runtime.connections.find((item) => item.connection === connection);
-    if (!pooled) {
-      throw new Error('Newly created connection not found in pool');
-    }
+  if (runtime.connections.length + runtime.creating < max) {
+    runtime.creating++;
+    try {
+      const connection = await createConnection(runtime);
+      const pooled = runtime.connections.find((item) => item.connection === connection);
+      if (!pooled) {
+        throw new Error('Newly created connection not found in pool');
+      }
 
-    pooled.inUse = true;
-    pooled.lastUsedAt = Date.now();
-    runtime.stats.available--;
-    runtime.stats.acquired++;
-    runtime.options.onAcquire?.(connection);
-    return connection;
+      pooled.inUse = true;
+      pooled.lastUsedAt = Date.now();
+      runtime.stats.available--;
+      runtime.stats.acquired++;
+      runtime.options.onAcquire?.(connection);
+      return connection;
+    } finally {
+      runtime.creating--;
+    }
   }
 
   return new Promise<T>((resolve, reject) => {

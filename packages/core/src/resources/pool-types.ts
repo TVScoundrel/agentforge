@@ -55,6 +55,7 @@ export interface ConnectionPoolRuntime<T> {
   stats: PoolStats;
   options: ConnectionPoolOptions<T>;
   draining: boolean;
+  creating: number;
   evictionTimer?: NodeJS.Timeout;
   healthCheckTimer?: NodeJS.Timeout;
 }
