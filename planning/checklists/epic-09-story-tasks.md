@@ -2829,12 +2829,12 @@ Implementation notes:
   - `1` file failed, `1` test failed, `2` tests passed
   - Failure: idle eviction dropped pool stats below configured `min` (`size 0`, `available 0`) instead of retaining one idle connection
 - Runtime file-size result:
-  - `packages/core/src/resources/pool.ts`: `316 -> 83` lines
-  - extracted modules: `61`, `72`, `89`, `27`, `60`, and `34` lines
+  - `packages/core/src/resources/pool.ts`: `316 -> 90` lines
+  - extracted modules: `61`, `102`, `89`, `43`, `64`, and `40` lines
 - Test modularization result:
   - `packages/core/tests/resources/pool.test.ts`: `3` line entrypoint
   - shared fixture: `57` lines
-  - focused suites: `81`, `42`, and `31` lines
+  - focused suites: `127`, `105`, and `106` lines
 - Focused validation after production split:
   - `pnpm test --run packages/core/tests/resources/pool.test.ts packages/core/tests/resources/database-pool.test.ts packages/core/tests/resources/http-pool.test.ts`
   - `3` files passed, `9` tests passed

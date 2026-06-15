@@ -63,7 +63,7 @@ describe('ConnectionPool eviction flow', () => {
         min: 1,
         max: 3,
         idleTimeout: 10,
-        evictionInterval: 10,
+        evictionInterval: 1_000,
       },
     });
 

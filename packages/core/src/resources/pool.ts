@@ -20,8 +20,15 @@ export type { ConnectionPoolOptions, HealthCheckConfig, PoolConfig, PoolStats } 
 
 const logger = createLogger('agentforge:core:resources:pool');
 
-function toErrorMessage(error: unknown): string {
-  return error instanceof Error ? error.message : String(error);
+function toErrorPayload(error: unknown): { error: string; stack?: string } {
+  if (error instanceof Error) {
+    return {
+      error: error.message,
+      stack: error.stack,
+    };
+  }
+
+  return { error: String(error) };
 }
 
 export class ConnectionPool<T> {
@@ -41,14 +48,14 @@ export class ConnectionPool<T> {
     const min = poolConfig.min || 0;
     if (min > 0) {
       initializeConnections(this.runtime, min).catch((error) => {
-        logger.error('Failed to initialize pool', { error: toErrorMessage(error) });
+        logger.error('Failed to initialize pool', toErrorPayload(error));
       });
     }
 
     const evictionInterval = poolConfig.evictionInterval || 60000;
     this.runtime.evictionTimer = setInterval(() => {
       evictIdleConnections(this.runtime).catch((error) => {
-        logger.error('Failed to evict idle connections', { error: toErrorMessage(error) });
+        logger.error('Failed to evict idle connections', toErrorPayload(error));
       });
     }, evictionInterval);
 
@@ -57,7 +64,7 @@ export class ConnectionPool<T> {
       const interval = healthCheck.interval || 30000;
       this.runtime.healthCheckTimer = setInterval(() => {
         performHealthChecks(this.runtime).catch((error) => {
-          logger.error('Health check failed', { error: toErrorMessage(error) });
+          logger.error('Health check failed', toErrorPayload(error));
           options.onHealthCheckFail?.(error);
         });
       }, interval);
