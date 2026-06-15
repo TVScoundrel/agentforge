@@ -2812,8 +2812,8 @@ Implementation notes:
 - [x] Assess residual test impact; add/update additional automated tests when needed, or document why no further tests are required
 - [x] Run full test suite before finalizing the PR and record results
 - [x] Run lint (`pnpm lint`) before finalizing the PR and record results
-- [ ] Commit completed checklist items as logical commits and push updates
-- [ ] Mark PR Ready only after all story tasks are complete
+- [x] Commit completed checklist items as logical commits and push updates
+- [x] Mark PR Ready only after all story tasks are complete
 - [ ] Wait for merge; do not merge directly from local branch
 
 Implementation notes:
@@ -2852,6 +2852,11 @@ Implementation notes:
 - Lint:
   - `pnpm lint`
   - exit `0`; warnings only (`0` errors)
+- Commits and pushes:
+  - `60da5b93` `refactor(st-09066): modularize resource pool runtime`
+  - `5d835972` `docs(st-09066): move resource pool story to in-review`
+- Ready for review:
+  - PR #135 body refreshed from `.tmp/pr-st09066.md` and draft status cleared with `gh pr ready 135`
 
 ---
 
