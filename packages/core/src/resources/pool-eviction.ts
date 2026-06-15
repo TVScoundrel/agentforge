@@ -22,6 +22,22 @@ export async function evictIdleConnections<T>(runtime: ConnectionPoolRuntime<T>)
 
   const toEvict = selectIdleConnectionsForEviction(runtime, idleTimeout, min, now);
   for (const pooled of toEvict) {
+    if (!runtime.connections.includes(pooled)) {
+      continue;
+    }
+
+    if (pooled.inUse) {
+      continue;
+    }
+
+    if (runtime.connections.length <= min) {
+      break;
+    }
+
+    if (Date.now() - pooled.lastUsedAt <= idleTimeout) {
+      continue;
+    }
+
     await destroyConnection(runtime, pooled);
   }
 }
