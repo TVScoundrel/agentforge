@@ -2798,9 +2798,9 @@ Implementation notes:
 **Branch:** `refactor/st-09066-resource-pool-modularization`
 
 ### Checklist
-- [ ] Create branch `refactor/st-09066-resource-pool-modularization`
+- [x] Create branch `refactor/st-09066-resource-pool-modularization`
 - [ ] Create draft PR with story ID in title
-- [ ] Define test strategy before implementation: cover runtime modularization and test-file modularization; first failing test should prove pool behavior remains stable while the oversized runtime and test files are split
+- [x] Define test strategy before implementation: cover runtime modularization and test-file modularization; first failing test should prove pool behavior remains stable while the oversized runtime and test files are split
 - [ ] Write or update the failing automated test before production changes when practical; if not practical, record why before implementation
 - [ ] Reduce `packages/core/src/resources/pool.ts` below the 300 line planning cutoff by extracting focused internal modules for acquisition/release flow, eviction/reaping behavior, metrics/introspection helpers, and shared pool types behind a stable facade
 - [ ] Keep extracted production modules below the 300 line planning cutoff as well; do not satisfy the story by only shrinking the public facade and moving the bulk into a new oversized helper unless an explicit exception is documented in the story notes
@@ -2815,6 +2815,13 @@ Implementation notes:
 - [ ] Commit completed checklist items as logical commits and push updates
 - [ ] Mark PR Ready only after all story tasks are complete
 - [ ] Wait for merge; do not merge directly from local branch
+
+Implementation notes:
+
+- Branch created from `main`: `refactor/st-09066-resource-pool-modularization`
+- Test-first strategy:
+  - `packages/core/src/resources/pool.ts` is the only oversized runtime file, but the current resource-pool assertions are split indirectly across `database-pool.test.ts` and `http-pool.test.ts` rather than a single shared `ConnectionPool` test seam.
+  - Practical test-first substitute: introduce a stable `packages/core/tests/resources/pool.test.ts` entrypoint that exercises the shared `ConnectionPool` API directly, add failing acquisition/eviction/lifecycle coverage there first, and then modularize both the new pool test entrypoint and `pool.ts` behind the same public resource exports.
 
 ---
 
