@@ -78,4 +78,50 @@ describe('ConnectionPool acquisition flow', () => {
       await pool.clear();
     }
   });
+
+  it('does not exceed max while min-size initialization is still creating connections', async () => {
+    let releaseInitialConnection: (() => void) | undefined;
+    let createdCount = 0;
+    let nextId = 1;
+
+    const pool = createConnectionPool({
+      factory: async () => {
+        createdCount++;
+        const connection = { id: nextId++ };
+        if (createdCount === 1) {
+          await new Promise<void>((resolve) => {
+            releaseInitialConnection = resolve;
+          });
+        }
+        return connection;
+      },
+      pool: { min: 1, max: 1, acquireTimeout: 50 },
+    });
+
+    try {
+      await Promise.resolve();
+      const pendingAcquire = pool.acquire();
+      await Promise.resolve();
+
+      expect(pool.getStats()).toMatchObject({
+        size: 0,
+        pending: 1,
+        acquired: 0,
+      });
+      expect(createdCount).toBe(1);
+
+      releaseInitialConnection?.();
+      const acquired = await pendingAcquire;
+
+      expect(acquired.id).toBe(1);
+      expect(pool.getStats()).toMatchObject({
+        size: 1,
+        pending: 0,
+        acquired: 1,
+      });
+    } finally {
+      releaseInitialConnection?.();
+      await pool.clear();
+    }
+  });
 });

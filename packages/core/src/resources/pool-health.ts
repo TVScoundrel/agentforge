@@ -54,6 +54,10 @@ export async function performHealthChecks<T>(runtime: ConnectionPoolRuntime<T>):
       continue;
     }
 
+    if (!runtime.connections.includes(pooled) || pooled.inUse) {
+      continue;
+    }
+
     runtime.stats.healthChecksFailed++;
     await destroyConnection(runtime, pooled);
   }

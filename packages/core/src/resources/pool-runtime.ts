@@ -17,8 +17,38 @@ export async function initializeConnections<T>(
   runtime: ConnectionPoolRuntime<T>,
   count: number
 ): Promise<void> {
-  const promises = Array.from({ length: count }, () => createConnection(runtime));
+  runtime.creating += count;
+  const promises = Array.from({ length: count }, async () => {
+    try {
+      const connection = await createConnection(runtime);
+      assignConnectionToPendingAcquire(runtime, connection);
+    } finally {
+      runtime.creating--;
+    }
+  });
   await Promise.all(promises);
+}
+
+function assignConnectionToPendingAcquire<T>(runtime: ConnectionPoolRuntime<T>, connection: T): void {
+  const pending = runtime.pending.shift();
+  if (!pending) {
+    return;
+  }
+
+  const pooled = runtime.connections.find((item) => item.connection === connection);
+  if (!pooled) {
+    runtime.pending.unshift(pending);
+    return;
+  }
+
+  clearTimeout(pending.timeout);
+  runtime.stats.pending--;
+  pooled.inUse = true;
+  pooled.lastUsedAt = Date.now();
+  runtime.stats.available--;
+  runtime.stats.acquired++;
+  runtime.options.onAcquire?.(connection);
+  pending.resolve(connection);
 }
 
 export async function createConnection<T>(runtime: ConnectionPoolRuntime<T>): Promise<T> {

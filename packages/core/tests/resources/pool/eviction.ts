@@ -47,6 +47,8 @@ describe('ConnectionPool eviction flow', () => {
     const destroyed: Array<{ id: number }> = [];
     let nextId = 1;
 
+    vi.useFakeTimers();
+
     const pool = createConnectionPool({
       factory: async () => ({ id: nextId++ }),
       destroyer: async (connection: { id: number }) => {
@@ -64,8 +66,6 @@ describe('ConnectionPool eviction flow', () => {
         evictionInterval: 10,
       },
     });
-
-    vi.useFakeTimers();
 
     try {
       const first = await pool.acquire();
