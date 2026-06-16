@@ -5,6 +5,34 @@ All notable changes to AgentForge will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.16.53] - 2026-06-16
+
+### Added
+
+#### @agentforge/core - Resource Pool Modularization Coverage
+- Added focused shared resource-pool coverage in `packages/core/tests/resources/pool/acquisition.ts`, `eviction.ts`, `lifecycle.ts`, and `shared.ts` behind the stable `packages/core/tests/resources/pool.test.ts` public entrypoint
+- Added story documentation in `docs/st09066-resource-pool-modularization.md` capturing the pool split, validation evidence, and no-regression explicit-`any` outcome
+
+### Changed
+
+#### @agentforge/core - Resource Pool Runtime Modularization
+- Split `packages/core/src/resources/pool.ts` into a smaller stable facade with focused `pool-types.ts`, `pool-runtime.ts`, `pool-acquisition.ts`, `pool-eviction.ts`, `pool-health.ts`, and `pool-lifecycle.ts` helper modules
+- Preserved the public `ConnectionPool` and `createConnectionPool(...)` surface, wrapper compatibility, and existing pool behavior while reducing maintenance pressure on the old monolithic runtime and test files
+
+### Fixed
+
+#### @agentforge/core - Resource Pool Review Follow-Ups
+- Hardened concurrent create/max enforcement, draining and clear races, eviction and health-check interleavings, structured pool logging, and health-check callback error normalization while keeping the explicit-`any` baseline stable at `workspace 84/289` and `core 23/119`
+
+### Published
+- All packages published to npm registry at version 0.16.53:
+  - @agentforge/core@0.16.53
+  - @agentforge/skills@0.16.53
+  - @agentforge/patterns@0.16.53
+  - @agentforge/tools@0.16.53
+  - @agentforge/testing@0.16.53
+  - @agentforge/cli@0.16.53
+
 ## [0.16.52] - 2026-06-14
 
 ### Added
