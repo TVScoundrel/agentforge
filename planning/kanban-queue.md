@@ -4,11 +4,11 @@
 
 ## Queue Status Summary
 
-- **Ready:** 4 stories
-- **In Progress:** 1 story
+- **Ready:** 7 stories
+- **In Progress:** 0 stories
 - **In Review:** 0 stories
 - **Blocked:** 0 stories
-- **Backlog:** 3 stories
+- **Backlog:** 0 stories
 
 ---
 
@@ -18,12 +18,15 @@
 - `ST-09069` - Modularize Neo4j Embedding Manager and Tests
 - `ST-09070` - Modularize Multi-Agent Utilities and Tests
 - `ST-09071` - Modularize Skill Activation Runtime and Tests
+- `ST-09072` - Modularize Relational Insert Executor and Tests
+- `ST-09073` - Modularize Relational Update Executor and Tests
+- `ST-09074` - Modularize Relational Delete Executor and Tests
 
 ---
 
 ## In Progress
 
-- `ST-09067` - Modularize Relational Batch Executor and Tests
+None currently.
 
 ---
 
@@ -39,9 +42,7 @@ _No stories currently blocked_
 
 ## Backlog
 
-- `ST-09072` - Modularize Relational Insert Executor and Tests
-- `ST-09073` - Modularize Relational Update Executor and Tests
-- `ST-09074` - Modularize Relational Delete Executor and Tests
+None currently.
 
 ---
 
@@ -140,5 +141,6 @@ _No stories currently blocked_
 - Complete: ST-09063 - multi-agent worker node and tests modularized (merged 2026-06-12, PR #132)
 - Complete: ST-09065 - LangGraph state helpers and tests modularized (merged 2026-06-13, PR #134)
 - Complete: ST-09066 - core resource pool and tests modularized (merged 2026-06-16, PR #135)
+- Complete: ST-09067 - relational batch executor and tests modularized (merged 2026-06-16, PR #136)
 - Epic 09 (SOLID Micro-Refactors and Type Boundary Hardening) was expanded on 2026-06-12 with follow-on backlog stories ST-09067 through ST-09074 to keep the daily modularization lane stocked after the current ready queue
 - Current measured `no-explicit-any` baseline is `84` warnings (`cli 6`, `core 23`, `patterns 2`, `testing 0`, `tools 53`)

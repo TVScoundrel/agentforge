@@ -8,6 +8,13 @@
 
 ## Completed Stories
 
+### ST-09067: Modularize Relational Batch Executor and Tests
+- **Merged:** 2026-06-16
+- **PR:** https://github.com/TVScoundrel/agentforge/pull/136 (commit 7421d92c)
+- **Epic:** EP-09 (SOLID Micro-Refactors and Type Boundary Hardening)
+- **Estimate:** 4 hours
+- **Outcome:** Modularized `@agentforge/tools` batch execution by shrinking `packages/tools/src/data/relational/query/batch-executor.ts` from a `367` line mixed-responsibility runtime to a `19` line public facade, extracting focused option validation/chunking, runtime helpers, execution flow, benchmark logic, and shared batch types while preserving public imports, progress callbacks, failure semantics, and benchmark behavior. The story also replaced the old batch-executor test monolith with a public entrypoint plus focused chunking, retry, failure, and benchmark suites, absorbed review follow-ups to prevent duplicate Vitest discovery and to correct documented file-size evidence, kept the explicit-`any` baseline flat at `workspace 84/289` and `tools 53/67`, and unblocked `ST-09072` through `ST-09074` for promotion into `Ready`.
+
 ### ST-09066: Modularize Core Resource Pool and Tests
 - **Merged:** 2026-06-16
 - **PR:** https://github.com/TVScoundrel/agentforge/pull/135 (commit 1fdb3bb3)

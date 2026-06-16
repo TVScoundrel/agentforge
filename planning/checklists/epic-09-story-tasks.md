@@ -2868,7 +2868,7 @@ Implementation notes:
 
 ### Checklist
 - [x] Create branch `refactor/st-09067-batch-executor-modularization`
-- [ ] Create draft PR with story ID in title
+- [x] Create draft PR with story ID in title
 - [x] Define test strategy before implementation: cover runtime modularization and test-file modularization; first focused test split now serves as the pre-refactor safety net for chunking, retry, failure, and benchmark behavior
 - [x] Write or update the failing automated test before production changes when practical; modularized the existing batch-executor coverage first, fixed the new shared import path after the first focused run failed, and used the passing focused suite as the refactor guardrail because this story is structural rather than a behavior change
 - [x] Reduce `packages/tools/src/data/relational/query/batch-executor.ts` below the 300 line planning cutoff by extracting focused internal modules for option resolution/chunking, retry/progress flow, benchmark helpers, and shared batch types behind a stable facade
@@ -2881,9 +2881,9 @@ Implementation notes:
 - [x] Assess residual test impact; add/update additional automated tests when needed, or document why no further tests are required
 - [x] Run full test suite before finalizing the PR and record results
 - [x] Run lint (`pnpm lint`) before finalizing the PR and record results
-- [ ] Commit completed checklist items as logical commits and push updates
-- [ ] Mark PR Ready only after all story tasks are complete
-- [ ] Wait for merge; do not merge directly from local branch
+- [x] Commit completed checklist items as logical commits and push updates
+- [x] Mark PR Ready only after all story tasks are complete
+- [x] Wait for merge; do not merge directly from local branch
 
 ---
 

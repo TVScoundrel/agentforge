@@ -2007,7 +2007,7 @@
 **Priority:** P2 (Medium)
 **Estimate:** 4 hours
 **Dependencies:** None
-**Status:** Ready
+**Status:** Merged (PR #136, 2026-06-16)
 
 **Acceptance criteria:**
 - [ ] `packages/core/src/langgraph/middleware/caching.ts` is reduced below the 300 line planning cutoff by extracting focused internal modules for cache-store internals, cache-entry lifecycle helpers, node-wrapper execution flow, and shared-cache facade helpers behind a stable public facade, and the extracted production modules must also stay below `300` lines unless the story documents and justifies an explicit exception.
@@ -2075,7 +2075,7 @@
 **Priority:** P2 (Medium)
 **Estimate:** 4 hours
 **Dependencies:** ST-09067
-**Status:** Backlog
+**Status:** Ready
 
 **Acceptance criteria:**
 - [ ] `packages/tools/src/data/relational/tools/relational-insert/executor.ts` is reduced below the 300 line planning cutoff by extracting focused internal modules for row normalization, batch orchestration, benchmark/result shaping, and insert error helpers behind a stable public facade, and the extracted production modules must also stay below `300` lines unless the story documents and justifies an explicit exception.
@@ -2092,7 +2092,7 @@
 **Priority:** P2 (Medium)
 **Estimate:** 4 hours
 **Dependencies:** ST-09067
-**Status:** Backlog
+**Status:** Ready
 
 **Acceptance criteria:**
 - [ ] `packages/tools/src/data/relational/tools/relational-update/executor.ts` is reduced below the 300 line planning cutoff by extracting focused internal modules for condition normalization, batch orchestration, benchmark/result shaping, and update error helpers behind a stable public facade, and the extracted production modules must also stay below `300` lines unless the story documents and justifies an explicit exception.
@@ -2109,7 +2109,7 @@
 **Priority:** P2 (Medium)
 **Estimate:** 4 hours
 **Dependencies:** ST-09067
-**Status:** Backlog
+**Status:** Ready
 
 **Acceptance criteria:**
 - [ ] `packages/tools/src/data/relational/tools/relational-delete/executor.ts` is reduced below the 300 line planning cutoff by extracting focused internal modules for condition normalization, batch orchestration, benchmark/result shaping, and delete error helpers behind a stable public facade, and the extracted production modules must also stay below `300` lines unless the story documents and justifies an explicit exception.
