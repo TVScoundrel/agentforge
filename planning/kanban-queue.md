@@ -4,8 +4,8 @@
 
 ## Queue Status Summary
 
-- **Ready:** 5 stories
-- **In Progress:** 0 stories
+- **Ready:** 4 stories
+- **In Progress:** 1 story
 - **In Review:** 0 stories
 - **Blocked:** 0 stories
 - **Backlog:** 3 stories
@@ -14,7 +14,6 @@
 
 ## Ready
 
-- `ST-09067` - Modularize Relational Batch Executor and Tests
 - `ST-09068` - Modularize LangGraph Caching Middleware and Tests
 - `ST-09069` - Modularize Neo4j Embedding Manager and Tests
 - `ST-09070` - Modularize Multi-Agent Utilities and Tests
@@ -24,7 +23,7 @@
 
 ## In Progress
 
-None currently.
+- `ST-09067` - Modularize Relational Batch Executor and Tests
 
 ---
 

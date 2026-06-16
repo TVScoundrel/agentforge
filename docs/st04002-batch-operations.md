@@ -39,7 +39,7 @@ Implemented configurable batch execution for relational INSERT, UPDATE, and DELE
 - Added partial-success metadata and benchmark output support.
 
 5. Test coverage
-- Added `packages/tools/tests/data/relational/batch-executor.test.ts`.
+- Added `packages/tools/tests/data/relational/query/batch-executor.test.ts`.
 - Expanded schema validation suites for insert/update/delete batch inputs.
 - Expanded tool invocation suites with batch-mode scenarios (compiled in this environment; SQLite-native execution is skip-gated when bindings are unavailable).
 
@@ -67,5 +67,5 @@ General guidance:
 ## Validation
 
 - `pnpm --filter @agentforge/tools typecheck`
-- `pnpm exec vitest run packages/tools/tests/data/relational/batch-executor.test.ts packages/tools/tests/data/relational/relational-insert/schema-validation.test.ts packages/tools/tests/data/relational/relational-update/schema-validation.test.ts packages/tools/tests/data/relational/relational-delete/schema-validation.test.ts`
+- `pnpm exec vitest run packages/tools/tests/data/relational/query/batch-executor.test.ts packages/tools/tests/data/relational/relational-insert/schema-validation.test.ts packages/tools/tests/data/relational/relational-update/schema-validation.test.ts packages/tools/tests/data/relational/relational-delete/schema-validation.test.ts`
 - `pnpm exec vitest run packages/tools/tests/data/relational/relational-insert/tool-invocation.test.ts packages/tools/tests/data/relational/relational-update/tool-invocation.test.ts packages/tools/tests/data/relational/relational-delete/tool-invocation.test.ts` (skip-gated in this environment because native SQLite bindings are unavailable)

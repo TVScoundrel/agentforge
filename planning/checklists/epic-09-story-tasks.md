@@ -2867,20 +2867,20 @@ Implementation notes:
 **Branch:** `refactor/st-09067-batch-executor-modularization`
 
 ### Checklist
-- [ ] Create branch `refactor/st-09067-batch-executor-modularization`
+- [x] Create branch `refactor/st-09067-batch-executor-modularization`
 - [ ] Create draft PR with story ID in title
-- [ ] Define test strategy before implementation: cover runtime modularization and test-file modularization; first failing test should prove batch execution behavior remains stable while the oversized runtime and test files are split
-- [ ] Write or update the failing automated test before production changes when practical; if not practical, record why before implementation
-- [ ] Reduce `packages/tools/src/data/relational/query/batch-executor.ts` below the 300 line planning cutoff by extracting focused internal modules for option resolution/chunking, retry/progress flow, benchmark helpers, and shared batch types behind a stable facade
-- [ ] Keep extracted production modules below the 300 line planning cutoff as well; do not satisfy the story by only shrinking the public facade and moving the bulk into a new oversized helper unless an explicit exception is documented in the story notes
-- [ ] Split batch-executor coverage into focused test modules so chunking, retry, failure, and benchmark behavior no longer depends on a single oversized test surface
-- [ ] Preserve existing batch execution behavior, failure semantics, progress callbacks, and public imports
-- [ ] Add/update production code until focused tests pass, keeping test evidence in checklist notes and PR body
-- [ ] Record explicit-`any` warning deltas and file-size/responsibility improvements for touched batch-executor modules in story docs
-- [ ] Add or update story documentation at `docs/st09067-batch-executor-modularization.md` (or document why not required)
-- [ ] Assess residual test impact; add/update additional automated tests when needed, or document why no further tests are required
-- [ ] Run full test suite before finalizing the PR and record results
-- [ ] Run lint (`pnpm lint`) before finalizing the PR and record results
+- [x] Define test strategy before implementation: cover runtime modularization and test-file modularization; first focused test split now serves as the pre-refactor safety net for chunking, retry, failure, and benchmark behavior
+- [x] Write or update the failing automated test before production changes when practical; modularized the existing batch-executor coverage first, fixed the new shared import path after the first focused run failed, and used the passing focused suite as the refactor guardrail because this story is structural rather than a behavior change
+- [x] Reduce `packages/tools/src/data/relational/query/batch-executor.ts` below the 300 line planning cutoff by extracting focused internal modules for option resolution/chunking, retry/progress flow, benchmark helpers, and shared batch types behind a stable facade
+- [x] Keep extracted production modules below the 300 line planning cutoff as well; do not satisfy the story by only shrinking the public facade and moving the bulk into a new oversized helper unless an explicit exception is documented in the story notes
+- [x] Split batch-executor coverage into focused test modules so chunking, retry, failure, and benchmark behavior no longer depends on a single oversized test surface
+- [x] Preserve existing batch execution behavior, failure semantics, progress callbacks, and public imports
+- [x] Add/update production code until focused tests pass, keeping test evidence in checklist notes and PR body
+- [x] Record explicit-`any` warning deltas and file-size/responsibility improvements for touched batch-executor modules in story docs
+- [x] Add or update story documentation at `docs/st09067-batch-executor-modularization.md` (or document why not required)
+- [x] Assess residual test impact; add/update additional automated tests when needed, or document why no further tests are required
+- [x] Run full test suite before finalizing the PR and record results
+- [x] Run lint (`pnpm lint`) before finalizing the PR and record results
 - [ ] Commit completed checklist items as logical commits and push updates
 - [ ] Mark PR Ready only after all story tasks are complete
 - [ ] Wait for merge; do not merge directly from local branch
