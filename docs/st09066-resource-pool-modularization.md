@@ -30,7 +30,7 @@ Modularized the shared resource-pool runtime in `packages/core/src/resources/poo
 ## File Size Results
 
 - Current post-split file sizes:
-- `packages/core/src/resources/pool.ts`: `316 -> 97` lines
+- `packages/core/src/resources/pool.ts`: `316 -> 106` lines
 - Extracted modules:
   - `pool-types.ts`: `61` lines
   - `pool-runtime.ts`: `113` lines
@@ -48,7 +48,7 @@ Modularized the shared resource-pool runtime in `packages/core/src/resources/poo
 - Focused suites:
   - `packages/core/tests/resources/pool/acquisition.ts`: `163` lines
   - `packages/core/tests/resources/pool/eviction.ts`: `105` lines
-  - `packages/core/tests/resources/pool/lifecycle.ts`: `182` lines
+  - `packages/core/tests/resources/pool/lifecycle.ts`: `211` lines
 
 ## Residual Test Impact
 
@@ -58,7 +58,7 @@ No additional automated coverage was needed beyond the new direct pool suites an
 
 - Focused shared and wrapper pool coverage:
   - `pnpm test --run packages/core/tests/resources/pool.test.ts packages/core/tests/resources/database-pool.test.ts packages/core/tests/resources/http-pool.test.ts`
-  - `3` files passed, `17` tests passed
+  - `3` files passed, `18` tests passed
 - Compatibility validation:
   - `pnpm --filter @agentforge/core typecheck`
 - Explicit-`any` baseline:
