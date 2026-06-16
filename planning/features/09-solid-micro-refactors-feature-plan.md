@@ -3,7 +3,7 @@
 **Epic Range:** EP-09 through EP-09
 **Status:** In Progress
 **Last Updated:** 2026-06-16
-**Active Story:** ST-09067 - Modularize Relational Batch Executor and Tests (Ready)
+**Active Story:** ST-09067 - Modularize Relational Batch Executor and Tests (In Progress)
 
 ---
 
