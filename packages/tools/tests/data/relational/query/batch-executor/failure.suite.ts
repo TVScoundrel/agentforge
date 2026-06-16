@@ -27,7 +27,7 @@ describe('batch-executor failure handling', () => {
   });
 
   it('throws when continueOnError is disabled', async () => {
-    await expect(() =>
+    await expect(
       executeBatchedTask<number, { values: number[] }>(
         {
           operation: 'strict-op',
