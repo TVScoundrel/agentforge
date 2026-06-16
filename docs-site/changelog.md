@@ -5,6 +5,34 @@ All notable changes to AgentForge will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.16.54] - 2026-06-16
+
+### Added
+
+#### @agentforge/tools - Batch Executor Modularization Coverage
+- Added focused relational batch-executor coverage in `packages/tools/tests/data/relational/query/batch-executor/chunking.suite.ts`, `retry.suite.ts`, `failure.suite.ts`, `benchmark.suite.ts`, and `shared.ts` behind the stable `packages/tools/tests/data/relational/query/batch-executor.test.ts` public entrypoint
+- Added story documentation in `docs/st09067-batch-executor-modularization.md` capturing the batch-executor split, validation evidence, and no-regression explicit-`any` outcome
+
+### Changed
+
+#### @agentforge/tools - Batch Executor Runtime Modularization
+- Split `packages/tools/src/data/relational/query/batch-executor.ts` into a smaller stable facade with focused `batch-executor-types.ts`, `batch-executor-options.ts`, `batch-executor-runtime.ts`, `batch-executor-execution.ts`, and `batch-executor-benchmark.ts` helper modules
+- Preserved the public batch execution imports, progress callbacks, retry and failure semantics, benchmark behavior, and query entrypoint compatibility while reducing maintenance pressure on the old monolithic runtime and test file
+
+### Fixed
+
+#### @agentforge/tools - Batch Executor Review Follow-Ups
+- Renamed focused batch-executor suites to non-discovered `*.suite.ts` modules to avoid duplicate Vitest execution, aligned the `.rejects` assertion style with the rest of the test suite, and corrected the published story-doc file-size evidence while keeping the explicit-`any` baseline stable at `workspace 84/289` and `tools 53/67`
+
+### Published
+- All packages published to npm registry at version 0.16.54:
+  - @agentforge/core@0.16.54
+  - @agentforge/skills@0.16.54
+  - @agentforge/patterns@0.16.54
+  - @agentforge/tools@0.16.54
+  - @agentforge/testing@0.16.54
+  - @agentforge/cli@0.16.54
+
 ## [0.16.53] - 2026-06-16
 
 ### Added
