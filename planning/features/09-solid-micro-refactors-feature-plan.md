@@ -2,8 +2,8 @@
 
 **Epic Range:** EP-09 through EP-09
 **Status:** In Progress
-**Last Updated:** 2026-06-15
-**Active Story:** ST-09066 - Modularize Core Resource Pool and Tests (In Review)
+**Last Updated:** 2026-06-16
+**Active Story:** ST-09067 - Modularize Relational Batch Executor and Tests (Ready)
 
 ---
 
@@ -108,7 +108,8 @@ Recent improvement snapshot:
 - `ST-09067` through `ST-09074` were added on 2026-06-12 to replenish EP-09 beyond the current ready lane with another dependency-safe batch of modularization-first slices across relational batch/executor helpers, middleware caching, Neo4j embeddings, multi-agent utilities, and skill activation.
 - `ST-09064` merged on 2026-06-13 after shrinking `packages/core/src/langgraph/middleware/presets.ts` from `365` lines to a small public facade, extracting focused logging, retry/timing, composition, and shared preset modules, and replacing the `286` line preset test monolith with focused suites while keeping the explicit-`any` baseline flat at `workspace 84/289` and `core 23/119`.
 - `ST-09065` merged on 2026-06-13 after shrinking `packages/core/src/langgraph/state.ts` from `361` lines to a `13` line public facade, extracting focused state annotation, validation, merge, reducer/default, and shared-type helpers while replacing the `507` line `packages/core/tests/langgraph/state.test.ts` monolith with focused annotation, validation, merge, and workflow suites behind the same public entrypoint. The story preserved public state-helper behavior, kept the explicit-`any` baseline flat at `workspace 84/289` and `core 23/119`, and required no CI changes.
-- `EP-09` remains open as the daily hardening stream, with `ST-09066` now in review, `ST-09067` through `ST-09071` still queued in the ready lane, and `ST-09072` through `ST-09074` still parked in backlog behind `ST-09067`.
+- `ST-09066` merged on 2026-06-16 after modularizing the shared resource pool runtime and test surface into focused helper modules and suites, preserving the public pooling facade while absorbing follow-up fixes for concurrent creation limits, teardown races, structured pool logging, and health-check callback error normalization with the explicit-`any` baseline flat at `workspace 84/289` and `core 23/119`.
+- `EP-09` remains open as the daily hardening stream, with `ST-09067` through `ST-09071` queued in the ready lane and `ST-09072` through `ST-09074` still parked in backlog behind `ST-09067`.
 - The refreshed follow-on queue now extends beyond the current Ready lane so another few weeks of small SOLID/DRY and modularization work can be pulled without re-planning the epic.
 
 ---

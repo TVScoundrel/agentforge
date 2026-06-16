@@ -2,11 +2,18 @@
 
 **Purpose:** Track completed and merged stories for the Relational Database Access Tool project.
 
-**Last Updated:** 2026-06-13
+**Last Updated:** 2026-06-16
 
 ---
 
 ## Completed Stories
+
+### ST-09066: Modularize Core Resource Pool and Tests
+- **Merged:** 2026-06-16
+- **PR:** https://github.com/TVScoundrel/agentforge/pull/135 (commit 1fdb3bb3)
+- **Epic:** EP-09 (SOLID Micro-Refactors and Type Boundary Hardening)
+- **Estimate:** 4 hours
+- **Outcome:** Modularized `@agentforge/core` resource pooling by shrinking `packages/core/src/resources/pool.ts` from a `316` line mixed-responsibility runtime into a `106` line public facade with focused acquisition, eviction, health-check, lifecycle, runtime, and shared-type helper modules while preserving the stable `ConnectionPool` and `createConnectionPool(...)` surface. The story also replaced the shared pool test monolith with focused acquisition, eviction, and lifecycle suites behind the same public entrypoint, absorbed review-driven fixes for concurrent create/max enforcement, draining and clear races, eviction and health-check interleavings, structured logging, and health-check callback error normalization, and kept the explicit-`any` baseline flat at `workspace 84/289` and `core 23/119` with no CI changes required.
 
 ### ST-09065: Modularize LangGraph State Helpers and Tests
 - **Merged:** 2026-06-13

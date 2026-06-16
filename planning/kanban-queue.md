@@ -1,12 +1,12 @@
 # Kanban Queue: AgentForge
 
-**Last Updated:** 2026-06-15
+**Last Updated:** 2026-06-16
 
 ## Queue Status Summary
 
 - **Ready:** 5 stories
 - **In Progress:** 0 stories
-- **In Review:** 1 story
+- **In Review:** 0 stories
 - **Blocked:** 0 stories
 - **Backlog:** 3 stories
 
@@ -30,7 +30,7 @@ None currently.
 
 ## In Review
 
-- `ST-09066` - Modularize Core Resource Pool and Tests
+None currently.
 
 ## Blocked
 
@@ -140,5 +140,6 @@ _No stories currently blocked_
 - Complete: ST-09062 - core tool executor and tests modularized (merged 2026-06-11, PR #131)
 - Complete: ST-09063 - multi-agent worker node and tests modularized (merged 2026-06-12, PR #132)
 - Complete: ST-09065 - LangGraph state helpers and tests modularized (merged 2026-06-13, PR #134)
+- Complete: ST-09066 - core resource pool and tests modularized (merged 2026-06-16, PR #135)
 - Epic 09 (SOLID Micro-Refactors and Type Boundary Hardening) was expanded on 2026-06-12 with follow-on backlog stories ST-09067 through ST-09074 to keep the daily modularization lane stocked after the current ready queue
 - Current measured `no-explicit-any` baseline is `84` warnings (`cli 6`, `core 23`, `patterns 2`, `testing 0`, `tools 53`)

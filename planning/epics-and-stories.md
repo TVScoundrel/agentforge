@@ -1973,7 +1973,7 @@
 **Priority:** P2 (Medium)
 **Estimate:** 4 hours
 **Dependencies:** None
-**Status:** In Review
+**Status:** Merged (PR #135, 2026-06-16)
 
 **Acceptance criteria:**
 - [ ] `packages/core/src/resources/pool.ts` is reduced below the 300 line planning cutoff by extracting focused internal modules for acquisition/release flow, eviction/reaping behavior, metrics/introspection helpers, and shared pool types behind a stable public facade, and the extracted production modules must also stay below `300` lines unless the story documents and justifies an explicit exception.
