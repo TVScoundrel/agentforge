@@ -42,7 +42,7 @@ Modularized `packages/tools/src/data/relational/query/batch-executor.ts` from a 
   - `packages/tools/tests/data/relational/query/batch-executor/shared.ts`: `6` lines
   - `packages/tools/tests/data/relational/query/batch-executor/chunking.suite.ts`: `28` lines
   - `packages/tools/tests/data/relational/query/batch-executor/retry.suite.ts`: `31` lines
-  - `packages/tools/tests/data/relational/query/batch-executor/failure.suite.ts`: `45` lines
+  - `packages/tools/tests/data/relational/query/batch-executor/failure.suite.ts`: `46` lines
   - `packages/tools/tests/data/relational/query/batch-executor/benchmark.suite.ts`: `24` lines
 
 ## Explicit-`any` Baseline
