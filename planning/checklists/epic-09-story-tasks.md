@@ -2798,23 +2798,66 @@ Implementation notes:
 **Branch:** `refactor/st-09066-resource-pool-modularization`
 
 ### Checklist
-- [ ] Create branch `refactor/st-09066-resource-pool-modularization`
-- [ ] Create draft PR with story ID in title
-- [ ] Define test strategy before implementation: cover runtime modularization and test-file modularization; first failing test should prove pool behavior remains stable while the oversized runtime and test files are split
-- [ ] Write or update the failing automated test before production changes when practical; if not practical, record why before implementation
-- [ ] Reduce `packages/core/src/resources/pool.ts` below the 300 line planning cutoff by extracting focused internal modules for acquisition/release flow, eviction/reaping behavior, metrics/introspection helpers, and shared pool types behind a stable facade
-- [ ] Keep extracted production modules below the 300 line planning cutoff as well; do not satisfy the story by only shrinking the public facade and moving the bulk into a new oversized helper unless an explicit exception is documented in the story notes
-- [ ] Split pool coverage into focused test modules so acquisition, eviction, and lifecycle behavior no longer depends on a single oversized test surface
-- [ ] Preserve existing pool behavior, lifecycle semantics, and public imports
-- [ ] Add/update production code until focused tests pass, keeping test evidence in checklist notes and PR body
-- [ ] Record explicit-`any` warning deltas and file-size/responsibility improvements for touched pool modules in story docs
-- [ ] Add or update story documentation at `docs/st09066-resource-pool-modularization.md` (or document why not required)
-- [ ] Assess residual test impact; add/update additional automated tests when needed, or document why no further tests are required
-- [ ] Run full test suite before finalizing the PR and record results
-- [ ] Run lint (`pnpm lint`) before finalizing the PR and record results
-- [ ] Commit completed checklist items as logical commits and push updates
-- [ ] Mark PR Ready only after all story tasks are complete
+- [x] Create branch `refactor/st-09066-resource-pool-modularization`
+- [x] Create draft PR with story ID in title
+- [x] Define test strategy before implementation: cover runtime modularization and test-file modularization; first failing test should prove pool behavior remains stable while the oversized runtime and test files are split
+- [x] Write or update the failing automated test before production changes when practical; if not practical, record why before implementation
+- [x] Reduce `packages/core/src/resources/pool.ts` below the 300 line planning cutoff by extracting focused internal modules for acquisition/release flow, eviction/reaping behavior, metrics/introspection helpers, and shared pool types behind a stable facade
+- [x] Keep extracted production modules below the 300 line planning cutoff as well; do not satisfy the story by only shrinking the public facade and moving the bulk into a new oversized helper unless an explicit exception is documented in the story notes
+- [x] Split pool coverage into focused test modules so acquisition, eviction, and lifecycle behavior no longer depends on a single oversized test surface
+- [x] Preserve existing pool behavior, lifecycle semantics, and public imports
+- [x] Add/update production code until focused tests pass, keeping test evidence in checklist notes and PR body
+- [x] Record explicit-`any` warning deltas and file-size/responsibility improvements for touched pool modules in story docs
+- [x] Add or update story documentation at `docs/st09066-resource-pool-modularization.md` (or document why not required)
+- [x] Assess residual test impact; add/update additional automated tests when needed, or document why no further tests are required
+- [x] Run full test suite before finalizing the PR and record results
+- [x] Run lint (`pnpm lint`) before finalizing the PR and record results
+- [x] Commit completed checklist items as logical commits and push updates
+- [x] Mark PR Ready only after all story tasks are complete
 - [ ] Wait for merge; do not merge directly from local branch
+
+Implementation notes:
+
+- Branch created from `main`: `refactor/st-09066-resource-pool-modularization`
+- PR:
+  - PR #135: https://github.com/TVScoundrel/agentforge/pull/135
+- Test-first strategy:
+  - `packages/core/src/resources/pool.ts` is the only oversized runtime file, but the current resource-pool assertions are split indirectly across `database-pool.test.ts` and `http-pool.test.ts` rather than a single shared `ConnectionPool` test seam.
+  - Practical test-first substitute: introduce a stable `packages/core/tests/resources/pool.test.ts` entrypoint that exercises the shared `ConnectionPool` API directly, add failing acquisition/eviction/lifecycle coverage there first, and then modularize both the new pool test entrypoint and `pool.ts` behind the same public resource exports.
+- First focused failing run before production split:
+  - `pnpm test --run packages/core/tests/resources/pool.test.ts`
+  - `1` file failed, `1` test failed, `2` tests passed
+  - Failure: idle eviction dropped pool stats below configured `min` (`size 0`, `available 0`) instead of retaining one idle connection
+- Runtime file-size result:
+  - `packages/core/src/resources/pool.ts`: `316 -> 106` lines
+  - extracted modules: `61`, `113`, `93`, `43`, `64`, and `40` lines
+- Test modularization result:
+  - `packages/core/tests/resources/pool.test.ts`: `3` line entrypoint
+  - shared fixture: `57` lines
+  - focused suites: `163`, `105`, and `211` lines
+- Focused validation after production split:
+  - `pnpm test --run packages/core/tests/resources/pool.test.ts packages/core/tests/resources/database-pool.test.ts packages/core/tests/resources/http-pool.test.ts`
+  - `3` files passed, `18` tests passed
+- Compatibility validation:
+  - `pnpm --filter @agentforge/core typecheck`
+- Explicit-`any` baseline check:
+  - `pnpm lint:explicit-any:baseline`
+  - `84/289` warnings overall; `23/119` in `core`
+- CI impact:
+  - No CI change required; the story keeps the existing public resource exports and validation commands intact.
+- Residual test impact:
+  - No additional automated coverage was needed beyond the new direct `pool.test.ts` suites and the existing database/http wrapper tests because acquisition, eviction, and lifecycle behavior are now exercised against the shared `ConnectionPool` seam directly while wrapper compatibility remains covered by the focused resource tests.
+- Full test suite:
+  - `pnpm test --run`
+  - `211 passed | 18 skipped` files; `2314 passed | 286 skipped` tests
+- Lint:
+  - `pnpm lint`
+  - exit `0`; warnings only (`0` errors)
+- Commits and pushes:
+  - `60da5b93` `refactor(st-09066): modularize resource pool runtime`
+  - `5d835972` `docs(st-09066): move resource pool story to in-review`
+- Ready for review:
+  - PR #135 body refreshed from `.tmp/pr-st09066.md` and draft status cleared with `gh pr ready 135`
 
 ---
 

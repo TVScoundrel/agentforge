@@ -1,12 +1,12 @@
 # Kanban Queue: AgentForge
 
-**Last Updated:** 2026-06-13
+**Last Updated:** 2026-06-15
 
 ## Queue Status Summary
 
-- **Ready:** 6 stories
+- **Ready:** 5 stories
 - **In Progress:** 0 stories
-- **In Review:** 0 stories
+- **In Review:** 1 story
 - **Blocked:** 0 stories
 - **Backlog:** 3 stories
 
@@ -14,7 +14,6 @@
 
 ## Ready
 
-- `ST-09066` - Modularize Core Resource Pool and Tests
 - `ST-09067` - Modularize Relational Batch Executor and Tests
 - `ST-09068` - Modularize LangGraph Caching Middleware and Tests
 - `ST-09069` - Modularize Neo4j Embedding Manager and Tests
@@ -31,7 +30,7 @@ None currently.
 
 ## In Review
 
-None currently.
+- `ST-09066` - Modularize Core Resource Pool and Tests
 
 ## Blocked
 
