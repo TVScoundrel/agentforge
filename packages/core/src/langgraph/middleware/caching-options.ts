@@ -4,7 +4,7 @@ import type {
   ResolvedCachingOptions,
 } from './caching-types.js';
 
-export function defaultCacheKeyGenerator<State>(state: State): string {
+function defaultCacheKeyGenerator<State>(state: State): string {
   try {
     return JSON.stringify(state);
   } catch {
