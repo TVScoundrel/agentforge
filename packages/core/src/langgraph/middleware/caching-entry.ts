@@ -8,6 +8,6 @@ export function isFreshCacheEntry<T>(entry: CacheEntry<T> | undefined, ttl: numb
   return Date.now() - entry.timestamp < ttl;
 }
 
-export function createCachedErrorResult<State>(error: Error): Partial<State> {
-  return { error: error.message } as unknown as Partial<State>;
+export function createCachedErrorResult<State>(error: Error): Partial<State> & { error: string } {
+  return { error: error.message } as Partial<State> & { error: string };
 }

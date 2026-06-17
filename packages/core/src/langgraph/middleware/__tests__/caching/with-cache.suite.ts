@@ -23,6 +23,8 @@ describe('Caching Middleware withCache()', () => {
   });
 
   it('respects TTL and expires cached entries', async () => {
+    vi.useFakeTimers();
+
     let callCount = 0;
     const node: NodeFunction<TestState> = vi.fn(async (state: TestState) => {
       callCount++;
@@ -32,13 +34,17 @@ describe('Caching Middleware withCache()', () => {
     const cachedNode = withCache(node, { ttl: 50 });
     const state: TestState = { input: 'test' };
 
-    await cachedNode(state);
-    expect(callCount).toBe(1);
+    try {
+      await cachedNode(state);
+      expect(callCount).toBe(1);
 
-    await new Promise((resolve) => setTimeout(resolve, 60));
+      await vi.advanceTimersByTimeAsync(60);
 
-    await cachedNode(state);
-    expect(callCount).toBe(2);
+      await cachedNode(state);
+      expect(callCount).toBe(2);
+    } finally {
+      vi.useRealTimers();
+    }
   });
 
   it('uses a custom key generator', async () => {
