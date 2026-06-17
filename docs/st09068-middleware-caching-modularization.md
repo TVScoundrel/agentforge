@@ -29,12 +29,12 @@ Modularized `packages/core/src/langgraph/middleware/caching.ts` from a mixed-res
 ## File Size Results
 
 - Production files:
-  - `packages/core/src/langgraph/middleware/caching.ts`: `342 -> 35` lines
+  - `packages/core/src/langgraph/middleware/caching.ts`: `342 -> 52` lines
   - `packages/core/src/langgraph/middleware/caching-entry.ts`: `13` lines
   - `packages/core/src/langgraph/middleware/caching-options.ts`: `34` lines
   - `packages/core/src/langgraph/middleware/caching-shared.ts`: `33` lines
   - `packages/core/src/langgraph/middleware/caching-store.ts`: `87` lines
-  - `packages/core/src/langgraph/middleware/caching-types.ts`: `49` lines
+  - `packages/core/src/langgraph/middleware/caching-types.ts`: `68` lines
   - `packages/core/src/langgraph/middleware/caching-wrapper.ts`: `44` lines
 
 ## Test Modularization Results
