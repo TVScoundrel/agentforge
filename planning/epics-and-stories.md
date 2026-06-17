@@ -2007,7 +2007,7 @@
 **Priority:** P2 (Medium)
 **Estimate:** 4 hours
 **Dependencies:** None
-**Status:** Merged (PR #136, 2026-06-16)
+**Status:** In Progress
 
 **Acceptance criteria:**
 - [ ] `packages/core/src/langgraph/middleware/caching.ts` is reduced below the 300 line planning cutoff by extracting focused internal modules for cache-store internals, cache-entry lifecycle helpers, node-wrapper execution flow, and shared-cache facade helpers behind a stable public facade, and the extracted production modules must also stay below `300` lines unless the story documents and justifies an explicit exception.

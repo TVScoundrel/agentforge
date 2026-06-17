@@ -4,8 +4,8 @@
 
 ## Queue Status Summary
 
-- **Ready:** 7 stories
-- **In Progress:** 0 stories
+- **Ready:** 6 stories
+- **In Progress:** 1 story
 - **In Review:** 0 stories
 - **Blocked:** 0 stories
 - **Backlog:** 0 stories
@@ -14,7 +14,6 @@
 
 ## Ready
 
-- `ST-09068` - Modularize LangGraph Caching Middleware and Tests
 - `ST-09069` - Modularize Neo4j Embedding Manager and Tests
 - `ST-09070` - Modularize Multi-Agent Utilities and Tests
 - `ST-09071` - Modularize Skill Activation Runtime and Tests
@@ -26,7 +25,7 @@
 
 ## In Progress
 
-None currently.
+- `ST-09068` - Modularize LangGraph Caching Middleware and Tests
 
 ---
 
