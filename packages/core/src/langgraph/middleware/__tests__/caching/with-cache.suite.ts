@@ -125,6 +125,8 @@ describe('Caching Middleware withCache()', () => {
   });
 
   it('uses LRU eviction strategy', async () => {
+    vi.useFakeTimers();
+
     const node: NodeFunction<TestState> = vi.fn(async (state: TestState) => ({
       ...state,
       output: 'result',
@@ -136,19 +138,23 @@ describe('Caching Middleware withCache()', () => {
       evictionStrategy: 'lru',
     });
 
-    await cachedNode({ input: 'test1' });
-    await new Promise((resolve) => setTimeout(resolve, 10));
-    await cachedNode({ input: 'test2' });
-    await new Promise((resolve) => setTimeout(resolve, 10));
-    await cachedNode({ input: 'test1' });
-    await new Promise((resolve) => setTimeout(resolve, 10));
-    await cachedNode({ input: 'test3' });
-    await cachedNode({ input: 'test1' });
+    try {
+      await cachedNode({ input: 'test1' });
+      await vi.advanceTimersByTimeAsync(10);
+      await cachedNode({ input: 'test2' });
+      await vi.advanceTimersByTimeAsync(10);
+      await cachedNode({ input: 'test1' });
+      await vi.advanceTimersByTimeAsync(10);
+      await cachedNode({ input: 'test3' });
+      await cachedNode({ input: 'test1' });
 
-    expect(node).toHaveBeenCalledTimes(3);
+      expect(node).toHaveBeenCalledTimes(3);
 
-    await cachedNode({ input: 'test2' });
-    expect(node).toHaveBeenCalledTimes(4);
+      await cachedNode({ input: 'test2' });
+      expect(node).toHaveBeenCalledTimes(4);
+    } finally {
+      vi.useRealTimers();
+    }
   });
 
   it('uses LFU eviction strategy', async () => {
