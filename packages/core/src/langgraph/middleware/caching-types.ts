@@ -37,9 +37,26 @@ export interface CachingOptions<State> {
    * @default JSON.stringify with String(...) fallback
    */
   keyGenerator?: CacheKeyGenerator<State>;
+
+  /**
+   * Whether to cache thrown `Error` results as `{ error: message }`.
+   * @default false
+   */
   cacheErrors?: boolean;
+
+  /**
+   * Optional callback invoked when a fresh cached value is returned.
+   */
   onCacheHit?: (key: string, value: State | Partial<State>) => void;
+
+  /**
+   * Optional callback invoked when no cached value is available.
+   */
   onCacheMiss?: (key: string) => void;
+
+  /**
+   * Optional callback invoked when a stale cached value is evicted.
+   */
   onEviction?: (key: string, value: State | Partial<State>) => void;
 }
 
