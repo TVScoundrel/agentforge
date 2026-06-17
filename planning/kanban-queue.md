@@ -6,7 +6,7 @@
 
 - **Ready:** 6 stories
 - **In Progress:** 0 stories
-- **In Review:** 1 story
+- **In Review:** 0 stories
 - **Blocked:** 0 stories
 - **Backlog:** 0 stories
 
@@ -31,7 +31,7 @@ None currently.
 
 ## In Review
 
-- `ST-09068` - Modularize LangGraph Caching Middleware and Tests
+None currently.
 
 ## Blocked
 
@@ -141,5 +141,6 @@ None currently.
 - Complete: ST-09065 - LangGraph state helpers and tests modularized (merged 2026-06-13, PR #134)
 - Complete: ST-09066 - core resource pool and tests modularized (merged 2026-06-16, PR #135)
 - Complete: ST-09067 - relational batch executor and tests modularized (merged 2026-06-16, PR #136)
+- Complete: ST-09068 - caching middleware and tests modularized (merged 2026-06-17, PR #137)
 - Epic 09 (SOLID Micro-Refactors and Type Boundary Hardening) was expanded on 2026-06-12 with follow-on backlog stories ST-09067 through ST-09074 to keep the daily modularization lane stocked after the current ready queue
-- Current measured `no-explicit-any` baseline is `84` warnings (`cli 6`, `core 23`, `patterns 2`, `testing 0`, `tools 53`)
+- Current measured `no-explicit-any` baseline is `80` warnings (`cli 6`, `core 19`, `patterns 2`, `testing 0`, `tools 53`)

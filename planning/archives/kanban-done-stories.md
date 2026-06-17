@@ -2,11 +2,18 @@
 
 **Purpose:** Track completed and merged stories for the Relational Database Access Tool project.
 
-**Last Updated:** 2026-06-16
+**Last Updated:** 2026-06-17
 
 ---
 
 ## Completed Stories
+
+### ST-09068: Modularize LangGraph Caching Middleware and Tests
+- **Merged:** 2026-06-17
+- **PR:** https://github.com/TVScoundrel/agentforge/pull/137 (commit 7972b7f6)
+- **Epic:** EP-09 (SOLID Micro-Refactors and Type Boundary Hardening)
+- **Estimate:** 4 hours
+- **Outcome:** Modularized `@agentforge/core` caching middleware by shrinking `packages/core/src/langgraph/middleware/caching.ts` from a `342` line mixed-responsibility runtime to a `52` line public facade, extracting focused cache type, option-resolution, cache-store, entry-lifecycle, wrapper-flow, and shared-cache helpers while preserving `withCache(...)`, `createSharedCache(...)`, public imports, callback hooks, and caching behavior. The story also replaced the old caching test monolith with focused `withCache(...)` and shared-cache suites behind the same public entrypoint, absorbed review follow-ups for documentation accuracy, type-only imports, deterministic timer control, empty-string cache-key eviction, and refreshed story-doc evidence, and improved the explicit-`any` baseline from `84/289` overall and `23/119` in `core` to `80/289` overall and `19/119` in `core`.
 
 ### ST-09067: Modularize Relational Batch Executor and Tests
 - **Merged:** 2026-06-16

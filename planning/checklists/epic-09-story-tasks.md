@@ -2913,7 +2913,8 @@ Implementation notes:
   - `7c3df4fa` refactor(st-09068): modularize caching middleware
 - [x] Mark PR Ready only after all story tasks are complete
   - PR #137 marked ready: https://github.com/TVScoundrel/agentforge/pull/137
-- [ ] Wait for merge; do not merge directly from local branch
+- [x] Wait for merge; do not merge directly from local branch
+  - Merged via PR #137 on 2026-06-17 (merge commit `7972b7f6877e2d089b93d786bcc92e4f563609ab`)
 
 ---
 
