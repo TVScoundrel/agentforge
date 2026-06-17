@@ -124,6 +124,26 @@ describe('Caching Middleware withCache()', () => {
     expect(node).toHaveBeenCalledTimes(4);
   });
 
+  it('evicts entries even when the cache key is an empty string', async () => {
+    const node: NodeFunction<TestState> = vi.fn(async (state: TestState) => ({
+      ...state,
+      output: `result:${state.count ?? 0}`,
+    }));
+
+    const cachedNode = withCache(node, {
+      ttl: 10000,
+      maxSize: 1,
+      evictionStrategy: 'fifo',
+      keyGenerator: (state) => state.input,
+    });
+
+    await cachedNode({ input: '', count: 1 });
+    await cachedNode({ input: 'next', count: 2 });
+    await cachedNode({ input: '', count: 3 });
+
+    expect(node).toHaveBeenCalledTimes(3);
+  });
+
   it('uses LRU eviction strategy', async () => {
     vi.useFakeTimers();
 

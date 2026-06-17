@@ -58,7 +58,7 @@ export class LRUCache<T> {
     }
 
     const keyToEvict = this.findKeyToEvict();
-    if (keyToEvict) {
+    if (keyToEvict !== undefined) {
       this.cache.delete(keyToEvict);
     }
   }
