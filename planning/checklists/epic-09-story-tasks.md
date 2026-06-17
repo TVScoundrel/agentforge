@@ -2911,7 +2911,8 @@ Implementation notes:
   - `pnpm lint` -> exit `0`; warnings only (`0` errors)
 - [x] Commit completed checklist items as logical commits and push updates
   - `7c3df4fa` refactor(st-09068): modularize caching middleware
-- [ ] Mark PR Ready only after all story tasks are complete
+- [x] Mark PR Ready only after all story tasks are complete
+  - PR #137 marked ready: https://github.com/TVScoundrel/agentforge/pull/137
 - [ ] Wait for merge; do not merge directly from local branch
 
 ---
