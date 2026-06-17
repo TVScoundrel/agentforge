@@ -25,7 +25,7 @@ import type {
  *   maxSize: 100,
  *   evictionStrategy: 'lru',
  *   keyGenerator: (state) => state.userId,
- *   onCacheHit: (key) => console.log('Cache hit:', key),
+ *   onCacheHit: (key) => recordCacheHitMetric(key),
  * });
  *
  * graph.addNode('cached', cachedNode);
