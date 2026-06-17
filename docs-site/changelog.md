@@ -5,6 +5,34 @@ All notable changes to AgentForge will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.16.55] - 2026-06-17
+
+### Added
+
+#### @agentforge/core - Caching Middleware Modularization Coverage
+- Added focused caching middleware coverage in `packages/core/src/langgraph/middleware/__tests__/caching/with-cache.suite.ts`, `shared-cache.suite.ts`, and `shared.ts` behind the stable `packages/core/src/langgraph/middleware/__tests__/caching.test.ts` public entrypoint
+- Added story documentation in `docs/st09068-middleware-caching-modularization.md` capturing the caching split, validation evidence, and explicit-`any` baseline improvement
+
+### Changed
+
+#### @agentforge/core - Caching Middleware Runtime Modularization
+- Split `packages/core/src/langgraph/middleware/caching.ts` into a smaller stable facade with focused `caching-types.ts`, `caching-options.ts`, `caching-store.ts`, `caching-entry.ts`, `caching-wrapper.ts`, and `caching-shared.ts` helper modules
+- Preserved the public `withCache(...)` and `createSharedCache(...)` surface, callback hooks, eviction strategies, TTL behavior, and shared-cache semantics while reducing maintenance pressure on the old monolithic runtime and test file
+
+### Fixed
+
+#### @agentforge/core - Caching Middleware Review Follow-Ups
+- Restored public middleware documentation, corrected planner and story-doc evidence, completed public option-field JSDoc, made the focused TTL and LRU eviction tests deterministic with fake timers, fixed eviction for empty-string cache keys, and tightened cached error helper typing while improving the explicit-`any` baseline from `84/289` overall and `23/119` in `core` to `80/289` overall and `19/119` in `core`
+
+### Published
+- All packages published to npm registry at version 0.16.55:
+  - @agentforge/core@0.16.55
+  - @agentforge/skills@0.16.55
+  - @agentforge/patterns@0.16.55
+  - @agentforge/tools@0.16.55
+  - @agentforge/testing@0.16.55
+  - @agentforge/cli@0.16.55
+
 ## [0.16.54] - 2026-06-16
 
 ### Added
