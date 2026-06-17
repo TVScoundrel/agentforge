@@ -2892,22 +2892,27 @@ Implementation notes:
 **Branch:** `refactor/st-09068-middleware-caching-modularization`
 
 ### Checklist
-- [ ] Create branch `refactor/st-09068-middleware-caching-modularization`
-- [ ] Create draft PR with story ID in title
-- [ ] Define test strategy before implementation: cover runtime modularization and test-file modularization; first failing test should prove caching middleware behavior remains stable while the oversized runtime and test files are split
-- [ ] Write or update the failing automated test before production changes when practical; if not practical, record why before implementation
-- [ ] Reduce `packages/core/src/langgraph/middleware/caching.ts` below the 300 line planning cutoff by extracting focused internal modules for cache-store internals, cache-entry lifecycle helpers, node-wrapper execution flow, and shared-cache facade helpers behind a stable facade
-- [ ] Keep extracted production modules below the 300 line planning cutoff as well; do not satisfy the story by only shrinking the public facade and moving the bulk into a new oversized helper unless an explicit exception is documented in the story notes
-- [ ] Split caching middleware coverage into focused test modules so cache hit/miss, TTL, eviction, and shared-cache behavior no longer depends on a single oversized test surface
-- [ ] Preserve existing caching middleware behavior, shared-cache semantics, callback hooks, and public imports
-- [ ] Add/update production code until focused tests pass, keeping test evidence in checklist notes and PR body
-- [ ] Record explicit-`any` warning deltas and file-size/responsibility improvements for touched caching middleware modules in story docs
-- [ ] Add or update story documentation at `docs/st09068-middleware-caching-modularization.md` (or document why not required)
-- [ ] Assess residual test impact; add/update additional automated tests when needed, or document why no further tests are required
-- [ ] Run full test suite before finalizing the PR and record results
-- [ ] Run lint (`pnpm lint`) before finalizing the PR and record results
-- [ ] Commit completed checklist items as logical commits and push updates
-- [ ] Mark PR Ready only after all story tasks are complete
+- [x] Create branch `refactor/st-09068-middleware-caching-modularization`
+- [x] Create draft PR with story ID in title
+  - PR #137: https://github.com/TVScoundrel/agentforge/pull/137
+- [x] Define test strategy before implementation: cover runtime modularization and test-file modularization; split the monolithic caching suite into a stable entrypoint plus focused suites first so that focused coverage becomes the pre-refactor guardrail
+- [x] Write or update the failing automated test before production changes when practical; modularized the existing caching coverage first, fixed the new shared harness import after the first focused run failed, and used the passing focused suite as the refactor safety net because this story is structural rather than a behavior change
+- [x] Reduce `packages/core/src/langgraph/middleware/caching.ts` below the 300 line planning cutoff by extracting focused internal modules for cache-store internals, cache-entry lifecycle helpers, node-wrapper execution flow, and shared-cache facade helpers behind a stable facade
+- [x] Keep extracted production modules below the 300 line planning cutoff as well; do not satisfy the story by only shrinking the public facade and moving the bulk into a new oversized helper unless an explicit exception is documented in the story notes
+- [x] Split caching middleware coverage into focused test modules so cache hit/miss, TTL, eviction, and shared-cache behavior no longer depends on a single oversized test surface
+- [x] Preserve existing caching middleware behavior, shared-cache semantics, callback hooks, and public imports
+- [x] Add/update production code until focused tests pass, keeping test evidence in checklist notes and PR body
+- [x] Record explicit-`any` warning deltas and file-size/responsibility improvements for touched caching middleware modules in story docs
+- [x] Add or update story documentation at `docs/st09068-middleware-caching-modularization.md` (or document why not required)
+- [x] Assess residual test impact; add/update additional automated tests when needed, or document why no further tests are required
+- [x] Run full test suite before finalizing the PR and record results
+  - `pnpm test --run` -> `211 passed | 18 skipped` files; `2323 passed | 286 skipped` tests
+- [x] Run lint (`pnpm lint`) before finalizing the PR and record results
+  - `pnpm lint` -> exit `0`; warnings only (`0` errors)
+- [x] Commit completed checklist items as logical commits and push updates
+  - `7c3df4fa` refactor(st-09068): modularize caching middleware
+- [x] Mark PR Ready only after all story tasks are complete
+  - PR #137 marked ready: https://github.com/TVScoundrel/agentforge/pull/137
 - [ ] Wait for merge; do not merge directly from local branch
 
 ---
