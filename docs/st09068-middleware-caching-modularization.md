@@ -34,7 +34,7 @@ Modularized `packages/core/src/langgraph/middleware/caching.ts` from a mixed-res
   - `packages/core/src/langgraph/middleware/caching-options.ts`: `34` lines
   - `packages/core/src/langgraph/middleware/caching-shared.ts`: `33` lines
   - `packages/core/src/langgraph/middleware/caching-store.ts`: `87` lines
-  - `packages/core/src/langgraph/middleware/caching-types.ts`: `68` lines
+  - `packages/core/src/langgraph/middleware/caching-types.ts`: `85` lines
   - `packages/core/src/langgraph/middleware/caching-wrapper.ts`: `44` lines
 
 ## Test Modularization Results
@@ -42,7 +42,7 @@ Modularized `packages/core/src/langgraph/middleware/caching.ts` from a mixed-res
 - Test files:
   - `packages/core/src/langgraph/middleware/__tests__/caching.test.ts`: `2` lines
   - `packages/core/src/langgraph/middleware/__tests__/caching/shared.ts`: `11` lines
-  - `packages/core/src/langgraph/middleware/__tests__/caching/with-cache.suite.ts`: `206` lines
+  - `packages/core/src/langgraph/middleware/__tests__/caching/with-cache.suite.ts`: `218` lines
   - `packages/core/src/langgraph/middleware/__tests__/caching/shared-cache.suite.ts`: `51` lines
 
 ## Explicit-`any` Baseline
