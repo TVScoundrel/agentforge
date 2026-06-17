@@ -1,6 +1,6 @@
 import type { NodeFunction } from './types.js';
 import { createCachedErrorResult, isFreshCacheEntry } from './caching-entry.js';
-import { LRUCache } from './caching-store.js';
+import type { LRUCache } from './caching-store.js';
 import type {
   CacheKeyGenerator,
   ResolvedCachingOptions,

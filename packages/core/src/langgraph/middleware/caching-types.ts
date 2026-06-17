@@ -14,9 +14,28 @@ export type EvictionStrategy = 'lru' | 'lfu' | 'fifo';
  * Options for caching middleware
  */
 export interface CachingOptions<State> {
+  /**
+   * Time-to-live in milliseconds.
+   * @default 3600000 (1 hour)
+   */
   ttl?: number;
+
+  /**
+   * Maximum number of cache entries.
+   * @default 100
+   */
   maxSize?: number;
+
+  /**
+   * Eviction strategy when the cache is full.
+   * @default 'lru'
+   */
   evictionStrategy?: EvictionStrategy;
+
+  /**
+   * Custom cache key generator.
+   * @default JSON.stringify with String(...) fallback
+   */
   keyGenerator?: CacheKeyGenerator<State>;
   cacheErrors?: boolean;
   onCacheHit?: (key: string, value: State | Partial<State>) => void;
