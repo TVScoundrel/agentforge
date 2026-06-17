@@ -1990,7 +1990,7 @@
 **Priority:** P2 (Medium)
 **Estimate:** 4 hours
 **Dependencies:** None
-**Status:** In Progress
+**Status:** In Review
 
 **Acceptance criteria:**
 - [ ] `packages/tools/src/data/relational/query/batch-executor.ts` is reduced below the 300 line planning cutoff by extracting focused internal modules for option resolution/chunking, retry/progress flow, benchmark helpers, and shared batch types behind a stable public facade, and the extracted production modules must also stay below `300` lines unless the story documents and justifies an explicit exception.

@@ -5,8 +5,8 @@
 ## Queue Status Summary
 
 - **Ready:** 6 stories
-- **In Progress:** 1 story
-- **In Review:** 0 stories
+- **In Progress:** 0 stories
+- **In Review:** 1 story
 - **Blocked:** 0 stories
 - **Backlog:** 0 stories
 
@@ -25,13 +25,13 @@
 
 ## In Progress
 
-- `ST-09068` - Modularize LangGraph Caching Middleware and Tests
+None currently.
 
 ---
 
 ## In Review
 
-None currently.
+- `ST-09068` - Modularize LangGraph Caching Middleware and Tests
 
 ## Blocked
 
