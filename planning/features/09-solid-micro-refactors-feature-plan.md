@@ -3,7 +3,7 @@
 **Epic Range:** EP-09 through EP-09
 **Status:** In Progress
 **Last Updated:** 2026-06-18
-**Active Story:** ST-09069 - Modularize Neo4j Embedding Manager and Tests (In Progress)
+**Active Story:** ST-09069 - Modularize Neo4j Embedding Manager and Tests (In Review)
 
 ---
 

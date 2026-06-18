@@ -2944,7 +2944,9 @@ Implementation notes:
   - `pnpm test --run` -> `212 passed | 18 skipped` files; `2340 passed | 286 skipped` tests
 - [x] Run lint (`pnpm lint`) before finalizing the PR and record results
   - `pnpm lint` -> exit `0`; warnings only (`0` errors)
-- [ ] Commit completed checklist items as logical commits and push updates
+- [x] Commit completed checklist items as logical commits and push updates
+  - `7da3a17e` refactor(st-09069): modularize neo4j embedding manager
+  - `64352b7f` docs(st-09069): record embedding manager validation
 - [ ] Mark PR Ready only after all story tasks are complete
 - [ ] Wait for merge; do not merge directly from local branch
 
