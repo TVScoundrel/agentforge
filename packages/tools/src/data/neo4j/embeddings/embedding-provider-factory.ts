@@ -5,7 +5,7 @@ import { HuggingFaceEmbeddingProvider } from './providers/huggingface.js';
 import { VoyageEmbeddingProvider } from './providers/voyage.js';
 import { OllamaEmbeddingProvider } from './providers/ollama.js';
 
-export const DEFAULT_OLLAMA_BASE_URL = 'http://localhost:11434';
+const DEFAULT_OLLAMA_BASE_URL = 'http://localhost:11434';
 
 export function parseEmbeddingProvider(providerName: string): EmbeddingProvider {
   switch (providerName) {

@@ -30,8 +30,8 @@ Modularized `packages/tools/src/data/neo4j/embeddings/embedding-manager.ts` from
 - Production files:
   - `packages/tools/src/data/neo4j/embeddings/embedding-manager.ts`: `332 -> 151` lines
   - `packages/tools/src/data/neo4j/embeddings/embedding-manager-shared.ts`: `29` lines
-  - `packages/tools/src/data/neo4j/embeddings/embedding-provider-factory.ts`: `47` lines
-  - `packages/tools/src/data/neo4j/embeddings/embedding-environment.ts`: `114` lines
+  - `packages/tools/src/data/neo4j/embeddings/embedding-provider-factory.ts`: `56` lines
+  - `packages/tools/src/data/neo4j/embeddings/embedding-environment.ts`: `120` lines
   - `packages/tools/src/data/neo4j/embeddings/embedding-generation.ts`: `56` lines
 
 ## Test Modularization Results
