@@ -20,7 +20,7 @@ export interface ResolvedEmbeddingEnvironment {
 
 export function resolveEmbeddingEnvironment(): ResolvedEmbeddingEnvironment {
   const providerName = validateEmbeddingProvider(getEmbeddingProvider());
-  const model = getEmbeddingModel() ?? getDefaultEmbeddingModel(providerName);
+  const model = getEmbeddingModel() || getDefaultEmbeddingModel(providerName);
 
   embeddingLogger.debug('Initializing embedding manager from environment', {
     provider: providerName,

@@ -63,6 +63,22 @@ describe('EmbeddingManager initialization', () => {
     });
   });
 
+  it('treats an empty env model as missing and falls back to the provider default', () => {
+    const manager = new EmbeddingManager();
+
+    mockGetEmbeddingProvider.mockReturnValue('openai');
+    mockGetEmbeddingModel.mockReturnValue('');
+    mockGetOpenAIApiKey.mockReturnValue('env-key');
+
+    manager.initializeFromEnv();
+
+    expect(manager.getConfig()).toEqual({
+      provider: 'openai',
+      model: 'text-embedding-3-small',
+      apiKey: '',
+    });
+  });
+
   it('throws a helpful error when required env credentials are missing', () => {
     const manager = new EmbeddingManager();
 
