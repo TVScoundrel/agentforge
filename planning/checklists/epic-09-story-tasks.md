@@ -2947,8 +2947,13 @@ Implementation notes:
 - [x] Commit completed checklist items as logical commits and push updates
   - `7da3a17e` refactor(st-09069): modularize neo4j embedding manager
   - `64352b7f` docs(st-09069): record embedding manager validation
-- [ ] Mark PR Ready only after all story tasks are complete
-- [ ] Wait for merge; do not merge directly from local branch
+  - `49a37f80` fix(st-09069): validate embedding providers eagerly
+  - `931cc2ac` fix(st-09069): preserve empty env model fallback
+  - `d2571e3b` fix(st-09069): tighten embedding helper surface
+- [x] Mark PR Ready only after all story tasks are complete
+  - PR #138 marked ready: https://github.com/TVScoundrel/agentforge/pull/138
+- [x] Wait for merge; do not merge directly from local branch
+  - Merged via PR #138 on 2026-06-18 (merge commit `db08fff71636e5e77758b1f63342a2cdf63d3431`)
 
 ---
 

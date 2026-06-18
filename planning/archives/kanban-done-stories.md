@@ -2,11 +2,18 @@
 
 **Purpose:** Track completed and merged stories for the Relational Database Access Tool project.
 
-**Last Updated:** 2026-06-17
+**Last Updated:** 2026-06-18
 
 ---
 
 ## Completed Stories
+
+### ST-09069: Modularize Neo4j Embedding Manager and Tests
+- **Merged:** 2026-06-18
+- **PR:** https://github.com/TVScoundrel/agentforge/pull/138 (commit db08fff7)
+- **Epic:** EP-09 (SOLID Micro-Refactors and Type Boundary Hardening)
+- **Estimate:** 4 hours
+- **Outcome:** Modularized `@agentforge/tools` embedding management by shrinking `packages/tools/src/data/neo4j/embeddings/embedding-manager.ts` from a `332` line mixed-responsibility runtime to a `151` line public facade, extracting focused provider-factory, environment-resolution, generation-flow, and shared-helper modules while preserving provider defaults, environment variable semantics, singleton initialization helpers, and public generation APIs. The story also replaced the old embedding-manager test surface with a public entrypoint plus focused initialization, provider-selection, and generation suites, absorbed review follow-ups for eager provider validation, empty-string environment-model fallback preservation, and tighter helper boundaries, and kept the explicit-`any` baseline flat at `workspace 80/289` and `tools 53/67`.
 
 ### ST-09068: Modularize LangGraph Caching Middleware and Tests
 - **Merged:** 2026-06-17

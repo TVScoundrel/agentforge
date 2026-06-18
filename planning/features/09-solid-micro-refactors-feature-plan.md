@@ -3,7 +3,7 @@
 **Epic Range:** EP-09 through EP-09
 **Status:** In Progress
 **Last Updated:** 2026-06-18
-**Active Story:** ST-09069 - Modularize Neo4j Embedding Manager and Tests (In Review)
+**Active Story:** ST-09070 - Modularize Multi-Agent Utilities and Tests (Ready)
 
 ---
 
@@ -111,7 +111,8 @@ Recent improvement snapshot:
 - `ST-09066` merged on 2026-06-16 after modularizing the shared resource pool runtime and test surface into focused helper modules and suites, preserving the public pooling facade while absorbing follow-up fixes for concurrent creation limits, teardown races, structured pool logging, and health-check callback error normalization with the explicit-`any` baseline flat at `workspace 84/289` and `core 23/119`.
 - `ST-09067` merged on 2026-06-16 after shrinking `packages/tools/src/data/relational/query/batch-executor.ts` from a `367` line mixed-responsibility runtime to a `19` line public facade, extracting focused option, runtime, execution, benchmark, and shared-type modules while preserving public imports and batch behavior. The story also replaced the old batch-executor test monolith with a public entrypoint plus focused chunking, retry, failure, and benchmark suites, absorbed review follow-ups for non-discovered suite naming and documentation count accuracy, and kept the explicit-`any` baseline flat at `workspace 84/289` and `tools 53/67`.
 - `ST-09068` merged on 2026-06-17 after shrinking `packages/core/src/langgraph/middleware/caching.ts` from a `342` line mixed-responsibility runtime to a `52` line public facade, extracting focused cache type, option-resolution, cache-store, entry-lifecycle, wrapper-flow, and shared-cache helpers while preserving public imports and runtime behavior. The story also replaced the old caching middleware test monolith with focused `withCache(...)` and shared-cache suites, absorbed review follow-ups for documentation accuracy, deterministic timer control, empty-string cache-key eviction, and refreshed line-count evidence, and improved the explicit-`any` baseline from `84/289` overall and `23/119` in `core` to `80/289` overall and `19/119` in `core`.
-- `EP-09` remains open as the daily hardening stream, with `ST-09069` through `ST-09074` now queued in the ready lane after `ST-09068` merged.
+- `ST-09069` merged on 2026-06-18 after shrinking `packages/tools/src/data/neo4j/embeddings/embedding-manager.ts` from a `332` line mixed-responsibility runtime to a `151` line public facade, extracting focused provider-factory, environment-resolution, generation-flow, and shared-helper modules while preserving provider defaults, singleton initialization helpers, environment variable semantics, and public generation APIs. The story also replaced the old embedding-manager test surface with a public entrypoint plus focused initialization, provider-selection, and generation suites, absorbed review follow-ups for eager provider validation, empty-string environment-model fallback preservation, and tighter helper boundaries, and kept the explicit-`any` baseline flat at `workspace 80/289` and `tools 53/67`.
+- `EP-09` remains open as the daily hardening stream, with `ST-09070` through `ST-09074` now queued in the ready lane after `ST-09069` merged.
 - The refreshed follow-on queue now extends beyond the current Ready lane so another few weeks of small SOLID/DRY and modularization work can be pulled without re-planning the epic.
 
 ---
