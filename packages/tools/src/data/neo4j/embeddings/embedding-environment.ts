@@ -8,7 +8,7 @@ import {
   getVoyageApiKey,
   getOllamaBaseUrl,
 } from './utils.js';
-import { getDefaultEmbeddingModel } from './embedding-provider-factory.js';
+import { getDefaultEmbeddingModel, parseEmbeddingProvider } from './embedding-provider-factory.js';
 import { embeddingLogger } from './embedding-manager-shared.js';
 
 export interface ResolvedEmbeddingEnvironment {
@@ -19,7 +19,7 @@ export interface ResolvedEmbeddingEnvironment {
 }
 
 export function resolveEmbeddingEnvironment(): ResolvedEmbeddingEnvironment {
-  const providerName = getEmbeddingProvider() as EmbeddingProvider;
+  const providerName = validateEmbeddingProvider(getEmbeddingProvider());
   const model = getEmbeddingModel() ?? getDefaultEmbeddingModel(providerName);
 
   embeddingLogger.debug('Initializing embedding manager from environment', {
@@ -77,11 +77,17 @@ export function resolveEmbeddingEnvironment(): ResolvedEmbeddingEnvironment {
         },
       };
     }
-    default:
-      embeddingLogger.error('Unknown embedding provider', {
-        provider: providerName,
-      });
-      throw new Error(`Unknown embedding provider: ${providerName}`);
+  }
+}
+
+function validateEmbeddingProvider(providerName: string): EmbeddingProvider {
+  try {
+    return parseEmbeddingProvider(providerName);
+  } catch (error) {
+    embeddingLogger.error('Unknown embedding provider', {
+      provider: providerName,
+    });
+    throw error;
   }
 }
 

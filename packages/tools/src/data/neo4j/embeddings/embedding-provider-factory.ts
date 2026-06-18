@@ -7,6 +7,19 @@ import { OllamaEmbeddingProvider } from './providers/ollama.js';
 
 export const DEFAULT_OLLAMA_BASE_URL = 'http://localhost:11434';
 
+export function parseEmbeddingProvider(providerName: string): EmbeddingProvider {
+  switch (providerName) {
+    case 'openai':
+    case 'cohere':
+    case 'huggingface':
+    case 'voyage':
+    case 'ollama':
+      return providerName;
+    default:
+      throw new Error(`Unknown embedding provider: ${providerName}`);
+  }
+}
+
 export function getDefaultEmbeddingModel(provider: EmbeddingProvider): string {
   switch (provider) {
     case 'openai':
@@ -19,8 +32,6 @@ export function getDefaultEmbeddingModel(provider: EmbeddingProvider): string {
       return 'voyage-2';
     case 'ollama':
       return 'nomic-embed-text';
-    default:
-      return 'text-embedding-3-small';
   }
 }
 
@@ -41,7 +52,5 @@ export function createEmbeddingProvider(
       return new VoyageEmbeddingProvider(apiKey);
     case 'ollama':
       return new OllamaEmbeddingProvider(model, baseUrl || DEFAULT_OLLAMA_BASE_URL);
-    default:
-      throw new Error(`Unknown embedding provider: ${providerName}`);
   }
 }

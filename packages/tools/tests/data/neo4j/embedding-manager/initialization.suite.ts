@@ -74,6 +74,15 @@ describe('EmbeddingManager initialization', () => {
     );
   });
 
+  it('rejects invalid env providers before model resolution', () => {
+    const manager = new EmbeddingManager();
+
+    mockGetEmbeddingProvider.mockReturnValue('custom');
+
+    expect(() => manager.initializeFromEnv()).toThrow('Unknown embedding provider: custom');
+    expect(mockGetEmbeddingModel).not.toHaveBeenCalled();
+  });
+
   it('throws when configuration is requested before initialization', () => {
     const manager = new EmbeddingManager();
 
