@@ -64,6 +64,13 @@ No additional automated coverage was required beyond the new focused embedding-m
 - Explicit-`any` baseline:
   - `pnpm lint:explicit-any:baseline`
   - Passed with no regression
+- Full test suite:
+  - `pnpm test --run`
+  - `212` files passed, `18` files skipped
+  - `2340` tests passed, `286` tests skipped
+- Lint:
+  - `pnpm lint`
+  - Exit `0`; warnings only (`0` errors)
 
 ## CI Impact
 

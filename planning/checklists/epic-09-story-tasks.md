@@ -2924,7 +2924,8 @@ Implementation notes:
 
 ### Checklist
 - [x] Create branch `refactor/st-09069-neo4j-embedding-manager-modularization`
-- [ ] Create draft PR with story ID in title
+- [x] Create draft PR with story ID in title
+  - PR #138: https://github.com/TVScoundrel/agentforge/pull/138
 - [x] Define test strategy before implementation: cover runtime modularization and test-file modularization; first failing test should prove embedding-manager behavior remains stable while the oversized runtime and test files are split
 - [x] Write or update the failing automated test before production changes when practical; if not practical, record why before implementation
   - Test-first note: this story is a behavior-preserving modularization of an already implemented embedding runtime, so a red-first test would only fail by asserting temporary structure rather than stable public behavior. The practical path is characterization-first coverage: add focused public-entry tests for environment initialization, provider selection, and batch/single generation semantics before extracting modules, then use those passing tests as the safety net during the split.
@@ -2939,8 +2940,10 @@ Implementation notes:
 - [x] Add or update story documentation at `docs/st09069-neo4j-embedding-manager-modularization.md` (or document why not required)
 - [x] Assess residual test impact; add/update additional automated tests when needed, or document why no further tests are required
   - No additional automated coverage was required beyond the new focused embedding-manager suites; the broader Neo4j integration surface remains in `packages/tools/tests/data/neo4j.test.ts`.
-- [ ] Run full test suite before finalizing the PR and record results
-- [ ] Run lint (`pnpm lint`) before finalizing the PR and record results
+- [x] Run full test suite before finalizing the PR and record results
+  - `pnpm test --run` -> `212 passed | 18 skipped` files; `2340 passed | 286 skipped` tests
+- [x] Run lint (`pnpm lint`) before finalizing the PR and record results
+  - `pnpm lint` -> exit `0`; warnings only (`0` errors)
 - [ ] Commit completed checklist items as logical commits and push updates
 - [ ] Mark PR Ready only after all story tasks are complete
 - [ ] Wait for merge; do not merge directly from local branch
