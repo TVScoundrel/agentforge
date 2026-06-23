@@ -2962,22 +2962,34 @@ Implementation notes:
 **Branch:** `refactor/st-09070-multi-agent-utils-modularization`
 
 ### Checklist
-- [ ] Create branch `refactor/st-09070-multi-agent-utils-modularization`
-- [ ] Create draft PR with story ID in title
-- [ ] Define test strategy before implementation: cover runtime modularization and test-file modularization; first failing test should prove multi-agent utility behavior remains stable while the oversized runtime and test files are split
-- [ ] Write or update the failing automated test before production changes when practical; if not practical, record why before implementation
-- [ ] Reduce `packages/patterns/src/multi-agent/utils.ts` below the 300 line planning cutoff by extracting focused internal modules for ReAct agent detection, result-shape extraction/serialization, and wrapped worker execution helpers behind a stable facade
-- [ ] Keep extracted production modules below the 300 line planning cutoff as well; do not satisfy the story by only shrinking the public facade and moving the bulk into a new oversized helper unless an explicit exception is documented in the story notes
-- [ ] Split multi-agent utility coverage into focused test modules so detection, assignment, serialization, and wrapped-agent behavior no longer depends on a single oversized test surface
-- [ ] Preserve existing multi-agent utility behavior, wrapped ReAct execution semantics, and public imports
-- [ ] Add/update production code until focused tests pass, keeping test evidence in checklist notes and PR body
-- [ ] Record explicit-`any` warning deltas and file-size/responsibility improvements for touched multi-agent utility modules in story docs
-- [ ] Add or update story documentation at `docs/st09070-multi-agent-utils-modularization.md` (or document why not required)
-- [ ] Assess residual test impact; add/update additional automated tests when needed, or document why no further tests are required
-- [ ] Run full test suite before finalizing the PR and record results
-- [ ] Run lint (`pnpm lint`) before finalizing the PR and record results
-- [ ] Commit completed checklist items as logical commits and push updates
-- [ ] Mark PR Ready only after all story tasks are complete
+- [x] Create branch `refactor/st-09070-multi-agent-utils-modularization`
+- [x] Create draft PR with story ID in title
+  - PR #139: https://github.com/TVScoundrel/agentforge/pull/139
+- [x] Define test strategy before implementation: cover runtime modularization and test-file modularization; first failing test should prove multi-agent utility behavior remains stable while the oversized runtime and test files are split
+  - Characterization-first path selected: this story is a behavior-preserving modularization, so a red-first structural assertion would mostly test file layout rather than the stable public utility behavior. The practical safety net is to split the public utility coverage first, add explicit detection coverage, and use the passing public entrypoint during the runtime split.
+- [x] Write or update the failing automated test before production changes when practical; if not practical, record why before implementation
+  - Added focused public-entry suites in `packages/patterns/tests/multi-agent/utils/` before production changes. The first focused run (`pnpm test --run packages/patterns/tests/multi-agent/utils.test.ts`) failed because the initial positive `isReActAgent(...)` fixture did not match the production constructor-name guard closely enough; after correcting that test fixture, the same focused entrypoint passed and became the refactor safety net.
+- [x] Reduce `packages/patterns/src/multi-agent/utils.ts` below the 300 line planning cutoff by extracting focused internal modules for ReAct agent detection, result-shape extraction/serialization, and wrapped worker execution helpers behind a stable facade
+- [x] Keep extracted production modules below the 300 line planning cutoff as well; do not satisfy the story by only shrinking the public facade and moving the bulk into a new oversized helper unless an explicit exception is documented in the story notes
+  - File sizes: `utils.ts 322 -> 11`, `utils-shared.ts 49`, `utils-react-detection.ts 23`, `utils-react-result.ts 65`, `utils-react-wrapper.ts 180`
+- [x] Split multi-agent utility coverage into focused test modules so detection, assignment, serialization, and wrapped-agent behavior no longer depends on a single oversized test surface
+- [x] Preserve existing multi-agent utility behavior, wrapped ReAct execution semantics, and public imports
+- [x] Add/update production code until focused tests pass, keeping test evidence in checklist notes and PR body
+  - `pnpm test --run packages/patterns/tests/multi-agent/utils.test.ts` -> `1` file passed, `8` tests passed
+  - `pnpm --filter @agentforge/patterns typecheck` -> passed
+- [x] Record explicit-`any` warning deltas and file-size/responsibility improvements for touched multi-agent utility modules in story docs
+- [x] Add or update story documentation at `docs/st09070-multi-agent-utils-modularization.md` (or document why not required)
+- [x] Assess residual test impact; add/update additional automated tests when needed, or document why no further tests are required
+  - No additional automated coverage was required beyond the new focused utility suites; broader multi-agent runtime behavior remains covered by the existing node, routing, and system-level test surfaces.
+- [x] Run full test suite before finalizing the PR and record results
+  - `pnpm test --run` -> `212` passed, `18` skipped files; `2345` passed, `286` skipped tests
+- [x] Run lint (`pnpm lint`) before finalizing the PR and record results
+  - `pnpm lint` -> exit `0`; warnings only (`0` errors)
+- [x] Commit completed checklist items as logical commits and push updates
+  - `5090a5f4` refactor(st-09070): modularize multi-agent utilities
+  - `0f6204f8` docs(st-09070): record modularization validation
+- [x] Mark PR Ready only after all story tasks are complete
+  - PR #139 marked ready: https://github.com/TVScoundrel/agentforge/pull/139
 - [ ] Wait for merge; do not merge directly from local branch
 
 ---
