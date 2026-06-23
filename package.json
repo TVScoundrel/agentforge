@@ -1,6 +1,6 @@
 {
   "name": "agentforge",
-  "version": "0.16.56",
+  "version": "0.16.57",
   "private": true,
   "type": "module",
   "description": "Production-ready framework for building deep agents with LangGraph",

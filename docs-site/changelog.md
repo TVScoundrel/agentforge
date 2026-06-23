@@ -5,6 +5,34 @@ All notable changes to AgentForge will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.16.57] - 2026-06-23
+
+### Added
+
+#### @agentforge/patterns - Multi-Agent Utility Modularization Coverage
+- Added focused multi-agent utility coverage in `packages/patterns/tests/multi-agent/utils/detection.suite.ts`, `wrap-react-agent.suite.ts`, and `shared.ts` behind the stable `packages/patterns/tests/multi-agent/utils.test.ts` public entrypoint
+- Added story documentation in `docs/st09070-multi-agent-utils-modularization.md` capturing the utility split, validation evidence, and no-regression explicit-`any` outcome
+
+### Changed
+
+#### @agentforge/patterns - Multi-Agent Utility Runtime Modularization
+- Split `packages/patterns/src/multi-agent/utils.ts` into a smaller stable facade with focused `utils-shared.ts`, `utils-react-detection.ts`, `utils-react-result.ts`, and `utils-react-wrapper.ts` helper modules
+- Preserved the public `isReActAgent(...)` and `wrapReActAgent(...)` surface, assignment selection, worker-specific checkpoint namespaces, structured response serialization, and wrapped ReAct error handling while reducing maintenance pressure on the old monolithic runtime and test file
+
+### Fixed
+
+#### @agentforge/patterns - Multi-Agent Utility Review Follow-Ups
+- Corrected the characterization fixture used to validate the public ReAct-agent detection guard during the suite split while keeping the explicit-`any` baseline stable at `workspace 80/289` and `patterns 2/28`
+
+### Published
+- All packages published to npm registry at version 0.16.57:
+  - @agentforge/core@0.16.57
+  - @agentforge/skills@0.16.57
+  - @agentforge/patterns@0.16.57
+  - @agentforge/tools@0.16.57
+  - @agentforge/testing@0.16.57
+  - @agentforge/cli@0.16.57
+
 ## [0.16.56] - 2026-06-18
 
 ### Added
