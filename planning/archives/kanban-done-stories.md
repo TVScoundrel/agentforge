@@ -2,11 +2,18 @@
 
 **Purpose:** Track completed and merged stories for the Relational Database Access Tool project.
 
-**Last Updated:** 2026-06-18
+**Last Updated:** 2026-06-23
 
 ---
 
 ## Completed Stories
+
+### ST-09070: Modularize Multi-Agent Utilities and Tests
+- **Merged:** 2026-06-23
+- **PR:** https://github.com/TVScoundrel/agentforge/pull/139 (commit 3c6fe3a8)
+- **Epic:** EP-09 (SOLID Micro-Refactors and Type Boundary Hardening)
+- **Estimate:** 4 hours
+- **Outcome:** Modularized `@agentforge/patterns` multi-agent utility handling by shrinking `packages/patterns/src/multi-agent/utils.ts` from a `322` line mixed-responsibility runtime to an `11` line public facade, extracting focused ReAct-agent detection, result-shape/serialization, shared runtime-guard, and wrapped worker-execution modules while preserving public imports, assignment selection, worker-specific checkpoint namespaces, response serialization, and wrapped error handling. The story also replaced the monolithic utility test surface with a public entrypoint plus focused detection and wrap-agent suites, absorbed the characterization-fixture follow-up for the constructor-name detection guard, and kept the explicit-`any` baseline flat at `workspace 80/289` and `patterns 2/28`.
 
 ### ST-09069: Modularize Neo4j Embedding Manager and Tests
 - **Merged:** 2026-06-18

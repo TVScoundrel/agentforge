@@ -2990,7 +2990,8 @@ Implementation notes:
   - `0f6204f8` docs(st-09070): record modularization validation
 - [x] Mark PR Ready only after all story tasks are complete
   - PR #139 marked ready: https://github.com/TVScoundrel/agentforge/pull/139
-- [ ] Wait for merge; do not merge directly from local branch
+- [x] Wait for merge; do not merge directly from local branch
+  - Merged via PR #139 on 2026-06-23 (merge commit `3c6fe3a8149fe8eacfce1954377894e4364c2514`)
 
 ---
 
