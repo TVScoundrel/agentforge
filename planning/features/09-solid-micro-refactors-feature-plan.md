@@ -3,7 +3,7 @@
 **Epic Range:** EP-09 through EP-09
 **Status:** In Progress
 **Last Updated:** 2026-06-23
-**Active Story:** ST-09070 - Modularize Multi-Agent Utilities and Tests (In Progress)
+**Active Story:** ST-09070 - Modularize Multi-Agent Utilities and Tests (In Review)
 
 ---
 

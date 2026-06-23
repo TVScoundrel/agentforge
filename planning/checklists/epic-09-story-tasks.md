@@ -2963,7 +2963,8 @@ Implementation notes:
 
 ### Checklist
 - [x] Create branch `refactor/st-09070-multi-agent-utils-modularization`
-- [ ] Create draft PR with story ID in title
+- [x] Create draft PR with story ID in title
+  - PR #139: https://github.com/TVScoundrel/agentforge/pull/139
 - [x] Define test strategy before implementation: cover runtime modularization and test-file modularization; first failing test should prove multi-agent utility behavior remains stable while the oversized runtime and test files are split
   - Characterization-first path selected: this story is a behavior-preserving modularization, so a red-first structural assertion would mostly test file layout rather than the stable public utility behavior. The practical safety net is to split the public utility coverage first, add explicit detection coverage, and use the passing public entrypoint during the runtime split.
 - [x] Write or update the failing automated test before production changes when practical; if not practical, record why before implementation
@@ -2980,10 +2981,15 @@ Implementation notes:
 - [x] Add or update story documentation at `docs/st09070-multi-agent-utils-modularization.md` (or document why not required)
 - [x] Assess residual test impact; add/update additional automated tests when needed, or document why no further tests are required
   - No additional automated coverage was required beyond the new focused utility suites; broader multi-agent runtime behavior remains covered by the existing node, routing, and system-level test surfaces.
-- [ ] Run full test suite before finalizing the PR and record results
-- [ ] Run lint (`pnpm lint`) before finalizing the PR and record results
-- [ ] Commit completed checklist items as logical commits and push updates
-- [ ] Mark PR Ready only after all story tasks are complete
+- [x] Run full test suite before finalizing the PR and record results
+  - `pnpm test --run` -> `212` passed, `18` skipped files; `2345` passed, `286` skipped tests
+- [x] Run lint (`pnpm lint`) before finalizing the PR and record results
+  - `pnpm lint` -> exit `0`; warnings only (`0` errors)
+- [x] Commit completed checklist items as logical commits and push updates
+  - `5090a5f4` refactor(st-09070): modularize multi-agent utilities
+  - `0f6204f8` docs(st-09070): record modularization validation
+- [x] Mark PR Ready only after all story tasks are complete
+  - PR #139 marked ready: https://github.com/TVScoundrel/agentforge/pull/139
 - [ ] Wait for merge; do not merge directly from local branch
 
 ---
