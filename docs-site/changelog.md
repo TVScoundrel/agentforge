@@ -5,6 +5,34 @@ All notable changes to AgentForge will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.16.58] - 2026-06-24
+
+### Added
+
+#### @agentforge/skills - Skill Activation Modularization Coverage
+- Added focused skill-activation coverage in `packages/skills/tests/activation/activation-tools.suite.ts`, `activate-skill.suite.ts`, `read-skill-resource.suite.ts`, and `resolve-resource-path.suite.ts` behind the stable `packages/skills/tests/activation.test.ts` public entrypoint
+- Added story documentation in `docs/st09071-skill-activation-modularization.md` capturing the activation-runtime split, validation evidence, and no-regression explicit-`any` outcome
+
+### Changed
+
+#### @agentforge/skills - Skill Activation Runtime Modularization
+- Split `packages/skills/src/activation.ts` into a smaller stable facade with focused `activation-activate-tool.ts`, `activation-resource-tool.ts`, `activation-path.ts`, `activation-content.ts`, `activation-shared.ts`, and `activation-schemas.ts` helper modules
+- Preserved `createActivateSkillTool`, `createReadSkillResourceTool`, `createSkillActivationTools`, `resolveResourcePath`, trust-policy decisions, emitted events, and public imports while reducing maintenance pressure on the old monolithic runtime and test file
+
+### Fixed
+
+#### @agentforge/skills - Skill Activation Review Follow-Ups
+- Guaranteed symlink-fixture cleanup in the focused path-guard coverage and kept the explicit-`any` baseline stable at `workspace 80/289` and `skills 0/0`
+
+### Published
+- All packages published to npm registry at version 0.16.58:
+  - @agentforge/core@0.16.58
+  - @agentforge/skills@0.16.58
+  - @agentforge/patterns@0.16.58
+  - @agentforge/tools@0.16.58
+  - @agentforge/testing@0.16.58
+  - @agentforge/cli@0.16.58
+
 ## [0.16.57] - 2026-06-23
 
 ### Added
