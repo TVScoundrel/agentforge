@@ -121,7 +121,7 @@
 - Story slices are intentionally small (1 day each) so quality improvements can ship continuously
 - Lightweight quality-gate follow-ups keep release/build feedback tight by reducing stale warning caps and easy package metadata warnings
 
-**Stories:** ST-09001 through ST-09074
+**Stories:** ST-09001 through ST-09076
 
 ---
 
@@ -2058,7 +2058,7 @@
 **Priority:** P2 (Medium)
 **Estimate:** 4 hours
 **Dependencies:** ST-09056
-**Status:** Ready
+**Status:** In Review
 
 **Acceptance criteria:**
 - [ ] `packages/skills/src/activation.ts` is reduced below the 300 line planning cutoff by extracting focused internal modules for activation-tool creation, resource path/trust-policy evaluation, and resource loading/event emission behind a stable public facade, and the extracted production modules must also stay below `300` lines unless the story documents and justifies an explicit exception.
@@ -2117,6 +2117,40 @@
 - [ ] Existing relational delete behavior, batch semantics, benchmark output, and public imports remain backward compatible.
 - [ ] Focused tests confirm extracted modules preserve current delete-executor behavior, and `pnpm --filter @agentforge/tools typecheck`, `pnpm test --run`, and `pnpm lint:explicit-any:baseline` pass with no baseline regression.
 - [ ] Add or update story documentation at `docs/st09074-relational-delete-executor-modularization.md`
+
+---
+
+#### ST-09075: Harden ReAct Agent Detection Beyond Constructor Names
+**User story:** As a patterns maintainer, I want `isReActAgent(...)` to rely on more durable runtime-shape evidence than constructor names so wrapped multi-agent utilities do not depend on minification-sensitive class names.
+
+**Priority:** P2 (Medium)
+**Estimate:** 3 hours
+**Dependencies:** ST-09070 (merged)
+**Status:** Backlog
+
+**Acceptance criteria:**
+- [ ] `packages/patterns/src/multi-agent/utils-react-detection.ts` replaces the current constructor-name-only `CompiledGraph`/`CompiledStateGraph` gate with a more durable runtime-shape check, compatibility helper, or layered detection strategy that does not rely solely on constructor names remaining stable.
+- [ ] Existing positive and negative `isReActAgent(...)` behavior remains backward compatible for current supported ReAct agent shapes, including compiled graph/state-graph wrappers already exercised by the public utility tests.
+- [ ] Focused detection tests cover the new identification path plus at least one regression guard against constructor-name fragility so future refactors do not silently reintroduce the same coupling.
+- [ ] `pnpm --filter @agentforge/patterns typecheck`, the focused multi-agent utility tests, and `pnpm lint:explicit-any:baseline` pass with no baseline regression.
+- [ ] Add or update story documentation at `docs/st09075-react-agent-detection-hardening.md`
+
+---
+
+#### ST-09076: Align Wrapped ReAct Error Assignment Selection
+**User story:** As a patterns maintainer, I want `wrapReActAgent(...)` to use the same assignment-targeting rules in success and error paths so wrapped worker failures do not resolve against already-completed assignments inconsistently.
+
+**Priority:** P2 (Medium)
+**Estimate:** 2 hours
+**Dependencies:** ST-09070 (merged)
+**Status:** Backlog
+
+**Acceptance criteria:**
+- [ ] `packages/patterns/src/multi-agent/utils-react-wrapper.ts` aligns error-path assignment selection with the same incomplete-assignment targeting semantics used in the success path, or explicitly centralizes both branches on one shared selector.
+- [ ] Existing wrapped ReAct execution behavior, emitted error structure, and public imports remain backward compatible aside from the intended assignment-targeting correction for completed-task edge cases.
+- [ ] Focused wrap-agent tests cover the corrected error-path targeting behavior and protect against regressions where completed assignments are selected ahead of active ones.
+- [ ] `pnpm --filter @agentforge/patterns typecheck`, the focused multi-agent utility tests, and `pnpm lint:explicit-any:baseline` pass with no baseline regression.
+- [ ] Add or update story documentation at `docs/st09076-wrap-react-error-assignment-alignment.md`
 
 ---
 
@@ -2224,13 +2258,13 @@
 
 ## Story Summary
 
-**Total Stories:** 88
+**Total Stories:** 90
 **By Priority:**
 - P0 (Critical): 17 stories
 - P1 (High): 27 stories
-- P2 (Medium): 44 stories
+- P2 (Medium): 46 stories
 
-**Total Estimated Effort:** ~316 hours (39.5 working days)
+**Total Estimated Effort:** ~321 hours (40.125 working days)
 
 **Dependency Chain:**
 1. Phase 1 (Foundation): ST-01001 → ST-01002 → ST-01003 → ST-01004
@@ -2241,5 +2275,5 @@
 6. Phase 6 (Agent Skills): ST-06001 → ST-06002 → ST-06003 → ST-06004 → ST-06005 → ST-06006
 7. Phase 7 (Skills Extraction): ST-07001 → ST-07002 → [ST-07003, ST-07004 parallel] → ST-07005; ST-07001 → ST-07006 (independent)
 8. Phase 8 (Type Safety Hardening): ST-08001 → [ST-08002, ST-08003, ST-08004 parallel]
-9. Phase 9 (SOLID Micro-Refactors): ST-09001 (Merged) → ST-09002 (Merged) → ST-09003 (Merged) → ST-09004 (Merged) → ST-09005 (Merged) → ST-09006 (Merged) → ST-09007 (Merged) → ST-09008 (Merged) → ST-09009 (Merged) → ST-09010 (Merged) → ST-09011 (Merged) → ST-09012 (Merged) → ST-09013 (Merged) → ST-09014 (Merged) → ST-09015 (Merged) → ST-09016 (Merged) → ST-09017 (Merged) → ST-09018 (Merged) → ST-09019 (Merged) → ST-09020 (Merged) → ST-09021 (Merged) → ST-09022 (Merged) → ST-09023 (Merged); ST-09025 (Merged) → ST-09026 (Merged) → ST-09031 (Merged); ST-09027 (Merged) → ST-09028 (Merged) → ST-09030 (Merged); ST-09032 → ST-09033; ST-09034 (Merged) → ST-09035 (Merged) → ST-09036 (Merged) → ST-09041; ST-09023 (Merged) and ST-09029 (Merged) → ST-09037; ST-09038 independent; ST-09023 (Merged) → ST-09039; ST-09024 (Merged) → ST-09040 → ST-09042 → ST-09047; ST-09020 (Merged) → ST-09043; ST-09018 (Merged) → ST-09044; ST-09015 (Merged) → ST-09045 → ST-09048; ST-09038 (Merged) → ST-09046; ST-03002 (Merged) → ST-09055; ST-06005 (Merged) → ST-09056 (Merged) → ST-09071; ST-04001 (Merged) → ST-09057; ST-09032 (Merged) → ST-09058; ST-09037 (Merged) → ST-09059; ST-09045 (Merged) → ST-09060; ST-09050 (Merged) → ST-09061 (Merged) → ST-09062; ST-09051 (Merged) → ST-09063 (Merged) → ST-09070; ST-09043 (Merged) → ST-09064 (Merged) → ST-09065 (Merged); ST-09010 (Merged) → ST-09066
+9. Phase 9 (SOLID Micro-Refactors): ST-09001 (Merged) → ST-09002 (Merged) → ST-09003 (Merged) → ST-09004 (Merged) → ST-09005 (Merged) → ST-09006 (Merged) → ST-09007 (Merged) → ST-09008 (Merged) → ST-09009 (Merged) → ST-09010 (Merged) → ST-09011 (Merged) → ST-09012 (Merged) → ST-09013 (Merged) → ST-09014 (Merged) → ST-09015 (Merged) → ST-09016 (Merged) → ST-09017 (Merged) → ST-09018 (Merged) → ST-09019 (Merged) → ST-09020 (Merged) → ST-09021 (Merged) → ST-09022 (Merged) → ST-09023 (Merged); ST-09025 (Merged) → ST-09026 (Merged) → ST-09031 (Merged); ST-09027 (Merged) → ST-09028 (Merged) → ST-09030 (Merged); ST-09032 → ST-09033; ST-09034 (Merged) → ST-09035 (Merged) → ST-09036 (Merged) → ST-09041; ST-09023 (Merged) and ST-09029 (Merged) → ST-09037; ST-09038 independent; ST-09023 (Merged) → ST-09039; ST-09024 (Merged) → ST-09040 → ST-09042 → ST-09047; ST-09020 (Merged) → ST-09043; ST-09018 (Merged) → ST-09044; ST-09015 (Merged) → ST-09045 → ST-09048; ST-09038 (Merged) → ST-09046; ST-03002 (Merged) → ST-09055; ST-06005 (Merged) → ST-09056 (Merged) → ST-09071; ST-04001 (Merged) → ST-09057; ST-09032 (Merged) → ST-09058; ST-09037 (Merged) → ST-09059; ST-09045 (Merged) → ST-09060; ST-09050 (Merged) → ST-09061 (Merged) → ST-09062; ST-09051 (Merged) → ST-09063 (Merged) → ST-09070 → [ST-09075, ST-09076]; ST-09043 (Merged) → ST-09064 (Merged) → ST-09065 (Merged); ST-09010 (Merged) → ST-09066
 10. Phase 10 (Documentation Only Changes): ST-10001 → [ST-10002, ST-10003, ST-10004, ST-10005 parallel] → ST-10006; EP-10 remains evergreen and intentionally open for future docs-only stories even when no current stories are queued

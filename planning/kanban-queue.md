@@ -1,20 +1,19 @@
 # Kanban Queue: AgentForge
 
-**Last Updated:** 2026-06-23
+**Last Updated:** 2026-06-24
 
 ## Queue Status Summary
 
 - **Ready:** 4 stories
 - **In Progress:** 0 stories
-- **In Review:** 0 stories
+- **In Review:** 1 story
 - **Blocked:** 0 stories
-- **Backlog:** 0 stories
+- **Backlog:** 2 stories
 
 ---
 
 ## Ready
 
-- `ST-09071` - Modularize Skill Activation Runtime and Tests
 - `ST-09072` - Modularize Relational Insert Executor and Tests
 - `ST-09073` - Modularize Relational Update Executor and Tests
 - `ST-09074` - Modularize Relational Delete Executor and Tests
@@ -29,7 +28,7 @@ None currently.
 
 ## In Review
 
-None currently.
+- `ST-09071` - Modularize Skill Activation Runtime and Tests
 
 ## Blocked
 
@@ -39,7 +38,8 @@ _No stories currently blocked_
 
 ## Backlog
 
-None currently.
+- `ST-09075` - Harden ReAct Agent Detection Beyond Constructor Names
+- `ST-09076` - Align Wrapped ReAct Error Assignment Selection
 
 ---
 
@@ -141,4 +141,5 @@ None currently.
 - Complete: ST-09067 - relational batch executor and tests modularized (merged 2026-06-16, PR #136)
 - Complete: ST-09068 - caching middleware and tests modularized (merged 2026-06-17, PR #137)
 - Epic 09 (SOLID Micro-Refactors and Type Boundary Hardening) was expanded on 2026-06-12 with follow-on backlog stories ST-09067 through ST-09074 to keep the daily modularization lane stocked after the current ready queue
+- Epic 09 was expanded on 2026-06-23 with follow-on backlog stories ST-09075 through ST-09076 to capture post-ST-09070 review debt around ReAct-agent detection robustness and wrapped error-path assignment targeting without displacing the current ready lane
 - Current measured `no-explicit-any` baseline is `80` warnings (`cli 6`, `core 19`, `patterns 2`, `testing 0`, `tools 53`)
