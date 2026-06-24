@@ -2,8 +2,8 @@
 
 **Epic Range:** EP-09 through EP-09
 **Status:** In Progress
-**Last Updated:** 2026-06-23
-**Active Story:** ST-09071 - Modularize Skill Activation Runtime and Tests (Ready)
+**Last Updated:** 2026-06-24
+**Active Story:** ST-09071 - Modularize Skill Activation Runtime and Tests (In Progress)
 
 ---
 
@@ -113,7 +113,8 @@ Recent improvement snapshot:
 - `ST-09068` merged on 2026-06-17 after shrinking `packages/core/src/langgraph/middleware/caching.ts` from a `342` line mixed-responsibility runtime to a `52` line public facade, extracting focused cache type, option-resolution, cache-store, entry-lifecycle, wrapper-flow, and shared-cache helpers while preserving public imports and runtime behavior. The story also replaced the old caching middleware test monolith with focused `withCache(...)` and shared-cache suites, absorbed review follow-ups for documentation accuracy, deterministic timer control, empty-string cache-key eviction, and refreshed line-count evidence, and improved the explicit-`any` baseline from `84/289` overall and `23/119` in `core` to `80/289` overall and `19/119` in `core`.
 - `ST-09069` merged on 2026-06-18 after shrinking `packages/tools/src/data/neo4j/embeddings/embedding-manager.ts` from a `332` line mixed-responsibility runtime to a `151` line public facade, extracting focused provider-factory, environment-resolution, generation-flow, and shared-helper modules while preserving provider defaults, singleton initialization helpers, environment variable semantics, and public generation APIs. The story also replaced the old embedding-manager test surface with a public entrypoint plus focused initialization, provider-selection, and generation suites, absorbed review follow-ups for eager provider validation, empty-string environment-model fallback preservation, and tighter helper boundaries, and kept the explicit-`any` baseline flat at `workspace 80/289` and `tools 53/67`.
 - `ST-09070` merged on 2026-06-23 after shrinking `packages/patterns/src/multi-agent/utils.ts` from a `322` line mixed-responsibility runtime to an `11` line public facade, extracting focused ReAct-agent detection, result-shape/serialization, shared runtime-guard, and wrapped worker-execution modules while preserving public imports, assignment selection, worker-specific checkpoint namespaces, response serialization, and wrapped error handling. The story also replaced the monolithic utility test surface with a public entrypoint plus focused detection and wrap-agent suites, absorbed the characterization-fixture follow-up for the constructor-name detection guard, and kept the explicit-`any` baseline flat at `workspace 80/289` and `patterns 2/28`.
-- `EP-09` remains open as the daily hardening stream, with `ST-09071` through `ST-09074` now queued in the ready lane after `ST-09070` merged.
+- `ST-09075` through `ST-09076` were added on 2026-06-23 as targeted follow-on hardening slices so the post-review concerns from `ST-09070` land as explicit backlog work instead of lingering as undocumented debt. These stories keep EP-09 focused on small, behavior-aware robustness improvements without pulling attention away from the current ready modularization lane.
+- `EP-09` remains open as the daily hardening stream, with `ST-09071` through `ST-09074` in the ready lane and `ST-09075` through `ST-09076` queued in backlog after `ST-09070` merged.
 - The refreshed follow-on queue now extends beyond the current Ready lane so another few weeks of small SOLID/DRY and modularization work can be pulled without re-planning the epic.
 
 ---
@@ -137,7 +138,7 @@ Recent improvement snapshot:
 
 ## Story Coverage by Epic
 
-- EP-09: ST-09001, ST-09002, ST-09003, ST-09004, ST-09005, ST-09006, ST-09007, ST-09008, ST-09009, ST-09010, ST-09011, ST-09012, ST-09013, ST-09014, ST-09015, ST-09016, ST-09017, ST-09018, ST-09019, ST-09020, ST-09021, ST-09022, ST-09023, ST-09024, ST-09025, ST-09026, ST-09027, ST-09028, ST-09029, ST-09030, ST-09031, ST-09032, ST-09033, ST-09034, ST-09035, ST-09036, ST-09037, ST-09038, ST-09039, ST-09040, ST-09041, ST-09042, ST-09043, ST-09044, ST-09045, ST-09046, ST-09047, ST-09048, ST-09049, ST-09050, ST-09051, ST-09052, ST-09053, ST-09054, ST-09055, ST-09056, ST-09057, ST-09058, ST-09059, ST-09060, ST-09061, ST-09062, ST-09063, ST-09064, ST-09065, ST-09066, ST-09067, ST-09068, ST-09069, ST-09070, ST-09071, ST-09072, ST-09073, ST-09074
+- EP-09: ST-09001, ST-09002, ST-09003, ST-09004, ST-09005, ST-09006, ST-09007, ST-09008, ST-09009, ST-09010, ST-09011, ST-09012, ST-09013, ST-09014, ST-09015, ST-09016, ST-09017, ST-09018, ST-09019, ST-09020, ST-09021, ST-09022, ST-09023, ST-09024, ST-09025, ST-09026, ST-09027, ST-09028, ST-09029, ST-09030, ST-09031, ST-09032, ST-09033, ST-09034, ST-09035, ST-09036, ST-09037, ST-09038, ST-09039, ST-09040, ST-09041, ST-09042, ST-09043, ST-09044, ST-09045, ST-09046, ST-09047, ST-09048, ST-09049, ST-09050, ST-09051, ST-09052, ST-09053, ST-09054, ST-09055, ST-09056, ST-09057, ST-09058, ST-09059, ST-09060, ST-09061, ST-09062, ST-09063, ST-09064, ST-09065, ST-09066, ST-09067, ST-09068, ST-09069, ST-09070, ST-09071, ST-09072, ST-09073, ST-09074, ST-09075, ST-09076
 
 ---
 
@@ -153,7 +154,7 @@ Recent improvement snapshot:
 
 ## Related Planning Documents
 
-- `planning/epics-and-stories.md` (EP-09 and ST-09001 through ST-09074)
+- `planning/epics-and-stories.md` (EP-09 and ST-09001 through ST-09076)
 - `planning/checklists/epic-09-story-tasks.md`
 - `planning/kanban-queue.md`
 - `scripts/no-explicit-any-baseline.json`
