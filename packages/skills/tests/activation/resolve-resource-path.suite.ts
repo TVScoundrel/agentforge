@@ -58,19 +58,21 @@ describe('resolveResourcePath', () => {
   it('blocks symlinks that escape the skill directory', () => {
     const skillRoot = createTempDir();
     const outsideDir = createTempDir();
-    const outsideFile = join(outsideDir, 'secret.txt');
-    writeFileSync(outsideFile, 'secret-data', 'utf-8');
+    try {
+      const outsideFile = join(outsideDir, 'secret.txt');
+      writeFileSync(outsideFile, 'secret-data', 'utf-8');
 
-    const symlinkPath = join(skillRoot, 'escape-link.txt');
-    symlinkSync(outsideFile, symlinkPath);
+      const symlinkPath = join(skillRoot, 'escape-link.txt');
+      symlinkSync(outsideFile, symlinkPath);
 
-    const result = resolveResourcePath(skillRoot, 'escape-link.txt');
-    expect(result.success).toBe(false);
-    if (!result.success) {
-      expect(result.error).toContain('Symlink target escapes the skill directory');
+      const result = resolveResourcePath(skillRoot, 'escape-link.txt');
+      expect(result.success).toBe(false);
+      if (!result.success) {
+        expect(result.error).toContain('Symlink target escapes the skill directory');
+      }
+    } finally {
+      rmSync(skillRoot, { recursive: true, force: true });
+      rmSync(outsideDir, { recursive: true, force: true });
     }
-
-    rmSync(skillRoot, { recursive: true, force: true });
-    rmSync(outsideDir, { recursive: true, force: true });
   });
 });
