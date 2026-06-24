@@ -2,11 +2,18 @@
 
 **Purpose:** Track completed and merged stories for the Relational Database Access Tool project.
 
-**Last Updated:** 2026-06-23
+**Last Updated:** 2026-06-24
 
 ---
 
 ## Completed Stories
+
+### ST-09071: Modularize Skill Activation Runtime and Tests
+- **Merged:** 2026-06-24
+- **PR:** https://github.com/TVScoundrel/agentforge/pull/140 (commit b78af7e2)
+- **Epic:** EP-09 (SOLID Micro-Refactors and Type Boundary Hardening)
+- **Estimate:** 4 hours
+- **Outcome:** Modularized `@agentforge/skills` activation handling by shrinking `packages/skills/src/activation.ts` from a `319` line mixed-responsibility runtime to a `46` line public facade, extracting focused activation-tool, resource-tool, path-guard, content, shared-helper, and schema modules while preserving `createActivateSkillTool`, `createReadSkillResourceTool`, `createSkillActivationTools`, `resolveResourcePath`, trust-policy decisions, emitted events, and public imports. The story also replaced the monolithic activation test surface with a public entrypoint plus focused activation-tools, activate-skill, read-skill-resource, and resolve-resource-path suites, absorbed the symlink-fixture cleanup follow-up before merge, kept the explicit-`any` baseline flat at `workspace 80/289` and `skills 0/0`, and promoted `ST-09075` plus `ST-09076` from `Backlog` to `Ready` because their `ST-09070` dependency was already merged.
 
 ### ST-09070: Modularize Multi-Agent Utilities and Tests
 - **Merged:** 2026-06-23

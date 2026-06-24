@@ -4,11 +4,11 @@
 
 ## Queue Status Summary
 
-- **Ready:** 4 stories
+- **Ready:** 5 stories
 - **In Progress:** 0 stories
-- **In Review:** 1 story
+- **In Review:** 0 stories
 - **Blocked:** 0 stories
-- **Backlog:** 2 stories
+- **Backlog:** 0 stories
 
 ---
 
@@ -17,6 +17,10 @@
 - `ST-09072` - Modularize Relational Insert Executor and Tests
 - `ST-09073` - Modularize Relational Update Executor and Tests
 - `ST-09074` - Modularize Relational Delete Executor and Tests
+- `ST-09075` - Harden ReAct Agent Detection Beyond Constructor Names
+  - Depends on: `ST-09070` (merged 2026-06-23)
+- `ST-09076` - Align Wrapped ReAct Error Assignment Selection
+  - Depends on: `ST-09070` (merged 2026-06-23)
 
 ---
 
@@ -28,7 +32,7 @@ None currently.
 
 ## In Review
 
-- `ST-09071` - Modularize Skill Activation Runtime and Tests
+None currently.
 
 ## Blocked
 
@@ -38,8 +42,7 @@ _No stories currently blocked_
 
 ## Backlog
 
-- `ST-09075` - Harden ReAct Agent Detection Beyond Constructor Names
-- `ST-09076` - Align Wrapped ReAct Error Assignment Selection
+None currently.
 
 ---
 
@@ -126,6 +129,7 @@ _No stories currently blocked_
 - Epic 10 (Documentation Only Changes) was opened on 2026-04-18 as an evergreen docs-only lane for markdown cleanup, style normalization, and future documentation maintenance stories
 - ST-10001 complete - markdown emoji usage audit merged (PR #97, 2026-05-03); ST-10002 through ST-10005 promoted to Ready as capacity became available
 - ST-10002 complete - public-facing docs emoji normalization merged (PR #100, 2026-05-04); ST-10003 remained next in Ready at that point
+- ST-09071 complete - skill activation runtime and tests modularized (merged 2026-06-24, PR #140); ST-09075 and ST-09076 promoted from Backlog to Ready because `ST-09070` was already merged
 - Complete: ST-10005 - documentation emoji guardrails added to contributor guidance (PR #104, 2026-05-05)
 - Complete: ST-10004 - example/template docs emoji normalization merged (PR #102, 2026-05-05)
 - Complete: ST-10003 - planning and internal docs emoji normalization merged (PR #101, 2026-05-04)

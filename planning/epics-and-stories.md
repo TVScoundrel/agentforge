@@ -2058,7 +2058,7 @@
 **Priority:** P2 (Medium)
 **Estimate:** 4 hours
 **Dependencies:** ST-09056
-**Status:** In Review
+**Status:** Merged (PR #140, 2026-06-24)
 
 **Acceptance criteria:**
 - [ ] `packages/skills/src/activation.ts` is reduced below the 300 line planning cutoff by extracting focused internal modules for activation-tool creation, resource path/trust-policy evaluation, and resource loading/event emission behind a stable public facade, and the extracted production modules must also stay below `300` lines unless the story documents and justifies an explicit exception.
@@ -2126,7 +2126,7 @@
 **Priority:** P2 (Medium)
 **Estimate:** 3 hours
 **Dependencies:** ST-09070 (merged)
-**Status:** Backlog
+**Status:** Ready
 
 **Acceptance criteria:**
 - [ ] `packages/patterns/src/multi-agent/utils-react-detection.ts` replaces the current constructor-name-only `CompiledGraph`/`CompiledStateGraph` gate with a more durable runtime-shape check, compatibility helper, or layered detection strategy that does not rely solely on constructor names remaining stable.
@@ -2143,7 +2143,7 @@
 **Priority:** P2 (Medium)
 **Estimate:** 2 hours
 **Dependencies:** ST-09070 (merged)
-**Status:** Backlog
+**Status:** Ready
 
 **Acceptance criteria:**
 - [ ] `packages/patterns/src/multi-agent/utils-react-wrapper.ts` aligns error-path assignment selection with the same incomplete-assignment targeting semantics used in the success path, or explicitly centralizes both branches on one shared selector.

@@ -3028,9 +3028,12 @@ Implementation notes:
 - [x] Commit completed checklist items as logical commits and push updates
   - `a3a336c9` refactor(st-09071): modularize skill activation runtime
   - `97d7e1d8` docs(st-09071): record validation and move story to in-review
+  - `7e7464f9` chore(st-09071): finalize checklist and ready status
+  - `d4634229` test(st-09071): guarantee symlink fixture cleanup
 - [x] Mark PR Ready only after all story tasks are complete
   - PR #140 is validated and ready for review after the final body refresh and draft-to-ready transition
-- [ ] Wait for merge; do not merge directly from local branch
+- [x] Wait for merge; do not merge directly from local branch
+  - Merged via PR #140 on 2026-06-24 (`b78af7e2`)
 
 ---
 
