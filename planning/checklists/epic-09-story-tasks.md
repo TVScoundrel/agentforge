@@ -3025,8 +3025,11 @@ Implementation notes:
   - `pnpm test --run` -> `212` passed, `18` skipped files; `2326` passed, `286` skipped tests
 - [x] Run lint (`pnpm lint`) before finalizing the PR and record results
   - `pnpm lint` -> exit `0`; warnings only (`0` errors)
-- [ ] Commit completed checklist items as logical commits and push updates
-- [ ] Mark PR Ready only after all story tasks are complete
+- [x] Commit completed checklist items as logical commits and push updates
+  - `a3a336c9` refactor(st-09071): modularize skill activation runtime
+  - `97d7e1d8` docs(st-09071): record validation and move story to in-review
+- [x] Mark PR Ready only after all story tasks are complete
+  - PR #140 is validated and ready for review after the final body refresh and draft-to-ready transition
 - [ ] Wait for merge; do not merge directly from local branch
 
 ---
