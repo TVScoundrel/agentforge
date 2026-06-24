@@ -3002,7 +3002,8 @@ Implementation notes:
 ### Checklist
 - [x] Create branch `refactor/st-09071-skill-activation-modularization`
   - Created as `codex/refactor/st-09071-skill-activation-modularization` (workspace branch-prefix policy)
-- [ ] Create draft PR with story ID in title
+- [x] Create draft PR with story ID in title
+  - PR #140: https://github.com/TVScoundrel/agentforge/pull/140
 - [x] Define test strategy before implementation: cover runtime modularization and test-file modularization; first failing test should prove skill activation behavior remains stable while the oversized runtime and test files are split
   - Characterization-first path selected: this story is a behavior-preserving modularization of an existing activation runtime, so a red-first structural assertion would mostly test temporary file layout rather than the stable activation API. The practical safety net is to split the public activation coverage first, run the focused public entrypoint, and then refactor the runtime behind that passing contract.
 - [x] Write or update the failing automated test before production changes when practical; if not practical, record why before implementation
@@ -3020,8 +3021,10 @@ Implementation notes:
 - [x] Add or update story documentation at `docs/st09071-skill-activation-modularization.md` (or document why not required)
 - [x] Assess residual test impact; add/update additional automated tests when needed, or document why no further tests are required
   - No additional automated coverage was required beyond the new focused activation suites; broader conformance and trust-policy behavior remains covered by the existing `packages/skills/tests/conformance.test.ts` and `packages/skills/tests/trust.test.ts` surfaces.
-- [ ] Run full test suite before finalizing the PR and record results
-- [ ] Run lint (`pnpm lint`) before finalizing the PR and record results
+- [x] Run full test suite before finalizing the PR and record results
+  - `pnpm test --run` -> `212` passed, `18` skipped files; `2326` passed, `286` skipped tests
+- [x] Run lint (`pnpm lint`) before finalizing the PR and record results
+  - `pnpm lint` -> exit `0`; warnings only (`0` errors)
 - [ ] Commit completed checklist items as logical commits and push updates
 - [ ] Mark PR Ready only after all story tasks are complete
 - [ ] Wait for merge; do not merge directly from local branch

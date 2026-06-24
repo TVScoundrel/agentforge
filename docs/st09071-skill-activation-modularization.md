@@ -63,6 +63,12 @@ No additional automated coverage was required beyond the new focused activation 
 - Explicit-`any` baseline:
   - `pnpm lint:explicit-any:baseline`
   - Passed with `80/289` warnings overall and `0/0` in `skills`; no regression introduced
+- Full test suite:
+  - `pnpm test --run`
+  - `212` passed, `18` skipped files; `2326` passed, `286` skipped tests
+- Repository lint:
+  - `pnpm lint`
+  - Passed with warnings only (`0` errors)
 
 ## CI Impact
 

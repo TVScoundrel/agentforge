@@ -22,7 +22,6 @@ import type { Tool } from '@agentforge/core';
 import type { z } from 'zod';
 import type { SkillRegistry } from './registry.js';
 import { createActivateSkillTool } from './activation-activate-tool.js';
-import { resolveResourcePath } from './activation-path.js';
 import { createReadSkillResourceTool } from './activation-resource-tool.js';
 import type { activateSkillSchema, readSkillResourceSchema } from './activation-schemas.js';
 
