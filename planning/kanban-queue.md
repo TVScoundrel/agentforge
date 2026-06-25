@@ -1,11 +1,11 @@
 # Kanban Queue: AgentForge
 
-**Last Updated:** 2026-06-24
+**Last Updated:** 2026-06-25
 
 ## Queue Status Summary
 
-- **Ready:** 5 stories
-- **In Progress:** 0 stories
+- **Ready:** 4 stories
+- **In Progress:** 1 story
 - **In Review:** 0 stories
 - **Blocked:** 0 stories
 - **Backlog:** 0 stories
@@ -14,7 +14,6 @@
 
 ## Ready
 
-- `ST-09072` - Modularize Relational Insert Executor and Tests
 - `ST-09073` - Modularize Relational Update Executor and Tests
 - `ST-09074` - Modularize Relational Delete Executor and Tests
 - `ST-09075` - Harden ReAct Agent Detection Beyond Constructor Names
@@ -26,7 +25,7 @@
 
 ## In Progress
 
-None currently.
+- `ST-09072` - Modularize Relational Insert Executor and Tests
 
 ---
 
