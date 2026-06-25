@@ -3044,7 +3044,8 @@ Implementation notes:
 ### Checklist
 - [x] Create branch `refactor/st-09072-relational-insert-executor-modularization`
   - Created as `codex/refactor/st-09072-relational-insert-executor-modularization` (workspace branch-prefix policy)
-- [ ] Create draft PR with story ID in title
+- [x] Create draft PR with story ID in title
+  - PR #141: https://github.com/TVScoundrel/agentforge/pull/141
 - [x] Define test strategy before implementation: cover runtime modularization and test-file modularization; first failing test should prove relational insert executor behavior remains stable while the oversized runtime and test files are split
   - Characterization-first path selected: this story is a behavior-preserving modularization of the existing insert executor, so a red-first structural assertion would mostly test temporary file layout rather than the stable `executeInsert(...)` contract. The practical safety net was to split the executor coverage first, keep a stable public entrypoint, and run the focused executor and insert-domain surfaces before and after the production split.
 - [x] Write or update the failing automated test before production changes when practical; if not practical, record why before implementation
