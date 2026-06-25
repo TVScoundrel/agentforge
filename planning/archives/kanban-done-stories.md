@@ -2,11 +2,18 @@
 
 **Purpose:** Track completed and merged stories for the Relational Database Access Tool project.
 
-**Last Updated:** 2026-06-24
+**Last Updated:** 2026-06-25
 
 ---
 
 ## Completed Stories
+
+### ST-09072: Modularize Relational Insert Executor and Tests
+- **Merged:** 2026-06-25
+- **PR:** https://github.com/TVScoundrel/agentforge/pull/141 (commit 8df274a7)
+- **Epic:** EP-09 (SOLID Micro-Refactors and Type Boundary Hardening)
+- **Estimate:** 4 hours
+- **Outcome:** Modularized `@agentforge/tools` relational insert execution by shrinking `packages/tools/src/data/relational/tools/relational-insert/executor.ts` from a `365` line mixed-responsibility runtime to a `91` line public facade, extracting focused shared normalization/defaulting, single-query execution, and batch orchestration modules while preserving the public `executeInsert(...)` surface, batch semantics, synthetic benchmark metadata, transaction routing, inserted-id derivation, and error handling. The story also replaced the monolithic insert-executor test body with a public entrypoint plus focused result-shaping, batch-mode, and error-handling suites, kept the explicit-`any` baseline flat at `workspace 80/289` and `tools 53/67`, and required no additional queue grooming because `ST-09073` through `ST-09076` were already dependency-ready in `Ready`.
 
 ### ST-09071: Modularize Skill Activation Runtime and Tests
 - **Merged:** 2026-06-24

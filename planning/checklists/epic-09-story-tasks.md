@@ -3073,9 +3073,11 @@ Implementation notes:
 - [x] Commit completed checklist items as logical commits and push updates
   - `bbd35ae7` refactor(st-09072): modularize insert executor
   - `ce67d27c` docs(st-09072): record validation and move story to in-review
+  - `ec47b4f1` chore(st-09072): finalize checklist and ready status
 - [x] Mark PR Ready only after all story tasks are complete
   - PR #141 is validated and ready for review after the final body refresh and draft-to-ready transition
-- [ ] Wait for merge; do not merge directly from local branch
+- [x] Wait for merge; do not merge directly from local branch
+  - Merged via PR #141 on 2026-06-25 (`8df274a7`)
 
 ---
 
