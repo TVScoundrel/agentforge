@@ -3042,22 +3042,39 @@ Implementation notes:
 **Branch:** `refactor/st-09072-relational-insert-executor-modularization`
 
 ### Checklist
-- [ ] Create branch `refactor/st-09072-relational-insert-executor-modularization`
-- [ ] Create draft PR with story ID in title
-- [ ] Define test strategy before implementation: cover runtime modularization and test-file modularization; first failing test should prove relational insert executor behavior remains stable while the oversized runtime and test files are split
-- [ ] Write or update the failing automated test before production changes when practical; if not practical, record why before implementation
-- [ ] Reduce `packages/tools/src/data/relational/tools/relational-insert/executor.ts` below the 300 line planning cutoff by extracting focused internal modules for row normalization, batch orchestration, benchmark/result shaping, and insert error helpers behind a stable facade
-- [ ] Keep extracted production modules below the 300 line planning cutoff as well; do not satisfy the story by only shrinking the public facade and moving the bulk into a new oversized helper unless an explicit exception is documented in the story notes
-- [ ] Split insert-executor coverage into focused test modules so normalization, batch, and error-path behavior no longer depends on a single oversized test surface
-- [ ] Preserve existing relational insert behavior, batch semantics, benchmark output, and public imports
-- [ ] Add/update production code until focused tests pass, keeping test evidence in checklist notes and PR body
-- [ ] Record explicit-`any` warning deltas and file-size/responsibility improvements for touched insert-executor modules in story docs
-- [ ] Add or update story documentation at `docs/st09072-relational-insert-executor-modularization.md` (or document why not required)
-- [ ] Assess residual test impact; add/update additional automated tests when needed, or document why no further tests are required
-- [ ] Run full test suite before finalizing the PR and record results
-- [ ] Run lint (`pnpm lint`) before finalizing the PR and record results
-- [ ] Commit completed checklist items as logical commits and push updates
-- [ ] Mark PR Ready only after all story tasks are complete
+- [x] Create branch `refactor/st-09072-relational-insert-executor-modularization`
+  - Created as `codex/refactor/st-09072-relational-insert-executor-modularization` (workspace branch-prefix policy)
+- [x] Create draft PR with story ID in title
+  - PR #141: https://github.com/TVScoundrel/agentforge/pull/141
+- [x] Define test strategy before implementation: cover runtime modularization and test-file modularization; first failing test should prove relational insert executor behavior remains stable while the oversized runtime and test files are split
+  - Characterization-first path selected: this story is a behavior-preserving modularization of the existing insert executor, so a red-first structural assertion would mostly test temporary file layout rather than the stable `executeInsert(...)` contract. The practical safety net was to split the executor coverage first, keep a stable public entrypoint, and run the focused executor and insert-domain surfaces before and after the production split.
+- [x] Write or update the failing automated test before production changes when practical; if not practical, record why before implementation
+  - A failing test was not practical for this structural refactor because the intended behavior stays unchanged and the value lies in smaller boundaries, not a new observable branch. Instead, the monolithic executor test was replaced first with a public entrypoint plus focused result-shaping, batch-mode, and error-handling suites, then that focused surface was executed as the characterization safety net before and after the runtime split.
+- [x] Reduce `packages/tools/src/data/relational/tools/relational-insert/executor.ts` below the 300 line planning cutoff by extracting focused internal modules for row normalization, batch orchestration, benchmark/result shaping, and insert error helpers behind a stable facade
+- [x] Keep extracted production modules below the 300 line planning cutoff as well; do not satisfy the story by only shrinking the public facade and moving the bulk into a new oversized helper unless an explicit exception is documented in the story notes
+  - File sizes: `executor.ts 365 -> 91`, `executor-shared.ts 133`, `executor-single.ts 80`, `executor-batch.ts 90`
+- [x] Split insert-executor coverage into focused test modules so normalization, batch, and error-path behavior no longer depends on a single oversized test surface
+  - Test split: `insert-executor.test.ts 285 -> 7`, plus `result-shaping.suite.ts 131`, `batch-mode.suite.ts 67`, `error-handling.suite.ts 72`, and `shared.ts 11`
+- [x] Preserve existing relational insert behavior, batch semantics, benchmark output, and public imports
+- [x] Add/update production code until focused tests pass, keeping test evidence in checklist notes and PR body
+  - `pnpm test --run packages/tools/tests/data/relational/tools/insert-executor.test.ts` -> `17` passed
+  - `pnpm test --run packages/tools/tests/data/relational/relational-insert/index.test.ts` -> `13` passed, `13` skipped
+  - `pnpm test --run packages/tools/tests/data/relational/tools/insert-tool.test.ts` -> `5` passed
+  - `pnpm --filter @agentforge/tools typecheck` -> passed
+- [x] Record explicit-`any` warning deltas and file-size/responsibility improvements for touched insert-executor modules in story docs
+  - Recorded in `docs/st09072-relational-insert-executor-modularization.md`; `pnpm lint:explicit-any:baseline` passed at `80/289` overall and `tools 53/67` with no regression
+- [x] Add or update story documentation at `docs/st09072-relational-insert-executor-modularization.md` (or document why not required)
+- [x] Assess residual test impact; add/update additional automated tests when needed, or document why no further tests are required
+  - No additional automated coverage was required beyond the focused executor suites and existing insert-domain entrypoints because result shaping, batch defaults, transaction routing, tool wiring, schema validation, and SQLite invocation coverage remain exercised by the combined focused and public test surfaces.
+- [x] Run full test suite before finalizing the PR and record results
+  - `pnpm test --run` -> `212` passed, `18` skipped files; `2326` passed, `286` skipped tests
+- [x] Run lint (`pnpm lint`) before finalizing the PR and record results
+  - `pnpm lint` -> exit `0`; warnings only (`0` errors)
+- [x] Commit completed checklist items as logical commits and push updates
+  - `bbd35ae7` refactor(st-09072): modularize insert executor
+  - `ce67d27c` docs(st-09072): record validation and move story to in-review
+- [x] Mark PR Ready only after all story tasks are complete
+  - PR #141 is validated and ready for review after the final body refresh and draft-to-ready transition
 - [ ] Wait for merge; do not merge directly from local branch
 
 ---
