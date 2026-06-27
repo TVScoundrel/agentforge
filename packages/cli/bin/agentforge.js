@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+/* global console, process */
 
 import('../dist/index.js')
   .then((module) => module.run())
@@ -6,4 +7,3 @@ import('../dist/index.js')
     console.error('Error running AgentForge CLI:', error);
     process.exit(1);
   });
-
