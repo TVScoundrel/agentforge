@@ -3087,7 +3087,8 @@ Implementation notes:
 
 ### Checklist
 - [x] Create branch `refactor/st-09073-relational-update-executor-modularization`
-- [ ] Create draft PR with story ID in title
+- [x] Create draft PR with story ID in title
+  - PR #142: https://github.com/TVScoundrel/agentforge/pull/142
 - [x] Define test strategy before implementation: cover runtime modularization and test-file modularization; first failing test should prove relational update executor behavior remains stable while the oversized runtime and test files are split
   - Characterization-first path selected on 2026-06-27: this story is behavior-preserving modularization, so a red-first test would mostly assert temporary file layout rather than a stable public contract. The practical safety net is to split the existing public update-executor coverage into focused suites first, then refactor the runtime behind the unchanged `executeUpdate(...)` entrypoint and re-run focused plus story-required validation.
 - [x] Write or update the failing automated test before production changes when practical; if not practical, record why before implementation
@@ -3114,8 +3115,11 @@ Implementation notes:
   - `./node_modules/.bin/vitest run` -> `212` passed | `18` skipped files; `2326` passed | `286` skipped tests
 - [x] Run lint (`pnpm lint`) before finalizing the PR and record results
   - Package-local equivalent of `pnpm -r lint` run directly via `./node_modules/.bin/eslint .` in each workspace package -> warnings only after clearing the pre-existing `packages/cli/bin/agentforge.js` `no-undef` errors
-- [ ] Commit completed checklist items as logical commits and push updates
-- [ ] Mark PR Ready only after all story tasks are complete
+- [x] Commit completed checklist items as logical commits and push updates
+  - `c35e1c8b` refactor(st-09073): modularize update executor
+  - `22122ac0` docs(st-09073): record modularization validation
+- [x] Mark PR Ready only after all story tasks are complete
+  - PR #142 will be promoted from draft after this final tracker-sync commit and body refresh
 - [ ] Wait for merge; do not merge directly from local branch
 
 ---
