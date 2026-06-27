@@ -2,11 +2,18 @@
 
 **Purpose:** Track completed and merged stories for the Relational Database Access Tool project.
 
-**Last Updated:** 2026-06-25
+**Last Updated:** 2026-06-27
 
 ---
 
 ## Completed Stories
+
+### ST-09073: Modularize Relational Update Executor and Tests
+- **Merged:** 2026-06-27
+- **PR:** https://github.com/TVScoundrel/agentforge/pull/142 (commit 9aa32e8c)
+- **Epic:** EP-09 (SOLID Micro-Refactors and Type Boundary Hardening)
+- **Estimate:** 4 hours
+- **Outcome:** Modularized `@agentforge/tools` relational update execution by shrinking `packages/tools/src/data/relational/tools/relational-update/executor.ts` from a `319` line mixed-responsibility runtime to a `92` line public facade, extracting focused shared normalization/defaulting, single-query execution, and batch orchestration modules while preserving the public `executeUpdate(...)` surface, batch semantics, optimistic-lock behavior, synthetic benchmark metadata, transaction routing, and error handling. The story also replaced the monolithic update-executor test body with a public entrypoint plus focused result-shaping, batch-mode, and error-handling suites, kept the explicit-`any` baseline flat at `workspace 80/289` and `tools 53/67`, and advanced the ready lane to `ST-09074` because no additional dependency grooming was required.
 
 ### ST-09072: Modularize Relational Insert Executor and Tests
 - **Merged:** 2026-06-25

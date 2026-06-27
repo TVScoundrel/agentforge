@@ -3120,7 +3120,8 @@ Implementation notes:
   - `22122ac0` docs(st-09073): record modularization validation
 - [x] Mark PR Ready only after all story tasks are complete
   - PR #142 will be promoted from draft after this final tracker-sync commit and body refresh
-- [ ] Wait for merge; do not merge directly from local branch
+- [x] Wait for merge; do not merge directly from local branch
+  - Merged via PR #142 on 2026-06-27
 
 ---
 

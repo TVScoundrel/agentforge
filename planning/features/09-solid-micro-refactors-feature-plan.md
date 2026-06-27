@@ -3,7 +3,7 @@
 **Epic Range:** EP-09 through EP-09
 **Status:** In Progress
 **Last Updated:** 2026-06-27
-**Active Story:** ST-09073 - Modularize Relational Update Executor and Tests (In Review)
+**Active Story:** ST-09074 - Modularize Relational Delete Executor and Tests (Ready)
 
 ---
 
@@ -115,8 +115,9 @@ Recent improvement snapshot:
 - `ST-09070` merged on 2026-06-23 after shrinking `packages/patterns/src/multi-agent/utils.ts` from a `322` line mixed-responsibility runtime to an `11` line public facade, extracting focused ReAct-agent detection, result-shape/serialization, shared runtime-guard, and wrapped worker-execution modules while preserving public imports, assignment selection, worker-specific checkpoint namespaces, response serialization, and wrapped error handling. The story also replaced the monolithic utility test surface with a public entrypoint plus focused detection and wrap-agent suites, absorbed the characterization-fixture follow-up for the constructor-name detection guard, and kept the explicit-`any` baseline flat at `workspace 80/289` and `patterns 2/28`.
 - `ST-09071` merged on 2026-06-24 after shrinking `packages/skills/src/activation.ts` from a `319` line mixed-responsibility runtime to a `46` line public facade, extracting focused activation-tool, resource-tool, path-guard, content, shared-helper, and schema modules while preserving the public activation API, trust-policy decisions, emitted events, and imports. The story also replaced the monolithic activation test surface with focused activation-tools, activate-skill, read-skill-resource, and resolve-resource-path suites, absorbed the symlink-fixture cleanup follow-up before merge, and kept the explicit-`any` baseline flat at `workspace 80/289` and `skills 0/0`.
 - `ST-09072` merged on 2026-06-25 after shrinking `packages/tools/src/data/relational/tools/relational-insert/executor.ts` from `365` lines to a `91` line public facade, extracting focused shared normalization/defaulting, single-query execution, and batch orchestration helpers while preserving `executeInsert(...)`, batch semantics, benchmark metadata, transaction routing, inserted-id derivation, and error handling. The story also replaced the monolithic insert-executor test body with focused result-shaping, batch-mode, and error-handling suites and kept the explicit-`any` baseline flat at `workspace 80/289` and `tools 53/67`.
+- `ST-09073` merged on 2026-06-27 after shrinking `packages/tools/src/data/relational/tools/relational-update/executor.ts` from a `319` line mixed-responsibility runtime to a `92` line public facade, extracting focused shared normalization/defaulting, single-query execution, and batch orchestration helpers while preserving `executeUpdate(...)`, batch semantics, optimistic-lock behavior, benchmark metadata, transaction routing, and error handling. The story also replaced the monolithic update-executor test body with focused result-shaping, batch-mode, and error-handling suites, kept the explicit-`any` baseline flat at `workspace 80/289` and `tools 53/67`, and advanced the ready lane to `ST-09074`.
 - `ST-09075` through `ST-09076` were added on 2026-06-23 as targeted follow-on hardening slices so the post-review concerns from `ST-09070` land as explicit backlog work instead of lingering as undocumented debt. These stories keep EP-09 focused on small, behavior-aware robustness improvements without pulling attention away from the current ready modularization lane.
-- `EP-09` remains open as the daily hardening stream, with `ST-09073` through `ST-09076` now in the ready lane after `ST-09072` merged.
+- `EP-09` remains open as the daily hardening stream, with `ST-09074` through `ST-09076` now in the ready lane after `ST-09073` merged.
 - The refreshed follow-on queue now extends beyond the current Ready lane so another few weeks of small SOLID/DRY and modularization work can be pulled without re-planning the epic.
 
 ---
