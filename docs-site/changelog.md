@@ -5,6 +5,34 @@ All notable changes to AgentForge will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.16.61] - 2026-06-28
+
+### Added
+
+#### @agentforge/tools - Relational Delete Executor Modularization Coverage
+- Added focused relational delete executor coverage in `packages/tools/tests/data/relational/tools/delete-executor/result-shaping.suite.ts`, `batch-mode.suite.ts`, and `error-handling.suite.ts` behind the stable `packages/tools/tests/data/relational/tools/delete-executor.test.ts` public entrypoint
+- Added story documentation in `docs/st09074-relational-delete-executor-modularization.md` capturing the executor split, validation evidence, and no-regression explicit-`any` outcome
+
+### Changed
+
+#### @agentforge/tools - Relational Delete Executor Runtime Modularization
+- Split `packages/tools/src/data/relational/tools/relational-delete/executor.ts` into a smaller stable facade with focused `executor-shared.ts`, `executor-single.ts`, and `executor-batch.ts` helper modules
+- Preserved the public `executeDelete(...)` surface, soft-delete behavior, batch semantics, transaction-context routing, foreign-key cascade hinting, and synthetic benchmark metadata while reducing maintenance pressure on the old monolithic runtime and test file
+
+### Fixed
+
+#### @agentforge/tools - Relational Delete Executor Review Follow-Ups
+- Kept the focused executor extraction aligned with the stable delete-tool and relational-index surfaces while preserving the explicit-`any` baseline at `workspace 80/289` and `tools 53/67`
+
+### Published
+- All packages published to npm registry at version 0.16.61:
+  - @agentforge/core@0.16.61
+  - @agentforge/skills@0.16.61
+  - @agentforge/patterns@0.16.61
+  - @agentforge/tools@0.16.61
+  - @agentforge/testing@0.16.61
+  - @agentforge/cli@0.16.61
+
 ## [0.16.60] - 2026-06-27
 
 ### Added
