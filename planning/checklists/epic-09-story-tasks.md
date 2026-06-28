@@ -3130,20 +3130,33 @@ Implementation notes:
 **Branch:** `refactor/st-09074-relational-delete-executor-modularization`
 
 ### Checklist
-- [ ] Create branch `refactor/st-09074-relational-delete-executor-modularization`
+- [x] Create branch `refactor/st-09074-relational-delete-executor-modularization`
 - [ ] Create draft PR with story ID in title
-- [ ] Define test strategy before implementation: cover runtime modularization and test-file modularization; first failing test should prove relational delete executor behavior remains stable while the oversized runtime and test files are split
-- [ ] Write or update the failing automated test before production changes when practical; if not practical, record why before implementation
-- [ ] Reduce `packages/tools/src/data/relational/tools/relational-delete/executor.ts` below the 300 line planning cutoff by extracting focused internal modules for condition normalization, batch orchestration, benchmark/result shaping, and delete error helpers behind a stable facade
-- [ ] Keep extracted production modules below the 300 line planning cutoff as well; do not satisfy the story by only shrinking the public facade and moving the bulk into a new oversized helper unless an explicit exception is documented in the story notes
-- [ ] Split delete-executor coverage into focused test modules so normalization, batch, and error-path behavior no longer depends on a single oversized test surface
-- [ ] Preserve existing relational delete behavior, batch semantics, benchmark output, and public imports
-- [ ] Add/update production code until focused tests pass, keeping test evidence in checklist notes and PR body
-- [ ] Record explicit-`any` warning deltas and file-size/responsibility improvements for touched delete-executor modules in story docs
-- [ ] Add or update story documentation at `docs/st09074-relational-delete-executor-modularization.md` (or document why not required)
-- [ ] Assess residual test impact; add/update additional automated tests when needed, or document why no further tests are required
-- [ ] Run full test suite before finalizing the PR and record results
-- [ ] Run lint (`pnpm lint`) before finalizing the PR and record results
+- [x] Define test strategy before implementation: cover runtime modularization and test-file modularization; first failing test should prove relational delete executor behavior remains stable while the oversized runtime and test files are split
+  - Characterization-first path selected on 2026-06-28: this story is behavior-preserving modularization, so a red-first test would mostly assert temporary file layout rather than a stable public contract. The practical safety net is to split the existing public delete-executor coverage into focused suites first, then refactor the runtime behind the unchanged `executeDelete(...)` entrypoint and re-run focused plus story-required validation.
+- [x] Write or update the failing automated test before production changes when practical; if not practical, record why before implementation
+  - No intentional failing test added before production changes because the stable contract is already characterized by the public delete-executor assertions; the first production-adjacent change will be test-surface modularization that preserves those assertions while making the suite structure match the extracted runtime responsibilities.
+- [x] Reduce `packages/tools/src/data/relational/tools/relational-delete/executor.ts` below the 300 line planning cutoff by extracting focused internal modules for condition normalization, batch orchestration, benchmark/result shaping, and delete error helpers behind a stable facade
+  - `executor.ts` is now `97` lines with focused `executor-shared.ts` (`88`), `executor-single.ts` (`33`), and `executor-batch.ts` (`144`) helpers
+- [x] Keep extracted production modules below the 300 line planning cutoff as well; do not satisfy the story by only shrinking the public facade and moving the bulk into a new oversized helper unless an explicit exception is documented in the story notes
+  - All extracted runtime modules remain below the `300` line cutoff; no exception required
+- [x] Split delete-executor coverage into focused test modules so normalization, batch, and error-path behavior no longer depends on a single oversized test surface
+  - Replaced the monolithic test body with `result-shaping.suite.ts`, `batch-mode.suite.ts`, `error-handling.suite.ts`, plus a shared helper behind the stable `delete-executor.test.ts` entrypoint
+- [x] Preserve existing relational delete behavior, batch semantics, benchmark output, and public imports
+  - Verified through focused executor coverage plus the public relational-delete and delete-tool suites
+- [x] Add/update production code until focused tests pass, keeping test evidence in checklist notes and PR body
+  - `./node_modules/.bin/vitest run packages/tools/tests/data/relational/tools/delete-executor.test.ts` -> `15` passed
+  - `./node_modules/.bin/vitest run packages/tools/tests/data/relational/relational-delete/index.test.ts packages/tools/tests/data/relational/tools/delete-tool.test.ts` -> `33` passed, `10` skipped
+  - `./node_modules/.bin/tsc --noEmit -p packages/tools/tsconfig.json` -> passed
+- [x] Record explicit-`any` warning deltas and file-size/responsibility improvements for touched delete-executor modules in story docs
+  - Recorded in `docs/st09074-relational-delete-executor-modularization.md`; direct source-target baseline check remains within caps at `total 10/289`, `tools 0/67`
+- [x] Add or update story documentation at `docs/st09074-relational-delete-executor-modularization.md` (or document why not required)
+- [x] Assess residual test impact; add/update additional automated tests when needed, or document why no further tests are required
+  - The modularized executor surface is covered by focused result-shaping, batch-mode, and error-handling suites, with public relational-delete and tool-boundary tests re-run to confirm no further targeted coverage was needed
+- [x] Run full test suite before finalizing the PR and record results
+  - `./node_modules/.bin/vitest run` -> first run hit one unrelated flaky miss in `packages/tools/tests/data/relational/transaction-timeout-and-savepoint.test.ts`; isolated rerun passed (`2` passed), and second full rerun passed cleanly with `212` passed | `18` skipped files and `2326` passed | `286` skipped tests
+- [x] Run lint (`pnpm lint`) before finalizing the PR and record results
+  - Package-local equivalent of `pnpm -r lint` run directly via each package's `lint` script -> warnings only (`0` errors); the repo's `pnpm` preflight hook still blocks wrapped lint/baseline execution before `pnpm exec eslint` runs
 - [ ] Commit completed checklist items as logical commits and push updates
 - [ ] Mark PR Ready only after all story tasks are complete
 - [ ] Wait for merge; do not merge directly from local branch

@@ -2109,7 +2109,7 @@
 **Priority:** P2 (Medium)
 **Estimate:** 4 hours
 **Dependencies:** ST-09067
-**Status:** Ready
+**Status:** In Progress
 
 **Acceptance criteria:**
 - [ ] `packages/tools/src/data/relational/tools/relational-delete/executor.ts` is reduced below the 300 line planning cutoff by extracting focused internal modules for condition normalization, batch orchestration, benchmark/result shaping, and delete error helpers behind a stable public facade, and the extracted production modules must also stay below `300` lines unless the story documents and justifies an explicit exception.
