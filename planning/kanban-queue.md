@@ -4,9 +4,9 @@
 
 ## Queue Status Summary
 
-- **Ready:** 3 stories
+- **Ready:** 2 stories
 - **In Progress:** 0 stories
-- **In Review:** 0 stories
+- **In Review:** 1 story
 - **Blocked:** 0 stories
 - **Backlog:** 0 stories
 
@@ -14,8 +14,6 @@
 
 ## Ready
 
-- `ST-09077` - Stabilize Release-Time pnpm Validation Path
-  - Depends on: None
 - `ST-09075` - Harden ReAct Agent Detection Beyond Constructor Names
   - Depends on: `ST-09070` (merged 2026-06-23)
 - `ST-09076` - Align Wrapped ReAct Error Assignment Selection
@@ -31,7 +29,8 @@ None currently.
 
 ## In Review
 
-None currently.
+- `ST-09077` - Stabilize Release-Time pnpm Validation Path
+  - Depends on: None
 
 ## Blocked
 

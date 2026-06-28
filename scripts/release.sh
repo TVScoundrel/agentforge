@@ -6,7 +6,7 @@
 # FULL RELEASE PROCESS (see .ai/RELEASE_PROCESS.md):
 # 1. Run this script: ./scripts/release.sh X.Y.Z
 # 2. Update docs-site/changelog.md with release notes (IMPORTANT!)
-# 3. Build and test: pnpm build && pnpm test
+# 3. Build and test: pnpm release:validate
 # 4. Review changes: git diff
 # 5. Commit: git add . && git commit -m "chore: Bump version to X.Y.Z"
 # 6. Tag: git tag -a vX.Y.Z -m "Release vX.Y.Z"
@@ -159,8 +159,7 @@ print_success "All version files updated to $NEW_VERSION"
 echo ""
 print_warning "IMPORTANT: You still need to:"
 echo "  1. Update docs-site/changelog.md with release notes"
-echo "  2. Run 'pnpm build' to rebuild all packages"
-echo "  3. Run 'pnpm test' to verify all tests pass"
+echo "  2. Run 'pnpm release:validate' to verify build approvals, rebuild packages, and run tests"
 echo "  4. Review all changes with 'git diff'"
 echo "  5. Commit changes: git add . && git commit -m 'chore: Bump version to $NEW_VERSION'"
 echo "  6. Create tag: git tag -a v$NEW_VERSION -m 'Release v$NEW_VERSION'"

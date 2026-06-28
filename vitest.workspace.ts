@@ -7,6 +7,15 @@ import { defineWorkspace } from 'vitest/config';
  * Each package extends the base configuration with package-specific overrides.
  */
 export default defineWorkspace([
+  // Repo-level maintenance scripts
+  {
+    extends: './vitest.config.ts',
+    test: {
+      name: 'repo',
+      include: ['scripts/tests/**/*.test.ts'],
+    },
+  },
+
   // Core package - uses root config
   // Tests are in both tests/ and src/**/__tests__/
   {
@@ -77,4 +86,3 @@ export default defineWorkspace([
     },
   },
 ]);
-
