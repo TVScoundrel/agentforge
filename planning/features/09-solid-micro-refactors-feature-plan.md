@@ -3,7 +3,7 @@
 **Epic Range:** EP-09 through EP-09
 **Status:** In Progress
 **Last Updated:** 2026-06-28
-**Active Story:** ST-09075 - Harden ReAct Agent Detection Beyond Constructor Names (Ready)
+**Active Story:** ST-09075 - Harden ReAct Agent Detection Beyond Constructor Names (In Progress)
 
 ---
 

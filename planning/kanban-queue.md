@@ -4,8 +4,8 @@
 
 ## Queue Status Summary
 
-- **Ready:** 2 stories
-- **In Progress:** 0 stories
+- **Ready:** 1 story
+- **In Progress:** 1 story
 - **In Review:** 0 stories
 - **Blocked:** 0 stories
 - **Backlog:** 0 stories
@@ -14,8 +14,6 @@
 
 ## Ready
 
-- `ST-09075` - Harden ReAct Agent Detection Beyond Constructor Names
-  - Depends on: `ST-09070` (merged 2026-06-23)
 - `ST-09076` - Align Wrapped ReAct Error Assignment Selection
   - Depends on: `ST-09070` (merged 2026-06-23)
 
@@ -23,7 +21,8 @@
 
 ## In Progress
 
-None currently.
+- `ST-09075` - Harden ReAct Agent Detection Beyond Constructor Names
+  - Depends on: `ST-09070` (merged 2026-06-23)
 
 ---
 
