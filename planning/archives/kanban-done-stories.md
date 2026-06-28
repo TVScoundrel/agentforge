@@ -2,11 +2,18 @@
 
 **Purpose:** Track completed and merged stories for the Relational Database Access Tool project.
 
-**Last Updated:** 2026-06-27
+**Last Updated:** 2026-06-28
 
 ---
 
 ## Completed Stories
+
+### ST-09074: Modularize Relational Delete Executor and Tests
+- **Merged:** 2026-06-28
+- **PR:** https://github.com/TVScoundrel/agentforge/pull/143 (commit 2b6dab8a)
+- **Epic:** EP-09 (SOLID Micro-Refactors and Type Boundary Hardening)
+- **Estimate:** 4 hours
+- **Outcome:** Modularized `@agentforge/tools` relational delete execution by shrinking `packages/tools/src/data/relational/tools/relational-delete/executor.ts` from a `324` line mixed-responsibility runtime to a `97` line public facade, extracting focused shared normalization/defaulting, single-query execution, and batch orchestration modules while preserving the public `executeDelete(...)` surface, soft-delete semantics, synthetic benchmark metadata, transaction routing, and error handling. The story also replaced the monolithic delete-executor test body with a public entrypoint plus focused result-shaping, batch-mode, and error-handling suites, corrected the review-raised explicit-`any` evidence to the comparable `workspace 80/289` and `tools 53/67` baseline, and left `ST-09075` plus `ST-09076` as the next dependency-ready ready-lane stories.
 
 ### ST-09073: Modularize Relational Update Executor and Tests
 - **Merged:** 2026-06-27

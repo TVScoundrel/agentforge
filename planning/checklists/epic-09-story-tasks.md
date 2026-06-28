@@ -3163,7 +3163,8 @@ Implementation notes:
   - `bc7e8677` docs(st-09074): record validation and move story to in-review
 - [x] Mark PR Ready only after all story tasks are complete
   - PR #143 will be marked ready after this final checklist-sync commit is pushed
-- [ ] Wait for merge; do not merge directly from local branch
+- [x] Wait for merge; do not merge directly from local branch
+  - Merged via PR #143 on 2026-06-28 (`2b6dab8a`)
 
 ---
 
