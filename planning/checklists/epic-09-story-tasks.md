@@ -3221,20 +3221,30 @@ Implementation notes:
 **Branch:** `refactor/st-09077-release-pnpm-validation-stability`
 
 ### Checklist
-- [ ] Create branch `refactor/st-09077-release-pnpm-validation-stability`
+- [x] Create branch `refactor/st-09077-release-pnpm-validation-stability`
 - [ ] Create draft PR with story ID in title
-- [ ] Define test strategy before implementation: cover the documented release validation path and prove `pnpm build` plus `pnpm test` can run in the intended maintainer environment without manual fallback to ad hoc direct commands
-- [ ] Reproduce and document the current failure mode in checklist notes and story docs, including the `pnpm install`/policy preflight that interrupts release-time validation before the actual build/test runs
-- [ ] Update the release/build workflow so the canonical maintainer path is stable and explicit, which may include repo configuration, approval/policy documentation, or release-script preflight checks, but must avoid silently drifting away from `RELEASE_PROCESS`
-- [ ] Preserve existing package publish order, smoke-test coverage, and signed/tagged release steps while removing the need to improvise direct `tsup`/`vitest` fallbacks during normal patch releases
-- [ ] Add/update automation or documentation so future failures stop with an actionable explanation instead of a misleading mid-release `pnpm` wrapper error
-- [ ] Add/update focused validation coverage or script-level checks when practical; if automation is not practical, document the reason and the exact manual guardrail added instead
-- [ ] Add/update production/docs/configuration until the stabilized release path passes, keeping evidence in checklist notes and PR body
-- [ ] Record the release-process compatibility rationale and any environment assumptions in story docs
-- [ ] Add or update story documentation at `docs/st09077-release-pnpm-validation-stability.md` (or document why not required)
-- [ ] Assess residual test impact; add/update additional automated tests when needed, or document why no further tests are required
-- [ ] Run the canonical release validation commands before finalizing the PR and record results
-- [ ] Run lint (`pnpm lint`) before finalizing the PR and record results
+- [x] Define test strategy before implementation: cover the documented release validation path and prove `pnpm build` plus `pnpm test` can run in the intended maintainer environment without manual fallback to ad hoc direct commands
+  - Used a targeted red-first script test for the new approval guard, then reran the full canonical release validation path after the config/script changes landed.
+- [x] Reproduce and document the current failure mode in checklist notes and story docs, including the `pnpm install`/policy preflight that interrupts release-time validation before the actual build/test runs
+  - Reproduced `ERR_PNPM_META_FETCH_FAIL` and `ERR_PNPM_ABORTED_REMOVE_MODULES_DIR_NO_TTY` in the sandboxed path, then `ERR_PNPM_IGNORED_BUILDS` on the real maintainer path until build approvals were committed.
+- [x] Update the release/build workflow so the canonical maintainer path is stable and explicit, which may include repo configuration, approval/policy documentation, or release-script preflight checks, but must avoid silently drifting away from `RELEASE_PROCESS`
+  - Added committed `allowBuilds`, `scripts/check-pnpm-build-approvals.mjs`, and `pnpm release:validate`, while keeping the underlying `pnpm build` and `pnpm test` flow intact.
+- [x] Preserve existing package publish order, smoke-test coverage, and signed/tagged release steps while removing the need to improvise direct `tsup`/`vitest` fallbacks during normal patch releases
+  - Only the validation step changed; publish order and the rest of `RELEASE_PROCESS` remain unchanged.
+- [x] Add/update automation or documentation so future failures stop with an actionable explanation instead of a misleading mid-release `pnpm` wrapper error
+  - Added the approval-check script and updated `.ai/RELEASE_PROCESS.md`, `scripts/release.sh`, and `README.md`.
+- [x] Add/update focused validation coverage or script-level checks when practical; if automation is not practical, document the reason and the exact manual guardrail added instead
+  - Added `scripts/tests/pnpm-build-approvals.test.ts` and a repo-level Vitest workspace target for script tests.
+- [x] Add/update production/docs/configuration until the stabilized release path passes, keeping evidence in checklist notes and PR body
+  - Updated `package.json`, `pnpm-workspace.yaml`, `vitest.workspace.ts`, `.ai/RELEASE_PROCESS.md`, `scripts/release.sh`, and `README.md`.
+- [x] Record the release-process compatibility rationale and any environment assumptions in story docs
+- [x] Add or update story documentation at `docs/st09077-release-pnpm-validation-stability.md` (or document why not required)
+- [x] Assess residual test impact; add/update additional automated tests when needed, or document why no further tests are required
+  - Added focused repo-level coverage for the new guard and relied on `pnpm release:validate` plus `pnpm lint:ci` for end-to-end validation.
+- [x] Run the canonical release validation commands before finalizing the PR and record results
+  - `pnpm release:validate` -> `222` passed, `9` skipped files; `2505` passed, `110` skipped tests
+- [x] Run lint (`pnpm lint`) before finalizing the PR and record results
+  - `pnpm lint:ci` -> passed with warnings only; explicit-`any` baseline held at `workspace 80/289`, `tools 53/67`
 - [ ] Commit completed checklist items as logical commits and push updates
 - [ ] Mark PR Ready only after all story tasks are complete
 - [ ] Wait for merge; do not merge directly from local branch

@@ -411,7 +411,7 @@ For maintainers releasing new versions:
 
 2. **Manual Steps** (see [release process guide](./.ai/RELEASE_PROCESS.md)):
    - Update `docs-site/changelog.md` with release notes
-   - Run `pnpm build` and `pnpm test`
+   - Run `pnpm release:validate`
    - Review changes with `git diff`
    - Commit: `git add . && git commit -S -m "chore: Bump version to X.Y.Z"`
    - Tag: `git tag -a vX.Y.Z -m "Release vX.Y.Z"`
