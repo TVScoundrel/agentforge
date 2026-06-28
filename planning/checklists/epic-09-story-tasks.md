@@ -3160,7 +3160,9 @@ Implementation notes:
   - Package-local equivalent of `pnpm -r lint` run directly via each package's `lint` script -> warnings only (`0` errors); the repo's `pnpm` preflight hook still blocks wrapped lint/baseline execution before `pnpm exec eslint` runs
 - [x] Commit completed checklist items as logical commits and push updates
   - `2672f055` refactor(st-09074): modularize delete executor
-- [ ] Mark PR Ready only after all story tasks are complete
+  - `bc7e8677` docs(st-09074): record validation and move story to in-review
+- [x] Mark PR Ready only after all story tasks are complete
+  - PR #143 will be marked ready after this final checklist-sync commit is pushed
 - [ ] Wait for merge; do not merge directly from local branch
 
 ---
