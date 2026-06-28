@@ -3246,6 +3246,9 @@ Implementation notes:
   - `pnpm release:validate` -> `222` passed, `9` skipped files; `2505` passed, `110` skipped tests
 - [x] Run lint (`pnpm lint`) before finalizing the PR and record results
   - `pnpm lint:ci` -> passed with warnings only; explicit-`any` baseline held at `workspace 80/289`, `tools 53/67`
-- [ ] Commit completed checklist items as logical commits and push updates
-- [ ] Mark PR Ready only after all story tasks are complete
+- [x] Commit completed checklist items as logical commits and push updates
+  - `b018d2d9` `chore(st-09077): stabilize release validation path`
+  - `68117240` `docs(st-09077): record validation and move story to in-review`
+- [x] Mark PR Ready only after all story tasks are complete
+  - PR #144 marked ready: https://github.com/TVScoundrel/agentforge/pull/144
 - [ ] Wait for merge; do not merge directly from local branch
