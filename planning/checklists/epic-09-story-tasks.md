@@ -3174,7 +3174,8 @@ Implementation notes:
 
 ### Checklist
 - [x] Create branch `refactor/st-09075-react-agent-detection-hardening`
-- [ ] Create draft PR with story ID in title
+- [x] Create draft PR with story ID in title
+  - PR #145: https://github.com/TVScoundrel/agentforge/pull/145
 - [x] Define test strategy before implementation: cover the public `isReActAgent(...)` contract and prove the replacement detection path no longer depends solely on constructor names remaining stable
   - Selected a focused red-first regression path because the public contract is small and directly testable: mask a real compiled ReAct agent's constructor name, prove detection should still succeed, then harden the runtime guard behind the unchanged public API.
 - [x] Write or update the failing automated test before production changes when practical; if not practical, record why before implementation
@@ -3198,7 +3199,8 @@ Implementation notes:
   - `pnpm test --run` -> passed with `222` files passed, `9` skipped; `2506` tests passed, `110` skipped
 - [x] Run lint (`pnpm lint`) before finalizing the PR and record results
   - `pnpm lint` -> passed with existing warning-only baseline; touched `patterns` package remained warning-only and the explicit-`any` baseline still held at `workspace 80/289`, `patterns 2/28`
-- [ ] Commit completed checklist items as logical commits and push updates
+- [x] Commit completed checklist items as logical commits and push updates
+  - Commit `5cd72ba9` (`refactor(st-09075): harden react agent detection`) pushed to `origin/refactor/st-09075-react-agent-detection-hardening`
 - [ ] Mark PR Ready only after all story tasks are complete
 - [ ] Wait for merge; do not merge directly from local branch
 
