@@ -3150,7 +3150,7 @@ Implementation notes:
   - `./node_modules/.bin/vitest run packages/tools/tests/data/relational/relational-delete/index.test.ts packages/tools/tests/data/relational/tools/delete-tool.test.ts` -> `33` passed, `10` skipped
   - `./node_modules/.bin/tsc --noEmit -p packages/tools/tsconfig.json` -> passed
 - [x] Record explicit-`any` warning deltas and file-size/responsibility improvements for touched delete-executor modules in story docs
-  - Recorded in `docs/st09074-relational-delete-executor-modularization.md`; direct source-target baseline check remains within caps at `total 10/289`, `tools 0/67`
+  - Recorded in `docs/st09074-relational-delete-executor-modularization.md`; direct source-target baseline check remains within caps at `workspace 80/289`, `tools 53/67`
 - [x] Add or update story documentation at `docs/st09074-relational-delete-executor-modularization.md` (or document why not required)
 - [x] Assess residual test impact; add/update additional automated tests when needed, or document why no further tests are required
   - The modularized executor surface is covered by focused result-shaping, batch-mode, and error-handling suites, with public relational-delete and tool-boundary tests re-run to confirm no further targeted coverage was needed

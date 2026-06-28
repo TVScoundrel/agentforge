@@ -34,7 +34,7 @@ This story used a characterization-first modularization path instead of forcing 
 - `./node_modules/.bin/vitest run packages/tools/tests/data/relational/tools/delete-executor.test.ts` -> `15` passed
 - `./node_modules/.bin/vitest run packages/tools/tests/data/relational/relational-delete/index.test.ts packages/tools/tests/data/relational/tools/delete-tool.test.ts` -> `33` passed, `10` skipped
 - `./node_modules/.bin/tsc --noEmit -p packages/tools/tsconfig.json` -> passed
-- Direct explicit-`any` baseline target run (`packages/**/src/**/*.ts`) -> `total 10/289`; `cli 2/24`, `core 6/119`, `patterns 2/28`
+- Direct explicit-`any` baseline target run (`packages/**/src/**/*.ts`) -> `workspace 80/289`, `tools 53/67`
 - `./node_modules/.bin/vitest run packages/tools/tests/data/relational/transaction-timeout-and-savepoint.test.ts` -> `2` passed (follow-up rerun after an unrelated flaky full-suite miss)
 - `./node_modules/.bin/vitest run` -> `212` passed, `18` skipped files; `2326` passed, `286` skipped tests
 - Package-local lint equivalent of `pnpm -r lint` -> passed with warnings only
@@ -44,4 +44,4 @@ This story used a characterization-first modularization path instead of forcing 
 - `executeDelete(...)` remains the stable public entrypoint.
 - Delete behavior, soft-delete handling, batch semantics, synthetic benchmark metadata, transaction-context routing, and sanitized error handling remain unchanged.
 - No CI or validation automation change is required for this story because the existing package-local and full-suite commands already cover the affected surfaces.
-- `pnpm`-wrapped baseline validation is currently intercepted in this environment by the workspace preflight hook before `pnpm exec eslint` runs, so the baseline was verified via a direct ESLint JSON pass against the same `packages/**/src/**/*.ts` target instead.
+- `pnpm`-wrapped baseline validation is currently intercepted in this environment by the workspace preflight hook before `pnpm exec eslint` runs, so the baseline was verified by invoking `./node_modules/.bin/eslint` directly against the same `packages/**/src/**/*.ts` target and aggregating the JSON output with the baseline script's package-counting logic instead.
