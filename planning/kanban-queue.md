@@ -1,10 +1,10 @@
 # Kanban Queue: AgentForge
 
-**Last Updated:** 2026-06-28
+**Last Updated:** 2026-06-29
 
 ## Queue Status Summary
 
-- **Ready:** 2 stories
+- **Ready:** 3 stories
 - **In Progress:** 0 stories
 - **In Review:** 0 stories
 - **Blocked:** 0 stories
@@ -14,6 +14,8 @@
 
 ## Ready
 
+- `ST-09077` - Stabilize Release-Time pnpm Validation Path
+  - Depends on: None
 - `ST-09075` - Harden ReAct Agent Detection Beyond Constructor Names
   - Depends on: `ST-09070` (merged 2026-06-23)
 - `ST-09076` - Align Wrapped ReAct Error Assignment Selection
@@ -130,6 +132,8 @@ None currently.
 - ST-09072 complete - relational insert executor and tests modularized (merged 2026-06-25, PR #141); ready lane advanced to `ST-09073`
 - ST-09073 complete - relational update executor and tests modularized (merged 2026-06-27, PR #142); ready lane advanced to `ST-09074`
 - ST-09074 complete - relational delete executor and tests modularized (merged 2026-06-28, PR #143); no additional queue promotion was needed because `ST-09075` and `ST-09076` were already dependency-ready in `Ready`
+- Epic 09 was expanded on 2026-06-29 with follow-on backlog story `ST-09077` to stabilize the release-time `pnpm` build/test path after the `0.16.61` release required environment-specific fallback validation outside the documented `RELEASE_PROCESS`
+- `ST-09077` was promoted to the front of `Ready` on 2026-06-29 because the release-process friction is worth fixing before the next two patterns-focused follow-up stories
 - Complete: ST-10005 - documentation emoji guardrails added to contributor guidance (PR #104, 2026-05-05)
 - Complete: ST-10004 - example/template docs emoji normalization merged (PR #102, 2026-05-05)
 - Complete: ST-10003 - planning and internal docs emoji normalization merged (PR #101, 2026-05-04)

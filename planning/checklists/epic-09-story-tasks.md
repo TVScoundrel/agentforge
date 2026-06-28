@@ -3213,3 +3213,28 @@ Implementation notes:
 - [ ] Commit completed checklist items as logical commits and push updates
 - [ ] Mark PR Ready only after all story tasks are complete
 - [ ] Wait for merge; do not merge directly from local branch
+
+---
+
+## ST-09077: Stabilize Release-Time pnpm Validation Path
+
+**Branch:** `refactor/st-09077-release-pnpm-validation-stability`
+
+### Checklist
+- [ ] Create branch `refactor/st-09077-release-pnpm-validation-stability`
+- [ ] Create draft PR with story ID in title
+- [ ] Define test strategy before implementation: cover the documented release validation path and prove `pnpm build` plus `pnpm test` can run in the intended maintainer environment without manual fallback to ad hoc direct commands
+- [ ] Reproduce and document the current failure mode in checklist notes and story docs, including the `pnpm install`/policy preflight that interrupts release-time validation before the actual build/test runs
+- [ ] Update the release/build workflow so the canonical maintainer path is stable and explicit, which may include repo configuration, approval/policy documentation, or release-script preflight checks, but must avoid silently drifting away from `RELEASE_PROCESS`
+- [ ] Preserve existing package publish order, smoke-test coverage, and signed/tagged release steps while removing the need to improvise direct `tsup`/`vitest` fallbacks during normal patch releases
+- [ ] Add/update automation or documentation so future failures stop with an actionable explanation instead of a misleading mid-release `pnpm` wrapper error
+- [ ] Add/update focused validation coverage or script-level checks when practical; if automation is not practical, document the reason and the exact manual guardrail added instead
+- [ ] Add/update production/docs/configuration until the stabilized release path passes, keeping evidence in checklist notes and PR body
+- [ ] Record the release-process compatibility rationale and any environment assumptions in story docs
+- [ ] Add or update story documentation at `docs/st09077-release-pnpm-validation-stability.md` (or document why not required)
+- [ ] Assess residual test impact; add/update additional automated tests when needed, or document why no further tests are required
+- [ ] Run the canonical release validation commands before finalizing the PR and record results
+- [ ] Run lint (`pnpm lint`) before finalizing the PR and record results
+- [ ] Commit completed checklist items as logical commits and push updates
+- [ ] Mark PR Ready only after all story tasks are complete
+- [ ] Wait for merge; do not merge directly from local branch

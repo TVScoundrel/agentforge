@@ -121,7 +121,7 @@
 - Story slices are intentionally small (1 day each) so quality improvements can ship continuously
 - Lightweight quality-gate follow-ups keep release/build feedback tight by reducing stale warning caps and easy package metadata warnings
 
-**Stories:** ST-09001 through ST-09076
+**Stories:** ST-09001 through ST-09077
 
 ---
 
@@ -2151,6 +2151,24 @@
 - [ ] Focused wrap-agent tests cover the corrected error-path targeting behavior and protect against regressions where completed assignments are selected ahead of active ones.
 - [ ] `pnpm --filter @agentforge/patterns typecheck`, the focused multi-agent utility tests, and `pnpm lint:explicit-any:baseline` pass with no baseline regression.
 - [ ] Add or update story documentation at `docs/st09076-wrap-react-error-assignment-alignment.md`
+
+---
+
+#### ST-09077: Stabilize Release-Time pnpm Validation Path
+**User story:** As a maintainer, I want the documented release-time `pnpm build` and `pnpm test` path to run reliably without manual fallback so daily patch releases follow `RELEASE_PROCESS` cleanly.
+
+**Priority:** P2 (Medium)
+**Estimate:** 3 hours
+**Dependencies:** None
+**Status:** Ready
+
+**Acceptance criteria:**
+- [ ] The current release-time failure mode is documented clearly, including the `pnpm` preflight/install or policy path that can stop validation before the actual build/test commands run.
+- [ ] The canonical maintainer validation path used by `RELEASE_PROCESS` is stabilized through configuration, scripting, or explicit preflight guidance so maintainers do not need to improvise direct `tsup`/`vitest` fallbacks during a normal patch release.
+- [ ] Any new guardrail fails fast with an actionable message that explains how to restore the canonical release path instead of surfacing a misleading generic `pnpm` wrapper failure mid-release.
+- [ ] Existing signed-commit, tag, publish-order, npm verification, and smoke-test release behavior remains unchanged aside from the intended validation-path hardening.
+- [ ] The relevant release/build validation commands and `pnpm lint:explicit-any:baseline` pass with no baseline regression, or the story documentation explicitly records why a residual environment dependency cannot yet be automated further.
+- [ ] Add or update story documentation at `docs/st09077-release-pnpm-validation-stability.md`
 
 ---
 
