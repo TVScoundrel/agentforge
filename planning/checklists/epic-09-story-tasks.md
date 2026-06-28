@@ -3251,4 +3251,5 @@ Implementation notes:
   - `68117240` `docs(st-09077): record validation and move story to in-review`
 - [x] Mark PR Ready only after all story tasks are complete
   - PR #144 marked ready: https://github.com/TVScoundrel/agentforge/pull/144
-- [ ] Wait for merge; do not merge directly from local branch
+- [x] Wait for merge; do not merge directly from local branch
+  - Merged via PR #144 on 2026-06-28

@@ -8,6 +8,13 @@
 
 ## Completed Stories
 
+### ST-09077: Stabilize Release-Time pnpm Validation Path
+- **Merged:** 2026-06-28
+- **PR:** https://github.com/TVScoundrel/agentforge/pull/144 (commit 99f91adf)
+- **Epic:** EP-09 (SOLID Micro-Refactors and Type Boundary Hardening)
+- **Estimate:** 3 hours
+- **Outcome:** Stabilized the canonical release-time maintainer validation path by committing the required `pnpm-workspace.yaml` build approvals, adding a shared approval validator plus repo-level guard script/tests, switching the root `test` script to non-watch `vitest run`, and standardizing the release documentation and helper script on `pnpm release:validate`. The story preserved the underlying `pnpm build` plus `pnpm test` flow, kept publish/sign/tag/smoke-test behavior unchanged, and left `ST-09075` plus `ST-09076` as the next deterministic ready-lane stories.
+
 ### ST-09074: Modularize Relational Delete Executor and Tests
 - **Merged:** 2026-06-28
 - **PR:** https://github.com/TVScoundrel/agentforge/pull/143 (commit 2b6dab8a)

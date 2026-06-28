@@ -2160,7 +2160,7 @@
 **Priority:** P2 (Medium)
 **Estimate:** 3 hours
 **Dependencies:** None
-**Status:** In Review
+**Status:** Merged (PR #144, 2026-06-28)
 
 **Acceptance criteria:**
 - [ ] The current release-time failure mode is documented clearly, including the `pnpm` preflight/install or policy path that can stop validation before the actual build/test commands run.
