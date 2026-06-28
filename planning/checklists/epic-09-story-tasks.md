@@ -3131,7 +3131,8 @@ Implementation notes:
 
 ### Checklist
 - [x] Create branch `refactor/st-09074-relational-delete-executor-modularization`
-- [ ] Create draft PR with story ID in title
+- [x] Create draft PR with story ID in title
+  - PR #143: https://github.com/TVScoundrel/agentforge/pull/143
 - [x] Define test strategy before implementation: cover runtime modularization and test-file modularization; first failing test should prove relational delete executor behavior remains stable while the oversized runtime and test files are split
   - Characterization-first path selected on 2026-06-28: this story is behavior-preserving modularization, so a red-first test would mostly assert temporary file layout rather than a stable public contract. The practical safety net is to split the existing public delete-executor coverage into focused suites first, then refactor the runtime behind the unchanged `executeDelete(...)` entrypoint and re-run focused plus story-required validation.
 - [x] Write or update the failing automated test before production changes when practical; if not practical, record why before implementation
@@ -3157,7 +3158,8 @@ Implementation notes:
   - `./node_modules/.bin/vitest run` -> first run hit one unrelated flaky miss in `packages/tools/tests/data/relational/transaction-timeout-and-savepoint.test.ts`; isolated rerun passed (`2` passed), and second full rerun passed cleanly with `212` passed | `18` skipped files and `2326` passed | `286` skipped tests
 - [x] Run lint (`pnpm lint`) before finalizing the PR and record results
   - Package-local equivalent of `pnpm -r lint` run directly via each package's `lint` script -> warnings only (`0` errors); the repo's `pnpm` preflight hook still blocks wrapped lint/baseline execution before `pnpm exec eslint` runs
-- [ ] Commit completed checklist items as logical commits and push updates
+- [x] Commit completed checklist items as logical commits and push updates
+  - `2672f055` refactor(st-09074): modularize delete executor
 - [ ] Mark PR Ready only after all story tasks are complete
 - [ ] Wait for merge; do not merge directly from local branch
 

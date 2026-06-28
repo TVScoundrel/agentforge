@@ -3,7 +3,7 @@
 **Epic Range:** EP-09 through EP-09
 **Status:** In Progress
 **Last Updated:** 2026-06-28
-**Active Story:** ST-09074 - Modularize Relational Delete Executor and Tests (In Progress)
+**Active Story:** ST-09074 - Modularize Relational Delete Executor and Tests (In Review)
 
 ---
 
