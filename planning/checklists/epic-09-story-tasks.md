@@ -3222,7 +3222,8 @@ Implementation notes:
 
 ### Checklist
 - [x] Create branch `refactor/st-09077-release-pnpm-validation-stability`
-- [ ] Create draft PR with story ID in title
+- [x] Create draft PR with story ID in title
+  - PR #144: https://github.com/TVScoundrel/agentforge/pull/144
 - [x] Define test strategy before implementation: cover the documented release validation path and prove `pnpm build` plus `pnpm test` can run in the intended maintainer environment without manual fallback to ad hoc direct commands
   - Used a targeted red-first script test for the new approval guard, then reran the full canonical release validation path after the config/script changes landed.
 - [x] Reproduce and document the current failure mode in checklist notes and story docs, including the `pnpm install`/policy preflight that interrupts release-time validation before the actual build/test runs

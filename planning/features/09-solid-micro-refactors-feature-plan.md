@@ -3,7 +3,7 @@
 **Epic Range:** EP-09 through EP-09
 **Status:** In Progress
 **Last Updated:** 2026-06-29
-**Active Story:** ST-09077 - Stabilize Release-Time pnpm Validation Path (In Progress)
+**Active Story:** ST-09077 - Stabilize Release-Time pnpm Validation Path (In Review)
 
 ---
 
