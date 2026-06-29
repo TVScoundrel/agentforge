@@ -2,11 +2,18 @@
 
 **Purpose:** Track completed and merged stories for the Relational Database Access Tool project.
 
-**Last Updated:** 2026-06-28
+**Last Updated:** 2026-06-29
 
 ---
 
 ## Completed Stories
+
+### ST-09075: Harden ReAct Agent Detection Beyond Constructor Names
+- **Merged:** 2026-06-29
+- **PR:** https://github.com/TVScoundrel/agentforge/pull/145 (commit c553a9ba)
+- **Epic:** EP-09 (SOLID Micro-Refactors and Type Boundary Hardening)
+- **Estimate:** 3 hours
+- **Outcome:** Hardened `@agentforge/patterns` ReAct-agent detection by replacing constructor-name-only gating in `packages/patterns/src/multi-agent/utils-react-detection.ts` with layered compiled-LangGraph runtime-shape checks while preserving constructor-name fallback compatibility for lightweight wrappers. The story added a regression test that uses a real compiled ReAct agent with a masked constructor name, documented the compatibility rationale in `docs/st09075-react-agent-detection-hardening.md`, kept the explicit-`any` baseline flat at `workspace 80/289` and `patterns 2/28`, and advanced the ready lane to `ST-09076`.
 
 ### ST-09077: Stabilize Release-Time pnpm Validation Path
 - **Merged:** 2026-06-28

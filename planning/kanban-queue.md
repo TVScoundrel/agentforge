@@ -6,7 +6,7 @@
 
 - **Ready:** 1 story
 - **In Progress:** 0 stories
-- **In Review:** 1 story
+- **In Review:** 0 stories
 - **Blocked:** 0 stories
 - **Backlog:** 0 stories
 
@@ -19,14 +19,13 @@
 
 ---
 
-## In Review
+## In Progress
 
-- `ST-09075` - Harden ReAct Agent Detection Beyond Constructor Names
-  - Depends on: `ST-09070` (merged 2026-06-23)
+None currently.
 
 ---
 
-## In Progress
+## In Review
 
 None currently.
 
@@ -132,6 +131,7 @@ None currently.
 - Epic 09 was expanded on 2026-06-29 with follow-on backlog story `ST-09077` to stabilize the release-time `pnpm` build/test path after the `0.16.61` release required environment-specific fallback validation outside the documented `RELEASE_PROCESS`
 - `ST-09077` was promoted to the front of `Ready` on 2026-06-29 because the release-process friction is worth fixing before the next two patterns-focused follow-up stories
 - ST-09077 complete - release-time pnpm validation path stabilized with committed build approvals, a fast-fail approval guard, and canonical `pnpm release:validate` maintainer guidance (merged 2026-06-28, PR #144); ready lane returns to `ST-09075` then `ST-09076`
+- ST-09075 complete - ReAct-agent detection hardened around compiled LangGraph runtime shape with constructor-name fallback compatibility preserved (merged 2026-06-29, PR #145); ready lane advances to `ST-09076`
 - Complete: ST-10005 - documentation emoji guardrails added to contributor guidance (PR #104, 2026-05-05)
 - Complete: ST-10004 - example/template docs emoji normalization merged (PR #102, 2026-05-05)
 - Complete: ST-10003 - planning and internal docs emoji normalization merged (PR #101, 2026-05-04)

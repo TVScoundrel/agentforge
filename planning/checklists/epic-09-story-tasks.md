@@ -3203,7 +3203,8 @@ Implementation notes:
   - Commit `5cd72ba9` (`refactor(st-09075): harden react agent detection`) pushed to `origin/refactor/st-09075-react-agent-detection-hardening`
 - [x] Mark PR Ready only after all story tasks are complete
   - PR #145 marked ready for review on 2026-06-29 after validation, self-review, and tracker sync were complete
-- [ ] Wait for merge; do not merge directly from local branch
+- [x] Wait for merge; do not merge directly from local branch
+  - Merged via PR #145 on 2026-06-29
 
 ---
 

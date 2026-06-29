@@ -3,7 +3,7 @@
 **Epic Range:** EP-09 through EP-09
 **Status:** In Progress
 **Last Updated:** 2026-06-29
-**Active Story:** ST-09075 - Harden ReAct Agent Detection Beyond Constructor Names (In Review)
+**Active Story:** ST-09076 - Align Wrapped ReAct Error Assignment Selection (Ready)
 
 ---
 
@@ -119,7 +119,8 @@ Recent improvement snapshot:
 - `ST-09074` merged on 2026-06-28 after shrinking `packages/tools/src/data/relational/tools/relational-delete/executor.ts` from a `324` line mixed-responsibility runtime to a `97` line public facade, extracting focused shared normalization/defaulting, single-query execution, and batch orchestration helpers while preserving `executeDelete(...)`, soft-delete semantics, benchmark metadata, transaction routing, and error handling. The story also replaced the monolithic delete-executor test body with focused result-shaping, batch-mode, and error-handling suites, kept the explicit-`any` baseline flat at `workspace 80/289` and `tools 53/67`, and left `ST-09075` plus `ST-09076` as the next dependency-ready ready-lane stories.
 - `ST-09075` through `ST-09076` were added on 2026-06-23 as targeted follow-on hardening slices so the post-review concerns from `ST-09070` land as explicit backlog work instead of lingering as undocumented debt. These stories keep EP-09 focused on small, behavior-aware robustness improvements without pulling attention away from the current ready modularization lane.
 - `ST-09077` was added on 2026-06-29 after the `0.16.61` patch release exposed that the documented `pnpm build`/`pnpm test` release-validation path can still be interrupted by environment/policy preflight before the real build runs. The story captures that release-process friction as explicit EP-09 hardening work instead of leaving the workaround tribal.
-- `EP-09` remains open as the daily hardening stream, with `ST-09075` and `ST-09076` now at the front of the ready lane after `ST-09074` merged.
+- `ST-09075` merged on 2026-06-29 after hardening `isReActAgent(...)` around compiled LangGraph runtime shape instead of constructor names alone, preserving compatibility fallback behavior for lightweight wrappers, adding a masked-constructor regression test plus clarification comment, and keeping the explicit-`any` baseline flat at `workspace 80/289` and `patterns 2/28`. `ST-09076` is now the next ready follow-on story.
+- `EP-09` remains open as the daily hardening stream, with `ST-09076` now at the front of the ready lane after `ST-09075` merged.
 - `ST-09077` was promoted to the front of the ready lane on 2026-06-29 because the release-process friction is now a higher-priority maintainer pain point than the two remaining patterns follow-up slices.
 - The refreshed follow-on queue now extends beyond the current Ready lane so another few weeks of small SOLID/DRY and modularization work can be pulled without re-planning the epic.
 
