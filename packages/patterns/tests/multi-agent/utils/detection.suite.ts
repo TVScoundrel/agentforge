@@ -6,6 +6,8 @@ import { isReActAgent } from '../../../src/multi-agent/utils.js';
 
 describe('Multi-Agent Utils detection', () => {
   it('accepts compiled state-graph shaped agents', () => {
+    // Keep the lightweight constructor-name fixture as a compatibility guard
+    // for wrappers that do not expose the full compiled-graph runtime shape.
     const compiledStateGraphLike = {
       invoke: vi.fn(),
       stream: vi.fn(),
