@@ -2126,7 +2126,7 @@
 **Priority:** P2 (Medium)
 **Estimate:** 3 hours
 **Dependencies:** ST-09070 (merged)
-**Status:** In Progress
+**Status:** In Review
 
 **Acceptance criteria:**
 - [ ] `packages/patterns/src/multi-agent/utils-react-detection.ts` replaces the current constructor-name-only `CompiledGraph`/`CompiledStateGraph` gate with a more durable runtime-shape check, compatibility helper, or layered detection strategy that does not rely solely on constructor names remaining stable.

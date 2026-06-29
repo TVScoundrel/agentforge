@@ -1,12 +1,12 @@
 # Kanban Queue: AgentForge
 
-**Last Updated:** 2026-06-28
+**Last Updated:** 2026-06-29
 
 ## Queue Status Summary
 
-- **Ready:** 2 stories
+- **Ready:** 1 story
 - **In Progress:** 0 stories
-- **In Review:** 0 stories
+- **In Review:** 1 story
 - **Blocked:** 0 stories
 - **Backlog:** 0 stories
 
@@ -14,20 +14,19 @@
 
 ## Ready
 
-- `ST-09075` - Harden ReAct Agent Detection Beyond Constructor Names
-  - Depends on: `ST-09070` (merged 2026-06-23)
 - `ST-09076` - Align Wrapped ReAct Error Assignment Selection
   - Depends on: `ST-09070` (merged 2026-06-23)
 
 ---
 
-## In Progress
+## In Review
 
-None currently.
+- `ST-09075` - Harden ReAct Agent Detection Beyond Constructor Names
+  - Depends on: `ST-09070` (merged 2026-06-23)
 
 ---
 
-## In Review
+## In Progress
 
 None currently.
 

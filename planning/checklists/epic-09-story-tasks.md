@@ -3173,21 +3173,36 @@ Implementation notes:
 **Branch:** `refactor/st-09075-react-agent-detection-hardening`
 
 ### Checklist
-- [ ] Create branch `refactor/st-09075-react-agent-detection-hardening`
-- [ ] Create draft PR with story ID in title
-- [ ] Define test strategy before implementation: cover the public `isReActAgent(...)` contract and prove the replacement detection path no longer depends solely on constructor names remaining stable
-- [ ] Write or update the failing automated test before production changes when practical; if not practical, record why before implementation
-- [ ] Replace the constructor-name-only `CompiledGraph`/`CompiledStateGraph` detection in `packages/patterns/src/multi-agent/utils-react-detection.ts` with a more durable runtime-shape check, compatibility helper, or layered strategy behind the same public API
-- [ ] Preserve existing supported ReAct-agent detection behavior and public imports while removing the minification-sensitive coupling
-- [ ] Add/update focused detection tests so positive and negative fixtures cover the new detection path and explicitly guard against silent constructor-name fallback regressions
-- [ ] Add/update production code until focused tests pass, keeping test evidence in checklist notes and PR body
-- [ ] Record explicit-`any` warning deltas and the runtime-detection compatibility rationale for touched modules in story docs
-- [ ] Add or update story documentation at `docs/st09075-react-agent-detection-hardening.md` (or document why not required)
-- [ ] Assess residual test impact; add/update additional automated tests when needed, or document why no further tests are required
-- [ ] Run full test suite before finalizing the PR and record results
-- [ ] Run lint (`pnpm lint`) before finalizing the PR and record results
-- [ ] Commit completed checklist items as logical commits and push updates
-- [ ] Mark PR Ready only after all story tasks are complete
+- [x] Create branch `refactor/st-09075-react-agent-detection-hardening`
+- [x] Create draft PR with story ID in title
+  - PR #145: https://github.com/TVScoundrel/agentforge/pull/145
+- [x] Define test strategy before implementation: cover the public `isReActAgent(...)` contract and prove the replacement detection path no longer depends solely on constructor names remaining stable
+  - Selected a focused red-first regression path because the public contract is small and directly testable: mask a real compiled ReAct agent's constructor name, prove detection should still succeed, then harden the runtime guard behind the unchanged public API.
+- [x] Write or update the failing automated test before production changes when practical; if not practical, record why before implementation
+  - Added a regression test that creates a real compiled ReAct agent, overrides its constructor name to simulate minification/rewriting, and initially failed with `expected false to be true`.
+- [x] Replace the constructor-name-only `CompiledGraph`/`CompiledStateGraph` detection in `packages/patterns/src/multi-agent/utils-react-detection.ts` with a more durable runtime-shape check, compatibility helper, or layered strategy behind the same public API
+  - `isReActAgent(...)` now prefers compiled LangGraph runtime-shape evidence (`invoke`, `stream`, `getGraph`, `getGraphAsync`, and a graph-like `builder`) while keeping constructor names only as a compatibility fallback.
+- [x] Preserve existing supported ReAct-agent detection behavior and public imports while removing the minification-sensitive coupling
+  - Existing constructor-name fixtures still pass, and the public `isReActAgent(...)` export/signature is unchanged.
+- [x] Add/update focused detection tests so positive and negative fixtures cover the new detection path and explicitly guard against silent constructor-name fallback regressions
+  - Added a regression guard for a real compiled ReAct agent with a masked constructor name alongside the existing positive and negative shape fixtures.
+- [x] Add/update production code until focused tests pass, keeping test evidence in checklist notes and PR body
+  - `./node_modules/.bin/vitest run --config .tmp/vitest.st09075.config.mjs` -> initial red run failed with `expected false to be true`; post-fix rerun passed with `2` files and `9` tests
+  - `pnpm --filter @agentforge/patterns typecheck` -> passed
+  - `pnpm lint:explicit-any:baseline` -> passed at `workspace 80/289`, `patterns 2/28`
+- [x] Record explicit-`any` warning deltas and the runtime-detection compatibility rationale for touched modules in story docs
+  - Recorded in `docs/st09075-react-agent-detection-hardening.md`; explicit-`any` baseline remains flat at `workspace 80/289`, `patterns 2/28`
+- [x] Add or update story documentation at `docs/st09075-react-agent-detection-hardening.md` (or document why not required)
+- [x] Assess residual test impact; add/update additional automated tests when needed, or document why no further tests are required
+  - The focused detection regression plus the companion wrap-agent utility suite cover the changed runtime guard; no further targeted automation was required before broader repo validation.
+- [x] Run full test suite before finalizing the PR and record results
+  - `pnpm test --run` -> passed with `222` files passed, `9` skipped; `2506` tests passed, `110` skipped
+- [x] Run lint (`pnpm lint`) before finalizing the PR and record results
+  - `pnpm lint` -> passed with existing warning-only baseline; touched `patterns` package remained warning-only and the explicit-`any` baseline still held at `workspace 80/289`, `patterns 2/28`
+- [x] Commit completed checklist items as logical commits and push updates
+  - Commit `5cd72ba9` (`refactor(st-09075): harden react agent detection`) pushed to `origin/refactor/st-09075-react-agent-detection-hardening`
+- [x] Mark PR Ready only after all story tasks are complete
+  - PR #145 marked ready for review on 2026-06-29 after validation, self-review, and tracker sync were complete
 - [ ] Wait for merge; do not merge directly from local branch
 
 ---
