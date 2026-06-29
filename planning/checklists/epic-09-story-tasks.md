@@ -3201,7 +3201,8 @@ Implementation notes:
   - `pnpm lint` -> passed with existing warning-only baseline; touched `patterns` package remained warning-only and the explicit-`any` baseline still held at `workspace 80/289`, `patterns 2/28`
 - [x] Commit completed checklist items as logical commits and push updates
   - Commit `5cd72ba9` (`refactor(st-09075): harden react agent detection`) pushed to `origin/refactor/st-09075-react-agent-detection-hardening`
-- [ ] Mark PR Ready only after all story tasks are complete
+- [x] Mark PR Ready only after all story tasks are complete
+  - PR #145 marked ready for review on 2026-06-29 after validation, self-review, and tracker sync were complete
 - [ ] Wait for merge; do not merge directly from local branch
 
 ---

@@ -1,12 +1,12 @@
 # Kanban Queue: AgentForge
 
-**Last Updated:** 2026-06-28
+**Last Updated:** 2026-06-29
 
 ## Queue Status Summary
 
 - **Ready:** 1 story
-- **In Progress:** 1 story
-- **In Review:** 0 stories
+- **In Progress:** 0 stories
+- **In Review:** 1 story
 - **Blocked:** 0 stories
 - **Backlog:** 0 stories
 
@@ -19,14 +19,14 @@
 
 ---
 
-## In Progress
+## In Review
 
 - `ST-09075` - Harden ReAct Agent Detection Beyond Constructor Names
   - Depends on: `ST-09070` (merged 2026-06-23)
 
 ---
 
-## In Review
+## In Progress
 
 None currently.
 
