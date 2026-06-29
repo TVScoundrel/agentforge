@@ -5,6 +5,40 @@ All notable changes to AgentForge will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.16.62] - 2026-06-29
+
+### Added
+
+#### @agentforge/patterns - ReAct Detection Hardening Coverage
+- Added focused ReAct detection regression coverage in `packages/patterns/tests/multi-agent/utils/detection.suite.ts`, including a real compiled agent fixture with a masked constructor name plus compatibility coverage for lightweight constructor-name-only fixtures
+- Added story documentation in `docs/st09075-react-agent-detection-hardening.md` capturing the structural runtime-shape detection strategy, compatibility fallback, and validation evidence
+
+### Changed
+
+#### Workspace - Release Validation Path Hardening
+- Added the canonical `pnpm release:validate` maintainer path and aligned the release guide, helper script, and root documentation around it so daily patch releases no longer rely on ad hoc direct build/test fallbacks
+- Committed the required `pnpm-workspace.yaml` build approvals, added a shared approval-check guard, and switched the root `test` script to `vitest run` so release-time validation stays deterministic in a normal maintainer workspace
+
+#### @agentforge/patterns - ReAct Agent Detection
+- Hardened `packages/patterns/src/multi-agent/utils-react-detection.ts` to prefer stable LangGraph runtime-shape checks over constructor-name matching while preserving the existing `CompiledGraph` and `CompiledStateGraph` fallback for compatibility
+
+### Fixed
+
+#### Workspace - Release Process Follow-Through
+- Removed the release-time drift that previously forced maintainers to improvise direct `tsup` and `vitest` invocations when `pnpm` preflight or build-approval checks interrupted the documented validation flow
+
+#### @agentforge/patterns - Minification Fragility Risk
+- Reduced the latent risk that minified or wrapped compiled LangGraph agents would fail ReAct detection by no longer relying solely on constructor names
+
+### Published
+- All packages published to npm registry at version 0.16.62:
+  - @agentforge/core@0.16.62
+  - @agentforge/skills@0.16.62
+  - @agentforge/patterns@0.16.62
+  - @agentforge/tools@0.16.62
+  - @agentforge/testing@0.16.62
+  - @agentforge/cli@0.16.62
+
 ## [0.16.61] - 2026-06-28
 
 ### Added
