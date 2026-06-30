@@ -1,6 +1,6 @@
 # Kanban Queue: AgentForge
 
-**Last Updated:** 2026-06-29
+**Last Updated:** 2026-06-30
 
 ## Queue Status Summary
 
@@ -8,7 +8,7 @@
 - **In Progress:** 0 stories
 - **In Review:** 0 stories
 - **Blocked:** 0 stories
-- **Backlog:** 0 stories
+- **Backlog:** 5 stories
 
 ---
 
@@ -37,7 +37,16 @@ _No stories currently blocked_
 
 ## Backlog
 
-None currently.
+- `ST-09078` - Modularize Relational Streaming SELECT Executor
+  - Depends on: none
+- `ST-09079` - Modularize CLI Tool Publish Command and Tests
+  - Depends on: `ST-09017` (merged 2026-03-27)
+- `ST-09080` - Modularize Multi-Agent Schemas and Schema-Centric Tests
+  - Depends on: `ST-09060` (merged 2026-06-08)
+- `ST-09081` - Modularize Monitoring Alert Manager and Tests
+  - Depends on: `ST-09016` (merged 2026-03-26)
+- `ST-09082` - Centralize Relational Row Extraction Helpers
+  - Depends on: `ST-09078`
 
 ---
 
@@ -132,6 +141,7 @@ None currently.
 - `ST-09077` was promoted to the front of `Ready` on 2026-06-29 because the release-process friction is worth fixing before the next two patterns-focused follow-up stories
 - ST-09077 complete - release-time pnpm validation path stabilized with committed build approvals, a fast-fail approval guard, and canonical `pnpm release:validate` maintainer guidance (merged 2026-06-28, PR #144); ready lane returns to `ST-09075` then `ST-09076`
 - ST-09075 complete - ReAct-agent detection hardened around compiled LangGraph runtime shape with constructor-name fallback compatibility preserved (merged 2026-06-29, PR #145); ready lane advances to `ST-09076`
+- Epic 09 was expanded on 2026-06-30 with follow-on backlog stories `ST-09078` through `ST-09082` to replenish the daily SOLID/DRY/modularization lane with one remaining relational runtime split, one CLI command/test split, one multi-agent schema split, one monitoring split, and a smaller relational helper de-duplication slice
 - Complete: ST-10005 - documentation emoji guardrails added to contributor guidance (PR #104, 2026-05-05)
 - Complete: ST-10004 - example/template docs emoji normalization merged (PR #102, 2026-05-05)
 - Complete: ST-10003 - planning and internal docs emoji normalization merged (PR #101, 2026-05-04)

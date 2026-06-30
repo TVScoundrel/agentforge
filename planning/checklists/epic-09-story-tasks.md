@@ -3269,3 +3269,123 @@ Implementation notes:
   - PR #144 marked ready: https://github.com/TVScoundrel/agentforge/pull/144
 - [x] Wait for merge; do not merge directly from local branch
   - Merged via PR #144 on 2026-06-28
+
+---
+
+## ST-09078: Modularize Relational Streaming SELECT Executor
+
+**Branch:** `refactor/st-09078-relational-streaming-select-modularization`
+
+### Checklist
+- [ ] Create branch `refactor/st-09078-relational-streaming-select-modularization`
+- [ ] Create draft PR with story ID in title
+- [ ] Define test strategy before implementation: cover chunk sizing, total-row limits, cancellation, sample-vs-collectAllRows behavior, and benchmark parity through focused streaming executor coverage
+- [ ] Write or update the failing automated test before production changes when practical; if not practical, record why before implementation
+- [ ] Reduce `packages/tools/src/data/relational/query/stream-executor.ts` to a smaller public facade or clearly separated orchestration layer while extracting focused pagination, normalization, row-extraction, memory-tracking, cancellation, and benchmark helpers
+- [ ] Preserve public exports and runtime behavior for `streamSelectChunks(...)`, `createSelectReadableStream(...)`, `executeStreamingSelect(...)`, `benchmarkStreamingSelectMemory(...)`, and their related option/result types
+- [ ] Add/update focused streaming executor tests so chunk limits, cancellation, sampled-vs-collected rows, and benchmark behavior are covered without relying only on broad relational SELECT suites
+- [ ] Add/update production code until focused tests pass, keeping test evidence in checklist notes and PR body
+- [ ] Record explicit-`any` warning deltas and the streaming compatibility rationale for touched modules in story docs
+- [ ] Add or update story documentation at `docs/st09078-relational-streaming-select-modularization.md` (or document why not required)
+- [ ] Assess residual test impact; add/update additional automated tests when needed, or document why no further tests are required
+- [ ] Run full test suite before finalizing the PR and record results
+- [ ] Run lint (`pnpm lint`) before finalizing the PR and record results
+- [ ] Commit completed checklist items as logical commits and push updates
+- [ ] Mark PR Ready only after all story tasks are complete
+- [ ] Wait for merge; do not merge directly from local branch
+
+---
+
+## ST-09079: Modularize CLI Tool Publish Command and Tests
+
+**Branch:** `refactor/st-09079-cli-tool-publish-modularization`
+
+### Checklist
+- [ ] Create branch `refactor/st-09079-cli-tool-publish-modularization`
+- [ ] Create draft PR with story ID in title
+- [ ] Define test strategy before implementation: cover path resolution, package validation, optional test/build execution, dry-run behavior, and npm auth/permission/version-conflict guidance through focused command suites
+- [ ] Write or update the failing automated test before production changes when practical; if not practical, record why before implementation
+- [ ] Reduce `packages/cli/src/commands/tool/publish.ts` to a smaller public facade or clearly separated orchestration layer while extracting focused path-resolution, package-validation, preflight script, and publish-result helpers
+- [ ] Preserve existing `tool:publish` behavior for dry-run mode, scoped-package resolution, optional test/build script detection, and user-facing npm error guidance
+- [ ] Replace the `packages/cli/tests/commands/tool/publish.test.ts` monolith with focused suites or shared fixtures that preserve coverage over path resolution, publish happy paths, and publish error handling
+- [ ] Add/update production code until focused tests pass, keeping test evidence in checklist notes and PR body
+- [ ] Record explicit-`any` warning deltas and the command-compatibility rationale for touched modules in story docs
+- [ ] Add or update story documentation at `docs/st09079-cli-tool-publish-modularization.md` (or document why not required)
+- [ ] Assess residual test impact; add/update additional automated tests when needed, or document why no further tests are required
+- [ ] Run full test suite before finalizing the PR and record results
+- [ ] Run lint (`pnpm lint`) before finalizing the PR and record results
+- [ ] Commit completed checklist items as logical commits and push updates
+- [ ] Mark PR Ready only after all story tasks are complete
+- [ ] Wait for merge; do not merge directly from local branch
+
+---
+
+## ST-09080: Modularize Multi-Agent Schemas and Schema-Centric Tests
+
+**Branch:** `refactor/st-09080-multi-agent-schemas-modularization`
+
+### Checklist
+- [ ] Create branch `refactor/st-09080-multi-agent-schemas-modularization`
+- [ ] Create draft PR with story ID in title
+- [ ] Define test strategy before implementation: cover message, routing, worker, assignment/result, and handoff schemas while proving state tests can stay leaner without losing schema regressions
+- [ ] Write or update the failing automated test before production changes when practical; if not practical, record why before implementation
+- [ ] Reduce `packages/patterns/src/multi-agent/schemas.ts` to a smaller public facade or clearly separated orchestration layer while extracting focused schema modules by domain
+- [ ] Preserve current public schema/type exports and import compatibility through `packages/patterns/src/multi-agent/schemas.ts`
+- [ ] Split the schema assertions currently coupled into `packages/patterns/tests/multi-agent/state.test.ts` into focused schema-centric coverage plus a leaner state suite while preserving JSON-safe metadata and unknown-first handoff-context regression coverage
+- [ ] Add/update production code until focused tests pass, keeping test evidence in checklist notes and PR body
+- [ ] Record explicit-`any` warning deltas and the schema-surface compatibility rationale for touched modules in story docs
+- [ ] Add or update story documentation at `docs/st09080-multi-agent-schemas-modularization.md` (or document why not required)
+- [ ] Assess residual test impact; add/update additional automated tests when needed, or document why no further tests are required
+- [ ] Run full test suite before finalizing the PR and record results
+- [ ] Run lint (`pnpm lint`) before finalizing the PR and record results
+- [ ] Commit completed checklist items as logical commits and push updates
+- [ ] Mark PR Ready only after all story tasks are complete
+- [ ] Wait for merge; do not merge directly from local branch
+
+---
+
+## ST-09081: Modularize Monitoring Alert Manager and Tests
+
+**Branch:** `refactor/st-09081-monitoring-alert-manager-modularization`
+
+### Checklist
+- [ ] Create branch `refactor/st-09081-monitoring-alert-manager-modularization`
+- [ ] Create draft PR with story ID in title
+- [ ] Define test strategy before implementation: cover rule evaluation, throttling, callback failure handling, metrics-provider failure handling, and channel dispatch logging through focused alert-manager suites
+- [ ] Write or update the failing automated test before production changes when practical; if not practical, record why before implementation
+- [ ] Reduce `packages/core/src/monitoring/alerts.ts` to a smaller public facade or clearly separated orchestration layer while extracting focused throttle/rule evaluation, channel dispatch, and error-payload/reporting helpers
+- [ ] Preserve public `AlertManager`, `createAlertManager(...)`, typed built-in/custom channel validation, and direct-alert behavior
+- [ ] Replace the `packages/core/tests/monitoring/alerts.test.ts` monolith with focused suites or shared fixtures that preserve monitoring regression coverage
+- [ ] Add/update production code until focused tests pass, keeping test evidence in checklist notes and PR body
+- [ ] Record explicit-`any` warning deltas and the monitoring compatibility rationale for touched modules in story docs
+- [ ] Add or update story documentation at `docs/st09081-monitoring-alert-manager-modularization.md` (or document why not required)
+- [ ] Assess residual test impact; add/update additional automated tests when needed, or document why no further tests are required
+- [ ] Run full test suite before finalizing the PR and record results
+- [ ] Run lint (`pnpm lint`) before finalizing the PR and record results
+- [ ] Commit completed checklist items as logical commits and push updates
+- [ ] Mark PR Ready only after all story tasks are complete
+- [ ] Wait for merge; do not merge directly from local branch
+
+---
+
+## ST-09082: Centralize Relational Row Extraction Helpers
+
+**Branch:** `refactor/st-09082-relational-row-extraction-deduplication`
+
+### Checklist
+- [ ] Create branch `refactor/st-09082-relational-row-extraction-deduplication`
+- [ ] Create draft PR with story ID in title
+- [ ] Define test strategy before implementation: cover shared result-shape normalization for array and `{ rows }` executor outputs across the touched runtime/test call sites
+- [ ] Write or update the failing automated test before production changes when practical; if not practical, record why before implementation
+- [ ] Replace repeated `extractRows(...)` implementations across the streaming executor path and focused insert/update/delete query-builder suites with a shared relational helper or clearly scoped shared test helper
+- [ ] Preserve current result-shape compatibility and avoid public relational API changes while removing the duplicate helper logic
+- [ ] Add/update focused helper or touched-suite coverage so normalized row extraction is exercised without multiple local helper implementations
+- [ ] Add/update production code until focused tests pass, keeping test evidence in checklist notes and PR body
+- [ ] Record explicit-`any` warning deltas and the result-shape compatibility rationale for touched modules in story docs
+- [ ] Add or update story documentation at `docs/st09082-relational-row-extraction-deduplication.md` (or document why not required)
+- [ ] Assess residual test impact; add/update additional automated tests when needed, or document why no further tests are required
+- [ ] Run full test suite before finalizing the PR and record results
+- [ ] Run lint (`pnpm lint`) before finalizing the PR and record results
+- [ ] Commit completed checklist items as logical commits and push updates
+- [ ] Mark PR Ready only after all story tasks are complete
+- [ ] Wait for merge; do not merge directly from local branch

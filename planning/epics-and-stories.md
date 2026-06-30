@@ -2172,6 +2172,91 @@
 
 ---
 
+#### ST-09078: Modularize Relational Streaming SELECT Executor
+**User story:** As a tools maintainer, I want the streaming SELECT executor split into focused modules so pagination, sampling, cancellation, and benchmark behavior can evolve without one mixed-responsibility runtime carrying every concern.
+
+**Priority:** P2 (Medium)
+**Estimate:** 4 hours
+**Dependencies:** None
+**Status:** Backlog
+
+**Acceptance criteria:**
+- [ ] `packages/tools/src/data/relational/query/stream-executor.ts` is reduced to a small stable public facade or clearly separated orchestration layer while extracted helpers keep pagination/limit normalization, row extraction, memory tracking, cancellation handling, and benchmark flow below the planning cutoff unless an exception is documented.
+- [ ] Public behavior and exports for `streamSelectChunks(...)`, `createSelectReadableStream(...)`, `executeStreamingSelect(...)`, `benchmarkStreamingSelectMemory(...)`, and the related option/result types remain backward compatible.
+- [ ] Focused streaming executor tests cover chunk sizing and total-row limits, cancellation behavior, sampled-vs-collected row handling, and benchmark execution parity without relying only on broad relational SELECT integration coverage.
+- [ ] `pnpm --filter @agentforge/tools test --run`, `pnpm --filter @agentforge/tools typecheck`, and `pnpm lint:explicit-any:baseline` pass with no baseline regression.
+- [ ] Add or update story documentation at `docs/st09078-relational-streaming-select-modularization.md`
+
+---
+
+#### ST-09079: Modularize CLI Tool Publish Command and Tests
+**User story:** As a CLI maintainer, I want `tool:publish` split into focused path-resolution, preflight, and publish-result helpers so the command stays easier to review and extend without one command file and test monolith owning every branch.
+
+**Priority:** P2 (Medium)
+**Estimate:** 4 hours
+**Dependencies:** ST-09017 (merged)
+**Status:** Backlog
+
+**Acceptance criteria:**
+- [ ] `packages/cli/src/commands/tool/publish.ts` is reduced to a smaller public command facade or clearly separated orchestration layer while path resolution, package validation, optional test/build execution, and npm publish result handling move into focused helpers that stay below the planning cutoff unless an exception is documented.
+- [ ] Existing `tool:publish` behavior remains backward compatible for dry-run mode, scoped-package resolution, optional test/build script detection, and npm auth/permission/version-conflict guidance.
+- [ ] The `packages/cli/tests/commands/tool/publish.test.ts` monolith is replaced with focused suites or shared fixtures that preserve coverage over path resolution, publish happy paths, and publish error handling.
+- [ ] `pnpm --filter @agentforge/cli test --run`, `pnpm --filter @agentforge/cli typecheck`, and `pnpm lint:explicit-any:baseline` pass with no baseline regression.
+- [ ] Add or update story documentation at `docs/st09079-cli-tool-publish-modularization.md`
+
+---
+
+#### ST-09080: Modularize Multi-Agent Schemas and Schema-Centric Tests
+**User story:** As a patterns maintainer, I want the multi-agent schema surface organized by domain so adding routing, messaging, assignment, and handoff contracts does not continue to grow one mixed-responsibility schema file and one coupled state-centric test surface.
+
+**Priority:** P2 (Medium)
+**Estimate:** 3 hours
+**Dependencies:** ST-09060 (merged)
+**Status:** Backlog
+
+**Acceptance criteria:**
+- [ ] `packages/patterns/src/multi-agent/schemas.ts` becomes a small stable facade or clearly grouped orchestration module while message, routing, worker, assignment/result, and handoff/status schemas move into focused internal modules that stay below the planning cutoff unless an exception is documented.
+- [ ] Public schema and type exports from the multi-agent package remain backward compatible, including current import paths through `packages/patterns/src/multi-agent/schemas.ts`.
+- [ ] The schema assertions currently coupled into `packages/patterns/tests/multi-agent/state.test.ts` are split into focused schema-centric coverage and a leaner state suite without losing regression coverage for JSON-safe metadata and unknown-first handoff context behavior.
+- [ ] `pnpm --filter @agentforge/patterns test --run`, `pnpm --filter @agentforge/patterns typecheck`, and `pnpm lint:explicit-any:baseline` pass with no baseline regression.
+- [ ] Add or update story documentation at `docs/st09080-multi-agent-schemas-modularization.md`
+
+---
+
+#### ST-09081: Modularize Monitoring Alert Manager and Tests
+**User story:** As a core maintainer, I want alert evaluation, throttling, channel dispatch, and monitoring-loop error handling separated into focused modules so monitoring changes do not keep accumulating inside one alert manager implementation and test file.
+
+**Priority:** P2 (Medium)
+**Estimate:** 3 hours
+**Dependencies:** ST-09016 (merged)
+**Status:** Backlog
+
+**Acceptance criteria:**
+- [ ] `packages/core/src/monitoring/alerts.ts` is reduced to a smaller public facade or clearly separated orchestration layer while channel dispatch, throttle/rule evaluation, and error-payload/reporting helpers move into focused modules that stay below the planning cutoff unless an exception is documented.
+- [ ] Public `AlertManager`, `createAlertManager(...)`, typed built-in/custom channel validation, and direct-alert behavior remain backward compatible.
+- [ ] `packages/core/tests/monitoring/alerts.test.ts` is split into focused suites or shared fixtures that preserve coverage over rule evaluation, throttling, callback failures, metrics-provider failures, and channel dispatch logging.
+- [ ] `pnpm --filter @agentforge/core test --run`, `pnpm --filter @agentforge/core typecheck`, and `pnpm lint:explicit-any:baseline` pass with no baseline regression.
+- [ ] Add or update story documentation at `docs/st09081-monitoring-alert-manager-modularization.md`
+
+---
+
+#### ST-09082: Centralize Relational Row Extraction Helpers
+**User story:** As a tools maintainer, I want relational row extraction normalized behind shared helpers so runtime and focused CRUD query-builder tests stop reimplementing the same result-shape assumptions in multiple places.
+
+**Priority:** P3 (Low)
+**Estimate:** 2 hours
+**Dependencies:** ST-09078
+**Status:** Backlog
+
+**Acceptance criteria:**
+- [ ] A shared relational row-extraction helper or clearly scoped shared test helper replaces the repeated `extractRows(...)` logic currently duplicated across the streaming executor path and the focused insert/update/delete query-builder test suites.
+- [ ] Existing array-vs-`{ rows }` result-shape compatibility remains unchanged, and no public relational runtime API behavior regresses.
+- [ ] Focused tests cover the shared helper directly or demonstrate that the touched query-builder and streaming suites still exercise the normalized result-shape behavior without duplicate helper implementations.
+- [ ] `pnpm --filter @agentforge/tools test --run`, `pnpm --filter @agentforge/tools typecheck`, and `pnpm lint:explicit-any:baseline` pass with no baseline regression.
+- [ ] Add or update story documentation at `docs/st09082-relational-row-extraction-deduplication.md`
+
+---
+
 #### ST-10001: Audit Markdown Emoji Usage Across Project-Owned Docs
 **User story:** As a maintainer, I want a clear inventory of markdown emoji usage so docs-only cleanup work can be prioritized and executed without noisy, repo-wide guesswork.
 

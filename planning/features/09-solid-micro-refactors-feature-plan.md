@@ -2,7 +2,7 @@
 
 **Epic Range:** EP-09 through EP-09
 **Status:** In Progress
-**Last Updated:** 2026-06-29
+**Last Updated:** 2026-06-30
 **Active Story:** ST-09076 - Align Wrapped ReAct Error Assignment Selection (Ready)
 
 ---
@@ -122,6 +122,7 @@ Recent improvement snapshot:
 - `ST-09075` merged on 2026-06-29 after hardening `isReActAgent(...)` around compiled LangGraph runtime shape instead of constructor names alone, preserving compatibility fallback behavior for lightweight wrappers, adding a masked-constructor regression test plus clarification comment, and keeping the explicit-`any` baseline flat at `workspace 80/289` and `patterns 2/28`. `ST-09076` is now the next ready follow-on story.
 - `EP-09` remains open as the daily hardening stream, with `ST-09076` now at the front of the ready lane after `ST-09075` merged.
 - `ST-09077` was promoted to the front of the ready lane on 2026-06-29 because the release-process friction is now a higher-priority maintainer pain point than the two remaining patterns follow-up slices.
+- `ST-09078` through `ST-09082` were added on 2026-06-30 to replenish the post-`ST-09076` queue with another dependency-safe batch across the remaining relational streaming runtime split, a CLI publish command/test split, a multi-agent schema split, a monitoring alert split, and a smaller relational helper de-duplication slice.
 - The refreshed follow-on queue now extends beyond the current Ready lane so another few weeks of small SOLID/DRY and modularization work can be pulled without re-planning the epic.
 
 ---
