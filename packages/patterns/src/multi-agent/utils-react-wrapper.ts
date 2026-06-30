@@ -150,9 +150,7 @@ export function wrapReActAgent(
         error: errorMessage,
       });
 
-      const currentAssignment = state.activeAssignments.find(
-        (assignment) => assignment.workerId === workerId
-      );
+      const currentAssignment = findCurrentAssignment(state, workerId);
 
       if (currentAssignment) {
         const errorResult: TaskResult = {

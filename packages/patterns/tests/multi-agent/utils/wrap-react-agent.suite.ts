@@ -99,6 +99,57 @@ describe('Multi-Agent Utils wrapReActAgent', () => {
     expect(result).toEqual({});
   });
 
+  it('targets the active assignment when the error path follows completed work', async () => {
+    const mockReActAgent = createMockReActAgent(async () => {
+      throw new Error('forced failure');
+    });
+    const completedAssignmentId = 'assignment-1';
+    const activeAssignmentId = 'assignment-2';
+    const state = createWorkerState({
+      activeAssignments: [
+        {
+          id: completedAssignmentId,
+          workerId: 'worker1',
+          task: 'Completed task',
+          priority: 5,
+          assignedAt: Date.now() - 1000,
+        },
+        {
+          id: activeAssignmentId,
+          workerId: 'worker1',
+          task: 'Active task',
+          priority: 5,
+          assignedAt: Date.now(),
+        },
+      ],
+      completedTasks: [
+        {
+          assignmentId: completedAssignmentId,
+          workerId: 'worker1',
+          success: true,
+          result: 'Already done',
+          completedAt: Date.now(),
+        },
+      ],
+    });
+
+    const wrappedAgent = wrapReActAgent('worker1', mockReActAgent);
+    const result = await wrappedAgent(state);
+
+    expect(result).toMatchObject({
+      completedTasks: [
+        {
+          assignmentId: activeAssignmentId,
+          workerId: 'worker1',
+          success: false,
+          error: 'forced failure',
+        },
+      ],
+      currentAgent: 'supervisor',
+      status: 'routing',
+    });
+  });
+
   it('serializes structured non-string response content', async () => {
     const mockReActAgent = createMockReActAgent(async () => ({
       messages: [

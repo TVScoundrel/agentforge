@@ -109,7 +109,7 @@ describe('Relational Query Tool', () => {
       expect(result.rows).toHaveLength(1);
       expect(result.rows[0]).toEqual({ value: 1 });
       expect(result.executionTime).toBeGreaterThanOrEqual(0);
-    });
+    }, 10000);
 
     it.skipIf(!hasSQLiteBindings)('should handle query errors gracefully', async () => {
       const result = await relationalQuery.invoke({

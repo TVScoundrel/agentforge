@@ -3213,21 +3213,33 @@ Implementation notes:
 **Branch:** `refactor/st-09076-wrap-react-error-assignment-alignment`
 
 ### Checklist
-- [ ] Create branch `refactor/st-09076-wrap-react-error-assignment-alignment`
-- [ ] Create draft PR with story ID in title
-- [ ] Define test strategy before implementation: cover the wrapped ReAct success/error assignment-targeting contract and prove completed assignments are not selected inconsistently in the error path
-- [ ] Write or update the failing automated test before production changes when practical; if not practical, record why before implementation
-- [ ] Align the error-path selection in `packages/patterns/src/multi-agent/utils-react-wrapper.ts` with the same incomplete-assignment targeting semantics used in the success path, preferably through one shared selector/helper
-- [ ] Preserve existing wrapped ReAct execution behavior, emitted error structure, and public imports aside from the intended completed-assignment edge-case correction
-- [ ] Add/update focused wrap-agent tests so error-path targeting is covered directly and regressions toward completed-assignment selection are caught
-- [ ] Add/update production code until focused tests pass, keeping test evidence in checklist notes and PR body
-- [ ] Record explicit-`any` warning deltas and the assignment-targeting compatibility rationale for touched modules in story docs
-- [ ] Add or update story documentation at `docs/st09076-wrap-react-error-assignment-alignment.md` (or document why not required)
-- [ ] Assess residual test impact; add/update additional automated tests when needed, or document why no further tests are required
-- [ ] Run full test suite before finalizing the PR and record results
-- [ ] Run lint (`pnpm lint`) before finalizing the PR and record results
-- [ ] Commit completed checklist items as logical commits and push updates
-- [ ] Mark PR Ready only after all story tasks are complete
+- [x] Create branch `refactor/st-09076-wrap-react-error-assignment-alignment`
+  - Created as `refactor/st-09076-wrap-react-error-assignment-alignment`
+- [x] Create draft PR with story ID in title
+  - PR #146: https://github.com/TVScoundrel/agentforge/pull/146
+- [x] Define test strategy before implementation: cover the wrapped ReAct success/error assignment-targeting contract and prove completed assignments are not selected inconsistently in the error path
+  - Added a focused red-first regression on the public `packages/patterns/tests/multi-agent/utils.test.ts` entrypoint to prove the error result must target the active assignment when the same worker also has completed work.
+- [x] Write or update the failing automated test before production changes when practical; if not practical, record why before implementation
+  - Red-first run: `pnpm test --run packages/patterns/tests/multi-agent/utils.test.ts` -> failed because the error result targeted completed `assignment-1` instead of active `assignment-2`
+- [x] Align the error-path selection in `packages/patterns/src/multi-agent/utils-react-wrapper.ts` with the same incomplete-assignment targeting semantics used in the success path, preferably through one shared selector/helper
+  - Reused `findCurrentAssignment(...)` in both success and error branches.
+- [x] Preserve existing wrapped ReAct execution behavior, emitted error structure, and public imports aside from the intended completed-assignment edge-case correction
+  - `wrapReActAgent(...)` signature, error payload shape, and supervisor-routing fallback are unchanged.
+- [x] Add/update focused wrap-agent tests so error-path targeting is covered directly and regressions toward completed-assignment selection are caught
+  - Added `targets the active assignment when the error path follows completed work`.
+- [x] Add/update production code until focused tests pass, keeping test evidence in checklist notes and PR body
+  - Focused post-fix run: `pnpm test --run packages/patterns/tests/multi-agent/utils.test.ts` -> `1` passed file, `10` passed tests
+- [x] Record explicit-`any` warning deltas and the assignment-targeting compatibility rationale for touched modules in story docs
+  - `pnpm lint:explicit-any:baseline` stayed flat at `workspace 80/289`, `patterns 2/28`; compatibility rationale recorded in `docs/st09076-wrap-react-error-assignment-alignment.md`.
+- [x] Add or update story documentation at `docs/st09076-wrap-react-error-assignment-alignment.md` (or document why not required)
+- [x] Assess residual test impact; add/update additional automated tests when needed, or document why no further tests are required
+  - No additional suites were needed after the focused wrapper regression because the touched behavior is isolated to the wrapped ReAct assignment selector. Story-specific validation also included `pnpm --filter @agentforge/patterns typecheck`.
+- [x] Run full test suite before finalizing the PR and record results
+  - `pnpm test --run` -> `222` passed, `9` skipped files; `2507` passed, `110` skipped tests after adding explicit timeout headroom to the three known cold-start test cases (`packages/cli/tests/index.test.ts`, `packages/tools/tests/data/relational/relational-query-tool.test.ts`, `packages/tools/tests/agent/ask-human-boundary.test.ts`).
+- [x] Run lint (`pnpm lint`) before finalizing the PR and record results
+  - `pnpm lint` -> exit `0`; warnings only (`0` errors)
+- [x] Commit completed checklist items as logical commits and push updates
+- [x] Mark PR Ready only after all story tasks are complete
 - [ ] Wait for merge; do not merge directly from local branch
 
 ---

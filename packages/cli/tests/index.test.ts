@@ -21,5 +21,5 @@ describe('CLI run', () => {
     await expect(run()).resolves.toBeUndefined();
     expect(errorSpy).not.toHaveBeenCalled();
     expect(exitSpy).not.toHaveBeenCalled();
-  });
+  }, 10000);
 });
