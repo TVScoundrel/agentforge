@@ -18,6 +18,10 @@ This story used a red-first regression test because the contract is small and th
 
 - Red-first run: `pnpm test --run packages/patterns/tests/multi-agent/utils.test.ts` -> failed in `targets the active assignment when the error path follows completed work` because the error result used completed `assignment-1`
 - Focused utility suite: `pnpm test --run packages/patterns/tests/multi-agent/utils.test.ts` -> `1` passed file, `10` passed tests
+- Package typecheck: `pnpm --filter @agentforge/patterns typecheck` -> passed
+- Explicit-`any` baseline: `pnpm lint:explicit-any:baseline` -> passed at `workspace 80/289`, `patterns 2/28`
+- Workspace lint: `pnpm lint` -> passed with warnings only (`0` errors)
+- Full suite: `pnpm test --run` hit timeout-only failures in unrelated existing tests under aggregate load. `packages/cli/tests/index.test.ts`, `packages/tools/tests/data/relational/relational-query-tool.test.ts`, and `packages/tools/tests/agent/ask-human-boundary.test.ts` each passed when rerun in isolation, so the blocker is the flaky full-suite gate rather than this story's code path.
 
 ## Compatibility Notes
 

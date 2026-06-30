@@ -3215,7 +3215,8 @@ Implementation notes:
 ### Checklist
 - [x] Create branch `refactor/st-09076-wrap-react-error-assignment-alignment`
   - Created as `refactor/st-09076-wrap-react-error-assignment-alignment`
-- [ ] Create draft PR with story ID in title
+- [x] Create draft PR with story ID in title
+  - PR #146: https://github.com/TVScoundrel/agentforge/pull/146
 - [x] Define test strategy before implementation: cover the wrapped ReAct success/error assignment-targeting contract and prove completed assignments are not selected inconsistently in the error path
   - Added a focused red-first regression on the public `packages/patterns/tests/multi-agent/utils.test.ts` entrypoint to prove the error result must target the active assignment when the same worker also has completed work.
 - [x] Write or update the failing automated test before production changes when practical; if not practical, record why before implementation
@@ -3234,7 +3235,9 @@ Implementation notes:
 - [x] Assess residual test impact; add/update additional automated tests when needed, or document why no further tests are required
   - No additional suites were needed after the focused wrapper regression because the touched behavior is isolated to the wrapped ReAct assignment selector. Story-specific validation also included `pnpm --filter @agentforge/patterns typecheck`.
 - [ ] Run full test suite before finalizing the PR and record results
-- [ ] Run lint (`pnpm lint`) before finalizing the PR and record results
+  - `pnpm test --run` timed out twice in unrelated existing tests during aggregate execution: `packages/cli/tests/index.test.ts`, then `packages/tools/tests/data/relational/relational-query-tool.test.ts` and `packages/tools/tests/agent/ask-human-boundary.test.ts`. All three passed when rerun in isolation, so the PR remains draft pending direction on the flaky full-suite gate.
+- [x] Run lint (`pnpm lint`) before finalizing the PR and record results
+  - `pnpm lint` -> exit `0`; warnings only (`0` errors)
 - [ ] Commit completed checklist items as logical commits and push updates
 - [ ] Mark PR Ready only after all story tasks are complete
 - [ ] Wait for merge; do not merge directly from local branch
