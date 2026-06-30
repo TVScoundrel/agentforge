@@ -9,6 +9,7 @@
 - Reused the existing `findCurrentAssignment(...)` helper in `packages/patterns/src/multi-agent/utils-react-wrapper.ts` for the error branch instead of re-querying `state.activeAssignments` with looser criteria.
 - Preserved the existing wrapped ReAct return shape, supervisor-routing fallback, logging, and public imports.
 - Added a focused regression in `packages/patterns/tests/multi-agent/utils/wrap-react-agent.suite.ts` that creates one completed assignment plus one still-active assignment for the same worker and proves the error result targets the active assignment.
+- Added explicit `10000ms` timeout headroom to three historically cold-start-sensitive tests (`packages/cli/tests/index.test.ts`, `packages/tools/tests/data/relational/relational-query-tool.test.ts`, and `packages/tools/tests/agent/ask-human-boundary.test.ts`) so the canonical full-suite gate no longer flakes under aggregate load.
 
 ## Test Strategy
 
@@ -21,7 +22,8 @@ This story used a red-first regression test because the contract is small and th
 - Package typecheck: `pnpm --filter @agentforge/patterns typecheck` -> passed
 - Explicit-`any` baseline: `pnpm lint:explicit-any:baseline` -> passed at `workspace 80/289`, `patterns 2/28`
 - Workspace lint: `pnpm lint` -> passed with warnings only (`0` errors)
-- Full suite: `pnpm test --run` hit timeout-only failures in unrelated existing tests under aggregate load. `packages/cli/tests/index.test.ts`, `packages/tools/tests/data/relational/relational-query-tool.test.ts`, and `packages/tools/tests/agent/ask-human-boundary.test.ts` each passed when rerun in isolation, so the blocker is the flaky full-suite gate rather than this story's code path.
+- Focused flaky-suite rerun: `pnpm test --run packages/cli/tests/index.test.ts packages/tools/tests/data/relational/relational-query-tool.test.ts packages/tools/tests/agent/ask-human-boundary.test.ts` -> `3` passed files, `21` passed tests
+- Full suite: `pnpm test --run` -> `222` passed, `9` skipped files; `2507` passed, `110` skipped tests
 
 ## Compatibility Notes
 

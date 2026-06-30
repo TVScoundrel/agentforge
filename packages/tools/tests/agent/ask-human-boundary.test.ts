@@ -29,7 +29,7 @@ describe('askHuman Tool - interrupt boundary', () => {
     ).rejects.toThrow(
       'askHuman tool requires @langchain/langgraph to be installed. Install it with: npm install @langchain/langgraph'
     );
-  });
+  }, 10000);
 
   it('throws a compatibility error when interrupt is unavailable', async () => {
     vi.doMock('@langchain/langgraph', () => ({ interrupt: undefined }));
