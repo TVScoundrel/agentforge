@@ -2143,7 +2143,7 @@
 **Priority:** P2 (Medium)
 **Estimate:** 2 hours
 **Dependencies:** ST-09070 (merged)
-**Status:** Ready
+**Status:** In Progress
 
 **Acceptance criteria:**
 - [ ] `packages/patterns/src/multi-agent/utils-react-wrapper.ts` aligns error-path assignment selection with the same incomplete-assignment targeting semantics used in the success path, or explicitly centralizes both branches on one shared selector.
