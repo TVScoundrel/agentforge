@@ -5,6 +5,33 @@ All notable changes to AgentForge will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.16.63] - 2026-06-30
+
+### Added
+
+#### @agentforge/patterns - Wrapped ReAct Assignment Regression Coverage
+- Added focused wrapped ReAct assignment-selection regression coverage in `packages/patterns/tests/multi-agent/utils/wrap-react-agent.suite.ts` to prove the error path targets the active assignment rather than already-completed work for the same worker
+- Added story documentation in `docs/st09076-wrap-react-error-assignment-alignment.md` capturing the shared-selector fix, compatibility rationale, and validation evidence
+
+### Changed
+
+#### @agentforge/patterns - Wrapped ReAct Error Assignment Selection
+- Aligned `packages/patterns/src/multi-agent/utils-react-wrapper.ts` so both success and error branches resolve through the same incomplete-assignment selector, preserving existing wrapped ReAct behavior and error payloads while removing inconsistent completed-assignment targeting
+
+### Fixed
+
+#### Workspace - Full-Suite Cold-Start Stability
+- Added explicit timeout headroom to the three known cold-start-sensitive tests so the canonical `pnpm release:validate` path stays green under full-suite load without changing production runtime behavior
+
+### Published
+- All packages published to npm registry at version 0.16.63:
+  - @agentforge/core@0.16.63
+  - @agentforge/skills@0.16.63
+  - @agentforge/patterns@0.16.63
+  - @agentforge/tools@0.16.63
+  - @agentforge/testing@0.16.63
+  - @agentforge/cli@0.16.63
+
 ## [0.16.62] - 2026-06-29
 
 ### Added
