@@ -4,17 +4,18 @@
 
 ## Queue Status Summary
 
-- **Ready:** 0 stories
+- **Ready:** 1 story
 - **In Progress:** 0 stories
-- **In Review:** 1 story
+- **In Review:** 0 stories
 - **Blocked:** 0 stories
-- **Backlog:** 5 stories
+- **Backlog:** 4 stories
 
 ---
 
 ## Ready
 
-None currently.
+- `ST-09078` - Modularize Relational Streaming SELECT Executor
+  - Depends on: none
 
 ---
 
@@ -26,8 +27,7 @@ None currently.
 
 ## In Review
 
-- `ST-09076` - Align Wrapped ReAct Error Assignment Selection
-  - Depends on: `ST-09070` (merged 2026-06-23)
+None currently.
 
 ## Blocked
 
@@ -37,8 +37,6 @@ _No stories currently blocked_
 
 ## Backlog
 
-- `ST-09078` - Modularize Relational Streaming SELECT Executor
-  - Depends on: none
 - `ST-09079` - Modularize CLI Tool Publish Command and Tests
   - Depends on: `ST-09017` (merged 2026-03-27)
 - `ST-09080` - Modularize Multi-Agent Schemas and Schema-Centric Tests
@@ -141,6 +139,7 @@ _No stories currently blocked_
 - `ST-09077` was promoted to the front of `Ready` on 2026-06-29 because the release-process friction is worth fixing before the next two patterns-focused follow-up stories
 - ST-09077 complete - release-time pnpm validation path stabilized with committed build approvals, a fast-fail approval guard, and canonical `pnpm release:validate` maintainer guidance (merged 2026-06-28, PR #144); ready lane returns to `ST-09075` then `ST-09076`
 - ST-09075 complete - ReAct-agent detection hardened around compiled LangGraph runtime shape with constructor-name fallback compatibility preserved (merged 2026-06-29, PR #145); ready lane advances to `ST-09076`
+- ST-09076 complete - wrapped ReAct error assignment selection aligned with the shared incomplete-assignment selector, plus focused regression coverage and cold-start timeout headroom for the three known flaky full-suite tests (merged 2026-06-30, PR #146); ready lane advances to `ST-09078`
 - Epic 09 was expanded on 2026-06-30 with follow-on backlog stories `ST-09078` through `ST-09082` to replenish the daily SOLID/DRY/modularization lane with one remaining relational runtime split, one CLI command/test split, one multi-agent schema split, one monitoring split, and a smaller relational helper de-duplication slice
 - Complete: ST-10005 - documentation emoji guardrails added to contributor guidance (PR #104, 2026-05-05)
 - Complete: ST-10004 - example/template docs emoji normalization merged (PR #102, 2026-05-05)

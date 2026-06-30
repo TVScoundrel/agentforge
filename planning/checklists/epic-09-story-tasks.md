@@ -3240,7 +3240,8 @@ Implementation notes:
   - `pnpm lint` -> exit `0`; warnings only (`0` errors)
 - [x] Commit completed checklist items as logical commits and push updates
 - [x] Mark PR Ready only after all story tasks are complete
-- [ ] Wait for merge; do not merge directly from local branch
+- [x] Wait for merge; do not merge directly from local branch
+  - Merged via PR #146 on 2026-06-30
 
 ---
 

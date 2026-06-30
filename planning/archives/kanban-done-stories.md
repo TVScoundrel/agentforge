@@ -2,11 +2,18 @@
 
 **Purpose:** Track completed and merged stories for the Relational Database Access Tool project.
 
-**Last Updated:** 2026-06-29
+**Last Updated:** 2026-06-30
 
 ---
 
 ## Completed Stories
+
+### ST-09076: Align Wrapped ReAct Error Assignment Selection
+- **Merged:** 2026-06-30
+- **PR:** https://github.com/TVScoundrel/agentforge/pull/146 (commit 3e713735)
+- **Epic:** EP-09 (SOLID Micro-Refactors and Type Boundary Hardening)
+- **Estimate:** 2 hours
+- **Outcome:** Aligned `wrapReActAgent(...)` so both success and error branches resolve through the same incomplete-assignment selector in `packages/patterns/src/multi-agent/utils-react-wrapper.ts`, preventing wrapped worker failures from targeting already-completed assignments when an active assignment still exists for the same worker. The story added a focused regression in the wrapped multi-agent utility suite, documented the compatibility rationale in `docs/st09076-wrap-react-error-assignment-alignment.md`, and removed the remaining full-suite review blocker by adding explicit timeout headroom to the three known cold-start-sensitive tests while keeping the explicit-`any` baseline flat at `workspace 80/289` and `patterns 2/28`.
 
 ### ST-09075: Harden ReAct Agent Detection Beyond Constructor Names
 - **Merged:** 2026-06-29
