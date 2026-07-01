@@ -5,6 +5,32 @@ All notable changes to AgentForge will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.16.64] - 2026-07-01
+
+### Added
+
+#### @agentforge/tools - Filtered Package Validation Coverage
+- Added story documentation in `docs/st09083-tools-filtered-vitest-validation-path.md` capturing the package-scoped Vitest-path fix, validation rationale, and no-regression evidence
+
+### Changed
+
+#### @agentforge/tools - Package-Scoped Vitest Validation Path
+- Added a tools-local Vitest config in `packages/tools/vitest.config.ts` and pointed the `@agentforge/tools` test scripts at it so `pnpm --filter @agentforge/tools test --run` resolves the intended suite from the workspace root without relying on a root-run workaround
+
+### Fixed
+
+#### @agentforge/tools - Filtered Tools Test Discovery
+- Restored the documented package-scoped release and story validation path by fixing the package-cwd test-discovery mismatch that previously made the filtered tools test command report `No test files found`
+
+### Published
+- All packages published to npm registry at version 0.16.64:
+  - @agentforge/core@0.16.64
+  - @agentforge/skills@0.16.64
+  - @agentforge/patterns@0.16.64
+  - @agentforge/tools@0.16.64
+  - @agentforge/testing@0.16.64
+  - @agentforge/cli@0.16.64
+
 ## [0.16.63] - 2026-06-30
 
 ### Added
