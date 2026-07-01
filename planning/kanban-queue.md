@@ -14,6 +14,8 @@
 
 ## Ready
 
+- `ST-09083` - Fix Tools Package Filtered Vitest Validation Path
+  - Depends on: `ST-09078` (merged 2026-07-01)
 - `ST-09079` - Modularize CLI Tool Publish Command and Tests
   - Depends on: `ST-09017` (merged 2026-03-27)
 - `ST-09080` - Modularize Multi-Agent Schemas and Schema-Centric Tests
@@ -21,8 +23,6 @@
 - `ST-09081` - Modularize Monitoring Alert Manager and Tests
   - Depends on: `ST-09016` (merged 2026-03-26)
 - `ST-09082` - Centralize Relational Row Extraction Helpers
-  - Depends on: `ST-09078` (merged 2026-07-01)
-- `ST-09083` - Fix Tools Package Filtered Vitest Validation Path
   - Depends on: `ST-09078` (merged 2026-07-01)
 
 ---
