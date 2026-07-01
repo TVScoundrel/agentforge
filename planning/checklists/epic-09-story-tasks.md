@@ -3315,7 +3315,8 @@ Implementation notes:
   - Includes a follow-up checklist/tracker sync commit for review readiness
 - [x] Mark PR Ready only after all story tasks are complete
   - PR #147 ready for review: https://github.com/TVScoundrel/agentforge/pull/147
-- [ ] Wait for merge; do not merge directly from local branch
+- [x] Wait for merge; do not merge directly from local branch
+  - Merged via PR #147 on 2026-07-01
 
 ---
 

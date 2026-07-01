@@ -2,11 +2,18 @@
 
 **Purpose:** Track completed and merged stories for the Relational Database Access Tool project.
 
-**Last Updated:** 2026-06-30
+**Last Updated:** 2026-07-01
 
 ---
 
 ## Completed Stories
+
+### ST-09078: Modularize Relational Streaming SELECT Executor
+- **Merged:** 2026-07-01
+- **PR:** https://github.com/TVScoundrel/agentforge/pull/147 (commit ee9e5a80)
+- **Epic:** EP-09 (SOLID Micro-Refactors and Type Boundary Hardening)
+- **Estimate:** 4 hours
+- **Outcome:** Modularized `@agentforge/tools` streaming SELECT execution by shrinking `packages/tools/src/data/relational/query/stream-executor.ts` from a `359` line mixed-responsibility runtime to a `19` line public facade, extracting focused option normalization, runtime row/cancellation helpers, chunk pagination, streaming execution, and benchmark modules while preserving `streamSelectChunks(...)`, `createSelectReadableStream(...)`, `executeStreamingSelect(...)`, `benchmarkStreamingSelectMemory(...)`, and all related public types. The story also replaced the single streaming executor test body with focused chunking, execution, and benchmark suites, added characterization coverage for total-row limits plus collect-vs-sample behavior, documented the package-filtered Vitest command quirk as the follow-up story `ST-09083` instead of broadening scope, and promoted `ST-09082` plus `ST-09083` into `Ready` once the dependency merged.
 
 ### ST-09076: Align Wrapped ReAct Error Assignment Selection
 - **Merged:** 2026-06-30

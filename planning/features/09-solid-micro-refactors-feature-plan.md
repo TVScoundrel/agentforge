@@ -3,7 +3,7 @@
 **Epic Range:** EP-09 through EP-09
 **Status:** In Progress
 **Last Updated:** 2026-07-01
-**Active Story:** ST-09078 - Modularize Relational Streaming SELECT Executor (In Review)
+**Active Story:** ST-09079 - Modularize CLI Tool Publish Command and Tests (Ready)
 
 ---
 
@@ -125,6 +125,7 @@ Recent improvement snapshot:
 - `ST-09077` was promoted to the front of the ready lane on 2026-06-29 because the release-process friction is now a higher-priority maintainer pain point than the two remaining patterns follow-up slices.
 - `ST-09078` through `ST-09082` were added on 2026-06-30 to replenish the post-`ST-09076` queue with another dependency-safe batch across the remaining relational streaming runtime split, a CLI publish command/test split, a multi-agent schema split, a monitoring alert split, and a smaller relational helper de-duplication slice.
 - `ST-09083` was added on 2026-07-01 as a post-`ST-09078` follow-up to restore the documented `pnpm --filter @agentforge/tools test --run` validation path after the streaming executor story confirmed that the current filtered package invocation still misses the tools suite from the package cwd.
+- `ST-09078` merged on 2026-07-01 after shrinking `packages/tools/src/data/relational/query/stream-executor.ts` from a `359` line mixed-responsibility runtime to a `19` line public facade, extracting focused options, runtime, chunking, execution, and benchmark helpers while preserving all public streaming SELECT exports and types. The story also replaced the single streaming test body with focused chunking, execution, and benchmark suites, added characterization coverage for total-row limits plus collect-vs-sample behavior, documented the filtered package-test invocation quirk as a follow-on story instead of broadening the refactor scope, and promoted `ST-09082` plus `ST-09083` into the ready lane now that their `ST-09078` dependency is merged.
 - The refreshed follow-on queue now extends beyond the current Ready lane so another few weeks of small SOLID/DRY and modularization work can be pulled without re-planning the epic.
 
 ---

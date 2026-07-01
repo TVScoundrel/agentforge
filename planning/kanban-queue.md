@@ -4,17 +4,26 @@
 
 ## Queue Status Summary
 
-- **Ready:** 0 stories
+- **Ready:** 5 stories
 - **In Progress:** 0 stories
-- **In Review:** 1 story
+- **In Review:** 0 stories
 - **Blocked:** 0 stories
-- **Backlog:** 5 stories
+- **Backlog:** 0 stories
 
 ---
 
 ## Ready
 
-None currently.
+- `ST-09079` - Modularize CLI Tool Publish Command and Tests
+  - Depends on: `ST-09017` (merged 2026-03-27)
+- `ST-09080` - Modularize Multi-Agent Schemas and Schema-Centric Tests
+  - Depends on: `ST-09060` (merged 2026-06-08)
+- `ST-09081` - Modularize Monitoring Alert Manager and Tests
+  - Depends on: `ST-09016` (merged 2026-03-26)
+- `ST-09082` - Centralize Relational Row Extraction Helpers
+  - Depends on: `ST-09078` (merged 2026-07-01)
+- `ST-09083` - Fix Tools Package Filtered Vitest Validation Path
+  - Depends on: `ST-09078` (merged 2026-07-01)
 
 ---
 
@@ -26,8 +35,7 @@ None currently.
 
 ## In Review
 
-- `ST-09078` - Modularize Relational Streaming SELECT Executor
-  - Depends on: none
+None currently.
 
 ## Blocked
 
@@ -37,16 +45,7 @@ _No stories currently blocked_
 
 ## Backlog
 
-- `ST-09079` - Modularize CLI Tool Publish Command and Tests
-  - Depends on: `ST-09017` (merged 2026-03-27)
-- `ST-09080` - Modularize Multi-Agent Schemas and Schema-Centric Tests
-  - Depends on: `ST-09060` (merged 2026-06-08)
-- `ST-09081` - Modularize Monitoring Alert Manager and Tests
-  - Depends on: `ST-09016` (merged 2026-03-26)
-- `ST-09082` - Centralize Relational Row Extraction Helpers
-  - Depends on: `ST-09078`
-- `ST-09083` - Fix Tools Package Filtered Vitest Validation Path
-  - Depends on: `ST-09078`
+None currently.
 
 ---
 
@@ -78,6 +77,7 @@ _No stories currently blocked_
 - Epic 04 (Advanced Features and Optimization) is now complete - all 3 stories merged
 - Epic 05 (Documentation, Examples, and Testing) is now complete — all 5 stories merged
 - New Epic 06 (Agent Skills Compatibility) is planned and queued in Backlog for sequencing after current ready work
+- ST-09078 complete - relational streaming SELECT executor and tests modularized (merged 2026-07-01, PR #147); `ST-09079` through `ST-09083` are now all dependency-ready in `Ready`, including `ST-09082` and `ST-09083` after their `ST-09078` dependency merged
 - Complete: ST-06001 - SkillRegistry with folder-config auto-discovery (merged 2026-02-24)
 - Complete: ST-06002 - generatePrompt() and system prompt integration (merged 2026-02-24)
 - Complete: ST-06003 - skill activation and resource tools (merged 2026-02-24)
