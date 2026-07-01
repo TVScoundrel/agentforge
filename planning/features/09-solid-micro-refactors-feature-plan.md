@@ -124,6 +124,7 @@ Recent improvement snapshot:
 - `EP-09` remains open as the daily hardening stream, with `ST-09078` now the next ready story after `ST-09076` merged.
 - `ST-09077` was promoted to the front of the ready lane on 2026-06-29 because the release-process friction is now a higher-priority maintainer pain point than the two remaining patterns follow-up slices.
 - `ST-09078` through `ST-09082` were added on 2026-06-30 to replenish the post-`ST-09076` queue with another dependency-safe batch across the remaining relational streaming runtime split, a CLI publish command/test split, a multi-agent schema split, a monitoring alert split, and a smaller relational helper de-duplication slice.
+- `ST-09083` was added on 2026-07-01 as a post-`ST-09078` follow-up to restore the documented `pnpm --filter @agentforge/tools test --run` validation path after the streaming executor story confirmed that the current filtered package invocation still misses the tools suite from the package cwd.
 - The refreshed follow-on queue now extends beyond the current Ready lane so another few weeks of small SOLID/DRY and modularization work can be pulled without re-planning the epic.
 
 ---

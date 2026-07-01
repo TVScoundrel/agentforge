@@ -3412,3 +3412,27 @@ Implementation notes:
 - [ ] Commit completed checklist items as logical commits and push updates
 - [ ] Mark PR Ready only after all story tasks are complete
 - [ ] Wait for merge; do not merge directly from local branch
+
+---
+
+## ST-09083: Fix Tools Package Filtered Vitest Validation Path
+
+**Branch:** `fix/st-09083-tools-filtered-vitest-validation-path`
+
+### Checklist
+- [ ] Create branch `fix/st-09083-tools-filtered-vitest-validation-path`
+- [ ] Create draft PR with story ID in title
+- [ ] Define test strategy before implementation: cover the filtered `@agentforge/tools` package invocation, the expected discovered test surface, and any touched Vitest/package-script configuration
+- [ ] Write or update the failing automated test before production changes when practical; if not practical, record why before implementation
+- [ ] Update the tools-package Vitest/script configuration so `pnpm --filter @agentforge/tools test --run` executes the intended tools suite from the workspace root without relying on a root-run workaround
+- [ ] Preserve existing workspace-root `pnpm test --run` behavior and avoid breaking other package test flows while fixing the filtered command path
+- [ ] Add/update focused validation or config coverage so the filtered package command regression is explicitly exercised
+- [ ] Add/update production or configuration files until focused tests pass, keeping test evidence in checklist notes and PR body
+- [ ] Record explicit-`any` warning deltas and the validation-path compatibility rationale for touched modules/configuration in story docs
+- [ ] Add or update story documentation at `docs/st09083-tools-filtered-vitest-validation-path.md` (or document why not required)
+- [ ] Assess residual test impact; add/update additional automated tests when needed, or document why no further tests are required
+- [ ] Run full test suite before finalizing the PR and record results
+- [ ] Run lint (`pnpm lint`) before finalizing the PR and record results
+- [ ] Commit completed checklist items as logical commits and push updates
+- [ ] Mark PR Ready only after all story tasks are complete
+- [ ] Wait for merge; do not merge directly from local branch

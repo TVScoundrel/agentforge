@@ -8,7 +8,7 @@
 - **In Progress:** 0 stories
 - **In Review:** 1 story
 - **Blocked:** 0 stories
-- **Backlog:** 4 stories
+- **Backlog:** 5 stories
 
 ---
 
@@ -44,6 +44,8 @@ _No stories currently blocked_
 - `ST-09081` - Modularize Monitoring Alert Manager and Tests
   - Depends on: `ST-09016` (merged 2026-03-26)
 - `ST-09082` - Centralize Relational Row Extraction Helpers
+  - Depends on: `ST-09078`
+- `ST-09083` - Fix Tools Package Filtered Vitest Validation Path
   - Depends on: `ST-09078`
 
 ---

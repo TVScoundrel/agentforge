@@ -2257,6 +2257,23 @@
 
 ---
 
+#### ST-09083: Fix Tools Package Filtered Vitest Validation Path
+**User story:** As a tools maintainer, I want `pnpm --filter @agentforge/tools test --run` to execute the intended tools test surface from the package context so story and release validation can rely on the documented package-scoped command instead of a root-run workaround.
+
+**Priority:** P2 (Medium)
+**Estimate:** 2 hours
+**Dependencies:** ST-09078
+**Status:** Backlog
+
+**Acceptance criteria:**
+- [ ] The `@agentforge/tools` package test command path is updated so `pnpm --filter @agentforge/tools test --run` discovers and runs the intended tools test suite when executed from the workspace root.
+- [ ] The fix preserves current root-level test behavior and does not break workspace-wide `pnpm test --run` execution or other package test flows.
+- [ ] Focused validation covers the filtered package invocation plus any touched Vitest/package-script configuration so the discovery regression is prevented from returning silently.
+- [ ] `pnpm --filter @agentforge/tools test --run`, `pnpm --filter @agentforge/tools typecheck`, `pnpm test --run`, and `pnpm lint:explicit-any:baseline` pass with no baseline regression.
+- [ ] Add or update story documentation at `docs/st09083-tools-filtered-vitest-validation-path.md`
+
+---
+
 #### ST-10001: Audit Markdown Emoji Usage Across Project-Owned Docs
 **User story:** As a maintainer, I want a clear inventory of markdown emoji usage so docs-only cleanup work can be prioritized and executed without noisy, repo-wide guesswork.
 
