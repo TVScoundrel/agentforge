@@ -2,8 +2,8 @@
 
 **Epic Range:** EP-09 through EP-09
 **Status:** In Progress
-**Last Updated:** 2026-06-30
-**Active Story:** ST-09078 - Modularize Relational Streaming SELECT Executor (Ready)
+**Last Updated:** 2026-07-01
+**Active Story:** ST-09078 - Modularize Relational Streaming SELECT Executor (In Review)
 
 ---
 

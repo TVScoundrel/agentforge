@@ -2178,7 +2178,7 @@
 **Priority:** P2 (Medium)
 **Estimate:** 4 hours
 **Dependencies:** None
-**Status:** Backlog
+**Status:** In Review
 
 **Acceptance criteria:**
 - [ ] `packages/tools/src/data/relational/query/stream-executor.ts` is reduced to a small stable public facade or clearly separated orchestration layer while extracted helpers keep pagination/limit normalization, row extraction, memory tracking, cancellation handling, and benchmark flow below the planning cutoff unless an exception is documented.

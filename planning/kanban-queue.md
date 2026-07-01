@@ -1,12 +1,12 @@
 # Kanban Queue: AgentForge
 
-**Last Updated:** 2026-06-30
+**Last Updated:** 2026-07-01
 
 ## Queue Status Summary
 
-- **Ready:** 1 story
+- **Ready:** 0 stories
 - **In Progress:** 0 stories
-- **In Review:** 0 stories
+- **In Review:** 1 story
 - **Blocked:** 0 stories
 - **Backlog:** 4 stories
 
@@ -14,8 +14,7 @@
 
 ## Ready
 
-- `ST-09078` - Modularize Relational Streaming SELECT Executor
-  - Depends on: none
+None currently.
 
 ---
 
@@ -27,7 +26,8 @@ None currently.
 
 ## In Review
 
-None currently.
+- `ST-09078` - Modularize Relational Streaming SELECT Executor
+  - Depends on: none
 
 ## Blocked
 

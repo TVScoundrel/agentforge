@@ -3290,21 +3290,31 @@ Implementation notes:
 **Branch:** `refactor/st-09078-relational-streaming-select-modularization`
 
 ### Checklist
-- [ ] Create branch `refactor/st-09078-relational-streaming-select-modularization`
-- [ ] Create draft PR with story ID in title
-- [ ] Define test strategy before implementation: cover chunk sizing, total-row limits, cancellation, sample-vs-collectAllRows behavior, and benchmark parity through focused streaming executor coverage
-- [ ] Write or update the failing automated test before production changes when practical; if not practical, record why before implementation
-- [ ] Reduce `packages/tools/src/data/relational/query/stream-executor.ts` to a smaller public facade or clearly separated orchestration layer while extracting focused pagination, normalization, row-extraction, memory-tracking, cancellation, and benchmark helpers
-- [ ] Preserve public exports and runtime behavior for `streamSelectChunks(...)`, `createSelectReadableStream(...)`, `executeStreamingSelect(...)`, `benchmarkStreamingSelectMemory(...)`, and their related option/result types
-- [ ] Add/update focused streaming executor tests so chunk limits, cancellation, sampled-vs-collected rows, and benchmark behavior are covered without relying only on broad relational SELECT suites
-- [ ] Add/update production code until focused tests pass, keeping test evidence in checklist notes and PR body
-- [ ] Record explicit-`any` warning deltas and the streaming compatibility rationale for touched modules in story docs
-- [ ] Add or update story documentation at `docs/st09078-relational-streaming-select-modularization.md` (or document why not required)
-- [ ] Assess residual test impact; add/update additional automated tests when needed, or document why no further tests are required
-- [ ] Run full test suite before finalizing the PR and record results
-- [ ] Run lint (`pnpm lint`) before finalizing the PR and record results
-- [ ] Commit completed checklist items as logical commits and push updates
-- [ ] Mark PR Ready only after all story tasks are complete
+- [x] Create branch `refactor/st-09078-relational-streaming-select-modularization`
+- [x] Create draft PR with story ID in title
+  - PR #147: https://github.com/TVScoundrel/agentforge/pull/147
+- [x] Define test strategy before implementation: cover chunk sizing, total-row limits, cancellation, sample-vs-collectAllRows behavior, and benchmark parity through focused streaming executor coverage
+  - Characterization-first for a behavior-preserving refactor; added focused total-row-limit and collect-vs-sample coverage before production edits
+- [x] Write or update the failing automated test before production changes when practical; if not practical, record why before implementation
+  - Added focused streaming executor suites before production edits; they passed on the original implementation, so no meaningful red-first phase existed for this modularization-only story
+- [x] Reduce `packages/tools/src/data/relational/query/stream-executor.ts` to a smaller public facade or clearly separated orchestration layer while extracting focused pagination, normalization, row-extraction, memory-tracking, cancellation, and benchmark helpers
+- [x] Preserve public exports and runtime behavior for `streamSelectChunks(...)`, `createSelectReadableStream(...)`, `executeStreamingSelect(...)`, `benchmarkStreamingSelectMemory(...)`, and their related option/result types
+- [x] Add/update focused streaming executor tests so chunk limits, cancellation, sampled-vs-collected rows, and benchmark behavior are covered without relying only on broad relational SELECT suites
+- [x] Add/update production code until focused tests pass, keeping test evidence in checklist notes and PR body
+  - `./node_modules/.bin/vitest --run packages/tools/tests/data/relational/relational-select/stream-executor.test.ts` -> `1` file passed, `7` tests passed
+- [x] Record explicit-`any` warning deltas and the streaming compatibility rationale for touched modules in story docs
+- [x] Add or update story documentation at `docs/st09078-relational-streaming-select-modularization.md` (or document why not required)
+- [x] Assess residual test impact; add/update additional automated tests when needed, or document why no further tests are required
+  - Added total-row-limit and collect-vs-sample characterization coverage; no further streaming-specific gaps found beyond the broader relational SELECT coverage
+- [x] Run full test suite before finalizing the PR and record results
+  - `pnpm test --run` -> `222` passed | `9` skipped files; `2511` passed | `110` skipped tests
+- [x] Run lint (`pnpm lint`) before finalizing the PR and record results
+  - `pnpm lint` -> exit `0`; warnings only (`0` errors)
+- [x] Commit completed checklist items as logical commits and push updates
+  - `4256d2dc` refactor(st-09078): modularize streaming select executor
+  - Includes a follow-up checklist/tracker sync commit for review readiness
+- [x] Mark PR Ready only after all story tasks are complete
+  - PR #147 ready for review: https://github.com/TVScoundrel/agentforge/pull/147
 - [ ] Wait for merge; do not merge directly from local branch
 
 ---
