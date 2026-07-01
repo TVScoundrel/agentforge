@@ -2263,7 +2263,7 @@
 **Priority:** P2 (Medium)
 **Estimate:** 2 hours
 **Dependencies:** ST-09078
-**Status:** In Review
+**Status:** Merged (PR #148, 2026-07-01)
 
 **Acceptance criteria:**
 - [ ] The `@agentforge/tools` package test command path is updated so `pnpm --filter @agentforge/tools test --run` discovers and runs the intended tools test suite when executed from the workspace root.

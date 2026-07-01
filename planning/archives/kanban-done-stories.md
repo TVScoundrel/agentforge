@@ -8,6 +8,13 @@
 
 ## Completed Stories
 
+### ST-09083: Fix Tools Package Filtered Vitest Validation Path
+- **Merged:** 2026-07-01
+- **PR:** https://github.com/TVScoundrel/agentforge/pull/148 (commit a93a8771)
+- **Epic:** EP-09 (SOLID Micro-Refactors and Type Boundary Hardening)
+- **Estimate:** 2 hours
+- **Outcome:** Restored the documented package-scoped tools validation path by adding `packages/tools/vitest.config.ts` and pointing the `@agentforge/tools` test scripts at that local config, so `pnpm --filter @agentforge/tools test --run` once again discovers and runs the intended tools suite from the workspace root. The story preserved root-level `pnpm test --run` behavior, documented the configuration-fix rationale in `docs/st09083-tools-filtered-vitest-validation-path.md`, kept the explicit-`any` baseline flat, and returned the ready lane to the remaining EP-09 follow-up stories with `ST-09082` moved to the front as the next small dependency-safe slice.
+
 ### ST-09078: Modularize Relational Streaming SELECT Executor
 - **Merged:** 2026-07-01
 - **PR:** https://github.com/TVScoundrel/agentforge/pull/147 (commit ee9e5a80)

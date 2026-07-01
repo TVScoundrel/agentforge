@@ -6,7 +6,7 @@
 
 - **Ready:** 4 stories
 - **In Progress:** 0 stories
-- **In Review:** 1 story
+- **In Review:** 0 stories
 - **Blocked:** 0 stories
 - **Backlog:** 0 stories
 
@@ -14,14 +14,14 @@
 
 ## Ready
 
+- `ST-09082` - Centralize Relational Row Extraction Helpers
+  - Depends on: `ST-09078` (merged 2026-07-01)
 - `ST-09079` - Modularize CLI Tool Publish Command and Tests
   - Depends on: `ST-09017` (merged 2026-03-27)
 - `ST-09080` - Modularize Multi-Agent Schemas and Schema-Centric Tests
   - Depends on: `ST-09060` (merged 2026-06-08)
 - `ST-09081` - Modularize Monitoring Alert Manager and Tests
   - Depends on: `ST-09016` (merged 2026-03-26)
-- `ST-09082` - Centralize Relational Row Extraction Helpers
-  - Depends on: `ST-09078` (merged 2026-07-01)
 
 ---
 
@@ -33,8 +33,7 @@ None currently.
 
 ## In Review
 
-- `ST-09083` - Fix Tools Package Filtered Vitest Validation Path
-  - Depends on: `ST-09078` (merged 2026-07-01)
+None currently.
 
 ## Blocked
 
@@ -142,6 +141,7 @@ None currently.
 - ST-09075 complete - ReAct-agent detection hardened around compiled LangGraph runtime shape with constructor-name fallback compatibility preserved (merged 2026-06-29, PR #145); ready lane advances to `ST-09076`
 - ST-09076 complete - wrapped ReAct error assignment selection aligned with the shared incomplete-assignment selector, plus focused regression coverage and cold-start timeout headroom for the three known flaky full-suite tests (merged 2026-06-30, PR #146); ready lane advances to `ST-09078`
 - Epic 09 was expanded on 2026-06-30 with follow-on backlog stories `ST-09078` through `ST-09082` to replenish the daily SOLID/DRY/modularization lane with one remaining relational runtime split, one CLI command/test split, one multi-agent schema split, one monitoring split, and a smaller relational helper de-duplication slice
+- ST-09083 complete - tools-package filtered Vitest validation path restored via a package-local config and package-script wiring fix (merged 2026-07-01, PR #148); no new promotions were needed because `ST-09079` through `ST-09082` were already dependency-ready, and the ready lane now starts with the smaller relational follow-up `ST-09082`
 - Complete: ST-10005 - documentation emoji guardrails added to contributor guidance (PR #104, 2026-05-05)
 - Complete: ST-10004 - example/template docs emoji normalization merged (PR #102, 2026-05-05)
 - Complete: ST-10003 - planning and internal docs emoji normalization merged (PR #101, 2026-05-04)

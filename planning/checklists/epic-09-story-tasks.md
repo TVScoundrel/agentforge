@@ -3446,7 +3446,8 @@ Implementation notes:
   - `pnpm lint` -> exit `0`; warnings only (`0` errors)
 - [x] Commit completed checklist items as logical commits and push updates
   - `b051016e` fix(st-09083): restore tools filtered vitest path
-  - Tracker/checklist follow-up commit pending for the ready-state transition
+  - `131c4342` docs(st-09083): record validation and move story to in-review
 - [x] Mark PR Ready only after all story tasks are complete
-  - PR #148 will be marked ready after this tracker/checklist sync commit is pushed
-- [ ] Wait for merge; do not merge directly from local branch
+  - PR #148 marked ready: https://github.com/TVScoundrel/agentforge/pull/148
+- [x] Wait for merge; do not merge directly from local branch
+  - Merged via PR #148 on 2026-07-01 (merge commit `a93a8771`)
