@@ -2195,7 +2195,7 @@
 **Priority:** P2 (Medium)
 **Estimate:** 4 hours
 **Dependencies:** ST-09017 (merged)
-**Status:** Backlog
+**Status:** In Review
 
 **Acceptance criteria:**
 - [ ] `packages/cli/src/commands/tool/publish.ts` is reduced to a smaller public command facade or clearly separated orchestration layer while path resolution, package validation, optional test/build execution, and npm publish result handling move into focused helpers that stay below the planning cutoff unless an exception is documented.
@@ -2212,7 +2212,7 @@
 **Priority:** P2 (Medium)
 **Estimate:** 3 hours
 **Dependencies:** ST-09060 (merged)
-**Status:** Backlog
+**Status:** In Review
 
 **Acceptance criteria:**
 - [ ] `packages/patterns/src/multi-agent/schemas.ts` becomes a small stable facade or clearly grouped orchestration module while message, routing, worker, assignment/result, and handoff/status schemas move into focused internal modules that stay below the planning cutoff unless an exception is documented.
@@ -2229,7 +2229,7 @@
 **Priority:** P2 (Medium)
 **Estimate:** 3 hours
 **Dependencies:** ST-09016 (merged)
-**Status:** Backlog
+**Status:** In Progress
 
 **Acceptance criteria:**
 - [ ] `packages/core/src/monitoring/alerts.ts` is reduced to a smaller public facade or clearly separated orchestration layer while channel dispatch, throttle/rule evaluation, and error-payload/reporting helpers move into focused modules that stay below the planning cutoff unless an exception is documented.
@@ -2263,7 +2263,7 @@
 **Priority:** P2 (Medium)
 **Estimate:** 2 hours
 **Dependencies:** ST-09078
-**Status:** Backlog
+**Status:** In Review
 
 **Acceptance criteria:**
 - [ ] The `@agentforge/tools` package test command path is updated so `pnpm --filter @agentforge/tools test --run` discovers and runs the intended tools test suite when executed from the workspace root.

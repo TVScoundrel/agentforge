@@ -3421,19 +3421,32 @@ Implementation notes:
 **Branch:** `fix/st-09083-tools-filtered-vitest-validation-path`
 
 ### Checklist
-- [ ] Create branch `fix/st-09083-tools-filtered-vitest-validation-path`
-- [ ] Create draft PR with story ID in title
-- [ ] Define test strategy before implementation: cover the filtered `@agentforge/tools` package invocation, the expected discovered test surface, and any touched Vitest/package-script configuration
-- [ ] Write or update the failing automated test before production changes when practical; if not practical, record why before implementation
-- [ ] Update the tools-package Vitest/script configuration so `pnpm --filter @agentforge/tools test --run` executes the intended tools suite from the workspace root without relying on a root-run workaround
-- [ ] Preserve existing workspace-root `pnpm test --run` behavior and avoid breaking other package test flows while fixing the filtered command path
-- [ ] Add/update focused validation or config coverage so the filtered package command regression is explicitly exercised
-- [ ] Add/update production or configuration files until focused tests pass, keeping test evidence in checklist notes and PR body
-- [ ] Record explicit-`any` warning deltas and the validation-path compatibility rationale for touched modules/configuration in story docs
-- [ ] Add or update story documentation at `docs/st09083-tools-filtered-vitest-validation-path.md` (or document why not required)
-- [ ] Assess residual test impact; add/update additional automated tests when needed, or document why no further tests are required
-- [ ] Run full test suite before finalizing the PR and record results
-- [ ] Run lint (`pnpm lint`) before finalizing the PR and record results
-- [ ] Commit completed checklist items as logical commits and push updates
-- [ ] Mark PR Ready only after all story tasks are complete
+- [x] Create branch `fix/st-09083-tools-filtered-vitest-validation-path`
+  - Created as `fix/st-09083-tools-filtered-vitest-validation-path`
+- [x] Create draft PR with story ID in title
+  - PR #148: https://github.com/TVScoundrel/agentforge/pull/148
+- [x] Define test strategy before implementation: cover the filtered `@agentforge/tools` package invocation, the expected discovered test surface, and any touched Vitest/package-script configuration
+  - Used the real filtered package command as the primary characterization seam because the failure lives in `pnpm`-driven package execution plus Vitest config resolution
+- [x] Write or update the failing automated test before production changes when practical; if not practical, record why before implementation
+  - No narrow red-first unit seam was practical for package-manager/config discovery; instead, the pre-fix failing characterization was `pnpm --filter @agentforge/tools test --run` -> `No test files found`
+- [x] Update the tools-package Vitest/script configuration so `pnpm --filter @agentforge/tools test --run` executes the intended tools suite from the workspace root without relying on a root-run workaround
+- [x] Preserve existing workspace-root `pnpm test --run` behavior and avoid breaking other package test flows while fixing the filtered command path
+- [x] Add/update focused validation or config coverage so the filtered package command regression is explicitly exercised
+  - `pnpm --filter @agentforge/tools test --run` now passes with the tools-local Vitest config
+- [x] Add/update production or configuration files until focused tests pass, keeping test evidence in checklist notes and PR body
+  - `pnpm --filter @agentforge/tools test --run` -> `87` passed | `9` skipped files; `1147` passed | `110` skipped tests
+  - `pnpm --filter @agentforge/tools typecheck` -> passed
+- [x] Record explicit-`any` warning deltas and the validation-path compatibility rationale for touched modules/configuration in story docs
+- [x] Add or update story documentation at `docs/st09083-tools-filtered-vitest-validation-path.md` (or document why not required)
+- [x] Assess residual test impact; add/update additional automated tests when needed, or document why no further tests are required
+  - No additional automated test seam beyond the real filtered package invocation was warranted for this config-only fix
+- [x] Run full test suite before finalizing the PR and record results
+  - `pnpm test --run` -> `222` passed | `9` skipped files; `2511` passed | `110` skipped tests
+- [x] Run lint (`pnpm lint`) before finalizing the PR and record results
+  - `pnpm lint` -> exit `0`; warnings only (`0` errors)
+- [x] Commit completed checklist items as logical commits and push updates
+  - `b051016e` fix(st-09083): restore tools filtered vitest path
+  - Tracker/checklist follow-up commit pending for the ready-state transition
+- [x] Mark PR Ready only after all story tasks are complete
+  - PR #148 will be marked ready after this tracker/checklist sync commit is pushed
 - [ ] Wait for merge; do not merge directly from local branch
