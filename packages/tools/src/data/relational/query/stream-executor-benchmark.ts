@@ -1,6 +1,6 @@
 import { buildSelectQuery, type SelectQueryInput } from './query-builder.js';
 import { executeStreamingSelect } from './stream-executor-execution.js';
-import { extractRows } from './stream-executor-runtime.js';
+import { extractRows } from './row-extraction.js';
 import type { SqlExecutor } from './types.js';
 import {
   streamExecutorLogger,

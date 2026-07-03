@@ -1,11 +1,11 @@
 # Kanban Queue: AgentForge
 
-**Last Updated:** 2026-07-01
+**Last Updated:** 2026-07-03
 
 ## Queue Status Summary
 
 - **Ready:** 4 stories
-- **In Progress:** 0 stories
+- **In Progress:** 1 story
 - **In Review:** 0 stories
 - **Blocked:** 0 stories
 - **Backlog:** 0 stories
@@ -14,8 +14,6 @@
 
 ## Ready
 
-- `ST-09082` - Centralize Relational Row Extraction Helpers
-  - Depends on: `ST-09078` (merged 2026-07-01)
 - `ST-09079` - Modularize CLI Tool Publish Command and Tests
   - Depends on: `ST-09017` (merged 2026-03-27)
 - `ST-09080` - Modularize Multi-Agent Schemas and Schema-Centric Tests
@@ -27,7 +25,8 @@
 
 ## In Progress
 
-None currently.
+- `ST-09082` - Centralize Relational Row Extraction Helpers
+  - Depends on: `ST-09078` (merged 2026-07-01)
 
 ---
 

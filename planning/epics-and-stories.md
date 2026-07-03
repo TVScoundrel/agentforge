@@ -2246,7 +2246,7 @@
 **Priority:** P3 (Low)
 **Estimate:** 2 hours
 **Dependencies:** ST-09078
-**Status:** Backlog
+**Status:** In Progress
 
 **Acceptance criteria:**
 - [ ] A shared relational row-extraction helper or clearly scoped shared test helper replaces the repeated `extractRows(...)` logic currently duplicated across the streaming executor path and the focused insert/update/delete query-builder test suites.
