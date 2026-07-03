@@ -2,11 +2,18 @@
 
 **Purpose:** Track completed and merged stories for the Relational Database Access Tool project.
 
-**Last Updated:** 2026-07-01
+**Last Updated:** 2026-07-03
 
 ---
 
 ## Completed Stories
+
+### ST-09082: Centralize Relational Row Extraction Helpers
+- **Merged:** 2026-07-03
+- **PR:** https://github.com/TVScoundrel/agentforge/pull/149 (commit f961d441)
+- **Epic:** EP-09 (SOLID Micro-Refactors and Type Boundary Hardening)
+- **Estimate:** 2 hours
+- **Outcome:** Centralized shared relational row extraction by introducing `packages/tools/src/data/relational/query/row-extraction.ts`, reusing it in the streaming SELECT executor runtime, and removing the duplicated `extractRows(...)` helpers from the focused relational insert, update, and delete query-builder suites. The story added direct helper coverage in `packages/tools/tests/data/relational/query/row-extraction.test.ts`, preserved existing array-vs-`{ rows }` compatibility with no public API changes, kept the explicit-`any` baseline flat at `workspace 80/289` and `tools 53/67`, and advanced the ready lane to `ST-09079`.
 
 ### ST-09083: Fix Tools Package Filtered Vitest Validation Path
 - **Merged:** 2026-07-01

@@ -3421,10 +3421,11 @@ Implementation notes:
   - `pnpm lint` -> exit `0`; warnings only (`0` errors)
 - [x] Commit completed checklist items as logical commits and push updates
   - `b3c27478` refactor(st-09082): centralize relational row extraction
-  - Tracker/checklist follow-up commit pending for ready-state transition
+  - `176d5280` docs(st-09082): record validation and move story to in-review
 - [x] Mark PR Ready only after all story tasks are complete
-  - PR #149 will be marked ready after this checklist/tracker sync commit is pushed
-- [ ] Wait for merge; do not merge directly from local branch
+  - PR #149 marked ready: https://github.com/TVScoundrel/agentforge/pull/149
+- [x] Wait for merge; do not merge directly from local branch
+  - Merged via PR #149 on 2026-07-03 (merge commit `f961d441`)
 
 ---
 
