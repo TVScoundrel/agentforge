@@ -5,8 +5,8 @@
 ## Queue Status Summary
 
 - **Ready:** 4 stories
-- **In Progress:** 1 story
-- **In Review:** 0 stories
+- **In Progress:** 0 stories
+- **In Review:** 1 story
 - **Blocked:** 0 stories
 - **Backlog:** 0 stories
 
@@ -25,14 +25,14 @@
 
 ## In Progress
 
-- `ST-09082` - Centralize Relational Row Extraction Helpers
-  - Depends on: `ST-09078` (merged 2026-07-01)
+None currently.
 
 ---
 
 ## In Review
 
-None currently.
+- `ST-09082` - Centralize Relational Row Extraction Helpers
+  - Depends on: `ST-09078` (merged 2026-07-01)
 
 ## Blocked
 

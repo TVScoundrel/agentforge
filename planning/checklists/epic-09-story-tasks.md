@@ -3397,21 +3397,33 @@ Implementation notes:
 **Branch:** `refactor/st-09082-relational-row-extraction-deduplication`
 
 ### Checklist
-- [ ] Create branch `refactor/st-09082-relational-row-extraction-deduplication`
-- [ ] Create draft PR with story ID in title
-- [ ] Define test strategy before implementation: cover shared result-shape normalization for array and `{ rows }` executor outputs across the touched runtime/test call sites
-- [ ] Write or update the failing automated test before production changes when practical; if not practical, record why before implementation
-- [ ] Replace repeated `extractRows(...)` implementations across the streaming executor path and focused insert/update/delete query-builder suites with a shared relational helper or clearly scoped shared test helper
-- [ ] Preserve current result-shape compatibility and avoid public relational API changes while removing the duplicate helper logic
-- [ ] Add/update focused helper or touched-suite coverage so normalized row extraction is exercised without multiple local helper implementations
-- [ ] Add/update production code until focused tests pass, keeping test evidence in checklist notes and PR body
-- [ ] Record explicit-`any` warning deltas and the result-shape compatibility rationale for touched modules in story docs
-- [ ] Add or update story documentation at `docs/st09082-relational-row-extraction-deduplication.md` (or document why not required)
-- [ ] Assess residual test impact; add/update additional automated tests when needed, or document why no further tests are required
-- [ ] Run full test suite before finalizing the PR and record results
-- [ ] Run lint (`pnpm lint`) before finalizing the PR and record results
-- [ ] Commit completed checklist items as logical commits and push updates
-- [ ] Mark PR Ready only after all story tasks are complete
+- [x] Create branch `refactor/st-09082-relational-row-extraction-deduplication`
+  - Created as `refactor/st-09082-relational-row-extraction-deduplication`
+- [x] Create draft PR with story ID in title
+  - PR #149: https://github.com/TVScoundrel/agentforge/pull/149
+- [x] Define test strategy before implementation: cover shared result-shape normalization for array and `{ rows }` executor outputs across the touched runtime/test call sites
+  - Used a direct helper test plus the touched SQLite-backed relational query-builder suites and streaming executor suite
+- [x] Write or update the failing automated test before production changes when practical; if not practical, record why before implementation
+  - Added `packages/tools/tests/data/relational/query/row-extraction.test.ts` first and captured the expected failing import before the helper existed
+- [x] Replace repeated `extractRows(...)` implementations across the streaming executor path and focused insert/update/delete query-builder suites with a shared relational helper or clearly scoped shared test helper
+- [x] Preserve current result-shape compatibility and avoid public relational API changes while removing the duplicate helper logic
+- [x] Add/update focused helper or touched-suite coverage so normalized row extraction is exercised without multiple local helper implementations
+- [x] Add/update production code until focused tests pass, keeping test evidence in checklist notes and PR body
+  - `pnpm --filter @agentforge/tools test --run tests/data/relational/query/row-extraction.test.ts tests/data/relational/relational-insert/query-builder.test.ts tests/data/relational/relational-update/query-builder.test.ts tests/data/relational/relational-delete/query-builder.test.ts tests/data/relational/relational-select/stream-executor.test.ts` -> `5` files passed; `23` tests passed
+- [x] Record explicit-`any` warning deltas and the result-shape compatibility rationale for touched modules in story docs
+  - Baseline held at workspace `80/289`; tools `53/67`
+- [x] Add or update story documentation at `docs/st09082-relational-row-extraction-deduplication.md` (or document why not required)
+- [x] Assess residual test impact; add/update additional automated tests when needed, or document why no further tests are required
+  - The new direct helper test plus the touched relational suites covered the behavior sufficiently; no further automation or CI change was needed
+- [x] Run full test suite before finalizing the PR and record results
+  - `pnpm test --run` -> `223` passed | `9` skipped files; `2512` passed | `110` skipped tests
+- [x] Run lint (`pnpm lint`) before finalizing the PR and record results
+  - `pnpm lint` -> exit `0`; warnings only (`0` errors)
+- [x] Commit completed checklist items as logical commits and push updates
+  - `b3c27478` refactor(st-09082): centralize relational row extraction
+  - Tracker/checklist follow-up commit pending for ready-state transition
+- [x] Mark PR Ready only after all story tasks are complete
+  - PR #149 will be marked ready after this checklist/tracker sync commit is pushed
 - [ ] Wait for merge; do not merge directly from local branch
 
 ---

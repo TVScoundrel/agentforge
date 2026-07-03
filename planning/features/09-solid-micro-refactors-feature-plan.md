@@ -3,7 +3,7 @@
 **Epic Range:** EP-09 through EP-09
 **Status:** In Progress
 **Last Updated:** 2026-07-03
-**Active Story:** ST-09082 - Centralize Relational Row Extraction Helpers (In Progress)
+**Active Story:** ST-09082 - Centralize Relational Row Extraction Helpers (In Review)
 
 ---
 
