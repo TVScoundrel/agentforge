@@ -2195,7 +2195,7 @@
 **Priority:** P2 (Medium)
 **Estimate:** 4 hours
 **Dependencies:** ST-09017 (merged)
-**Status:** In Review
+**Status:** Backlog
 
 **Acceptance criteria:**
 - [ ] `packages/cli/src/commands/tool/publish.ts` is reduced to a smaller public command facade or clearly separated orchestration layer while path resolution, package validation, optional test/build execution, and npm publish result handling move into focused helpers that stay below the planning cutoff unless an exception is documented.
@@ -2229,7 +2229,7 @@
 **Priority:** P2 (Medium)
 **Estimate:** 3 hours
 **Dependencies:** ST-09016 (merged)
-**Status:** In Progress
+**Status:** In Review
 
 **Acceptance criteria:**
 - [ ] `packages/core/src/monitoring/alerts.ts` is reduced to a smaller public facade or clearly separated orchestration layer while channel dispatch, throttle/rule evaluation, and error-payload/reporting helpers move into focused modules that stay below the planning cutoff unless an exception is documented.
@@ -2246,7 +2246,7 @@
 **Priority:** P3 (Low)
 **Estimate:** 2 hours
 **Dependencies:** ST-09078
-**Status:** Backlog
+**Status:** In Review
 
 **Acceptance criteria:**
 - [ ] A shared relational row-extraction helper or clearly scoped shared test helper replaces the repeated `extractRows(...)` logic currently duplicated across the streaming executor path and the focused insert/update/delete query-builder test suites.

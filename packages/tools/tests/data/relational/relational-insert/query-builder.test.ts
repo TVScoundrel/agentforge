@@ -6,20 +6,9 @@ import { describe, it, expect, beforeAll, afterAll } from 'vitest';
 import { sql } from 'drizzle-orm';
 import { ConnectionManager } from '../../../../src/data/relational/connection/connection-manager.js';
 import { buildInsertQuery } from '../../../../src/data/relational/query/query-builder.js';
+import { extractRows } from '../../../../src/data/relational/query/row-extraction.js';
 import type { ConnectionConfig } from '../../../../src/data/relational/connection/types.js';
 import { hasSQLiteBindings } from './test-utils.js';
-
-function extractRows(result: unknown): Array<Record<string, unknown>> {
-  if (Array.isArray(result)) {
-    return result as Array<Record<string, unknown>>;
-  }
-
-  if (result && typeof result === 'object' && Array.isArray((result as { rows?: unknown[] }).rows)) {
-    return (result as { rows: Array<Record<string, unknown>> }).rows;
-  }
-
-  return [];
-}
 
 describe('Relational INSERT - Query Builder', () => {
   let manager: ConnectionManager;
