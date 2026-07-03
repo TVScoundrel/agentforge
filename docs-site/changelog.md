@@ -5,6 +5,33 @@ All notable changes to AgentForge will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.16.65] - 2026-07-03
+
+### Added
+
+#### @agentforge/tools - Shared Relational Row-Extraction Coverage
+- Added focused shared-helper coverage in `packages/tools/tests/data/relational/query/row-extraction.test.ts` to lock down normalized array-vs-`{ rows }` result handling in one place
+- Added story documentation in `docs/st09082-relational-row-extraction-deduplication.md` capturing the shared-helper extraction, compatibility rationale, and validation evidence
+
+### Changed
+
+#### @agentforge/tools - Relational Row Extraction
+- Added `packages/tools/src/data/relational/query/row-extraction.ts` as a shared normalization helper and reused it in the streaming SELECT executor path plus the focused relational insert, update, and delete query-builder suites
+
+### Fixed
+
+#### @agentforge/tools - Duplicate Result-Shape Assumptions
+- Removed repeated `extractRows(...)` implementations from the touched relational runtime and test paths so future result-shape changes no longer need to be kept manually in sync across multiple helper copies
+
+### Published
+- All packages published to npm registry at version 0.16.65:
+  - @agentforge/core@0.16.65
+  - @agentforge/skills@0.16.65
+  - @agentforge/patterns@0.16.65
+  - @agentforge/tools@0.16.65
+  - @agentforge/testing@0.16.65
+  - @agentforge/cli@0.16.65
+
 ## [0.16.64] - 2026-07-01
 
 ### Added
