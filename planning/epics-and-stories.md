@@ -2195,7 +2195,7 @@
 **Priority:** P2 (Medium)
 **Estimate:** 4 hours
 **Dependencies:** ST-09017 (merged)
-**Status:** In Progress
+**Status:** In Review
 
 **Acceptance criteria:**
 - [ ] `packages/cli/src/commands/tool/publish.ts` is reduced to a smaller public command facade or clearly separated orchestration layer while path resolution, package validation, optional test/build execution, and npm publish result handling move into focused helpers that stay below the planning cutoff unless an exception is documented.

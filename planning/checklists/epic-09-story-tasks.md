@@ -3326,7 +3326,7 @@ Implementation notes:
 
 ### Checklist
 - [x] Create branch `refactor/st-09079-cli-tool-publish-modularization`
-- [ ] Create draft PR with story ID in title
+- [x] Create draft PR with story ID in title
 - [x] Define test strategy before implementation: cover path resolution, package validation, optional test/build execution, dry-run behavior, and npm auth/permission/version-conflict guidance through focused command suites
 - [x] Write or update the failing automated test before production changes when practical; if not practical, record why before implementation
 - [x] Reduce `packages/cli/src/commands/tool/publish.ts` to a smaller public facade or clearly separated orchestration layer while extracting focused path-resolution, package-validation, preflight script, and publish-result helpers
@@ -3338,7 +3338,7 @@ Implementation notes:
 - [x] Assess residual test impact; add/update additional automated tests when needed, or document why no further tests are required
 - [x] Run full test suite before finalizing the PR and record results
 - [x] Run lint (`pnpm lint`) before finalizing the PR and record results
-- [ ] Commit completed checklist items as logical commits and push updates
+- [x] Commit completed checklist items as logical commits and push updates
 - [ ] Mark PR Ready only after all story tasks are complete
 - [ ] Wait for merge; do not merge directly from local branch
 

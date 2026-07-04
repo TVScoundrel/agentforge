@@ -1,12 +1,12 @@
 # Kanban Queue: AgentForge
 
-**Last Updated:** 2026-07-03
+**Last Updated:** 2026-07-04
 
 ## Queue Status Summary
 
 - **Ready:** 2 stories
-- **In Progress:** 1 story
-- **In Review:** 0 stories
+- **In Progress:** 0 stories
+- **In Review:** 1 story
 - **Blocked:** 0 stories
 - **Backlog:** 0 stories
 
@@ -23,14 +23,14 @@
 
 ## In Progress
 
-- `ST-09079` - Modularize CLI Tool Publish Command and Tests
-  - Depends on: `ST-09017` (merged 2026-03-27)
+None currently.
 
 ---
 
 ## In Review
 
-None currently.
+- `ST-09079` - Modularize CLI Tool Publish Command and Tests
+  - Depends on: `ST-09017` (merged 2026-03-27)
 
 ## Blocked
 
