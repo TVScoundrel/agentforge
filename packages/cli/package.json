@@ -21,9 +21,9 @@
   "scripts": {
     "build": "tsup",
     "dev": "tsup --watch",
-    "test": "vitest",
-    "test:ui": "vitest --ui",
-    "test:coverage": "vitest --coverage",
+    "test": "vitest --config vitest.config.ts",
+    "test:ui": "vitest --config vitest.config.ts --ui",
+    "test:coverage": "vitest --config vitest.config.ts --coverage",
     "typecheck": "tsc --noEmit",
     "lint": "eslint src",
     "lint:fix": "eslint src --fix",
