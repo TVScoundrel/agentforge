@@ -3325,22 +3325,40 @@ Implementation notes:
 **Branch:** `refactor/st-09079-cli-tool-publish-modularization`
 
 ### Checklist
-- [ ] Create branch `refactor/st-09079-cli-tool-publish-modularization`
+- [x] Create branch `refactor/st-09079-cli-tool-publish-modularization`
 - [ ] Create draft PR with story ID in title
-- [ ] Define test strategy before implementation: cover path resolution, package validation, optional test/build execution, dry-run behavior, and npm auth/permission/version-conflict guidance through focused command suites
-- [ ] Write or update the failing automated test before production changes when practical; if not practical, record why before implementation
-- [ ] Reduce `packages/cli/src/commands/tool/publish.ts` to a smaller public facade or clearly separated orchestration layer while extracting focused path-resolution, package-validation, preflight script, and publish-result helpers
-- [ ] Preserve existing `tool:publish` behavior for dry-run mode, scoped-package resolution, optional test/build script detection, and user-facing npm error guidance
-- [ ] Replace the `packages/cli/tests/commands/tool/publish.test.ts` monolith with focused suites or shared fixtures that preserve coverage over path resolution, publish happy paths, and publish error handling
-- [ ] Add/update production code until focused tests pass, keeping test evidence in checklist notes and PR body
-- [ ] Record explicit-`any` warning deltas and the command-compatibility rationale for touched modules in story docs
-- [ ] Add or update story documentation at `docs/st09079-cli-tool-publish-modularization.md` (or document why not required)
-- [ ] Assess residual test impact; add/update additional automated tests when needed, or document why no further tests are required
-- [ ] Run full test suite before finalizing the PR and record results
-- [ ] Run lint (`pnpm lint`) before finalizing the PR and record results
+- [x] Define test strategy before implementation: cover path resolution, package validation, optional test/build execution, dry-run behavior, and npm auth/permission/version-conflict guidance through focused command suites
+- [x] Write or update the failing automated test before production changes when practical; if not practical, record why before implementation
+- [x] Reduce `packages/cli/src/commands/tool/publish.ts` to a smaller public facade or clearly separated orchestration layer while extracting focused path-resolution, package-validation, preflight script, and publish-result helpers
+- [x] Preserve existing `tool:publish` behavior for dry-run mode, scoped-package resolution, optional test/build script detection, and user-facing npm error guidance
+- [x] Replace the `packages/cli/tests/commands/tool/publish.test.ts` monolith with focused suites or shared fixtures that preserve coverage over path resolution, publish happy paths, and publish error handling
+- [x] Add/update production code until focused tests pass, keeping test evidence in checklist notes and PR body
+- [x] Record explicit-`any` warning deltas and the command-compatibility rationale for touched modules in story docs
+- [x] Add or update story documentation at `docs/st09079-cli-tool-publish-modularization.md` (or document why not required)
+- [x] Assess residual test impact; add/update additional automated tests when needed, or document why no further tests are required
+- [x] Run full test suite before finalizing the PR and record results
+- [x] Run lint (`pnpm lint`) before finalizing the PR and record results
 - [ ] Commit completed checklist items as logical commits and push updates
 - [ ] Mark PR Ready only after all story tasks are complete
 - [ ] Wait for merge; do not merge directly from local branch
+
+### Notes
+- Test-first rationale:
+  - Behavior-preserving modularization; no new externally visible behavior was added.
+  - Split the monolithic command test into focused characterization suites first, added a dedicated generic publish-error case, and used that green suite as the compatibility harness for the extraction.
+- Focused validation completed:
+  - `pnpm test --run packages/cli/tests/commands/tool/publish.test.ts`
+  - `pnpm --filter @agentforge/cli test --run`
+  - `pnpm --filter @agentforge/cli typecheck`
+  - `pnpm lint:explicit-any:baseline`
+- Final validation completed:
+  - `pnpm test --run`
+  - Result: `223` files passed, `9` skipped; `2513` tests passed, `110` skipped
+  - `pnpm lint`
+  - Result: passed with pre-existing workspace warnings only
+- Acceptance-command note:
+  - `pnpm --filter @agentforge/cli test --run` initially failed because the CLI package still invoked the repo-root workspace Vitest config from `packages/cli`, so it matched no tests.
+  - Added `packages/cli/vitest.config.ts` and updated the CLI package test scripts to use it, matching the already-restored package-local pattern used in `@agentforge/tools`.
 
 ---
 
