@@ -5,6 +5,36 @@ All notable changes to AgentForge will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.16.66] - 2026-07-04
+
+### Added
+
+#### @agentforge/cli - Publish Command Coverage
+- Added focused happy-path, error-handling, and path-resolution publish-command suites under `packages/cli/tests/commands/tool/publish/` to keep `tool:publish` behavior covered without one monolithic test file
+- Added story documentation in `docs/st09079-cli-tool-publish-modularization.md` capturing the command split, compatibility rationale, and validation evidence
+
+### Changed
+
+#### @agentforge/cli - Tool Publish Command Structure
+- Reduced `packages/cli/src/commands/tool/publish.ts` to a small orchestration facade and extracted focused path-resolution, preflight, publish-result, and shared-type helpers while preserving dry-run mode, scoped-package resolution, optional test/build execution, and npm publish guidance
+
+#### @agentforge/cli - Package-Scoped Vitest Validation Path
+- Added `packages/cli/vitest.config.ts` and pointed the CLI package test scripts at it so `pnpm --filter @agentforge/cli test --run` resolves the intended suite from the package context instead of depending on a root-run workaround
+
+### Fixed
+
+#### @agentforge/cli - Filtered CLI Test Discovery
+- Restored the documented package-scoped validation flow for the CLI package by fixing the package-cwd Vitest config mismatch that previously caused filtered test runs to miss the publish-command suite
+
+### Published
+- All packages published to npm registry at version 0.16.66:
+  - @agentforge/core@0.16.66
+  - @agentforge/skills@0.16.66
+  - @agentforge/patterns@0.16.66
+  - @agentforge/tools@0.16.66
+  - @agentforge/testing@0.16.66
+  - @agentforge/cli@0.16.66
+
 ## [0.16.65] - 2026-07-03
 
 ### Added
