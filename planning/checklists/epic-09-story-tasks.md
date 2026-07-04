@@ -3339,8 +3339,10 @@ Implementation notes:
 - [x] Run full test suite before finalizing the PR and record results
 - [x] Run lint (`pnpm lint`) before finalizing the PR and record results
 - [x] Commit completed checklist items as logical commits and push updates
-- [ ] Mark PR Ready only after all story tasks are complete
-- [ ] Wait for merge; do not merge directly from local branch
+- [x] Mark PR Ready only after all story tasks are complete
+  - PR #150 marked ready: https://github.com/TVScoundrel/agentforge/pull/150
+- [x] Wait for merge; do not merge directly from local branch
+  - Merged via PR #150 on 2026-07-04
 
 ### Notes
 - Test-first rationale:

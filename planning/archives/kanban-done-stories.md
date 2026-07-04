@@ -787,6 +787,13 @@
 - **Estimate:** 3 hours
 - **Outcome:** Hardened the `createParallelWorkflow()` public typing surface around schema-derived state and update contracts, removed avoidable builder `any`/`@ts-expect-error` usage, preserved backward compatibility for the deprecated `name` option, and added focused edge-wiring regressions while improving the workspace explicit-`any` baseline from 304 to 295.
 
+### ST-09079: Modularize CLI Tool Publish Command and Tests
+- **Merged:** 2026-07-04
+- **PR:** https://github.com/TVScoundrel/agentforge/pull/150
+- **Epic:** EP-09 (SOLID Micro-Refactors and Type Boundary Hardening)
+- **Estimate:** 4 hours
+- **Outcome:** Modularized the CLI `tool:publish` command by shrinking `packages/cli/src/commands/tool/publish.ts` from `240` lines to a `39` line facade, extracting focused path-resolution, preflight, publish-result, and shared-type helpers while preserving dry-run behavior, scoped-package resolution, optional test/build execution, and npm auth/permission/version-conflict guidance. The story also replaced the monolithic publish command test with focused happy-path, error-handling, and path-resolution suites, added package-local CLI Vitest config/script wiring so `pnpm --filter @agentforge/cli test --run` works from the package context again, kept the explicit-`any` baseline flat at `workspace 80/289` and `cli 6/24`, and advanced the ready lane to `ST-09080`.
+
 ### ST-09009: Tighten Ask-Human Interrupt Boundary
 - **Merged:** 2026-03-23
 - **PR:** https://github.com/TVScoundrel/agentforge/pull/71
