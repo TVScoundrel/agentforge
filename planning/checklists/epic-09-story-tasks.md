@@ -3369,22 +3369,40 @@ Implementation notes:
 **Branch:** `refactor/st-09080-multi-agent-schemas-modularization`
 
 ### Checklist
-- [ ] Create branch `refactor/st-09080-multi-agent-schemas-modularization`
-- [ ] Create draft PR with story ID in title
-- [ ] Define test strategy before implementation: cover message, routing, worker, assignment/result, and handoff schemas while proving state tests can stay leaner without losing schema regressions
-- [ ] Write or update the failing automated test before production changes when practical; if not practical, record why before implementation
-- [ ] Reduce `packages/patterns/src/multi-agent/schemas.ts` to a smaller public facade or clearly separated orchestration layer while extracting focused schema modules by domain
-- [ ] Preserve current public schema/type exports and import compatibility through `packages/patterns/src/multi-agent/schemas.ts`
-- [ ] Split the schema assertions currently coupled into `packages/patterns/tests/multi-agent/state.test.ts` into focused schema-centric coverage plus a leaner state suite while preserving JSON-safe metadata and unknown-first handoff-context regression coverage
-- [ ] Add/update production code until focused tests pass, keeping test evidence in checklist notes and PR body
-- [ ] Record explicit-`any` warning deltas and the schema-surface compatibility rationale for touched modules in story docs
-- [ ] Add or update story documentation at `docs/st09080-multi-agent-schemas-modularization.md` (or document why not required)
-- [ ] Assess residual test impact; add/update additional automated tests when needed, or document why no further tests are required
-- [ ] Run full test suite before finalizing the PR and record results
-- [ ] Run lint (`pnpm lint`) before finalizing the PR and record results
-- [ ] Commit completed checklist items as logical commits and push updates
-- [ ] Mark PR Ready only after all story tasks are complete
+- [x] Create branch `refactor/st-09080-multi-agent-schemas-modularization`
+  - Created as `refactor/st-09080-multi-agent-schemas-modularization`
+- [x] Create draft PR with story ID in title
+  - PR #151: https://github.com/TVScoundrel/agentforge/pull/151
+- [x] Define test strategy before implementation: cover message, routing, worker, assignment/result, and handoff schemas while proving state tests can stay leaner without losing schema regressions
+  - Split the existing schema assertions into a dedicated characterization suite first, then used that focused harness plus the leaner state suite during the production extraction
+- [x] Write or update the failing automated test before production changes when practical; if not practical, record why before implementation
+  - A red test was not practical for this behavior-preserving modularization, so the existing schema coverage was first reorganized into a dedicated compatibility harness instead of inventing new behavior
+- [x] Reduce `packages/patterns/src/multi-agent/schemas.ts` to a smaller public facade or clearly separated orchestration layer while extracting focused schema modules by domain
+- [x] Preserve current public schema/type exports and import compatibility through `packages/patterns/src/multi-agent/schemas.ts`
+- [x] Split the schema assertions currently coupled into `packages/patterns/tests/multi-agent/state.test.ts` into focused schema-centric coverage plus a leaner state suite while preserving JSON-safe metadata and unknown-first handoff-context regression coverage
+- [x] Add/update production code until focused tests pass, keeping test evidence in checklist notes and PR body
+  - `pnpm test --run packages/patterns/tests/multi-agent/state.test.ts packages/patterns/tests/multi-agent/schemas.test.ts` -> 2 files, 23 tests passed
+  - `pnpm --filter @agentforge/patterns test --run` -> 34 files, 293 tests passed
+- [x] Record explicit-`any` warning deltas and the schema-surface compatibility rationale for touched modules in story docs
+  - Recorded in `docs/st09080-multi-agent-schemas-modularization.md`; baseline remains workspace `80/289`, patterns `2/28`
+- [x] Add or update story documentation at `docs/st09080-multi-agent-schemas-modularization.md` (or document why not required)
+- [x] Assess residual test impact; add/update additional automated tests when needed, or document why no further tests are required
+  - No further automated coverage was needed beyond the dedicated schema suite, leaner state suite, package-level patterns run, and the full workspace suite
+- [x] Run full test suite before finalizing the PR and record results
+  - `pnpm test --run` -> 224 files passed, 9 skipped; 2513 tests passed, 110 skipped
+- [x] Run lint (`pnpm lint`) before finalizing the PR and record results
+  - `pnpm lint` -> passed with pre-existing workspace warnings only
+- [x] Commit completed checklist items as logical commits and push updates
+  - `fe84e7a` refactor(st-09080): modularize multi-agent schemas
+- [x] Mark PR Ready only after all story tasks are complete
 - [ ] Wait for merge; do not merge directly from local branch
+
+### Notes
+- Test-first rationale:
+  - This is a behavior-preserving modularization of an existing schema surface rather than a new externally visible feature.
+  - A red test is not practical without inventing behavior that the current public schema API does not expose, so the compatibility harness will be established first by splitting the existing schema assertions into focused characterization suites before the production schema modules are extracted.
+- CI-impact assessment:
+  - No CI workflow change is expected; the story should stay within existing `pnpm --filter @agentforge/patterns test --run`, `pnpm --filter @agentforge/patterns typecheck`, `pnpm lint:explicit-any:baseline`, `pnpm test --run`, and `pnpm lint` validation paths unless the refactor exposes a real gap.
 
 ---
 

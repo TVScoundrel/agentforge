@@ -1,12 +1,12 @@
 # Kanban Queue: AgentForge
 
-**Last Updated:** 2026-07-04
+**Last Updated:** 2026-07-06
 
 ## Queue Status Summary
 
-- **Ready:** 2 stories
+- **Ready:** 1 story
 - **In Progress:** 0 stories
-- **In Review:** 0 stories
+- **In Review:** 1 story
 - **Blocked:** 0 stories
 - **Backlog:** 0 stories
 
@@ -14,8 +14,6 @@
 
 ## Ready
 
-- `ST-09080` - Modularize Multi-Agent Schemas and Schema-Centric Tests
-  - Depends on: `ST-09060` (merged 2026-06-08)
 - `ST-09081` - Modularize Monitoring Alert Manager and Tests
   - Depends on: `ST-09016` (merged 2026-03-26)
 
@@ -29,7 +27,8 @@ None currently.
 
 ## In Review
 
-None currently.
+- `ST-09080` - Modularize Multi-Agent Schemas and Schema-Centric Tests
+  - Depends on: `ST-09060` (merged 2026-06-08)
 
 ## Blocked
 
