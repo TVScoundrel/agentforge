@@ -161,16 +161,17 @@ describe('Multi-Agent Schemas', () => {
 
   it('validates worker capabilities', () => {
     const validWorker = {
-      agentId: 'worker-1',
-      name: 'Research Agent',
-      description: 'Specializes in web research and data gathering',
       skills: ['web-search', 'data-extraction', 'summarization'],
       tools: ['search', 'scrape', 'summarize'],
       available: true,
-      workload: 2,
+      currentWorkload: 2,
     };
 
-    expect(WorkerCapabilitiesSchema.safeParse(validWorker).success).toBe(true);
+    const result = WorkerCapabilitiesSchema.safeParse(validWorker);
+    expect(result.success).toBe(true);
+    if (result.success) {
+      expect(result.data.currentWorkload).toBe(2);
+    }
   });
 
   it('validates worker capabilities with defaults', () => {
