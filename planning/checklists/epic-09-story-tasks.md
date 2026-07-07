@@ -3395,7 +3395,8 @@ Implementation notes:
 - [x] Commit completed checklist items as logical commits and push updates
   - `fe84e7a` refactor(st-09080): modularize multi-agent schemas
 - [x] Mark PR Ready only after all story tasks are complete
-- [ ] Wait for merge; do not merge directly from local branch
+- [x] Wait for merge; do not merge directly from local branch
+  - Merged via PR #151 on 2026-07-07
 
 ### Notes
 - Test-first rationale:

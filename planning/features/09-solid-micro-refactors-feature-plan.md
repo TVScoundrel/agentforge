@@ -2,8 +2,8 @@
 
 **Epic Range:** EP-09 through EP-09
 **Status:** In Progress
-**Last Updated:** 2026-07-06
-**Active Story:** ST-09080 - Modularize Multi-Agent Schemas and Schema-Centric Tests (In Review)
+**Last Updated:** 2026-07-07
+**Active Story:** ST-09081 - Modularize Monitoring Alert Manager and Tests (Ready)
 
 ---
 
@@ -128,6 +128,7 @@ Recent improvement snapshot:
 - `ST-09078` merged on 2026-07-01 after shrinking `packages/tools/src/data/relational/query/stream-executor.ts` from a `359` line mixed-responsibility runtime to a `19` line public facade, extracting focused options, runtime, chunking, execution, and benchmark helpers while preserving all public streaming SELECT exports and types. The story also replaced the single streaming test body with focused chunking, execution, and benchmark suites, added characterization coverage for total-row limits plus collect-vs-sample behavior, documented the filtered package-test invocation quirk as a follow-on story instead of broadening the refactor scope, and promoted `ST-09082` plus `ST-09083` into the ready lane now that their `ST-09078` dependency is merged.
 - `ST-09083` is intentionally prioritized to the front of `Ready` on 2026-07-01 because it removes a documented validation-path gap discovered during `ST-09078`, and it should run before the remaining broader modularization slices.
 - `ST-09079` merged on 2026-07-04 after shrinking `packages/cli/src/commands/tool/publish.ts` from a `240` line mixed-responsibility command to a `39` line facade, extracting focused path-resolution, preflight, publish-result, and shared-type helpers while preserving `tool:publish` behavior. The story also replaced the monolithic CLI publish test with focused happy-path, error-handling, and path-resolution suites, restored package-local CLI Vitest execution so `pnpm --filter @agentforge/cli test --run` works from the package context, and advanced the ready lane to `ST-09080`.
+- `ST-09080` merged on 2026-07-07 after shrinking `packages/patterns/src/multi-agent/schemas.ts` into a stable facade backed by focused message, routing, worker, and handoff schema modules, splitting schema assertions into a dedicated schema-centric suite, preserving backward-compatible multi-agent schema exports, and keeping the explicit-`any` baseline flat at `workspace 80/289` and `patterns 2/28`. The ready lane now advances to `ST-09081`.
 - The refreshed follow-on queue now extends beyond the current Ready lane so another few weeks of small SOLID/DRY and modularization work can be pulled without re-planning the epic.
 
 ---

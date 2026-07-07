@@ -2212,7 +2212,7 @@
 **Priority:** P2 (Medium)
 **Estimate:** 3 hours
 **Dependencies:** ST-09060 (merged)
-**Status:** In Review
+**Status:** Merged (PR #151, 2026-07-07)
 
 **Acceptance criteria:**
 - [ ] `packages/patterns/src/multi-agent/schemas.ts` becomes a small stable facade or clearly grouped orchestration module while message, routing, worker, assignment/result, and handoff/status schemas move into focused internal modules that stay below the planning cutoff unless an exception is documented.

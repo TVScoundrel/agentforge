@@ -1,12 +1,12 @@
 # Kanban Queue: AgentForge
 
-**Last Updated:** 2026-07-06
+**Last Updated:** 2026-07-07
 
 ## Queue Status Summary
 
 - **Ready:** 1 story
 - **In Progress:** 0 stories
-- **In Review:** 1 story
+- **In Review:** 0 stories
 - **Blocked:** 0 stories
 - **Backlog:** 0 stories
 
@@ -27,8 +27,7 @@ None currently.
 
 ## In Review
 
-- `ST-09080` - Modularize Multi-Agent Schemas and Schema-Centric Tests
-  - Depends on: `ST-09060` (merged 2026-06-08)
+None currently.
 
 ## Blocked
 
@@ -139,6 +138,7 @@ None currently.
 - ST-09083 complete - tools-package filtered Vitest validation path restored via a package-local config and package-script wiring fix (merged 2026-07-01, PR #148); no new promotions were needed because `ST-09079` through `ST-09082` were already dependency-ready, and the ready lane now starts with the smaller relational follow-up `ST-09082`
 - ST-09082 complete - shared relational row extraction was centralized for the streaming executor path and focused CRUD query-builder suites (merged 2026-07-03, PR #149); no new promotions were needed because `ST-09079` through `ST-09081` were already dependency-ready, and the ready lane now advances to `ST-09079`
 - ST-09079 complete - CLI `tool:publish` was modularized into focused path-resolution, preflight, and publish-result helpers, the CLI package gained a package-local Vitest config so `pnpm --filter @agentforge/cli test --run` works from the package context again, and the ready lane now advances to `ST-09080` with `ST-09081` still dependency-ready behind it (merged 2026-07-04, PR #150)
+- ST-09080 complete - multi-agent schemas and schema-centric tests were modularized into focused schema-domain modules plus a dedicated schema suite while preserving the stable facade and package-scoped patterns Vitest path (merged 2026-07-07, PR #151); no additional promotions were needed because `ST-09081` was already dependency-ready, and the ready lane now advances to `ST-09081`
 - Complete: ST-10005 - documentation emoji guardrails added to contributor guidance (PR #104, 2026-05-05)
 - Complete: ST-10004 - example/template docs emoji normalization merged (PR #102, 2026-05-05)
 - Complete: ST-10003 - planning and internal docs emoji normalization merged (PR #101, 2026-05-04)

@@ -2,11 +2,18 @@
 
 **Purpose:** Track completed and merged stories for the Relational Database Access Tool project.
 
-**Last Updated:** 2026-07-03
+**Last Updated:** 2026-07-07
 
 ---
 
 ## Completed Stories
+
+### ST-09080: Modularize Multi-Agent Schemas and Schema-Centric Tests
+- **Merged:** 2026-07-07
+- **PR:** https://github.com/TVScoundrel/agentforge/pull/151 (commit 5f659fba)
+- **Epic:** EP-09 (SOLID Micro-Refactors and Type Boundary Hardening)
+- **Estimate:** 3 hours
+- **Outcome:** Modularized `@agentforge/patterns` multi-agent schemas by shrinking `packages/patterns/src/multi-agent/schemas.ts` into a stable public facade backed by focused message, routing, worker, and handoff schema modules while preserving current schema/type exports and import compatibility. The story also split schema assertions out of `packages/patterns/tests/multi-agent/state.test.ts` into a dedicated schema-centric suite, restored package-local patterns Vitest execution so `pnpm --filter @agentforge/patterns test --run` targets the intended suite from the workspace root, kept the explicit-`any` baseline flat at `workspace 80/289` and `patterns 2/28`, and advanced the ready lane to `ST-09081`.
 
 ### ST-09082: Centralize Relational Row Extraction Helpers
 - **Merged:** 2026-07-03
