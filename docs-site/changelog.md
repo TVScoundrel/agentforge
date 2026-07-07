@@ -5,6 +5,36 @@ All notable changes to AgentForge will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.16.67] - 2026-07-07
+
+### Added
+
+#### @agentforge/patterns - Schema-Centric Multi-Agent Coverage
+- Added focused schema-centric multi-agent coverage in `packages/patterns/tests/multi-agent/schemas.test.ts` so schema regressions are isolated from the leaner state-behavior suite
+- Added story documentation in `docs/st09080-multi-agent-schemas-modularization.md` capturing the modularization split, compatibility rationale, and validation evidence
+
+### Changed
+
+#### @agentforge/patterns - Multi-Agent Schema Structure
+- Reduced `packages/patterns/src/multi-agent/schemas.ts` to a stable public facade and extracted focused message, routing, worker, and handoff schema modules while preserving current exports and import compatibility
+
+#### @agentforge/patterns - Package-Scoped Vitest Validation Path
+- Added `packages/patterns/vitest.config.ts` and pointed the patterns package test scripts at it so `pnpm --filter @agentforge/patterns test --run` targets the intended suite from the workspace root
+
+### Fixed
+
+#### @agentforge/patterns - Filtered Patterns Test Discovery
+- Restored the documented package-scoped validation flow for the patterns package by fixing the package-cwd Vitest config mismatch that previously made filtered patterns test runs depend on broader root execution
+
+### Published
+- All packages published to npm registry at version 0.16.67:
+  - @agentforge/core@0.16.67
+  - @agentforge/skills@0.16.67
+  - @agentforge/patterns@0.16.67
+  - @agentforge/tools@0.16.67
+  - @agentforge/testing@0.16.67
+  - @agentforge/cli@0.16.67
+
 ## [0.16.66] - 2026-07-04
 
 ### Added
