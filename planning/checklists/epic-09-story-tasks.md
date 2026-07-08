@@ -3440,7 +3440,8 @@ Implementation notes:
   - `14fc32a2` docs(st-09081): move story to in-review
 - [x] Mark PR Ready only after all story tasks are complete
   - PR #152 marked ready: https://github.com/TVScoundrel/agentforge/pull/152
-- [ ] Wait for merge; do not merge directly from local branch
+- [x] Wait for merge; do not merge directly from local branch
+  - Merged via PR #152 on 2026-07-08 (merge commit `d556f2a3`)
 
 ### Notes
 - CI-impact assessment:

@@ -3,7 +3,7 @@
 **Epic Range:** EP-09 through EP-09
 **Status:** In Progress
 **Last Updated:** 2026-07-08
-**Active Story:** ST-09081 - Modularize Monitoring Alert Manager and Tests (In Review)
+**Active Story:** None currently - ready lane empty after ST-09081 merged
 
 ---
 
@@ -129,6 +129,7 @@ Recent improvement snapshot:
 - `ST-09083` is intentionally prioritized to the front of `Ready` on 2026-07-01 because it removes a documented validation-path gap discovered during `ST-09078`, and it should run before the remaining broader modularization slices.
 - `ST-09079` merged on 2026-07-04 after shrinking `packages/cli/src/commands/tool/publish.ts` from a `240` line mixed-responsibility command to a `39` line facade, extracting focused path-resolution, preflight, publish-result, and shared-type helpers while preserving `tool:publish` behavior. The story also replaced the monolithic CLI publish test with focused happy-path, error-handling, and path-resolution suites, restored package-local CLI Vitest execution so `pnpm --filter @agentforge/cli test --run` works from the package context, and advanced the ready lane to `ST-09080`.
 - `ST-09080` merged on 2026-07-07 after shrinking `packages/patterns/src/multi-agent/schemas.ts` into a stable facade backed by focused message, routing, worker, and handoff schema modules, splitting schema assertions into a dedicated schema-centric suite, preserving backward-compatible multi-agent schema exports, and keeping the explicit-`any` baseline flat at `workspace 80/289` and `patterns 2/28`. The ready lane now advances to `ST-09081`.
+- `ST-09081` merged on 2026-07-08 after shrinking `packages/core/src/monitoring/alerts.ts` into a stable facade backed by focused rule-evaluation, throttling, channel-dispatch, and error/reporting helpers, splitting the alert-manager monolith into dedicated monitoring suites, restoring package-local core Vitest execution so `pnpm --filter @agentforge/core test --run` resolves from the workspace root again, and keeping the explicit-`any` baseline flat at `workspace 80/289` and `core 19/119`. The current EP-09 ready lane is now empty pending the next accepted slice.
 - The refreshed follow-on queue now extends beyond the current Ready lane so another few weeks of small SOLID/DRY and modularization work can be pulled without re-planning the epic.
 
 ---

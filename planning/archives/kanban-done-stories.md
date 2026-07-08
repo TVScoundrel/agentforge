@@ -2,11 +2,18 @@
 
 **Purpose:** Track completed and merged stories for the Relational Database Access Tool project.
 
-**Last Updated:** 2026-07-07
+**Last Updated:** 2026-07-08
 
 ---
 
 ## Completed Stories
+
+### ST-09081: Modularize Monitoring Alert Manager and Tests
+- **Merged:** 2026-07-08
+- **PR:** https://github.com/TVScoundrel/agentforge/pull/152 (commit d556f2a3)
+- **Epic:** EP-09 (SOLID Micro-Refactors and Type Boundary Hardening)
+- **Estimate:** 3 hours
+- **Outcome:** Modularized `@agentforge/core` monitoring alerts by shrinking `packages/core/src/monitoring/alerts.ts` into a stable public facade backed by focused rule-evaluation, throttling, channel-dispatch, and error/reporting helpers while preserving `AlertManager`, `createAlertManager(...)`, typed built-in/custom channel validation, and direct-alert behavior. The story also split the alert-manager monolithic suite into focused rule-evaluation, throttling, error-handling, and channel-dispatch suites, restored package-local core Vitest execution so `pnpm --filter @agentforge/core test --run` works from the workspace root, kept the explicit-`any` baseline flat at `workspace 80/289` and `core 19/119`, and left the active queue empty pending the next accepted EP-09 slice.
 
 ### ST-09080: Modularize Multi-Agent Schemas and Schema-Centric Tests
 - **Merged:** 2026-07-07
