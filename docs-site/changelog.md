@@ -5,6 +5,36 @@ All notable changes to AgentForge will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.16.68] - 2026-07-08
+
+### Added
+
+#### @agentforge/core - Focused Monitoring Alert Coverage
+- Added focused monitoring alert suites under `packages/core/tests/monitoring/alerts/` so rule evaluation, throttling, error handling, and channel dispatch regressions are isolated from the public facade entrypoint
+- Added story documentation in `docs/st09081-monitoring-alert-manager-modularization.md` capturing the modularization split, compatibility rationale, and validation evidence
+
+### Changed
+
+#### @agentforge/core - Monitoring Alert Manager Structure
+- Reduced `packages/core/src/monitoring/alerts.ts` to a stable public facade and extracted focused rule-evaluation, throttling, channel-dispatch, and error/reporting helpers while preserving `AlertManager`, `createAlertManager(...)`, built-in/custom channel validation, and direct-alert behavior
+
+#### @agentforge/core - Package-Scoped Vitest Validation Path
+- Added `packages/core/vitest.config.ts` and pointed the core package test scripts at it so `pnpm --filter @agentforge/core test --run` resolves the intended suite from the workspace root
+
+### Fixed
+
+#### @agentforge/core - Filtered Core Test Discovery
+- Restored the documented package-scoped validation flow for the core package by fixing the package-cwd Vitest config mismatch that previously made filtered core test runs depend on broader root execution
+
+### Published
+- All packages published to npm registry at version 0.16.68:
+  - @agentforge/core@0.16.68
+  - @agentforge/skills@0.16.68
+  - @agentforge/patterns@0.16.68
+  - @agentforge/tools@0.16.68
+  - @agentforge/testing@0.16.68
+  - @agentforge/cli@0.16.68
+
 ## [0.16.67] - 2026-07-07
 
 ### Added
