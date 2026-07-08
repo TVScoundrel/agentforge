@@ -3412,22 +3412,35 @@ Implementation notes:
 **Branch:** `refactor/st-09081-monitoring-alert-manager-modularization`
 
 ### Checklist
-- [ ] Create branch `refactor/st-09081-monitoring-alert-manager-modularization`
+- [x] Create branch `refactor/st-09081-monitoring-alert-manager-modularization`
 - [ ] Create draft PR with story ID in title
-- [ ] Define test strategy before implementation: cover rule evaluation, throttling, callback failure handling, metrics-provider failure handling, and channel dispatch logging through focused alert-manager suites
-- [ ] Write or update the failing automated test before production changes when practical; if not practical, record why before implementation
-- [ ] Reduce `packages/core/src/monitoring/alerts.ts` to a smaller public facade or clearly separated orchestration layer while extracting focused throttle/rule evaluation, channel dispatch, and error-payload/reporting helpers
-- [ ] Preserve public `AlertManager`, `createAlertManager(...)`, typed built-in/custom channel validation, and direct-alert behavior
-- [ ] Replace the `packages/core/tests/monitoring/alerts.test.ts` monolith with focused suites or shared fixtures that preserve monitoring regression coverage
-- [ ] Add/update production code until focused tests pass, keeping test evidence in checklist notes and PR body
-- [ ] Record explicit-`any` warning deltas and the monitoring compatibility rationale for touched modules in story docs
-- [ ] Add or update story documentation at `docs/st09081-monitoring-alert-manager-modularization.md` (or document why not required)
-- [ ] Assess residual test impact; add/update additional automated tests when needed, or document why no further tests are required
-- [ ] Run full test suite before finalizing the PR and record results
-- [ ] Run lint (`pnpm lint`) before finalizing the PR and record results
+- [x] Define test strategy before implementation: cover rule evaluation, throttling, callback failure handling, metrics-provider failure handling, and channel dispatch logging through focused alert-manager suites
+  - Split the current alert-manager coverage first into focused `packages/core/tests/monitoring/alerts/` characterization modules plus a thin entrypoint so the public behavior is pinned before runtime extraction.
+- [x] Write or update the failing automated test before production changes when practical; if not practical, record why before implementation
+  - A red test is not practical here because the story is a behavior-preserving modularization of an already-covered public monitoring API rather than a new externally visible behavior; the characterization split will be established first and then reused during runtime extraction.
+- [x] Reduce `packages/core/src/monitoring/alerts.ts` to a smaller public facade or clearly separated orchestration layer while extracting focused throttle/rule evaluation, channel dispatch, and error-payload/reporting helpers
+- [x] Preserve public `AlertManager`, `createAlertManager(...)`, typed built-in/custom channel validation, and direct-alert behavior
+- [x] Replace the `packages/core/tests/monitoring/alerts.test.ts` monolith with focused suites or shared fixtures that preserve monitoring regression coverage
+- [x] Add/update production code until focused tests pass, keeping test evidence in checklist notes and PR body
+  - `pnpm test --run packages/core/tests/monitoring/alerts.test.ts` -> `1` file passed; `7` tests passed
+  - `pnpm --filter @agentforge/core test --run` -> `65` files passed; `643` tests passed
+  - `pnpm --filter @agentforge/core typecheck` -> passed
+  - `pnpm lint:explicit-any:baseline` -> passed; baseline held at workspace `80/289`, core `19/119`
+- [x] Record explicit-`any` warning deltas and the monitoring compatibility rationale for touched modules in story docs
+- [x] Add or update story documentation at `docs/st09081-monitoring-alert-manager-modularization.md` (or document why not required)
+- [x] Assess residual test impact; add/update additional automated tests when needed, or document why no further tests are required
+  - The split alert suites preserve coverage across rule evaluation, throttling, callback failure handling, metrics-provider failure handling, and channel dispatch logging; no additional automation or CI workflow change was required beyond restoring the documented package-local Vitest path for `@agentforge/core`.
+- [x] Run full test suite before finalizing the PR and record results
+  - `pnpm test --run` -> `224` passed | `9` skipped files; `2513` passed | `110` skipped tests
+- [x] Run lint (`pnpm lint`) before finalizing the PR and record results
+  - `pnpm lint` -> passed with pre-existing workspace warnings only (`0` errors)
 - [ ] Commit completed checklist items as logical commits and push updates
 - [ ] Mark PR Ready only after all story tasks are complete
 - [ ] Wait for merge; do not merge directly from local branch
+
+### Notes
+- CI-impact assessment:
+  - No CI workflow file change was needed for this story, but the acceptance-path command contract for `@agentforge/core` was broken pre-change because the package had no local Vitest config. The story now restores that documented validation path with `packages/core/vitest.config.ts` and an updated package `test` script.
 
 ---
 

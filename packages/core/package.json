@@ -19,8 +19,8 @@
   "scripts": {
     "build": "tsup src/index.ts --format esm,cjs --dts --clean",
     "dev": "tsup src/index.ts --format esm,cjs --dts --watch",
-    "test": "vitest",
-    "test:coverage": "vitest --coverage",
+    "test": "vitest --config vitest.config.ts",
+    "test:coverage": "vitest --config vitest.config.ts --coverage",
     "typecheck": "tsc --noEmit",
     "lint": "eslint src",
     "lint:fix": "eslint src --fix",
