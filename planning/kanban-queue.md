@@ -5,8 +5,8 @@
 ## Queue Status Summary
 
 - **Ready:** 0 stories
-- **In Progress:** 1 story
-- **In Review:** 0 stories
+- **In Progress:** 0 stories
+- **In Review:** 1 story
 - **Blocked:** 0 stories
 - **Backlog:** 0 stories
 
@@ -20,14 +20,14 @@ None currently.
 
 ## In Progress
 
-- `ST-09081` - Modularize Monitoring Alert Manager and Tests
-  - Depends on: `ST-09016` (merged 2026-03-26)
+None currently.
 
 ---
 
 ## In Review
 
-None currently.
+- `ST-09081` - Modularize Monitoring Alert Manager and Tests
+  - Depends on: `ST-09016` (merged 2026-03-26)
 
 ## Blocked
 

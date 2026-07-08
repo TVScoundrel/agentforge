@@ -3413,7 +3413,8 @@ Implementation notes:
 
 ### Checklist
 - [x] Create branch `refactor/st-09081-monitoring-alert-manager-modularization`
-- [ ] Create draft PR with story ID in title
+- [x] Create draft PR with story ID in title
+  - PR #152: https://github.com/TVScoundrel/agentforge/pull/152
 - [x] Define test strategy before implementation: cover rule evaluation, throttling, callback failure handling, metrics-provider failure handling, and channel dispatch logging through focused alert-manager suites
   - Split the current alert-manager coverage first into focused `packages/core/tests/monitoring/alerts/` characterization modules plus a thin entrypoint so the public behavior is pinned before runtime extraction.
 - [x] Write or update the failing automated test before production changes when practical; if not practical, record why before implementation
@@ -3434,7 +3435,8 @@ Implementation notes:
   - `pnpm test --run` -> `224` passed | `9` skipped files; `2513` passed | `110` skipped tests
 - [x] Run lint (`pnpm lint`) before finalizing the PR and record results
   - `pnpm lint` -> passed with pre-existing workspace warnings only (`0` errors)
-- [ ] Commit completed checklist items as logical commits and push updates
+- [x] Commit completed checklist items as logical commits and push updates
+  - `5805b022` refactor(st-09081): modularize monitoring alerts
 - [ ] Mark PR Ready only after all story tasks are complete
 - [ ] Wait for merge; do not merge directly from local branch
 

@@ -2229,7 +2229,7 @@
 **Priority:** P2 (Medium)
 **Estimate:** 3 hours
 **Dependencies:** ST-09016 (merged)
-**Status:** In Progress
+**Status:** In Review
 
 **Acceptance criteria:**
 - [ ] `packages/core/src/monitoring/alerts.ts` is reduced to a smaller public facade or clearly separated orchestration layer while channel dispatch, throttle/rule evaluation, and error-payload/reporting helpers move into focused modules that stay below the planning cutoff unless an exception is documented.
