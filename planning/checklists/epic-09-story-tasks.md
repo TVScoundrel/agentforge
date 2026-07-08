@@ -3437,7 +3437,9 @@ Implementation notes:
   - `pnpm lint` -> passed with pre-existing workspace warnings only (`0` errors)
 - [x] Commit completed checklist items as logical commits and push updates
   - `5805b022` refactor(st-09081): modularize monitoring alerts
-- [ ] Mark PR Ready only after all story tasks are complete
+  - `14fc32a2` docs(st-09081): move story to in-review
+- [x] Mark PR Ready only after all story tasks are complete
+  - PR #152 marked ready: https://github.com/TVScoundrel/agentforge/pull/152
 - [ ] Wait for merge; do not merge directly from local branch
 
 ### Notes
