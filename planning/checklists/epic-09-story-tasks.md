@@ -3521,3 +3521,141 @@ Implementation notes:
   - PR #148 marked ready: https://github.com/TVScoundrel/agentforge/pull/148
 - [x] Wait for merge; do not merge directly from local branch
   - Merged via PR #148 on 2026-07-01 (merge commit `a93a8771`)
+
+---
+
+## ST-09084: Deduplicate Tool Testing Helpers Across Core and Testing
+
+**Branch:** `refactor/st-09084-tool-testing-helper-deduplication`
+
+### Checklist
+- [ ] Create branch `refactor/st-09084-tool-testing-helper-deduplication`
+- [ ] Create draft PR with story ID in title
+- [ ] Define test strategy before implementation: cover mock-tool responses, simulator execution, invocation recording, and current type-level/public import compatibility across both `@agentforge/core` and `@agentforge/testing`
+- [ ] Write or update the failing automated test before production changes when practical; if not practical, record why before implementation
+- [ ] Reduce duplicated mock-tool or simulator behavior across `packages/core/src/tools/testing.ts` and `packages/testing/src/mocks/mock-tool.ts` behind focused shared helpers, adapters, or re-exports
+- [ ] Preserve current public `createMockTool(...)`, `createToolSimulator(...)`, invocation-recording behavior, and type inference for both packages
+- [ ] Add/update focused tests until the deduplicated behavior passes in both package surfaces, keeping evidence in checklist notes and PR body
+- [ ] Record explicit-`any` warning deltas and the cross-package compatibility rationale in story docs
+- [ ] Add or update story documentation at `docs/st09084-tool-testing-helper-deduplication.md` (or document why not required)
+- [ ] Assess residual test impact; add/update additional automated tests when needed, or document why no further tests are required
+- [ ] Run full test suite before finalizing the PR and record results
+- [ ] Run lint (`pnpm lint`) before finalizing the PR and record results
+- [ ] Commit completed checklist items as logical commits and push updates
+- [ ] Mark PR Ready only after all story tasks are complete
+- [ ] Wait for merge; do not merge directly from local branch
+
+### Notes
+- CI-impact assessment:
+  - No CI workflow update is expected; verify the existing package-scoped and root test flows still cover both `@agentforge/core` and `@agentforge/testing`.
+
+---
+
+## ST-09085: Modularize Relational Schema Type Mapper and Tests
+
+**Branch:** `refactor/st-09085-relational-schema-type-mapper-modularization`
+
+### Checklist
+- [ ] Create branch `refactor/st-09085-relational-schema-type-mapper-modularization`
+- [ ] Create draft PR with story ID in title
+- [ ] Define test strategy before implementation: cover vendor-specific mappings, normalization rules, precision-loss notes, unknown-type fallbacks, and schema-wide mapping aggregation
+- [ ] Write or update the failing automated test before production changes when practical; if not practical, record why before implementation
+- [ ] Reduce `packages/tools/src/data/relational/schema/type-mapper.ts` below the planning cutoff by extracting focused vendor-map, normalization, or shared mapping helpers
+- [ ] Preserve current public `mapColumnType(...)`, `mapSchemaTypes(...)`, and `getVendorTypeMap(...)` behavior and import paths
+- [ ] Replace any monolithic type-mapper assertions with focused suites or fixtures that preserve vendor, normalization, and schema-level behavior coverage
+- [ ] Add/update production code until focused tests pass, keeping evidence in checklist notes and PR body
+- [ ] Record explicit-`any` warning deltas and the mapping-compatibility rationale in story docs
+- [ ] Add or update story documentation at `docs/st09085-relational-schema-type-mapper-modularization.md` (or document why not required)
+- [ ] Assess residual test impact; add/update additional automated tests when needed, or document why no further tests are required
+- [ ] Run full test suite before finalizing the PR and record results
+- [ ] Run lint (`pnpm lint`) before finalizing the PR and record results
+- [ ] Commit completed checklist items as logical commits and push updates
+- [ ] Mark PR Ready only after all story tasks are complete
+- [ ] Wait for merge; do not merge directly from local branch
+
+### Notes
+- CI-impact assessment:
+  - No CI workflow update is expected; verify the existing tools package-scoped and root validation paths still cover the modularized schema utilities.
+
+---
+
+## ST-09086: Modularize Relational Schema Diff and JSON Utilities
+
+**Branch:** `refactor/st-09086-relational-schema-diff-modularization`
+
+### Checklist
+- [ ] Create branch `refactor/st-09086-relational-schema-diff-modularization`
+- [ ] Create draft PR with story ID in title
+- [ ] Define test strategy before implementation: cover table/column diff reporting, case-insensitive matching, primary-key ordering, deterministic export, and invalid JSON structural validation
+- [ ] Write or update the failing automated test before production changes when practical; if not practical, record why before implementation
+- [ ] Reduce `packages/tools/src/data/relational/schema/schema-diff.ts` to a smaller public facade or clearly separated orchestration layer while extracting focused diffing and JSON validation helpers
+- [ ] Preserve current public `diffSchemas(...)`, `exportSchemaToJson(...)`, `importSchemaFromJson(...)`, and diff-report shape behavior
+- [ ] Replace the `packages/tools/tests/data/relational/schema-diff.test.ts` monolith with focused suites or shared fixtures that preserve current regression coverage
+- [ ] Add/update production code until focused tests pass, keeping evidence in checklist notes and PR body
+- [ ] Record explicit-`any` warning deltas and the schema-diff compatibility rationale in story docs
+- [ ] Add or update story documentation at `docs/st09086-relational-schema-diff-modularization.md` (or document why not required)
+- [ ] Assess residual test impact; add/update additional automated tests when needed, or document why no further tests are required
+- [ ] Run full test suite before finalizing the PR and record results
+- [ ] Run lint (`pnpm lint`) before finalizing the PR and record results
+- [ ] Commit completed checklist items as logical commits and push updates
+- [ ] Mark PR Ready only after all story tasks are complete
+- [ ] Wait for merge; do not merge directly from local branch
+
+### Notes
+- CI-impact assessment:
+  - No CI workflow update is expected; verify the existing tools package-scoped and root validation paths still cover the modularized schema diff utilities.
+
+---
+
+## ST-09087: DRY Middleware Rate-Limit and Concurrency Controllers
+
+**Branch:** `refactor/st-09087-middleware-controller-deduplication`
+
+### Checklist
+- [ ] Create branch `refactor/st-09087-middleware-controller-deduplication`
+- [ ] Create draft PR with story ID in title
+- [ ] Define test strategy before implementation: cover rate-limit strategies, shared limiter/controller behavior, queue limits and timeouts, preset integration, and shared middleware interactions
+- [ ] Write or update the failing automated test before production changes when practical; if not practical, record why before implementation
+- [ ] Reduce duplicated controller or factory wiring across `packages/core/src/langgraph/middleware/rate-limiting.ts` and `packages/core/src/langgraph/middleware/concurrency.ts` behind focused helpers or internal modules
+- [ ] Preserve current public `withRateLimit(...)`, `createSharedRateLimiter(...)`, `withConcurrency(...)`, and `createSharedConcurrencyController(...)` behavior and import paths
+- [ ] Replace `packages/core/src/langgraph/middleware/__tests__/integration.test.ts` with focused suites or shared fixtures that preserve composition, preset, and shared-controller coverage
+- [ ] Add/update production code until focused tests pass, keeping evidence in checklist notes and PR body
+- [ ] Record explicit-`any` warning deltas and the middleware-compatibility rationale in story docs
+- [ ] Add or update story documentation at `docs/st09087-middleware-controller-deduplication.md` (or document why not required)
+- [ ] Assess residual test impact; add/update additional automated tests when needed, or document why no further tests are required
+- [ ] Run full test suite before finalizing the PR and record results
+- [ ] Run lint (`pnpm lint`) before finalizing the PR and record results
+- [ ] Commit completed checklist items as logical commits and push updates
+- [ ] Mark PR Ready only after all story tasks are complete
+- [ ] Wait for merge; do not merge directly from local branch
+
+### Notes
+- CI-impact assessment:
+  - No CI workflow update is expected; verify the existing core package-scoped and root validation paths still cover the refactored middleware layers.
+
+---
+
+## ST-09088: Harden Multi-Agent Runnable Config and GraphInterrupt Detection
+
+**Branch:** `fix/st-09088-multi-agent-runtime-boundary-hardening`
+
+### Checklist
+- [ ] Create branch `fix/st-09088-multi-agent-runtime-boundary-hardening`
+- [ ] Create draft PR with story ID in title
+- [ ] Define test strategy before implementation: cover malformed runnable-config inputs, supported config forwarding, GraphInterrupt compatibility, and current wrapped-node error bubbling
+- [ ] Write or update the failing automated test before production changes when practical; if not practical, record why before implementation
+- [ ] Replace the bare config cast in `packages/patterns/src/multi-agent/utils-shared.ts` with structural RunnableConfig validation or safe forwarding logic
+- [ ] Harden `packages/patterns/src/shared/error-handling.ts` so GraphInterrupt detection does not rely solely on constructor-name matching
+- [ ] Add/update focused tests until the runtime-boundary behavior passes, keeping evidence in checklist notes and PR body
+- [ ] Record explicit-`any` warning deltas and the runtime-boundary compatibility rationale in story docs
+- [ ] Add or update story documentation at `docs/st09088-multi-agent-runtime-boundary-hardening.md` (or document why not required)
+- [ ] Assess residual test impact; add/update additional automated tests when needed, or document why no further tests are required
+- [ ] Run full test suite before finalizing the PR and record results
+- [ ] Run lint (`pnpm lint`) before finalizing the PR and record results
+- [ ] Commit completed checklist items as logical commits and push updates
+- [ ] Mark PR Ready only after all story tasks are complete
+- [ ] Wait for merge; do not merge directly from local branch
+
+### Notes
+- CI-impact assessment:
+  - No CI workflow update is expected; verify the existing patterns package-scoped and root validation paths still cover the hardened runtime boundary.

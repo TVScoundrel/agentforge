@@ -2274,6 +2274,91 @@
 
 ---
 
+#### ST-09084: Deduplicate Tool Testing Helpers Across Core and Testing
+**User story:** As a maintainer, I want the core tool-testing helpers and the testing package mock-tool utilities to share their behavior through focused internals so mock-tool fixes do not keep drifting across two similar implementations.
+
+**Priority:** P2 (Medium)
+**Estimate:** 3 hours
+**Dependencies:** None
+**Status:** Ready
+
+**Acceptance criteria:**
+- [ ] The duplicated mock-tool or tool-simulator behavior currently split between `packages/core/src/tools/testing.ts` and `packages/testing/src/mocks/mock-tool.ts` is reduced behind focused shared helpers, adapters, or re-exports without breaking current public imports from either package.
+- [ ] Public `createMockTool(...)`, `createToolSimulator(...)`, invocation-recording semantics, and current type-inference behavior remain backward compatible for existing `@agentforge/core` and `@agentforge/testing` consumers.
+- [ ] Focused tests preserve coverage across configured responses, error paths, invocation history, and simulator execution while avoiding future behavioral drift between the two packages.
+- [ ] `pnpm --filter @agentforge/core test --run`, `pnpm --filter @agentforge/testing test --run`, `pnpm --filter @agentforge/core typecheck`, `pnpm --filter @agentforge/testing typecheck`, and `pnpm lint:explicit-any:baseline` pass with no baseline regression.
+- [ ] Add or update story documentation at `docs/st09084-tool-testing-helper-deduplication.md`
+
+---
+
+#### ST-09085: Modularize Relational Schema Type Mapper and Tests
+**User story:** As a tools maintainer, I want the relational schema type-mapping logic split into focused modules so vendor maps, normalization rules, and schema-wide mapping behavior can evolve without one oversized mixed-responsibility file.
+
+**Priority:** P2 (Medium)
+**Estimate:** 3 hours
+**Dependencies:** None
+**Status:** Ready
+
+**Acceptance criteria:**
+- [ ] `packages/tools/src/data/relational/schema/type-mapper.ts` is reduced below the planning cutoff by extracting focused vendor-map, normalization, or shared mapping helpers while preserving stable public exports for `mapColumnType(...)`, `mapSchemaTypes(...)`, and `getVendorTypeMap(...)`.
+- [ ] Existing mapping behavior remains unchanged for bigint precision-loss notes, unknown-type fallback logging, `[]`/`unsigned`/size suffix normalization, and schema-wide per-table mapping output.
+- [ ] Focused tests cover vendor-specific mappings plus normalization and schema-level aggregation behavior without relying on one monolithic type-mapper suite.
+- [ ] `pnpm --filter @agentforge/tools test --run`, `pnpm --filter @agentforge/tools typecheck`, and `pnpm lint:explicit-any:baseline` pass with no baseline regression.
+- [ ] Add or update story documentation at `docs/st09085-relational-schema-type-mapper-modularization.md`
+
+---
+
+#### ST-09086: Modularize Relational Schema Diff and JSON Utilities
+**User story:** As a tools maintainer, I want schema diffing and schema JSON import/export validation separated into focused modules so comparison logic and structural validation can evolve without one coupled utility and test surface.
+
+**Priority:** P2 (Medium)
+**Estimate:** 3 hours
+**Dependencies:** None
+**Status:** Backlog
+
+**Acceptance criteria:**
+- [ ] `packages/tools/src/data/relational/schema/schema-diff.ts` is reduced to a smaller public facade or clearly grouped orchestration layer while table/column diffing and schema JSON validation/serialization helpers move into focused internal modules that stay below the planning cutoff unless an exception is documented.
+- [ ] Public `diffSchemas(...)`, `exportSchemaToJson(...)`, `importSchemaFromJson(...)`, and the current diff-report shapes remain backward compatible.
+- [ ] `packages/tools/tests/data/relational/schema-diff.test.ts` is split into focused suites or shared fixtures that preserve coverage over case-insensitive table matching, primary-key ordering, column-diff reporting, deterministic export, and invalid-JSON structure handling.
+- [ ] `pnpm --filter @agentforge/tools test --run`, `pnpm --filter @agentforge/tools typecheck`, and `pnpm lint:explicit-any:baseline` pass with no baseline regression.
+- [ ] Add or update story documentation at `docs/st09086-relational-schema-diff-modularization.md`
+
+---
+
+#### ST-09087: DRY Middleware Rate-Limit and Concurrency Controllers
+**User story:** As a core maintainer, I want the rate-limit and concurrency middleware layers to share less duplicated controller/factory wiring so queueing and throttling fixes do not have to be applied in parallel across two similar runtimes and one oversized integration suite.
+
+**Priority:** P2 (Medium)
+**Estimate:** 4 hours
+**Dependencies:** None
+**Status:** Backlog
+
+**Acceptance criteria:**
+- [ ] The repeated controller or factory wiring in `packages/core/src/langgraph/middleware/rate-limiting.ts` and `packages/core/src/langgraph/middleware/concurrency.ts` is reduced behind focused internal helpers or modules without changing the public `withRateLimit(...)`, `createSharedRateLimiter(...)`, `withConcurrency(...)`, or `createSharedConcurrencyController(...)` APIs.
+- [ ] Existing middleware behavior remains unchanged for token-bucket/sliding-window/fixed-window throttling, queue priority ordering, queue limits/timeouts, shared-controller behavior, and current callback semantics.
+- [ ] `packages/core/src/langgraph/middleware/__tests__/integration.test.ts` is split into focused suites or shared fixtures that preserve coverage over middleware composition, preset stacks, cache/validation ordering, and shared rate-limit/concurrency interactions.
+- [ ] `pnpm --filter @agentforge/core test --run`, `pnpm --filter @agentforge/core typecheck`, and `pnpm lint:explicit-any:baseline` pass with no baseline regression.
+- [ ] Add or update story documentation at `docs/st09087-middleware-controller-deduplication.md`
+
+---
+
+#### ST-09088: Harden Multi-Agent Runnable Config and GraphInterrupt Detection
+**User story:** As a patterns maintainer, I want multi-agent config coercion and GraphInterrupt detection to rely on safer structural checks so lightweight wrappers, cross-package LangGraph installs, or future internal renames do not silently break the runtime boundary.
+
+**Priority:** P2 (Medium)
+**Estimate:** 2 hours
+**Dependencies:** None
+**Status:** Ready
+
+**Acceptance criteria:**
+- [ ] `packages/patterns/src/multi-agent/utils-shared.ts` stops relying on a bare `RunnableConfig` cast and only forwards a structurally validated config shape that remains compatible with the current worker execution flow.
+- [ ] `packages/patterns/src/shared/error-handling.ts` no longer relies solely on `constructor.name === 'GraphInterrupt'` for interrupt detection and preserves current human-in-the-loop rethrow behavior for supported LangGraph runtime shapes.
+- [ ] Focused tests cover malformed config inputs, interrupt compatibility, and existing wrapped-node error-handling behavior without widening story scope into unrelated agent changes.
+- [ ] `pnpm --filter @agentforge/patterns test --run`, `pnpm --filter @agentforge/patterns typecheck`, and `pnpm lint:explicit-any:baseline` pass with no baseline regression.
+- [ ] Add or update story documentation at `docs/st09088-multi-agent-runtime-boundary-hardening.md`
+
+---
+
 #### ST-10001: Audit Markdown Emoji Usage Across Project-Owned Docs
 **User story:** As a maintainer, I want a clear inventory of markdown emoji usage so docs-only cleanup work can be prioritized and executed without noisy, repo-wide guesswork.
 

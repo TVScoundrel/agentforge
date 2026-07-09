@@ -3,7 +3,7 @@
 **Epic Range:** EP-09 through EP-09
 **Status:** In Progress
 **Last Updated:** 2026-07-08
-**Active Story:** None currently - ready lane empty after ST-09081 merged
+**Active Story:** None currently - next recommended ready story is ST-09088
 
 ---
 
@@ -32,17 +32,17 @@
 
 ## Current Hotspot Snapshot
 
-Current `@typescript-eslint/no-explicit-any` baseline check (`pnpm lint:explicit-any:baseline`, 2026-06-12):
+Current `@typescript-eslint/no-explicit-any` baseline check (latest committed release-era tracking):
 
-- Total: `84` warnings (`src/**`)
-- By package: `cli 6`, `core 23`, `patterns 2`, `testing 0`, `tools 53`
+- Total: `80` warnings (`src/**`)
+- By package: `cli 6`, `core 19`, `patterns 2`, `testing 0`, `tools 53`
 
 Top runtime hotspots informing this feature slice:
 
-1. Runtime files above the planning cutoff of `300` lines remain first-class modularization candidates, especially `packages/tools/src/data/relational/query/batch-executor.ts` (`367`), `packages/tools/src/data/relational/tools/relational-insert/executor.ts` (`365`), `packages/tools/src/data/relational/query/stream-executor.ts` (`359`), `packages/core/src/langgraph/middleware/caching.ts` (`342`), `packages/tools/src/data/neo4j/embeddings/embedding-manager.ts` (`332`), `packages/tools/src/data/relational/tools/relational-delete/executor.ts` (`324`), `packages/patterns/src/multi-agent/utils.ts` (`322`), `packages/skills/src/activation.ts` (`319`), `packages/tools/src/data/relational/tools/relational-update/executor.ts` (`319`), and `packages/core/src/resources/pool.ts` (`316`).
-2. Their coupled test files are also oversized or tightly coupled and should be modularized in the same stories so production and verification boundaries stay aligned, especially `packages/core/src/langgraph/middleware/__tests__/caching.test.ts` (`280`), `packages/tools/tests/data/neo4j.test.ts` (`261`), `packages/patterns/tests/multi-agent/utils.test.ts` (`299`), `packages/skills/tests/activation.test.ts` (`618`), and the relational executor suites in `packages/tools/tests/data/relational/tools/`.
-3. Modularization stories are only complete when they avoid the "shrink the facade, move the blob" failure mode: newly extracted production modules should also stay below the `300` line cutoff unless a documented exception is explicitly accepted in the story notes.
-4. Shared-helper seams that still expose duplication or unsafe internal shortcuts remain valid follow-on slices when they can be tightened without changing behavior, especially the duplicated shared-cache wrapper logic and broad internal cache/error casts in `packages/core/src/langgraph/middleware/caching.ts`.
+1. The remaining runtime file above the planning cutoff is `packages/tools/src/data/relational/schema/type-mapper.ts` (`325`), which still mixes large vendor maps, normalization, precision-loss notes, and schema-level aggregation helpers in one file.
+2. The next strongest remaining test-modularity hotspots are `packages/core/src/langgraph/middleware/__tests__/integration.test.ts` (`370`), `packages/tools/tests/data/relational/schema-diff.test.ts` (`299`), and several very large pattern/web suites that should be split only when paired with a clear runtime or shared-helper payoff.
+3. Shared-helper seams that still expose duplication or fragile shortcuts remain valid follow-on slices when they can be tightened without behavior changes, especially the repeated factory/controller wiring in `packages/core/src/langgraph/middleware/rate-limiting.ts` and `packages/core/src/langgraph/middleware/concurrency.ts`, plus the cross-package mock-tool duplication between `packages/core/src/tools/testing.ts` and `packages/testing/src/mocks/mock-tool.ts`.
+4. Latent type-boundary risks remain worth capturing as explicit hardening stories even when they are not regressions, especially the structural cast in `packages/patterns/src/multi-agent/utils-shared.ts` and constructor-name-only GraphInterrupt detection in `packages/patterns/src/shared/error-handling.ts`.
 5. The next follow-on slices should keep EP-09 open for another short burst of small SOLID/DRY improvements rather than creating a new epic for the same quality lane.
 
 Recent improvement snapshot:
@@ -130,6 +130,7 @@ Recent improvement snapshot:
 - `ST-09079` merged on 2026-07-04 after shrinking `packages/cli/src/commands/tool/publish.ts` from a `240` line mixed-responsibility command to a `39` line facade, extracting focused path-resolution, preflight, publish-result, and shared-type helpers while preserving `tool:publish` behavior. The story also replaced the monolithic CLI publish test with focused happy-path, error-handling, and path-resolution suites, restored package-local CLI Vitest execution so `pnpm --filter @agentforge/cli test --run` works from the package context, and advanced the ready lane to `ST-09080`.
 - `ST-09080` merged on 2026-07-07 after shrinking `packages/patterns/src/multi-agent/schemas.ts` into a stable facade backed by focused message, routing, worker, and handoff schema modules, splitting schema assertions into a dedicated schema-centric suite, preserving backward-compatible multi-agent schema exports, and keeping the explicit-`any` baseline flat at `workspace 80/289` and `patterns 2/28`. The ready lane now advances to `ST-09081`.
 - `ST-09081` merged on 2026-07-08 after shrinking `packages/core/src/monitoring/alerts.ts` into a stable facade backed by focused rule-evaluation, throttling, channel-dispatch, and error/reporting helpers, splitting the alert-manager monolith into dedicated monitoring suites, restoring package-local core Vitest execution so `pnpm --filter @agentforge/core test --run` resolves from the workspace root again, and keeping the explicit-`any` baseline flat at `workspace 80/289` and `core 19/119`. The current EP-09 ready lane is now empty pending the next accepted slice.
+- `ST-09084` through `ST-09088` were added on 2026-07-08 to replenish the empty EP-09 lane with another dependency-safe batch focused on one multi-agent hardening slice, one cross-package testing-helper de-duplication slice, two relational schema utility modularization slices, and one middleware controller/integration-test DRY slice.
 - The refreshed follow-on queue now extends beyond the current Ready lane so another few weeks of small SOLID/DRY and modularization work can be pulled without re-planning the epic.
 
 ---
@@ -153,7 +154,7 @@ Recent improvement snapshot:
 
 ## Story Coverage by Epic
 
-- EP-09: ST-09001, ST-09002, ST-09003, ST-09004, ST-09005, ST-09006, ST-09007, ST-09008, ST-09009, ST-09010, ST-09011, ST-09012, ST-09013, ST-09014, ST-09015, ST-09016, ST-09017, ST-09018, ST-09019, ST-09020, ST-09021, ST-09022, ST-09023, ST-09024, ST-09025, ST-09026, ST-09027, ST-09028, ST-09029, ST-09030, ST-09031, ST-09032, ST-09033, ST-09034, ST-09035, ST-09036, ST-09037, ST-09038, ST-09039, ST-09040, ST-09041, ST-09042, ST-09043, ST-09044, ST-09045, ST-09046, ST-09047, ST-09048, ST-09049, ST-09050, ST-09051, ST-09052, ST-09053, ST-09054, ST-09055, ST-09056, ST-09057, ST-09058, ST-09059, ST-09060, ST-09061, ST-09062, ST-09063, ST-09064, ST-09065, ST-09066, ST-09067, ST-09068, ST-09069, ST-09070, ST-09071, ST-09072, ST-09073, ST-09074, ST-09075, ST-09076, ST-09077
+- EP-09: ST-09001, ST-09002, ST-09003, ST-09004, ST-09005, ST-09006, ST-09007, ST-09008, ST-09009, ST-09010, ST-09011, ST-09012, ST-09013, ST-09014, ST-09015, ST-09016, ST-09017, ST-09018, ST-09019, ST-09020, ST-09021, ST-09022, ST-09023, ST-09024, ST-09025, ST-09026, ST-09027, ST-09028, ST-09029, ST-09030, ST-09031, ST-09032, ST-09033, ST-09034, ST-09035, ST-09036, ST-09037, ST-09038, ST-09039, ST-09040, ST-09041, ST-09042, ST-09043, ST-09044, ST-09045, ST-09046, ST-09047, ST-09048, ST-09049, ST-09050, ST-09051, ST-09052, ST-09053, ST-09054, ST-09055, ST-09056, ST-09057, ST-09058, ST-09059, ST-09060, ST-09061, ST-09062, ST-09063, ST-09064, ST-09065, ST-09066, ST-09067, ST-09068, ST-09069, ST-09070, ST-09071, ST-09072, ST-09073, ST-09074, ST-09075, ST-09076, ST-09077, ST-09078, ST-09079, ST-09080, ST-09081, ST-09082, ST-09083, ST-09084, ST-09085, ST-09086, ST-09087, ST-09088
 
 ---
 

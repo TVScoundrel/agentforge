@@ -4,17 +4,22 @@
 
 ## Queue Status Summary
 
-- **Ready:** 0 stories
+- **Ready:** 3 stories
 - **In Progress:** 0 stories
 - **In Review:** 0 stories
 - **Blocked:** 0 stories
-- **Backlog:** 0 stories
+- **Backlog:** 2 stories
 
 ---
 
 ## Ready
 
-None currently.
+- `ST-09088` - Harden Multi-Agent Runnable Config and GraphInterrupt Detection
+  - Depends on: None
+- `ST-09084` - Deduplicate Tool Testing Helpers Across Core and Testing
+  - Depends on: None
+- `ST-09085` - Modularize Relational Schema Type Mapper and Tests
+  - Depends on: None
 
 ---
 
@@ -36,7 +41,10 @@ _No stories currently blocked_
 
 ## Backlog
 
-None currently.
+- `ST-09086` - Modularize Relational Schema Diff and JSON Utilities
+  - Depends on: None
+- `ST-09087` - DRY Middleware Rate-Limit and Concurrency Controllers
+  - Depends on: None
 
 ---
 
@@ -139,6 +147,8 @@ None currently.
 - ST-09079 complete - CLI `tool:publish` was modularized into focused path-resolution, preflight, and publish-result helpers, the CLI package gained a package-local Vitest config so `pnpm --filter @agentforge/cli test --run` works from the package context again, and the ready lane now advances to `ST-09080` with `ST-09081` still dependency-ready behind it (merged 2026-07-04, PR #150)
 - ST-09080 complete - multi-agent schemas and schema-centric tests were modularized into focused schema-domain modules plus a dedicated schema suite while preserving the stable facade and package-scoped patterns Vitest path (merged 2026-07-07, PR #151); no additional promotions were needed because `ST-09081` was already dependency-ready, and the ready lane now advances to `ST-09081`
 - ST-09081 complete - monitoring alert evaluation, throttling, channel dispatch, and error handling were modularized behind a stable public facade, the alert-manager coverage was split into focused suites, and the documented `pnpm --filter @agentforge/core test --run` path now works again from the package context via a package-local Vitest config (merged 2026-07-08, PR #152); the active queue is now empty pending the next accepted EP-09 slice
+- Epic 09 was expanded on 2026-07-08 with follow-on stories `ST-09084` through `ST-09088` after the prior ready lane emptied; the new batch targets one remaining multi-agent type-boundary hardening seam, one cross-package tool-testing duplication seam, two relational schema utility modularization slices, and one middleware controller/test modularization slice
+- `ST-09088` is intentionally placed at the front of `Ready` because it is the smallest remaining behavior-hardening seam and directly addresses two latent risks in the multi-agent patterns layer before the next broader modularization stories
 - Complete: ST-10005 - documentation emoji guardrails added to contributor guidance (PR #104, 2026-05-05)
 - Complete: ST-10004 - example/template docs emoji normalization merged (PR #102, 2026-05-05)
 - Complete: ST-10003 - planning and internal docs emoji normalization merged (PR #101, 2026-05-04)
