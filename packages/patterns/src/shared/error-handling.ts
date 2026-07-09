@@ -13,12 +13,33 @@
  * @param error - The error to check
  * @returns True if the error is a GraphInterrupt
  */
+function getErrorName(error: Record<string, unknown>): string | undefined {
+  return typeof error.name === 'string' ? error.name : undefined;
+}
+
+function getConstructorName(error: Record<string, unknown>): string | undefined {
+  if (!('constructor' in error)) {
+    return undefined;
+  }
+
+  const { constructor } = error;
+  if (constructor !== null && typeof constructor === 'object' && 'name' in constructor) {
+    const constructorName = (constructor as { name?: unknown }).name;
+    return typeof constructorName === 'string' ? constructorName : undefined;
+  }
+
+  return typeof constructor === 'function' ? constructor.name : undefined;
+}
+
 export function isGraphInterrupt(error: unknown): boolean {
+  if (error === null || typeof error !== 'object') {
+    return false;
+  }
+
+  const errorRecord = error as Record<string, unknown>;
   return (
-    error !== null &&
-    typeof error === 'object' &&
-    'constructor' in error &&
-    error.constructor.name === 'GraphInterrupt'
+    getErrorName(errorRecord) === 'GraphInterrupt' ||
+    getConstructorName(errorRecord) === 'GraphInterrupt'
   );
 }
 

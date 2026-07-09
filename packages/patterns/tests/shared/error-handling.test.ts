@@ -16,6 +16,22 @@ describe('withErrorHandling', () => {
     await expect(wrapped({ input: 'test' })).rejects.toBe(graphInterrupt);
   });
 
+  it('rethrows GraphInterrupt-like errors when the constructor name is unstable', async () => {
+    class MinifiedInterrupt extends Error {
+      override name = 'GraphInterrupt';
+    }
+
+    const graphInterrupt = new MinifiedInterrupt('pause for human input');
+    const wrapped = withErrorHandling(
+      async () => {
+        throw graphInterrupt;
+      },
+      'test-node'
+    );
+
+    await expect(wrapped({ input: 'test' })).rejects.toBe(graphInterrupt);
+  });
+
   it('returns fallback status and error even when state omits optional channels', async () => {
     type MinimalState = { input: string; status?: string; error?: string };
     const wrapped = withErrorHandling<MinimalState>(

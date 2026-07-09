@@ -191,6 +191,47 @@ describe('Multi-Agent Utils wrapReActAgent', () => {
     });
   });
 
+  it('forwards only runnable config keys while preserving supported options', async () => {
+    const mockReActAgent = createMockReActAgent(async () => createHumanMessageResponse('Done'));
+    const wrappedAgent = wrapReActAgent('worker1', mockReActAgent);
+
+    await wrappedAgent(createWorkerState(), {
+      tags: ['multi-agent'],
+      metadata: { source: 'test' },
+      recursionLimit: 12,
+      configurable: {
+        thread_id: 'parent-thread',
+      },
+      customRuntimeFlag: 'drop-me',
+    });
+
+    expect(mockReActAgent.invoke).toHaveBeenCalledWith(
+      { messages: [{ role: 'user', content: 'Analyze customer feedback data' }] },
+      {
+        tags: ['multi-agent'],
+        metadata: { source: 'test' },
+        recursionLimit: 12,
+        configurable: {
+          thread_id: 'parent-thread:worker:worker1',
+        },
+      }
+    );
+  });
+
+  it('drops malformed worker config values instead of forwarding arbitrary records', async () => {
+    const mockReActAgent = createMockReActAgent(async () => createHumanMessageResponse('Done'));
+    const wrappedAgent = wrapReActAgent('worker1', mockReActAgent);
+
+    await wrappedAgent(createWorkerState(), {
+      customRuntimeFlag: 'drop-me',
+    });
+
+    expect(mockReActAgent.invoke).toHaveBeenCalledWith(
+      { messages: [{ role: 'user', content: 'Analyze customer feedback data' }] },
+      undefined
+    );
+  });
+
   it('emits more error console output when verbose is enabled', async () => {
     const mockReActAgent = createMockReActAgent(async () => {
       throw new Error('forced failure');

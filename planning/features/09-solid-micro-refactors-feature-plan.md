@@ -2,8 +2,8 @@
 
 **Epic Range:** EP-09 through EP-09
 **Status:** In Progress
-**Last Updated:** 2026-07-08
-**Active Story:** None currently - next recommended ready story is ST-09088
+**Last Updated:** 2026-07-09
+**Active Story:** ST-09088 - Harden Multi-Agent Runnable Config and GraphInterrupt Detection
 
 ---
 

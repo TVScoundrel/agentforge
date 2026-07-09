@@ -1,11 +1,11 @@
 # Kanban Queue: AgentForge
 
-**Last Updated:** 2026-07-08
+**Last Updated:** 2026-07-09
 
 ## Queue Status Summary
 
-- **Ready:** 3 stories
-- **In Progress:** 0 stories
+- **Ready:** 2 stories
+- **In Progress:** 1 story
 - **In Review:** 0 stories
 - **Blocked:** 0 stories
 - **Backlog:** 2 stories
@@ -14,8 +14,6 @@
 
 ## Ready
 
-- `ST-09088` - Harden Multi-Agent Runnable Config and GraphInterrupt Detection
-  - Depends on: None
 - `ST-09084` - Deduplicate Tool Testing Helpers Across Core and Testing
   - Depends on: None
 - `ST-09085` - Modularize Relational Schema Type Mapper and Tests
@@ -25,7 +23,8 @@
 
 ## In Progress
 
-None currently.
+- `ST-09088` - Harden Multi-Agent Runnable Config and GraphInterrupt Detection
+  - Depends on: None
 
 ---
 
