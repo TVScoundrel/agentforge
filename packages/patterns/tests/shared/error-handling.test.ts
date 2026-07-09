@@ -32,6 +32,34 @@ describe('withErrorHandling', () => {
     await expect(wrapped({ input: 'test' })).rejects.toBe(graphInterrupt);
   });
 
+  it('does not mask the original error when interrupt-like getters throw', async () => {
+    const originalError = new Error('boom');
+    const thrownValue = Object.create(null) as { name?: string; constructor?: unknown };
+    Object.defineProperty(thrownValue, 'name', {
+      get() {
+        throw originalError;
+      },
+    });
+    Object.defineProperty(thrownValue, 'constructor', {
+      get() {
+        throw originalError;
+      },
+    });
+
+    const wrapped = withErrorHandling(
+      async () => {
+        throw thrownValue;
+      },
+      'test-node'
+    );
+
+    const result = await wrapped({ input: 'test' });
+    expect(result).toEqual({
+      status: 'failed',
+      error: 'Unknown error',
+    });
+  });
+
   it('returns fallback status and error even when state omits optional channels', async () => {
     type MinimalState = { input: string; status?: string; error?: string };
     const wrapped = withErrorHandling<MinimalState>(

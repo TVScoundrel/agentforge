@@ -14,21 +14,35 @@
  * @returns True if the error is a GraphInterrupt
  */
 function getErrorName(error: Record<string, unknown>): string | undefined {
-  return typeof error.name === 'string' ? error.name : undefined;
+  try {
+    return typeof error.name === 'string' ? error.name : undefined;
+  } catch {
+    return undefined;
+  }
 }
 
 function getConstructorName(error: Record<string, unknown>): string | undefined {
-  if (!('constructor' in error)) {
+  let constructorValue: unknown;
+  try {
+    constructorValue = error.constructor;
+  } catch {
     return undefined;
   }
 
-  const { constructor } = error;
-  if (constructor !== null && typeof constructor === 'object' && 'name' in constructor) {
-    const constructorName = (constructor as { name?: unknown }).name;
-    return typeof constructorName === 'string' ? constructorName : undefined;
+  if (constructorValue === undefined) {
+    return undefined;
   }
 
-  return typeof constructor === 'function' ? constructor.name : undefined;
+  if (constructorValue !== null && typeof constructorValue === 'object') {
+    try {
+      const constructorName = (constructorValue as { name?: unknown }).name;
+      return typeof constructorName === 'string' ? constructorName : undefined;
+    } catch {
+      return undefined;
+    }
+  }
+
+  return typeof constructorValue === 'function' ? constructorValue.name : undefined;
 }
 
 export function isGraphInterrupt(error: unknown): boolean {
@@ -41,6 +55,18 @@ export function isGraphInterrupt(error: unknown): boolean {
     getErrorName(errorRecord) === 'GraphInterrupt' ||
     getConstructorName(errorRecord) === 'GraphInterrupt'
   );
+}
+
+function toErrorMessage(error: unknown): string {
+  if (error instanceof Error) {
+    return error.message;
+  }
+
+  try {
+    return String(error);
+  } catch {
+    return 'Unknown error';
+  }
 }
 
 /**
@@ -78,7 +104,7 @@ export function handleNodeError(
   }
 
   // Extract error message
-  const errorMessage = error instanceof Error ? error.message : String(error);
+  const errorMessage = toErrorMessage(error);
 
   // Log if verbose
   if (verbose) {

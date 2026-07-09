@@ -11,13 +11,13 @@ This story hardens both seams without changing the public multi-agent or shared 
 
 ## Implementation
 
-- Replaced the bare `RunnableConfig` cast in [packages/patterns/src/multi-agent/utils-shared.ts](/Users/tomvanschoor/Projects/Paymentology/agents/langgraph/learning/deepagents/packages/patterns/src/multi-agent/utils-shared.ts) with LangChain's own `pickRunnableConfigKeys(...)` helper.
+- Replaced the bare `RunnableConfig` cast in [`packages/patterns/src/multi-agent/utils-shared.ts`](../packages/patterns/src/multi-agent/utils-shared.ts) with LangChain's own `pickRunnableConfigKeys(...)` helper.
 - Added undefined-value cleanup so malformed worker config records collapse to `undefined` instead of forwarding an inert object full of unsupported keys.
 - Preserved supported runtime forwarding for real runnable options such as `configurable.thread_id`, `tags`, `metadata`, and `recursionLimit`.
-- Hardened [packages/patterns/src/shared/error-handling.ts](/Users/tomvanschoor/Projects/Paymentology/agents/langgraph/learning/deepagents/packages/patterns/src/shared/error-handling.ts) so interrupt detection accepts either `error.name === 'GraphInterrupt'` or the existing constructor-name compatibility path.
+- Hardened [`packages/patterns/src/shared/error-handling.ts`](../packages/patterns/src/shared/error-handling.ts) so interrupt detection accepts either `error.name === 'GraphInterrupt'` or the existing constructor-name compatibility path.
 - Added focused regression coverage in:
-  - [packages/patterns/tests/multi-agent/utils/wrap-react-agent.suite.ts](/Users/tomvanschoor/Projects/Paymentology/agents/langgraph/learning/deepagents/packages/patterns/tests/multi-agent/utils/wrap-react-agent.suite.ts)
-  - [packages/patterns/tests/shared/error-handling.test.ts](/Users/tomvanschoor/Projects/Paymentology/agents/langgraph/learning/deepagents/packages/patterns/tests/shared/error-handling.test.ts)
+  - [`packages/patterns/tests/multi-agent/utils/wrap-react-agent.suite.ts`](../packages/patterns/tests/multi-agent/utils/wrap-react-agent.suite.ts)
+  - [`packages/patterns/tests/shared/error-handling.test.ts`](../packages/patterns/tests/shared/error-handling.test.ts)
 
 ## Test Strategy
 
