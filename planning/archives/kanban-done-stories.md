@@ -2,11 +2,18 @@
 
 **Purpose:** Track completed and merged stories for the Relational Database Access Tool project.
 
-**Last Updated:** 2026-07-08
+**Last Updated:** 2026-07-09
 
 ---
 
 ## Completed Stories
+
+### ST-09088: Harden Multi-Agent Runnable Config and GraphInterrupt Detection
+- **Merged:** 2026-07-09
+- **PR:** https://github.com/TVScoundrel/agentforge/pull/153 (commit 05955f9d)
+- **Epic:** EP-09 (SOLID Micro-Refactors and Type Boundary Hardening)
+- **Estimate:** 2 hours
+- **Outcome:** Hardened `@agentforge/patterns` multi-agent runtime boundaries by replacing the bare `RunnableConfig` cast in `packages/patterns/src/multi-agent/utils-shared.ts` with sanitized key-picking via LangChain's runnable-config helpers, preserving worker-thread namespacing while dropping malformed caller keys. The story also replaced constructor-name-only GraphInterrupt detection in `packages/patterns/src/shared/error-handling.ts` with a stable name-or-constructor compatibility check, then absorbed a review-driven follow-up so hostile getters and fallback stringification can no longer break the error path. Focused regressions landed in the wrapped multi-agent utility and shared error-handling suites, the story documentation was added in `docs/st09088-multi-agent-runtime-boundary-hardening.md`, and the queue was groomed so `ST-09084` through `ST-09087` are now all dependency-ready in `Ready`.
 
 ### ST-09081: Modularize Monitoring Alert Manager and Tests
 - **Merged:** 2026-07-08

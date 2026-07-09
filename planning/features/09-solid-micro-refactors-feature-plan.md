@@ -1,9 +1,9 @@
 # Feature Plan: SOLID Micro-Refactors and Type Boundary Hardening
 
 **Epic Range:** EP-09 through EP-09
-**Status:** In Review
+**Status:** In Progress
 **Last Updated:** 2026-07-09
-**Active Story:** ST-09088 - Harden Multi-Agent Runnable Config and GraphInterrupt Detection (In Review)
+**Active Story:** None currently - next recommended ready story is ST-09084
 
 ---
 
@@ -131,6 +131,7 @@ Recent improvement snapshot:
 - `ST-09080` merged on 2026-07-07 after shrinking `packages/patterns/src/multi-agent/schemas.ts` into a stable facade backed by focused message, routing, worker, and handoff schema modules, splitting schema assertions into a dedicated schema-centric suite, preserving backward-compatible multi-agent schema exports, and keeping the explicit-`any` baseline flat at `workspace 80/289` and `patterns 2/28`. The ready lane now advances to `ST-09081`.
 - `ST-09081` merged on 2026-07-08 after shrinking `packages/core/src/monitoring/alerts.ts` into a stable facade backed by focused rule-evaluation, throttling, channel-dispatch, and error/reporting helpers, splitting the alert-manager monolith into dedicated monitoring suites, restoring package-local core Vitest execution so `pnpm --filter @agentforge/core test --run` resolves from the workspace root again, and keeping the explicit-`any` baseline flat at `workspace 80/289` and `core 19/119`. The current EP-09 ready lane is now empty pending the next accepted slice.
 - `ST-09084` through `ST-09088` were added on 2026-07-08 to replenish the empty EP-09 lane with another dependency-safe batch focused on one multi-agent hardening slice, one cross-package testing-helper de-duplication slice, two relational schema utility modularization slices, and one middleware controller/integration-test DRY slice.
+- `ST-09088` merged on 2026-07-09 after hardening multi-agent worker config forwarding around sanitized RunnableConfig key-picking, removing constructor-name-only GraphInterrupt detection, and absorbing the review-driven hostile-getter error-path guard plus GitHub-safe story-doc links. The queue is now groomed with `ST-09084` through `ST-09087` all dependency-ready in `Ready`, and the next recommended slice is `ST-09084`.
 - The refreshed follow-on queue now extends beyond the current Ready lane so another few weeks of small SOLID/DRY and modularization work can be pulled without re-planning the epic.
 
 ---

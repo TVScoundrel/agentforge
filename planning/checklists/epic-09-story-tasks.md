@@ -3599,8 +3599,10 @@ Implementation notes:
 - [ ] Run full test suite before finalizing the PR and record results
 - [ ] Run lint (`pnpm lint`) before finalizing the PR and record results
 - [ ] Commit completed checklist items as logical commits and push updates
-- [ ] Mark PR Ready only after all story tasks are complete
-- [ ] Wait for merge; do not merge directly from local branch
+- [x] Mark PR Ready only after all story tasks are complete
+  - PR #153 marked ready for review on 2026-07-09 after focused validation, full-suite validation, lint, story-doc updates, and tracker sync were complete
+- [x] Wait for merge; do not merge directly from local branch
+  - Merged via PR #153 on 2026-07-09
 
 ### Notes
 - CI-impact assessment:
@@ -3668,8 +3670,10 @@ Implementation notes:
   - `pnpm lint` -> passed with existing warning-only baseline; touched `patterns` package remained warning-only and the explicit-`any` baseline still held at `workspace 80/289`, `patterns 2/28`
 - [x] Commit completed checklist items as logical commits and push updates
   - Commit `2d612c3b` (`fix(st-09088): harden multi-agent runtime boundaries`) pushed to `origin/codex/fix/st-09088-multi-agent-runtime-boundary-hardening`
-- [ ] Mark PR Ready only after all story tasks are complete
-- [ ] Wait for merge; do not merge directly from local branch
+- [x] Mark PR Ready only after all story tasks are complete
+  - PR #153 marked ready for review on 2026-07-09 after focused validation, full-suite validation, lint, story-doc updates, and tracker sync were complete
+- [x] Wait for merge; do not merge directly from local branch
+  - Merged via PR #153 on 2026-07-09
 
 ### Notes
 - CI-impact assessment:

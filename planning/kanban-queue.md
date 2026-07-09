@@ -4,11 +4,11 @@
 
 ## Queue Status Summary
 
-- **Ready:** 2 stories
+- **Ready:** 4 stories
 - **In Progress:** 0 stories
-- **In Review:** 1 story
+- **In Review:** 0 stories
 - **Blocked:** 0 stories
-- **Backlog:** 2 stories
+- **Backlog:** 0 stories
 
 ---
 
@@ -17,6 +17,10 @@
 - `ST-09084` - Deduplicate Tool Testing Helpers Across Core and Testing
   - Depends on: None
 - `ST-09085` - Modularize Relational Schema Type Mapper and Tests
+  - Depends on: None
+- `ST-09086` - Modularize Relational Schema Diff and JSON Utilities
+  - Depends on: None
+- `ST-09087` - DRY Middleware Rate-Limit and Concurrency Controllers
   - Depends on: None
 
 ---
@@ -29,8 +33,7 @@ None currently.
 
 ## In Review
 
-- `ST-09088` - Harden Multi-Agent Runnable Config and GraphInterrupt Detection
-  - Depends on: None
+None currently.
 
 ## Blocked
 
@@ -40,10 +43,7 @@ _No stories currently blocked_
 
 ## Backlog
 
-- `ST-09086` - Modularize Relational Schema Diff and JSON Utilities
-  - Depends on: None
-- `ST-09087` - DRY Middleware Rate-Limit and Concurrency Controllers
-  - Depends on: None
+None currently.
 
 ---
 
@@ -148,6 +148,7 @@ _No stories currently blocked_
 - ST-09081 complete - monitoring alert evaluation, throttling, channel dispatch, and error handling were modularized behind a stable public facade, the alert-manager coverage was split into focused suites, and the documented `pnpm --filter @agentforge/core test --run` path now works again from the package context via a package-local Vitest config (merged 2026-07-08, PR #152); the active queue is now empty pending the next accepted EP-09 slice
 - Epic 09 was expanded on 2026-07-08 with follow-on stories `ST-09084` through `ST-09088` after the prior ready lane emptied; the new batch targets one remaining multi-agent type-boundary hardening seam, one cross-package tool-testing duplication seam, two relational schema utility modularization slices, and one middleware controller/test modularization slice
 - `ST-09088` is intentionally placed at the front of `Ready` because it is the smallest remaining behavior-hardening seam and directly addresses two latent risks in the multi-agent patterns layer before the next broader modularization stories
+- ST-09088 complete - multi-agent worker config forwarding now uses sanitized RunnableConfig key-picking, GraphInterrupt detection no longer depends solely on constructor names, hostile getter access no longer breaks the error path, the public patterns utility/error-handling suites gained focused regressions, and `ST-09086` plus `ST-09087` were promoted from Backlog to Ready because they remained dependency-free after the merge (merged 2026-07-09, PR #153)
 - Complete: ST-10005 - documentation emoji guardrails added to contributor guidance (PR #104, 2026-05-05)
 - Complete: ST-10004 - example/template docs emoji normalization merged (PR #102, 2026-05-05)
 - Complete: ST-10003 - planning and internal docs emoji normalization merged (PR #101, 2026-05-04)
