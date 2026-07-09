@@ -5,6 +5,36 @@ All notable changes to AgentForge will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.16.69] - 2026-07-09
+
+### Added
+
+#### @agentforge/patterns - Runtime Boundary Hardening Coverage
+- Added focused regression coverage in `packages/patterns/tests/multi-agent/utils/wrap-react-agent.suite.ts` and `packages/patterns/tests/shared/error-handling.test.ts` to lock down malformed runnable-config handling, unstable GraphInterrupt detection, and hostile error-accessor fallbacks
+- Added story documentation in `docs/st09088-multi-agent-runtime-boundary-hardening.md` capturing the boundary-hardening changes, compatibility rationale, and validation evidence
+
+### Changed
+
+#### @agentforge/patterns - Multi-Agent Runtime Boundary Handling
+- Hardened `packages/patterns/src/multi-agent/utils-shared.ts` to forward only supported `RunnableConfig` keys when worker execution config reaches LangChain boundaries, preserving valid config fields while dropping malformed or unsupported payloads
+
+#### @agentforge/patterns - Shared Error Handling
+- Hardened `packages/patterns/src/shared/error-handling.ts` so GraphInterrupt detection no longer relies solely on stable constructor names and error-message fallback handling remains safe even when thrown values expose hostile property getters
+
+### Fixed
+
+#### @agentforge/patterns - Runtime Error Classification
+- Reduced the risk that minified or wrapped LangGraph interrupts would be misclassified and prevented secondary error-handling failures when malformed thrown values cannot be stringified safely
+
+### Published
+- All packages published to npm registry at version 0.16.69:
+  - @agentforge/core@0.16.69
+  - @agentforge/skills@0.16.69
+  - @agentforge/patterns@0.16.69
+  - @agentforge/tools@0.16.69
+  - @agentforge/testing@0.16.69
+  - @agentforge/cli@0.16.69
+
 ## [0.16.68] - 2026-07-08
 
 ### Added
