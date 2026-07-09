@@ -2348,7 +2348,7 @@
 **Priority:** P2 (Medium)
 **Estimate:** 2 hours
 **Dependencies:** None
-**Status:** Ready
+**Status:** In Review
 
 **Acceptance criteria:**
 - [ ] `packages/patterns/src/multi-agent/utils-shared.ts` stops relying on a bare `RunnableConfig` cast and only forwards a structurally validated config shape that remains compatible with the current worker execution flow.

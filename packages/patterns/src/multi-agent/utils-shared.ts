@@ -1,4 +1,4 @@
-import type { RunnableConfig } from '@langchain/core/runnables';
+import { pickRunnableConfigKeys, type RunnableConfig } from '@langchain/core/runnables';
 import type { CompiledStateGraph } from '@langchain/langgraph';
 import type { WorkerExecutionConfig } from './types.js';
 
@@ -18,6 +18,16 @@ export function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === 'object' && value !== null && !Array.isArray(value);
 }
 
+function removeUndefinedEntries<T extends Record<string, unknown>>(
+  value: T
+): Partial<T> | undefined {
+  const filtered = Object.fromEntries(
+    Object.entries(value).filter(([, entryValue]) => entryValue !== undefined)
+  ) as Partial<T>;
+
+  return Object.keys(filtered).length > 0 ? filtered : undefined;
+}
+
 export function toRunnableConfig(
   config: WorkerExecutionConfig | undefined
 ): RunnableConfig | undefined {
@@ -25,7 +35,26 @@ export function toRunnableConfig(
     return undefined;
   }
 
-  return config as RunnableConfig;
+  const runnableConfig = pickRunnableConfigKeys(config);
+
+  if (!runnableConfig || !isRecord(runnableConfig)) {
+    return undefined;
+  }
+
+  const cleanedConfig = removeUndefinedEntries(runnableConfig);
+  if (!cleanedConfig) {
+    return undefined;
+  }
+
+  const { configurable, ...restConfig } = cleanedConfig;
+  const cleanedConfigurable = isRecord(configurable)
+    ? removeUndefinedEntries(configurable)
+    : undefined;
+
+  return {
+    ...restConfig,
+    ...(cleanedConfigurable !== undefined ? { configurable: cleanedConfigurable } : {}),
+  };
 }
 
 export function getReActResultShape(value: unknown): ReActResultShape {

@@ -3542,7 +3542,8 @@ Implementation notes:
 - [ ] Run full test suite before finalizing the PR and record results
 - [ ] Run lint (`pnpm lint`) before finalizing the PR and record results
 - [ ] Commit completed checklist items as logical commits and push updates
-- [ ] Mark PR Ready only after all story tasks are complete
+- [x] Mark PR Ready only after all story tasks are complete
+  - PR #153 marked ready for review on 2026-07-09 after focused validation, full-suite validation, lint, story-doc updates, and tracker sync were complete
 - [ ] Wait for merge; do not merge directly from local branch
 
 ### Notes
@@ -3640,19 +3641,33 @@ Implementation notes:
 **Branch:** `fix/st-09088-multi-agent-runtime-boundary-hardening`
 
 ### Checklist
-- [ ] Create branch `fix/st-09088-multi-agent-runtime-boundary-hardening`
-- [ ] Create draft PR with story ID in title
-- [ ] Define test strategy before implementation: cover malformed runnable-config inputs, supported config forwarding, GraphInterrupt compatibility, and current wrapped-node error bubbling
-- [ ] Write or update the failing automated test before production changes when practical; if not practical, record why before implementation
-- [ ] Replace the bare config cast in `packages/patterns/src/multi-agent/utils-shared.ts` with structural RunnableConfig validation or safe forwarding logic
-- [ ] Harden `packages/patterns/src/shared/error-handling.ts` so GraphInterrupt detection does not rely solely on constructor-name matching
-- [ ] Add/update focused tests until the runtime-boundary behavior passes, keeping evidence in checklist notes and PR body
-- [ ] Record explicit-`any` warning deltas and the runtime-boundary compatibility rationale in story docs
-- [ ] Add or update story documentation at `docs/st09088-multi-agent-runtime-boundary-hardening.md` (or document why not required)
-- [ ] Assess residual test impact; add/update additional automated tests when needed, or document why no further tests are required
-- [ ] Run full test suite before finalizing the PR and record results
-- [ ] Run lint (`pnpm lint`) before finalizing the PR and record results
-- [ ] Commit completed checklist items as logical commits and push updates
+- [x] Create branch `fix/st-09088-multi-agent-runtime-boundary-hardening`
+  - Created as `codex/fix/st-09088-multi-agent-runtime-boundary-hardening` (workspace branch-prefix policy)
+- [x] Create draft PR with story ID in title
+  - PR #153: https://github.com/TVScoundrel/agentforge/pull/153
+- [x] Define test strategy before implementation: cover malformed runnable-config inputs, supported config forwarding, GraphInterrupt compatibility, and current wrapped-node error bubbling
+  - Selected a focused red-first regression path because both seams are small public runtime boundaries: extend the public `withErrorHandling(...)` interrupt coverage and assert wrapped ReAct invocation keeps supported runnable keys while dropping arbitrary config input.
+- [x] Write or update the failing automated test before production changes when practical; if not practical, record why before implementation
+  - Added a GraphInterrupt regression for an error whose constructor name is unstable and a wrap-agent config-forwarding regression; the initial red run failed because the unstable-constructor interrupt was converted into `{ status: 'failed', error: 'pause for human input' }` instead of being rethrown.
+- [x] Replace the bare config cast in `packages/patterns/src/multi-agent/utils-shared.ts` with structural RunnableConfig validation or safe forwarding logic
+  - `toRunnableConfig(...)` now uses LangChain's `pickRunnableConfigKeys(...)` helper and removes undefined-only shells so only supported runnable options survive forwarding.
+- [x] Harden `packages/patterns/src/shared/error-handling.ts` so GraphInterrupt detection does not rely solely on constructor-name matching
+  - `isGraphInterrupt(...)` now accepts either `error.name === 'GraphInterrupt'` or the legacy constructor-name compatibility signal.
+- [x] Add/update focused tests until the runtime-boundary behavior passes, keeping evidence in checklist notes and PR body
+  - `pnpm --filter @agentforge/patterns test --run packages/patterns/tests/multi-agent/utils.test.ts packages/patterns/tests/shared/error-handling.test.ts` -> initial red run failed in the unstable-constructor interrupt regression; post-fix rerun passed with `2` files and `15` tests
+  - `pnpm --filter @agentforge/patterns typecheck` -> passed
+  - `pnpm lint:explicit-any:baseline` -> passed at `workspace 80/289`, `patterns 2/28`
+- [x] Record explicit-`any` warning deltas and the runtime-boundary compatibility rationale in story docs
+  - Recorded in `docs/st09088-multi-agent-runtime-boundary-hardening.md`; explicit-`any` baseline remains flat at `workspace 80/289`, `patterns 2/28`
+- [x] Add or update story documentation at `docs/st09088-multi-agent-runtime-boundary-hardening.md` (or document why not required)
+- [x] Assess residual test impact; add/update additional automated tests when needed, or document why no further tests are required
+  - The public wrap-agent and shared error-handling regressions cover the changed runtime boundaries directly; no further targeted automation was needed before workspace validation.
+- [x] Run full test suite before finalizing the PR and record results
+  - `pnpm test --run` -> passed with `224` files passed, `9` skipped; `2516` tests passed, `110` skipped
+- [x] Run lint (`pnpm lint`) before finalizing the PR and record results
+  - `pnpm lint` -> passed with existing warning-only baseline; touched `patterns` package remained warning-only and the explicit-`any` baseline still held at `workspace 80/289`, `patterns 2/28`
+- [x] Commit completed checklist items as logical commits and push updates
+  - Commit `2d612c3b` (`fix(st-09088): harden multi-agent runtime boundaries`) pushed to `origin/codex/fix/st-09088-multi-agent-runtime-boundary-hardening`
 - [ ] Mark PR Ready only after all story tasks are complete
 - [ ] Wait for merge; do not merge directly from local branch
 

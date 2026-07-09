@@ -13,13 +13,60 @@
  * @param error - The error to check
  * @returns True if the error is a GraphInterrupt
  */
+function getErrorName(error: Record<string, unknown>): string | undefined {
+  try {
+    return typeof error.name === 'string' ? error.name : undefined;
+  } catch {
+    return undefined;
+  }
+}
+
+function getConstructorName(error: Record<string, unknown>): string | undefined {
+  let constructorValue: unknown;
+  try {
+    constructorValue = error.constructor;
+  } catch {
+    return undefined;
+  }
+
+  if (constructorValue === undefined) {
+    return undefined;
+  }
+
+  if (constructorValue !== null && typeof constructorValue === 'object') {
+    try {
+      const constructorName = (constructorValue as { name?: unknown }).name;
+      return typeof constructorName === 'string' ? constructorName : undefined;
+    } catch {
+      return undefined;
+    }
+  }
+
+  return typeof constructorValue === 'function' ? constructorValue.name : undefined;
+}
+
 export function isGraphInterrupt(error: unknown): boolean {
+  if (error === null || typeof error !== 'object') {
+    return false;
+  }
+
+  const errorRecord = error as Record<string, unknown>;
   return (
-    error !== null &&
-    typeof error === 'object' &&
-    'constructor' in error &&
-    error.constructor.name === 'GraphInterrupt'
+    getErrorName(errorRecord) === 'GraphInterrupt' ||
+    getConstructorName(errorRecord) === 'GraphInterrupt'
   );
+}
+
+function toErrorMessage(error: unknown): string {
+  if (error instanceof Error) {
+    return error.message;
+  }
+
+  try {
+    return String(error);
+  } catch {
+    return 'Unknown error';
+  }
 }
 
 /**
@@ -57,7 +104,7 @@ export function handleNodeError(
   }
 
   // Extract error message
-  const errorMessage = error instanceof Error ? error.message : String(error);
+  const errorMessage = toErrorMessage(error);
 
   // Log if verbose
   if (verbose) {
