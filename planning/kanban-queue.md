@@ -8,7 +8,7 @@
 - **In Progress:** 0 stories
 - **In Review:** 0 stories
 - **Blocked:** 0 stories
-- **Backlog:** 0 stories
+- **Backlog:** 6 stories
 
 ---
 
@@ -43,7 +43,18 @@ _No stories currently blocked_
 
 ## Backlog
 
-None currently.
+- `ST-11001` - Publish Repository Security Boundary Policy
+  - Depends on: None
+- `ST-11002` - Harden Default Web Tool Egress Policy
+  - Depends on: `ST-11001`
+- `ST-11003` - Add Filesystem Confinement Controls for Default File Tools
+  - Depends on: `ST-11001`
+- `ST-11004` - Separate Worker Output from Supervisor Routing Input
+  - Depends on: None
+- `ST-11005` - Enforce Trust-Aware Skill Prompt and Activation Boundaries
+  - Depends on: `ST-11001`
+- `ST-11006` - Harden Express Chat Example Ownership Semantics
+  - Depends on: `ST-11001`
 
 ---
 
@@ -149,6 +160,7 @@ None currently.
 - Epic 09 was expanded on 2026-07-08 with follow-on stories `ST-09084` through `ST-09088` after the prior ready lane emptied; the new batch targets one remaining multi-agent type-boundary hardening seam, one cross-package tool-testing duplication seam, two relational schema utility modularization slices, and one middleware controller/test modularization slice
 - `ST-09088` is intentionally placed at the front of `Ready` because it is the smallest remaining behavior-hardening seam and directly addresses two latent risks in the multi-agent patterns layer before the next broader modularization stories
 - ST-09088 complete - multi-agent worker config forwarding now uses sanitized RunnableConfig key-picking, GraphInterrupt detection no longer depends solely on constructor names, hostile getter access no longer breaks the error path, the public patterns utility/error-handling suites gained focused regressions, and `ST-09086` plus `ST-09087` were promoted from Backlog to Ready because they remained dependency-free after the merge (merged 2026-07-09, PR #153)
+- Epic 11 (Security Boundary Hardening) was opened on 2026-07-09 after triaging a repository security scan into six backlog stories that separate policy/documentation hardening, safer default tool boundaries, multi-agent and skills trust-boundary fixes, and lower-priority example guidance cleanup
 - Complete: ST-10005 - documentation emoji guardrails added to contributor guidance (PR #104, 2026-05-05)
 - Complete: ST-10004 - example/template docs emoji normalization merged (PR #102, 2026-05-05)
 - Complete: ST-10003 - planning and internal docs emoji normalization merged (PR #101, 2026-05-04)

@@ -153,6 +153,35 @@
 
 ---
 
+### EP-11: Security Boundary Hardening
+**Capability:** Harden framework defaults, trust boundaries, and example guidance so security-sensitive surfaces are explicit, safer by default where practical, and easier for downstream adopters to use correctly.
+
+**Outcomes:**
+- The repository has a top-level security boundary statement that distinguishes intentionally privileged surfaces from shipped-by-default guardrails.
+- Default web and file tools expose clearer confinement hooks or safer defaults for model-controlled use cases.
+- Multi-agent and skills flows preserve trust boundaries instead of treating worker or untrusted skill content as implicitly safe supervisor instructions.
+- Example integrations avoid normalizing insecure ownership or authorization patterns without prominent guidance.
+
+**Stories:** ST-11001 through ST-11006
+
+#### Feature Context: Security Boundary Hardening
+
+- Goal:
+  - Turn the 2026-07-09 repository security scan into a concrete, reviewable hardening backlog rather than leaving the results as ad hoc scanner noise.
+- Scope:
+  - In:
+    - Security policy documentation, safer default boundary handling, trust-aware prompt/runtime flows, and example hardening where the current example can be copied into production too easily.
+  - Out:
+    - Broad application-specific threat modeling for downstream adopters, runtime sandboxing outside the framework surface, and speculative scanner findings without source-backed evidence.
+- Critical edge cases:
+  - Preserve legitimate privileged-tool use cases for local/operator-controlled agents while making the risk posture explicit and easier to constrain for model-exposed deployments.
+  - Avoid breaking existing APIs unless a story explicitly documents the compatibility strategy, opt-in transition path, or major-version rationale.
+  - Keep example hardening scoped so educational examples remain understandable while no longer presenting unsafe defaults as production-ready patterns.
+- Delivery controls:
+  - Treat findings that are “dangerous by design” as hardening/documentation work, not automatic proof of a shipping vulnerability, unless the framework itself crosses an unintended trust boundary.
+
+---
+
 ## Stories
 
 ### Epic 01: Core Database Connection Management
@@ -2461,15 +2490,113 @@
 
 ---
 
+### Epic 11: Security Boundary Hardening
+
+#### ST-11001: Publish Repository Security Boundary Policy
+**User story:** As a maintainer, I want a top-level security policy and boundary statement so scanner findings and downstream adopters can distinguish intentionally privileged surfaces from supported secure-by-default guarantees.
+
+**Priority:** P1 (High)
+**Estimate:** 3 hours
+**Dependencies:** None
+
+**Acceptance criteria:**
+- [ ] Add a repository-level `SECURITY.md` that documents supported versions, reporting guidance, and the project’s intended trust boundaries for tools, skills, examples, and downstream host applications
+- [ ] The policy explicitly distinguishes privileged-by-design surfaces from framework guarantees that are expected to be safe for model-controlled input
+- [ ] Security-relevant docs cross-link to the new policy where that guidance materially affects safe adoption
+- [ ] The policy includes concrete maintainer guidance for classifying example-only issues, untrusted skill roots, and model-exposed tool execution
+- [ ] Add or update story documentation at `docs/st11001-repository-security-boundary-policy.md`
+
+---
+
+#### ST-11002: Harden Default Web Tool Egress Policy
+**User story:** As a developer exposing web tools to model-controlled input, I want default outbound request tools to support safe destination controls so I do not inherit silent SSRF footguns.
+
+**Priority:** P1 (High)
+**Estimate:** 5 hours
+**Dependencies:** ST-11001
+
+**Acceptance criteria:**
+- [ ] Default HTTP and scraping tool surfaces support an explicit destination policy that can block localhost, link-local, metadata, and RFC1918/private-network targets by default or via a clearly documented safe preset
+- [ ] Redirect handling cannot bypass blocked-destination policy through chained hops
+- [ ] Existing privileged/internal-network use cases keep a documented opt-in path rather than being silently removed
+- [ ] Focused tests cover localhost, metadata, RFC1918, and redirect-bypass attempts
+- [ ] Add or update story documentation at `docs/st11002-web-tool-egress-policy-hardening.md`
+
+---
+
+#### ST-11003: Add Filesystem Confinement Controls for Default File Tools
+**User story:** As a developer exposing file tools to model-controlled input, I want default read/write/delete helpers to support workspace confinement so arbitrary host file access is not the path of least resistance.
+
+**Priority:** P1 (High)
+**Estimate:** 6 hours
+**Dependencies:** ST-11001
+
+**Acceptance criteria:**
+- [ ] Default file read and mutation tools support a confinement policy such as allowed roots, workspace-relative mode, or an equivalent guardrail that can be enabled without bespoke wrapper code
+- [ ] Path traversal, symlink-escape, and destructive recursive-delete edge cases are covered by focused tests for the confinement layer
+- [ ] Existing operator-controlled privileged file workflows keep a documented opt-in escape hatch instead of being broken outright
+- [ ] Public docs clearly explain which file-tool modes are suitable for model-exposed agents versus trusted local automation
+- [ ] Add or update story documentation at `docs/st11003-file-tool-confinement-controls.md`
+
+---
+
+#### ST-11004: Separate Worker Output from Supervisor Routing Input
+**User story:** As a developer using the multi-agent pattern, I want supervisor routing to treat worker output as untrusted context so compromised workers cannot directly steer privileged orchestration decisions.
+
+**Priority:** P1 (High)
+**Estimate:** 5 hours
+**Dependencies:** None
+
+**Acceptance criteria:**
+- [ ] Multi-agent routing no longer reuses raw worker result text as the next supervisor `Current task` prompt without an explicit boundary or transformation step
+- [ ] The state model preserves enough structured worker-result context for current workflows while separating routing intent from untrusted free-form worker output
+- [ ] Focused tests cover prompt-injection-style worker output attempting to rewrite routing instructions or escalate authority
+- [ ] Compatibility impact is documented for downstream applications that rely on the current raw-message routing behavior
+- [ ] Add or update story documentation at `docs/st11004-multi-agent-routing-boundary-separation.md`
+
+---
+
+#### ST-11005: Enforce Trust-Aware Skill Prompt and Activation Boundaries
+**User story:** As a developer using community or third-party skills, I want untrusted skill content to remain discoverable without being treated as implicitly safe privileged instructions.
+
+**Priority:** P1 (High)
+**Estimate:** 6 hours
+**Dependencies:** ST-11001
+
+**Acceptance criteria:**
+- [ ] Skill prompt generation and activation flows expose trust level clearly and do not present untrusted skill bodies to the model on the same footing as workspace/trusted skills without an explicit policy choice
+- [ ] The existing script-resource trust policy remains intact and the new prompt/activation trust handling composes with it instead of creating split-brain security behavior
+- [ ] Conformance or focused regression tests cover untrusted-skill discovery, activation behavior, and the trusted-root opt-in path
+- [ ] Public docs explain the trust tradeoffs for community skill packs and the migration path for existing adopters
+- [ ] Add or update story documentation at `docs/st11005-skill-trust-boundary-hardening.md`
+
+---
+
+#### ST-11006: Harden Express Chat Example Ownership Semantics
+**User story:** As a developer copying the Express chat example, I want the sample to model safe conversation ownership semantics so I do not inherit an IDOR-prone history API by accident.
+
+**Priority:** P2 (Medium)
+**Estimate:** 3 hours
+**Dependencies:** ST-11001
+
+**Acceptance criteria:**
+- [ ] The Express chat example either enforces a minimal ownership/auth boundary for conversation history endpoints or is clearly documented as intentionally unauthenticated demo-only code with safer production guidance adjacent to the route handlers and README
+- [ ] Example tests or focused route coverage prove the intended ownership behavior or documented guardrail path
+- [ ] Example docs stop implying that caller-provided conversation IDs are sufficient for production history retrieval/deletion flows
+- [ ] The story remains scoped to the example integration and does not attempt to invent a production auth framework for all adopters
+- [ ] Add or update story documentation at `docs/st11006-express-chat-example-ownership-hardening.md`
+
+---
+
 ## Story Summary
 
-**Total Stories:** 90
+**Total Stories:** 96
 **By Priority:**
 - P0 (Critical): 17 stories
-- P1 (High): 27 stories
-- P2 (Medium): 46 stories
+- P1 (High): 31 stories
+- P2 (Medium): 48 stories
 
-**Total Estimated Effort:** ~321 hours (40.125 working days)
+**Total Estimated Effort:** ~349 hours (43.625 working days)
 
 **Dependency Chain:**
 1. Phase 1 (Foundation): ST-01001 → ST-01002 → ST-01003 → ST-01004
@@ -2482,3 +2609,4 @@
 8. Phase 8 (Type Safety Hardening): ST-08001 → [ST-08002, ST-08003, ST-08004 parallel]
 9. Phase 9 (SOLID Micro-Refactors): ST-09001 (Merged) → ST-09002 (Merged) → ST-09003 (Merged) → ST-09004 (Merged) → ST-09005 (Merged) → ST-09006 (Merged) → ST-09007 (Merged) → ST-09008 (Merged) → ST-09009 (Merged) → ST-09010 (Merged) → ST-09011 (Merged) → ST-09012 (Merged) → ST-09013 (Merged) → ST-09014 (Merged) → ST-09015 (Merged) → ST-09016 (Merged) → ST-09017 (Merged) → ST-09018 (Merged) → ST-09019 (Merged) → ST-09020 (Merged) → ST-09021 (Merged) → ST-09022 (Merged) → ST-09023 (Merged); ST-09025 (Merged) → ST-09026 (Merged) → ST-09031 (Merged); ST-09027 (Merged) → ST-09028 (Merged) → ST-09030 (Merged); ST-09032 → ST-09033; ST-09034 (Merged) → ST-09035 (Merged) → ST-09036 (Merged) → ST-09041; ST-09023 (Merged) and ST-09029 (Merged) → ST-09037; ST-09038 independent; ST-09023 (Merged) → ST-09039; ST-09024 (Merged) → ST-09040 → ST-09042 → ST-09047; ST-09020 (Merged) → ST-09043; ST-09018 (Merged) → ST-09044; ST-09015 (Merged) → ST-09045 → ST-09048; ST-09038 (Merged) → ST-09046; ST-03002 (Merged) → ST-09055; ST-06005 (Merged) → ST-09056 (Merged) → ST-09071; ST-04001 (Merged) → ST-09057; ST-09032 (Merged) → ST-09058; ST-09037 (Merged) → ST-09059; ST-09045 (Merged) → ST-09060; ST-09050 (Merged) → ST-09061 (Merged) → ST-09062; ST-09051 (Merged) → ST-09063 (Merged) → ST-09070 → [ST-09075, ST-09076]; ST-09043 (Merged) → ST-09064 (Merged) → ST-09065 (Merged); ST-09010 (Merged) → ST-09066
 10. Phase 10 (Documentation Only Changes): ST-10001 → [ST-10002, ST-10003, ST-10004, ST-10005 parallel] → ST-10006; EP-10 remains evergreen and intentionally open for future docs-only stories even when no current stories are queued
+11. Phase 11 (Security Boundary Hardening): ST-11001 → [ST-11002, ST-11003, ST-11004, ST-11005, ST-11006 parallel] with ST-11001 establishing the policy baseline for the follow-on hardening and example-guidance stories
