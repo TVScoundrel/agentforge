@@ -3,6 +3,8 @@
  * @module tools/testing
  */
 
+import { runMockExecution } from './testing-runtime.js';
+
 type MockToolMatcher<TInput> = TInput | ((input: TInput) => boolean);
 
 interface MockToolSuccessResponse<TInput, TOutput> {
@@ -104,70 +106,52 @@ export function createMockTool<
     invoke: async (input: TInput) => {
       const startTime = Date.now();
 
-      // Simulate latency
-      if (latency) {
-        const delay =
-          typeof latency === 'number'
-            ? latency
-            : Math.random() * (latency.max - latency.min) + latency.min;
-        await new Promise((resolve) => setTimeout(resolve, delay));
-      }
-
-      // Simulate random errors
-      if (errorRate > 0 && Math.random() < errorRate) {
-        const error = new Error(`Random error from ${name}`);
-        invocations.push({
+      try {
+        const result = await runMockExecution(
           input,
-          error,
-          timestamp: startTime,
-          duration: Date.now() - startTime,
-        });
-        throw error;
-      }
+          () => {
+            const matchingResponse = responses.find((response) =>
+              matchesMockInput(response.input, input)
+            );
 
-      // Find matching response
-      const matchingResponse = responses.find((response) => matchesMockInput(response.input, input));
+            if (matchingResponse) {
+              if (matchingResponse.error) {
+                throw matchingResponse.error;
+              }
 
-      if (matchingResponse) {
-        if (matchingResponse.error) {
-          invocations.push({
-            input,
-            error: matchingResponse.error,
-            timestamp: startTime,
-            duration: Date.now() - startTime,
-          });
-          throw matchingResponse.error;
-        }
+              return matchingResponse.output;
+            }
+
+            if (defaultResponse !== undefined) {
+              return defaultResponse;
+            }
+
+            throw new Error(`No mock response configured for input: ${JSON.stringify(input)}`);
+          },
+          {
+            latency,
+            shouldError: errorRate > 0 ? () => Math.random() < errorRate : false,
+            errorFactory: () => new Error(`Random error from ${name}`),
+          }
+        );
 
         invocations.push({
           input,
-          output: matchingResponse.output,
+          output: result,
           timestamp: startTime,
           duration: Date.now() - startTime,
         });
-        return matchingResponse.output;
-      }
-
-      // Use default response
-      if (defaultResponse !== undefined) {
+        return result;
+      } catch (error) {
+        const recordedError = error instanceof Error ? error : new Error(String(error));
         invocations.push({
           input,
-          output: defaultResponse,
+          error: recordedError,
           timestamp: startTime,
           duration: Date.now() - startTime,
         });
-        return defaultResponse;
+        throw recordedError;
       }
-
-      // No matching response
-      const error = new Error(`No mock response configured for input: ${JSON.stringify(input)}`);
-      invocations.push({
-        input,
-        error,
-        timestamp: startTime,
-        duration: Date.now() - startTime,
-      });
-      throw error;
     },
     getInvocations: () => [...invocations],
     clearInvocations: () => {
@@ -218,28 +202,12 @@ export function createToolSimulator<const TTools extends readonly SimulatedTool[
 
       const startTime = Date.now();
 
-      // Simulate latency
-      if (latency) {
-        const delay = generateLatency();
-        await new Promise((resolve) => setTimeout(resolve, delay));
-      }
-
-      // Simulate random errors
-      if (errorRate > 0 && Math.random() < errorRate) {
-        const error = new Error(`Simulated error from ${toolName}`);
-        if (recordInvocations) {
-          invocations.get(toolName)!.push({
-            input,
-            error,
-            timestamp: startTime,
-            duration: Date.now() - startTime,
-          });
-        }
-        throw error;
-      }
-
       try {
-        const result = await tool.invoke(input);
+        const result = await runMockExecution(input, () => tool.invoke(input), {
+          latency: latency ? generateLatency : undefined,
+          shouldError: errorRate > 0 ? () => Math.random() < errorRate : false,
+          errorFactory: () => new Error(`Simulated error from ${toolName}`),
+        });
         if (recordInvocations) {
           invocations.get(toolName)!.push({
             input,
@@ -250,15 +218,16 @@ export function createToolSimulator<const TTools extends readonly SimulatedTool[
         }
         return result as ToolOutputFor<TTools, TName>;
       } catch (error) {
+        const recordedError = error instanceof Error ? error : new Error(String(error));
         if (recordInvocations) {
           invocations.get(toolName)!.push({
             input,
-            error: error as Error,
+            error: recordedError,
             timestamp: startTime,
             duration: Date.now() - startTime,
           });
         }
-        throw error;
+        throw recordedError;
       }
     },
     getInvocations: <TName extends ToolName<TTools>>(toolName: TName): ToolInvocation<

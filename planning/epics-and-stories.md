@@ -2309,7 +2309,7 @@
 **Priority:** P2 (Medium)
 **Estimate:** 3 hours
 **Dependencies:** None
-**Status:** Ready
+**Status:** In Review
 
 **Acceptance criteria:**
 - [ ] The duplicated mock-tool or tool-simulator behavior currently split between `packages/core/src/tools/testing.ts` and `packages/testing/src/mocks/mock-tool.ts` is reduced behind focused shared helpers, adapters, or re-exports without breaking current public imports from either package.

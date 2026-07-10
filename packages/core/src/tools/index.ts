@@ -94,3 +94,8 @@ export {
   type ToolInvocation,
   type ToolSimulatorConfig,
 } from './testing.js';
+
+export {
+  runMockExecution,
+  type MockExecutionRuntimeOptions,
+} from './testing-runtime.js';

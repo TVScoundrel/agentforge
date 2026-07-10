@@ -1,7 +1,11 @@
-import { describe, expect, it } from 'vitest';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 import { createMockTool, createToolSimulator } from '../../src/tools/testing.js';
 
 describe('tool testing helpers', () => {
+  afterEach(() => {
+    vi.restoreAllMocks();
+  });
+
   it('matches predicate responses and falls back to the default response', async () => {
     const tool = createMockTool<'search', { query: string }, { matches: string[] }>({
       name: 'search',
@@ -63,5 +67,27 @@ describe('tool testing helpers', () => {
     await expect(
       simulator.execute('missing' as 'search', { query: 'alpha' })
     ).rejects.toThrow('Tool missing not found in simulator');
+  });
+
+  it('records simulator-level injected errors in invocation history', async () => {
+    vi.spyOn(Math, 'random').mockReturnValue(0);
+
+    const searchTool = createMockTool<'search', { query: string }, { matches: string[] }>({
+      name: 'search',
+      defaultResponse: { matches: ['ok'] },
+    });
+
+    const simulator = createToolSimulator({
+      tools: [searchTool] as const,
+      errorRate: 0.5,
+    });
+
+    await expect(simulator.execute('search', { query: 'alpha' })).rejects.toThrow(
+      'Simulated error from search'
+    );
+
+    expect(simulator.getInvocations('search')).toHaveLength(1);
+    expect(simulator.getInvocations('search')[0]?.error?.message).toBe('Simulated error from search');
+    expect(simulator.getInvocations('search')[0]?.output).toBeUndefined();
   });
 });
