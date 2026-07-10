@@ -3574,21 +3574,38 @@ Implementation notes:
 **Branch:** `refactor/st-09085-relational-schema-type-mapper-modularization`
 
 ### Checklist
-- [ ] Create branch `refactor/st-09085-relational-schema-type-mapper-modularization`
-- [ ] Create draft PR with story ID in title
-- [ ] Define test strategy before implementation: cover vendor-specific mappings, normalization rules, precision-loss notes, unknown-type fallbacks, and schema-wide mapping aggregation
-- [ ] Write or update the failing automated test before production changes when practical; if not practical, record why before implementation
-- [ ] Reduce `packages/tools/src/data/relational/schema/type-mapper.ts` below the planning cutoff by extracting focused vendor-map, normalization, or shared mapping helpers
-- [ ] Preserve current public `mapColumnType(...)`, `mapSchemaTypes(...)`, and `getVendorTypeMap(...)` behavior and import paths
-- [ ] Replace any monolithic type-mapper assertions with focused suites or fixtures that preserve vendor, normalization, and schema-level behavior coverage
-- [ ] Add/update production code until focused tests pass, keeping evidence in checklist notes and PR body
-- [ ] Record explicit-`any` warning deltas and the mapping-compatibility rationale in story docs
-- [ ] Add or update story documentation at `docs/st09085-relational-schema-type-mapper-modularization.md` (or document why not required)
-- [ ] Assess residual test impact; add/update additional automated tests when needed, or document why no further tests are required
-- [ ] Run full test suite before finalizing the PR and record results
-- [ ] Run lint (`pnpm lint`) before finalizing the PR and record results
-- [ ] Commit completed checklist items as logical commits and push updates
-- [ ] Mark PR Ready only after all story tasks are complete
+- [x] Create branch `refactor/st-09085-relational-schema-type-mapper-modularization`
+  - Created as `codex/refactor/st-09085-relational-schema-type-mapper-modularization` on 2026-07-10.
+- [x] Create draft PR with story ID in title
+  - PR #155: https://github.com/TVScoundrel/agentforge/pull/155
+- [x] Define test strategy before implementation: cover vendor-specific mappings, normalization rules, precision-loss notes, unknown-type fallbacks, and schema-wide mapping aggregation
+  - Strategy: preserve the public `type-mapper.ts` entrypoint, split the current monolithic suite into focused vendor, normalization, schema-aggregation, and vendor-map suites, then refactor vendor maps and normalization helpers behind the stable facade and validate with package-scoped plus workspace quality gates.
+- [x] Write or update the failing automated test before production changes when practical; if not practical, record why before implementation
+  - A new failing test is not the practical seam here because the story is a behavior-preserving modularization of an existing fully covered mapper. The safer path is to strengthen characterization coverage by splitting the current suite into focused assertions first, then refactor under that passing test net.
+- [x] Reduce `packages/tools/src/data/relational/schema/type-mapper.ts` below the planning cutoff by extracting focused vendor-map, normalization, or shared mapping helpers
+  - Reduced `packages/tools/src/data/relational/schema/type-mapper.ts` from `324` lines to a `115` line public facade; extracted `type-mapper-vendor-maps.ts` and `type-mapper-normalization.ts`.
+- [x] Preserve current public `mapColumnType(...)`, `mapSchemaTypes(...)`, and `getVendorTypeMap(...)` behavior and import paths
+  - The public schema entrypoint and all three exported functions remained unchanged; focused mapping, normalization, schema-aggregation, and defensive-copy tests passed after the refactor.
+- [x] Replace any monolithic type-mapper assertions with focused suites or fixtures that preserve vendor, normalization, and schema-level behavior coverage
+  - Replaced the `196` line monolithic test body with an `8` line public entrypoint plus focused suites under `packages/tools/tests/data/relational/type-mapper/`.
+- [x] Add/update production code until focused tests pass, keeping evidence in checklist notes and PR body
+  - `pnpm --filter @agentforge/tools test --run tests/data/relational/type-mapper.test.ts` -> `1` passed file; `16` passed tests
+- [x] Record explicit-`any` warning deltas and the mapping-compatibility rationale in story docs
+  - `pnpm lint:explicit-any:baseline` -> passed at `workspace 80/289`, `tools 53/67`; compatibility rationale recorded in `docs/st09085-relational-schema-type-mapper-modularization.md`.
+- [x] Add or update story documentation at `docs/st09085-relational-schema-type-mapper-modularization.md` (or document why not required)
+  - Added `docs/st09085-relational-schema-type-mapper-modularization.md`
+- [x] Assess residual test impact; add/update additional automated tests when needed, or document why no further tests are required
+  - No further automated coverage was required beyond the focused suite split and added normalization characterization because the public mapper API stayed stable and the remaining change was internal decomposition.
+- [x] Run full test suite before finalizing the PR and record results
+  - `pnpm test --run` -> `228` passed, `9` skipped files; `2519` passed, `110` skipped tests
+- [x] Run lint (`pnpm lint`) before finalizing the PR and record results
+  - `pnpm lint` -> passed with pre-existing warnings only (`0` errors)
+- [x] Commit completed checklist items as logical commits and push updates
+  - `49156df1` refactor(st-09085): modularize schema type mapper
+  - `90616e73` chore(st-09085): move story to in-review
+  - Review follow-up pending: address duplicate suite discovery, readonly vendor-map export typing, and restored `mapColumnType(...)` normalization contract docs before resolving Copilot threads.
+- [x] Mark PR Ready only after all story tasks are complete
+  - PR #155 marked ready for review on 2026-07-10 after focused validation, full-suite validation, lint, story-doc updates, and tracker sync were complete.
 - [ ] Wait for merge; do not merge directly from local branch
 
 ### Notes
