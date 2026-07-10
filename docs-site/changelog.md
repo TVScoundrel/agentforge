@@ -5,6 +5,39 @@ All notable changes to AgentForge will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.16.70] - 2026-07-10
+
+### Added
+
+#### @agentforge/core - Shared Tool Testing Runtime
+- Added `packages/core/src/tools/testing-runtime.ts` to centralize async mock-tool execution and response/result normalization for the core testing helpers
+- Added story documentation in `docs/st09084-tool-testing-helper-deduplication.md` capturing the helper deduplication changes, compatibility rationale, and validation evidence
+
+### Changed
+
+#### @agentforge/core - Tool Testing Helper Structure
+- Reduced `packages/core/src/tools/testing.ts` to a thinner facade over the shared testing runtime while preserving the existing mock-tool and simulator public APIs
+
+#### @agentforge/testing - Mock Tool Runtime Reuse
+- Updated `packages/testing/src/mocks/mock-tool.ts` to reuse the same focused async execution runtime pattern as core so mock-tool behavior stays aligned across packages without duplicated internals
+
+#### @agentforge/testing - Package-Scoped Vitest Validation Path
+- Added `packages/testing/vitest.config.ts` and pointed the package test script at it so `pnpm --filter @agentforge/testing test --run` resolves the intended suite from the workspace root
+
+### Fixed
+
+#### @agentforge/testing - Filtered Testing Package Execution
+- Restored the documented package-scoped validation flow for `@agentforge/testing` by fixing the package-cwd Vitest config mismatch that previously made filtered test runs depend on broader root execution
+
+### Published
+- All packages published to npm registry at version 0.16.70:
+  - @agentforge/core@0.16.70
+  - @agentforge/skills@0.16.70
+  - @agentforge/patterns@0.16.70
+  - @agentforge/tools@0.16.70
+  - @agentforge/testing@0.16.70
+  - @agentforge/cli@0.16.70
+
 ## [0.16.69] - 2026-07-09
 
 ### Added
