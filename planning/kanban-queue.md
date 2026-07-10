@@ -1,11 +1,11 @@
 # Kanban Queue: AgentForge
 
-**Last Updated:** 2026-07-09
+**Last Updated:** 2026-07-10
 
 ## Queue Status Summary
 
-- **Ready:** 4 stories
-- **In Progress:** 0 stories
+- **Ready:** 3 stories
+- **In Progress:** 1 story
 - **In Review:** 0 stories
 - **Blocked:** 0 stories
 - **Backlog:** 6 stories
@@ -14,8 +14,6 @@
 
 ## Ready
 
-- `ST-09084` - Deduplicate Tool Testing Helpers Across Core and Testing
-  - Depends on: None
 - `ST-09085` - Modularize Relational Schema Type Mapper and Tests
   - Depends on: None
 - `ST-09086` - Modularize Relational Schema Diff and JSON Utilities
@@ -27,7 +25,8 @@
 
 ## In Progress
 
-None currently.
+- `ST-09084` - Deduplicate Tool Testing Helpers Across Core and Testing
+  - Depends on: None
 
 ---
 

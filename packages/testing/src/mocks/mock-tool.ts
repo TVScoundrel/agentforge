@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { toolBuilder, ToolCategory, type Tool } from '@agentforge/core';
+import { runMockExecution, toolBuilder, ToolCategory, type Tool } from '@agentforge/core';
 
 const defaultMockToolSchema = z.object({
   input: z.string().describe('Input parameter'),
@@ -94,19 +94,21 @@ function buildMockTool<TSchema extends MockToolSchema>(config: {
   };
 
   const actualImplementation = async (input: MockToolInput<TSchema>): Promise<string> => {
-    if (delay > 0) {
-      await new Promise((resolve) => setTimeout(resolve, delay));
-    }
+    return runMockExecution(
+      input,
+      () => {
+        if (implementation) {
+          return Promise.resolve(implementation(input));
+        }
 
-    if (shouldError) {
-      throw new Error(errorMessage);
-    }
-
-    if (implementation) {
-      const result = await Promise.resolve(implementation(input));
-      return result;
-    }
-    return defaultImplementation(input);
+        return defaultImplementation(input);
+      },
+      {
+        latency: delay,
+        shouldError,
+        errorFactory: () => new Error(errorMessage),
+      }
+    );
   };
 
   return toolBuilder()

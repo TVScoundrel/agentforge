@@ -3529,21 +3529,33 @@ Implementation notes:
 **Branch:** `refactor/st-09084-tool-testing-helper-deduplication`
 
 ### Checklist
-- [ ] Create branch `refactor/st-09084-tool-testing-helper-deduplication`
+- [x] Create branch `refactor/st-09084-tool-testing-helper-deduplication`
+  - Created as `codex/refactor/st-09084-tool-testing-helper-deduplication` on 2026-07-10.
 - [ ] Create draft PR with story ID in title
-- [ ] Define test strategy before implementation: cover mock-tool responses, simulator execution, invocation recording, and current type-level/public import compatibility across both `@agentforge/core` and `@agentforge/testing`
-- [ ] Write or update the failing automated test before production changes when practical; if not practical, record why before implementation
-- [ ] Reduce duplicated mock-tool or simulator behavior across `packages/core/src/tools/testing.ts` and `packages/testing/src/mocks/mock-tool.ts` behind focused shared helpers, adapters, or re-exports
-- [ ] Preserve current public `createMockTool(...)`, `createToolSimulator(...)`, invocation-recording behavior, and type inference for both packages
-- [ ] Add/update focused tests until the deduplicated behavior passes in both package surfaces, keeping evidence in checklist notes and PR body
-- [ ] Record explicit-`any` warning deltas and the cross-package compatibility rationale in story docs
-- [ ] Add or update story documentation at `docs/st09084-tool-testing-helper-deduplication.md` (or document why not required)
-- [ ] Assess residual test impact; add/update additional automated tests when needed, or document why no further tests are required
-- [ ] Run full test suite before finalizing the PR and record results
-- [ ] Run lint (`pnpm lint`) before finalizing the PR and record results
+- [x] Define test strategy before implementation: cover mock-tool responses, simulator execution, invocation recording, and current type-level/public import compatibility across both `@agentforge/core` and `@agentforge/testing`
+  - Strategy: keep the existing public entrypoints stable, add focused characterization coverage for the shared async mock-runtime paths used by core simulator/mock helpers and testing-package schema-backed mock tools, then run both package-scoped suites plus package typecheck/static analysis.
+- [x] Write or update the failing automated test before production changes when practical; if not practical, record why before implementation
+  - A new failing test is not practical here because the story is a behavior-preserving cross-package deduplication, not a new branch or bug fix. The safer path is characterization-first coverage on the current public behavior, then the structural refactor under that test net.
+- [x] Reduce duplicated mock-tool or simulator behavior across `packages/core/src/tools/testing.ts` and `packages/testing/src/mocks/mock-tool.ts` behind focused shared helpers, adapters, or re-exports
+  - Added shared async runtime helper `packages/core/src/tools/testing-runtime.ts`; both core helper flows and the testing package mock-tool factory now reuse it for delay/error orchestration.
+- [x] Preserve current public `createMockTool(...)`, `createToolSimulator(...)`, invocation-recording behavior, and type inference for both packages
+  - Existing public exports were preserved; invocation recording still captures `output` on success and `error` on failure at the public helper boundary, and both `@agentforge/core` and `@agentforge/testing` typecheck paths passed after the change.
+- [x] Add/update focused tests until the deduplicated behavior passes in both package surfaces, keeping evidence in checklist notes and PR body
+  - Added simulator injected-error coverage in `packages/core/tests/tools/testing.test.ts`.
+  - `pnpm --filter @agentforge/core test --run tests/tools/testing.test.ts` -> `4` passed
+  - `pnpm --filter @agentforge/testing test --run` -> `5` passed files; `45` passed tests
+- [x] Record explicit-`any` warning deltas and the cross-package compatibility rationale in story docs
+  - `pnpm lint:explicit-any:baseline` -> passed at `workspace 80/289`, `core 19/119`, `testing 0/51`; compatibility rationale and package-local Vitest follow-up details recorded in `docs/st09084-tool-testing-helper-deduplication.md`
+- [x] Add or update story documentation at `docs/st09084-tool-testing-helper-deduplication.md` (or document why not required)
+  - Added `docs/st09084-tool-testing-helper-deduplication.md`
+- [x] Assess residual test impact; add/update additional automated tests when needed, or document why no further tests are required
+  - No further automated coverage was required beyond the focused simulator characterization test plus the existing `@agentforge/testing` mock-tool suite because the change preserves the public helper shapes and only centralizes delay/error orchestration behind a shared runtime.
+- [x] Run full test suite before finalizing the PR and record results
+  - `pnpm test --run` -> `224` passed, `9` skipped files; `2518` passed, `110` skipped tests
+- [x] Run lint (`pnpm lint`) before finalizing the PR and record results
+  - `pnpm lint` -> passed with pre-existing warnings only (`0` errors)
 - [ ] Commit completed checklist items as logical commits and push updates
-- [x] Mark PR Ready only after all story tasks are complete
-  - PR #153 marked ready for review on 2026-07-09 after focused validation, full-suite validation, lint, story-doc updates, and tracker sync were complete
+- [ ] Mark PR Ready only after all story tasks are complete
 - [ ] Wait for merge; do not merge directly from local branch
 
 ### Notes
