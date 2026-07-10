@@ -2326,7 +2326,7 @@
 **Priority:** P2 (Medium)
 **Estimate:** 3 hours
 **Dependencies:** None
-**Status:** In Progress
+**Status:** In Review (PR #155)
 
 **Acceptance criteria:**
 - [ ] `packages/tools/src/data/relational/schema/type-mapper.ts` is reduced below the planning cutoff by extracting focused vendor-map, normalization, or shared mapping helpers while preserving stable public exports for `mapColumnType(...)`, `mapSchemaTypes(...)`, and `getVendorTypeMap(...)`.

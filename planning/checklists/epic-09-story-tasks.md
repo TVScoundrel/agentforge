@@ -3576,7 +3576,8 @@ Implementation notes:
 ### Checklist
 - [x] Create branch `refactor/st-09085-relational-schema-type-mapper-modularization`
   - Created as `codex/refactor/st-09085-relational-schema-type-mapper-modularization` on 2026-07-10.
-- [ ] Create draft PR with story ID in title
+- [x] Create draft PR with story ID in title
+  - PR #155: https://github.com/TVScoundrel/agentforge/pull/155
 - [x] Define test strategy before implementation: cover vendor-specific mappings, normalization rules, precision-loss notes, unknown-type fallbacks, and schema-wide mapping aggregation
   - Strategy: preserve the public `type-mapper.ts` entrypoint, split the current monolithic suite into focused vendor, normalization, schema-aggregation, and vendor-map suites, then refactor vendor maps and normalization helpers behind the stable facade and validate with package-scoped plus workspace quality gates.
 - [x] Write or update the failing automated test before production changes when practical; if not practical, record why before implementation
