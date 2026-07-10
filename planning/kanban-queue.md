@@ -4,8 +4,8 @@
 
 ## Queue Status Summary
 
-- **Ready:** 3 stories
-- **In Progress:** 0 stories
+- **Ready:** 2 stories
+- **In Progress:** 1 story
 - **In Review:** 0 stories
 - **Blocked:** 0 stories
 - **Backlog:** 6 stories
@@ -14,8 +14,6 @@
 
 ## Ready
 
-- `ST-09085` - Modularize Relational Schema Type Mapper and Tests
-  - Depends on: None
 - `ST-09086` - Modularize Relational Schema Diff and JSON Utilities
   - Depends on: None
 - `ST-09087` - DRY Middleware Rate-Limit and Concurrency Controllers
@@ -25,7 +23,8 @@
 
 ## In Progress
 
-None currently.
+- `ST-09085` - Modularize Relational Schema Type Mapper and Tests
+  - Depends on: None
 
 ---
 

@@ -3,7 +3,7 @@
 **Epic Range:** EP-09 through EP-09
 **Status:** In Progress
 **Last Updated:** 2026-07-10
-**Active Story:** None currently - next recommended ready story is ST-09085
+**Active Story:** ST-09085 - Modularize Relational Schema Type Mapper and Tests
 
 ---
 
