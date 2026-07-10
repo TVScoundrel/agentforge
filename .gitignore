@@ -58,3 +58,6 @@ dev-docs/
 
 # AI assistant context and instructions (local only)
 .ai/
+
+# Temporary PR body drafts generated during review workflow
+.pr-body-st-*.md
