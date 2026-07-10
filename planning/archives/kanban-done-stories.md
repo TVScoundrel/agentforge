@@ -2,11 +2,18 @@
 
 **Purpose:** Track completed and merged stories for the Relational Database Access Tool project.
 
-**Last Updated:** 2026-07-09
+**Last Updated:** 2026-07-10
 
 ---
 
 ## Completed Stories
+
+### ST-09084: Deduplicate Tool Testing Helpers Across Core and Testing
+- **Merged:** 2026-07-10
+- **PR:** https://github.com/TVScoundrel/agentforge/pull/154 (commit a5cc2174)
+- **Epic:** EP-09 (SOLID Micro-Refactors and Type Boundary Hardening)
+- **Estimate:** 3 hours
+- **Outcome:** Deduplicated the shared async mock-tool execution behavior by introducing `packages/core/src/tools/testing-runtime.ts` and reusing it across `@agentforge/core` tool-testing helpers plus the `@agentforge/testing` mock-tool utilities, preserving public `createMockTool(...)`, `createToolSimulator(...)`, invocation-recording semantics, and existing import compatibility. The story also added focused simulator injected-error coverage in the core tool-testing suite, restored package-local testing Vitest execution so `pnpm --filter @agentforge/testing test --run` works from the workspace root again, kept the explicit-`any` baseline flat at `workspace 80/289`, `core 19/119`, and `testing 0/51`, and left `ST-09085` as the next deterministic ready-lane slice with `ST-09086` and `ST-09087` still dependency-ready behind it.
 
 ### ST-09088: Harden Multi-Agent Runnable Config and GraphInterrupt Detection
 - **Merged:** 2026-07-09

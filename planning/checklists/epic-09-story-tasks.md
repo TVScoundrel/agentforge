@@ -3560,7 +3560,8 @@ Implementation notes:
   - `5da538c0` chore(st-09084): move story to in-review
 - [x] Mark PR Ready only after all story tasks are complete
   - PR #154 marked ready for review on 2026-07-10 after focused validation, full-suite validation, lint, story-doc updates, and tracker sync were complete
-- [ ] Wait for merge; do not merge directly from local branch
+- [x] Wait for merge; do not merge directly from local branch
+  - Merged via PR #154 on 2026-07-10 (merge commit `a5cc2174`)
 
 ### Notes
 - CI-impact assessment:

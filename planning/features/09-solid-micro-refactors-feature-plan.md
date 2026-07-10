@@ -2,8 +2,8 @@
 
 **Epic Range:** EP-09 through EP-09
 **Status:** In Progress
-**Last Updated:** 2026-07-09
-**Active Story:** None currently - next recommended ready story is ST-09084
+**Last Updated:** 2026-07-10
+**Active Story:** None currently - next recommended ready story is ST-09085
 
 ---
 
@@ -132,6 +132,7 @@ Recent improvement snapshot:
 - `ST-09081` merged on 2026-07-08 after shrinking `packages/core/src/monitoring/alerts.ts` into a stable facade backed by focused rule-evaluation, throttling, channel-dispatch, and error/reporting helpers, splitting the alert-manager monolith into dedicated monitoring suites, restoring package-local core Vitest execution so `pnpm --filter @agentforge/core test --run` resolves from the workspace root again, and keeping the explicit-`any` baseline flat at `workspace 80/289` and `core 19/119`. The current EP-09 ready lane is now empty pending the next accepted slice.
 - `ST-09084` through `ST-09088` were added on 2026-07-08 to replenish the empty EP-09 lane with another dependency-safe batch focused on one multi-agent hardening slice, one cross-package testing-helper de-duplication slice, two relational schema utility modularization slices, and one middleware controller/integration-test DRY slice.
 - `ST-09088` merged on 2026-07-09 after hardening multi-agent worker config forwarding around sanitized RunnableConfig key-picking, removing constructor-name-only GraphInterrupt detection, and absorbing the review-driven hostile-getter error-path guard plus GitHub-safe story-doc links. The queue is now groomed with `ST-09084` through `ST-09087` all dependency-ready in `Ready`, and the next recommended slice is `ST-09084`.
+- `ST-09084` merged on 2026-07-10 after centralizing the duplicated async mock-tool execution flow behind `packages/core/src/tools/testing-runtime.ts`, preserving backward-compatible core/testing public helper surfaces, adding a focused simulator injected-error regression, and restoring package-local testing Vitest execution so `pnpm --filter @agentforge/testing test --run` resolves from the workspace root. The ready lane now advances to `ST-09085`, with `ST-09086` and `ST-09087` still dependency-ready behind it.
 - The refreshed follow-on queue now extends beyond the current Ready lane so another few weeks of small SOLID/DRY and modularization work can be pulled without re-planning the epic.
 
 ---
