@@ -3555,8 +3555,11 @@ Implementation notes:
   - `pnpm test --run` -> `224` passed, `9` skipped files; `2518` passed, `110` skipped tests
 - [x] Run lint (`pnpm lint`) before finalizing the PR and record results
   - `pnpm lint` -> passed with pre-existing warnings only (`0` errors)
-- [ ] Commit completed checklist items as logical commits and push updates
-- [ ] Mark PR Ready only after all story tasks are complete
+- [x] Commit completed checklist items as logical commits and push updates
+  - `ad6bc5ae` refactor(st-09084): deduplicate tool testing helpers
+  - `5da538c0` chore(st-09084): move story to in-review
+- [x] Mark PR Ready only after all story tasks are complete
+  - PR #154 marked ready for review on 2026-07-10 after focused validation, full-suite validation, lint, story-doc updates, and tracker sync were complete
 - [ ] Wait for merge; do not merge directly from local branch
 
 ### Notes
