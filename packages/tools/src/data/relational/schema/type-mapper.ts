@@ -32,6 +32,10 @@ export interface MappedType {
 /**
  * Map a single database column type to its TypeScript equivalent.
  *
+ * Normalises the input type to lower-case and strips PostgreSQL array
+ * suffixes, MySQL `unsigned`, and size/precision suffixes such as
+ * `varchar(255)` or `numeric(10,2)` before map lookup.
+ *
  * @param vendor - Database vendor
  * @param dbType - The raw column type string from the database
  * @param nullable - Whether the column is nullable

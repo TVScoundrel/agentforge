@@ -3603,6 +3603,7 @@ Implementation notes:
 - [x] Commit completed checklist items as logical commits and push updates
   - `49156df1` refactor(st-09085): modularize schema type mapper
   - `90616e73` chore(st-09085): move story to in-review
+  - Review follow-up pending: address duplicate suite discovery, readonly vendor-map export typing, and restored `mapColumnType(...)` normalization contract docs before resolving Copilot threads.
 - [x] Mark PR Ready only after all story tasks are complete
   - PR #155 marked ready for review on 2026-07-10 after focused validation, full-suite validation, lint, story-doc updates, and tracker sync were complete.
 - [ ] Wait for merge; do not merge directly from local branch

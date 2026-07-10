@@ -129,7 +129,7 @@ const SQLITE_TYPE_MAP: Record<string, string> = {
   json: 'unknown',
 };
 
-export const VENDOR_TYPE_MAPS: Record<DatabaseVendor, Record<string, string>> = {
+export const VENDOR_TYPE_MAPS: Readonly<Record<DatabaseVendor, Readonly<Record<string, string>>>> = {
   postgresql: POSTGRES_TYPE_MAP,
   mysql: MYSQL_TYPE_MAP,
   sqlite: SQLITE_TYPE_MAP,
