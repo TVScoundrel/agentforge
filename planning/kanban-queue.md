@@ -5,8 +5,8 @@
 ## Queue Status Summary
 
 - **Ready:** 3 stories
-- **In Progress:** 1 story
-- **In Review:** 0 stories
+- **In Progress:** 0 stories
+- **In Review:** 1 story
 - **Blocked:** 0 stories
 - **Backlog:** 6 stories
 
@@ -25,14 +25,14 @@
 
 ## In Progress
 
-- `ST-09084` - Deduplicate Tool Testing Helpers Across Core and Testing
-  - Depends on: None
+None currently.
 
 ---
 
 ## In Review
 
-None currently.
+- `ST-09084` - Deduplicate Tool Testing Helpers Across Core and Testing
+  - Depends on: None
 
 ## Blocked
 

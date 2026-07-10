@@ -3531,7 +3531,8 @@ Implementation notes:
 ### Checklist
 - [x] Create branch `refactor/st-09084-tool-testing-helper-deduplication`
   - Created as `codex/refactor/st-09084-tool-testing-helper-deduplication` on 2026-07-10.
-- [ ] Create draft PR with story ID in title
+- [x] Create draft PR with story ID in title
+  - PR #154: https://github.com/TVScoundrel/agentforge/pull/154
 - [x] Define test strategy before implementation: cover mock-tool responses, simulator execution, invocation recording, and current type-level/public import compatibility across both `@agentforge/core` and `@agentforge/testing`
   - Strategy: keep the existing public entrypoints stable, add focused characterization coverage for the shared async mock-runtime paths used by core simulator/mock helpers and testing-package schema-backed mock tools, then run both package-scoped suites plus package typecheck/static analysis.
 - [x] Write or update the failing automated test before production changes when practical; if not practical, record why before implementation
