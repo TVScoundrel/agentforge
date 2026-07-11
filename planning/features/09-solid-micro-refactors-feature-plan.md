@@ -2,8 +2,8 @@
 
 **Epic Range:** EP-09 through EP-09
 **Status:** In Progress
-**Last Updated:** 2026-07-10
-**Active Story:** ST-09085 - In Review on PR #155; next recommended ready story is ST-09086
+**Last Updated:** 2026-07-11
+**Active Story:** ST-09085 merged on PR #155; next recommended ready story is ST-09086
 
 ---
 
@@ -133,6 +133,7 @@ Recent improvement snapshot:
 - `ST-09084` through `ST-09088` were added on 2026-07-08 to replenish the empty EP-09 lane with another dependency-safe batch focused on one multi-agent hardening slice, one cross-package testing-helper de-duplication slice, two relational schema utility modularization slices, and one middleware controller/integration-test DRY slice.
 - `ST-09088` merged on 2026-07-09 after hardening multi-agent worker config forwarding around sanitized RunnableConfig key-picking, removing constructor-name-only GraphInterrupt detection, and absorbing the review-driven hostile-getter error-path guard plus GitHub-safe story-doc links. The queue is now groomed with `ST-09084` through `ST-09087` all dependency-ready in `Ready`, and the next recommended slice is `ST-09084`.
 - `ST-09084` merged on 2026-07-10 after centralizing the duplicated async mock-tool execution flow behind `packages/core/src/tools/testing-runtime.ts`, preserving backward-compatible core/testing public helper surfaces, adding a focused simulator injected-error regression, and restoring package-local testing Vitest execution so `pnpm --filter @agentforge/testing test --run` resolves from the workspace root. The ready lane now advances to `ST-09085`, with `ST-09086` and `ST-09087` still dependency-ready behind it.
+- `ST-09085` merged on 2026-07-11 after shrinking `packages/tools/src/data/relational/schema/type-mapper.ts` into a stable facade backed by focused vendor-map and normalization helpers while preserving public type-mapper exports and behavior. The story also replaced the monolithic mapper suite with focused vendor, normalization, schema-aggregation, and vendor-map modules, absorbed review follow-ups for non-discovered suite naming plus readonly vendor-map exports, and groomed the wider queue by promoting `ST-11001` and `ST-11004` into `Ready` while the EP-09 lane continues with `ST-09086`.
 - The refreshed follow-on queue now extends beyond the current Ready lane so another few weeks of small SOLID/DRY and modularization work can be pulled without re-planning the epic.
 
 ---

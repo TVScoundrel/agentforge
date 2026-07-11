@@ -3606,7 +3606,8 @@ Implementation notes:
   - Review follow-up pending: address duplicate suite discovery, readonly vendor-map export typing, and restored `mapColumnType(...)` normalization contract docs before resolving Copilot threads.
 - [x] Mark PR Ready only after all story tasks are complete
   - PR #155 marked ready for review on 2026-07-10 after focused validation, full-suite validation, lint, story-doc updates, and tracker sync were complete.
-- [ ] Wait for merge; do not merge directly from local branch
+- [x] Wait for merge; do not merge directly from local branch
+  - PR #155 merged into `main` on 2026-07-11 as commit `aa5e505e`; post-merge tracker sync and queue grooming completed from local `main`.
 
 ### Notes
 - CI-impact assessment:

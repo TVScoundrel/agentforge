@@ -1,14 +1,14 @@
 # Kanban Queue: AgentForge
 
-**Last Updated:** 2026-07-10
+**Last Updated:** 2026-07-11
 
 ## Queue Status Summary
 
-- **Ready:** 2 stories
+- **Ready:** 4 stories
 - **In Progress:** 0 stories
-- **In Review:** 1 story
+- **In Review:** 0 stories
 - **Blocked:** 0 stories
-- **Backlog:** 6 stories
+- **Backlog:** 4 stories
 
 ---
 
@@ -17,6 +17,10 @@
 - `ST-09086` - Modularize Relational Schema Diff and JSON Utilities
   - Depends on: None
 - `ST-09087` - DRY Middleware Rate-Limit and Concurrency Controllers
+  - Depends on: None
+- `ST-11001` - Publish Repository Security Boundary Policy
+  - Depends on: None
+- `ST-11004` - Separate Worker Output from Supervisor Routing Input
   - Depends on: None
 
 ---
@@ -29,8 +33,7 @@ None currently.
 
 ## In Review
 
-- `ST-09085` - Modularize Relational Schema Type Mapper and Tests
-  - PR: #155
+None currently.
 
 ## Blocked
 
@@ -40,14 +43,10 @@ _No stories currently blocked_
 
 ## Backlog
 
-- `ST-11001` - Publish Repository Security Boundary Policy
-  - Depends on: None
 - `ST-11002` - Harden Default Web Tool Egress Policy
   - Depends on: `ST-11001`
 - `ST-11003` - Add Filesystem Confinement Controls for Default File Tools
   - Depends on: `ST-11001`
-- `ST-11004` - Separate Worker Output from Supervisor Routing Input
-  - Depends on: None
 - `ST-11005` - Enforce Trust-Aware Skill Prompt and Activation Boundaries
   - Depends on: `ST-11001`
 - `ST-11006` - Harden Express Chat Example Ownership Semantics
@@ -158,6 +157,7 @@ _No stories currently blocked_
 - `ST-09088` is intentionally placed at the front of `Ready` because it is the smallest remaining behavior-hardening seam and directly addresses two latent risks in the multi-agent patterns layer before the next broader modularization stories
 - ST-09088 complete - multi-agent worker config forwarding now uses sanitized RunnableConfig key-picking, GraphInterrupt detection no longer depends solely on constructor names, hostile getter access no longer breaks the error path, the public patterns utility/error-handling suites gained focused regressions, and `ST-09086` plus `ST-09087` were promoted from Backlog to Ready because they remained dependency-free after the merge (merged 2026-07-09, PR #153)
 - ST-09084 complete - core tool-testing helpers and testing-package mock tools now share a focused async execution runtime, the public mock/simulator surfaces stayed backward compatible, `@agentforge/testing` gained a package-local Vitest config so `pnpm --filter @agentforge/testing test --run` works from the workspace root again, and no further queue promotion was needed because `ST-09085` through `ST-09087` were already dependency-ready in `Ready` (merged 2026-07-10, PR #154)
+- ST-09085 complete - relational schema type-mapper vendor maps, normalization, and schema-aggregation behavior were modularized behind the stable public facade; the monolithic suite was replaced with focused mapper tests; and the queue was groomed so `ST-11001` plus `ST-11004` were promoted from Backlog to Ready while the deterministic ready lane continues with `ST-09086` then `ST-09087` (merged 2026-07-11, PR #155)
 - Epic 11 (Security Boundary Hardening) was opened on 2026-07-09 after triaging a repository security scan into six backlog stories that separate policy/documentation hardening, safer default tool boundaries, multi-agent and skills trust-boundary fixes, and lower-priority example guidance cleanup
 - Complete: ST-10005 - documentation emoji guardrails added to contributor guidance (PR #104, 2026-05-05)
 - Complete: ST-10004 - example/template docs emoji normalization merged (PR #102, 2026-05-05)

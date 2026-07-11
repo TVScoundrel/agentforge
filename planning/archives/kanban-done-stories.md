@@ -2,11 +2,18 @@
 
 **Purpose:** Track completed and merged stories for the Relational Database Access Tool project.
 
-**Last Updated:** 2026-07-10
+**Last Updated:** 2026-07-11
 
 ---
 
 ## Completed Stories
+
+### ST-09085: Modularize Relational Schema Type Mapper and Tests
+- **Merged:** 2026-07-11
+- **PR:** https://github.com/TVScoundrel/agentforge/pull/155 (commit aa5e505e)
+- **Epic:** EP-09 (SOLID Micro-Refactors and Type Boundary Hardening)
+- **Estimate:** 3 hours
+- **Outcome:** Modularized `@agentforge/tools` relational schema type mapping by shrinking `packages/tools/src/data/relational/schema/type-mapper.ts` into a stable facade backed by focused vendor-map and normalization helpers while preserving `mapColumnType(...)`, `mapSchemaTypes(...)`, and `getVendorTypeMap(...)` behavior. The story also replaced the monolithic type-mapper suite with focused vendor, normalization, schema-aggregation, and vendor-map modules, absorbed review follow-ups for non-discovered suite naming, readonly vendor-map exports, and restored normalization-contract docs, kept the explicit-`any` baseline flat at `workspace 80/289` and `tools 53/67`, and left `ST-09086` as the next deterministic ready-lane story with `ST-09087`, `ST-11001`, and `ST-11004` also ready.
 
 ### ST-09084: Deduplicate Tool Testing Helpers Across Core and Testing
 - **Merged:** 2026-07-10
