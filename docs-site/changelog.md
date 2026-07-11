@@ -5,6 +5,33 @@ All notable changes to AgentForge will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.16.71] - 2026-07-11
+
+### Added
+
+#### @agentforge/tools - Focused Relational Schema Type-Mapper Coverage
+- Added focused type-mapper coverage modules under `packages/tools/tests/data/relational/type-mapper/` for vendor-specific mappings, normalization behavior, schema-wide aggregation, and vendor-map access while keeping the stable public test entrypoint
+- Added story documentation in `docs/st09085-relational-schema-type-mapper-modularization.md` capturing the modularization split, compatibility rationale, review follow-ups, and validation evidence
+
+### Changed
+
+#### @agentforge/tools - Relational Schema Type-Mapper Structure
+- Reduced `packages/tools/src/data/relational/schema/type-mapper.ts` to a stable facade backed by focused normalization and vendor-map helpers while preserving `mapColumnType(...)`, `mapSchemaTypes(...)`, and `getVendorTypeMap(...)` behavior and import compatibility
+
+### Fixed
+
+#### @agentforge/tools - Type-Mapper Review Follow-Ups
+- Prevented imported focused suites from being double-discovered by Vitest, made exported vendor maps readonly at the public type boundary, and restored explicit normalization-contract documentation on `mapColumnType(...)`
+
+### Published
+- All packages published to npm registry at version 0.16.71:
+  - @agentforge/core@0.16.71
+  - @agentforge/skills@0.16.71
+  - @agentforge/patterns@0.16.71
+  - @agentforge/tools@0.16.71
+  - @agentforge/testing@0.16.71
+  - @agentforge/cli@0.16.71
+
 ## [0.16.70] - 2026-07-10
 
 ### Added

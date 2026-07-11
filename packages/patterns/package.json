@@ -1,6 +1,6 @@
 {
   "name": "@agentforge/patterns",
-  "version": "0.16.70",
+  "version": "0.16.71",
   "description": "Production-ready agent workflow patterns for TypeScript including ReAct and Planner-Executor, built on LangGraph.",
   "type": "module",
   "main": "./dist/index.cjs",
