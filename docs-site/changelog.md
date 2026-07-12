@@ -5,6 +5,33 @@ All notable changes to AgentForge will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.16.72] - 2026-07-12
+
+### Added
+
+#### @agentforge/tools - Focused Relational Schema Diff Coverage
+- Added focused schema-diff coverage modules under `packages/tools/tests/data/relational/schema-diff/` for comparison behavior, JSON import/export validation, and shared schema fixtures while keeping the stable public test entrypoint
+- Added story documentation in `docs/st09086-relational-schema-diff-modularization.md` capturing the modularization split, compatibility rationale, and validation evidence
+
+### Changed
+
+#### @agentforge/tools - Relational Schema Diff Structure
+- Reduced `packages/tools/src/data/relational/schema/schema-diff.ts` to a stable facade backed by focused comparison, JSON import/export validation, and public diff-type modules while preserving `diffSchemas(...)`, `exportSchemaToJson(...)`, `importSchemaFromJson(...)`, and current diff-report compatibility
+
+### Fixed
+
+#### @agentforge/tools - Schema Diff Validation Path
+- Preserved the documented package-scoped tools validation flow while replacing the prior monolithic schema-diff suite with focused diff and JSON modules plus shared fixtures so the relational schema utility surface can evolve without one coupled runtime and test body
+
+### Published
+- All packages published to npm registry at version 0.16.72:
+  - @agentforge/core@0.16.72
+  - @agentforge/skills@0.16.72
+  - @agentforge/patterns@0.16.72
+  - @agentforge/tools@0.16.72
+  - @agentforge/testing@0.16.72
+  - @agentforge/cli@0.16.72
+
 ## [0.16.71] - 2026-07-11
 
 ### Added
