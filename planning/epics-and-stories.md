@@ -2343,7 +2343,7 @@
 **Priority:** P2 (Medium)
 **Estimate:** 3 hours
 **Dependencies:** None
-**Status:** Backlog
+**Status:** In Progress
 
 **Acceptance criteria:**
 - [ ] `packages/tools/src/data/relational/schema/schema-diff.ts` is reduced to a smaller public facade or clearly grouped orchestration layer while table/column diffing and schema JSON validation/serialization helpers move into focused internal modules that stay below the planning cutoff unless an exception is documented.
