@@ -3,7 +3,7 @@
 **Epic Range:** EP-09 through EP-09
 **Status:** In Progress
 **Last Updated:** 2026-07-12
-**Active Story:** ST-09086 - In Review on PR #156; next recommended ready story is ST-09087
+**Active Story:** ST-09086 - Merged on 2026-07-12 (PR #156); next recommended ready story is ST-09087
 
 ---
 
@@ -134,6 +134,7 @@ Recent improvement snapshot:
 - `ST-09088` merged on 2026-07-09 after hardening multi-agent worker config forwarding around sanitized RunnableConfig key-picking, removing constructor-name-only GraphInterrupt detection, and absorbing the review-driven hostile-getter error-path guard plus GitHub-safe story-doc links. The queue is now groomed with `ST-09084` through `ST-09087` all dependency-ready in `Ready`, and the next recommended slice is `ST-09084`.
 - `ST-09084` merged on 2026-07-10 after centralizing the duplicated async mock-tool execution flow behind `packages/core/src/tools/testing-runtime.ts`, preserving backward-compatible core/testing public helper surfaces, adding a focused simulator injected-error regression, and restoring package-local testing Vitest execution so `pnpm --filter @agentforge/testing test --run` resolves from the workspace root. The ready lane now advances to `ST-09085`, with `ST-09086` and `ST-09087` still dependency-ready behind it.
 - `ST-09085` merged on 2026-07-11 after shrinking `packages/tools/src/data/relational/schema/type-mapper.ts` into a stable facade backed by focused vendor-map and normalization helpers while preserving public type-mapper exports and behavior. The story also replaced the monolithic mapper suite with focused vendor, normalization, schema-aggregation, and vendor-map modules, absorbed review follow-ups for non-discovered suite naming plus readonly vendor-map exports, and groomed the wider queue by promoting `ST-11001` and `ST-11004` into `Ready` while the EP-09 lane continues with `ST-09086`.
+- `ST-09086` merged on 2026-07-12 after shrinking `packages/tools/src/data/relational/schema/schema-diff.ts` into a stable facade backed by focused comparison, JSON import/export validation, and diff-type modules while preserving public schema diff/import/export behavior. The story also replaced the monolithic schema-diff suite with focused diff and JSON modules plus shared fixtures, kept the explicit-`any` baseline flat at `workspace 80/289` and `tools 53/67`, and advanced the deterministic ready lane to `ST-09087` with `ST-11001` and `ST-11004` still dependency-ready behind it.
 - The refreshed follow-on queue now extends beyond the current Ready lane so another few weeks of small SOLID/DRY and modularization work can be pulled without re-planning the epic.
 
 ---

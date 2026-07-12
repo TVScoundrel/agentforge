@@ -3650,7 +3650,8 @@ Implementation notes:
   - `13b08f3a` `refactor(st-09086): modularize schema diff utilities` pushed to `origin/codex/refactor/st-09086-relational-schema-diff-modularization`; tracker sync is captured in the current review-prep follow-up.
 - [x] Mark PR Ready only after all story tasks are complete
   - PR #156 marked ready for review on 2026-07-12 after focused validation, full-suite validation, lint, story-doc updates, and tracker sync were complete.
-- [ ] Wait for merge; do not merge directly from local branch
+- [x] Wait for merge; do not merge directly from local branch
+  - PR #156 merged into `main` on 2026-07-12 as commit `9d9c52f8`; post-merge tracker sync and queue grooming completed from local `main`.
 
 ### Notes
 - CI-impact assessment:

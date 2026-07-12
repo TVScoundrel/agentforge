@@ -2,11 +2,18 @@
 
 **Purpose:** Track completed and merged stories for the Relational Database Access Tool project.
 
-**Last Updated:** 2026-07-11
+**Last Updated:** 2026-07-12
 
 ---
 
 ## Completed Stories
+
+### ST-09086: Modularize Relational Schema Diff and JSON Utilities
+- **Merged:** 2026-07-12
+- **PR:** https://github.com/TVScoundrel/agentforge/pull/156 (commit 9d9c52f8)
+- **Epic:** EP-09 (SOLID Micro-Refactors and Type Boundary Hardening)
+- **Estimate:** 3 hours
+- **Outcome:** Modularized `@agentforge/tools` relational schema diffing by shrinking `packages/tools/src/data/relational/schema/schema-diff.ts` into a stable facade backed by focused comparison, JSON import/export validation, and public diff-type modules while preserving `diffSchemas(...)`, `exportSchemaToJson(...)`, `importSchemaFromJson(...)`, and current diff-report compatibility. The story also replaced the monolithic schema-diff suite with focused diff and JSON modules plus shared fixtures, kept the explicit-`any` baseline flat at `workspace 80/289` and `tools 53/67`, and advanced the deterministic ready lane to `ST-09087` with `ST-11001` and `ST-11004` still dependency-ready behind it.
 
 ### ST-09085: Modularize Relational Schema Type Mapper and Tests
 - **Merged:** 2026-07-11
