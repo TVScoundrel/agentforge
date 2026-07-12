@@ -3620,24 +3620,37 @@ Implementation notes:
 **Branch:** `refactor/st-09086-relational-schema-diff-modularization`
 
 ### Checklist
-- [ ] Create branch `refactor/st-09086-relational-schema-diff-modularization`
-- [ ] Create draft PR with story ID in title
-- [ ] Define test strategy before implementation: cover table/column diff reporting, case-insensitive matching, primary-key ordering, deterministic export, and invalid JSON structural validation
-- [ ] Write or update the failing automated test before production changes when practical; if not practical, record why before implementation
-- [ ] Reduce `packages/tools/src/data/relational/schema/schema-diff.ts` to a smaller public facade or clearly separated orchestration layer while extracting focused diffing and JSON validation helpers
-- [ ] Preserve current public `diffSchemas(...)`, `exportSchemaToJson(...)`, `importSchemaFromJson(...)`, and diff-report shape behavior
-- [ ] Replace the `packages/tools/tests/data/relational/schema-diff.test.ts` monolith with focused suites or shared fixtures that preserve current regression coverage
-- [ ] Add/update production code until focused tests pass, keeping evidence in checklist notes and PR body
-- [ ] Record explicit-`any` warning deltas and the schema-diff compatibility rationale in story docs
-- [ ] Add or update story documentation at `docs/st09086-relational-schema-diff-modularization.md` (or document why not required)
-- [ ] Assess residual test impact; add/update additional automated tests when needed, or document why no further tests are required
-- [ ] Run full test suite before finalizing the PR and record results
-- [ ] Run lint (`pnpm lint`) before finalizing the PR and record results
-- [ ] Commit completed checklist items as logical commits and push updates
+- [x] Create branch `refactor/st-09086-relational-schema-diff-modularization`
+  - Created as `codex/refactor/st-09086-relational-schema-diff-modularization` on 2026-07-12.
+- [x] Create draft PR with story ID in title
+  - Draft PR #156 created on 2026-07-12: <https://github.com/TVScoundrel/agentforge/pull/156>
+- [x] Define test strategy before implementation: cover table/column diff reporting, case-insensitive matching, primary-key ordering, deterministic export, and invalid JSON structural validation
+  - Strategy: preserve the public `schema-diff.ts` entrypoint, split the monolithic suite into focused diff and JSON characterization modules first, then extract comparison and JSON-validation helpers behind the stable facade and validate with package-scoped quality gates before broader repo validation.
+- [x] Write or update the failing automated test before production changes when practical; if not practical, record why before implementation
+  - A new failing test was not the practical seam because this story is an internal modularization of an already covered public utility. The safer path was to strengthen characterization coverage by splitting the existing schema-diff assertions into focused suites first, then refactor under that passing test net.
+- [x] Reduce `packages/tools/src/data/relational/schema/schema-diff.ts` to a smaller public facade or clearly separated orchestration layer while extracting focused diffing and JSON validation helpers
+  - Reduced `packages/tools/src/data/relational/schema/schema-diff.ts` to a small facade and extracted `schema-diff-comparison.ts`, `schema-diff-json.ts`, and `schema-diff-types.ts`.
+- [x] Preserve current public `diffSchemas(...)`, `exportSchemaToJson(...)`, `importSchemaFromJson(...)`, and diff-report shape behavior
+  - Public exports and diff-report structures remained stable while the comparison and JSON validation logic moved behind the facade.
+- [x] Replace the `packages/tools/tests/data/relational/schema-diff.test.ts` monolith with focused suites or shared fixtures that preserve current regression coverage
+  - Replaced the monolithic body with a public entrypoint that imports focused `diff-schemas.ts` and `schema-json.ts` suites plus shared fixtures under `packages/tools/tests/data/relational/schema-diff/`.
+- [x] Add/update production code until focused tests pass, keeping evidence in checklist notes and PR body
+  - `pnpm --filter @agentforge/tools test --run tests/data/relational/schema-diff.test.ts` -> `1` passed file; `15` passed tests.
+- [x] Record explicit-`any` warning deltas and the schema-diff compatibility rationale in story docs
+  - `pnpm lint:explicit-any:baseline` -> passed at `workspace 80/289`, `tools 53/67`; compatibility rationale recorded in `docs/st09086-relational-schema-diff-modularization.md`.
+- [x] Add or update story documentation at `docs/st09086-relational-schema-diff-modularization.md` (or document why not required)
+  - Added `docs/st09086-relational-schema-diff-modularization.md`.
+- [x] Assess residual test impact; add/update additional automated tests when needed, or document why no further tests are required
+  - No further automated coverage was required beyond the focused suite split because the touched behavior remained the same public diff/import/export contract and the refactor only separated internal responsibilities.
+- [x] Run full test suite before finalizing the PR and record results
+  - `pnpm test --run` -> `224` passed, `9` skipped files; `2498` passed, `110` skipped tests.
+- [x] Run lint (`pnpm lint`) before finalizing the PR and record results
+  - `pnpm lint` -> passed with pre-existing warnings only (`0` errors).
+- [x] Commit completed checklist items as logical commits and push updates
+  - `13b08f3a` `refactor(st-09086): modularize schema diff utilities` pushed to `origin/codex/refactor/st-09086-relational-schema-diff-modularization`; tracker sync is captured in the current review-prep follow-up.
 - [x] Mark PR Ready only after all story tasks are complete
-  - PR #153 marked ready for review on 2026-07-09 after focused validation, full-suite validation, lint, story-doc updates, and tracker sync were complete
-- [x] Wait for merge; do not merge directly from local branch
-  - Merged via PR #153 on 2026-07-09
+  - PR #156 marked ready for review on 2026-07-12 after focused validation, full-suite validation, lint, story-doc updates, and tracker sync were complete.
+- [ ] Wait for merge; do not merge directly from local branch
 
 ### Notes
 - CI-impact assessment:

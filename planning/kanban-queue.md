@@ -1,12 +1,12 @@
 # Kanban Queue: AgentForge
 
-**Last Updated:** 2026-07-11
+**Last Updated:** 2026-07-12
 
 ## Queue Status Summary
 
-- **Ready:** 4 stories
+- **Ready:** 3 stories
 - **In Progress:** 0 stories
-- **In Review:** 0 stories
+- **In Review:** 1 story
 - **Blocked:** 0 stories
 - **Backlog:** 4 stories
 
@@ -14,8 +14,6 @@
 
 ## Ready
 
-- `ST-09086` - Modularize Relational Schema Diff and JSON Utilities
-  - Depends on: None
 - `ST-09087` - DRY Middleware Rate-Limit and Concurrency Controllers
   - Depends on: None
 - `ST-11001` - Publish Repository Security Boundary Policy
@@ -25,13 +23,14 @@
 
 ---
 
-## In Progress
+## In Review
 
-None currently.
+- `ST-09086` - Modularize Relational Schema Diff and JSON Utilities
+  - Depends on: None
 
 ---
 
-## In Review
+## In Progress
 
 None currently.
 
