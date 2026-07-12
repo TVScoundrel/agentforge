@@ -3622,7 +3622,8 @@ Implementation notes:
 ### Checklist
 - [x] Create branch `refactor/st-09086-relational-schema-diff-modularization`
   - Created as `codex/refactor/st-09086-relational-schema-diff-modularization` on 2026-07-12.
-- [ ] Create draft PR with story ID in title
+- [x] Create draft PR with story ID in title
+  - Draft PR #156 created on 2026-07-12: <https://github.com/TVScoundrel/agentforge/pull/156>
 - [x] Define test strategy before implementation: cover table/column diff reporting, case-insensitive matching, primary-key ordering, deterministic export, and invalid JSON structural validation
   - Strategy: preserve the public `schema-diff.ts` entrypoint, split the monolithic suite into focused diff and JSON characterization modules first, then extract comparison and JSON-validation helpers behind the stable facade and validate with package-scoped quality gates before broader repo validation.
 - [x] Write or update the failing automated test before production changes when practical; if not practical, record why before implementation
@@ -3645,11 +3646,11 @@ Implementation notes:
   - `pnpm test --run` -> `224` passed, `9` skipped files; `2498` passed, `110` skipped tests.
 - [x] Run lint (`pnpm lint`) before finalizing the PR and record results
   - `pnpm lint` -> passed with pre-existing warnings only (`0` errors).
-- [ ] Commit completed checklist items as logical commits and push updates
+- [x] Commit completed checklist items as logical commits and push updates
+  - `13b08f3a` `refactor(st-09086): modularize schema diff utilities` pushed to `origin/codex/refactor/st-09086-relational-schema-diff-modularization`; tracker sync is captured in the current review-prep follow-up.
 - [x] Mark PR Ready only after all story tasks are complete
-  - PR #153 marked ready for review on 2026-07-09 after focused validation, full-suite validation, lint, story-doc updates, and tracker sync were complete
-- [x] Wait for merge; do not merge directly from local branch
-  - Merged via PR #153 on 2026-07-09
+  - PR #156 marked ready for review on 2026-07-12 after focused validation, full-suite validation, lint, story-doc updates, and tracker sync were complete.
+- [ ] Wait for merge; do not merge directly from local branch
 
 ### Notes
 - CI-impact assessment:
