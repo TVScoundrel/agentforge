@@ -3,7 +3,7 @@
 **Epic Range:** EP-09 through EP-09
 **Status:** In Progress
 **Last Updated:** 2026-07-13
-**Active Story:** ST-09087 - In Progress; next recommended ready story is ST-11001
+**Active Story:** ST-09087 - In Review on PR #157; next recommended ready story is ST-11001
 
 ---
 

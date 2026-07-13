@@ -3666,7 +3666,8 @@ Implementation notes:
 ### Checklist
 - [x] Create branch `refactor/st-09087-middleware-controller-deduplication`
   - Created as `codex/refactor/st-09087-middleware-controller-deduplication` on 2026-07-13.
-- [ ] Create draft PR with story ID in title
+- [x] Create draft PR with story ID in title
+  - Draft PR #157 created on 2026-07-13: <https://github.com/TVScoundrel/agentforge/pull/157>
 - [x] Define test strategy before implementation: cover rate-limit strategies, shared limiter/controller behavior, queue limits and timeouts, preset integration, and shared middleware interactions
   - Strategy: keep the public middleware entrypoints stable, split the monolithic integration suite into focused composition, preset, and shared-controller characterization modules first, then extract the duplicated controller/wrapper wiring behind shared internal helpers and validate with package-scoped core quality gates before broader workspace validation.
 - [x] Write or update the failing automated test before production changes when practical; if not practical, record why before implementation
@@ -3696,8 +3697,10 @@ Implementation notes:
   - `pnpm test --run` -> passed with `224` files passed, `9` skipped; `2498` tests passed, `110` skipped.
 - [x] Run lint (`pnpm lint`) before finalizing the PR and record results
   - `pnpm lint` -> passed with the existing warning-only baseline (`0` errors).
-- [ ] Commit completed checklist items as logical commits and push updates
-- [ ] Mark PR Ready only after all story tasks are complete
+- [x] Commit completed checklist items as logical commits and push updates
+  - `216beec1` `refactor(st-09087): deduplicate middleware controller wiring` pushed to `origin/codex/refactor/st-09087-middleware-controller-deduplication`; tracker sync is captured in the current review-prep follow-up.
+- [x] Mark PR Ready only after all story tasks are complete
+  - PR #157 marked ready for review on 2026-07-13 after focused validation, package-scoped validation, full-suite validation, lint, story-doc updates, and tracker sync were complete.
 - [ ] Wait for merge; do not merge directly from local branch
 
 ### Notes
