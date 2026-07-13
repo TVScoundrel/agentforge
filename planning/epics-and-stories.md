@@ -2360,7 +2360,7 @@
 **Priority:** P2 (Medium)
 **Estimate:** 4 hours
 **Dependencies:** None
-**Status:** Backlog
+**Status:** In Review (PR #157)
 
 **Acceptance criteria:**
 - [ ] The repeated controller or factory wiring in `packages/core/src/langgraph/middleware/rate-limiting.ts` and `packages/core/src/langgraph/middleware/concurrency.ts` is reduced behind focused internal helpers or modules without changing the public `withRateLimit(...)`, `createSharedRateLimiter(...)`, `withConcurrency(...)`, or `createSharedConcurrencyController(...)` APIs.

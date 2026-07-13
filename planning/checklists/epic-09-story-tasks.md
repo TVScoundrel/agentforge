@@ -3664,21 +3664,43 @@ Implementation notes:
 **Branch:** `refactor/st-09087-middleware-controller-deduplication`
 
 ### Checklist
-- [ ] Create branch `refactor/st-09087-middleware-controller-deduplication`
-- [ ] Create draft PR with story ID in title
-- [ ] Define test strategy before implementation: cover rate-limit strategies, shared limiter/controller behavior, queue limits and timeouts, preset integration, and shared middleware interactions
-- [ ] Write or update the failing automated test before production changes when practical; if not practical, record why before implementation
+- [x] Create branch `refactor/st-09087-middleware-controller-deduplication`
+  - Created as `codex/refactor/st-09087-middleware-controller-deduplication` on 2026-07-13.
+- [x] Create draft PR with story ID in title
+  - Draft PR #157 created on 2026-07-13: <https://github.com/TVScoundrel/agentforge/pull/157>
+- [x] Define test strategy before implementation: cover rate-limit strategies, shared limiter/controller behavior, queue limits and timeouts, preset integration, and shared middleware interactions
+  - Strategy: keep the public middleware entrypoints stable, split the monolithic integration suite into focused composition, preset, and shared-controller characterization modules first, then extract the duplicated controller/wrapper wiring behind shared internal helpers and validate with package-scoped core quality gates before broader workspace validation.
+- [x] Write or update the failing automated test before production changes when practical; if not practical, record why before implementation
+  - A new red test was not the practical seam because this story is behavior-preserving middleware modularization across already-covered public APIs. The safer path is to preserve and sharpen characterization coverage first by splitting the oversized integration suite, then refactor under that passing test net.
 - [ ] Reduce duplicated controller or factory wiring across `packages/core/src/langgraph/middleware/rate-limiting.ts` and `packages/core/src/langgraph/middleware/concurrency.ts` behind focused helpers or internal modules
 - [ ] Preserve current public `withRateLimit(...)`, `createSharedRateLimiter(...)`, `withConcurrency(...)`, and `createSharedConcurrencyController(...)` behavior and import paths
 - [ ] Replace `packages/core/src/langgraph/middleware/__tests__/integration.test.ts` with focused suites or shared fixtures that preserve composition, preset, and shared-controller coverage
 - [ ] Add/update production code until focused tests pass, keeping evidence in checklist notes and PR body
 - [ ] Record explicit-`any` warning deltas and the middleware-compatibility rationale in story docs
 - [ ] Add or update story documentation at `docs/st09087-middleware-controller-deduplication.md` (or document why not required)
-- [ ] Assess residual test impact; add/update additional automated tests when needed, or document why no further tests are required
-- [ ] Run full test suite before finalizing the PR and record results
-- [ ] Run lint (`pnpm lint`) before finalizing the PR and record results
-- [ ] Commit completed checklist items as logical commits and push updates
-- [ ] Mark PR Ready only after all story tasks are complete
+- [x] Reduce duplicated controller or factory wiring across `packages/core/src/langgraph/middleware/rate-limiting.ts` and `packages/core/src/langgraph/middleware/concurrency.ts` behind focused helpers or internal modules
+  - Added shared `controller-runtime.ts`, introduced internal `RateLimiterRegistry`, and consolidated concurrency controller setup behind `createConfiguredConcurrencyController(...)`.
+- [x] Preserve current public `withRateLimit(...)`, `createSharedRateLimiter(...)`, `withConcurrency(...)`, and `createSharedConcurrencyController(...)` behavior and import paths
+  - Public middleware entrypoints and import paths stayed unchanged while the shared wrapper/controller wiring moved behind internal helpers.
+- [x] Replace `packages/core/src/langgraph/middleware/__tests__/integration.test.ts` with focused suites or shared fixtures that preserve composition, preset, and shared-controller coverage
+  - Replaced the monolithic body with a public entrypoint that imports focused `integration/composition.ts`, `integration/presets.ts`, and `integration/shared-resources.ts` suites plus shared test fixtures.
+- [x] Add/update production code until focused tests pass, keeping evidence in checklist notes and PR body
+  - `pnpm --filter @agentforge/core test --run src/langgraph/middleware/__tests__/integration.test.ts` -> passed with `1` file and `18` tests.
+  - `pnpm --filter @agentforge/core test --run src/langgraph/middleware/__tests__/rate-limiting.test.ts src/langgraph/middleware/__tests__/concurrency.test.ts` -> passed with `2` files and `22` tests.
+- [x] Record explicit-`any` warning deltas and the middleware-compatibility rationale in story docs
+  - `pnpm lint:explicit-any:baseline` -> passed at `workspace 80/289`, `core 19/119`; compatibility rationale recorded in `docs/st09087-middleware-controller-deduplication.md`.
+- [x] Add or update story documentation at `docs/st09087-middleware-controller-deduplication.md` (or document why not required)
+  - Added `docs/st09087-middleware-controller-deduplication.md`.
+- [x] Assess residual test impact; add/update additional automated tests when needed, or document why no further tests are required
+  - No further targeted automation was required beyond the split integration suites and existing dedicated rate-limit/concurrency coverage because the changed seams are internal controller-wrapper orchestration paths behind stable public middleware APIs.
+- [x] Run full test suite before finalizing the PR and record results
+  - `pnpm test --run` -> passed with `224` files passed, `9` skipped; `2498` tests passed, `110` skipped.
+- [x] Run lint (`pnpm lint`) before finalizing the PR and record results
+  - `pnpm lint` -> passed with the existing warning-only baseline (`0` errors).
+- [x] Commit completed checklist items as logical commits and push updates
+  - `216beec1` `refactor(st-09087): deduplicate middleware controller wiring` pushed to `origin/codex/refactor/st-09087-middleware-controller-deduplication`; tracker sync is captured in the current review-prep follow-up.
+- [x] Mark PR Ready only after all story tasks are complete
+  - PR #157 marked ready for review on 2026-07-13 after focused validation, package-scoped validation, full-suite validation, lint, story-doc updates, and tracker sync were complete.
 - [ ] Wait for merge; do not merge directly from local branch
 
 ### Notes

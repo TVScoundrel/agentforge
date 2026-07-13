@@ -1,12 +1,12 @@
 # Kanban Queue: AgentForge
 
-**Last Updated:** 2026-07-12
+**Last Updated:** 2026-07-13
 
 ## Queue Status Summary
 
-- **Ready:** 3 stories
+- **Ready:** 2 stories
 - **In Progress:** 0 stories
-- **In Review:** 0 stories
+- **In Review:** 1 story
 - **Blocked:** 0 stories
 - **Backlog:** 4 stories
 
@@ -14,8 +14,6 @@
 
 ## Ready
 
-- `ST-09087` - DRY Middleware Rate-Limit and Concurrency Controllers
-  - Depends on: None
 - `ST-11001` - Publish Repository Security Boundary Policy
   - Depends on: None
 - `ST-11004` - Separate Worker Output from Supervisor Routing Input
@@ -23,15 +21,16 @@
 
 ---
 
-## In Review
+## In Progress
 
 None currently.
 
 ---
 
-## In Progress
+## In Review
 
-None currently.
+- `ST-09087` - DRY Middleware Rate-Limit and Concurrency Controllers
+  - Depends on: None
 
 ## Blocked
 
