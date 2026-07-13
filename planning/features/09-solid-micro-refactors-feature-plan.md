@@ -3,7 +3,7 @@
 **Epic Range:** EP-09 through EP-09
 **Status:** In Progress
 **Last Updated:** 2026-07-13
-**Active Story:** ST-09087 - In Review on PR #157; next recommended ready story is ST-11001
+**Active Story:** ST-09087 - Merged on 2026-07-13 (PR #157); next recommended ready story is ST-11001
 
 ---
 
@@ -135,6 +135,7 @@ Recent improvement snapshot:
 - `ST-09084` merged on 2026-07-10 after centralizing the duplicated async mock-tool execution flow behind `packages/core/src/tools/testing-runtime.ts`, preserving backward-compatible core/testing public helper surfaces, adding a focused simulator injected-error regression, and restoring package-local testing Vitest execution so `pnpm --filter @agentforge/testing test --run` resolves from the workspace root. The ready lane now advances to `ST-09085`, with `ST-09086` and `ST-09087` still dependency-ready behind it.
 - `ST-09085` merged on 2026-07-11 after shrinking `packages/tools/src/data/relational/schema/type-mapper.ts` into a stable facade backed by focused vendor-map and normalization helpers while preserving public type-mapper exports and behavior. The story also replaced the monolithic mapper suite with focused vendor, normalization, schema-aggregation, and vendor-map modules, absorbed review follow-ups for non-discovered suite naming plus readonly vendor-map exports, and groomed the wider queue by promoting `ST-11001` and `ST-11004` into `Ready` while the EP-09 lane continues with `ST-09086`.
 - `ST-09086` merged on 2026-07-12 after shrinking `packages/tools/src/data/relational/schema/schema-diff.ts` into a stable facade backed by focused comparison, JSON import/export validation, and diff-type modules while preserving public schema diff/import/export behavior. The story also replaced the monolithic schema-diff suite with focused diff and JSON modules plus shared fixtures, kept the explicit-`any` baseline flat at `workspace 80/289` and `tools 53/67`, and advanced the deterministic ready lane to `ST-09087` with `ST-11001` and `ST-11004` still dependency-ready behind it.
+- `ST-09087` merged on 2026-07-13 after centralizing duplicated controller-backed middleware wrapping behind a shared helper, consolidating rate-limit and concurrency controller setup behind focused internal runtimes, and replacing the oversized middleware integration suite with focused composition, preset, and shared-resource modules. The story kept the explicit-`any` baseline flat at `workspace 80/289` and `core 19/119`, and the deterministic ready lane now advances beyond EP-09 to `ST-11001`, with `ST-11004` still dependency-ready behind it.
 - The refreshed follow-on queue now extends beyond the current Ready lane so another few weeks of small SOLID/DRY and modularization work can be pulled without re-planning the epic.
 
 ---

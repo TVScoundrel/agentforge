@@ -3672,12 +3672,6 @@ Implementation notes:
   - Strategy: keep the public middleware entrypoints stable, split the monolithic integration suite into focused composition, preset, and shared-controller characterization modules first, then extract the duplicated controller/wrapper wiring behind shared internal helpers and validate with package-scoped core quality gates before broader workspace validation.
 - [x] Write or update the failing automated test before production changes when practical; if not practical, record why before implementation
   - A new red test was not the practical seam because this story is behavior-preserving middleware modularization across already-covered public APIs. The safer path is to preserve and sharpen characterization coverage first by splitting the oversized integration suite, then refactor under that passing test net.
-- [ ] Reduce duplicated controller or factory wiring across `packages/core/src/langgraph/middleware/rate-limiting.ts` and `packages/core/src/langgraph/middleware/concurrency.ts` behind focused helpers or internal modules
-- [ ] Preserve current public `withRateLimit(...)`, `createSharedRateLimiter(...)`, `withConcurrency(...)`, and `createSharedConcurrencyController(...)` behavior and import paths
-- [ ] Replace `packages/core/src/langgraph/middleware/__tests__/integration.test.ts` with focused suites or shared fixtures that preserve composition, preset, and shared-controller coverage
-- [ ] Add/update production code until focused tests pass, keeping evidence in checklist notes and PR body
-- [ ] Record explicit-`any` warning deltas and the middleware-compatibility rationale in story docs
-- [ ] Add or update story documentation at `docs/st09087-middleware-controller-deduplication.md` (or document why not required)
 - [x] Reduce duplicated controller or factory wiring across `packages/core/src/langgraph/middleware/rate-limiting.ts` and `packages/core/src/langgraph/middleware/concurrency.ts` behind focused helpers or internal modules
   - Added shared `controller-runtime.ts`, introduced internal `RateLimiterRegistry`, and consolidated concurrency controller setup behind `createConfiguredConcurrencyController(...)`.
 - [x] Preserve current public `withRateLimit(...)`, `createSharedRateLimiter(...)`, `withConcurrency(...)`, and `createSharedConcurrencyController(...)` behavior and import paths
@@ -3701,7 +3695,8 @@ Implementation notes:
   - `216beec1` `refactor(st-09087): deduplicate middleware controller wiring` pushed to `origin/codex/refactor/st-09087-middleware-controller-deduplication`; tracker sync is captured in the current review-prep follow-up.
 - [x] Mark PR Ready only after all story tasks are complete
   - PR #157 marked ready for review on 2026-07-13 after focused validation, package-scoped validation, full-suite validation, lint, story-doc updates, and tracker sync were complete.
-- [ ] Wait for merge; do not merge directly from local branch
+- [x] Wait for merge; do not merge directly from local branch
+  - PR #157 merged into `main` on 2026-07-13 as commit `3f583c11`; post-merge tracker sync and queue grooming completed from local `main`.
 
 ### Notes
 - CI-impact assessment:

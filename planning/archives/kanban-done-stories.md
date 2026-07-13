@@ -2,11 +2,18 @@
 
 **Purpose:** Track completed and merged stories for the Relational Database Access Tool project.
 
-**Last Updated:** 2026-07-12
+**Last Updated:** 2026-07-13
 
 ---
 
 ## Completed Stories
+
+### ST-09087: DRY Middleware Rate-Limit and Concurrency Controllers
+- **Merged:** 2026-07-13
+- **PR:** https://github.com/TVScoundrel/agentforge/pull/157 (commit 3f583c11)
+- **Epic:** EP-09 (SOLID Micro-Refactors and Type Boundary Hardening)
+- **Estimate:** 4 hours
+- **Outcome:** Deduplicated core middleware controller wiring by introducing `packages/core/src/langgraph/middleware/controller-runtime.ts`, centralizing rate-limit orchestration behind an internal `RateLimiterRegistry`, and consolidating concurrency controller setup behind a shared helper while preserving `withRateLimit(...)`, `createSharedRateLimiter(...)`, `withConcurrency(...)`, and `createSharedConcurrencyController(...)` behavior. The story also replaced the monolithic middleware integration suite with focused composition, preset, and shared-resource modules plus shared fixtures, tightened the shared rate-limiter characterization path to prove actual shared exhaustion, kept the explicit-`any` baseline flat at `workspace 80/289` and `core 19/119`, and left `ST-11001` as the next deterministic ready-lane story with `ST-11004` also dependency-ready.
 
 ### ST-09086: Modularize Relational Schema Diff and JSON Utilities
 - **Merged:** 2026-07-12

@@ -6,7 +6,7 @@
 
 - **Ready:** 2 stories
 - **In Progress:** 0 stories
-- **In Review:** 1 story
+- **In Review:** 0 stories
 - **Blocked:** 0 stories
 - **Backlog:** 4 stories
 
@@ -29,8 +29,7 @@ None currently.
 
 ## In Review
 
-- `ST-09087` - DRY Middleware Rate-Limit and Concurrency Controllers
-  - Depends on: None
+None currently.
 
 ## Blocked
 
@@ -156,6 +155,7 @@ _No stories currently blocked_
 - ST-09084 complete - core tool-testing helpers and testing-package mock tools now share a focused async execution runtime, the public mock/simulator surfaces stayed backward compatible, `@agentforge/testing` gained a package-local Vitest config so `pnpm --filter @agentforge/testing test --run` works from the workspace root again, and no further queue promotion was needed because `ST-09085` through `ST-09087` were already dependency-ready in `Ready` (merged 2026-07-10, PR #154)
 - ST-09085 complete - relational schema type-mapper vendor maps, normalization, and schema-aggregation behavior were modularized behind the stable public facade; the monolithic suite was replaced with focused mapper tests; and the queue was groomed so `ST-11001` plus `ST-11004` were promoted from Backlog to Ready while the deterministic ready lane continues with `ST-09086` then `ST-09087` (merged 2026-07-11, PR #155)
 - ST-09086 complete - relational schema diff comparison, JSON import/export validation, and public diff types were modularized behind the stable `schema-diff.ts` facade; the monolithic schema-diff suite was replaced with focused diff and JSON modules plus shared fixtures; and the deterministic ready lane now advances to `ST-09087` with `ST-11001` and `ST-11004` still dependency-ready behind it (merged 2026-07-12, PR #156)
+- ST-09087 complete - middleware controller-backed rate-limit and concurrency wiring now shares focused internal orchestration helpers, the oversized middleware integration suite was split into composition, preset, and shared-resource modules, and the deterministic ready lane now advances beyond EP-09 to `ST-11001` with `ST-11004` still dependency-ready behind it (merged 2026-07-13, PR #157)
 - Epic 11 (Security Boundary Hardening) was opened on 2026-07-09 after triaging a repository security scan into six backlog stories that separate policy/documentation hardening, safer default tool boundaries, multi-agent and skills trust-boundary fixes, and lower-priority example guidance cleanup
 - Complete: ST-10005 - documentation emoji guardrails added to contributor guidance (PR #104, 2026-05-05)
 - Complete: ST-10004 - example/template docs emoji normalization merged (PR #102, 2026-05-05)
