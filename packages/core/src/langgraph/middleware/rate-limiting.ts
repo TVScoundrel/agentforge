@@ -285,7 +285,10 @@ export function createSharedRateLimiter(
   );
 
   return {
-    withRateLimit: <State>(node: NodeFunction<State>, keyGenerator = () => 'global') => {
+    withRateLimit: <State>(
+      node: NodeFunction<State>,
+      keyGenerator: (state: State) => string = () => 'global'
+    ) => {
       return createControlledNode(
         node,
         keyGenerator,

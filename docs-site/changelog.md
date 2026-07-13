@@ -5,6 +5,34 @@ All notable changes to AgentForge will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.16.73] - 2026-07-13
+
+### Added
+
+#### @agentforge/core - Focused Middleware Controller Runtimes
+- Added `packages/core/src/langgraph/middleware/controller-runtime.ts` to centralize shared controller-backed middleware execution flow across rate-limit and concurrency wrappers.
+- Added focused internal controller runtimes so rate-limit strategy selection and concurrency controller setup are reused consistently across local and shared middleware entrypoints.
+
+### Changed
+
+#### @agentforge/core - Middleware Integration Structure
+- Reduced duplicated controller wrapper wiring in `packages/core/src/langgraph/middleware/rate-limiting.ts` and `packages/core/src/langgraph/middleware/concurrency.ts` without changing public middleware APIs.
+- Replaced the monolithic core middleware integration suite with focused composition, preset, shared-resource, and shared helper modules to keep follow-up fixes isolated and easier to maintain.
+
+### Fixed
+
+#### @agentforge/core - Shared Middleware Controller Coverage
+- Tightened shared-controller integration coverage so shared rate-limit behavior is asserted directly through `createSharedRateLimiter(...)` while preserving existing rate-limit strategies, concurrency queueing behavior, and public middleware compatibility.
+
+### Published
+- All packages published to npm registry at version 0.16.73:
+  - @agentforge/core@0.16.73
+  - @agentforge/skills@0.16.73
+  - @agentforge/patterns@0.16.73
+  - @agentforge/tools@0.16.73
+  - @agentforge/testing@0.16.73
+  - @agentforge/cli@0.16.73
+
 ## [0.16.72] - 2026-07-12
 
 ### Added
