@@ -1,4 +1,5 @@
 import type { NodeFunction } from './types.js';
+import { createControlledNode } from './controller-runtime.js';
 
 /**
  * Rate limiting strategy
@@ -152,6 +153,81 @@ class FixedWindow {
 
 type RateLimiter = TokenBucket | SlidingWindow | FixedWindow;
 
+function createRateLimiter(
+  strategy: RateLimitStrategy,
+  maxRequests: number,
+  windowMs: number
+): RateLimiter {
+  switch (strategy) {
+    case 'token-bucket':
+      return new TokenBucket(maxRequests, maxRequests / windowMs);
+    case 'sliding-window':
+      return new SlidingWindow(maxRequests, windowMs);
+    case 'fixed-window':
+      return new FixedWindow(maxRequests, windowMs);
+    default:
+      throw new Error(`Unknown rate limit strategy: ${strategy}`);
+  }
+}
+
+class RateLimiterRegistry {
+  private readonly limiters = new Map<string, RateLimiter>();
+
+  constructor(
+    private readonly maxRequests: number,
+    private readonly windowMs: number,
+    private readonly strategy: RateLimitStrategy,
+    private readonly onRateLimitExceeded?: (key: string) => void,
+    private readonly onRateLimitReset?: (key: string) => void
+  ) {}
+
+  async execute<State>(
+    state: State,
+    key: string,
+    executor: (state: State) => Promise<State | Partial<State>>
+  ): Promise<State | Partial<State>> {
+    const limiter = this.getOrCreate(key);
+
+    if (!limiter.tryConsume()) {
+      this.onRateLimitExceeded?.(key);
+      throw new Error(`Rate limit exceeded for key: ${key}`);
+    }
+
+    return executor(state);
+  }
+
+  reset(key?: string): void {
+    if (key) {
+      this.resetLimiter(key, this.limiters.get(key));
+      return;
+    }
+
+    this.limiters.forEach((limiter, limiterKey) => {
+      this.resetLimiter(limiterKey, limiter);
+    });
+  }
+
+  private getOrCreate(key: string): RateLimiter {
+    const existing = this.limiters.get(key);
+    if (existing) {
+      return existing;
+    }
+
+    const limiter = createRateLimiter(this.strategy, this.maxRequests, this.windowMs);
+    this.limiters.set(key, limiter);
+    return limiter;
+  }
+
+  private resetLimiter(key: string, limiter?: RateLimiter): void {
+    if (!limiter) {
+      return;
+    }
+
+    limiter.reset();
+    this.onRateLimitReset?.(key);
+  }
+}
+
 /**
  * Rate limiting middleware
  */
@@ -168,45 +244,19 @@ export function withRateLimit<State>(
     keyGenerator = () => 'global',
   } = options;
 
-  const limiters = new Map<string, RateLimiter>();
+  const registry = new RateLimiterRegistry(
+    maxRequests,
+    windowMs,
+    strategy,
+    onRateLimitExceeded,
+    onRateLimitReset
+  );
 
-  return async (state: State): Promise<State | Partial<State>> => {
-    const key = keyGenerator(state);
-
-    // Get or create rate limiter for this key
-    if (!limiters.has(key)) {
-      let limiter: RateLimiter;
-
-      switch (strategy) {
-        case 'token-bucket':
-          limiter = new TokenBucket(maxRequests, maxRequests / windowMs);
-          break;
-        case 'sliding-window':
-          limiter = new SlidingWindow(maxRequests, windowMs);
-          break;
-        case 'fixed-window':
-          limiter = new FixedWindow(maxRequests, windowMs);
-          break;
-        default:
-          throw new Error(`Unknown rate limit strategy: ${strategy}`);
-      }
-
-      limiters.set(key, limiter);
-    }
-
-    const limiter = limiters.get(key)!;
-
-    // Try to consume a token/request
-    if (!limiter.tryConsume()) {
-      if (onRateLimitExceeded) {
-        onRateLimitExceeded(key);
-      }
-      throw new Error(`Rate limit exceeded for key: ${key}`);
-    }
-
-    // Execute the node
-    return await Promise.resolve(node(state));
-  };
+  return createControlledNode(
+    node,
+    keyGenerator,
+    (state: State, key, executor) => registry.execute(state, key, executor)
+  );
 }
 
 /**
@@ -226,67 +276,24 @@ export function createSharedRateLimiter(
     onRateLimitReset,
   } = options;
 
-  const limiters = new Map<string, RateLimiter>();
+  const registry = new RateLimiterRegistry(
+    maxRequests,
+    windowMs,
+    strategy,
+    onRateLimitExceeded,
+    onRateLimitReset
+  );
 
   return {
-    withRateLimit: <State>(node: NodeFunction<State>, keyGenerator = (state: State) => 'global') => {
-      return async (state: State): Promise<State | Partial<State>> => {
-        const key = keyGenerator(state);
-
-        // Get or create rate limiter for this key
-        if (!limiters.has(key)) {
-          let limiter: RateLimiter;
-
-          switch (strategy) {
-            case 'token-bucket':
-              limiter = new TokenBucket(maxRequests, maxRequests / windowMs);
-              break;
-            case 'sliding-window':
-              limiter = new SlidingWindow(maxRequests, windowMs);
-              break;
-            case 'fixed-window':
-              limiter = new FixedWindow(maxRequests, windowMs);
-              break;
-            default:
-              throw new Error(`Unknown rate limit strategy: ${strategy}`);
-          }
-
-          limiters.set(key, limiter);
-        }
-
-        const limiter = limiters.get(key)!;
-
-        // Try to consume a token/request
-        if (!limiter.tryConsume()) {
-          if (onRateLimitExceeded) {
-            onRateLimitExceeded(key);
-          }
-          throw new Error(`Rate limit exceeded for key: ${key}`);
-        }
-
-        // Execute the node
-        return await Promise.resolve(node(state));
-      };
+    withRateLimit: <State>(node: NodeFunction<State>, keyGenerator = () => 'global') => {
+      return createControlledNode(
+        node,
+        keyGenerator,
+        (state: State, key, executor) => registry.execute(state, key, executor)
+      );
     },
     reset: (key?: string) => {
-      if (key) {
-        const limiter = limiters.get(key);
-        if (limiter) {
-          limiter.reset();
-          if (onRateLimitReset) {
-            onRateLimitReset(key);
-          }
-        }
-      } else {
-        // Reset all limiters
-        limiters.forEach((limiter, k) => {
-          limiter.reset();
-          if (onRateLimitReset) {
-            onRateLimitReset(k);
-          }
-        });
-      }
+      registry.reset(key);
     },
   };
 }
-

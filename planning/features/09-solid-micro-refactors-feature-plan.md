@@ -2,8 +2,8 @@
 
 **Epic Range:** EP-09 through EP-09
 **Status:** In Progress
-**Last Updated:** 2026-07-12
-**Active Story:** ST-09086 - Merged on 2026-07-12 (PR #156); next recommended ready story is ST-09087
+**Last Updated:** 2026-07-13
+**Active Story:** ST-09087 - In Progress; next recommended ready story is ST-11001
 
 ---
 

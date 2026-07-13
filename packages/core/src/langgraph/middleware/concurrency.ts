@@ -1,4 +1,5 @@
 import type { NodeFunction } from './types.js';
+import { createControlledNode } from './controller-runtime.js';
 
 /**
  * Priority level for queued tasks
@@ -202,49 +203,11 @@ class ConcurrencyController<State> {
   }
 }
 
-/**
- * Concurrency control middleware
- */
-export function withConcurrency<State>(
-  node: NodeFunction<State>,
-  options: ConcurrencyOptions<State> = {}
-): NodeFunction<State> {
-  const {
-    maxConcurrent = 1,
-    maxQueueSize = 0,
-    priorityFn = () => 'normal' as Priority,
-    onQueued,
-    onExecutionStart,
-    onExecutionComplete,
-    onQueueFull,
-    queueTimeout = 0,
-  } = options;
-
-  const controller = new ConcurrencyController<State>(
-    maxConcurrent,
-    maxQueueSize,
-    onQueued,
-    onExecutionStart,
-    onExecutionComplete,
-    onQueueFull,
-    queueTimeout
-  );
-
-  return async (state: State): Promise<State | Partial<State>> => {
-    const priority = priorityFn(state);
-    return controller.execute(state, priority, async (s) => await node(s));
-  };
-}
-
-/**
- * Create a shared concurrency controller
- */
-export function createSharedConcurrencyController<State>(
+function createConfiguredConcurrencyController<State>(
   options: ConcurrencyOptions<State> = {}
 ): {
-  withConcurrency: (node: NodeFunction<State>) => NodeFunction<State>;
-  getStats: () => { activeCount: number; queueSize: number };
-  clear: () => void;
+  controller: ConcurrencyController<State>;
+  priorityFn: (state: State) => Priority;
 } {
   const {
     maxConcurrent = 1,
@@ -257,25 +220,57 @@ export function createSharedConcurrencyController<State>(
     queueTimeout = 0,
   } = options;
 
-  const controller = new ConcurrencyController<State>(
-    maxConcurrent,
-    maxQueueSize,
-    onQueued,
-    onExecutionStart,
-    onExecutionComplete,
-    onQueueFull,
-    queueTimeout
+  return {
+    controller: new ConcurrencyController<State>(
+      maxConcurrent,
+      maxQueueSize,
+      onQueued,
+      onExecutionStart,
+      onExecutionComplete,
+      onQueueFull,
+      queueTimeout
+    ),
+    priorityFn,
+  };
+}
+
+/**
+ * Concurrency control middleware
+ */
+export function withConcurrency<State>(
+  node: NodeFunction<State>,
+  options: ConcurrencyOptions<State> = {}
+): NodeFunction<State> {
+  const { controller, priorityFn } = createConfiguredConcurrencyController(options);
+
+  return createControlledNode(
+    node,
+    priorityFn,
+    (state: State, priority, executor) => controller.execute(state, priority, executor)
   );
+}
+
+/**
+ * Create a shared concurrency controller
+ */
+export function createSharedConcurrencyController<State>(
+  options: ConcurrencyOptions<State> = {}
+): {
+  withConcurrency: (node: NodeFunction<State>) => NodeFunction<State>;
+  getStats: () => { activeCount: number; queueSize: number };
+  clear: () => void;
+} {
+  const { controller, priorityFn } = createConfiguredConcurrencyController(options);
 
   return {
     withConcurrency: (node: NodeFunction<State>) => {
-      return async (state: State): Promise<State | Partial<State>> => {
-        const priority = priorityFn(state);
-        return controller.execute(state, priority, async (s) => await node(s));
-      };
+      return createControlledNode(
+        node,
+        priorityFn,
+        (state: State, priority, executor) => controller.execute(state, priority, executor)
+      );
     },
     getStats: () => controller.getStats(),
     clear: () => controller.clear(),
   };
 }
-
