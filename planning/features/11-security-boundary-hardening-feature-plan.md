@@ -1,5 +1,12 @@
 # Feature Plan: EP-11 Security Boundary Hardening
 
+**Epic Range:** EP-11 through EP-11
+**Status:** In Progress
+**Last Updated:** 2026-07-14
+**Active Story:** ST-11001 - In Progress
+
+---
+
 ## Goal
 
 Turn the 2026-07-09 repository security scan into a concrete, reviewable hardening backlog that improves security-sensitive defaults and documents the intended trust model more clearly.

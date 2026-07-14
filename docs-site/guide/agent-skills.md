@@ -10,6 +10,10 @@ AgentForge supports the [Agent Skills specification](https://agentskills.io/spec
 
 Agent Skills are markdown-based instruction packs that agents load on demand via tool calls. Each skill is a directory containing a `SKILL.md` file with frontmatter metadata and instructional content.
 
+::: warning Trust Boundary
+Skills can carry untrusted instructions even when script execution is blocked. Read the repository [Security Policy](https://github.com/TVScoundrel/agentforge/blob/main/SECURITY.md) before treating third-party skills as equivalent to trusted system guidance.
+:::
+
 ```
 .agentskills/
 ├── code-review/
@@ -183,6 +187,7 @@ All resource paths are validated:
 Script resources (`scripts/` directory) are subject to trust policy checks. Non-script resources (references, assets, SKILL.md) are always accessible.
 
 See [Trust Policies](/guide/agent-skills-authoring#trust-policies) for the full trust model.
+See the repository [Security Policy](https://github.com/TVScoundrel/agentforge/blob/main/SECURITY.md) for the maintainer boundary on untrusted skill roots versus trusted project-owned skill content.
 
 ## Feature Flag
 
@@ -294,4 +299,3 @@ Setting `enabled: false` only suppresses `generatePrompt()`. If activation tools
 - **[Skill-Powered Agent Tutorial](/tutorials/skill-powered-agent)** — Step-by-step walkthrough building a skill-powered agent from scratch
 - **[Agent Skills Examples](/examples/agent-skills)** — Common patterns and runnable code snippets
 - **[SkillRegistry API Reference](/api/skills#skillregistry)** — Full API documentation for the SkillRegistry class
-

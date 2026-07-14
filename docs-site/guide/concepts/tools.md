@@ -19,6 +19,10 @@ A **tool** is a function that an AI agent can call to perform actions or retriev
 - **Search the web**
 - And much more...
 
+::: warning Security Boundary
+Many tools are intentionally powerful. Read the repository [Security Policy](https://github.com/TVScoundrel/agentforge/blob/main/SECURITY.md) before exposing filesystem, network, shell, or data-mutation tools to model-controlled input.
+:::
+
 ## Why AgentForge Tools?
 
 AgentForge's tool system goes beyond simple function calling:
@@ -378,4 +382,3 @@ const readJsonTool = toolBuilder()
 - [Standard Tools](/api/tools) - 70 pre-built tools
 - [Custom Tools Tutorial](/tutorials/custom-tools) - Build your own tools
 - [Agent Patterns](/guide/concepts/patterns) - Use tools with agents
-

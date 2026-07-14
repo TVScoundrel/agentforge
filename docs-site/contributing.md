@@ -12,6 +12,8 @@ We are committed to providing a welcoming and inclusive environment. Please be r
 
 Before creating a bug report, please check existing issues to avoid duplicates.
 
+If you suspect a security vulnerability or trust-boundary bypass, follow the repository [Security Policy](https://github.com/TVScoundrel/agentforge/blob/main/SECURITY.md) instead of opening a public issue.
+
 **When filing a bug report, include:**
 - Clear, descriptive title
 - Steps to reproduce the issue

@@ -389,6 +389,14 @@ See [ROADMAP.md](./docs/ROADMAP.md) for complete development history.
 
 ---
 
+## Security
+
+Read the [security policy](./SECURITY.md) before exposing AgentForge tools, skills, examples, or multi-agent workflows to model-controlled input.
+
+The policy distinguishes privileged-by-design surfaces from framework guardrails that AgentForge is expected to enforce by default, and it explains how to classify example-only issues versus framework trust-boundary bugs.
+
+---
+
 ## Contributing
 
 Contributions are welcome! Please follow these steps:
