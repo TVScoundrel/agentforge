@@ -35,5 +35,6 @@
   - `pnpm lint` -> passed with the existing warning baseline only (`0` errors).
 - [x] Commit completed checklist items as logical commits and push updates
   - `91933602` `docs(st-11001): publish security policy guidance` pushed to `origin/docs/st-11001-repository-security-boundary-policy`; tracker and ready-state sync are captured in the current review-prep follow-up commit.
-- [ ] Mark PR Ready only after all story tasks are complete
+- [x] Mark PR Ready only after all story tasks are complete
+  - PR #158 marked ready for review on 2026-07-14 after docs updates, story documentation, validation, PR body verification, and tracker sync were complete.
 - [ ] Wait for merge; do not merge directly from local branch
