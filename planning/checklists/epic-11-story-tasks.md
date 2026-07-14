@@ -7,7 +7,8 @@
 ### Checklist
 - [x] Create branch `docs/st-11001-repository-security-boundary-policy`
   - Created on 2026-07-14 from `main`.
-- [ ] Create draft PR with story ID in title
+- [x] Create draft PR with story ID in title
+  - Draft PR #158 created on 2026-07-14: <https://github.com/TVScoundrel/agentforge/pull/158>
 - [x] Define test strategy before implementation: identify whether this policy/docs hardening story has a practical failing automated test seam or should rely on documented rationale plus validation commands
   - Strategy: this is a repository-policy and docs-routing story with no practical red-test seam, so record the rationale up front and rely on targeted diff review plus the repo's standard full-suite and lint gates.
 - [x] Write or update the failing automated test before production changes when practical; if not practical, record why before implementation
@@ -32,6 +33,7 @@
   - `pnpm test --run` -> `224` passed, `9` skipped files; `2498` passed, `110` skipped tests.
 - [x] Run lint (`pnpm lint`) before finalizing the PR and record results
   - `pnpm lint` -> passed with the existing warning baseline only (`0` errors).
-- [ ] Commit completed checklist items as logical commits and push updates
+- [x] Commit completed checklist items as logical commits and push updates
+  - `91933602` `docs(st-11001): publish security policy guidance` pushed to `origin/docs/st-11001-repository-security-boundary-policy`; tracker and ready-state sync are captured in the current review-prep follow-up commit.
 - [ ] Mark PR Ready only after all story tasks are complete
 - [ ] Wait for merge; do not merge directly from local branch
