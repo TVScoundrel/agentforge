@@ -30,6 +30,8 @@ None currently.
 - `ST-11001` - Publish Repository Security Boundary Policy
   - PR #158
 
+---
+
 ## Blocked
 
 _No stories currently blocked_

@@ -2501,11 +2501,11 @@
 **Status:** In Review (PR #158, 2026-07-14)
 
 **Acceptance criteria:**
-- [ ] Add a repository-level `SECURITY.md` that documents supported versions, reporting guidance, and the project’s intended trust boundaries for tools, skills, examples, and downstream host applications
-- [ ] The policy explicitly distinguishes privileged-by-design surfaces from framework guarantees that are expected to be safe for model-controlled input
-- [ ] Security-relevant docs cross-link to the new policy where that guidance materially affects safe adoption
-- [ ] The policy includes concrete maintainer guidance for classifying example-only issues, untrusted skill roots, and model-exposed tool execution
-- [ ] Add or update story documentation at `docs/st11001-repository-security-boundary-policy.md`
+- [x] Add a repository-level `SECURITY.md` that documents supported versions, reporting guidance, and the project’s intended trust boundaries for tools, skills, examples, and downstream host applications
+- [x] The policy explicitly distinguishes privileged-by-design surfaces from framework guarantees that are expected to be safe for model-controlled input
+- [x] Security-relevant docs cross-link to the new policy where that guidance materially affects safe adoption
+- [x] The policy includes concrete maintainer guidance for classifying example-only issues, untrusted skill roots, and model-exposed tool execution
+- [x] Add or update story documentation at `docs/st11001-repository-security-boundary-policy.md`
 
 ---
 
