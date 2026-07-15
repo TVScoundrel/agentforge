@@ -1,12 +1,12 @@
 # Kanban Queue: AgentForge
 
-**Last Updated:** 2026-07-13
+**Last Updated:** 2026-07-14
 
 ## Queue Status Summary
 
-- **Ready:** 2 stories
+- **Ready:** 1 story
 - **In Progress:** 0 stories
-- **In Review:** 0 stories
+- **In Review:** 1 story
 - **Blocked:** 0 stories
 - **Backlog:** 4 stories
 
@@ -14,8 +14,6 @@
 
 ## Ready
 
-- `ST-11001` - Publish Repository Security Boundary Policy
-  - Depends on: None
 - `ST-11004` - Separate Worker Output from Supervisor Routing Input
   - Depends on: None
 
@@ -29,7 +27,10 @@ None currently.
 
 ## In Review
 
-None currently.
+- `ST-11001` - Publish Repository Security Boundary Policy
+  - PR #158
+
+---
 
 ## Blocked
 

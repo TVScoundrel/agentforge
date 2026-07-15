@@ -130,6 +130,8 @@ Static assets like images, data files, or templates. Always accessible.
 
 Trust levels control access to `scripts/` resources:
 
+The repository [Security Policy](https://github.com/TVScoundrel/agentforge/blob/main/SECURITY.md) defines the broader trust-boundary expectations for untrusted skill roots and model-visible skill content.
+
 | Trust Level | `references/` | `scripts/` | `assets/` |
 |-------------|---------------|------------|-----------|
 | `workspace` | Read | Read | Read |
