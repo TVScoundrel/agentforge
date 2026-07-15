@@ -2498,7 +2498,7 @@
 **Priority:** P1 (High)
 **Estimate:** 3 hours
 **Dependencies:** None
-**Status:** In Review (PR #158, 2026-07-14)
+**Status:** Merged (PR #158, 2026-07-15)
 
 **Acceptance criteria:**
 - [x] Add a repository-level `SECURITY.md` that documents supported versions, reporting guidance, and the project’s intended trust boundaries for tools, skills, examples, and downstream host applications

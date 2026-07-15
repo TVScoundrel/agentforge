@@ -2,11 +2,18 @@
 
 **Purpose:** Track completed and merged stories for the Relational Database Access Tool project.
 
-**Last Updated:** 2026-07-13
+**Last Updated:** 2026-07-15
 
 ---
 
 ## Completed Stories
+
+### ST-11001: Publish Repository Security Boundary Policy
+- **Merged:** 2026-07-15
+- **PR:** https://github.com/TVScoundrel/agentforge/pull/158 (commit 20246a4b)
+- **Epic:** EP-11 (Security Boundary Hardening)
+- **Estimate:** 3 hours
+- **Outcome:** Established the repository security-policy baseline around intentionally privileged framework surfaces versus default guardrails by keeping the tracked top-level `SECURITY.md` as the canonical policy and routing maintainers and adopters to it from the root README, docs contributing guide, tools guide, and agent-skills guides. The story also added `docs/st11001-repository-security-boundary-policy.md`, introduced the missing Epic 11 checklist tracker, and unblocked the rest of Epic 11 so `ST-11004`, `ST-11005`, `ST-11002`, `ST-11003`, and `ST-11006` are now all dependency-ready in `Ready` with the feature-plan priority preserved.
 
 ### ST-09087: DRY Middleware Rate-Limit and Concurrency Controllers
 - **Merged:** 2026-07-13

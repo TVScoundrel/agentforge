@@ -37,4 +37,5 @@
   - `91933602` `docs(st-11001): publish security policy guidance` pushed to `origin/docs/st-11001-repository-security-boundary-policy`; tracker and ready-state sync are captured in the current review-prep follow-up commit.
 - [x] Mark PR Ready only after all story tasks are complete
   - PR #158 marked ready for review on 2026-07-14 after docs updates, story documentation, validation, PR body verification, and tracker sync were complete.
-- [ ] Wait for merge; do not merge directly from local branch
+- [x] Wait for merge; do not merge directly from local branch
+  - PR #158 merged into `main` on 2026-07-15 as commit `20246a4b`; post-merge tracker sync and queue grooming completed from local `main`.

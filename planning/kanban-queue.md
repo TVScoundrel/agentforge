@@ -1,14 +1,14 @@
 # Kanban Queue: AgentForge
 
-**Last Updated:** 2026-07-14
+**Last Updated:** 2026-07-15
 
 ## Queue Status Summary
 
-- **Ready:** 1 story
+- **Ready:** 5 stories
 - **In Progress:** 0 stories
-- **In Review:** 1 story
+- **In Review:** 0 stories
 - **Blocked:** 0 stories
-- **Backlog:** 4 stories
+- **Backlog:** 0 stories
 
 ---
 
@@ -16,6 +16,14 @@
 
 - `ST-11004` - Separate Worker Output from Supervisor Routing Input
   - Depends on: None
+- `ST-11005` - Enforce Trust-Aware Skill Prompt and Activation Boundaries
+  - Depends on: `ST-11001` (merged)
+- `ST-11002` - Harden Default Web Tool Egress Policy
+  - Depends on: `ST-11001` (merged)
+- `ST-11003` - Add Filesystem Confinement Controls for Default File Tools
+  - Depends on: `ST-11001` (merged)
+- `ST-11006` - Harden Express Chat Example Ownership Semantics
+  - Depends on: `ST-11001` (merged)
 
 ---
 
@@ -27,8 +35,7 @@ None currently.
 
 ## In Review
 
-- `ST-11001` - Publish Repository Security Boundary Policy
-  - PR #158
+None currently.
 
 ---
 
@@ -40,18 +47,13 @@ _No stories currently blocked_
 
 ## Backlog
 
-- `ST-11002` - Harden Default Web Tool Egress Policy
-  - Depends on: `ST-11001`
-- `ST-11003` - Add Filesystem Confinement Controls for Default File Tools
-  - Depends on: `ST-11001`
-- `ST-11005` - Enforce Trust-Aware Skill Prompt and Activation Boundaries
-  - Depends on: `ST-11001`
-- `ST-11006` - Harden Express Chat Example Ownership Semantics
-  - Depends on: `ST-11001`
+_No stories currently in backlog_
 
 ---
 
 ## Notes
+
+- ST-11001 complete - repository security policy routing is now documented through the root README, contributing guide, tools guide, and agent-skills guides; Epic 11 queue grooming promoted `ST-11005`, `ST-11002`, `ST-11003`, and `ST-11006` into `Ready` behind the existing top-priority `ST-11004` after the policy baseline merged (merged 2026-07-15, PR #158)
 
 - Complete: ST-01001 - foundation established (merged 2026-02-17)
 - Complete: ST-01002 - connection manager implemented (merged 2026-02-17)
