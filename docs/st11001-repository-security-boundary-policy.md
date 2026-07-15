@@ -13,7 +13,7 @@ This story formalizes AgentForge's repository-level security posture around inte
   - `docs-site/guide/concepts/tools.md`
   - `docs-site/guide/agent-skills.md`
   - `docs-site/guide/agent-skills-authoring.md`
-- Added the missing Epic 11 checklist file and updated the planning artifacts to track `ST-11001` through in-progress and in-review status.
+- Added the missing Epic 11 checklist file and updated the planning artifacts to track `ST-11001` as the active Epic 11 story and then as in review.
 
 ## Test Strategy
 
