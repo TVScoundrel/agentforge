@@ -5,6 +5,33 @@ All notable changes to AgentForge will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.16.74] - 2026-07-15
+
+### Added
+
+#### Repository - Security Boundary Policy Baseline
+- Added story documentation in `docs/st11001-repository-security-boundary-policy.md` capturing the repository trust-boundary model, policy-routing rationale, and validation evidence for the EP-11 security-policy baseline.
+
+### Changed
+
+#### Repository - Security Guidance Routing
+- Routed maintainers and adopters to the canonical `SECURITY.md` policy from the root README, docs contributing guide, tools guide, and agent-skills guides so privileged-by-design surfaces and default framework guardrails are documented in one consistent place.
+- Added the missing Epic 11 checklist tracker and aligned planning metadata around the `ST-11001` security-policy baseline so the remaining EP-11 hardening stories can sequence against the published trust model.
+
+### Fixed
+
+#### Repository - Security Adoption Clarity
+- Clarified security-sensitive reporting and safe-adoption guidance so repository policy, example-only issues, untrusted skill roots, and model-exposed tool usage are classified against the same documented boundary expectations.
+
+### Published
+- All packages published to npm registry at version 0.16.74:
+  - @agentforge/core@0.16.74
+  - @agentforge/skills@0.16.74
+  - @agentforge/patterns@0.16.74
+  - @agentforge/tools@0.16.74
+  - @agentforge/testing@0.16.74
+  - @agentforge/cli@0.16.74
+
 ## [0.16.73] - 2026-07-13
 
 ### Added
