@@ -20,6 +20,7 @@ describe('Multi-Agent State', () => {
       expect(spec.input).toBeDefined();
       expect(spec.messages).toBeDefined();
       expect(spec.workers).toBeDefined();
+      expect(spec.supervisorTask).toBeDefined();
       expect(spec.currentAgent).toBeDefined();
       expect(spec.routingHistory).toBeDefined();
       expect(spec.activeAssignments).toBeDefined();

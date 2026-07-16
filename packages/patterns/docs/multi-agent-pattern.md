@@ -140,6 +140,7 @@ The pattern uses `MultiAgentState` with the following channels:
   input: string;                           // Original user input/query
   messages: AgentMessage[];                // Inter-agent messages
   workers: Record<string, WorkerCapabilities>; // Available workers and their capabilities
+  supervisorTask?: string;                 // Trusted supervisor task intent
   currentAgent?: string;                   // Currently active agent ID
   routingHistory: RoutingDecision[];       // History of routing decisions
   activeAssignments: TaskAssignment[];     // Currently active task assignments
@@ -166,6 +167,8 @@ const supervisorNode = createSupervisorNode({
   systemPrompt: 'Custom supervisor instructions',
 });
 ```
+
+The supervisor keeps `supervisorTask` as the trusted orchestration intent. Worker `task_result` content is preserved separately in `completedTasks`, then reintroduced to supervisor routing and follow-up assignments only as explicitly labeled untrusted context. If your application previously depended on raw worker text becoming the next supervisor `Current task`, move that behavior into an explicit application-owned transformation step instead of relying on the default routing path.
 
 #### 2. Worker Node
 

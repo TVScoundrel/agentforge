@@ -11,9 +11,21 @@ export function createRoutingUserMessage(content: string) {
   };
 }
 
+export function createRoutingWorkerResultMessage(workerId: string, content: string) {
+  return {
+    id: `msg-${workerId.toLowerCase()}-result`,
+    from: workerId,
+    to: ['supervisor'],
+    type: 'task_result' as const,
+    content,
+    timestamp: Date.now(),
+  };
+}
+
 export function createMockRoutingState(): MultiAgentStateType {
   return {
     input: 'Test task requiring research and analysis',
+    supervisorTask: 'Test task requiring research and analysis',
     messages: [createRoutingUserMessage('Test task requiring research and analysis')],
     workers: {
       researcher: {

@@ -6,7 +6,8 @@ import { handleNodeError } from '../../shared/error-handling.js';
 import {
   createAssignmentMessages,
   createTaskAssignments,
-  getLatestTaskContent,
+  buildSupervisorAssignmentTask,
+  getSupervisorTaskIntent,
   logger,
 } from './shared.js';
 
@@ -147,7 +148,7 @@ export function createSupervisorNode(config: SupervisorConfig) {
         );
       }
 
-      const task = getLatestTaskContent(state);
+      const task = buildSupervisorAssignmentTask(state);
       const assignments = createTaskAssignments(targetAgents, task);
 
       logger.debug('Created task assignments', {
@@ -173,6 +174,7 @@ export function createSupervisorNode(config: SupervisorConfig) {
       });
 
       return {
+        supervisorTask: getSupervisorTaskIntent(state),
         currentAgent: targetAgents.join(','),
         status: 'executing',
         routingHistory: [decision],

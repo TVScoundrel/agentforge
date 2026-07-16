@@ -239,6 +239,8 @@ The supervisor can use tools (like `askHuman`) to gather additional information 
 - Fetching context needed for routing
 - Validating information before routing
 
+Worker outputs are treated as untrusted context during supervisor routing. The framework now preserves a trusted `supervisorTask` intent separately and no longer reuses raw worker-result text as the next supervisor task unless your application performs that transformation explicitly.
+
 See example `05-supervisor-with-askhuman.ts` for a complete demonstration.
 
 ## When to Use This Pattern

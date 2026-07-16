@@ -39,3 +39,37 @@
   - PR #158 marked ready for review on 2026-07-14 after docs updates, story documentation, validation, PR body verification, and tracker sync were complete.
 - [x] Wait for merge; do not merge directly from local branch
   - PR #158 merged into `main` on 2026-07-15 as commit `20246a4b`; post-merge tracker sync and queue grooming completed from local `main`.
+
+## ST-11004: Separate Worker Output from Supervisor Routing Input
+
+**Branch:** `feat/st-11004-worker-routing-boundary`
+
+### Checklist
+- [x] Create branch `feat/st-11004-worker-routing-boundary`
+  - Created on 2026-07-16 from `main` after moving `ST-11004` to `In Progress` in `planning/kanban-queue.md`.
+- [ ] Create draft PR with story ID in title
+- [x] Define test strategy before implementation: identify the practical failing automated test seam for worker-output prompt injection and supervisor-routing boundary separation
+  - Strategy: use focused red/green routing regressions around `packages/patterns/src/multi-agent/routing-internal/llm-routing.ts` and `packages/patterns/src/multi-agent/nodes/supervisor.ts` because this story changes framework routing behavior with a practical unit-test seam.
+- [x] Write or update the failing automated test before production changes when practical; if not practical, record why before implementation
+  - Added injection-focused regressions in `packages/patterns/tests/multi-agent/routing-llm.test.ts` and `packages/patterns/tests/multi-agent/nodes/supervisor-routing.ts`, then captured the expected red failure from `pnpm --filter @agentforge/patterns test --run packages/patterns/tests/multi-agent/routing-llm.test.ts packages/patterns/tests/multi-agent/nodes/supervisor-routing.ts` because the supervisor prompt still used injected worker-result text as `Current task`.
+- [x] Identify the current supervisor-routing prompt path that reuses worker output and document the intended boundary/transform seam
+  - Confirmed the vulnerable path in `packages/patterns/src/multi-agent/routing-internal/llm-routing.ts` and `packages/patterns/src/multi-agent/nodes/shared.ts`, where the latest message content was reused directly; the replacement seam now anchors to trusted `supervisorTask` intent and reintroduces worker results only through labeled untrusted-context formatting.
+- [x] Update the multi-agent state model so worker-result context remains available without reusing raw worker free-form output as direct supervisor routing input
+  - Added optional `supervisorTask` state support in `packages/patterns/src/multi-agent/state.ts` and taught shared helpers to preserve trusted task intent separately from `completedTasks`.
+- [x] Harden supervisor routing prompt construction so worker output is treated as untrusted context instead of authoritative routing instructions
+  - Updated `packages/patterns/src/multi-agent/routing-internal/llm-routing.ts` plus assignment-task generation in `packages/patterns/src/multi-agent/nodes/shared.ts` so worker results are appended only as explicitly labeled untrusted context.
+- [x] Add focused regression tests covering prompt-injection-style worker output that attempts to rewrite routing instructions or escalate authority
+  - Added focused regressions for injected worker-result text in `packages/patterns/tests/multi-agent/routing-llm.test.ts` and `packages/patterns/tests/multi-agent/nodes/supervisor-routing.ts`; follow-up validation also passed in `packages/patterns/tests/multi-agent/nodes.test.ts`, `packages/patterns/tests/multi-agent/agent-system.test.ts`, and `packages/patterns/tests/multi-agent/state.test.ts`.
+- [x] Document compatibility impact for downstream applications that currently rely on raw worker-message routing behavior
+  - Added compatibility notes to `packages/patterns/docs/multi-agent-pattern.md`, `packages/patterns/examples/multi-agent/README.md`, and `docs/st11004-multi-agent-routing-boundary-separation.md`.
+- [x] Add or update story documentation at `docs/st11004-multi-agent-routing-boundary-separation.md` (or document why not required)
+  - Added `docs/st11004-multi-agent-routing-boundary-separation.md`.
+- [x] Assess residual test impact; add/update additional automated tests when needed, or document why no further tests are required
+  - Added the focused routing and supervisor regressions plus adjacent multi-agent suite coverage; no further automated tests are currently required beyond the pending repo-wide validation/lint gates before PR readiness.
+- [x] Assess CI impact; update CI or document why no CI change is required
+  - No CI change is required because the hardening fits the existing patterns-package and repo-wide validation commands without introducing a new automation contract.
+- [ ] Run full test suite before finalizing the PR and record results
+- [ ] Run lint (`pnpm lint`) before finalizing the PR and record results
+- [ ] Commit completed checklist items as logical commits and push updates
+- [ ] Mark PR Ready only after all story tasks are complete
+- [ ] Wait for merge; do not merge directly from local branch

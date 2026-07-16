@@ -5,6 +5,7 @@ export class GraphInterrupt extends Error {}
 export function createMockState(): MultiAgentStateType {
   return {
     input: 'Test task',
+    supervisorTask: 'Test task',
     messages: [
       {
         from: 'user',
