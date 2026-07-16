@@ -2547,7 +2547,7 @@
 **Priority:** P1 (High)
 **Estimate:** 5 hours
 **Dependencies:** None
-**Status:** In Review (PR #159, 2026-07-16)
+**Status:** Merged (PR #159, 2026-07-16)
 
 **Acceptance criteria:**
 - [x] Multi-agent routing no longer reuses raw worker result text as the next supervisor `Current task` prompt without an explicit boundary or transformation step

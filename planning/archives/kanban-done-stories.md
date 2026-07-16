@@ -2,11 +2,18 @@
 
 **Purpose:** Track completed and merged stories for the Relational Database Access Tool project.
 
-**Last Updated:** 2026-07-15
+**Last Updated:** 2026-07-16
 
 ---
 
 ## Completed Stories
+
+### ST-11004: Separate Worker Output from Supervisor Routing Input
+- **Merged:** 2026-07-16
+- **PR:** https://github.com/TVScoundrel/agentforge/pull/159 (commit 7aaeb92e)
+- **Epic:** EP-11 (Security Boundary Hardening)
+- **Estimate:** 5 hours
+- **Outcome:** Hardened `@agentforge/patterns` multi-agent routing so the supervisor no longer promotes raw worker `task_result` text into the next `Current task` prompt or follow-up assignment by default. The story added a trusted `supervisorTask` state channel, reformatted worker outcomes as explicitly labeled untrusted context for routing, bounded that context to the most recent completed tasks with truncated details, added focused prompt-injection and prompt-growth regressions, documented the downstream compatibility impact in the multi-agent docs and example README, and advanced the Epic 11 ready lane to `ST-11005` with `ST-11002`, `ST-11003`, and `ST-11006` still dependency-ready behind it.
 
 ### ST-11001: Publish Repository Security Boundary Policy
 - **Merged:** 2026-07-15
