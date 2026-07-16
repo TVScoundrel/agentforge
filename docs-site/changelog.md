@@ -5,6 +5,36 @@ All notable changes to AgentForge will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.16.75] - 2026-07-16
+
+### Added
+
+#### @agentforge/patterns - Focused Multi-Agent Worker-Context Coverage
+- Added `packages/patterns/tests/multi-agent/nodes/shared-context.ts` to prove worker-result context is capped to the most recent completed tasks and that oversized worker outputs are truncated before they reach supervisor routing prompts.
+- Added story documentation in `docs/st11004-multi-agent-routing-boundary-separation.md` capturing the supervisor-task trust boundary, compatibility rationale, and review follow-up for prompt-growth control.
+
+### Changed
+
+#### @agentforge/patterns - Supervisor Routing Boundary Hardening
+- Added a trusted `supervisorTask` state channel so multi-agent supervisor routing no longer infers the next `Current task` from the latest inter-agent message.
+- Reworked supervisor routing and follow-up task construction so worker `task_result` content is preserved only as explicitly labeled untrusted context instead of being promoted into supervisor instructions.
+
+### Fixed
+
+#### @agentforge/patterns - Worker Output Prompt Safety
+- Prevented compromised or prompt-injecting worker output from directly steering supervisor routing decisions or overwriting the next worker assignment task in the default multi-agent flow.
+- Bounded worker-result context size by limiting routing prompts to the most recent completed tasks and truncating per-task details to avoid unbounded prompt growth, token spikes, and noisy supervisor context.
+- Documented the compatibility impact for downstream applications that previously relied on raw worker output becoming the next supervisor task, so adopters can move that behavior into an explicit application-owned transformation step if needed.
+
+### Published
+- All packages published to npm registry at version 0.16.75:
+  - @agentforge/core@0.16.75
+  - @agentforge/skills@0.16.75
+  - @agentforge/patterns@0.16.75
+  - @agentforge/tools@0.16.75
+  - @agentforge/testing@0.16.75
+  - @agentforge/cli@0.16.75
+
 ## [0.16.74] - 2026-07-15
 
 ### Added
