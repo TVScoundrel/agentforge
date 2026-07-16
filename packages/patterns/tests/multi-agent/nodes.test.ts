@@ -1,4 +1,5 @@
 import './nodes/supervisor-routing.js';
+import './nodes/shared-context.js';
 import './nodes/supervisor-workload.js';
 import './nodes/worker-core.js';
 import './nodes/worker-workload.js';
