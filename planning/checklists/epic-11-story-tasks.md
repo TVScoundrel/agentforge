@@ -75,5 +75,6 @@
   - `pnpm lint` -> passed with the existing warning baseline only (`0` errors); package lint output still includes the known repo warning baseline and existing ESLint flat-config env warnings in legacy example files.
 - [x] Commit completed checklist items as logical commits and push updates
   - `a826743e` `fix(st-11004): separate supervisor task intent` pushed to `origin/feat/st-11004-worker-routing-boundary`; final review-prep tracker sync is captured in the current follow-up commit.
-- [ ] Mark PR Ready only after all story tasks are complete
+- [x] Mark PR Ready only after all story tasks are complete
+  - PR #159 marked ready for review on 2026-07-16 after the focused regressions, repo-wide `pnpm test --run`, `pnpm lint`, checklist sync, and PR body verification all completed successfully.
 - [ ] Wait for merge; do not merge directly from local branch
