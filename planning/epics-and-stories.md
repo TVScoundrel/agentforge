@@ -2547,13 +2547,14 @@
 **Priority:** P1 (High)
 **Estimate:** 5 hours
 **Dependencies:** None
+**Status:** In Review (PR #159, 2026-07-16)
 
 **Acceptance criteria:**
-- [ ] Multi-agent routing no longer reuses raw worker result text as the next supervisor `Current task` prompt without an explicit boundary or transformation step
-- [ ] The state model preserves enough structured worker-result context for current workflows while separating routing intent from untrusted free-form worker output
-- [ ] Focused tests cover prompt-injection-style worker output attempting to rewrite routing instructions or escalate authority
-- [ ] Compatibility impact is documented for downstream applications that rely on the current raw-message routing behavior
-- [ ] Add or update story documentation at `docs/st11004-multi-agent-routing-boundary-separation.md`
+- [x] Multi-agent routing no longer reuses raw worker result text as the next supervisor `Current task` prompt without an explicit boundary or transformation step
+- [x] The state model preserves enough structured worker-result context for current workflows while separating routing intent from untrusted free-form worker output
+- [x] Focused tests cover prompt-injection-style worker output attempting to rewrite routing instructions or escalate authority
+- [x] Compatibility impact is documented for downstream applications that rely on the current raw-message routing behavior
+- [x] Add or update story documentation at `docs/st11004-multi-agent-routing-boundary-separation.md`
 
 ---
 

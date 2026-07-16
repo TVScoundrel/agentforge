@@ -47,7 +47,8 @@
 ### Checklist
 - [x] Create branch `feat/st-11004-worker-routing-boundary`
   - Created on 2026-07-16 from `main` after moving `ST-11004` to `In Progress` in `planning/kanban-queue.md`.
-- [ ] Create draft PR with story ID in title
+- [x] Create draft PR with story ID in title
+  - Draft PR #159 created on 2026-07-16: <https://github.com/TVScoundrel/agentforge/pull/159>
 - [x] Define test strategy before implementation: identify the practical failing automated test seam for worker-output prompt injection and supervisor-routing boundary separation
   - Strategy: use focused red/green routing regressions around `packages/patterns/src/multi-agent/routing-internal/llm-routing.ts` and `packages/patterns/src/multi-agent/nodes/supervisor.ts` because this story changes framework routing behavior with a practical unit-test seam.
 - [x] Write or update the failing automated test before production changes when practical; if not practical, record why before implementation
@@ -68,8 +69,11 @@
   - Added the focused routing and supervisor regressions plus adjacent multi-agent suite coverage; no further automated tests are currently required beyond the pending repo-wide validation/lint gates before PR readiness.
 - [x] Assess CI impact; update CI or document why no CI change is required
   - No CI change is required because the hardening fits the existing patterns-package and repo-wide validation commands without introducing a new automation contract.
-- [ ] Run full test suite before finalizing the PR and record results
-- [ ] Run lint (`pnpm lint`) before finalizing the PR and record results
-- [ ] Commit completed checklist items as logical commits and push updates
+- [x] Run full test suite before finalizing the PR and record results
+  - `pnpm test --run` -> `224` passed, `9` skipped files; `2500` passed, `110` skipped tests.
+- [x] Run lint (`pnpm lint`) before finalizing the PR and record results
+  - `pnpm lint` -> passed with the existing warning baseline only (`0` errors); package lint output still includes the known repo warning baseline and existing ESLint flat-config env warnings in legacy example files.
+- [x] Commit completed checklist items as logical commits and push updates
+  - `a826743e` `fix(st-11004): separate supervisor task intent` pushed to `origin/feat/st-11004-worker-routing-boundary`; final review-prep tracker sync is captured in the current follow-up commit.
 - [ ] Mark PR Ready only after all story tasks are complete
 - [ ] Wait for merge; do not merge directly from local branch
