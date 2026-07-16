@@ -71,6 +71,15 @@ export const MultiAgentStateConfig = {
   } satisfies StateChannelConfig<Record<string, WorkerCapabilities>, Record<string, WorkerCapabilities>>,
 
   /**
+   * Trusted supervisor task intent
+   * Preserves the orchestration objective separately from worker free-form output.
+   */
+  supervisorTask: {
+    schema: z.string().optional(),
+    description: 'Trusted supervisor task intent, separate from untrusted worker output',
+  } satisfies StateChannelConfig<string | undefined, string | undefined>,
+
+  /**
    * Current active agent
    */
   currentAgent: {
@@ -167,6 +176,7 @@ export type MultiAgentStateType = {
   input: string;
   messages: AgentMessage[];
   workers: Record<string, WorkerCapabilities>;
+  supervisorTask?: string;
   currentAgent?: string;
   routingHistory: RoutingDecision[];
   activeAssignments: TaskAssignment[];
@@ -198,4 +208,3 @@ export {
   type MultiAgentStatus,
   type HandoffRequest,
 };
-

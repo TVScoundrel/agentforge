@@ -1,12 +1,12 @@
 # Kanban Queue: AgentForge
 
-**Last Updated:** 2026-07-15
+**Last Updated:** 2026-07-16
 
 ## Queue Status Summary
 
-- **Ready:** 5 stories
+- **Ready:** 4 stories
 - **In Progress:** 0 stories
-- **In Review:** 0 stories
+- **In Review:** 1 story
 - **Blocked:** 0 stories
 - **Backlog:** 0 stories
 
@@ -14,8 +14,6 @@
 
 ## Ready
 
-- `ST-11004` - Separate Worker Output from Supervisor Routing Input
-  - Depends on: None
 - `ST-11005` - Enforce Trust-Aware Skill Prompt and Activation Boundaries
   - Depends on: `ST-11001` (merged)
 - `ST-11002` - Harden Default Web Tool Egress Policy
@@ -35,7 +33,8 @@ None currently.
 
 ## In Review
 
-None currently.
+- `ST-11004` - Separate Worker Output from Supervisor Routing Input
+  - Depends on: None
 
 ---
 
