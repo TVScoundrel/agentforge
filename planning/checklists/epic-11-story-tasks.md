@@ -113,7 +113,8 @@
   - `pnpm test --run` -> `224` passed, `9` skipped files; `2505` passed, `110` skipped tests.
 - [x] Run lint (`pnpm lint`) before finalizing the PR and record results
   - `pnpm lint` -> passed with the existing warning baseline only (`0` errors); workspace lint still reports longstanding warnings and ESLint flat-config env warnings in legacy example files outside this story.
-- [ ] Commit completed checklist items as logical commits and push updates
-  - `4a107088` `fix(st-11005): enforce skill trust boundaries` already pushed to `origin/feat/st-11005-skill-trust-boundaries`; this checklist sync plus the conformance expectation update are being recorded in the final review-prep follow-up commit.
-- [ ] Mark PR Ready only after all story tasks are complete
+- [x] Commit completed checklist items as logical commits and push updates
+  - `4a107088` `fix(st-11005): enforce skill trust boundaries` and `2877bbe0` `test(st-11005): align conformance expectations` were pushed to `origin/feat/st-11005-skill-trust-boundaries`; the final ready-state tracker sync is captured in the current follow-up commit.
+- [x] Mark PR Ready only after all story tasks are complete
+  - PR #160 marked ready for review on 2026-07-17 after the conformance expectation fix, repo-wide `pnpm test --run`, `pnpm lint`, checklist sync, and PR body update were complete.
 - [ ] Wait for merge; do not merge directly from local branch
