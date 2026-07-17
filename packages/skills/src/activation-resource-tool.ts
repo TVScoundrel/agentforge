@@ -74,7 +74,7 @@ export function createReadSkillResourceTool(
 
           registry.emitEvent(SkillRegistryEvent.TRUST_POLICY_DENIED, {
             name: skill.metadata.name,
-            resourcePath,
+            resourcePath: 'SKILL.md',
             trustLevel: skill.trustLevel,
             reason: activationDecision.reason,
             message: activationDecision.message,

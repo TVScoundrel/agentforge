@@ -97,11 +97,13 @@ describe('read-skill-resource tool', () => {
     expect(caseVariantResult).not.toContain('secret instructions');
     expect(symlinkResult).not.toContain('secret instructions');
     expect(deniedEvents).toHaveLength(4);
-    expect(deniedEvents[0]).toEqual(expect.objectContaining({
-      name: 'my-skill',
-      resourcePath: 'SKILL.md',
-      trustLevel: 'untrusted',
-    }));
+    for (const event of deniedEvents) {
+      expect(event).toEqual(expect.objectContaining({
+        name: 'my-skill',
+        resourcePath: 'SKILL.md',
+        trustLevel: 'untrusted',
+      }));
+    }
   });
 
   it('emits resource events on success and not on failure', async () => {

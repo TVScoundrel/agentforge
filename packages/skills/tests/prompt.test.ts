@@ -81,6 +81,21 @@ describe('SkillRegistry.generatePrompt()', () => {
       expect(xml).toContain('<name>my-skill</name>');
     });
 
+    it('should classify plain string roots as untrusted', () => {
+      const root = makeTempDir();
+      createSkillFixture(root, 'community-skill', {
+        name: 'community-skill',
+        description: 'Community skill',
+      });
+
+      const registry = new SkillRegistry({ skillRoots: [root], enabled: true });
+      const xml = registry.generatePrompt();
+
+      expect(xml).toContain('<untrusted_skills>');
+      expect(xml).toContain('<trust>untrusted</trust>');
+      expect(xml).not.toContain('<available_skills>');
+    });
+
     it('should return empty string when enabled but no skills discovered', () => {
       const root = makeTempDir();
       // Empty root — no skills
