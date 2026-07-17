@@ -53,6 +53,7 @@ export {
 // Trust Policy
 export {
   evaluateTrustPolicy,
+  evaluateSkillActivationPolicy,
   isScriptResource,
   normalizeRootConfig,
 } from './trust.js';

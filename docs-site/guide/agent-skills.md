@@ -47,7 +47,8 @@ const skillRegistry = new SkillRegistry({
 
 ```typescript
 const skillsPrompt = skillRegistry.generatePrompt();
-// Returns <available_skills> XML block with skill names + descriptions
+// Returns trusted <available_skills> XML and, when present,
+// a separate <untrusted_skills> section for discoverable-but-blocked roots
 ```
 
 ### 3. Register Activation Tools
@@ -81,7 +82,7 @@ const agent = createReActAgent({
 
 ### Skill Root Trust Levels
 
-Each skill root can be assigned a trust level that controls access to `scripts/` resources:
+Each skill root can be assigned a trust level that controls script access and whether `activate-skill` can expose the full SKILL.md body to the model:
 
 ```typescript
 const registry = new SkillRegistry({
@@ -94,11 +95,11 @@ const registry = new SkillRegistry({
 });
 ```
 
-| Trust Level | Script Access | Use Case |
-|-------------|--------------|----------|
-| `workspace` | Allowed | Project-local skills |
-| `trusted` | Allowed | Verified shared skill repositories |
-| `untrusted` | **Denied** | Community or unknown skill sources |
+| Trust Level | Full Skill Activation | Script Access | Use Case |
+|-------------|-----------------------|---------------|----------|
+| `workspace` | Allowed | Allowed | Project-local skills |
+| `trusted` | Allowed | Allowed | Verified shared skill repositories |
+| `untrusted` | **Blocked until root promotion** | **Denied** | Community or unknown skill sources |
 
 ::: tip
 Plain string roots default to `'untrusted'` for security. Promote roots to `'trusted'` or `'workspace'` only after reviewing their contents.
@@ -109,13 +110,13 @@ Plain string roots default to `'untrusted'` for security. Promote roots to `'tru
 ```
 Startup:
   1. new SkillRegistry({ skillRoots }) → scans folders → parses SKILL.md frontmatter
-  2. skillRegistry.generatePrompt() → <available_skills> XML
+  2. skillRegistry.generatePrompt() → trusted <available_skills> XML plus optional <untrusted_skills> notice block
   3. XML injected into agent system prompt (~50-100 tokens per skill)
 
 Runtime (agent decides):
   4. Agent reads task → sees relevant skill in prompt
   5. Agent calls activate-skill({ name: "skill-name" })
-     → Returns full SKILL.md body content
+     → Returns full SKILL.md body content only for workspace/trusted roots
   6. Agent optionally calls read-skill-resource({ name: "skill-name", path: "references/guide.md" })
      → Returns referenced file content
   7. Agent follows skill instructions using its existing tools
@@ -125,13 +126,13 @@ Runtime (agent decides):
 
 ### `activate-skill`
 
-Loads the full body content of a skill's SKILL.md file.
+Loads the full body content of a skill's SKILL.md file for `workspace` and `trusted` roots.
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
 | `name` | `string` | Skill name (must match a discovered skill) |
 
-**Returns:** SKILL.md body content as markdown string.
+**Returns:** SKILL.md body content as markdown string for trusted roots. Untrusted roots return a trust-policy message explaining that the operator must promote the root to `trusted` or `workspace` after review.
 
 ### `read-skill-resource`
 
@@ -152,9 +153,9 @@ The `SkillRegistry` emits structured events for observability:
 |-------|------|
 | `skill:discovered` | Skill found and parsed during discovery |
 | `skill:warning` | Skill parse or validation issue |
-| `skill:activated` | `activate-skill` tool successfully loaded a skill |
+| `skill:activated` | `activate-skill` tool successfully loaded a trusted/workspace skill |
 | `skill:resource-loaded` | `read-skill-resource` tool successfully loaded a resource |
-| `trust:policy-denied` | Script access blocked by trust policy |
+| `trust:policy-denied` | Skill activation or script access blocked by trust policy |
 | `trust:policy-allowed` | Script access permitted by trust policy |
 
 ```typescript
@@ -184,7 +185,7 @@ All resource paths are validated:
 
 ### Trust Policy Enforcement
 
-Script resources (`scripts/` directory) are subject to trust policy checks. Non-script resources (references, assets, SKILL.md) are always accessible.
+Script resources (`scripts/` directory) are subject to trust policy checks. Non-script resources (references, assets) remain readable from any discovered root, but the full SKILL.md body is only activatable from `workspace` or `trusted` roots.
 
 See [Trust Policies](/guide/agent-skills-authoring#trust-policies) for the full trust model.
 See the repository [Security Policy](https://github.com/TVScoundrel/agentforge/blob/main/SECURITY.md) for the maintainer boundary on untrusted skill roots versus trusted project-owned skill content.
@@ -199,10 +200,11 @@ const registry = new SkillRegistry({
   skillRoots: ['.agentskills'],
 });
 
-// Enabled — generatePrompt() returns <available_skills> XML
+// Enabled — generatePrompt() returns trusted <available_skills>
+// and optional discoverable <untrusted_skills> entries
 const registryEnabled = new SkillRegistry({
   enabled: true,
-  skillRoots: ['.agentskills'],
+  skillRoots: [{ path: '.agentskills', trust: 'workspace' }],
 });
 ```
 
@@ -216,8 +218,9 @@ Use this checklist when enabling Agent Skills in a production or team environmen
 
 1. Start with `enabled: false` (default) — skills are discovered but not surfaced to the LLM
 2. Verify discovery with `registry.size()` and `registry.getScanErrors()` before enabling
-3. Set `enabled: true` to activate prompt injection
+3. Set `enabled: true` to activate prompt injection for trusted/workspace roots
 4. Set `allowUntrustedScripts: false` (default) — block untrusted script access
+5. Promote only reviewed roots to `trusted` or `workspace` if you want the model to activate their full SKILL.md bodies
 
 ```typescript
 const registry = new SkillRegistry({
@@ -291,6 +294,10 @@ If issues are detected after enabling Agent Skills:
 
 ::: warning
 Setting `enabled: false` only suppresses `generatePrompt()`. If activation tools are registered with the agent, they remain callable. Remove them from the tool array for a complete rollback.
+
+## Migration Note
+
+If you previously passed plain string roots such as `skillRoots: ['.agentskills']`, those roots remain discoverable but are now treated as `untrusted` for prompt and activation purposes. Migrate reviewed roots to explicit objects such as `{ path: '.agentskills', trust: 'workspace' }` or `{ path: '/shared/skills', trust: 'trusted' }` before expecting `activate-skill` to expose the full SKILL.md body.
 :::
 
 ## See Also

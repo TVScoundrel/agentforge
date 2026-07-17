@@ -24,7 +24,7 @@ describe('createSkillActivationTools', () => {
   });
 
   it('returns the two skill tools in the SKILLS category', () => {
-    const registry = new SkillRegistry({ skillRoots: [tempDir] });
+    const registry = new SkillRegistry({ skillRoots: [{ path: tempDir, trust: 'workspace' }] });
     const tools = createSkillActivationTools(registry);
 
     expect(tools).toHaveLength(2);
@@ -51,7 +51,7 @@ describe('SkillRegistry.toActivationTools()', () => {
   it('returns activation tools bound to the registry', async () => {
     createSkillFixture(tempDir, 'my-skill', 'name: my-skill\ndescription: A test skill', '\n# Test Skill\n\nInstructions here.');
 
-    const registry = new SkillRegistry({ skillRoots: [tempDir] });
+    const registry = new SkillRegistry({ skillRoots: [{ path: tempDir, trust: 'workspace' }] });
     const [activateTool, readResourceTool] = registry.toActivationTools();
 
     expect(activateTool.metadata.name).toBe('activate-skill');
@@ -82,7 +82,7 @@ describe('Skill activation integration', () => {
     );
     createResourceFile(skillDir, 'references/checklist.md', '# Checklist\n\n- [ ] Check naming\n- [ ] Check tests');
 
-    const registry = new SkillRegistry({ skillRoots: [tempDir] });
+    const registry = new SkillRegistry({ skillRoots: [{ path: tempDir, trust: 'workspace' }] });
     const [activateTool, readResourceTool] = registry.toActivationTools();
 
     const skillBody = await activateTool.invoke({ name: 'code-review' });
@@ -119,7 +119,7 @@ describe('Skill activation integration', () => {
     const skillDir = createSkillFixture(tempDir, 'my-skill', 'name: my-skill\ndescription: Test', '\nbody');
     createResourceFile(skillDir, 'references/ref.md', 'reference content');
 
-    const registry = new SkillRegistry({ skillRoots: [tempDir] });
+    const registry = new SkillRegistry({ skillRoots: [{ path: tempDir, trust: 'workspace' }] });
     const [activateTool, readResourceTool] = registry.toActivationTools();
 
     const activatedHandler = vi.fn();
@@ -137,7 +137,7 @@ describe('Skill activation integration', () => {
   it('works alongside generatePrompt and tool spreading', async () => {
     createSkillFixture(tempDir, 'my-skill', 'name: my-skill\ndescription: Test skill for compose', '\n# Skill Body');
 
-    const registry = new SkillRegistry({ skillRoots: [tempDir], enabled: true });
+    const registry = new SkillRegistry({ skillRoots: [{ path: tempDir, trust: 'workspace' }], enabled: true });
     const [activateTool] = registry.toActivationTools();
 
     const prompt = registry.generatePrompt();

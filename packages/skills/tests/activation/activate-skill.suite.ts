@@ -21,7 +21,7 @@ describe('activate-skill tool', () => {
   });
 
   it('has the expected metadata', () => {
-    const registry = new SkillRegistry({ skillRoots: [tempDir] });
+    const registry = new SkillRegistry({ skillRoots: [{ path: tempDir, trust: 'workspace' }] });
     const tool = createActivateSkillTool(registry);
 
     expect(tool.metadata.name).toBe('activate-skill');
@@ -40,17 +40,52 @@ describe('activate-skill tool', () => {
     );
     createSkillFixture(tempDir, 'my-skill', 'name: my-skill\ndescription: Test skill', '\nBody content only');
 
-    const registry = new SkillRegistry({ skillRoots: [tempDir] });
+    const registry = new SkillRegistry({ skillRoots: [{ path: tempDir, trust: 'workspace' }] });
     const tool = createActivateSkillTool(registry);
 
     expect(await tool.invoke({ name: 'code-review' })).toContain('# Code Review');
     expect(await tool.invoke({ name: 'my-skill' })).toBe('Body content only');
   });
 
+  it('blocks activation for untrusted skills until the root is promoted', async () => {
+    const trustedRoot = createTempDir();
+    const untrustedRoot = createTempDir();
+    tempDirs.push(trustedRoot, untrustedRoot);
+
+    createSkillFixture(
+      trustedRoot,
+      'trusted-skill',
+      'name: trusted-skill\ndescription: Trusted skill',
+      '\nTrusted body',
+    );
+    createSkillFixture(
+      untrustedRoot,
+      'community-skill',
+      'name: community-skill\ndescription: Community skill',
+      '\nUntrusted body',
+    );
+
+    const registry = new SkillRegistry({
+      skillRoots: [
+        { path: trustedRoot, trust: 'trusted' },
+        { path: untrustedRoot, trust: 'untrusted' },
+      ],
+    });
+    const tool = createActivateSkillTool(registry);
+
+    expect(await tool.invoke({ name: 'trusted-skill' })).toBe('Trusted body');
+
+    const blocked = await tool.invoke({ name: 'community-skill' });
+    expect(blocked).toContain('blocked');
+    expect(blocked).toContain('untrusted');
+    expect(blocked).toContain('trusted');
+    expect(blocked).not.toContain('Untrusted body');
+  });
+
   it('returns helpful not-found messages', async () => {
     createSkillFixture(tempDir, 'code-review', 'name: code-review\ndescription: CR', '\nbody');
 
-    const populatedRegistry = new SkillRegistry({ skillRoots: [tempDir] });
+    const populatedRegistry = new SkillRegistry({ skillRoots: [{ path: tempDir, trust: 'workspace' }] });
     const populatedTool = createActivateSkillTool(populatedRegistry);
     const populatedResult = await populatedTool.invoke({ name: 'non-existent' });
     expect(populatedResult).toContain('Skill "non-existent" not found');
@@ -67,7 +102,7 @@ describe('activate-skill tool', () => {
   it('emits activation events and read errors correctly', async () => {
     const brokenDir = createSkillFixture(tempDir, 'broken-skill', 'name: broken-skill\ndescription: Broken', '\nbody');
     createSkillFixture(tempDir, 'my-skill', 'name: my-skill\ndescription: Test', '\nbody');
-    const registry = new SkillRegistry({ skillRoots: [tempDir] });
+    const registry = new SkillRegistry({ skillRoots: [{ path: tempDir, trust: 'workspace' }] });
     const tool = createActivateSkillTool(registry);
 
     const handler = vi.fn();
@@ -96,7 +131,7 @@ describe('activate-skill tool', () => {
     mkdirSync(noFrontmatterDir, { recursive: true });
     writeFileSync(join(noFrontmatterDir, 'SKILL.md'), '# Just content\n\nNo frontmatter here.', 'utf-8');
 
-    const registry = new SkillRegistry({ skillRoots: [tempDir] });
+    const registry = new SkillRegistry({ skillRoots: [{ path: tempDir, trust: 'workspace' }] });
     const tool = createActivateSkillTool(registry);
 
     expect(await tool.invoke({ name: 'empty-body' })).toBe('');

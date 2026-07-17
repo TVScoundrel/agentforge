@@ -27,7 +27,10 @@ export function generateSkillPrompt(
     skills = skills.slice(0, config.maxDiscoveredSkills);
   }
 
-  if (skills.length === 0) {
+  const trustedSkills = skills.filter((skill) => skill.trustLevel !== 'untrusted');
+  const untrustedSkills = skills.filter((skill) => skill.trustLevel === 'untrusted');
+
+  if (trustedSkills.length === 0 && untrustedSkills.length === 0) {
     logger.debug('Skill prompt generation produced empty result', {
       totalDiscovered,
       filterApplied: !!(options?.skills && options.skills.length > 0),
@@ -38,11 +41,23 @@ export function generateSkillPrompt(
     return '';
   }
 
-  const xml = `<available_skills>\n${skills.map(renderSkillEntry).join('\n')}\n</available_skills>`;
+  const sections: string[] = [];
+
+  if (trustedSkills.length > 0) {
+    sections.push(`<available_skills>\n${trustedSkills.map(renderTrustedSkillEntry).join('\n')}\n</available_skills>`);
+  }
+
+  if (untrustedSkills.length > 0) {
+    sections.push(renderUntrustedSkillsSection(untrustedSkills));
+  }
+
+  const xml = sections.join('\n');
   const estimatedTokens = Math.ceil(xml.length / 4);
 
   logger.info('Skill prompt generated', {
     skillCount: skills.length,
+    trustedSkillCount: trustedSkills.length,
+    untrustedSkillCount: untrustedSkills.length,
     totalDiscovered,
     filterApplied: !!(options?.skills && options.skills.length > 0),
     ...(config.maxDiscoveredSkills !== undefined ? { maxCap: config.maxDiscoveredSkills } : {}),
@@ -53,12 +68,34 @@ export function generateSkillPrompt(
   return xml;
 }
 
-function renderSkillEntry(skill: Skill): string {
+function renderTrustedSkillEntry(skill: Skill): string {
   return [
     '  <skill>',
     `    <name>${escapeXml(skill.metadata.name)}</name>`,
     `    <description>${escapeXml(skill.metadata.description)}</description>`,
     `    <location>${escapeXml(skill.skillPath)}</location>`,
+    `    <trust>${escapeXml(skill.trustLevel)}</trust>`,
+    '  </skill>',
+  ].join('\n');
+}
+
+function renderUntrustedSkillsSection(skills: Skill[]): string {
+  return [
+    '<untrusted_skills>',
+    '  <trust_notice>Untrusted skills are discoverable, but their full SKILL.md bodies stay blocked until the root is promoted to trusted or workspace status.</trust_notice>',
+    ...skills.map(renderUntrustedSkillEntry),
+    '</untrusted_skills>',
+  ].join('\n');
+}
+
+function renderUntrustedSkillEntry(skill: Skill): string {
+  return [
+    '  <skill>',
+    `    <name>${escapeXml(skill.metadata.name)}</name>`,
+    `    <description>${escapeXml(skill.metadata.description)}</description>`,
+    `    <location>${escapeXml(skill.skillPath)}</location>`,
+    `    <trust>${escapeXml(skill.trustLevel)}</trust>`,
+    '    <activation_policy>requires-trusted-root</activation_policy>',
     '  </skill>',
   ].join('\n');
 }
