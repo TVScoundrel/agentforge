@@ -4,7 +4,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { ToolCategory } from '@agentforge/core';
 import { SkillRegistry } from '../../src/registry.js';
 import { createActivateSkillTool } from '../../src/activation.js';
-import { SkillRegistryEvent } from '../../src/types.js';
+import { SkillRegistryEvent, TrustPolicyReason } from '../../src/types.js';
 import { cleanupTempDirs, createSkillFixture, createTempDir } from './shared.js';
 
 describe('activate-skill tool', () => {
@@ -72,6 +72,8 @@ describe('activate-skill tool', () => {
       ],
     });
     const tool = createActivateSkillTool(registry);
+    const deniedEvents: unknown[] = [];
+    registry.on(SkillRegistryEvent.TRUST_POLICY_DENIED, (data) => deniedEvents.push(data));
 
     expect(await tool.invoke({ name: 'trusted-skill' })).toBe('Trusted body');
 
@@ -80,6 +82,13 @@ describe('activate-skill tool', () => {
     expect(blocked).toContain('untrusted');
     expect(blocked).toContain('trusted');
     expect(blocked).not.toContain('Untrusted body');
+    expect(deniedEvents).toHaveLength(1);
+    expect(deniedEvents[0]).toEqual(expect.objectContaining({
+      name: 'community-skill',
+      resourcePath: 'SKILL.md',
+      trustLevel: 'untrusted',
+      reason: TrustPolicyReason.UNTRUSTED_SKILL_ACTIVATION_DENIED,
+    }));
   });
 
   it('returns helpful not-found messages', async () => {

@@ -53,6 +53,7 @@ export function createActivateSkillTool(
 
         registry.emitEvent(SkillRegistryEvent.TRUST_POLICY_DENIED, {
           name: skill.metadata.name,
+          resourcePath: 'SKILL.md',
           trustLevel: skill.trustLevel,
           reason: policyDecision.reason,
           message: policyDecision.message,
