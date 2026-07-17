@@ -87,7 +87,8 @@
 ### Checklist
 - [x] Create branch `feat/st-11005-skill-trust-boundaries`
   - Created on 2026-07-17 from `main` after moving `ST-11005` to `In Progress` in `planning/kanban-queue.md`.
-- [ ] Create draft PR with story ID in title
+- [x] Create draft PR with story ID in title
+  - Draft PR #160 created on 2026-07-17: <https://github.com/TVScoundrel/agentforge/pull/160>
 - [x] Define test strategy before implementation: identify the practical failing automated test seam for untrusted-skill discovery, prompt generation, and activation trust handling
   - Strategy: use focused red/green regressions in `packages/skills/tests/prompt.test.ts` and `packages/skills/tests/activation/activate-skill.suite.ts`, then re-run the activation entrypoint in `packages/skills/tests/activation.test.ts` to confirm the trust-aware activation flow composes with existing resource-policy coverage.
 - [x] Write or update the failing automated test before production changes when practical; if not practical, record why before implementation
@@ -108,8 +109,11 @@
   - Added the prompt and activation regressions plus updated activation integration coverage; no additional focused automated tests are currently required beyond the pending repo-wide full-suite and lint gates.
 - [x] Assess CI impact; update CI or document why no CI change is required
   - No CI change is required because the hardening fits the existing skills-package and repo-wide validation paths; this story adds coverage inside the current Vitest suites rather than introducing a new automation contract.
-- [ ] Run full test suite before finalizing the PR and record results
-- [ ] Run lint (`pnpm lint`) before finalizing the PR and record results
+- [x] Run full test suite before finalizing the PR and record results
+  - `pnpm test --run` -> `224` passed, `9` skipped files; `2505` passed, `110` skipped tests.
+- [x] Run lint (`pnpm lint`) before finalizing the PR and record results
+  - `pnpm lint` -> passed with the existing warning baseline only (`0` errors); workspace lint still reports longstanding warnings and ESLint flat-config env warnings in legacy example files outside this story.
 - [ ] Commit completed checklist items as logical commits and push updates
+  - `4a107088` `fix(st-11005): enforce skill trust boundaries` already pushed to `origin/feat/st-11005-skill-trust-boundaries`; this checklist sync plus the conformance expectation update are being recorded in the final review-prep follow-up commit.
 - [ ] Mark PR Ready only after all story tasks are complete
 - [ ] Wait for merge; do not merge directly from local branch

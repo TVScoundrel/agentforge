@@ -242,12 +242,13 @@ describe('Conformance: Tool Activation', () => {
     expect(body).toContain('Test Quality Rules');
   });
 
-  it('should activate community-tool from untrusted root', async () => {
+  it('should keep community-tool discoverable but block full-body activation from an untrusted root', async () => {
     const [activateSkill] = registry.toActivationTools();
     const body = await activateSkill.invoke({ name: 'community-tool' });
-    expect(body).toContain('Community Tool');
-    // Activation always works regardless of trust — trust is enforced on resources
-    expect(body).toContain('trust policy');
+    expect(body).toContain('blocked');
+    expect(body).toContain('untrusted');
+    expect(body).toContain('trusted');
+    expect(body).not.toContain('Community Tool');
   });
 
   it('should emit SKILL_ACTIVATED event on activation', async () => {
@@ -499,9 +500,11 @@ describe('Conformance: Full Pipeline', () => {
     expect(codeReviewBody).toContain('Code Review Skill');
 
     const communityBody = await activateSkill.invoke({ name: 'community-tool' });
-    expect(communityBody).toContain('Community Tool');
+    expect(communityBody).toContain('blocked');
+    expect(communityBody).toContain('untrusted');
+    expect(communityBody).not.toContain('Community Tool');
 
-    expect(activated).toHaveLength(2);
+    expect(activated).toHaveLength(1);
 
     // 4. Read resource — workspace reference (allowed)
     const styleGuide = await readResource.invoke({
@@ -531,7 +534,7 @@ describe('Conformance: Full Pipeline', () => {
       path: 'scripts/install.sh',
     });
     expect(blockedScript).toContain('blocked');
-    expect(denied).toHaveLength(1);
+    expect(denied).toHaveLength(2);
 
     // 8. Path traversal — blocked regardless of trust
     const traversal = await readResource.invoke({
