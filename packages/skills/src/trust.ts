@@ -77,7 +77,8 @@ export function isScriptResource(resourcePath: string): boolean {
 /**
  * Evaluate the trust policy for a resource access request.
  *
- * Non-script resources are always allowed regardless of trust level.
+ * Non-script resources are allowed regardless of trust level, except for
+ * SKILL.md, which is protected by the activation policy.
  * Script resources require `workspace` or `trusted` trust, or the
  * `allowUntrustedScripts` override to be enabled.
  *
@@ -91,7 +92,7 @@ export function evaluateTrustPolicy(
   trustLevel: TrustLevel,
   allowUntrustedScripts: boolean = false,
 ): TrustPolicyDecision {
-  // Non-script resources — no policy enforcement needed
+  // Non-script resources — SKILL.md is checked separately by the resource tool.
   if (!isScriptResource(resourcePath)) {
     return {
       allowed: true,

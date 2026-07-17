@@ -143,7 +143,7 @@ Reads a resource file from within a skill directory.
 | `name` | `string` | Skill name |
 | `path` | `string` | Relative path within the skill directory |
 
-**Returns:** File content as string. Blocked for `scripts/` paths from untrusted roots.
+**Returns:** File content as string. `scripts/` paths and the root `SKILL.md` are blocked from untrusted roots.
 
 ## Events
 
@@ -185,7 +185,7 @@ All resource paths are validated:
 
 ### Trust Policy Enforcement
 
-Script resources (`scripts/` directory) are subject to trust policy checks. Non-script resources (references, assets) remain readable from any discovered root, but the full SKILL.md body is only activatable from `workspace` or `trusted` roots.
+Script resources (`scripts/` directory) are subject to trust policy checks. Non-script resources (references, assets) remain readable from any discovered root, while `SKILL.md` itself is protected as the full skill instruction body and is only readable from `workspace` or `trusted` roots.
 
 See [Trust Policies](/guide/agent-skills-authoring#trust-policies) for the full trust model.
 See the repository [Security Policy](https://github.com/TVScoundrel/agentforge/blob/main/SECURITY.md) for the maintainer boundary on untrusted skill roots versus trusted project-owned skill content.

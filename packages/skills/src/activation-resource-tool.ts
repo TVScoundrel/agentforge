@@ -1,9 +1,10 @@
 import { readFileSync } from 'node:fs';
+import { resolve } from 'node:path';
 import { ToolBuilder, ToolCategory } from '@agentforge/core';
 import type { Tool } from '@agentforge/core';
 import type { z } from 'zod';
 import type { SkillRegistry } from './registry.js';
-import { evaluateTrustPolicy } from './trust.js';
+import { evaluateSkillActivationPolicy, evaluateTrustPolicy } from './trust.js';
 import { SkillRegistryEvent, TrustPolicyReason } from './types.js';
 import { resolveResourcePath } from './activation-path.js';
 import { readSkillResourceSchema } from './activation-schemas.js';
@@ -26,7 +27,8 @@ export function createReadSkillResourceTool(
     .description(
       'Read a resource file from an activated Agent Skill. ' +
       'Returns the content of a file within the skill directory (e.g., references/, scripts/, assets/). ' +
-      'The path must be relative to the skill root and cannot traverse outside it.',
+      'The path must be relative to the skill root and cannot traverse outside it. ' +
+      'SKILL.md is only readable from workspace or trusted roots.',
     )
     .category(ToolCategory.SKILLS)
     .tags(['skill', 'resource', 'agent-skills'])
@@ -48,6 +50,30 @@ export function createReadSkillResourceTool(
           error: pathResult.error,
         });
         return pathResult.error;
+      }
+
+      const isSkillInstructions = pathResult.resolvedPath === resolve(skill.skillPath, 'SKILL.md');
+      if (isSkillInstructions) {
+        const activationDecision = evaluateSkillActivationPolicy(skill.trustLevel);
+        if (!activationDecision.allowed) {
+          activationLogger.warn('Skill resource load blocked — skill instructions trust policy', {
+            name,
+            resourcePath,
+            trustLevel: skill.trustLevel,
+            reason: activationDecision.reason,
+            message: activationDecision.message,
+          });
+
+          registry.emitEvent(SkillRegistryEvent.TRUST_POLICY_DENIED, {
+            name: skill.metadata.name,
+            resourcePath,
+            trustLevel: skill.trustLevel,
+            reason: activationDecision.reason,
+            message: activationDecision.message,
+          });
+
+          return activationDecision.message;
+        }
       }
 
       const policyDecision = evaluateTrustPolicy(

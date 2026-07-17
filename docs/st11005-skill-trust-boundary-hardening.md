@@ -18,6 +18,7 @@ That split-brain behavior made it too easy for a model-exposed agent to treat th
 
 - Prompt generation now annotates trusted skill entries with their trust level and separates untrusted discoveries into a dedicated `<untrusted_skills>` block with an explicit activation-policy notice.
 - Full-body activation now uses a trust-policy check parallel to the existing script-resource trust policy.
+- `read-skill-resource` applies the same activation policy to direct `SKILL.md` requests, closing the resource-tool bypass for untrusted roots.
 - `workspace` and `trusted` roots can still activate normally.
 - `untrusted` roots stay discoverable for operator review and migration planning, but their SKILL.md bodies stay blocked until the root is explicitly promoted.
 

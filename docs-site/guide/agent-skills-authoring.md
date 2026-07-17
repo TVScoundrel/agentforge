@@ -138,6 +138,8 @@ The repository [Security Policy](https://github.com/TVScoundrel/agentforge/blob/
 | `trusted` | Activatable | Read | Read | Read |
 | `untrusted` | Discoverable only until root promotion | Read | **Denied** | Read |
 
+The root `SKILL.md` is protected like the full activation body: it is readable through activation tools only from `workspace` or `trusted` roots.
+
 ### Promoting a Skill Root
 
 To allow script access and full `activate-skill` access from a root:

@@ -72,6 +72,29 @@ describe('read-skill-resource tool', () => {
     expect(missingResource).toContain('nonexistent.md');
   });
 
+  it('blocks SKILL.md reads from untrusted roots, including normalized paths', async () => {
+    createSkillFixture(tempDir, 'my-skill', 'name: my-skill\ndescription: Test', '\nsecret instructions');
+
+    const registry = new SkillRegistry({ skillRoots: [tempDir] });
+    const tool = createReadSkillResourceTool(registry);
+    const deniedEvents: unknown[] = [];
+    registry.on(SkillRegistryEvent.TRUST_POLICY_DENIED, (data) => deniedEvents.push(data));
+
+    const directResult = await tool.invoke({ name: 'my-skill', path: 'SKILL.md' });
+    const normalizedResult = await tool.invoke({ name: 'my-skill', path: './SKILL.md' });
+
+    expect(directResult).toContain('Skill activation blocked');
+    expect(normalizedResult).toContain('Skill activation blocked');
+    expect(directResult).not.toContain('secret instructions');
+    expect(normalizedResult).not.toContain('secret instructions');
+    expect(deniedEvents).toHaveLength(2);
+    expect(deniedEvents[0]).toEqual(expect.objectContaining({
+      name: 'my-skill',
+      resourcePath: 'SKILL.md',
+      trustLevel: 'untrusted',
+    }));
+  });
+
   it('emits resource events on success and not on failure', async () => {
     const skillDir = createSkillFixture(tempDir, 'my-skill', 'name: my-skill\ndescription: Test', '\nbody');
     createResourceFile(skillDir, 'references/guide.md', 'Guide content');
