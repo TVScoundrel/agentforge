@@ -27,7 +27,8 @@ export function createActivateSkillTool(
     .description(
       'Activate an Agent Skill by name, loading its full instructions for trusted roots. ' +
       'Returns the complete SKILL.md body content for workspace or explicitly trusted skills. ' +
-      'Use this when you see a relevant skill in <available_skills> and want to follow its instructions.',
+      'Use this when you see a relevant skill in <available_skills> or <untrusted_skills>; ' +
+      'activation is blocked for untrusted roots until they are promoted.',
     )
     .category(ToolCategory.SKILLS)
     .tags(['skill', 'activation', 'agent-skills'])

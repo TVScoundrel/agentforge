@@ -27,8 +27,12 @@ export function generateSkillPrompt(
     skills = skills.slice(0, config.maxDiscoveredSkills);
   }
 
-  const trustedSkills = skills.filter((skill) => skill.trustLevel !== 'untrusted');
-  const untrustedSkills = skills.filter((skill) => skill.trustLevel === 'untrusted');
+  const trustedSkills = skills.filter(
+    (skill) => skill.trustLevel === 'workspace' || skill.trustLevel === 'trusted',
+  );
+  const untrustedSkills = skills.filter(
+    (skill) => skill.trustLevel !== 'workspace' && skill.trustLevel !== 'trusted',
+  );
 
   if (trustedSkills.length === 0 && untrustedSkills.length === 0) {
     logger.debug('Skill prompt generation produced empty result', {

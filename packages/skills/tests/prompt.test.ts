@@ -11,6 +11,8 @@ import { mkdirSync, writeFileSync, rmSync } from 'node:fs';
 import { join } from 'node:path';
 import { tmpdir } from 'node:os';
 import { SkillRegistry } from '../src/registry.js';
+import { generateSkillPrompt } from '../src/registry-prompt.js';
+import type { Skill } from '../src/types.js';
 
 /**
  * Create a temp directory for test fixtures.
@@ -157,6 +159,26 @@ describe('SkillRegistry.generatePrompt()', () => {
 
       const trustedSection = xml.split('<untrusted_skills>')[0] ?? '';
       expect(trustedSection).not.toContain('<name>community-skill</name>');
+    });
+
+    it('should restrict unknown runtime trust values to the untrusted section', () => {
+      const skill = {
+        metadata: { name: 'unknown-trust', description: 'Unknown trust' },
+        skillPath: '/skills/unknown-trust',
+        rootPath: '/skills',
+        trustLevel: 'unknown',
+      } as unknown as Skill;
+
+      const xml = generateSkillPrompt(
+        { enabled: true, skillRoots: [] },
+        [skill],
+        1,
+      );
+
+      expect(xml).not.toContain('<available_skills>');
+      expect(xml).toContain('<untrusted_skills>');
+      expect(xml).toContain('<trust>unknown</trust>');
+      expect(xml).toContain('<activation_policy>requires-trusted-root</activation_policy>');
     });
 
     it('should escape XML special characters in skill fields', () => {

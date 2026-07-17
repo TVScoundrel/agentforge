@@ -82,12 +82,15 @@ describe('read-skill-resource tool', () => {
 
     const directResult = await tool.invoke({ name: 'my-skill', path: 'SKILL.md' });
     const normalizedResult = await tool.invoke({ name: 'my-skill', path: './SKILL.md' });
+    const caseVariantResult = await tool.invoke({ name: 'my-skill', path: 'skill.md' });
 
     expect(directResult).toContain('Skill activation blocked');
     expect(normalizedResult).toContain('Skill activation blocked');
+    expect(caseVariantResult).toContain('Skill activation blocked');
     expect(directResult).not.toContain('secret instructions');
     expect(normalizedResult).not.toContain('secret instructions');
-    expect(deniedEvents).toHaveLength(2);
+    expect(caseVariantResult).not.toContain('secret instructions');
+    expect(deniedEvents).toHaveLength(3);
     expect(deniedEvents[0]).toEqual(expect.objectContaining({
       name: 'my-skill',
       resourcePath: 'SKILL.md',

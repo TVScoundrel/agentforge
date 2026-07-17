@@ -52,7 +52,8 @@ export function createReadSkillResourceTool(
         return pathResult.error;
       }
 
-      const isSkillInstructions = pathResult.resolvedPath === resolve(skill.skillPath, 'SKILL.md');
+      const skillInstructionsPath = resolve(skill.skillPath, 'SKILL.md');
+      const isSkillInstructions = pathResult.resolvedPath.toLowerCase() === skillInstructionsPath.toLowerCase();
       if (isSkillInstructions) {
         const activationDecision = evaluateSkillActivationPolicy(skill.trustLevel);
         if (!activationDecision.allowed) {
