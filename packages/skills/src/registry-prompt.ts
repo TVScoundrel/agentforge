@@ -23,16 +23,19 @@ export function generateSkillPrompt(
     skills = skills.filter((skill) => requested.has(skill.metadata.name));
   }
 
-  if (config.maxDiscoveredSkills !== undefined && config.maxDiscoveredSkills >= 0) {
-    skills = skills.slice(0, config.maxDiscoveredSkills);
-  }
-
-  const trustedSkills = skills.filter(
+  let trustedSkills = skills.filter(
     (skill) => skill.trustLevel === 'workspace' || skill.trustLevel === 'trusted',
   );
-  const untrustedSkills = skills.filter(
+  let untrustedSkills = skills.filter(
     (skill) => skill.trustLevel !== 'workspace' && skill.trustLevel !== 'trusted',
   );
+
+  if (config.maxDiscoveredSkills !== undefined && config.maxDiscoveredSkills >= 0) {
+    const trustedLimit = Math.min(config.maxDiscoveredSkills, trustedSkills.length);
+    trustedSkills = trustedSkills.slice(0, trustedLimit);
+    untrustedSkills = untrustedSkills.slice(0, config.maxDiscoveredSkills - trustedLimit);
+    skills = [...trustedSkills, ...untrustedSkills];
+  }
 
   if (trustedSkills.length === 0 && untrustedSkills.length === 0) {
     logger.debug('Skill prompt generation produced empty result', {

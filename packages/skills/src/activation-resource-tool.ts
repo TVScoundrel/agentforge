@@ -1,4 +1,4 @@
-import { readFileSync } from 'node:fs';
+import { readFileSync, realpathSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { ToolBuilder, ToolCategory } from '@agentforge/core';
 import type { Tool } from '@agentforge/core';
@@ -53,7 +53,14 @@ export function createReadSkillResourceTool(
       }
 
       const skillInstructionsPath = resolve(skill.skillPath, 'SKILL.md');
-      const isSkillInstructions = pathResult.resolvedPath.toLowerCase() === skillInstructionsPath.toLowerCase();
+      let isSkillInstructions = pathResult.resolvedPath.toLowerCase() === skillInstructionsPath.toLowerCase();
+      if (!isSkillInstructions) {
+        try {
+          isSkillInstructions = realpathSync(pathResult.resolvedPath).toLowerCase() === realpathSync(skillInstructionsPath).toLowerCase();
+        } catch {
+          // The resource read below reports missing or unreadable paths.
+        }
+      }
       if (isSkillInstructions) {
         const activationDecision = evaluateSkillActivationPolicy(skill.trustLevel);
         if (!activationDecision.allowed) {

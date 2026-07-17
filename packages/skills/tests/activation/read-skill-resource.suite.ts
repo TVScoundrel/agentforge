@@ -1,3 +1,5 @@
+import { symlinkSync } from 'node:fs';
+import { join } from 'node:path';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { ToolCategory } from '@agentforge/core';
 import { SkillRegistry } from '../../src/registry.js';
@@ -83,14 +85,18 @@ describe('read-skill-resource tool', () => {
     const directResult = await tool.invoke({ name: 'my-skill', path: 'SKILL.md' });
     const normalizedResult = await tool.invoke({ name: 'my-skill', path: './SKILL.md' });
     const caseVariantResult = await tool.invoke({ name: 'my-skill', path: 'skill.md' });
+    symlinkSync(join(tempDir, 'my-skill', 'SKILL.md'), join(tempDir, 'my-skill', 'instructions.md'));
+    const symlinkResult = await tool.invoke({ name: 'my-skill', path: 'instructions.md' });
 
     expect(directResult).toContain('Skill activation blocked');
     expect(normalizedResult).toContain('Skill activation blocked');
     expect(caseVariantResult).toContain('Skill activation blocked');
+    expect(symlinkResult).toContain('Skill activation blocked');
     expect(directResult).not.toContain('secret instructions');
     expect(normalizedResult).not.toContain('secret instructions');
     expect(caseVariantResult).not.toContain('secret instructions');
-    expect(deniedEvents).toHaveLength(3);
+    expect(symlinkResult).not.toContain('secret instructions');
+    expect(deniedEvents).toHaveLength(4);
     expect(deniedEvents[0]).toEqual(expect.objectContaining({
       name: 'my-skill',
       resourcePath: 'SKILL.md',

@@ -294,6 +294,34 @@ describe('SkillRegistry.generatePrompt()', () => {
       expect(skillBlocks).toHaveLength(2);
     });
 
+    it('should prioritize trusted skills before restricted skills when capped', () => {
+      const untrustedRoot = makeTempDir();
+      const trustedRoot = makeTempDir();
+      createSkillFixture(untrustedRoot, 'community-skill', {
+        name: 'community-skill',
+        description: 'Community skill',
+      });
+      createSkillFixture(trustedRoot, 'workspace-skill', {
+        name: 'workspace-skill',
+        description: 'Workspace skill',
+      });
+
+      const registry = new SkillRegistry({
+        skillRoots: [
+          { path: untrustedRoot, trust: 'untrusted' },
+          { path: trustedRoot, trust: 'workspace' },
+        ],
+        enabled: true,
+        maxDiscoveredSkills: 1,
+      });
+      const xml = registry.generatePrompt();
+
+      expect(xml).toContain('<name>workspace-skill</name>');
+      expect(xml).not.toContain('<name>community-skill</name>');
+      expect(xml).toContain('<available_skills>');
+      expect(xml).not.toContain('<untrusted_skills>');
+    });
+
     it('should return empty string when maxDiscoveredSkills is 0', () => {
       const root = makeTempDir();
       createSkillFixture(root, 'skill-a', { name: 'skill-a', description: 'Skill A' });
