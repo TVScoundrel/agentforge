@@ -5,6 +5,36 @@ All notable changes to AgentForge will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.16.76] - 2026-07-18
+
+### Added
+
+#### @agentforge/skills - Trust Boundary Coverage
+- Added focused regressions for untrusted-skill discovery, trusted-root opt-in behavior, activation denial, resource aliases, symlink aliases, denial telemetry, and trusted-first prompt-cap ordering.
+- Added story documentation in `docs/st11005-skill-trust-boundary-hardening.md` covering the trust model, compatibility impact, and migration from plain string skill roots.
+
+### Changed
+
+#### @agentforge/skills - Trust-Aware Prompts and Activation
+- Separated trusted/workspace skills from discoverable untrusted skills in generated prompts so untrusted skills are not presented as implicitly trusted instructions.
+- Added trust-aware `SKILL.md` activation checks while preserving the existing script-resource trust policy for untrusted roots.
+- Normalized trust-denial telemetry and hardened activation/resource checks against case-variant and symlink aliases.
+
+### Fixed
+
+#### @agentforge/skills - Untrusted Skill Exposure
+- Prevented untrusted skill roots from exposing full `SKILL.md` bodies through activation and resource aliases without explicit root promotion.
+- Prioritized trusted and workspace skills under prompt discovery caps so untrusted entries cannot crowd out trusted skills.
+
+### Published
+- All packages published to npm registry at version 0.16.76:
+  - @agentforge/core@0.16.76
+  - @agentforge/skills@0.16.76
+  - @agentforge/patterns@0.16.76
+  - @agentforge/tools@0.16.76
+  - @agentforge/testing@0.16.76
+  - @agentforge/cli@0.16.76
+
 ## [0.16.75] - 2026-07-16
 
 ### Added
