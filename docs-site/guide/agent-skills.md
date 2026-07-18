@@ -294,11 +294,11 @@ If issues are detected after enabling Agent Skills:
 
 ::: warning
 Setting `enabled: false` only suppresses `generatePrompt()`. If activation tools are registered with the agent, they remain callable. Remove them from the tool array for a complete rollback.
+:::
 
 ## Migration Note
 
 If you previously passed plain string roots such as `skillRoots: ['.agentskills']`, those roots remain discoverable but are now treated as `untrusted` for prompt and activation purposes. Migrate reviewed roots to explicit objects such as `{ path: '.agentskills', trust: 'workspace' }` or `{ path: '/shared/skills', trust: 'trusted' }` before expecting `activate-skill` to expose the full SKILL.md body.
-:::
 
 ## See Also
 
