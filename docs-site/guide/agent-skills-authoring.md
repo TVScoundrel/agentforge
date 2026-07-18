@@ -132,15 +132,17 @@ Trust levels control access to `scripts/` resources:
 
 The repository [Security Policy](https://github.com/TVScoundrel/agentforge/blob/main/SECURITY.md) defines the broader trust-boundary expectations for untrusted skill roots and model-visible skill content.
 
-| Trust Level | `references/` | `scripts/` | `assets/` |
-|-------------|---------------|------------|-----------|
-| `workspace` | Read | Read | Read |
-| `trusted` | Read | Read | Read |
-| `untrusted` | Read | **Denied** | Read |
+| Trust Level | SKILL.md Activation | `references/` | `scripts/` | `assets/` |
+|-------------|---------------------|---------------|------------|-----------|
+| `workspace` | Activatable | Read | Read | Read |
+| `trusted` | Activatable | Read | Read | Read |
+| `untrusted` | Discoverable only until root promotion | Read | **Denied** | Read |
+
+The root `SKILL.md` is protected like the full activation body: it is readable through activation tools only from `workspace` or `trusted` roots.
 
 ### Promoting a Skill Root
 
-To allow script access from a root:
+To allow script access and full `activate-skill` access from a root:
 
 1. **Review** the skill scripts manually
 2. **Configure** the root with explicit trust:
@@ -153,6 +155,8 @@ const registry = new SkillRegistry({
   ],
 });
 ```
+
+Until that promotion happens, the skill can still appear in the prompt under `<untrusted_skills>`, but `activate-skill` will return a trust-policy message instead of the full SKILL.md body.
 
 ### `allowed-tools` Field
 

@@ -11,6 +11,8 @@ import { mkdirSync, writeFileSync, rmSync } from 'node:fs';
 import { join } from 'node:path';
 import { tmpdir } from 'node:os';
 import { SkillRegistry } from '../src/registry.js';
+import { generateSkillPrompt } from '../src/registry-prompt.js';
+import type { Skill } from '../src/types.js';
 
 /**
  * Create a temp directory for test fixtures.
@@ -72,17 +74,32 @@ describe('SkillRegistry.generatePrompt()', () => {
       const root = makeTempDir();
       createSkillFixture(root, 'my-skill', { name: 'my-skill', description: 'A skill' });
 
-      const registry = new SkillRegistry({ skillRoots: [root], enabled: true });
+      const registry = new SkillRegistry({ skillRoots: [{ path: root, trust: 'workspace' }], enabled: true });
       const xml = registry.generatePrompt();
       expect(xml).toContain('<available_skills>');
       expect(xml).toContain('</available_skills>');
       expect(xml).toContain('<name>my-skill</name>');
     });
 
+    it('should classify plain string roots as untrusted', () => {
+      const root = makeTempDir();
+      createSkillFixture(root, 'community-skill', {
+        name: 'community-skill',
+        description: 'Community skill',
+      });
+
+      const registry = new SkillRegistry({ skillRoots: [root], enabled: true });
+      const xml = registry.generatePrompt();
+
+      expect(xml).toContain('<untrusted_skills>');
+      expect(xml).toContain('<trust>untrusted</trust>');
+      expect(xml).not.toContain('<available_skills>');
+    });
+
     it('should return empty string when enabled but no skills discovered', () => {
       const root = makeTempDir();
       // Empty root — no skills
-      const registry = new SkillRegistry({ skillRoots: [root], enabled: true });
+      const registry = new SkillRegistry({ skillRoots: [{ path: root, trust: 'workspace' }], enabled: true });
       expect(registry.generatePrompt()).toBe('');
     });
   });
@@ -97,7 +114,7 @@ describe('SkillRegistry.generatePrompt()', () => {
         description: 'Review code for quality and correctness',
       });
 
-      const registry = new SkillRegistry({ skillRoots: [root], enabled: true });
+      const registry = new SkillRegistry({ skillRoots: [{ path: root, trust: 'workspace' }], enabled: true });
       const xml = registry.generatePrompt();
 
       expect(xml).toMatch(/^<available_skills>\n/);
@@ -114,7 +131,7 @@ describe('SkillRegistry.generatePrompt()', () => {
       createSkillFixture(root, 'code-review', { name: 'code-review', description: 'Review code' });
       createSkillFixture(root, 'testing', { name: 'testing', description: 'Write tests' });
 
-      const registry = new SkillRegistry({ skillRoots: [root], enabled: true });
+      const registry = new SkillRegistry({ skillRoots: [{ path: root, trust: 'workspace' }], enabled: true });
       const xml = registry.generatePrompt();
 
       expect(xml).toContain('<name>code-review</name>');
@@ -123,6 +140,60 @@ describe('SkillRegistry.generatePrompt()', () => {
       // Count skill blocks
       const skillBlocks = xml.match(/<skill>/g);
       expect(skillBlocks).toHaveLength(2);
+    });
+
+    it('should separate untrusted skills from the trusted available-skills list', () => {
+      const workspaceRoot = makeTempDir();
+      const communityRoot = makeTempDir();
+      createSkillFixture(workspaceRoot, 'workspace-skill', {
+        name: 'workspace-skill',
+        description: 'First-party workspace skill',
+      });
+      createSkillFixture(communityRoot, 'community-skill', {
+        name: 'community-skill',
+        description: 'Third-party community skill',
+      });
+
+      const registry = new SkillRegistry({
+        skillRoots: [
+          { path: workspaceRoot, trust: 'workspace' },
+          { path: communityRoot, trust: 'untrusted' },
+        ],
+        enabled: true,
+      });
+
+      const xml = registry.generatePrompt();
+
+      expect(xml).toContain('<available_skills>');
+      expect(xml).toContain('<name>workspace-skill</name>');
+      expect(xml).toContain('<trust>workspace</trust>');
+      expect(xml).toContain('<untrusted_skills>');
+      expect(xml).toContain('<name>community-skill</name>');
+      expect(xml).toContain('<trust>untrusted</trust>');
+      expect(xml).toContain('<activation_policy>requires-trusted-root</activation_policy>');
+
+      const trustedSection = xml.split('<untrusted_skills>')[0] ?? '';
+      expect(trustedSection).not.toContain('<name>community-skill</name>');
+    });
+
+    it('should restrict unknown runtime trust values to the untrusted section', () => {
+      const skill = {
+        metadata: { name: 'unknown-trust', description: 'Unknown trust' },
+        skillPath: '/skills/unknown-trust',
+        rootPath: '/skills',
+        trustLevel: 'unknown',
+      } as unknown as Skill;
+
+      const xml = generateSkillPrompt(
+        { enabled: true, skillRoots: [] },
+        [skill],
+        1,
+      );
+
+      expect(xml).not.toContain('<available_skills>');
+      expect(xml).toContain('<untrusted_skills>');
+      expect(xml).toContain('<trust>unknown</trust>');
+      expect(xml).toContain('<activation_policy>requires-trusted-root</activation_policy>');
     });
 
     it('should escape XML special characters in skill fields', () => {
@@ -139,7 +210,7 @@ describe('SkillRegistry.generatePrompt()', () => {
         '# HTML Tools',
       ].join('\n'), 'utf-8');
 
-      const registry = new SkillRegistry({ skillRoots: [root], enabled: true });
+      const registry = new SkillRegistry({ skillRoots: [{ path: root, trust: 'workspace' }], enabled: true });
       const xml = registry.generatePrompt();
 
       expect(xml).toContain('<name>html-tools</name>');
@@ -158,7 +229,7 @@ describe('SkillRegistry.generatePrompt()', () => {
       createSkillFixture(root, 'testing', { name: 'testing', description: 'Write tests' });
       createSkillFixture(root, 'deployment', { name: 'deployment', description: 'Deploy apps' });
 
-      const registry = new SkillRegistry({ skillRoots: [root], enabled: true });
+      const registry = new SkillRegistry({ skillRoots: [{ path: root, trust: 'workspace' }], enabled: true });
       const xml = registry.generatePrompt({ skills: ['code-review', 'testing'] });
 
       expect(xml).toContain('<name>code-review</name>');
@@ -173,7 +244,7 @@ describe('SkillRegistry.generatePrompt()', () => {
       const root = makeTempDir();
       createSkillFixture(root, 'code-review', { name: 'code-review', description: 'Review code' });
 
-      const registry = new SkillRegistry({ skillRoots: [root], enabled: true });
+      const registry = new SkillRegistry({ skillRoots: [{ path: root, trust: 'workspace' }], enabled: true });
       const xml = registry.generatePrompt({ skills: ['nonexistent'] });
 
       expect(xml).toBe('');
@@ -184,7 +255,7 @@ describe('SkillRegistry.generatePrompt()', () => {
       createSkillFixture(root, 'code-review', { name: 'code-review', description: 'Review code' });
       createSkillFixture(root, 'testing', { name: 'testing', description: 'Write tests' });
 
-      const registry = new SkillRegistry({ skillRoots: [root], enabled: true });
+      const registry = new SkillRegistry({ skillRoots: [{ path: root, trust: 'workspace' }], enabled: true });
       const xml = registry.generatePrompt({ skills: [] });
 
       expect(xml).toContain('<name>code-review</name>');
@@ -196,7 +267,7 @@ describe('SkillRegistry.generatePrompt()', () => {
       createSkillFixture(root, 'code-review', { name: 'code-review', description: 'Review code' });
       createSkillFixture(root, 'testing', { name: 'testing', description: 'Write tests' });
 
-      const registry = new SkillRegistry({ skillRoots: [root], enabled: true });
+      const registry = new SkillRegistry({ skillRoots: [{ path: root, trust: 'workspace' }], enabled: true });
       const xml = registry.generatePrompt();
 
       expect(xml).toContain('<name>code-review</name>');
@@ -207,7 +278,7 @@ describe('SkillRegistry.generatePrompt()', () => {
       const root = makeTempDir();
       createSkillFixture(root, 'code-review', { name: 'code-review', description: 'Review code' });
 
-      const registry = new SkillRegistry({ skillRoots: [root], enabled: true });
+      const registry = new SkillRegistry({ skillRoots: [{ path: root, trust: 'workspace' }], enabled: true });
       const xml = registry.generatePrompt({ skills: ['code-review', 'nonexistent'] });
 
       expect(xml).toContain('<name>code-review</name>');
@@ -228,7 +299,7 @@ describe('SkillRegistry.generatePrompt()', () => {
       createSkillFixture(root, 'skill-c', { name: 'skill-c', description: 'Skill C' });
 
       const registry = new SkillRegistry({
-        skillRoots: [root],
+        skillRoots: [{ path: root, trust: 'workspace' }],
         enabled: true,
         maxDiscoveredSkills: 2,
       });
@@ -238,12 +309,40 @@ describe('SkillRegistry.generatePrompt()', () => {
       expect(skillBlocks).toHaveLength(2);
     });
 
+    it('should prioritize trusted skills before restricted skills when capped', () => {
+      const untrustedRoot = makeTempDir();
+      const trustedRoot = makeTempDir();
+      createSkillFixture(untrustedRoot, 'community-skill', {
+        name: 'community-skill',
+        description: 'Community skill',
+      });
+      createSkillFixture(trustedRoot, 'workspace-skill', {
+        name: 'workspace-skill',
+        description: 'Workspace skill',
+      });
+
+      const registry = new SkillRegistry({
+        skillRoots: [
+          { path: untrustedRoot, trust: 'untrusted' },
+          { path: trustedRoot, trust: 'workspace' },
+        ],
+        enabled: true,
+        maxDiscoveredSkills: 1,
+      });
+      const xml = registry.generatePrompt();
+
+      expect(xml).toContain('<name>workspace-skill</name>');
+      expect(xml).not.toContain('<name>community-skill</name>');
+      expect(xml).toContain('<available_skills>');
+      expect(xml).not.toContain('<untrusted_skills>');
+    });
+
     it('should return empty string when maxDiscoveredSkills is 0', () => {
       const root = makeTempDir();
       createSkillFixture(root, 'skill-a', { name: 'skill-a', description: 'Skill A' });
 
       const registry = new SkillRegistry({
-        skillRoots: [root],
+        skillRoots: [{ path: root, trust: 'workspace' }],
         enabled: true,
         maxDiscoveredSkills: 0,
       });
@@ -258,7 +357,7 @@ describe('SkillRegistry.generatePrompt()', () => {
       createSkillFixture(root, 'skill-b', { name: 'skill-b', description: 'Skill B' });
 
       const registry = new SkillRegistry({
-        skillRoots: [root],
+        skillRoots: [{ path: root, trust: 'workspace' }],
         enabled: true,
         maxDiscoveredSkills: 100,
       });
@@ -275,7 +374,7 @@ describe('SkillRegistry.generatePrompt()', () => {
       createSkillFixture(root, 'skill-c', { name: 'skill-c', description: 'Skill C' });
 
       const registry = new SkillRegistry({
-        skillRoots: [root],
+        skillRoots: [{ path: root, trust: 'workspace' }],
         enabled: true,
         maxDiscoveredSkills: 1,
       });
@@ -294,7 +393,7 @@ describe('SkillRegistry.generatePrompt()', () => {
       createSkillFixture(root, 'skill-c', { name: 'skill-c', description: 'Skill C' });
 
       const registry = new SkillRegistry({
-        skillRoots: [root],
+        skillRoots: [{ path: root, trust: 'workspace' }],
         enabled: true,
         // maxDiscoveredSkills not set
       });
@@ -312,7 +411,7 @@ describe('SkillRegistry.generatePrompt()', () => {
       const root = makeTempDir();
       createSkillFixture(root, 'code-review', { name: 'code-review', description: 'Review code' });
 
-      const registry = new SkillRegistry({ skillRoots: [root], enabled: true });
+      const registry = new SkillRegistry({ skillRoots: [{ path: root, trust: 'workspace' }], enabled: true });
 
       // Simulate composing with tool prompt
       const toolPrompt = 'Available Tools:\n\n- my-tool: Does things';
@@ -349,7 +448,7 @@ describe('SkillRegistry.generatePrompt()', () => {
       const root = makeTempDir();
       createSkillFixture(root, 'my-skill', { name: 'my-skill', description: 'A skill' });
 
-      const registry = new SkillRegistry({ skillRoots: [root], enabled: true });
+      const registry = new SkillRegistry({ skillRoots: [{ path: root, trust: 'workspace' }], enabled: true });
       const xml = registry.generatePrompt(undefined);
 
       expect(xml).toContain('<name>my-skill</name>');
@@ -357,7 +456,7 @@ describe('SkillRegistry.generatePrompt()', () => {
 
     it('should handle empty registry with enabled flag', () => {
       const root = makeTempDir();
-      const registry = new SkillRegistry({ skillRoots: [root], enabled: true });
+      const registry = new SkillRegistry({ skillRoots: [{ path: root, trust: 'workspace' }], enabled: true });
 
       expect(registry.generatePrompt()).toBe('');
       expect(registry.generatePrompt({ skills: ['anything'] })).toBe('');
@@ -367,7 +466,7 @@ describe('SkillRegistry.generatePrompt()', () => {
       const root = makeTempDir();
       createSkillFixture(root, 'skill-a', { name: 'skill-a', description: 'Skill A' });
 
-      const registry = new SkillRegistry({ skillRoots: [root], enabled: true });
+      const registry = new SkillRegistry({ skillRoots: [{ path: root, trust: 'workspace' }], enabled: true });
       expect(registry.generatePrompt()).toContain('<name>skill-a</name>');
 
       // Add another skill and re-scan
@@ -379,11 +478,31 @@ describe('SkillRegistry.generatePrompt()', () => {
       expect(xml).toContain('<name>skill-b</name>');
     });
 
+    it('should still expose untrusted skills when no trusted skills are available', () => {
+      const root = makeTempDir();
+      createSkillFixture(root, 'community-skill', {
+        name: 'community-skill',
+        description: 'Third-party community skill',
+      });
+
+      const registry = new SkillRegistry({
+        skillRoots: [{ path: root, trust: 'untrusted' }],
+        enabled: true,
+      });
+
+      const xml = registry.generatePrompt();
+
+      expect(xml).not.toContain('<available_skills>');
+      expect(xml).toContain('<untrusted_skills>');
+      expect(xml).toContain('<name>community-skill</name>');
+      expect(xml).toContain('<activation_policy>requires-trusted-root</activation_policy>');
+    });
+
     it('should produce consistent XML across multiple calls', () => {
       const root = makeTempDir();
       createSkillFixture(root, 'my-skill', { name: 'my-skill', description: 'A skill' });
 
-      const registry = new SkillRegistry({ skillRoots: [root], enabled: true });
+      const registry = new SkillRegistry({ skillRoots: [{ path: root, trust: 'workspace' }], enabled: true });
       const xml1 = registry.generatePrompt();
       const xml2 = registry.generatePrompt();
 

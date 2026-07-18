@@ -8,6 +8,7 @@ import { SkillRegistryEvent } from './types.js';
 import { extractBody } from './activation-content.js';
 import { activateSkillSchema } from './activation-schemas.js';
 import { activationLogger, buildMissingSkillMessage } from './activation-shared.js';
+import { evaluateSkillActivationPolicy } from './trust.js';
 
 /**
  * Create the `activate-skill` tool bound to a registry instance.
@@ -24,9 +25,10 @@ export function createActivateSkillTool(
   return new ToolBuilder<z.infer<typeof activateSkillSchema>, string>()
     .name('activate-skill')
     .description(
-      'Activate an Agent Skill by name, loading its full instructions. ' +
-      'Returns the complete SKILL.md body content for the named skill. ' +
-      'Use this when you see a relevant skill in <available_skills> and want to follow its instructions.',
+      'Activate an Agent Skill by name, loading its full instructions for trusted roots. ' +
+      'Returns the complete SKILL.md body content for workspace or explicitly trusted skills. ' +
+      'Use this when you see a relevant skill in <available_skills> or <untrusted_skills>; ' +
+      'activation is blocked for untrusted roots until they are promoted.',
     )
     .category(ToolCategory.SKILLS)
     .tags(['skill', 'activation', 'agent-skills'])
@@ -40,6 +42,26 @@ export function createActivateSkillTool(
         return errorMessage;
       }
 
+      const policyDecision = evaluateSkillActivationPolicy(skill.trustLevel);
+      if (!policyDecision.allowed) {
+        activationLogger.warn('Skill activation blocked — trust policy', {
+          name,
+          trustLevel: skill.trustLevel,
+          reason: policyDecision.reason,
+          message: policyDecision.message,
+        });
+
+        registry.emitEvent(SkillRegistryEvent.TRUST_POLICY_DENIED, {
+          name: skill.metadata.name,
+          resourcePath: 'SKILL.md',
+          trustLevel: skill.trustLevel,
+          reason: policyDecision.reason,
+          message: policyDecision.message,
+        });
+
+        return policyDecision.message;
+      }
+
       const skillMdPath = resolve(skill.skillPath, 'SKILL.md');
       try {
         const content = readFileSync(skillMdPath, 'utf-8');
@@ -49,12 +71,15 @@ export function createActivateSkillTool(
           name: skill.metadata.name,
           skillPath: skill.skillPath,
           bodyLength: body.length,
+          trustLevel: skill.trustLevel,
+          activationReason: policyDecision.reason,
         });
 
         registry.emitEvent(SkillRegistryEvent.SKILL_ACTIVATED, {
           name: skill.metadata.name,
           skillPath: skill.skillPath,
           bodyLength: body.length,
+          trustLevel: skill.trustLevel,
         });
 
         return body;

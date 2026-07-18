@@ -198,7 +198,7 @@ Discovered 2 skills:
 
 ## Step 5: Generate the System Prompt
 
-The `generatePrompt()` method produces an `<available_skills>` XML block that tells the LLM which skills are available:
+The `generatePrompt()` method produces a trusted `<available_skills>` XML block and, when needed, a separate `<untrusted_skills>` block that keeps community roots discoverable without treating them as implicitly safe:
 
 ```typescript
 // 2. Generate skill-aware system prompt
@@ -214,13 +214,30 @@ Output:
     <name>code-review</name>
     <description>Performs thorough code reviews with focus on best practices, security, and maintainability.</description>
     <location>/path/to/.agentskills/code-review</location>
+    <trust>workspace</trust>
   </skill>
   <skill>
     <name>test-generator</name>
     <description>Generates comprehensive test suites following project conventions and testing best practices.</description>
     <location>/path/to/.agentskills/test-generator</location>
+    <trust>workspace</trust>
   </skill>
 </available_skills>
+```
+
+If you also scan unreviewed community roots, they appear in a separate section:
+
+```xml
+<untrusted_skills>
+  <trust_notice>Untrusted skills are discoverable, but their full SKILL.md bodies stay blocked until the root is promoted to trusted or workspace status.</trust_notice>
+  <skill>
+    <name>community-pack</name>
+    <description>Third-party community skill</description>
+    <location>/path/to/community-pack</location>
+    <trust>untrusted</trust>
+    <activation_policy>requires-trusted-root</activation_policy>
+  </skill>
+</untrusted_skills>
 ```
 
 ::: tip Subset Filtering
@@ -235,7 +252,7 @@ This is useful when building focused agents that only need a subset of available
 
 The `toActivationTools()` method returns two tools pre-wired to the registry:
 
-- **`activate-skill`** — loads the full SKILL.md instructions for a skill by name
+- **`activate-skill`** — loads the full SKILL.md instructions for a trusted/workspace skill by name
 - **`read-skill-resource`** — reads a resource file from a skill's directory
 
 ```typescript
@@ -261,7 +278,7 @@ const agent = createReActAgent({
 ${skillPrompt}
 
 When a user asks for help, check if an available skill matches the task.
-If so, use the activate-skill tool to load the skill's full instructions,
+If so, use the activate-skill tool to load the skill's full instructions from trusted or workspace roots,
 then follow those instructions to complete the task.
 Use read-skill-resource to load any referenced templates or files.`,
 });
@@ -292,7 +309,7 @@ for (const msg of result.messages) {
 
 The agent will:
 1. See `code-review` in `<available_skills>` and recognize it matches the task
-2. Call `activate-skill` with `{ name: "code-review" }` to load the full instructions
+2. Call `activate-skill` with `{ name: "code-review" }` to load the full instructions from the trusted workspace root
 3. Follow the skill's review process (read files, analyze, structured output)
 
 ```bash
@@ -355,14 +372,18 @@ const skillRegistry = new SkillRegistry({
 });
 ```
 
-| Trust Level | Reference Files | Script Files | Use Case |
-|-------------|----------------|--------------|----------|
-| `workspace` | Allowed | Allowed | First-party skills in your project |
-| `trusted` | Allowed | Allowed | Vetted community/team skills |
-| `untrusted` | Allowed | Blocked | Unknown or unreviewed skill sources |
+| Trust Level | Full Skill Activation | Reference Files | Script Files | Use Case |
+|-------------|-----------------------|----------------|--------------|----------|
+| `workspace` | Allowed | Allowed | Allowed | First-party skills in your project |
+| `trusted` | Allowed | Allowed | Allowed | Vetted community/team skills |
+| `untrusted` | Blocked until root promotion | Allowed | Blocked | Unknown or unreviewed skill sources |
 
 ::: warning Script Access
 Resources under `scripts/` directories are subject to trust policy enforcement. Only `workspace` and `trusted` roots allow script access. Use `allowUntrustedScripts: true` in config to override (not recommended for production).
+:::
+
+::: warning Full Skill Activation
+Untrusted roots are still listed in the prompt so the model can surface them for operator review, but `activate-skill` will refuse to return their full SKILL.md bodies until you explicitly promote that root to `trusted` or `workspace`.
 :::
 
 ## Complete Working Example
@@ -419,7 +440,7 @@ const agent = createReActAgent({
 ${skillPrompt}
 
 When a user asks for help, check if an available skill matches the task.
-If so, use the activate-skill tool to load the skill's full instructions,
+If so, use the activate-skill tool to load the skill's full instructions from trusted or workspace roots,
 then follow those instructions to complete the task.
 Use read-skill-resource to load any referenced templates or files.`,
 });

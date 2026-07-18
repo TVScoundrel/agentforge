@@ -77,7 +77,8 @@ export function isScriptResource(resourcePath: string): boolean {
 /**
  * Evaluate the trust policy for a resource access request.
  *
- * Non-script resources are always allowed regardless of trust level.
+ * Non-script resources are allowed regardless of trust level, except for
+ * SKILL.md, which is protected by the activation policy.
  * Script resources require `workspace` or `trusted` trust, or the
  * `allowUntrustedScripts` override to be enabled.
  *
@@ -91,7 +92,7 @@ export function evaluateTrustPolicy(
   trustLevel: TrustLevel,
   allowUntrustedScripts: boolean = false,
 ): TrustPolicyDecision {
-  // Non-script resources — no policy enforcement needed
+  // Non-script resources — SKILL.md is checked separately by the resource tool.
   if (!isScriptResource(resourcePath)) {
     return {
       allowed: true,
@@ -138,6 +139,47 @@ export function evaluateTrustPolicy(
         allowed: false,
         reason: TrustPolicyReason.UNKNOWN_TRUST_LEVEL,
         message: `Script access denied — trust level "${trustLevel}" is unknown and is treated as untrusted for security.`,
+      };
+  }
+}
+
+/**
+ * Evaluate whether the full SKILL.md body can be exposed through activation.
+ *
+ * Untrusted roots stay discoverable, but their full instruction bodies are
+ * blocked until the operator explicitly promotes that root to `trusted` or
+ * `workspace`.
+ */
+export function evaluateSkillActivationPolicy(trustLevel: TrustLevel): TrustPolicyDecision {
+  switch (trustLevel) {
+    case 'workspace':
+      return {
+        allowed: true,
+        reason: TrustPolicyReason.WORKSPACE_SKILL_ACTIVATION,
+        message: 'Skill activation allowed — skill root has workspace trust',
+      };
+
+    case 'trusted':
+      return {
+        allowed: true,
+        reason: TrustPolicyReason.TRUSTED_SKILL_ACTIVATION,
+        message: 'Skill activation allowed — skill root is explicitly trusted',
+      };
+
+    case 'untrusted':
+      return {
+        allowed: false,
+        reason: TrustPolicyReason.UNTRUSTED_SKILL_ACTIVATION_DENIED,
+        message: `Skill activation blocked — skill root is untrusted. ` +
+          `Untrusted skills remain discoverable, but their full SKILL.md bodies are blocked by default. ` +
+          `Promote the skill root to 'trusted' or 'workspace' trust level after review to allow activation.`,
+      };
+
+    default:
+      return {
+        allowed: false,
+        reason: TrustPolicyReason.UNKNOWN_TRUST_LEVEL,
+        message: `Skill activation blocked — trust level "${trustLevel}" is unknown and is treated as untrusted for security.`,
       };
   }
 }

@@ -79,3 +79,42 @@
   - PR #159 marked ready for review on 2026-07-16 after the focused regressions, repo-wide `pnpm test --run`, `pnpm lint`, checklist sync, and PR body verification all completed successfully.
 - [x] Wait for merge; do not merge directly from local branch
   - PR #159 merged into `main` on 2026-07-16 as commit `7aaeb92e`; post-merge tracker sync, done-story archival, and ready-lane grooming were completed from local `main`.
+
+## ST-11005: Enforce Trust-Aware Skill Prompt and Activation Boundaries
+
+**Branch:** `feat/st-11005-skill-trust-boundaries`
+
+### Checklist
+- [x] Create branch `feat/st-11005-skill-trust-boundaries`
+  - Created on 2026-07-17 from `main` after moving `ST-11005` to `In Progress` in `planning/kanban-queue.md`.
+- [x] Create draft PR with story ID in title
+  - Draft PR #160 created on 2026-07-17: <https://github.com/TVScoundrel/agentforge/pull/160>
+- [x] Define test strategy before implementation: identify the practical failing automated test seam for untrusted-skill discovery, prompt generation, and activation trust handling
+  - Strategy: use focused red/green regressions in `packages/skills/tests/prompt.test.ts` and `packages/skills/tests/activation/activate-skill.suite.ts`, then re-run the activation entrypoint in `packages/skills/tests/activation.test.ts` to confirm the trust-aware activation flow composes with existing resource-policy coverage.
+- [x] Write or update the failing automated test before production changes when practical; if not practical, record why before implementation
+  - Added prompt and activation regressions first, then captured the expected red failures with `pnpm exec vitest --run packages/skills/tests/prompt.test.ts packages/skills/tests/activation/activate-skill.suite.ts`; initial failures confirmed untrusted skills were still emitted as ordinary `<available_skills>` entries and activation still returned full SKILL.md bodies.
+- [x] Identify the current prompt-generation and activation paths that treat untrusted skill content on the same footing as trusted/workspace skills, and document the intended trust boundary
+  - Confirmed the vulnerable path in `packages/skills/src/registry-prompt.ts` and `packages/skills/src/activation-activate-tool.ts`, where trust level existed for resource enforcement but not for prompt rendering or SKILL.md activation; the new boundary keeps untrusted roots discoverable while blocking full-body activation until root promotion.
+- [x] Update skill prompt generation and activation flows so trust level is explicit and untrusted skill bodies are not presented to the model on the same footing as trusted/workspace skills without an explicit policy choice
+  - `generatePrompt()` now separates trusted/workspace entries from discoverable `<untrusted_skills>` output, and `activate-skill` now enforces trust-aware SKILL.md activation via `evaluateSkillActivationPolicy()`.
+- [x] Preserve the existing script-resource trust policy and ensure the new prompt/activation trust handling composes with it without split-brain behavior
+  - Preserved `read-skill-resource` script gating and added the activation trust check alongside it so trusted/workspace roots still activate normally while untrusted roots remain blocked for both full-body activation and `scripts/` reads.
+- [x] Add focused regression or conformance coverage for untrusted-skill discovery, activation behavior, and the trusted-root opt-in path
+  - Added/updated focused regressions in `packages/skills/tests/prompt.test.ts`, `packages/skills/tests/activation/activate-skill.suite.ts`, and `packages/skills/tests/activation/activation-tools.suite.ts`; green validation passed with `pnpm exec vitest --run packages/skills/tests/prompt.test.ts packages/skills/tests/activation.test.ts`.
+- [x] Update public docs to explain trust tradeoffs for community skill packs and the migration path for existing adopters
+  - Updated `docs-site/guide/agent-skills.md`, `docs-site/guide/agent-skills-authoring.md`, and `docs-site/tutorials/skill-powered-agent.md` with the new prompt structure, activation boundary, and root-promotion migration guidance.
+- [x] Add or update story documentation at `docs/st11005-skill-trust-boundary-hardening.md` (or document why not required)
+  - Added `docs/st11005-skill-trust-boundary-hardening.md`.
+- [x] Assess residual test impact; add/update additional automated tests when needed, or document why no further tests are required
+  - Added the prompt and activation regressions plus updated activation integration coverage; no additional focused automated tests are currently required beyond the pending repo-wide full-suite and lint gates.
+- [x] Assess CI impact; update CI or document why no CI change is required
+  - No CI change is required because the hardening fits the existing skills-package and repo-wide validation paths; this story adds coverage inside the current Vitest suites rather than introducing a new automation contract.
+- [x] Run full test suite before finalizing the PR and record results
+  - `pnpm test --run` -> `224` passed, `9` skipped files; `2505` passed, `110` skipped tests.
+- [x] Run lint (`pnpm lint`) before finalizing the PR and record results
+  - `pnpm lint` -> passed with the existing warning baseline only (`0` errors); workspace lint still reports longstanding warnings and ESLint flat-config env warnings in legacy example files outside this story.
+- [x] Commit completed checklist items as logical commits and push updates
+  - `4a107088` `fix(st-11005): enforce skill trust boundaries` and `2877bbe0` `test(st-11005): align conformance expectations` were pushed to `origin/feat/st-11005-skill-trust-boundaries`; the final ready-state tracker sync is captured in the current follow-up commit.
+- [x] Mark PR Ready only after all story tasks are complete
+  - PR #160 marked ready for review on 2026-07-17 after the conformance expectation fix, repo-wide `pnpm test --run`, `pnpm lint`, checklist sync, and PR body update were complete.
+- [ ] Wait for merge; do not merge directly from local branch

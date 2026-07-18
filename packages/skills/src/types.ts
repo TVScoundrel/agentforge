@@ -59,6 +59,12 @@ export enum TrustPolicyReason {
   WORKSPACE_TRUST = 'workspace-trust',
   /** Skill root has explicit trusted status — scripts allowed */
   TRUSTED_ROOT = 'trusted-root',
+  /** Skill body activation allowed because the root is workspace-owned */
+  WORKSPACE_SKILL_ACTIVATION = 'workspace-skill-activation',
+  /** Skill body activation allowed because the root is explicitly trusted */
+  TRUSTED_SKILL_ACTIVATION = 'trusted-skill-activation',
+  /** Full skill-body activation denied for an untrusted root */
+  UNTRUSTED_SKILL_ACTIVATION_DENIED = 'untrusted-skill-activation-denied',
   /** Skill root is untrusted — scripts denied by default */
   UNTRUSTED_SCRIPT_DENIED = 'untrusted-script-denied',
   /** Untrusted script access was explicitly allowed via config override */
