@@ -2564,13 +2564,14 @@
 **Priority:** P1 (High)
 **Estimate:** 6 hours
 **Dependencies:** ST-11001
+**Status:** Merged (PR #160, 2026-07-18)
 
 **Acceptance criteria:**
-- [ ] Skill prompt generation and activation flows expose trust level clearly and do not present untrusted skill bodies to the model on the same footing as workspace/trusted skills without an explicit policy choice
-- [ ] The existing script-resource trust policy remains intact and the new prompt/activation trust handling composes with it instead of creating split-brain security behavior
-- [ ] Conformance or focused regression tests cover untrusted-skill discovery, activation behavior, and the trusted-root opt-in path
-- [ ] Public docs explain the trust tradeoffs for community skill packs and the migration path for existing adopters
-- [ ] Add or update story documentation at `docs/st11005-skill-trust-boundary-hardening.md`
+- [x] Skill prompt generation and activation flows expose trust level clearly and do not present untrusted skill bodies to the model on the same footing as workspace/trusted skills without an explicit policy choice
+- [x] The existing script-resource trust policy remains intact and the new prompt/activation trust handling composes with it instead of creating split-brain security behavior
+- [x] Conformance or focused regression tests cover untrusted-skill discovery, activation behavior, and the trusted-root opt-in path
+- [x] Public docs explain the trust tradeoffs for community skill packs and the migration path for existing adopters
+- [x] Add or update story documentation at `docs/st11005-skill-trust-boundary-hardening.md`
 
 ---
 

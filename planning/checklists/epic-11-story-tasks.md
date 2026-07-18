@@ -117,4 +117,5 @@
   - `4a107088` `fix(st-11005): enforce skill trust boundaries` and `2877bbe0` `test(st-11005): align conformance expectations` were pushed to `origin/feat/st-11005-skill-trust-boundaries`; the final ready-state tracker sync is captured in the current follow-up commit.
 - [x] Mark PR Ready only after all story tasks are complete
   - PR #160 marked ready for review on 2026-07-17 after the conformance expectation fix, repo-wide `pnpm test --run`, `pnpm lint`, checklist sync, and PR body update were complete.
-- [ ] Wait for merge; do not merge directly from local branch
+- [x] Wait for merge; do not merge directly from local branch
+  - PR #160 merged into `main` on 2026-07-18 as commit `e34389a9`; post-merge tracker sync and ready-lane grooming completed from local `main`.

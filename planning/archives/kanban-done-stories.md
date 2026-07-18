@@ -2,11 +2,18 @@
 
 **Purpose:** Track completed and merged stories for the Relational Database Access Tool project.
 
-**Last Updated:** 2026-07-16
+**Last Updated:** 2026-07-18
 
 ---
 
 ## Completed Stories
+
+### ST-11005: Enforce Trust-Aware Skill Prompt and Activation Boundaries
+- **Merged:** 2026-07-18
+- **PR:** https://github.com/TVScoundrel/agentforge/pull/160 (commit e34389a9)
+- **Epic:** EP-11 (Security Boundary Hardening)
+- **Estimate:** 6 hours
+- **Outcome:** Hardened `@agentforge/skills` trust boundaries by separating trusted/workspace prompt entries from discoverable untrusted skills, blocking untrusted `SKILL.md` activation through activation and resource aliases including symlinks, preserving script-resource policy, normalizing denial telemetry, prioritizing trusted skills under prompt caps, adding focused regressions, and documenting migration from plain string roots.
 
 ### ST-11004: Separate Worker Output from Supervisor Routing Input
 - **Merged:** 2026-07-16

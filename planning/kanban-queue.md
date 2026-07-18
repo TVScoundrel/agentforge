@@ -1,11 +1,11 @@
 # Kanban Queue: AgentForge
 
-**Last Updated:** 2026-07-17
+**Last Updated:** 2026-07-18
 
 ## Queue Status Summary
 
 - **Ready:** 3 stories
-- **In Progress:** 1 story
+- **In Progress:** 0 stories
 - **In Review:** 0 stories
 - **Blocked:** 0 stories
 - **Backlog:** 0 stories
@@ -25,8 +25,7 @@
 
 ## In Progress
 
-- `ST-11005` - Enforce Trust-Aware Skill Prompt and Activation Boundaries
-  - Depends on: `ST-11001` (merged)
+None currently.
 
 ---
 
@@ -52,6 +51,7 @@ _No stories currently in backlog_
 
 - ST-11001 complete - repository security policy routing is now documented through the root README, contributing guide, tools guide, and agent-skills guides; Epic 11 queue grooming promoted `ST-11005`, `ST-11002`, `ST-11003`, and `ST-11006` into `Ready` behind the existing top-priority `ST-11004` after the policy baseline merged (merged 2026-07-15, PR #158)
 - ST-11004 complete - multi-agent supervisor routing now preserves trusted `supervisorTask` intent separately from worker `task_result` output, reuses worker results only as labeled untrusted context, and bounds that context for prompt growth safety; the ready lane advanced to `ST-11005`, which moved to `In Progress` on 2026-07-17, with `ST-11002`, `ST-11003`, and `ST-11006` still dependency-ready behind it (merged 2026-07-16, PR #159)
+- ST-11005 complete - skill prompts and activation now distinguish trusted/workspace skills from discoverable untrusted skills, block untrusted `SKILL.md` exposure through activation and resource aliases, preserve script-resource policy, and document the root-promotion migration path; the ready lane remains `ST-11002`, `ST-11003`, and `ST-11006` (merged 2026-07-18, PR #160)
 
 - Complete: ST-01001 - foundation established (merged 2026-02-17)
 - Complete: ST-01002 - connection manager implemented (merged 2026-02-17)
