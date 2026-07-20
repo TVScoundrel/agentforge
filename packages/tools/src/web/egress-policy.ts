@@ -1,6 +1,6 @@
 import { lookup as dnsLookup } from 'node:dns/promises';
 import net from 'node:net';
-import axios, { type AxiosRequestConfig, type AxiosResponse } from 'axios';
+import axios, { type AddressFamily, type AxiosRequestConfig, type AxiosResponse, type LookupAddress } from 'axios';
 
 export type DestinationBlockReason =
   | 'unsupported-protocol'
@@ -24,6 +24,11 @@ const DEFAULT_MAX_REDIRECTS = 5;
 const REDIRECT_STATUSES = new Set([301, 302, 303, 307, 308]);
 const IPV4_MAPPED_NETWORK = '::ffff:0:0';
 const SENSITIVE_REDIRECT_HEADERS = new Set(['authorization', 'cookie', 'proxy-authorization']);
+
+interface ResolvedAddress {
+  address: string;
+  family: 4 | 6;
+}
 
 export const DEFAULT_DESTINATION_POLICY = Object.freeze({
   allowLocalhost: false,
@@ -135,10 +140,10 @@ function policyAllows(reason: DestinationBlockReason, policy: DestinationPolicy)
   return false;
 }
 
-async function resolveDestinationAddresses(hostname: string): Promise<string[]> {
+async function resolveDestinationAddresses(hostname: string): Promise<ResolvedAddress[]> {
   try {
     const addresses = await dnsLookup(hostname, { all: true, verbatim: true });
-    return addresses.map(({ address }) => address);
+    return addresses.map(({ address, family }) => ({ address, family: family as 4 | 6 }));
   } catch (error) {
     throw new DestinationPolicyError(hostname, 'dns-resolution-failed', `Destination policy could not resolve hostname "${hostname}" before making a request: ${error instanceof Error ? error.message : String(error)}`);
   }
@@ -148,7 +153,7 @@ function blockDestination(url: string, reason: DestinationBlockReason): never {
   throw new DestinationPolicyError(url, reason, `Destination blocked by web egress policy (${reason}): ${url}`);
 }
 
-export async function assertDestinationAllowed(url: string, policy: DestinationPolicy = {}): Promise<void> {
+async function validateDestinationAllowed(url: string, policy: DestinationPolicy): Promise<ResolvedAddress[]> {
   const effectivePolicy = { ...DEFAULT_DESTINATION_POLICY, ...policy };
   let parsed: URL;
   try {
@@ -161,12 +166,19 @@ export async function assertDestinationAllowed(url: string, policy: DestinationP
   const hostname = parsed.hostname.replace(/^\[|\]$/g, '').toLowerCase();
   const directReason = classifyHostname(hostname);
   if (directReason && !policyAllows(directReason, effectivePolicy)) blockDestination(url, directReason);
-  if (directReason) return;
+  const version = net.isIP(hostname);
+  if (version !== 0) return [{ address: hostname, family: version as 4 | 6 }];
 
-  for (const address of await resolveDestinationAddresses(hostname)) {
+  const addresses = await resolveDestinationAddresses(hostname);
+  for (const { address } of addresses) {
     const reason = classifyIp(address);
     if (reason && !policyAllows(reason, effectivePolicy)) blockDestination(url, reason);
   }
+  return addresses;
+}
+
+export async function assertDestinationAllowed(url: string, policy: DestinationPolicy = {}): Promise<void> {
+  await validateDestinationAllowed(url, policy);
 }
 
 function isRedirectStatus(status: number): boolean {
@@ -187,6 +199,29 @@ function stripSensitiveRedirectHeaders(headers: AxiosRequestConfig['headers']): 
   return sanitizedHeaders as AxiosRequestConfig['headers'];
 }
 
+function createPinnedLookup(addresses: ResolvedAddress[]) {
+  return (
+    _hostname: string,
+    options: object,
+    callback: (error: Error | null, address: LookupAddress | LookupAddress[], family?: AddressFamily) => void
+  ): void => {
+    const requestedFamily = 'family' in options && (options.family === 4 || options.family === 6) ? options.family : undefined;
+    const candidates = requestedFamily ? addresses.filter(({ family }) => family === requestedFamily) : addresses;
+    if (candidates.length === 0) {
+      callback(new Error(`No validated destination address matches the requested address family: ${requestedFamily}`), '', undefined);
+      return;
+    }
+
+    if ('all' in options && options.all === true) {
+      callback(null, candidates, undefined);
+      return;
+    }
+
+    const [{ address, family }] = candidates;
+    callback(null, address, family);
+  };
+}
+
 export async function requestWithDestinationPolicy<T = unknown>(config: AxiosRequestConfig<T>, policy: DestinationPolicy = {}): Promise<AxiosResponse<T>> {
   if (!config.url) throw new Error('A request URL is required for destination policy enforcement');
   const effectivePolicy = { ...DEFAULT_DESTINATION_POLICY, ...policy };
@@ -202,7 +237,8 @@ export async function requestWithDestinationPolicy<T = unknown>(config: AxiosReq
   };
 
   for (let redirectCount = 0; ; redirectCount += 1) {
-    await assertDestinationAllowed(currentUrl, effectivePolicy);
+    const validatedAddresses = await validateDestinationAllowed(currentUrl, effectivePolicy);
+    currentConfig.lookup = createPinnedLookup(validatedAddresses);
     const response = await axios(currentConfig);
     if (!isRedirectStatus(response.status)) return response;
     if (effectivePolicy.allowRedirects === false) blockDestination(currentUrl, 'redirect');

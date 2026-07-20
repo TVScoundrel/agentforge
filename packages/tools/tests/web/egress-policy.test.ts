@@ -44,7 +44,7 @@ describe('web egress destination policy', () => {
   it('revalidates redirect destinations before following them', async () => {
     mockedAxios.mockResolvedValueOnce({
       status: 302,
-      headers: { location: 'https://93.184.216.34/next' },
+      headers: { location: ['https://93.184.216.34/next'] },
       config: {},
       data: undefined,
       statusText: 'Found',
