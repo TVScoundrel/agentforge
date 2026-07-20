@@ -6,6 +6,7 @@
 
 import { toolBuilder, ToolCategory } from '@agentforge/core';
 import { requestWithDestinationPolicy } from '../../egress-policy.js';
+import type { DestinationPolicy } from '../../egress-policy.js';
 import { httpPostSchema } from '../types.js';
 
 /**
@@ -17,7 +18,7 @@ import { httpPostSchema } from '../types.js';
 export function createHttpPostTool(
   defaultTimeout: number = 30000,
   defaultHeaders: Record<string, string> = {},
-  destinationPolicy = {}
+  destinationPolicy: DestinationPolicy = {}
 ) {
   return toolBuilder()
     .name('http-post')

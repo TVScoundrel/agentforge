@@ -7,6 +7,7 @@
 import { toolBuilder, ToolCategory } from '@agentforge/core';
 import * as cheerio from 'cheerio';
 import { requestWithDestinationPolicy } from '../../egress-policy.js';
+import type { DestinationPolicy } from '../../egress-policy.js';
 import { webScraperSchema, type ScraperResult } from '../types.js';
 
 /**
@@ -29,7 +30,7 @@ import { webScraperSchema, type ScraperResult } from '../types.js';
 export function createWebScraperTool(
   defaultTimeout: number = 30000,
   userAgent: string = 'Mozilla/5.0 (compatible; AgentForge/1.0; +https://agentforge.dev)',
-  destinationPolicy = {}
+  destinationPolicy: DestinationPolicy = {}
 ) {
   return toolBuilder()
     .name('web-scraper')

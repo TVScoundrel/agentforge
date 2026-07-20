@@ -5,8 +5,9 @@
  */
 
 import { toolBuilder, ToolCategory } from '@agentforge/core';
-import { AxiosRequestConfig } from 'axios';
+import type { AxiosRequestConfig } from 'axios';
 import { requestWithDestinationPolicy } from '../../egress-policy.js';
+import type { DestinationPolicy } from '../../egress-policy.js';
 import { httpRequestSchema, HttpResponse } from '../types.js';
 
 /**
@@ -27,7 +28,7 @@ import { httpRequestSchema, HttpResponse } from '../types.js';
 export function createHttpClientTool(
   defaultTimeout: number = 30000,
   defaultHeaders: Record<string, string> = {},
-  destinationPolicy = {}
+  destinationPolicy: DestinationPolicy = {}
 ) {
   return toolBuilder()
     .name('http-client')
