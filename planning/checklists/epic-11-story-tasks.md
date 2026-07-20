@@ -119,3 +119,29 @@
   - PR #160 marked ready for review on 2026-07-17 after the conformance expectation fix, repo-wide `pnpm test --run`, `pnpm lint`, checklist sync, and PR body update were complete.
 - [x] Wait for merge; do not merge directly from local branch
   - PR #160 merged into `main` on 2026-07-18 as commit `e34389a9`; post-merge tracker sync and ready-lane grooming completed from local `main`.
+
+## ST-11002: Harden Default Web Tool Egress Policy
+
+**Branch:** `feat/st-11002-web-egress-policy`
+
+### Checklist
+- [x] Create branch `feat/st-11002-web-egress-policy`
+  - Created on 2026-07-20 from `main` after moving `ST-11002` to `In Progress` in `planning/kanban-queue.md`.
+- [ ] Create draft PR with story ID in title
+- [x] Define test strategy before implementation: identify the practical failing automated test seam for destination policy enforcement and redirect revalidation
+  - Strategy: add red-first unit coverage for the shared destination classifier and request helper in `packages/tools/tests/web/egress-policy.test.ts`, using mocked Axios responses to prove initial private-target denial and redirect-bypass denial without making network requests.
+- [x] Write or update the failing automated test before production changes when practical; if not practical, record why before implementation
+  - Added `packages/tools/tests/web/egress-policy.test.ts` before the production module; the red run failed because `src/web/egress-policy.ts` did not exist, then the focused green run passed after implementation.
+- [ ] Add a shared destination policy for HTTP and scraper tools that blocks localhost, link-local, metadata, and RFC1918/private-network targets by default
+- [ ] Ensure destination policy validation covers hostname resolution and IP-literal forms for supported HTTP(S) destinations
+- [ ] Ensure redirect handling revalidates every hop and cannot bypass blocked-destination policy through chained redirects
+- [ ] Preserve an explicit privileged/internal-network opt-in path with documented policy configuration
+- [ ] Add focused tests covering localhost, metadata, RFC1918/private-network, redirect-bypass, and privileged opt-in behavior
+- [ ] Add or update story documentation at `docs/st11002-web-egress-policy-hardening.md`
+- [ ] Assess residual test impact; add/update additional automated tests when needed, or document why no further tests are required
+- [ ] Assess CI impact; update CI or document why no CI change is required
+- [ ] Run full test suite before finalizing the PR and record results
+- [ ] Run lint (`pnpm lint`) before finalizing the PR and record results
+- [ ] Commit completed checklist items as logical commits and push updates
+- [ ] Mark PR Ready only after all story tasks are complete
+- [ ] Wait for merge; do not merge directly from local branch
