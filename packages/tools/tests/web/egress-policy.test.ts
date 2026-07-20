@@ -101,6 +101,39 @@ describe('web egress destination policy', () => {
     expect(mockedAxios).toHaveBeenCalledTimes(2);
   });
 
+  it('strips sensitive headers before following a cross-origin redirect', async () => {
+    mockedAxios
+      .mockResolvedValueOnce({
+        status: 302,
+        headers: { location: 'https://redirected.example.test/next' },
+        config: {},
+        data: undefined,
+        statusText: 'Found',
+      })
+      .mockResolvedValueOnce({
+        status: 200,
+        headers: {},
+        config: {},
+        data: { ok: true },
+        statusText: 'OK',
+      });
+
+    await requestWithDestinationPolicy({
+      method: 'GET',
+      url: 'https://source.example.test/start',
+      headers: {
+        Authorization: 'Bearer secret',
+        Cookie: 'session=secret',
+        'Proxy-Authorization': 'Basic secret',
+        'X-Request-Id': 'kept',
+      },
+      validateStatus: () => true,
+    });
+
+    const redirectedHeaders = mockedAxios.mock.calls[1][0].headers;
+    expect(redirectedHeaders).toEqual({ 'X-Request-Id': 'kept' });
+  });
+
   it('allows explicit localhost opt-in for privileged operators', async () => {
     await expect(assertDestinationAllowed('http://127.0.0.1:8080/health', { allowLocalhost: true })).resolves.toBeUndefined();
   });

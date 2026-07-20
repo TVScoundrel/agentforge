@@ -23,6 +23,7 @@ export interface DestinationPolicy {
 const DEFAULT_MAX_REDIRECTS = 5;
 const REDIRECT_STATUSES = new Set([301, 302, 303, 307, 308]);
 const IPV4_MAPPED_NETWORK = '::ffff:0:0';
+const SENSITIVE_REDIRECT_HEADERS = new Set(['authorization', 'cookie', 'proxy-authorization']);
 
 export const DEFAULT_DESTINATION_POLICY = Object.freeze({
   allowLocalhost: false,
@@ -177,6 +178,15 @@ function responseLocation(response: AxiosResponse): string | undefined {
   return headers.location ?? headers.Location;
 }
 
+function stripSensitiveRedirectHeaders(headers: AxiosRequestConfig['headers']): AxiosRequestConfig['headers'] {
+  if (!headers) return headers;
+  const sanitizedHeaders = { ...headers } as Record<string, unknown>;
+  for (const headerName of Object.keys(sanitizedHeaders)) {
+    if (SENSITIVE_REDIRECT_HEADERS.has(headerName.toLowerCase())) delete sanitizedHeaders[headerName];
+  }
+  return sanitizedHeaders as AxiosRequestConfig['headers'];
+}
+
 export async function requestWithDestinationPolicy<T = unknown>(config: AxiosRequestConfig<T>, policy: DestinationPolicy = {}): Promise<AxiosResponse<T>> {
   if (!config.url) throw new Error('A request URL is required for destination policy enforcement');
   const effectivePolicy = { ...DEFAULT_DESTINATION_POLICY, ...policy };
@@ -200,10 +210,14 @@ export async function requestWithDestinationPolicy<T = unknown>(config: AxiosReq
 
     const location = responseLocation(response);
     if (!location) throw new DestinationPolicyError(currentUrl, 'redirect', `Redirect response did not include a Location header: ${currentUrl}`);
+    const previousUrl = currentUrl;
     currentUrl = new URL(location, currentUrl).toString();
     const method = String(currentConfig.method ?? 'GET').toUpperCase();
     const nextMethod = response.status === 303 || ((response.status === 301 || response.status === 302) && method === 'POST') ? 'GET' : method;
     currentConfig = { ...currentConfig, url: currentUrl, method: nextMethod };
+    if (new URL(previousUrl).origin !== new URL(currentUrl).origin) {
+      currentConfig.headers = stripSensitiveRedirectHeaders(currentConfig.headers);
+    }
     if (nextMethod === 'GET' || nextMethod === 'HEAD') delete currentConfig.data;
   }
 }
