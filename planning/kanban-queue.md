@@ -31,7 +31,7 @@ None currently.
 
 - `ST-11002` - Harden Default Web Tool Egress Policy
   - Depends on: `ST-11001` (merged)
-  - PR: #161 (draft, validation complete; ready-state transition pending)
+  - PR: #161 (ready for review)
 
 ---
 

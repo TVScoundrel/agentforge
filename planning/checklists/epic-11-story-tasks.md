@@ -155,5 +155,6 @@
   - `pnpm lint` -> passed with `0` errors and the existing warning baseline.
 - [x] Commit completed checklist items as logical commits and push updates
   - `e4f31706` established the red-first test checkpoint and `9960dc41` contains the implementation, documentation, and focused tests; both are pushed to `origin/feat/st-11002-web-egress-policy`.
-- [ ] Mark PR Ready only after all story tasks are complete
+- [x] Mark PR Ready only after all story tasks are complete
+  - PR #161 marked ready for review on 2026-07-20 after implementation, documentation, tracker synchronization, `pnpm test --run`, `pnpm lint`, `pnpm typecheck`, `pnpm build`, and self-review.
 - [ ] Wait for merge; do not merge directly from local branch
