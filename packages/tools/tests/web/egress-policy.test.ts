@@ -134,6 +134,21 @@ describe('web egress destination policy', () => {
     expect(redirectedHeaders).toEqual({ 'X-Request-Id': 'kept' });
   });
 
+  it('wraps invalid redirect locations in a destination policy error', async () => {
+    mockedAxios.mockResolvedValueOnce({
+      status: 302,
+      headers: { location: 'https://[invalid' },
+      config: {},
+      data: undefined,
+      statusText: 'Found',
+    });
+
+    await expect(requestWithDestinationPolicy({ url: 'https://source.example.test/start' })).rejects.toMatchObject({
+      code: 'WEB_DESTINATION_BLOCKED',
+      reason: 'redirect',
+    });
+  });
+
   it('allows explicit localhost opt-in for privileged operators', async () => {
     await expect(assertDestinationAllowed('http://127.0.0.1:8080/health', { allowLocalhost: true })).resolves.toBeUndefined();
   });

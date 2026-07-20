@@ -247,7 +247,11 @@ export async function requestWithDestinationPolicy<T = unknown>(config: AxiosReq
     const location = responseLocation(response);
     if (!location) throw new DestinationPolicyError(currentUrl, 'redirect', `Redirect response did not include a Location header: ${currentUrl}`);
     const previousUrl = currentUrl;
-    currentUrl = new URL(location, currentUrl).toString();
+    try {
+      currentUrl = new URL(location, currentUrl).toString();
+    } catch {
+      throw new DestinationPolicyError(currentUrl, 'redirect', `Redirect response included an invalid Location header: ${location}`);
+    }
     const method = String(currentConfig.method ?? 'GET').toUpperCase();
     const nextMethod = response.status === 303 || ((response.status === 301 || response.status === 302) && method === 'POST') ? 'GET' : method;
     currentConfig = { ...currentConfig, url: currentUrl, method: nextMethod };
