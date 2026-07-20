@@ -2515,14 +2515,14 @@
 **Priority:** P1 (High)
 **Estimate:** 5 hours
 **Dependencies:** ST-11001
-**Status:** In Progress (2026-07-20)
+**Status:** In Review (PR #161, 2026-07-20)
 
 **Acceptance criteria:**
-- [ ] Default HTTP and scraping tool surfaces support an explicit destination policy that can block localhost, link-local, metadata, and RFC1918/private-network targets by default or via a clearly documented safe preset
-- [ ] Redirect handling cannot bypass blocked-destination policy through chained hops
-- [ ] Existing privileged/internal-network use cases keep a documented opt-in path rather than being silently removed
-- [ ] Focused tests cover localhost, metadata, RFC1918, and redirect-bypass attempts
-- [ ] Add or update story documentation at `docs/st11002-web-tool-egress-policy-hardening.md`
+- [x] Default HTTP and scraping tool surfaces support an explicit destination policy that blocks localhost, link-local, metadata, and RFC1918/private-network targets by default
+- [x] Redirect handling cannot bypass blocked-destination policy through chained hops
+- [x] Existing privileged/internal-network use cases keep a documented opt-in path rather than being silently removed
+- [x] Focused tests cover localhost, metadata, RFC1918, IPv4/IPv6, DNS resolution, and redirect-bypass attempts
+- [x] Add or update story documentation at `docs/st11002-web-egress-policy-hardening.md`
 
 ---
 

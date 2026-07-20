@@ -127,7 +127,8 @@
 ### Checklist
 - [x] Create branch `feat/st-11002-web-egress-policy`
   - Created on 2026-07-20 from `main` after moving `ST-11002` to `In Progress` in `planning/kanban-queue.md`.
-- [ ] Create draft PR with story ID in title
+- [x] Create draft PR with story ID in title
+  - Created draft PR #161: https://github.com/TVScoundrel/agentforge/pull/161
 - [x] Define test strategy before implementation: identify the practical failing automated test seam for destination policy enforcement and redirect revalidation
   - Strategy: add red-first unit coverage for the shared destination classifier and request helper in `packages/tools/tests/web/egress-policy.test.ts`, using mocked Axios responses to prove initial private-target denial and redirect-bypass denial without making network requests.
 - [x] Write or update the failing automated test before production changes when practical; if not practical, record why before implementation
@@ -148,8 +149,11 @@
   - Added the shared helper, factory wiring, IPv4/IPv6 boundary, DNS, redirect, and opt-in regressions; no further focused automation is required beyond the full validation gates.
 - [x] Assess CI impact; update CI or document why no CI change is required
   - No CI change is required because the new policy uses the existing package/workspace TypeScript, Vitest, and lint paths.
-- [ ] Run full test suite before finalizing the PR and record results
-- [ ] Run lint (`pnpm lint`) before finalizing the PR and record results
-- [ ] Commit completed checklist items as logical commits and push updates
+- [x] Run full test suite before finalizing the PR and record results
+  - `pnpm test --run` -> `225` passed, `9` skipped files; `2524` passed, `110` skipped tests.
+- [x] Run lint (`pnpm lint`) before finalizing the PR and record results
+  - `pnpm lint` -> passed with `0` errors and the existing warning baseline.
+- [x] Commit completed checklist items as logical commits and push updates
+  - `e4f31706` established the red-first test checkpoint and `9960dc41` contains the implementation, documentation, and focused tests; both are pushed to `origin/feat/st-11002-web-egress-policy`.
 - [ ] Mark PR Ready only after all story tasks are complete
 - [ ] Wait for merge; do not merge directly from local branch

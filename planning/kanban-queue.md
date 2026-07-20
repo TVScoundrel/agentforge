@@ -5,8 +5,8 @@
 ## Queue Status Summary
 
 - **Ready:** 2 stories
-- **In Progress:** 1 story
-- **In Review:** 0 stories
+- **In Progress:** 0 stories
+- **In Review:** 1 story
 - **Blocked:** 0 stories
 - **Backlog:** 0 stories
 
@@ -23,14 +23,15 @@
 
 ## In Progress
 
-- `ST-11002` - Harden Default Web Tool Egress Policy
-  - Depends on: `ST-11001` (merged)
+None currently.
 
 ---
 
 ## In Review
 
-None currently.
+- `ST-11002` - Harden Default Web Tool Egress Policy
+  - Depends on: `ST-11001` (merged)
+  - PR: #161 (draft, validation complete; ready-state transition pending)
 
 ---
 
@@ -52,6 +53,7 @@ _No stories currently in backlog_
 - ST-11004 complete - multi-agent supervisor routing now preserves trusted `supervisorTask` intent separately from worker `task_result` output, reuses worker results only as labeled untrusted context, and bounds that context for prompt growth safety; the ready lane advanced to `ST-11005`, which moved to `In Progress` on 2026-07-17, with `ST-11002`, `ST-11003`, and `ST-11006` still dependency-ready behind it (merged 2026-07-16, PR #159)
 - ST-11005 complete - skill prompts and activation now distinguish trusted/workspace skills from discoverable untrusted skills, block untrusted `SKILL.md` exposure through activation and resource aliases, preserve script-resource policy, and document the root-promotion migration path; the ready lane remains `ST-11002`, `ST-11003`, and `ST-11006` (merged 2026-07-18, PR #160)
 - ST-11002 moved to `In Progress` on 2026-07-20 as the next dependency-ready EP-11 story; `ST-11003` and `ST-11006` remain in `Ready` behind the merged `ST-11001` policy baseline
+- ST-11002 moved to `In Review` on 2026-07-20 with PR #161 after implementation, focused and full validation, lint, typecheck, build, documentation, and tracker synchronization; `ST-11003` and `ST-11006` remain in `Ready`
 
 - Complete: ST-01001 - foundation established (merged 2026-02-17)
 - Complete: ST-01002 - connection manager implemented (merged 2026-02-17)
