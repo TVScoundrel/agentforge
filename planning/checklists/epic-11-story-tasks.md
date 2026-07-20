@@ -132,14 +132,22 @@
   - Strategy: add red-first unit coverage for the shared destination classifier and request helper in `packages/tools/tests/web/egress-policy.test.ts`, using mocked Axios responses to prove initial private-target denial and redirect-bypass denial without making network requests.
 - [x] Write or update the failing automated test before production changes when practical; if not practical, record why before implementation
   - Added `packages/tools/tests/web/egress-policy.test.ts` before the production module; the red run failed because `src/web/egress-policy.ts` did not exist, then the focused green run passed after implementation.
-- [ ] Add a shared destination policy for HTTP and scraper tools that blocks localhost, link-local, metadata, and RFC1918/private-network targets by default
-- [ ] Ensure destination policy validation covers hostname resolution and IP-literal forms for supported HTTP(S) destinations
-- [ ] Ensure redirect handling revalidates every hop and cannot bypass blocked-destination policy through chained redirects
-- [ ] Preserve an explicit privileged/internal-network opt-in path with documented policy configuration
-- [ ] Add focused tests covering localhost, metadata, RFC1918/private-network, redirect-bypass, and privileged opt-in behavior
-- [ ] Add or update story documentation at `docs/st11002-web-egress-policy-hardening.md`
-- [ ] Assess residual test impact; add/update additional automated tests when needed, or document why no further tests are required
-- [ ] Assess CI impact; update CI or document why no CI change is required
+- [x] Add a shared destination policy for HTTP and scraper tools that blocks localhost, link-local, metadata, and RFC1918/private-network targets by default
+  - Added `packages/tools/src/web/egress-policy.ts` and wired the HTTP client, GET/POST helpers, and scraper factories through its default-deny policy.
+- [x] Ensure destination policy validation covers hostname resolution and IP-literal forms for supported HTTP(S) destinations
+  - Validates HTTP(S) schemes, IPv4/IPv6 literals, IPv4-mapped IPv6 literals, and every DNS-resolved address before request execution.
+- [x] Ensure redirect handling revalidates every hop and cannot bypass blocked-destination policy through chained redirects
+  - Disabled Axios automatic redirects in the shared helper, follows supported redirect responses manually, and validates each `Location` target before the next request with a five-hop default cap.
+- [x] Preserve an explicit privileged/internal-network opt-in path with documented policy configuration
+  - Exported `DestinationPolicy` and `DEFAULT_DESTINATION_POLICY`; documented the separate `allowLocalhost`, `allowPrivateNetwork`, `allowLinkLocal`, `allowMetadata`, `allowRedirects`, and `maxRedirects` controls.
+- [x] Add focused tests covering localhost, metadata, RFC1918/private-network, redirect-bypass, and privileged opt-in behavior
+  - `packages/tools/tests/web/egress-policy.test.ts` now covers 15 focused cases, including IPv4/IPv6, DNS resolution, chained redirects, factory wiring, and privileged opt-in.
+- [x] Add or update story documentation at `docs/st11002-web-egress-policy-hardening.md`
+  - Added the story rationale, configuration examples, compatibility notes, and validation evidence; linked it from `docs-site/api/tools.md`.
+- [x] Assess residual test impact; add/update additional automated tests when needed, or document why no further tests are required
+  - Added the shared helper, factory wiring, IPv4/IPv6 boundary, DNS, redirect, and opt-in regressions; no further focused automation is required beyond the full validation gates.
+- [x] Assess CI impact; update CI or document why no CI change is required
+  - No CI change is required because the new policy uses the existing package/workspace TypeScript, Vitest, and lint paths.
 - [ ] Run full test suite before finalizing the PR and record results
 - [ ] Run lint (`pnpm lint`) before finalizing the PR and record results
 - [ ] Commit completed checklist items as logical commits and push updates

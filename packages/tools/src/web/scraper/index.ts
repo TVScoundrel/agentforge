@@ -7,6 +7,8 @@
 // Export types
 export type { ScraperResult, ScraperToolsConfig } from './types.js';
 export { webScraperSchema } from './types.js';
+export type { DestinationBlockReason, DestinationPolicy } from '../egress-policy.js';
+export { DEFAULT_DESTINATION_POLICY } from '../egress-policy.js';
 
 // Export tool factory
 export { createWebScraperTool } from './tools/web-scraper.js';
@@ -33,7 +35,6 @@ export const scraperTools = [webScraper];
  * ```
  */
 export function createScraperTools(config: import('./types.js').ScraperToolsConfig = {}) {
-  const { defaultTimeout = 30000, userAgent = 'Mozilla/5.0 (compatible; AgentForge/1.0; +https://agentforge.dev)' } = config;
-  return [createWebScraperTool(defaultTimeout, userAgent)];
+  const { defaultTimeout = 30000, userAgent = 'Mozilla/5.0 (compatible; AgentForge/1.0; +https://agentforge.dev)', destinationPolicy = {} } = config;
+  return [createWebScraperTool(defaultTimeout, userAgent, destinationPolicy)];
 }
-

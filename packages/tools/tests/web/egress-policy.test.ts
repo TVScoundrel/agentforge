@@ -6,6 +6,8 @@ import {
   requestWithDestinationPolicy,
   type DestinationPolicy,
 } from '../../src/web/egress-policy.js';
+import { createHttpTools } from '../../src/web/http/index.js';
+import { createScraperTools } from '../../src/web/scraper/index.js';
 
 vi.mock('axios');
 vi.mock('node:dns/promises', () => ({ lookup: vi.fn() }));
@@ -26,6 +28,10 @@ describe('web egress destination policy', () => {
     ['http://172.16.0.4/internal', 'private-network'],
     ['http://192.168.1.20/internal', 'private-network'],
     ['http://169.254.10.20/internal', 'link-local'],
+    ['http://[::1]/admin', 'localhost'],
+    ['http://[::ffff:127.0.0.1]/admin', 'localhost'],
+    ['http://[fd00::1]/internal', 'private-network'],
+    ['http://[fe80::1]/internal', 'link-local'],
   ])('blocks %s as %s by default', async (url, reason) => {
     await expect(assertDestinationAllowed(url)).rejects.toMatchObject({ reason });
   });
@@ -97,5 +103,14 @@ describe('web egress destination policy', () => {
 
   it('allows explicit localhost opt-in for privileged operators', async () => {
     await expect(assertDestinationAllowed('http://127.0.0.1:8080/health', { allowLocalhost: true })).resolves.toBeUndefined();
+  });
+
+  it('wires the default policy through HTTP and scraper tool factories', async () => {
+    const [, httpGet] = createHttpTools();
+    const [scraper] = createScraperTools();
+
+    await expect(httpGet.invoke({ url: 'http://10.0.0.8/internal' })).rejects.toMatchObject({ reason: 'private-network' });
+    await expect(scraper.invoke({ url: 'http://127.0.0.1:8080/health' })).rejects.toMatchObject({ reason: 'localhost' });
+    expect(mockedAxios).not.toHaveBeenCalled();
   });
 });

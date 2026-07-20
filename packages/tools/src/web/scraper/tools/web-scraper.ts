@@ -5,8 +5,8 @@
  */
 
 import { toolBuilder, ToolCategory } from '@agentforge/core';
-import axios from 'axios';
 import * as cheerio from 'cheerio';
+import { requestWithDestinationPolicy } from '../../egress-policy.js';
 import { webScraperSchema, type ScraperResult } from '../types.js';
 
 /**
@@ -28,28 +28,31 @@ import { webScraperSchema, type ScraperResult } from '../types.js';
  */
 export function createWebScraperTool(
   defaultTimeout: number = 30000,
-  userAgent: string = 'Mozilla/5.0 (compatible; AgentForge/1.0; +https://agentforge.dev)'
+  userAgent: string = 'Mozilla/5.0 (compatible; AgentForge/1.0; +https://agentforge.dev)',
+  destinationPolicy = {}
 ) {
   return toolBuilder()
     .name('web-scraper')
-    .description('Scrape and extract data from web pages. Can extract text, HTML, links, images, and use CSS selectors to target specific elements.')
+    .description('Scrape and extract data from policy-checked web pages. Local, metadata, link-local, and private-network destinations are blocked by default. Supports text, HTML, links, images, and CSS selectors.')
     .category(ToolCategory.WEB)
     .tags(['scraper', 'web', 'html', 'extract', 'parse'])
     .schema(webScraperSchema)
     .implement(async (input): Promise<ScraperResult> => {
       // Fetch the page
-      const response = await axios.get(input.url, {
+      const response = await requestWithDestinationPolicy<string>({
+        method: 'GET',
+        url: input.url,
         timeout: input.timeout || defaultTimeout,
         headers: {
           'User-Agent': userAgent,
         },
-      });
+      }, destinationPolicy);
 
       const html = response.data;
       const $ = cheerio.load(html);
 
       const result: ScraperResult = {
-        url: input.url,
+        url: response.config.url ?? input.url,
       };
 
       // Apply selector if provided
@@ -134,4 +137,3 @@ export function createWebScraperTool(
     })
     .build();
 }
-

@@ -5,7 +5,7 @@
  */
 
 import { toolBuilder, ToolCategory } from '@agentforge/core';
-import axios from 'axios';
+import { requestWithDestinationPolicy } from '../../egress-policy.js';
 import { httpGetSchema } from '../types.js';
 
 /**
@@ -16,22 +16,24 @@ import { httpGetSchema } from '../types.js';
  */
 export function createHttpGetTool(
   defaultTimeout: number = 30000,
-  defaultHeaders: Record<string, string> = {}
+  defaultHeaders: Record<string, string> = {},
+  destinationPolicy = {}
 ) {
   return toolBuilder()
     .name('http-get')
-    .description('Make a simple HTTP GET request to a URL and return the response data.')
+    .description('Make a policy-checked HTTP GET request to a URL and return the response data. Local, metadata, link-local, and private-network destinations are blocked by default.')
     .category(ToolCategory.WEB)
     .tags(['http', 'get', 'fetch', 'web'])
     .schema(httpGetSchema)
     .implement(async (input) => {
-      const response = await axios.get(input.url, {
+      const response = await requestWithDestinationPolicy({
+        method: 'GET',
+        url: input.url,
         headers: { ...defaultHeaders, ...input.headers },
         params: input.params,
         timeout: defaultTimeout,
-      });
+      }, destinationPolicy);
       return response.data;
     })
     .build();
 }
-

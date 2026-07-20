@@ -5,7 +5,7 @@
  */
 
 import { toolBuilder, ToolCategory } from '@agentforge/core';
-import axios from 'axios';
+import { requestWithDestinationPolicy } from '../../egress-policy.js';
 import { httpPostSchema } from '../types.js';
 
 /**
@@ -16,25 +16,28 @@ import { httpPostSchema } from '../types.js';
  */
 export function createHttpPostTool(
   defaultTimeout: number = 30000,
-  defaultHeaders: Record<string, string> = {}
+  defaultHeaders: Record<string, string> = {},
+  destinationPolicy = {}
 ) {
   return toolBuilder()
     .name('http-post')
-    .description('Make a simple HTTP POST request with JSON body and return the response data.')
+    .description('Make a policy-checked HTTP POST request with JSON body and return the response data. Local, metadata, link-local, and private-network destinations are blocked by default.')
     .category(ToolCategory.WEB)
     .tags(['http', 'post', 'api', 'web'])
     .schema(httpPostSchema)
     .implement(async (input) => {
-      const response = await axios.post(input.url, input.body, {
+      const response = await requestWithDestinationPolicy({
+        method: 'POST',
+        url: input.url,
+        data: input.body,
         headers: {
           'Content-Type': 'application/json',
           ...defaultHeaders,
           ...input.headers,
         },
         timeout: defaultTimeout,
-      });
+      }, destinationPolicy);
       return response.data;
     })
     .build();
 }
-
