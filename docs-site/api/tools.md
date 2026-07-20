@@ -78,6 +78,25 @@ const result = await httpPost.invoke({
 });
 ```
 
+HTTP and scraper factories apply a destination policy before every request. By default, localhost, metadata, link-local, and private-network destinations are blocked, including destinations reached through redirects or hostname resolution. Use the explicit opt-in flags only for trusted operator-controlled or internal-network workflows:
+
+```typescript
+import { createHttpTools, createScraperTools } from '@agentforge/tools';
+
+const [safeHttpClient] = createHttpTools({
+  destinationPolicy: { maxRedirects: 3 }
+});
+
+const [internalScraper] = createScraperTools({
+  destinationPolicy: {
+    allowPrivateNetwork: true,
+    allowLocalhost: true,
+  }
+});
+```
+
+Available policy flags are `allowLocalhost`, `allowPrivateNetwork`, `allowLinkLocal`, `allowMetadata`, `allowRedirects`, and `maxRedirects`. See [`ST-11002` web egress policy hardening](https://github.com/TVScoundrel/agentforge/blob/main/docs/st11002-web-egress-policy-hardening.md) for the security rationale and migration guidance.
+
 ### Web Scraping
 
 ```typescript
@@ -1400,4 +1419,3 @@ const tools = [askHuman, ...otherTools];
 ## Complete Tool List
 
 See the [Tools README](https://github.com/TVScoundrel/agentforge/tree/main/packages/tools) for the complete list of all 88 tools with detailed documentation.
-

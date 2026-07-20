@@ -5,6 +5,7 @@
  */
 
 import { z } from 'zod';
+import type { DestinationPolicy } from '../egress-policy.js';
 
 /**
  * HTTP method enum
@@ -59,4 +60,5 @@ export const httpPostSchema = z.object({
 export interface HttpToolsConfig {
   defaultTimeout?: number;
   defaultHeaders?: Record<string, string>;
+  destinationPolicy?: DestinationPolicy;
 }

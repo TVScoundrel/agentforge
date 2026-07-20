@@ -5,7 +5,9 @@
  */
 
 import { toolBuilder, ToolCategory } from '@agentforge/core';
-import axios, { AxiosRequestConfig } from 'axios';
+import type { AxiosRequestConfig } from 'axios';
+import { requestWithDestinationPolicy } from '../../egress-policy.js';
+import type { DestinationPolicy } from '../../egress-policy.js';
 import { httpRequestSchema, HttpResponse } from '../types.js';
 
 /**
@@ -25,11 +27,12 @@ import { httpRequestSchema, HttpResponse } from '../types.js';
  */
 export function createHttpClientTool(
   defaultTimeout: number = 30000,
-  defaultHeaders: Record<string, string> = {}
+  defaultHeaders: Record<string, string> = {},
+  destinationPolicy: DestinationPolicy = {}
 ) {
   return toolBuilder()
     .name('http-client')
-    .description('Make HTTP requests to web APIs and services. Supports GET, POST, PUT, DELETE, PATCH methods with custom headers and body.')
+    .description('Make policy-checked HTTP requests to web APIs and services. Supports GET, POST, PUT, DELETE, PATCH methods with custom headers and body. Local, metadata, link-local, and private-network destinations are blocked by default.')
     .category(ToolCategory.WEB)
     .tags(['http', 'api', 'request', 'web'])
     .schema(httpRequestSchema)
@@ -44,17 +47,16 @@ export function createHttpClientTool(
         validateStatus: () => true, // Don't throw on any status code
       };
 
-      const response = await axios(config);
+      const response = await requestWithDestinationPolicy(config, destinationPolicy);
 
       return {
         status: response.status,
         statusText: response.statusText,
         headers: response.headers as Record<string, string>,
         data: response.data,
-        url: input.url,
+        url: response.config.url ?? input.url,
         method: input.method ?? 'GET',
       };
     })
     .build();
 }
-

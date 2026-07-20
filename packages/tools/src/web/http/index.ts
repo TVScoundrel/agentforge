@@ -11,6 +11,8 @@ import type { HttpToolsConfig } from './types.js';
 
 // Export types
 export * from './types.js';
+export { assertDestinationAllowed, DEFAULT_DESTINATION_POLICY, DestinationPolicyError, requestWithDestinationPolicy } from '../egress-policy.js';
+export type { DestinationBlockReason, DestinationPolicy } from '../egress-policy.js';
 
 // Default tool instances
 export const httpClient = createHttpClientTool();
@@ -35,12 +37,11 @@ export const httpTools = [httpClient, httpGet, httpPost];
  * ```
  */
 export function createHttpTools(config: HttpToolsConfig = {}) {
-  const { defaultTimeout = 30000, defaultHeaders = {} } = config;
+  const { defaultTimeout = 30000, defaultHeaders = {}, destinationPolicy = {} } = config;
 
   return [
-    createHttpClientTool(defaultTimeout, defaultHeaders),
-    createHttpGetTool(defaultTimeout, defaultHeaders),
-    createHttpPostTool(defaultTimeout, defaultHeaders),
+    createHttpClientTool(defaultTimeout, defaultHeaders, destinationPolicy),
+    createHttpGetTool(defaultTimeout, defaultHeaders, destinationPolicy),
+    createHttpPostTool(defaultTimeout, defaultHeaders, destinationPolicy),
   ];
 }
-

@@ -5,6 +5,7 @@
  */
 
 import { z } from 'zod';
+import type { DestinationPolicy } from '../egress-policy.js';
 
 /**
  * Scraper result type
@@ -26,6 +27,7 @@ export interface ScraperResult {
 export interface ScraperToolsConfig {
   defaultTimeout?: number;
   userAgent?: string;
+  destinationPolicy?: DestinationPolicy;
 }
 
 /**
@@ -41,4 +43,3 @@ export const webScraperSchema = z.object({
   extractMetadata: z.boolean().default(false).describe('Extract meta tags (title, description, etc.)'),
   timeout: z.number().default(30000).describe('Request timeout in milliseconds'),
 });
-
