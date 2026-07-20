@@ -2,11 +2,18 @@
 
 **Purpose:** Track completed and merged stories for the Relational Database Access Tool project.
 
-**Last Updated:** 2026-07-18
+**Last Updated:** 2026-07-20
 
 ---
 
 ## Completed Stories
+
+### ST-11002: Harden Default Web Tool Egress Policy
+- **Merged:** 2026-07-20
+- **PR:** https://github.com/TVScoundrel/agentforge/pull/161 (commit 0f8d2f55)
+- **Epic:** EP-11 (Security Boundary Hardening)
+- **Estimate:** 5 hours
+- **Outcome:** Hardened the default HTTP and scraper web-tool surfaces with a shared destination policy that blocks localhost, metadata, link-local, and private-network targets by default across IP literals and DNS resolution. Redirects are manually revalidated at every hop with bounded redirects, sensitive credentials are stripped across origins, validated DNS addresses are pinned into each request to close the rebinding window, malformed and multi-valued `Location` headers are normalized into typed redirect errors, and the public policy exports remain unambiguous. Added operator opt-ins, story/API documentation, 17 focused regressions, and full workspace validation (2526 tests passed).
 
 ### ST-11005: Enforce Trust-Aware Skill Prompt and Activation Boundaries
 - **Merged:** 2026-07-18

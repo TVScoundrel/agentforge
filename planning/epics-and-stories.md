@@ -2515,7 +2515,7 @@
 **Priority:** P1 (High)
 **Estimate:** 5 hours
 **Dependencies:** ST-11001
-**Status:** In Review (PR #161, 2026-07-20)
+**Status:** Merged (PR #161, 2026-07-20)
 
 **Acceptance criteria:**
 - [x] Default HTTP and scraping tool surfaces support an explicit destination policy that blocks localhost, link-local, metadata, and RFC1918/private-network targets by default

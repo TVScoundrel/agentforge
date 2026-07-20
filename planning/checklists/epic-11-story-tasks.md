@@ -142,7 +142,7 @@
 - [x] Preserve an explicit privileged/internal-network opt-in path with documented policy configuration
   - Exported `DestinationPolicy` and `DEFAULT_DESTINATION_POLICY`; documented the separate `allowLocalhost`, `allowPrivateNetwork`, `allowLinkLocal`, `allowMetadata`, `allowRedirects`, and `maxRedirects` controls.
 - [x] Add focused tests covering localhost, metadata, RFC1918/private-network, redirect-bypass, and privileged opt-in behavior
-  - `packages/tools/tests/web/egress-policy.test.ts` now covers 15 focused cases, including IPv4/IPv6, DNS resolution, chained redirects, factory wiring, and privileged opt-in.
+  - `packages/tools/tests/web/egress-policy.test.ts` now covers 17 focused cases, including IPv4/IPv6, DNS resolution pinning, chained redirects, credential stripping, malformed and multi-valued `Location` headers, factory wiring, and privileged opt-in.
 - [x] Add or update story documentation at `docs/st11002-web-egress-policy-hardening.md`
   - Added the story rationale, configuration examples, compatibility notes, and validation evidence; linked it from `docs-site/api/tools.md`.
 - [x] Assess residual test impact; add/update additional automated tests when needed, or document why no further tests are required
@@ -150,11 +150,12 @@
 - [x] Assess CI impact; update CI or document why no CI change is required
   - No CI change is required because the new policy uses the existing package/workspace TypeScript, Vitest, and lint paths.
 - [x] Run full test suite before finalizing the PR and record results
-  - `pnpm test --run` -> `225` passed, `9` skipped files; `2524` passed, `110` skipped tests.
+  - `pnpm test --run` -> `225` passed, `9` skipped files; `2526` passed, `110` skipped tests.
 - [x] Run lint (`pnpm lint`) before finalizing the PR and record results
   - `pnpm lint` -> passed with `0` errors and the existing warning baseline.
 - [x] Commit completed checklist items as logical commits and push updates
-  - `e4f31706` established the red-first test checkpoint and `9960dc41` contains the implementation, documentation, and focused tests; both are pushed to `origin/feat/st-11002-web-egress-policy`.
+  - `e4f31706` established the red-first test checkpoint; `9960dc41`, `d4c1cc21`, `eeed0dc6`, `6130280e`, and `81c2a21a` contain the implementation and review fixes; PR #161 merged as `0f8d2f55`.
 - [x] Mark PR Ready only after all story tasks are complete
   - PR #161 marked ready for review on 2026-07-20 after implementation, documentation, tracker synchronization, `pnpm test --run`, `pnpm lint`, `pnpm typecheck`, `pnpm build`, and self-review.
-- [ ] Wait for merge; do not merge directly from local branch
+- [x] Wait for merge; do not merge directly from local branch
+  - PR #161 merged into `main` on 2026-07-20 as commit `0f8d2f55`; post-merge tracker synchronization is being committed from local `main`.
