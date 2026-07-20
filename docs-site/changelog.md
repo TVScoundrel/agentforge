@@ -5,6 +5,36 @@ All notable changes to AgentForge will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.16.77] - 2026-07-20
+
+### Added
+
+#### @agentforge/tools - Default Web Egress Policy
+- Added a shared `DestinationPolicy` for the default HTTP and scraping tools, with explicit controls for localhost, private-network, link-local, metadata, redirects, and maximum redirect hops.
+- Added focused regressions for IP literals, DNS resolution, redirect chains, DNS rebinding protection, credential stripping, malformed and multi-valued `Location` headers, factory wiring, and privileged opt-in behavior.
+- Added story documentation in `docs/st11002-web-egress-policy-hardening.md` covering the security rationale, configuration, compatibility, and validation evidence.
+
+### Changed
+
+#### @agentforge/tools - Redirect and Destination Validation
+- Revalidated redirect destinations at every hop, bounded redirect traversal, stripped sensitive credentials across origins, and pinned validated DNS addresses into requests to close the rebinding window.
+- Exported the destination-policy types and default policy from the public tools surface.
+
+### Fixed
+
+#### @agentforge/tools - SSRF-Safe Defaults
+- Blocked localhost, metadata, link-local, and RFC1918/private-network destinations by default across IP literals and DNS resolution while preserving documented operator opt-ins for privileged use cases.
+- Normalized malformed and multi-valued redirect locations into typed policy errors instead of allowing ambiguous redirect behavior.
+
+### Published
+- All packages published to npm registry at version 0.16.77:
+  - @agentforge/core@0.16.77
+  - @agentforge/skills@0.16.77
+  - @agentforge/patterns@0.16.77
+  - @agentforge/tools@0.16.77
+  - @agentforge/testing@0.16.77
+  - @agentforge/cli@0.16.77
+
 ## [0.16.76] - 2026-07-18
 
 ### Added
