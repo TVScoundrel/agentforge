@@ -7,4 +7,4 @@
 export * from './operations/index.js';
 export * from './directory/index.js';
 export * from './path/index.js';
-
+export * from './confinement.js';

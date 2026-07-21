@@ -204,6 +204,27 @@ Tools for file system operations.
 - **`pathRelative`** - Get relative path
 - **`pathNormalize`** - Normalize paths
 
+#### Filesystem Confinement
+
+The standalone filesystem tool exports are intentionally powerful for trusted local automation. For model-exposed tools, configure a shared policy on the factory functions so every file and directory operation uses the same allowed roots and symlink checks:
+
+```typescript
+import {
+  createDirectoryOperationTools,
+  createFileOperationTools,
+  createFileSystemPolicy,
+} from '@agentforge/tools';
+
+const policy = createFileSystemPolicy({
+  workspaceRoot: process.cwd(),
+});
+
+const safeFileTools = createFileOperationTools({ policy });
+const safeDirectoryTools = createDirectoryOperationTools({ policy });
+```
+
+The policy rejects `..` traversal, resolved symlink escapes, paths outside configured roots, and recursive deletion of a configured root. Use `allowedRoots` for multiple roots. Keep the default unrestricted exports for trusted local automation only; `allowOutsideRoots: true` is an explicit privileged opt-out when a configured factory must access the wider host filesystem. The `file-exists` tool preserves its legacy result shape for successful and missing-path checks, while policy violations return `{ success: false, error }`. Detailed `directory-list` results use non-following `lstat` metadata for symlink entries under both default and confined policies.
+
 ### Utility Tools (22 tools)
 
 General utility tools for common operations.

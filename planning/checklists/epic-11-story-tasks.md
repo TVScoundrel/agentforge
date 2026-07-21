@@ -159,3 +159,42 @@
   - PR #161 marked ready for review on 2026-07-20 after implementation, documentation, tracker synchronization, `pnpm test --run`, `pnpm lint`, `pnpm typecheck`, `pnpm build`, and self-review.
 - [x] Wait for merge; do not merge directly from local branch
   - PR #161 merged into `main` on 2026-07-20 as commit `0f8d2f55`; post-merge tracker synchronization is being committed from local `main`.
+
+## ST-11003: Add Filesystem Confinement Controls for Default File Tools
+
+**Branch:** `feat/st-11003-file-tool-confinement`
+
+### Checklist
+- [x] Create branch `feat/st-11003-file-tool-confinement`
+  - Created on 2026-07-21 from `main` after moving `ST-11003` to `In Progress` in `planning/kanban-queue.md`.
+- [x] Create draft PR with story ID in title
+  - Draft PR #162 created on 2026-07-21: <https://github.com/TVScoundrel/agentforge/pull/162>
+- [x] Define test strategy before implementation: identify the practical failing automated test seam for path confinement, traversal, symlink escape, and recursive-delete safety
+  - Strategy: add red-first unit coverage for a shared filesystem policy resolver and the configured file/directory tool factories in `packages/tools/tests/file/confinement.test.ts`, using temporary roots and symlink fixtures where supported.
+- [x] Write or update the failing automated test before production changes when practical; if not practical, record why before implementation
+  - Added `packages/tools/tests/file/confinement.test.ts` before the production policy; the red run failed as expected because `createFileSystemPolicy` was not yet implemented (`7` tests failed).
+- [x] Identify the existing default file read, write, append, exists, directory list/create/delete, and file-search tool paths and define the shared confinement seam
+  - Keep pure path utility tools unchanged; route filesystem I/O through a shared policy that can validate lexical paths, resolved existing targets, and creation/deletion parents.
+- [x] Add a reusable filesystem confinement policy with allowed roots or workspace-relative mode and an explicit privileged escape hatch
+  - Added the exported `FileSystemPolicy`, `createFileSystemPolicy`, `DEFAULT_FILE_SYSTEM_POLICY`, and typed `FileSystemPolicyError`; configured policies support `allowedRoots`, `workspaceRoot`, `allowOutsideRoots`, and `allowRootDeletion`.
+- [x] Apply confinement consistently to default file read and mutation tools, directory traversal/list/search, directory creation, and recursive deletion
+  - Routed all configured file and directory I/O factories through the shared policy; pure path utilities remain unchanged. Existing standalone exports remain unrestricted for trusted automation, while configured factories enforce traversal, realpath containment, symlink, and recursive-root-deletion checks.
+- [x] Add focused tests covering path traversal, symlink escape, allowed-root boundaries, creation parents, missing targets, and recursive-delete edge cases
+  - `packages/tools/tests/file/confinement.test.ts` covers 8 focused cases, including non-following directory-list symlinks; the focused suite and full tools package suite pass, including the explicit privileged opt-out path.
+- [x] Add or update public docs explaining model-exposed file-tool modes versus trusted local automation
+  - Updated `packages/tools/README.md`, `docs-site/api/tools.md`, and `docs-site/guide/concepts/tools.md` with the shared policy configuration and model-exposure guidance.
+- [x] Add or update story documentation at `docs/st11003-file-tool-confinement-controls.md`
+  - Added the security rationale, API/configuration examples, compatibility impact, and current validation evidence.
+- [x] Assess residual test impact; add/update additional automated tests when needed, or document why no further tests are required
+  - Focused confinement coverage plus the tools package suite cover the changed filesystem surface; no additional focused automation is currently required.
+- [x] Assess CI impact; update CI or document why no CI change is required
+  - No CI change is expected if the policy is covered by the existing tools-package and workspace TypeScript, Vitest, lint, and build paths.
+- [x] Run full test suite before finalizing the PR and record results
+  - `pnpm test --run` -> `226` test files passed, `9` skipped; `2534` tests passed, `110` skipped.
+- [x] Run lint (`pnpm lint`) before finalizing the PR and record results
+  - `pnpm lint` -> passed with `0` errors and the existing `161`-warning baseline; `pnpm typecheck` and `pnpm build` also passed. Build retained the existing VitePress chunk-size warning.
+- [x] Commit completed checklist items as logical commits and push updates
+  - `b3f15c19` tracker start and `7d08f06c` implementation were pushed to `origin/feat/st-11003-file-tool-confinement`; final tracker synchronization is captured in the follow-up commit.
+- [x] Mark PR Ready only after all story tasks are complete
+  - PR #162 is ready for review on 2026-07-21 after implementation, documentation, focused and full validation, lint, typecheck, build, self-review, and tracker synchronization.
+- [ ] Wait for merge; do not merge directly from local branch

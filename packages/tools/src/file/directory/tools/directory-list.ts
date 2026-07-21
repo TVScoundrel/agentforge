@@ -6,11 +6,16 @@ import { toolBuilder, ToolCategory } from '@agentforge/core';
 import { directoryListSchema } from '../types.js';
 import { promises as fs } from 'fs';
 import * as path from 'path';
+import { DEFAULT_FILE_SYSTEM_POLICY, type FileSystemPolicy } from '../../confinement.js';
 
 /**
  * Create directory list tool
  */
-export function createDirectoryListTool(defaultRecursive: boolean = false, defaultIncludeDetails: boolean = false) {
+export function createDirectoryListTool(
+  defaultRecursive: boolean = false,
+  defaultIncludeDetails: boolean = false,
+  policy: FileSystemPolicy = DEFAULT_FILE_SYSTEM_POLICY,
+) {
   return toolBuilder()
     .name('directory-list')
     .description('List all files and directories in a directory. Can optionally include file details and filter by extension.')
@@ -18,13 +23,15 @@ export function createDirectoryListTool(defaultRecursive: boolean = false, defau
     .tags(['directory', 'list', 'files', 'filesystem'])
     .schema(directoryListSchema)
     .implementSafe(async (input) => {
+      const safePath = await policy.resolvePath(input.path, 'directory listing');
+      const includeDetails = input.includeDetails ?? defaultIncludeDetails;
       const listFiles = async (dir: string, recursive: boolean): Promise<any[]> => {
         const entries = await fs.readdir(dir, { withFileTypes: true });
         const files: any[] = [];
 
         for (const entry of entries) {
           const fullPath = path.join(dir, entry.name);
-          const relativePath = path.relative(input.path, fullPath);
+          const relativePath = path.relative(safePath, fullPath);
 
           // Apply extension filter if specified
           if (input.extension && !entry.name.endsWith(input.extension)) {
@@ -33,8 +40,8 @@ export function createDirectoryListTool(defaultRecursive: boolean = false, defau
             }
           }
 
-          if (input.includeDetails) {
-            const stats = await fs.stat(fullPath);
+          if (includeDetails) {
+            const stats = await fs.lstat(fullPath);
             files.push({
               name: entry.name,
               path: relativePath,
@@ -64,7 +71,7 @@ export function createDirectoryListTool(defaultRecursive: boolean = false, defau
       };
 
       const recursive = input.recursive ?? defaultRecursive;
-      const files = await listFiles(input.path, recursive);
+      const files = await listFiles(safePath, recursive);
 
       return {
         path: input.path,
@@ -74,4 +81,3 @@ export function createDirectoryListTool(defaultRecursive: boolean = false, defau
     })
     .build();
 }
-

@@ -2532,13 +2532,14 @@
 **Priority:** P1 (High)
 **Estimate:** 6 hours
 **Dependencies:** ST-11001
+**Status:** In Review (PR #162, 2026-07-21)
 
 **Acceptance criteria:**
-- [ ] Default file read and mutation tools support a confinement policy such as allowed roots, workspace-relative mode, or an equivalent guardrail that can be enabled without bespoke wrapper code
-- [ ] Path traversal, symlink-escape, and destructive recursive-delete edge cases are covered by focused tests for the confinement layer
-- [ ] Existing operator-controlled privileged file workflows keep a documented opt-in escape hatch instead of being broken outright
-- [ ] Public docs clearly explain which file-tool modes are suitable for model-exposed agents versus trusted local automation
-- [ ] Add or update story documentation at `docs/st11003-file-tool-confinement-controls.md`
+- [x] Default file read and mutation tools support a confinement policy such as allowed roots, workspace-relative mode, or an equivalent guardrail that can be enabled without bespoke wrapper code
+- [x] Path traversal, symlink-escape, and destructive recursive-delete edge cases are covered by focused tests for the confinement layer
+- [x] Existing operator-controlled privileged file workflows keep a documented opt-in escape hatch instead of being broken outright
+- [x] Public docs clearly explain which file-tool modes are suitable for model-exposed agents versus trusted local automation
+- [x] Add or update story documentation at `docs/st11003-file-tool-confinement-controls.md`
 
 ---
 

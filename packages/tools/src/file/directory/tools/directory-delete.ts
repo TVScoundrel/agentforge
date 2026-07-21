@@ -5,11 +5,15 @@
 import { toolBuilder, ToolCategory } from '@agentforge/core';
 import { directoryDeleteSchema } from '../types.js';
 import { promises as fs } from 'fs';
+import { DEFAULT_FILE_SYSTEM_POLICY, type FileSystemPolicy } from '../../confinement.js';
 
 /**
  * Create directory delete tool
  */
-export function createDirectoryDeleteTool(defaultRecursive: boolean = false) {
+export function createDirectoryDeleteTool(
+  defaultRecursive: boolean = false,
+  policy: FileSystemPolicy = DEFAULT_FILE_SYSTEM_POLICY,
+) {
   return toolBuilder()
     .name('directory-delete')
     .description('Delete a directory. Can optionally delete non-empty directories recursively.')
@@ -18,7 +22,8 @@ export function createDirectoryDeleteTool(defaultRecursive: boolean = false) {
     .schema(directoryDeleteSchema)
     .implementSafe(async (input) => {
       const recursive = input.recursive ?? defaultRecursive;
-      await fs.rm(input.path, { recursive, force: false });
+      const safePath = await policy.resolveDeletePath(input.path, recursive);
+      await fs.rm(safePath, { recursive, force: false });
 
       return {
         path: input.path,
@@ -27,4 +32,3 @@ export function createDirectoryDeleteTool(defaultRecursive: boolean = false) {
     })
     .build();
 }
-

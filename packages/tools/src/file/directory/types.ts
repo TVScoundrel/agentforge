@@ -5,6 +5,7 @@
  */
 
 import { z } from 'zod';
+import type { FileSystemPolicyInput } from '../confinement.js';
 
 /**
  * Directory list schema
@@ -49,5 +50,5 @@ export interface DirectoryOperationsConfig {
   defaultRecursive?: boolean;
   defaultIncludeDetails?: boolean;
   defaultCaseSensitive?: boolean;
+  policy?: FileSystemPolicyInput;
 }
-

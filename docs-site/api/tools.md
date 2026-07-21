@@ -1344,6 +1344,27 @@ if (searchResult.success) {
 }
 ```
 
+### Filesystem Confinement
+
+The standalone file and directory tool exports are privileged filesystem operations. For model-exposed agents, configure both factory groups with one shared policy:
+
+```typescript
+import {
+  createDirectoryOperationTools,
+  createFileOperationTools,
+  createFileSystemPolicy,
+} from '@agentforge/tools';
+
+const policy = createFileSystemPolicy({
+  workspaceRoot: process.cwd(),
+});
+
+const safeFileTools = createFileOperationTools({ policy });
+const safeDirectoryTools = createDirectoryOperationTools({ policy });
+```
+
+`workspaceRoot` resolves relative paths from the workspace and confines all configured operations to that root. Use `allowedRoots` for multiple permitted roots. The policy rejects lexical traversal, resolved symlink escapes, paths outside the allowed roots, and recursive deletion of an allowed root. Set `allowOutsideRoots: true` only for trusted local automation that explicitly needs unrestricted host access.
+
 ## Utility Tools (22)
 
 ### Date/Time

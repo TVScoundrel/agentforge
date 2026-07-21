@@ -16,6 +16,7 @@ import { createFileWriterTool } from './tools/file-writer.js';
 import { createFileAppendTool } from './tools/file-append.js';
 import { createFileDeleteTool } from './tools/file-delete.js';
 import { createFileExistsTool } from './tools/file-exists.js';
+import { resolveFileSystemPolicy } from '../confinement.js';
 import type { FileOperationsConfig } from './types.js';
 
 /**
@@ -45,14 +46,15 @@ export function createFileOperationTools(config: FileOperationsConfig = {}) {
   const {
     defaultEncoding = 'utf8',
     createDirsDefault = false,
+    policy: policyInput,
   } = config;
+  const policy = resolveFileSystemPolicy(policyInput);
 
   return [
-    createFileReaderTool(defaultEncoding),
-    createFileWriterTool(defaultEncoding, createDirsDefault),
-    createFileAppendTool(defaultEncoding),
-    createFileDeleteTool(),
-    createFileExistsTool(),
+    createFileReaderTool(defaultEncoding, policy),
+    createFileWriterTool(defaultEncoding, createDirsDefault, policy),
+    createFileAppendTool(defaultEncoding, policy),
+    createFileDeleteTool(policy),
+    createFileExistsTool(policy),
   ];
 }
-
