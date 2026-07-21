@@ -189,8 +189,12 @@
   - Focused confinement coverage plus the tools package suite cover the changed filesystem surface; no additional focused automation is currently required.
 - [x] Assess CI impact; update CI or document why no CI change is required
   - No CI change is expected if the policy is covered by the existing tools-package and workspace TypeScript, Vitest, lint, and build paths.
-- [ ] Run full test suite before finalizing the PR and record results
-- [ ] Run lint (`pnpm lint`) before finalizing the PR and record results
-- [ ] Commit completed checklist items as logical commits and push updates
-- [ ] Mark PR Ready only after all story tasks are complete
+- [x] Run full test suite before finalizing the PR and record results
+  - `pnpm test --run` -> `226` test files passed, `9` skipped; `2534` tests passed, `110` skipped.
+- [x] Run lint (`pnpm lint`) before finalizing the PR and record results
+  - `pnpm lint` -> passed with `0` errors and the existing `161`-warning baseline; `pnpm typecheck` and `pnpm build` also passed. Build retained the existing VitePress chunk-size warning.
+- [x] Commit completed checklist items as logical commits and push updates
+  - `b3f15c19` tracker start and `7d08f06c` implementation were pushed to `origin/feat/st-11003-file-tool-confinement`; final tracker synchronization is captured in the follow-up commit.
+- [x] Mark PR Ready only after all story tasks are complete
+  - PR #162 is ready for review on 2026-07-21 after implementation, documentation, focused and full validation, lint, typecheck, build, self-review, and tracker synchronization.
 - [ ] Wait for merge; do not merge directly from local branch

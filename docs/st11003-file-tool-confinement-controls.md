@@ -39,3 +39,5 @@ Existing positional factory arguments remain valid. The new `policy` option is a
 
 - `packages/tools/tests/file/confinement.test.ts` covers workspace-relative paths, traversal, symlink escape, configured-root deletion, missing creation parents, non-following directory-list symlinks, directory operations, and the privileged opt-out.
 - The focused confinement suite passes with 8 tests; the full tools package suite passes with 1153 tests.
+- The repository-wide `pnpm test --run` passes with 226 test files passed, 9 skipped; 2534 tests passed, 110 skipped.
+- Repository-wide `pnpm lint`, `pnpm typecheck`, and `pnpm build` pass. Lint reports the existing 161-warning baseline with 0 errors; build retains the existing VitePress chunk-size warning.
