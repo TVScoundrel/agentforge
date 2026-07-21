@@ -20,7 +20,7 @@ A **tool** is a function that an AI agent can call to perform actions or retriev
 - And much more...
 
 ::: warning Security Boundary
-Many tools are intentionally powerful. Read the repository [Security Policy](https://github.com/TVScoundrel/agentforge/blob/main/SECURITY.md) before exposing filesystem, network, shell, or data-mutation tools to model-controlled input.
+Many tools are intentionally powerful. Read the repository [Security Policy](https://github.com/TVScoundrel/agentforge/blob/main/SECURITY.md) before exposing filesystem, network, shell, or data-mutation tools to model-controlled input. For filesystem tools, configure `createFileSystemPolicy({ workspaceRoot, allowedRoots })` on both file and directory factories; reserve unrestricted exports and `allowOutsideRoots: true` for trusted local automation.
 :::
 
 ## Why AgentForge Tools?

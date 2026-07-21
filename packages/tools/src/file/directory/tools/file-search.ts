@@ -6,11 +6,16 @@ import { toolBuilder, ToolCategory } from '@agentforge/core';
 import { fileSearchSchema } from '../types.js';
 import { promises as fs } from 'fs';
 import * as path from 'path';
+import { DEFAULT_FILE_SYSTEM_POLICY, type FileSystemPolicy } from '../../confinement.js';
 
 /**
  * Create file search tool
  */
-export function createFileSearchTool(defaultRecursive: boolean = true, defaultCaseSensitive: boolean = false) {
+export function createFileSearchTool(
+  defaultRecursive: boolean = true,
+  defaultCaseSensitive: boolean = false,
+  policy: FileSystemPolicy = DEFAULT_FILE_SYSTEM_POLICY,
+) {
   return toolBuilder()
     .name('file-search')
     .description('Search for files by name pattern in a directory. Supports wildcards and recursive search.')
@@ -20,6 +25,7 @@ export function createFileSearchTool(defaultRecursive: boolean = true, defaultCa
     .implementSafe(async (input) => {
       const recursive = input.recursive ?? defaultRecursive;
       const caseSensitive = input.caseSensitive ?? defaultCaseSensitive;
+      const safeDirectory = await policy.resolvePath(input.directory, 'file search');
 
       const searchFiles = async (dir: string): Promise<string[]> => {
         const entries = await fs.readdir(dir, { withFileTypes: true });
@@ -47,7 +53,7 @@ export function createFileSearchTool(defaultRecursive: boolean = true, defaultCa
         return matches;
       };
 
-      const matches = await searchFiles(input.directory);
+      const matches = await searchFiles(safeDirectory);
 
       return {
         directory: input.directory,
@@ -58,4 +64,3 @@ export function createFileSearchTool(defaultRecursive: boolean = true, defaultCa
     })
     .build();
 }
-

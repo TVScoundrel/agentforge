@@ -15,6 +15,7 @@ import { createDirectoryCreateTool } from './tools/directory-create.js';
 import { createDirectoryDeleteTool } from './tools/directory-delete.js';
 import { createFileSearchTool } from './tools/file-search.js';
 import type { DirectoryOperationsConfig } from './types.js';
+import { resolveFileSystemPolicy } from '../confinement.js';
 
 /**
  * Default directory operation tool instances
@@ -42,13 +43,14 @@ export function createDirectoryOperationTools(config: DirectoryOperationsConfig 
     defaultRecursive = false,
     defaultIncludeDetails = false,
     defaultCaseSensitive = false,
+    policy: policyInput,
   } = config;
+  const policy = resolveFileSystemPolicy(policyInput);
 
   return [
-    createDirectoryListTool(defaultRecursive, defaultIncludeDetails),
-    createDirectoryCreateTool(true), // Always default to true for create
-    createDirectoryDeleteTool(false), // Always default to false for delete (safety)
-    createFileSearchTool(defaultRecursive, defaultCaseSensitive),
+    createDirectoryListTool(defaultRecursive, defaultIncludeDetails, policy),
+    createDirectoryCreateTool(true, policy), // Always default to true for create
+    createDirectoryDeleteTool(false, policy), // Always default to false for delete (safety)
+    createFileSearchTool(defaultRecursive, defaultCaseSensitive, policy),
   ];
 }
-

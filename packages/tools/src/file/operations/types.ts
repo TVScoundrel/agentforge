@@ -5,6 +5,7 @@
  */
 
 import { z } from 'zod';
+import type { FileSystemPolicyInput } from '../confinement.js';
 
 /**
  * File reader schema
@@ -53,5 +54,5 @@ export const fileExistsSchema = z.object({
 export interface FileOperationsConfig {
   defaultEncoding?: 'utf8' | 'utf-8' | 'ascii' | 'base64' | 'hex';
   createDirsDefault?: boolean;
+  policy?: FileSystemPolicyInput;
 }
-

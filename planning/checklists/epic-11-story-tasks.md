@@ -167,26 +167,27 @@
 ### Checklist
 - [x] Create branch `feat/st-11003-file-tool-confinement`
   - Created on 2026-07-21 from `main` after moving `ST-11003` to `In Progress` in `planning/kanban-queue.md`.
-- [ ] Create draft PR with story ID in title
-  - Use title `feat(tools): add file tool confinement controls [ST-11003]`.
-- [ ] Define test strategy before implementation: identify the practical failing automated test seam for path confinement, traversal, symlink escape, and recursive-delete safety
+- [x] Create draft PR with story ID in title
+  - Draft PR #162 created on 2026-07-21: <https://github.com/TVScoundrel/agentforge/pull/162>
+- [x] Define test strategy before implementation: identify the practical failing automated test seam for path confinement, traversal, symlink escape, and recursive-delete safety
   - Strategy: add red-first unit coverage for a shared filesystem policy resolver and the configured file/directory tool factories in `packages/tools/tests/file/confinement.test.ts`, using temporary roots and symlink fixtures where supported.
-- [ ] Write or update the failing automated test before production changes when practical; if not practical, record why before implementation
-  - Capture the expected red failure before adding the policy implementation; if platform symlink support is unavailable, record the limitation and retain traversal plus delete safety coverage.
-- [ ] Identify the existing default file read, write, append, exists, directory list/create/delete, and file-search tool paths and define the shared confinement seam
+- [x] Write or update the failing automated test before production changes when practical; if not practical, record why before implementation
+  - Added `packages/tools/tests/file/confinement.test.ts` before the production policy; the red run failed as expected because `createFileSystemPolicy` was not yet implemented (`7` tests failed).
+- [x] Identify the existing default file read, write, append, exists, directory list/create/delete, and file-search tool paths and define the shared confinement seam
   - Keep pure path utility tools unchanged; route filesystem I/O through a shared policy that can validate lexical paths, resolved existing targets, and creation/deletion parents.
-- [ ] Add a reusable filesystem confinement policy with allowed roots or workspace-relative mode and an explicit privileged escape hatch
-  - Preserve existing unrestricted operator workflows through an explicit `allowOutsideRoots`/privileged policy option while making the safe configured factory path available without bespoke wrappers.
-- [ ] Apply confinement consistently to default file read and mutation tools, directory traversal/list/search, directory creation, and recursive deletion
-  - Block `..` traversal, symlink escapes, and destructive recursive deletes outside configured roots; ensure all configured tools share the same policy semantics and typed errors.
-- [ ] Add focused tests covering path traversal, symlink escape, allowed-root boundaries, creation parents, missing targets, and recursive-delete edge cases
-  - Include both confined behavior and the documented privileged opt-out path.
-- [ ] Add or update public docs explaining model-exposed file-tool modes versus trusted local automation
-  - Document allowed roots, workspace-relative configuration, symlink behavior, deletion safeguards, compatibility, and the privileged escape hatch.
-- [ ] Add or update story documentation at `docs/st11003-file-tool-confinement-controls.md`
-  - Record the security rationale, API/configuration examples, compatibility impact, and validation evidence.
-- [ ] Assess residual test impact; add/update additional automated tests when needed, or document why no further tests are required
-- [ ] Assess CI impact; update CI or document why no CI change is required
+- [x] Add a reusable filesystem confinement policy with allowed roots or workspace-relative mode and an explicit privileged escape hatch
+  - Added the exported `FileSystemPolicy`, `createFileSystemPolicy`, `DEFAULT_FILE_SYSTEM_POLICY`, and typed `FileSystemPolicyError`; configured policies support `allowedRoots`, `workspaceRoot`, `allowOutsideRoots`, and `allowRootDeletion`.
+- [x] Apply confinement consistently to default file read and mutation tools, directory traversal/list/search, directory creation, and recursive deletion
+  - Routed all configured file and directory I/O factories through the shared policy; pure path utilities remain unchanged. Existing standalone exports remain unrestricted for trusted automation, while configured factories enforce traversal, realpath containment, symlink, and recursive-root-deletion checks.
+- [x] Add focused tests covering path traversal, symlink escape, allowed-root boundaries, creation parents, missing targets, and recursive-delete edge cases
+  - `packages/tools/tests/file/confinement.test.ts` covers 8 focused cases, including non-following directory-list symlinks; the focused suite and full tools package suite pass, including the explicit privileged opt-out path.
+- [x] Add or update public docs explaining model-exposed file-tool modes versus trusted local automation
+  - Updated `packages/tools/README.md`, `docs-site/api/tools.md`, and `docs-site/guide/concepts/tools.md` with the shared policy configuration and model-exposure guidance.
+- [x] Add or update story documentation at `docs/st11003-file-tool-confinement-controls.md`
+  - Added the security rationale, API/configuration examples, compatibility impact, and current validation evidence.
+- [x] Assess residual test impact; add/update additional automated tests when needed, or document why no further tests are required
+  - Focused confinement coverage plus the tools package suite cover the changed filesystem surface; no additional focused automation is currently required.
+- [x] Assess CI impact; update CI or document why no CI change is required
   - No CI change is expected if the policy is covered by the existing tools-package and workspace TypeScript, Vitest, lint, and build paths.
 - [ ] Run full test suite before finalizing the PR and record results
 - [ ] Run lint (`pnpm lint`) before finalizing the PR and record results

@@ -5,11 +5,15 @@
 import { toolBuilder, ToolCategory } from '@agentforge/core';
 import { fileAppendSchema } from '../types.js';
 import { promises as fs } from 'fs';
+import { DEFAULT_FILE_SYSTEM_POLICY, type FileSystemPolicy } from '../../confinement.js';
 
 /**
  * Create file append tool
  */
-export function createFileAppendTool(defaultEncoding: string = 'utf8') {
+export function createFileAppendTool(
+  defaultEncoding: string = 'utf8',
+  policy: FileSystemPolicy = DEFAULT_FILE_SYSTEM_POLICY,
+) {
   return toolBuilder()
     .name('file-append')
     .description('Append content to the end of a file. Creates the file if it doesn\'t exist.')
@@ -18,8 +22,9 @@ export function createFileAppendTool(defaultEncoding: string = 'utf8') {
     .schema(fileAppendSchema)
     .implementSafe(async (input) => {
       const encoding = input.encoding || defaultEncoding;
-      await fs.appendFile(input.path, input.content, encoding as BufferEncoding);
-      const stats = await fs.stat(input.path);
+      const safePath = await policy.resolvePath(input.path, 'file append');
+      await fs.appendFile(safePath, input.content, encoding as BufferEncoding);
+      const stats = await fs.stat(safePath);
 
       return {
         path: input.path,
@@ -28,4 +33,3 @@ export function createFileAppendTool(defaultEncoding: string = 'utf8') {
     })
     .build();
 }
-

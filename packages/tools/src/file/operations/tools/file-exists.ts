@@ -5,11 +5,12 @@
 import { toolBuilder, ToolCategory } from '@agentforge/core';
 import { fileExistsSchema } from '../types.js';
 import { promises as fs } from 'fs';
+import { DEFAULT_FILE_SYSTEM_POLICY, type FileSystemPolicy } from '../../confinement.js';
 
 /**
  * Create file exists tool
  */
-export function createFileExistsTool() {
+export function createFileExistsTool(policy: FileSystemPolicy = DEFAULT_FILE_SYSTEM_POLICY) {
   return toolBuilder()
     .name('file-exists')
     .description('Check if a file or directory exists at the specified path.')
@@ -17,9 +18,10 @@ export function createFileExistsTool() {
     .tags(['file', 'exists', 'check', 'filesystem'])
     .schema(fileExistsSchema)
     .implement(async (input) => {
+      const safePath = await policy.resolvePath(input.path, 'file existence check');
       try {
-        await fs.access(input.path);
-        const stats = await fs.stat(input.path);
+        await fs.access(safePath);
+        const stats = await fs.stat(safePath);
         
         return {
           exists: true,
@@ -38,4 +40,3 @@ export function createFileExistsTool() {
     })
     .build();
 }
-
