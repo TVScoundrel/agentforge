@@ -6,7 +6,7 @@
 
 - **Ready:** 1 story
 - **In Progress:** 0 stories
-- **In Review:** 1 story
+- **In Review:** 0 stories
 - **Blocked:** 0 stories
 - **Backlog:** 0 stories
 
@@ -27,8 +27,7 @@ None currently.
 
 ## In Review
 
-- `ST-11003` - Add Filesystem Confinement Controls for Default File Tools
-  - PR #162: <https://github.com/TVScoundrel/agentforge/pull/162>
+None currently.
 
 ---
 
@@ -54,6 +53,7 @@ _No stories currently in backlog_
 - ST-11002 merged on 2026-07-20 as PR #161 / commit `0f8d2f55`; the active EP-11 ready lane remains `ST-11003` followed by `ST-11006`
 - ST-11003 moved to `In Progress` on 2026-07-21 as the next dependency-ready EP-11 story; `ST-11006` remains in `Ready` behind the merged `ST-11001` policy baseline
 - ST-11003 moved to `In Review` on 2026-07-21 with PR #162 after implementation, documentation, focused and full validation, lint, typecheck, build, and tracker synchronization; `ST-11006` remains in `Ready`
+- ST-11003 merged on 2026-07-21 as PR #162 / commit `31e2270b`; removed from the active queue, archived as done, and left `ST-11006` as the next dependency-ready story
 
 - Complete: ST-01001 - foundation established (merged 2026-02-17)
 - Complete: ST-01002 - connection manager implemented (merged 2026-02-17)

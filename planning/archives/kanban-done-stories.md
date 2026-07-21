@@ -2,11 +2,18 @@
 
 **Purpose:** Track completed and merged stories for the Relational Database Access Tool project.
 
-**Last Updated:** 2026-07-20
+**Last Updated:** 2026-07-21
 
 ---
 
 ## Completed Stories
+
+### ST-11003: Add Filesystem Confinement Controls for Default File Tools
+- **Merged:** 2026-07-21
+- **PR:** https://github.com/TVScoundrel/agentforge/pull/162 (commit 31e2270b)
+- **Epic:** EP-11 (Security Boundary Hardening)
+- **Estimate:** 6 hours
+- **Outcome:** Added a shared, exported filesystem policy for configured file and directory tools with workspace-relative and allowed-root confinement, traversal and symlink-escape checks, creation-parent validation, recursive allowed-root deletion protection, and an explicit trusted-automation opt-out. Preserved unrestricted standalone exports for operator-controlled workflows, added focused confinement regressions and public/story documentation, addressed review follow-ups for safe `file-exists` policy failures, single-pass root resolution, and non-following directory-list metadata, and completed full workspace validation with 2534 tests passed, lint with 0 errors, typecheck, and build.
 
 ### ST-11002: Harden Default Web Tool Egress Policy
 - **Merged:** 2026-07-20

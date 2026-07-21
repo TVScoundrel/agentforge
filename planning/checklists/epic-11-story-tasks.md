@@ -194,7 +194,8 @@
 - [x] Run lint (`pnpm lint`) before finalizing the PR and record results
   - `pnpm lint` -> passed with `0` errors and the existing `161`-warning baseline; `pnpm typecheck` and `pnpm build` also passed. Build retained the existing VitePress chunk-size warning.
 - [x] Commit completed checklist items as logical commits and push updates
-  - `b3f15c19` tracker start and `7d08f06c` implementation were pushed to `origin/feat/st-11003-file-tool-confinement`; final tracker synchronization is captured in the follow-up commit.
+  - `b3f15c19` tracker start, `7d08f06c` implementation, and `d0a997a6` review fixes were pushed to `origin/feat/st-11003-file-tool-confinement`; post-merge tracker closure is captured in the main-branch sync commit.
 - [x] Mark PR Ready only after all story tasks are complete
   - PR #162 is ready for review on 2026-07-21 after implementation, documentation, focused and full validation, lint, typecheck, build, self-review, and tracker synchronization.
-- [ ] Wait for merge; do not merge directly from local branch
+- [x] Wait for merge; do not merge directly from local branch
+  - PR #162 merged into `main` on 2026-07-21 as commit `31e2270b`; post-merge tracker synchronization, done-story archival, and ready-lane grooming were completed from local `main`.
