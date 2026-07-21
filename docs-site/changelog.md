@@ -5,6 +5,35 @@ All notable changes to AgentForge will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.16.78] - 2026-07-21
+
+### Added
+
+#### @agentforge/tools - Filesystem Confinement Controls
+- Added a shared `FileSystemPolicy` with workspace-relative and allowed-root confinement for configured file and directory tools.
+- Added focused regressions and public/story documentation covering traversal, symlink escapes, creation parents, recursive-root deletion, safe policy failures, and trusted opt-out behavior.
+
+### Changed
+
+#### @agentforge/tools - Configured File and Directory Operations
+- Routed configured file reads, writes, appends, existence checks, directory listing/search/creation, and deletion through the shared policy while preserving unrestricted standalone exports for trusted automation.
+- Directory listing detail metadata now uses non-following `lstat` behavior for symlink entries, and recursive deletion reuses one allowed-root resolution per operation.
+
+### Fixed
+
+#### @agentforge/tools - File Access Boundary Hardening
+- Blocked lexical traversal, resolved symlink escapes, paths outside configured roots, missing creation parents outside approved roots, and recursive deletion of an allowed root.
+- Returned `file-exists` confinement violations as explicit safe failures instead of rejected promises or false missing-path results.
+
+### Published
+- All packages published to npm registry at version 0.16.78:
+  - @agentforge/core@0.16.78
+  - @agentforge/skills@0.16.78
+  - @agentforge/patterns@0.16.78
+  - @agentforge/tools@0.16.78
+  - @agentforge/testing@0.16.78
+  - @agentforge/cli@0.16.78
+
 ## [0.16.77] - 2026-07-20
 
 ### Added
