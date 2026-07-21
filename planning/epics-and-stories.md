@@ -2532,6 +2532,7 @@
 **Priority:** P1 (High)
 **Estimate:** 6 hours
 **Dependencies:** ST-11001
+**Status:** In Progress (2026-07-21)
 
 **Acceptance criteria:**
 - [ ] Default file read and mutation tools support a confinement policy such as allowed roots, workspace-relative mode, or an equivalent guardrail that can be enabled without bespoke wrapper code

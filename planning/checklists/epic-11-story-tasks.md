@@ -159,3 +159,37 @@
   - PR #161 marked ready for review on 2026-07-20 after implementation, documentation, tracker synchronization, `pnpm test --run`, `pnpm lint`, `pnpm typecheck`, `pnpm build`, and self-review.
 - [x] Wait for merge; do not merge directly from local branch
   - PR #161 merged into `main` on 2026-07-20 as commit `0f8d2f55`; post-merge tracker synchronization is being committed from local `main`.
+
+## ST-11003: Add Filesystem Confinement Controls for Default File Tools
+
+**Branch:** `feat/st-11003-file-tool-confinement`
+
+### Checklist
+- [x] Create branch `feat/st-11003-file-tool-confinement`
+  - Created on 2026-07-21 from `main` after moving `ST-11003` to `In Progress` in `planning/kanban-queue.md`.
+- [ ] Create draft PR with story ID in title
+  - Use title `feat(tools): add file tool confinement controls [ST-11003]`.
+- [ ] Define test strategy before implementation: identify the practical failing automated test seam for path confinement, traversal, symlink escape, and recursive-delete safety
+  - Strategy: add red-first unit coverage for a shared filesystem policy resolver and the configured file/directory tool factories in `packages/tools/tests/file/confinement.test.ts`, using temporary roots and symlink fixtures where supported.
+- [ ] Write or update the failing automated test before production changes when practical; if not practical, record why before implementation
+  - Capture the expected red failure before adding the policy implementation; if platform symlink support is unavailable, record the limitation and retain traversal plus delete safety coverage.
+- [ ] Identify the existing default file read, write, append, exists, directory list/create/delete, and file-search tool paths and define the shared confinement seam
+  - Keep pure path utility tools unchanged; route filesystem I/O through a shared policy that can validate lexical paths, resolved existing targets, and creation/deletion parents.
+- [ ] Add a reusable filesystem confinement policy with allowed roots or workspace-relative mode and an explicit privileged escape hatch
+  - Preserve existing unrestricted operator workflows through an explicit `allowOutsideRoots`/privileged policy option while making the safe configured factory path available without bespoke wrappers.
+- [ ] Apply confinement consistently to default file read and mutation tools, directory traversal/list/search, directory creation, and recursive deletion
+  - Block `..` traversal, symlink escapes, and destructive recursive deletes outside configured roots; ensure all configured tools share the same policy semantics and typed errors.
+- [ ] Add focused tests covering path traversal, symlink escape, allowed-root boundaries, creation parents, missing targets, and recursive-delete edge cases
+  - Include both confined behavior and the documented privileged opt-out path.
+- [ ] Add or update public docs explaining model-exposed file-tool modes versus trusted local automation
+  - Document allowed roots, workspace-relative configuration, symlink behavior, deletion safeguards, compatibility, and the privileged escape hatch.
+- [ ] Add or update story documentation at `docs/st11003-file-tool-confinement-controls.md`
+  - Record the security rationale, API/configuration examples, compatibility impact, and validation evidence.
+- [ ] Assess residual test impact; add/update additional automated tests when needed, or document why no further tests are required
+- [ ] Assess CI impact; update CI or document why no CI change is required
+  - No CI change is expected if the policy is covered by the existing tools-package and workspace TypeScript, Vitest, lint, and build paths.
+- [ ] Run full test suite before finalizing the PR and record results
+- [ ] Run lint (`pnpm lint`) before finalizing the PR and record results
+- [ ] Commit completed checklist items as logical commits and push updates
+- [ ] Mark PR Ready only after all story tasks are complete
+- [ ] Wait for merge; do not merge directly from local branch

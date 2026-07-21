@@ -4,8 +4,8 @@
 
 ## Queue Status Summary
 
-- **Ready:** 2 stories
-- **In Progress:** 0 stories
+- **Ready:** 1 story
+- **In Progress:** 1 story
 - **In Review:** 0 stories
 - **Blocked:** 0 stories
 - **Backlog:** 0 stories
@@ -14,8 +14,6 @@
 
 ## Ready
 
-- `ST-11003` - Add Filesystem Confinement Controls for Default File Tools
-  - Depends on: `ST-11001` (merged)
 - `ST-11006` - Harden Express Chat Example Ownership Semantics
   - Depends on: `ST-11001` (merged)
 
@@ -23,7 +21,8 @@
 
 ## In Progress
 
-None currently.
+- `ST-11003` - Add Filesystem Confinement Controls for Default File Tools
+  - Depends on: `ST-11001` (merged)
 
 ---
 
@@ -53,6 +52,7 @@ _No stories currently in backlog_
 - ST-11002 moved to `In Progress` on 2026-07-20 as the next dependency-ready EP-11 story; `ST-11003` and `ST-11006` remain in `Ready` behind the merged `ST-11001` policy baseline
 - ST-11002 moved to `In Review` on 2026-07-20 with PR #161 after implementation, focused and full validation, lint, typecheck, build, documentation, and tracker synchronization; `ST-11003` and `ST-11006` remain in `Ready`
 - ST-11002 merged on 2026-07-20 as PR #161 / commit `0f8d2f55`; the active EP-11 ready lane remains `ST-11003` followed by `ST-11006`
+- ST-11003 moved to `In Progress` on 2026-07-21 as the next dependency-ready EP-11 story; `ST-11006` remains in `Ready` behind the merged `ST-11001` policy baseline
 
 - Complete: ST-01001 - foundation established (merged 2026-02-17)
 - Complete: ST-01002 - connection manager implemented (merged 2026-02-17)
