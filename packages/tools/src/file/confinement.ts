@@ -78,10 +78,32 @@ export class FileSystemPolicy {
   }
 
   async resolvePath(inputPath: string, operation: string): Promise<string> {
+    const { resolvedPath } = await this.resolvePathWithRoots(inputPath, operation);
+    return resolvedPath;
+  }
+
+  async resolveDeletePath(inputPath: string, recursive: boolean): Promise<string> {
+    const { resolvedPath, resolvedRoots } = await this.resolvePathWithRoots(inputPath, 'directory deletion');
+
+    if (recursive && !this.allowRootDeletion && resolvedRoots.some((root) => root === resolvedPath)) {
+      throw new FileSystemPolicyError(
+        'Filesystem policy blocked directory deletion: recursive deletion of an allowed root is not permitted',
+        'directory deletion',
+        inputPath,
+      );
+    }
+
+    return resolvedPath;
+  }
+
+  private async resolvePathWithRoots(
+    inputPath: string,
+    operation: string,
+  ): Promise<{ resolvedPath: string; resolvedRoots: string[] }> {
     const absolutePath = path.resolve(this.baseDirectory, inputPath);
 
     if (this.allowOutsideRoots) {
-      return absolutePath;
+      return { resolvedPath: absolutePath, resolvedRoots: [] };
     }
 
     if (containsTraversal(inputPath)) {
@@ -112,24 +134,7 @@ export class FileSystemPolicy {
       );
     }
 
-    return resolvedPath;
-  }
-
-  async resolveDeletePath(inputPath: string, recursive: boolean): Promise<string> {
-    const resolvedPath = await this.resolvePath(inputPath, 'directory deletion');
-
-    if (recursive && !this.allowRootDeletion) {
-      const resolvedRoots = await this.resolveRoots('directory deletion', inputPath);
-      if (resolvedRoots.some((root) => root === resolvedPath)) {
-        throw new FileSystemPolicyError(
-          'Filesystem policy blocked directory deletion: recursive deletion of an allowed root is not permitted',
-          'directory deletion',
-          inputPath,
-        );
-      }
-    }
-
-    return resolvedPath;
+    return { resolvedPath, resolvedRoots };
   }
 
   private async resolveRoots(operation: string, inputPath: string): Promise<string[]> {

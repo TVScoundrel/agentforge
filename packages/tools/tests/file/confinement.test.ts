@@ -138,13 +138,14 @@ describe('file system confinement policy', () => {
     await expect(readFile(outsidePath, 'utf8')).resolves.toBe('allowed');
   });
 
-  it('does not hide confinement errors from file-exists checks', async () => {
+  it('returns confinement errors from file-exists checks as safe failures', async () => {
     const [, , , , exists] = createFileOperationTools({
       policy: createFileSystemPolicy({ allowedRoots: [workspaceRoot] }),
     });
 
-    await expect(exists.invoke({ path: join(workspaceRoot, '..', 'outside.txt') })).rejects.toMatchObject({
-      code: 'FILE_SYSTEM_POLICY_VIOLATION',
+    await expect(exists.invoke({ path: join(workspaceRoot, '..', 'outside.txt') })).resolves.toMatchObject({
+      success: false,
+      error: expect.stringContaining('outside the allowed roots'),
     });
   });
 });

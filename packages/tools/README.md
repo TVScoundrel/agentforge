@@ -223,7 +223,7 @@ const safeFileTools = createFileOperationTools({ policy });
 const safeDirectoryTools = createDirectoryOperationTools({ policy });
 ```
 
-The policy rejects `..` traversal, resolved symlink escapes, paths outside configured roots, and recursive deletion of a configured root. Use `allowedRoots` for multiple roots. Keep the default unrestricted exports for trusted local automation only; `allowOutsideRoots: true` is an explicit privileged opt-out when a configured factory must access the wider host filesystem.
+The policy rejects `..` traversal, resolved symlink escapes, paths outside configured roots, and recursive deletion of a configured root. Use `allowedRoots` for multiple roots. Keep the default unrestricted exports for trusted local automation only; `allowOutsideRoots: true` is an explicit privileged opt-out when a configured factory must access the wider host filesystem. The `file-exists` tool preserves its legacy result shape for successful and missing-path checks, while policy violations return `{ success: false, error }`. Detailed `directory-list` results use non-following `lstat` metadata for symlink entries under both default and confined policies.
 
 ### Utility Tools (22 tools)
 

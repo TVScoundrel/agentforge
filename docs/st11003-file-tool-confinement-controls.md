@@ -35,6 +35,8 @@ The standalone tool exports preserve their existing unrestricted behavior for tr
 
 Existing positional factory arguments remain valid. The new `policy` option is additive on `FileOperationsConfig` and `DirectoryOperationsConfig`, and the public policy types and factory are exported from `@agentforge/tools`.
 
+`file-exists` retains its legacy result shape for successful and missing-path checks. Confinement violations from that tool are returned as explicit `{ success: false, error }` results instead of being reported as a missing path or rejected promise. Detailed `directory-list` results use non-following `lstat` metadata for symlink entries; this applies to both default and confined policies, so symlinks report link metadata rather than target metadata.
+
 ## Validation
 
 - `packages/tools/tests/file/confinement.test.ts` covers workspace-relative paths, traversal, symlink escape, configured-root deletion, missing creation parents, non-following directory-list symlinks, directory operations, and the privileged opt-out.
