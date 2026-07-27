@@ -2617,13 +2617,14 @@
 **Priority:** P2 (Medium)
 **Estimate:** 3 hours
 **Dependencies:** ST-11001
+**Status:** In Progress
 
 **Acceptance criteria:**
-- [ ] The Express chat example either enforces a minimal ownership/auth boundary for conversation history endpoints or is clearly documented as intentionally unauthenticated demo-only code with safer production guidance adjacent to the route handlers and README
-- [ ] Example tests or focused route coverage prove the intended ownership behavior or documented guardrail path
-- [ ] Example docs stop implying that caller-provided conversation IDs are sufficient for production history retrieval/deletion flows
-- [ ] The story remains scoped to the example integration and does not attempt to invent a production auth framework for all adopters
-- [ ] Add or update story documentation at `docs/st11006-express-chat-example-ownership-hardening.md`
+- [x] The Express chat example requires a non-empty demo owner header, scopes conversation storage and all history operations to that owner, and documents the header as a demo-only guardrail rather than authentication
+- [x] Focused ownership-store tests prove missing-owner rejection, cross-owner isolation, owner-scoped listing, and owner-scoped deletion
+- [x] Example docs stop implying that caller-provided conversation IDs are sufficient for production history retrieval/deletion flows
+- [x] The story remains scoped to the example integration and does not attempt to invent a production auth framework for all adopters
+- [x] Add or update story documentation at `docs/st11006-express-chat-example-ownership-hardening.md`
 
 ---
 

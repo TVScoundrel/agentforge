@@ -1,6 +1,8 @@
 # Express.js Integration Example
 
-A production-ready Express.js REST API integration with AgentForge, featuring rate limiting, security headers, streaming, and conversation management.
+An Express.js REST API integration example with AgentForge, featuring rate limiting, security headers, streaming, and conversation management.
+
+> **Demo security boundary:** The chat routes require an `X-Demo-User-Id` header and scope conversation history to that value. This header is only an example ownership boundary, not authentication; replace it with an identity established by verified application authentication before exposing the API to users.
 
 ## Features
 
@@ -147,6 +149,14 @@ Content-Type: application/json
   "message": "Hello!"
 }
 ```
+
+Include the demo owner header with every chat request:
+
+```http
+X-Demo-User-Id: user-123
+```
+
+Conversation IDs are scoped to that owner. History, deletion, and conversation listing do not authorize access based on the caller-provided conversation ID alone; production applications must replace the demo header with a verified identity from their authentication layer.
 
 Response:
 ```json
