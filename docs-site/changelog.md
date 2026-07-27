@@ -5,6 +5,23 @@ All notable changes to AgentForge will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.16.79] - 2026-07-27
+
+### Changed
+
+#### Express API Example - Conversation Ownership
+- Scoped conversation state and snapshots by owner so requests cannot access another owner's conversation data.
+- Added route-level ownership coverage and documented the example's authentication and ownership assumptions.
+
+### Published
+- All packages published to npm registry at version 0.16.79:
+  - @agentforge/core@0.16.79
+  - @agentforge/skills@0.16.79
+  - @agentforge/patterns@0.16.79
+  - @agentforge/tools@0.16.79
+  - @agentforge/testing@0.16.79
+  - @agentforge/cli@0.16.79
+
 ## [0.16.78] - 2026-07-21
 
 ### Added
