@@ -207,7 +207,8 @@
 **Branch:** `fix/st-11006-express-chat-example-ownership-hardening`
 
 ### Checklist
-- [ ] Create branch `fix/st-11006-express-chat-example-ownership-hardening`
+- [x] Create branch `fix/st-11006-express-chat-example-ownership-hardening`
+  - Created as `codex/fix/st-11006-express-chat-example-ownership-hardening` from `main`.
 - [x] Create a draft PR with the story ID in the title
   - Draft PR #163 created: <https://github.com/TVScoundrel/agentforge/pull/163>
 - [x] Define the test strategy for conversation ownership and the documented demo-only guardrail path
@@ -233,7 +234,8 @@
 - [x] Commit completed checklist items as logical story-linked commits and push updates
 - [x] Mark the PR Ready only after all story tasks are complete
   - PR #163 marked ready for review after tracker synchronization and self-review.
-- [ ] Wait for merge; do not merge directly from local branch
+- [x] Wait for merge; do not merge directly from local branch
+  - PR #163 merged into `main` on 2026-07-27 as commit `2d79621d`; post-merge tracker synchronization and queue grooming completed from local `main`.
 
 ---
 

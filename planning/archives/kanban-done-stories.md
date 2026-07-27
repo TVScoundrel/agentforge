@@ -2,11 +2,18 @@
 
 **Purpose:** Track completed and merged stories for the Relational Database Access Tool project.
 
-**Last Updated:** 2026-07-21
+**Last Updated:** 2026-07-27
 
 ---
 
 ## Completed Stories
+
+### ST-11006: Harden Express Chat Example Ownership Semantics
+- **Merged:** 2026-07-27
+- **PR:** https://github.com/TVScoundrel/agentforge/pull/163 (commit 2d79621d)
+- **Epic:** EP-11 (Security Boundary Hardening)
+- **Estimate:** 3 hours
+- **Outcome:** Hardened the Express chat example by requiring a non-empty `X-Demo-User-Id` owner scope on message, history, deletion, and listing endpoints, isolating conversations between owners, and documenting that the demo header must be replaced with verified application identity in production. Added an example-local Vitest harness and focused ownership tests, then fixed review feedback by snapshotting conversation messages on store input and output so failed agent calls cannot persist partial state through live array references. Full workspace tests, lint, typecheck, and build passed; the four dependency-ready follow-on stories `ST-11007`, `ST-11008`, `ST-09089`, and `ST-09091` were promoted to Ready.
 
 ### ST-11003: Add Filesystem Confinement Controls for Default File Tools
 - **Merged:** 2026-07-21

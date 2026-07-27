@@ -4,17 +4,24 @@
 
 ## Queue Status Summary
 
-- **Ready:** 0 stories
+- **Ready:** 4 stories
 - **In Progress:** 0 stories
-- **In Review:** 1 story
+- **In Review:** 0 stories
 - **Blocked:** 0 stories
-- **Backlog:** 4 stories
+- **Backlog:** 0 stories
 
 ---
 
 ## Ready
 
-None currently.
+- `ST-11007` - Add Model-Safe File and Web Tool Presets
+  - Depends on: `ST-11002` and `ST-11003` (merged)
+- `ST-11008` - Tighten Express Example CORS and Request Limits
+  - Depends on: `ST-11006` (merged)
+- `ST-09089` - Harden CLI JSON Utility Type Boundaries
+  - Depends on: None
+- `ST-09091` - Type Directory Listing Results
+  - Depends on: `ST-11003` (merged)
 
 ---
 
@@ -26,9 +33,7 @@ None currently.
 
 ## In Review
 
-- `ST-11006` - Harden Express Chat Example Ownership Semantics
-  - Depends on: `ST-11001` (merged)
-  - PR: <https://github.com/TVScoundrel/agentforge/pull/163>
+None currently.
 
 ---
 
@@ -40,14 +45,7 @@ _No stories currently blocked_
 
 ## Backlog
 
-- `ST-11007` - Add Model-Safe File and Web Tool Presets
-  - Depends on: `ST-11002` and `ST-11003` (merged)
-- `ST-11008` - Tighten Express Example CORS and Request Limits
-  - Depends on: `ST-11006`
-- `ST-09089` - Harden CLI JSON Utility Type Boundaries
-  - Depends on: None
-- `ST-09091` - Type Directory Listing Results
-  - Depends on: `ST-11003` (merged)
+None currently.
 
 ---
 
@@ -63,7 +61,7 @@ _No stories currently blocked_
 - ST-11003 moved to `In Review` on 2026-07-21 with PR #162 after implementation, documentation, focused and full validation, lint, typecheck, build, and tracker synchronization; `ST-11006` remains in `Ready`
 - ST-11003 merged on 2026-07-21 as PR #162 / commit `31e2270b`; removed from the active queue, archived as done, and left `ST-11006` as the next dependency-ready story
 - ST-11007, ST-11008, ST-09089, and ST-09091 added to Backlog on 2026-07-27 after source review identified bounded, low-risk follow-on improvements for EP-11 and EP-09; `ST-11006` was the only Ready story before moving to In Progress
-- ST-11006 moved to In Review on 2026-07-27 with PR #163 after focused ownership tests, full test, lint, workspace typecheck, build, documentation, and self-review completed
+- ST-11006 merged on 2026-07-27 as PR #163 / commit `2d79621d`; removed from the active queue, archived as done, and all four accepted follow-on stories were promoted to Ready because their dependencies are now satisfied
 
 - Complete: ST-01001 - foundation established (merged 2026-02-17)
 - Complete: ST-01002 - connection manager implemented (merged 2026-02-17)

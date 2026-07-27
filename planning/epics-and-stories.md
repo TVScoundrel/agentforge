@@ -2617,7 +2617,7 @@
 **Priority:** P2 (Medium)
 **Estimate:** 3 hours
 **Dependencies:** ST-11001
-**Status:** In Progress
+**Status:** Merged (PR #163, 2026-07-27)
 
 **Acceptance criteria:**
 - [x] The Express chat example requires a non-empty demo owner header, scopes conversation storage and all history operations to that owner, and documents the header as a demo-only guardrail rather than authentication
