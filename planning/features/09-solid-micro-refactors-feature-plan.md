@@ -2,8 +2,8 @@
 
 **Epic Range:** EP-09 through EP-09
 **Status:** In Progress
-**Last Updated:** 2026-07-13
-**Active Story:** ST-09087 - Merged on 2026-07-13 (PR #157); next recommended ready story is ST-11001
+**Last Updated:** 2026-07-27
+**Active Story:** No EP-09 story active; `ST-09089` and `ST-09091` are queued backlog follow-ons while `ST-11006` remains the next Ready story
 
 ---
 
@@ -140,6 +140,8 @@ Recent improvement snapshot:
 
 ---
 
+- `ST-09089` and `ST-09091` were added on 2026-07-27 as small follow-on type-boundary slices covering CLI JSON helpers and the directory-list result model; `ST-09091` depends on the merged filesystem-confinement work in `ST-11003`.
+
 ## Scope
 
 ### In Scope
@@ -159,7 +161,7 @@ Recent improvement snapshot:
 
 ## Story Coverage by Epic
 
-- EP-09: ST-09001, ST-09002, ST-09003, ST-09004, ST-09005, ST-09006, ST-09007, ST-09008, ST-09009, ST-09010, ST-09011, ST-09012, ST-09013, ST-09014, ST-09015, ST-09016, ST-09017, ST-09018, ST-09019, ST-09020, ST-09021, ST-09022, ST-09023, ST-09024, ST-09025, ST-09026, ST-09027, ST-09028, ST-09029, ST-09030, ST-09031, ST-09032, ST-09033, ST-09034, ST-09035, ST-09036, ST-09037, ST-09038, ST-09039, ST-09040, ST-09041, ST-09042, ST-09043, ST-09044, ST-09045, ST-09046, ST-09047, ST-09048, ST-09049, ST-09050, ST-09051, ST-09052, ST-09053, ST-09054, ST-09055, ST-09056, ST-09057, ST-09058, ST-09059, ST-09060, ST-09061, ST-09062, ST-09063, ST-09064, ST-09065, ST-09066, ST-09067, ST-09068, ST-09069, ST-09070, ST-09071, ST-09072, ST-09073, ST-09074, ST-09075, ST-09076, ST-09077, ST-09078, ST-09079, ST-09080, ST-09081, ST-09082, ST-09083, ST-09084, ST-09085, ST-09086, ST-09087, ST-09088
+- EP-09: ST-09001 through ST-09091
 
 ---
 

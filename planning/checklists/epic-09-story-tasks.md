@@ -3744,3 +3744,39 @@ Implementation notes:
 ### Notes
 - CI-impact assessment:
   - No CI workflow update is expected; verify the existing patterns package-scoped and root validation paths still cover the hardened runtime boundary.
+
+---
+
+## ST-09089: Harden CLI JSON Utility Type Boundaries
+
+**Branch:** `refactor/st-09089-cli-json-utility-type-boundaries`
+
+### Checklist
+- [ ] Create branch `refactor/st-09089-cli-json-utility-type-boundaries`
+- [ ] Define focused tests for JSON round trips, malformed JSON, generic output usage, and filesystem failures
+- [ ] Replace explicit `any` contracts in `packages/cli/src/utils/fs.ts` with JSON-safe input and unknown-first generic output
+- [ ] Preserve current encoding defaults, error propagation, and public helper behavior
+- [ ] Record explicit-`any` warning deltas in story documentation
+- [ ] Add or update story documentation at `docs/st09089-cli-json-utility-type-boundaries.md`
+- [ ] Run CLI tests, typecheck, lint, and the explicit-any baseline gate
+- [ ] Commit completed checklist items and push updates
+- [ ] Mark the PR Ready only after all story tasks are complete
+- [ ] Wait for merge; do not merge directly from local branch
+
+---
+
+## ST-09091: Type Directory Listing Results
+
+**Branch:** `refactor/st-09091-directory-list-result-typing`
+
+### Checklist
+- [ ] Create branch `refactor/st-09091-directory-list-result-typing`
+- [ ] Define focused type and runtime tests for empty, flat, nested, filtered, and detailed listings
+- [ ] Replace `Promise<any[]>` and `any[]` contracts in the directory-list tool with an exported result model
+- [ ] Preserve filesystem-policy enforcement and existing output serialization
+- [ ] Record explicit-`any` warning deltas in story documentation
+- [ ] Add or update story documentation at `docs/st09091-directory-list-result-typing.md`
+- [ ] Run tools tests, typecheck, lint, and the explicit-any baseline gate
+- [ ] Commit completed checklist items and push updates
+- [ ] Mark the PR Ready only after all story tasks are complete
+- [ ] Wait for merge; do not merge directly from local branch

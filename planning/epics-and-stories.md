@@ -121,7 +121,7 @@
 - Story slices are intentionally small (1 day each) so quality improvements can ship continuously
 - Lightweight quality-gate follow-ups keep release/build feedback tight by reducing stale warning caps and easy package metadata warnings
 
-**Stories:** ST-09001 through ST-09077
+**Stories:** ST-09001 through ST-09091
 
 ---
 
@@ -162,7 +162,7 @@
 - Multi-agent and skills flows preserve trust boundaries instead of treating worker or untrusted skill content as implicitly safe supervisor instructions.
 - Example integrations avoid normalizing insecure ownership or authorization patterns without prominent guidance.
 
-**Stories:** ST-11001 through ST-11006
+**Stories:** ST-11001 through ST-11008
 
 #### Feature Context: Security Boundary Hardening
 
@@ -2388,6 +2388,40 @@
 
 ---
 
+#### ST-09089: Harden CLI JSON Utility Type Boundaries
+**User story:** As a CLI maintainer, I want JSON filesystem helpers to use explicit unknown and generic boundaries so malformed or evolving configuration data cannot hide behind broad `any` contracts.
+
+**Priority:** P2 (Medium)
+**Estimate:** 2 hours
+**Dependencies:** None
+**Status:** Backlog
+
+**Acceptance criteria:**
+- [ ] Replace the explicit `any` contracts in `packages/cli/src/utils/fs.ts` with JSON-safe input and unknown-first generic output while preserving current public helper behavior.
+- [ ] Preserve JSON round-trip behavior, encoding defaults, malformed-JSON errors, and filesystem error propagation.
+- [ ] Add focused tests for round trips, malformed JSON, generic output usage, and filesystem failures.
+- [ ] `pnpm --filter @agentforge/cli test --run`, `pnpm --filter @agentforge/cli typecheck`, and `pnpm lint:explicit-any:baseline` pass with no baseline regression.
+- [ ] Add or update story documentation at `docs/st09089-cli-json-utility-type-boundaries.md`
+
+---
+
+#### ST-09091: Type Directory Listing Results
+**User story:** As a tools maintainer, I want directory-list results to expose a stable typed shape so consumers do not need to infer or cast unstructured `any[]` output.
+
+**Priority:** P2 (Medium)
+**Estimate:** 2 hours
+**Dependencies:** ST-11003 (merged)
+**Status:** Backlog
+
+**Acceptance criteria:**
+- [ ] Replace the `Promise<any[]>` and `any[]` directory-list result contracts with an exported typed result model while preserving existing fields and serialization.
+- [ ] Preserve recursive traversal, extension filtering, detail inclusion, and filesystem-policy enforcement behavior.
+- [ ] Add focused type and runtime coverage for empty directories, files, nested entries, and detailed metadata.
+- [ ] `pnpm --filter @agentforge/tools test --run`, `pnpm --filter @agentforge/tools typecheck`, and `pnpm lint:explicit-any:baseline` pass with no baseline regression.
+- [ ] Add or update story documentation at `docs/st09090-directory-list-result-typing.md`
+
+---
+
 #### ST-10001: Audit Markdown Emoji Usage Across Project-Owned Docs
 **User story:** As a maintainer, I want a clear inventory of markdown emoji usage so docs-only cleanup work can be prioritized and executed without noisy, repo-wide guesswork.
 
@@ -2593,15 +2627,51 @@
 
 ---
 
+#### ST-11007: Add Model-Safe File and Web Tool Presets
+**User story:** As a developer exposing AgentForge tools to a model, I want named safe presets so confinement and egress policies are easy to configure without changing trusted automation defaults.
+
+**Priority:** P1 (High)
+**Estimate:** 4 hours
+**Dependencies:** ST-11002 and ST-11003 (merged)
+**Status:** Backlog
+
+**Acceptance criteria:**
+- [ ] Add explicit model-safe factory or preset APIs that combine filesystem confinement and default web destination policy for model-exposed file and web tools.
+- [ ] Preserve existing unrestricted standalone exports and document the compatibility distinction between trusted automation and model-controlled usage.
+- [ ] Focused tests prove the safe presets reject traversal, symlink escapes, private or metadata destinations, and unsafe redirects while allowing configured workspace/public-host use.
+- [ ] Update public tool documentation and examples with the recommended model-exposed setup.
+- [ ] `pnpm --filter @agentforge/tools test --run`, `pnpm --filter @agentforge/tools typecheck`, `pnpm lint`, and `pnpm build` pass.
+- [ ] Add or update story documentation at `docs/st11007-model-safe-tool-presets.md`
+
+---
+
+#### ST-11008: Tighten Express Example CORS and Request Limits
+**User story:** As a developer copying the Express example, I want conservative cross-origin and request-size defaults so the sample does not present permissive deployment settings as production-ready.
+
+**Priority:** P2 (Medium)
+**Estimate:** 3 hours
+**Dependencies:** ST-11006
+**Status:** Backlog
+
+**Acceptance criteria:**
+- [ ] Replace wildcard CORS plus credentials with an explicit safe default and a documented development override.
+- [ ] Apply bounded JSON and URL-encoded request limits with configuration guidance for legitimate larger payloads.
+- [ ] Add focused middleware tests covering allowed origins, rejected origins, credentials behavior, and oversized request bodies.
+- [ ] Update the Express README and environment example so the security posture is clear and no default implies production authorization.
+- [ ] Run the repository-supported Express example tests, `pnpm lint`, and `pnpm typecheck`.
+- [ ] Add or update story documentation at `docs/st11008-express-request-boundaries.md`
+
+---
+
 ## Story Summary
 
-**Total Stories:** 96
+**Total Stories:** 100
 **By Priority:**
 - P0 (Critical): 17 stories
 - P1 (High): 31 stories
-- P2 (Medium): 48 stories
+- P2 (Medium): 52 stories
 
-**Total Estimated Effort:** ~349 hours (43.625 working days)
+**Total Estimated Effort:** ~360 hours (45 working days)
 
 **Dependency Chain:**
 1. Phase 1 (Foundation): ST-01001 → ST-01002 → ST-01003 → ST-01004
@@ -2614,4 +2684,4 @@
 8. Phase 8 (Type Safety Hardening): ST-08001 → [ST-08002, ST-08003, ST-08004 parallel]
 9. Phase 9 (SOLID Micro-Refactors): ST-09001 (Merged) → ST-09002 (Merged) → ST-09003 (Merged) → ST-09004 (Merged) → ST-09005 (Merged) → ST-09006 (Merged) → ST-09007 (Merged) → ST-09008 (Merged) → ST-09009 (Merged) → ST-09010 (Merged) → ST-09011 (Merged) → ST-09012 (Merged) → ST-09013 (Merged) → ST-09014 (Merged) → ST-09015 (Merged) → ST-09016 (Merged) → ST-09017 (Merged) → ST-09018 (Merged) → ST-09019 (Merged) → ST-09020 (Merged) → ST-09021 (Merged) → ST-09022 (Merged) → ST-09023 (Merged); ST-09025 (Merged) → ST-09026 (Merged) → ST-09031 (Merged); ST-09027 (Merged) → ST-09028 (Merged) → ST-09030 (Merged); ST-09032 → ST-09033; ST-09034 (Merged) → ST-09035 (Merged) → ST-09036 (Merged) → ST-09041; ST-09023 (Merged) and ST-09029 (Merged) → ST-09037; ST-09038 independent; ST-09023 (Merged) → ST-09039; ST-09024 (Merged) → ST-09040 → ST-09042 → ST-09047; ST-09020 (Merged) → ST-09043; ST-09018 (Merged) → ST-09044; ST-09015 (Merged) → ST-09045 → ST-09048; ST-09038 (Merged) → ST-09046; ST-03002 (Merged) → ST-09055; ST-06005 (Merged) → ST-09056 (Merged) → ST-09071; ST-04001 (Merged) → ST-09057; ST-09032 (Merged) → ST-09058; ST-09037 (Merged) → ST-09059; ST-09045 (Merged) → ST-09060; ST-09050 (Merged) → ST-09061 (Merged) → ST-09062; ST-09051 (Merged) → ST-09063 (Merged) → ST-09070 → [ST-09075, ST-09076]; ST-09043 (Merged) → ST-09064 (Merged) → ST-09065 (Merged); ST-09010 (Merged) → ST-09066
 10. Phase 10 (Documentation Only Changes): ST-10001 → [ST-10002, ST-10003, ST-10004, ST-10005 parallel] → ST-10006; EP-10 remains evergreen and intentionally open for future docs-only stories even when no current stories are queued
-11. Phase 11 (Security Boundary Hardening): ST-11001 → [ST-11002, ST-11003, ST-11004, ST-11005, ST-11006 parallel] with ST-11001 establishing the policy baseline for the follow-on hardening and example-guidance stories
+11. Phase 11 (Security Boundary Hardening): ST-11001 → [ST-11002, ST-11003, ST-11004, ST-11005, ST-11006 parallel] → ST-11007 → ST-11008, with ST-11001 establishing the policy baseline for the follow-on hardening and example-guidance stories

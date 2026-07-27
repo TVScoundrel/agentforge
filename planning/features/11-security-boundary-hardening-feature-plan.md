@@ -2,8 +2,8 @@
 
 **Epic Range:** EP-11 through EP-11
 **Status:** In Progress
-**Last Updated:** 2026-07-21
-**Active Story:** ST-11006 - Ready after ST-11003 merged on 2026-07-21 (PR #162); ST-11002 merged on 2026-07-20 (PR #161); ST-11005 merged on 2026-07-18 (PR #160); ST-11004 merged on 2026-07-16 (PR #159)
+**Last Updated:** 2026-07-27
+**Active Story:** ST-11006 - Ready; ST-11007 and ST-11008 are queued backlog follow-ons after the merged web/file policy work
 
 ---
 
@@ -69,6 +69,12 @@ Without an explicit repository security policy, these findings are harder to tri
 ### ST-11006: Harden Express Chat Example Ownership Semantics
 - Add minimal ownership checks or unavoidable production warnings to the example’s history endpoints.
 
+### ST-11007: Add Model-Safe File and Web Tool Presets
+- Provide additive, documented presets for safe model-exposed file and web access while preserving trusted standalone exports.
+
+### ST-11008: Tighten Express Example CORS and Request Limits
+- Make CORS, credentials, and body-size defaults conservative and explicitly configurable in the Express example.
+
 ## Recommended Execution Order
 
 1. `ST-11001` — establish policy baseline first
@@ -76,7 +82,9 @@ Without an explicit repository security policy, these findings are harder to tri
 3. `ST-11005` — second highest-leverage framework trust-boundary fix
 4. `ST-11002` — safer network defaults/presets
 5. `ST-11003` — safer filesystem defaults/presets
-6. `ST-11006` — example-only cleanup after framework surfaces are addressed
+6. `ST-11006` — example ownership cleanup after framework surfaces are addressed
+7. `ST-11007` — make the safe model-exposed framework path easy to adopt
+8. `ST-11008` — tighten adjacent Express transport defaults
 
 ## Success Criteria
 

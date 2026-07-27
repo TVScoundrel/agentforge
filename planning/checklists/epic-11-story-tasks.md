@@ -199,3 +199,39 @@
   - PR #162 is ready for review on 2026-07-21 after implementation, documentation, focused and full validation, lint, typecheck, build, self-review, and tracker synchronization.
 - [x] Wait for merge; do not merge directly from local branch
   - PR #162 merged into `main` on 2026-07-21 as commit `31e2270b`; post-merge tracker synchronization, done-story archival, and ready-lane grooming were completed from local `main`.
+
+---
+
+## ST-11007: Add Model-Safe File and Web Tool Presets
+
+**Branch:** `feat/st-11007-model-safe-tool-presets`
+
+### Checklist
+- [ ] Create branch `feat/st-11007-model-safe-tool-presets`
+- [ ] Define focused tests for combined filesystem confinement and web destination-policy behavior
+- [ ] Add explicit model-safe factory or preset APIs without changing unrestricted trusted exports
+- [ ] Prove safe presets reject traversal, symlink escapes, private/metadata destinations, and unsafe redirects
+- [ ] Update public tool documentation and examples with the recommended model-exposed setup
+- [ ] Add or update story documentation at `docs/st11007-model-safe-tool-presets.md`
+- [ ] Run tools tests, typecheck, lint, and build
+- [ ] Commit completed checklist items and push updates
+- [ ] Mark the PR Ready only after all story tasks are complete
+- [ ] Wait for merge; do not merge directly from local branch
+
+---
+
+## ST-11008: Tighten Express Example CORS and Request Limits
+
+**Branch:** `fix/st-11008-express-request-boundaries`
+
+### Checklist
+- [ ] Create branch `fix/st-11008-express-request-boundaries`
+- [ ] Define focused middleware tests for allowed/rejected origins, credentials, and oversized request bodies
+- [ ] Replace wildcard CORS plus credentials with a conservative configurable default
+- [ ] Add bounded JSON and URL-encoded request limits with README/environment guidance
+- [ ] Update the example documentation to distinguish development overrides from production configuration
+- [ ] Add or update story documentation at `docs/st11008-express-request-boundaries.md`
+- [ ] Run the supported Express example tests, lint, and typecheck
+- [ ] Commit completed checklist items and push updates
+- [ ] Mark the PR Ready only after all story tasks are complete
+- [ ] Wait for merge; do not merge directly from local branch
