@@ -3,7 +3,7 @@
 **Epic Range:** EP-11 through EP-11
 **Status:** In Progress
 **Last Updated:** 2026-07-27
-**Active Story:** ST-11006 - In Progress; ST-11007 and ST-11008 remain queued backlog follow-ons after the merged web/file policy work
+**Active Story:** ST-11006 - In Review (PR #163); ST-11007 and ST-11008 remain queued backlog follow-ons after the merged web/file policy work
 
 ---
 

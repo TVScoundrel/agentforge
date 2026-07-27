@@ -208,7 +208,8 @@
 
 ### Checklist
 - [ ] Create branch `fix/st-11006-express-chat-example-ownership-hardening`
-- [ ] Create a draft PR with the story ID in the title
+- [x] Create a draft PR with the story ID in the title
+  - Draft PR #163 created: <https://github.com/TVScoundrel/agentforge/pull/163>
 - [x] Define the test strategy for conversation ownership and the documented demo-only guardrail path
   - Use focused unit coverage for the extracted owner-scoped conversation store and owner-header validation because the example has no HTTP test harness or test dependency; preserve the route behavior through those stable seams.
 - [x] Add or update failing route tests before production changes where a practical seam exists
@@ -230,9 +231,8 @@
   - `pnpm build` -> passed for all 8 build targets.
   - Standalone example typecheck remains unavailable because the example is outside `pnpm-workspace.yaml` and its declared dependencies are not installed in the checkout.
 - [x] Commit completed checklist items as logical story-linked commits and push updates
-- [ ] Mark the PR Ready only after all story tasks are complete
-- [ ] Wait for merge; do not merge directly from local branch
-- [ ] Mark the PR Ready only after all story tasks are complete
+- [x] Mark the PR Ready only after all story tasks are complete
+  - PR #163 marked ready for review after tracker synchronization and self-review.
 - [ ] Wait for merge; do not merge directly from local branch
 
 ---

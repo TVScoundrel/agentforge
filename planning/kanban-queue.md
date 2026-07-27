@@ -5,8 +5,8 @@
 ## Queue Status Summary
 
 - **Ready:** 0 stories
-- **In Progress:** 1 story
-- **In Review:** 0 stories
+- **In Progress:** 0 stories
+- **In Review:** 1 story
 - **Blocked:** 0 stories
 - **Backlog:** 4 stories
 
@@ -20,14 +20,15 @@ None currently.
 
 ## In Progress
 
-- `ST-11006` - Harden Express Chat Example Ownership Semantics
-  - Depends on: `ST-11001` (merged)
+None currently.
 
 ---
 
 ## In Review
 
-None currently.
+- `ST-11006` - Harden Express Chat Example Ownership Semantics
+  - Depends on: `ST-11001` (merged)
+  - PR: <https://github.com/TVScoundrel/agentforge/pull/163>
 
 ---
 
@@ -62,7 +63,7 @@ _No stories currently blocked_
 - ST-11003 moved to `In Review` on 2026-07-21 with PR #162 after implementation, documentation, focused and full validation, lint, typecheck, build, and tracker synchronization; `ST-11006` remains in `Ready`
 - ST-11003 merged on 2026-07-21 as PR #162 / commit `31e2270b`; removed from the active queue, archived as done, and left `ST-11006` as the next dependency-ready story
 - ST-11007, ST-11008, ST-09089, and ST-09091 added to Backlog on 2026-07-27 after source review identified bounded, low-risk follow-on improvements for EP-11 and EP-09; `ST-11006` was the only Ready story before moving to In Progress
-- ST-11006 moved to In Progress on 2026-07-27 after the planning commit was pushed; implementation is scoped to the Express example ownership boundary and adjacent guidance
+- ST-11006 moved to In Review on 2026-07-27 with PR #163 after focused ownership tests, full test, lint, workspace typecheck, build, documentation, and self-review completed
 
 - Complete: ST-01001 - foundation established (merged 2026-02-17)
 - Complete: ST-01002 - connection manager implemented (merged 2026-02-17)
