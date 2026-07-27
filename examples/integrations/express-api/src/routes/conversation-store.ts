@@ -29,10 +29,16 @@ export function createConversationStore(): ConversationStore {
   return {
     get(ownerId, conversationId) {
       const conversation = conversations.get(conversationKey(ownerId, conversationId));
-      return conversation ? { conversationId: conversation.conversationId, messages: conversation.messages } : undefined;
+      return conversation
+        ? { conversationId: conversation.conversationId, messages: [...conversation.messages] }
+        : undefined;
     },
     set(ownerId, conversation) {
-      conversations.set(conversationKey(ownerId, conversation.conversationId), { ownerId, ...conversation });
+      conversations.set(conversationKey(ownerId, conversation.conversationId), {
+        ownerId,
+        conversationId: conversation.conversationId,
+        messages: [...conversation.messages],
+      });
     },
     delete(ownerId, conversationId) {
       return conversations.delete(conversationKey(ownerId, conversationId));
@@ -40,7 +46,7 @@ export function createConversationStore(): ConversationStore {
     list(ownerId) {
       return Array.from(conversations.values())
         .filter((conversation) => conversation.ownerId === ownerId)
-        .map(({ conversationId, messages }) => ({ conversationId, messages }));
+        .map(({ conversationId, messages }) => ({ conversationId, messages: [...messages] }));
     },
   };
 }

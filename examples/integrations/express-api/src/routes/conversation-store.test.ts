@@ -14,6 +14,9 @@ describe('conversation ownership boundaries', () => {
 
     store.set('user-1', conversation);
 
+    const stored = store.get('user-1', 'conv-1');
+    expect(stored).toEqual(conversation);
+    stored?.messages.push({ role: 'user', content: 'should not leak' });
     expect(store.get('user-1', 'conv-1')).toEqual(conversation);
     expect(store.get('user-2', 'conv-1')).toBeUndefined();
     expect(store.list('user-2')).toEqual([]);
