@@ -202,6 +202,27 @@
 
 ---
 
+## ST-11006: Harden Express Chat Example Ownership Semantics
+
+**Branch:** `fix/st-11006-express-chat-example-ownership-hardening`
+
+### Checklist
+- [ ] Create branch `fix/st-11006-express-chat-example-ownership-hardening`
+- [ ] Create a draft PR with the story ID in the title
+- [ ] Define the test strategy for conversation ownership and the documented demo-only guardrail path
+- [ ] Add or update failing route tests before production changes where a practical seam exists
+- [ ] Enforce a minimal ownership boundary or clearly document the intentionally unauthenticated demo-only behavior adjacent to the routes and README
+- [ ] Ensure history retrieval, deletion, listing, and message mutation do not imply that caller-provided IDs provide production authorization
+- [ ] Add focused example route coverage for the chosen ownership or guardrail behavior
+- [ ] Add or update story documentation at `docs/st11006-express-chat-example-ownership-hardening.md`
+- [ ] Assess CI impact and record why no CI change is required unless the example needs a new test command
+- [ ] Run the supported example tests and the repository's canonical full test, lint, typecheck, and build validation
+- [ ] Commit completed checklist items as logical story-linked commits and push updates
+- [ ] Mark the PR Ready only after all story tasks are complete
+- [ ] Wait for merge; do not merge directly from local branch
+
+---
+
 ## ST-11007: Add Model-Safe File and Web Tool Presets
 
 **Branch:** `feat/st-11007-model-safe-tool-presets`
