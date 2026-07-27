@@ -209,15 +209,29 @@
 ### Checklist
 - [ ] Create branch `fix/st-11006-express-chat-example-ownership-hardening`
 - [ ] Create a draft PR with the story ID in the title
-- [ ] Define the test strategy for conversation ownership and the documented demo-only guardrail path
-- [ ] Add or update failing route tests before production changes where a practical seam exists
-- [ ] Enforce a minimal ownership boundary or clearly document the intentionally unauthenticated demo-only behavior adjacent to the routes and README
-- [ ] Ensure history retrieval, deletion, listing, and message mutation do not imply that caller-provided IDs provide production authorization
-- [ ] Add focused example route coverage for the chosen ownership or guardrail behavior
-- [ ] Add or update story documentation at `docs/st11006-express-chat-example-ownership-hardening.md`
-- [ ] Assess CI impact and record why no CI change is required unless the example needs a new test command
-- [ ] Run the supported example tests and the repository's canonical full test, lint, typecheck, and build validation
-- [ ] Commit completed checklist items as logical story-linked commits and push updates
+- [x] Define the test strategy for conversation ownership and the documented demo-only guardrail path
+  - Use focused unit coverage for the extracted owner-scoped conversation store and owner-header validation because the example has no HTTP test harness or test dependency; preserve the route behavior through those stable seams.
+- [x] Add or update failing route tests before production changes where a practical seam exists
+  - Added owner-scoping tests first; the initial run is expected to fail until the store and ownership helpers are implemented.
+- [x] Enforce a minimal ownership boundary or clearly document the intentionally unauthenticated demo-only behavior adjacent to the routes and README
+  - Added required `X-Demo-User-Id` ownership scoping and documented that it must be replaced with verified application identity in production.
+- [x] Ensure history retrieval, deletion, listing, and message mutation do not imply that caller-provided IDs provide production authorization
+  - All four chat endpoints now require owner scope; cross-owner reads/deletes are treated as not found.
+- [x] Add focused example route coverage for the chosen ownership or guardrail behavior
+  - `pnpm --dir examples/integrations/express-api test` -> passed, 1 file and 3 tests.
+- [x] Add or update story documentation at `docs/st11006-express-chat-example-ownership-hardening.md`
+  - Added the ownership decision, compatibility boundary, test strategy, and validation evidence.
+- [x] Assess CI impact and record why no CI change is required unless the example needs a new test command
+  - No CI change is required; the example-local Vitest script provides focused coverage and repository gates remain unchanged.
+- [x] Run the supported example tests and the repository's canonical full test, lint, typecheck, and build validation
+  - `pnpm test --run` -> 226 files passed, 9 skipped; 2534 tests passed, 110 skipped.
+  - `pnpm lint` -> passed with existing warning-only baseline and 0 errors.
+  - `pnpm typecheck` -> passed for all 6 workspace packages.
+  - `pnpm build` -> passed for all 8 build targets.
+  - Standalone example typecheck remains unavailable because the example is outside `pnpm-workspace.yaml` and its declared dependencies are not installed in the checkout.
+- [x] Commit completed checklist items as logical story-linked commits and push updates
+- [ ] Mark the PR Ready only after all story tasks are complete
+- [ ] Wait for merge; do not merge directly from local branch
 - [ ] Mark the PR Ready only after all story tasks are complete
 - [ ] Wait for merge; do not merge directly from local branch
 

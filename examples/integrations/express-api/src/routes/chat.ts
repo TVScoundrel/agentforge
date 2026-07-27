@@ -2,11 +2,13 @@ import { Router } from 'express';
 import { ChatOpenAI } from '@langchain/openai';
 import { createReActAgent } from '@agentforge/patterns';
 import { z } from 'zod';
+import { createConversationStore, normalizeOwnerId, type ChatMessage } from './conversation-store.js';
 
 const router = Router();
 
-// In-memory conversation storage (use Redis/DB in production)
-const conversations = new Map<string, any[]>();
+// In-memory conversation storage (use Redis/DB in production).
+// The demo owner header must be replaced with verified application identity.
+const conversations = createConversationStore();
 
 // Initialize model
 const model = new ChatOpenAI({
@@ -37,9 +39,20 @@ const chatSchema = z.object({
  *   "conversationId": "optional-id",
  *   "message": "Hello!"
  * }
+ *
+ * Header:
+ * X-Demo-User-Id: user-123
  */
 router.post('/message', async (req, res) => {
   try {
+    const ownerId = normalizeOwnerId(req.get('x-demo-user-id'));
+    if (!ownerId) {
+      return res.status(401).json({
+        error: 'Missing conversation owner',
+        message: 'Provide X-Demo-User-Id for this demo; replace it with verified application identity in production.',
+      });
+    }
+
     const validation = chatSchema.safeParse(req.body);
     if (!validation.success) {
       return res.status(400).json({
@@ -51,7 +64,8 @@ router.post('/message', async (req, res) => {
     const { conversationId = `conv-${Date.now()}`, message } = validation.data;
 
     // Get or create conversation history
-    const history = conversations.get(conversationId) || [];
+    const conversation = conversations.get(ownerId, conversationId) || { conversationId, messages: [] as ChatMessage[] };
+    const history = conversation.messages;
     
     // Add user message to history
     history.push({ role: 'user', content: message });
@@ -61,11 +75,11 @@ router.post('/message', async (req, res) => {
       messages: history,
     });
 
-    const response = result.messages[result.messages.length - 1].content;
+    const response = String(result.messages[result.messages.length - 1].content);
     
     // Add assistant response to history
     history.push({ role: 'assistant', content: response });
-    conversations.set(conversationId, history);
+    conversations.set(ownerId, conversation);
 
     res.json({
       success: true,
@@ -73,11 +87,11 @@ router.post('/message', async (req, res) => {
       message: response,
       messageCount: history.length,
     });
-  } catch (error: any) {
+  } catch (error) {
     console.error('Chat error:', error);
     res.status(500).json({
       success: false,
-      error: error.message,
+      error: error instanceof Error ? error.message : 'Unknown chat error',
     });
   }
 });
@@ -87,10 +101,18 @@ router.post('/message', async (req, res) => {
  * GET /api/chat/history/:conversationId
  */
 router.get('/history/:conversationId', (req, res) => {
-  const { conversationId } = req.params;
-  const history = conversations.get(conversationId);
+  const ownerId = normalizeOwnerId(req.get('x-demo-user-id'));
+  if (!ownerId) {
+    return res.status(401).json({
+      error: 'Missing conversation owner',
+      message: 'Provide X-Demo-User-Id for this demo; replace it with verified application identity in production.',
+    });
+  }
 
-  if (!history) {
+  const { conversationId } = req.params;
+  const conversation = conversations.get(ownerId, conversationId);
+
+  if (!conversation) {
     return res.status(404).json({
       error: 'Conversation not found',
     });
@@ -98,8 +120,8 @@ router.get('/history/:conversationId', (req, res) => {
 
   res.json({
     conversationId,
-    messages: history,
-    messageCount: history.length,
+    messages: conversation.messages,
+    messageCount: conversation.messages.length,
   });
 });
 
@@ -108,8 +130,16 @@ router.get('/history/:conversationId', (req, res) => {
  * DELETE /api/chat/history/:conversationId
  */
 router.delete('/history/:conversationId', (req, res) => {
+  const ownerId = normalizeOwnerId(req.get('x-demo-user-id'));
+  if (!ownerId) {
+    return res.status(401).json({
+      error: 'Missing conversation owner',
+      message: 'Provide X-Demo-User-Id for this demo; replace it with verified application identity in production.',
+    });
+  }
+
   const { conversationId } = req.params;
-  const existed = conversations.delete(conversationId);
+  const existed = conversations.delete(ownerId, conversationId);
 
   res.json({
     success: true,
@@ -122,9 +152,17 @@ router.delete('/history/:conversationId', (req, res) => {
  * GET /api/chat/conversations
  */
 router.get('/conversations', (req, res) => {
-  const conversationList = Array.from(conversations.keys()).map(id => ({
-    conversationId: id,
-    messageCount: conversations.get(id)?.length || 0,
+  const ownerId = normalizeOwnerId(req.get('x-demo-user-id'));
+  if (!ownerId) {
+    return res.status(401).json({
+      error: 'Missing conversation owner',
+      message: 'Provide X-Demo-User-Id for this demo; replace it with verified application identity in production.',
+    });
+  }
+
+  const conversationList = conversations.list(ownerId).map(({ conversationId, messages }) => ({
+    conversationId,
+    messageCount: messages.length,
   }));
 
   res.json({
@@ -134,4 +172,3 @@ router.get('/conversations', (req, res) => {
 });
 
 export { router as chatRouter };
-
