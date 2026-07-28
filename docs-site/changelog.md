@@ -5,6 +5,29 @@ All notable changes to AgentForge will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.16.80] - 2026-07-28
+
+### Added
+
+#### @agentforge/tools - Model-Safe File and Web Tool Preset
+- Added `createModelSafeToolPreset` to combine confined file and directory tools with destination-policy-checked HTTP and scraper tools for model-exposed workflows.
+- Added focused regressions for traversal, symlink escapes, private and metadata destinations, unsafe redirects, and privileged override rejection.
+
+### Changed
+
+#### @agentforge/tools - Model-Controlled Access Guidance
+- Required an explicit workspace or allowed filesystem root for the model-safe preset while preserving unrestricted standalone factories for trusted automation.
+- Documented the recommended model-exposed setup and its enforced safe policy boundary in the package README, API docs, and story documentation.
+
+### Published
+- All packages published to npm registry at version 0.16.80:
+  - @agentforge/core@0.16.80
+  - @agentforge/skills@0.16.80
+  - @agentforge/patterns@0.16.80
+  - @agentforge/tools@0.16.80
+  - @agentforge/testing@0.16.80
+  - @agentforge/cli@0.16.80
+
 ## [0.16.79] - 2026-07-27
 
 ### Changed
