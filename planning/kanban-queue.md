@@ -5,8 +5,8 @@
 ## Queue Status Summary
 
 - **Ready:** 3 stories
-- **In Progress:** 1 story
-- **In Review:** 0 stories
+- **In Progress:** 0 stories
+- **In Review:** 1 story
 - **Blocked:** 0 stories
 - **Backlog:** 0 stories
 
@@ -25,14 +25,15 @@
 
 ## In Progress
 
-- `ST-11007` - Add Model-Safe File and Web Tool Presets
-  - Depends on: `ST-11002` and `ST-11003` (merged)
+None currently.
 
 ---
 
 ## In Review
 
-None currently.
+- `ST-11007` - Add Model-Safe File and Web Tool Presets
+  - Depends on: `ST-11002` and `ST-11003` (merged)
+  - PR: #164
 
 ---
 

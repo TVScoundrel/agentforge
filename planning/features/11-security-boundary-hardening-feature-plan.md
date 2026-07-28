@@ -3,7 +3,7 @@
 **Epic Range:** EP-11 through EP-11
 **Status:** In Progress
 **Last Updated:** 2026-07-28
-**Active Story:** ST-11007 - In Progress; ST-11008 remains Ready
+**Active Story:** ST-11007 - In Review (PR #164); ST-11008 remains Ready
 
 ---
 
