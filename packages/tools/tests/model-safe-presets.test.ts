@@ -72,10 +72,21 @@ describe('model-safe tool preset', () => {
       fileSystem: { workspaceRoot, allowOutsideRoots: true, allowRootDeletion: true },
       web: { destinationPolicy: { allowPrivateNetwork: true, allowMetadata: true, allowLocalhost: true } },
     });
+    const fileReader = preset.fileTools.find((tool) => tool.metadata.name === 'file-reader')!;
+    const directoryDeleter = preset.directoryTools.find((tool) => tool.metadata.name === 'directory-delete')!;
     const httpGet = preset.webTools.find((tool) => tool.metadata.name === 'http-get')!;
     mockedAxios.mockResolvedValue({ status: 200, headers: {}, config: {}, data: { ok: true } });
 
+    await expect(fileReader.invoke({ path: join(outsideRoot, 'outside.txt') })).resolves.toMatchObject({
+      success: false,
+      error: expect.stringContaining('outside the allowed roots'),
+    });
+    await expect(directoryDeleter.invoke({ path: workspaceRoot, recursive: true })).resolves.toMatchObject({
+      success: false,
+      error: expect.stringContaining('recursive deletion of an allowed root'),
+    });
     await expect(httpGet.invoke({ url: 'http://127.0.0.1/should-still-be-blocked' })).rejects.toMatchObject({ reason: 'localhost' });
+    await expect(httpGet.invoke({ url: 'http://169.254.169.254/latest/meta-data/' })).rejects.toMatchObject({ reason: 'metadata' });
     await expect(httpGet.invoke({ url: 'http://93.184.216.34/public' })).resolves.toEqual({ ok: true });
   });
 });

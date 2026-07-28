@@ -264,6 +264,7 @@
   - `pnpm lint` -> passed with the existing `161`-warning baseline and `0` errors.
   - `pnpm build` -> passed for all workspace build targets with the existing VitePress chunk-size warning.
   - `pnpm test --run` -> `227` passed, `9` skipped files; `2538` passed, `110` skipped tests.
+  - Follow-up review coverage adds direct assertions for forced filesystem root confinement/root-deletion flags and forced metadata/private/local web destination blocks.
 - [x] Commit completed checklist items and push updates
   - `69bf3aa1` `feat(st-11007): add model-safe tool preset` pushed to `origin/feat/st-11007-model-safe-tool-presets`; draft PR #164 created with the required story, acceptance, test, validation, and status sections.
 - [x] Mark the PR Ready only after all story tasks are complete
