@@ -13,10 +13,10 @@ export * from './data/index.js';
 
 // File Tools
 export * from './file/index.js';
+export * from './model-safe.js';
 
 // Utility Tools
 export * from './utility/index.js';
 
 // Agent Tools
 export * from './agent/index.js';
-

@@ -1365,6 +1365,22 @@ const safeDirectoryTools = createDirectoryOperationTools({ policy });
 
 `workspaceRoot` resolves relative paths from the workspace and confines all configured operations to that root. Use `allowedRoots` for multiple permitted roots. The policy rejects lexical traversal, resolved symlink escapes, paths outside the allowed roots, and recursive deletion of an allowed root. Set `allowOutsideRoots: true` only for trusted local automation that explicitly needs unrestricted host access.
 
+### Model-Safe File and Web Preset
+
+When file and web tools are exposed to a model, use the combined preset instead of wiring separate policy objects by hand:
+
+```typescript
+import { createModelSafeToolPreset } from '@agentforge/tools';
+
+const preset = createModelSafeToolPreset({
+  fileSystem: { workspaceRoot: process.cwd() },
+});
+
+const agentTools = preset.tools;
+```
+
+The preset requires `workspaceRoot` or `allowedRoots`, applies one confinement policy to all file and directory tools, and preserves the default web blocks for localhost, private-network, link-local, metadata, and unsafe redirect destinations. Privileged override flags are forced back to safe values; use the standalone factories only for trusted operator-controlled automation.
+
 ## Utility Tools (22)
 
 ### Date/Time

@@ -225,6 +225,21 @@ const safeDirectoryTools = createDirectoryOperationTools({ policy });
 
 The policy rejects `..` traversal, resolved symlink escapes, paths outside configured roots, and recursive deletion of a configured root. Use `allowedRoots` for multiple roots. Keep the default unrestricted exports for trusted local automation only; `allowOutsideRoots: true` is an explicit privileged opt-out when a configured factory must access the wider host filesystem. The `file-exists` tool preserves its legacy result shape for successful and missing-path checks, while policy violations return `{ success: false, error }`. Detailed `directory-list` results use non-following `lstat` metadata for symlink entries under both default and confined policies.
 
+For the recommended model-exposed setup, use the combined preset. It requires a workspace or allowed root, applies the same root confinement to all file and directory tools, and retains the web policy's localhost, private-network, link-local, metadata, and redirect checks:
+
+```typescript
+import { createModelSafeToolPreset } from '@agentforge/tools';
+
+const { tools } = createModelSafeToolPreset({
+  fileSystem: { workspaceRoot: process.cwd() },
+  web: { http: { defaultTimeout: 15000 } },
+});
+
+const agentTools = tools;
+```
+
+The preset deliberately ignores privileged filesystem and network opt-ins such as `allowOutsideRoots` and `allowPrivateNetwork`. Use the existing standalone factories for trusted operator-controlled automation that needs those capabilities.
+
 ### Utility Tools (22 tools)
 
 General utility tools for common operations.

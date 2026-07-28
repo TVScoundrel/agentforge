@@ -4,9 +4,9 @@
 
 ## Queue Status Summary
 
-- **Ready:** 4 stories
+- **Ready:** 3 stories
 - **In Progress:** 0 stories
-- **In Review:** 0 stories
+- **In Review:** 1 story
 - **Blocked:** 0 stories
 - **Backlog:** 0 stories
 
@@ -14,8 +14,6 @@
 
 ## Ready
 
-- `ST-11007` - Add Model-Safe File and Web Tool Presets
-  - Depends on: `ST-11002` and `ST-11003` (merged)
 - `ST-11008` - Tighten Express Example CORS and Request Limits
   - Depends on: `ST-11006` (merged)
 - `ST-09089` - Harden CLI JSON Utility Type Boundaries
@@ -33,7 +31,9 @@ None currently.
 
 ## In Review
 
-None currently.
+- `ST-11007` - Add Model-Safe File and Web Tool Presets
+  - Depends on: `ST-11002` and `ST-11003` (merged)
+  - PR: #164
 
 ---
 
