@@ -269,7 +269,8 @@
   - `69bf3aa1` `feat(st-11007): add model-safe tool preset` pushed to `origin/feat/st-11007-model-safe-tool-presets`; draft PR #164 created with the required story, acceptance, test, validation, and status sections.
 - [x] Mark the PR Ready only after all story tasks are complete
   - PR #164 marked ready for review after the final self-review, tracker synchronization, and validation evidence were completed.
-- [ ] Wait for merge; do not merge directly from local branch
+- [x] Wait for merge; do not merge directly from local branch
+  - PR #164 merged into `main` on 2026-07-28 as commit `1607601c`; post-merge tracker synchronization completed from local `main`.
 
 ---
 

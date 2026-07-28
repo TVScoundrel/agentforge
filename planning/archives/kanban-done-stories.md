@@ -2,11 +2,18 @@
 
 **Purpose:** Track completed and merged stories for the Relational Database Access Tool project.
 
-**Last Updated:** 2026-07-27
+**Last Updated:** 2026-07-28
 
 ---
 
 ## Completed Stories
+
+### ST-11007: Add Model-Safe File and Web Tool Presets
+- **Merged:** 2026-07-28
+- **PR:** https://github.com/TVScoundrel/agentforge/pull/164 (commit 1607601c)
+- **Epic:** EP-11 (Security Boundary Hardening)
+- **Estimate:** 4 hours
+- **Outcome:** Added the additive `createModelSafeToolPreset` API, combining confined file and directory tools with destination-policy-checked HTTP and scraper tools for model-exposed workflows. The preset requires an explicit workspace or allowed root, forces filesystem and web privileged overrides back to safe defaults, preserves unrestricted standalone factories for trusted automation, and adds focused traversal, symlink, private/metadata destination, redirect, and override regression coverage. Public package/API/story documentation was added; tools tests, full workspace tests, lint, typecheck, and build passed.
 
 ### ST-11006: Harden Express Chat Example Ownership Semantics
 - **Merged:** 2026-07-27
