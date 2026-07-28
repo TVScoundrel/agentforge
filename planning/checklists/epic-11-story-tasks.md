@@ -244,13 +244,26 @@
 **Branch:** `feat/st-11007-model-safe-tool-presets`
 
 ### Checklist
-- [ ] Create branch `feat/st-11007-model-safe-tool-presets`
-- [ ] Define focused tests for combined filesystem confinement and web destination-policy behavior
-- [ ] Add explicit model-safe factory or preset APIs without changing unrestricted trusted exports
-- [ ] Prove safe presets reject traversal, symlink escapes, private/metadata destinations, and unsafe redirects
-- [ ] Update public tool documentation and examples with the recommended model-exposed setup
-- [ ] Add or update story documentation at `docs/st11007-model-safe-tool-presets.md`
-- [ ] Run tools tests, typecheck, lint, and build
+- [x] Create branch `feat/st-11007-model-safe-tool-presets`
+  - Created on 2026-07-28 from `main` after moving `ST-11007` to `In Progress` in `planning/kanban-queue.md`.
+- [x] Define focused tests for combined filesystem confinement and web destination-policy behavior
+  - Test-first strategy: add focused red/green coverage for named model-safe file and web factories, proving the existing confinement and destination policies remain active through the combined preset surface.
+- [x] Add explicit model-safe factory or preset APIs without changing unrestricted trusted exports
+  - Added exported `createModelSafeToolPreset`, which combines file, directory, HTTP, and scraper tools while leaving standalone factories unchanged.
+- [x] Prove safe presets reject traversal, symlink escapes, private/metadata destinations, and unsafe redirects
+  - Added four focused tests covering explicit-root requirements, workspace/public-host success, traversal, symlink escapes, private destinations, redirect revalidation, and forced-safe override flags.
+- [x] Update public tool documentation and examples with the recommended model-exposed setup
+  - Updated `packages/tools/README.md` and `docs-site/api/tools.md` with the combined preset usage and trusted-automation compatibility boundary.
+- [x] Add or update story documentation at `docs/st11007-model-safe-tool-presets.md`
+  - Added the story scope, security decisions, usage guidance, and validation evidence.
+- [x] Assess CI impact; update CI or document why no CI change is required
+  - No CI change is required because the preset is covered by the existing tools-package Vitest, TypeScript, workspace lint, and build paths.
+- [x] Run tools tests, typecheck, lint, and build
+  - `pnpm --filter @agentforge/tools test --run` -> `91` passed, `9` skipped files; `1157` passed, `110` skipped tests.
+  - `pnpm --filter @agentforge/tools typecheck` -> passed.
+  - `pnpm lint` -> passed with the existing `161`-warning baseline and `0` errors.
+  - `pnpm build` -> passed for all workspace build targets with the existing VitePress chunk-size warning.
+  - `pnpm test --run` -> `227` passed, `9` skipped files; `2538` passed, `110` skipped tests.
 - [ ] Commit completed checklist items and push updates
 - [ ] Mark the PR Ready only after all story tasks are complete
 - [ ] Wait for merge; do not merge directly from local branch
