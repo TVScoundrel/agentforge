@@ -295,5 +295,7 @@
   - `pnpm --dir examples/integrations/express-api test --run` -> passed, 2 files and 8 tests.
   - `pnpm lint` -> passed with existing warnings; `pnpm typecheck` -> passed for all 6 workspace packages.
   - Standalone example `typecheck` was attempted and remains blocked by pre-existing route/model typing incompatibilities; details are recorded in the story doc.
+- [x] Commit completed checklist items and push updates
+  - Implementation commit `bea54023` pushed to the story branch; PR #165 is open as draft.
 - [ ] Mark the PR Ready only after all story tasks are complete
 - [ ] Wait for merge; do not merge directly from local branch
