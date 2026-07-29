@@ -297,5 +297,6 @@
   - Standalone example `typecheck` was attempted and remains blocked by pre-existing route/model typing incompatibilities; details are recorded in the story doc.
 - [x] Commit completed checklist items and push updates
   - Implementation commit `bea54023` pushed to the story branch; PR #165 is open as draft.
-- [ ] Mark the PR Ready only after all story tasks are complete
+- [x] Mark the PR Ready only after all story tasks are complete
+  - PR #165 marked ready for review after the implementation and tracker commits.
 - [ ] Wait for merge; do not merge directly from local branch

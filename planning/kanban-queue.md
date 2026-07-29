@@ -31,7 +31,7 @@ None currently.
 
 - `ST-11008` - Tighten Express Example CORS and Request Limits
   - Depends on: `ST-11006` (merged)
-  - PR: #165 (draft)
+  - PR: #165 (ready for review)
 
 ---
 
