@@ -2,8 +2,8 @@
 
 **Epic Range:** EP-11 through EP-11
 **Status:** In Progress
-**Last Updated:** 2026-07-28
-**Active Story:** ST-11007 - Merged on 2026-07-28 (PR #164); ST-11008 remains Ready
+**Last Updated:** 2026-07-29
+**Active Story:** ST-11008 - In Progress
 
 ---
 

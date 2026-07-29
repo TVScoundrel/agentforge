@@ -2652,7 +2652,7 @@
 **Priority:** P2 (Medium)
 **Estimate:** 3 hours
 **Dependencies:** ST-11006
-**Status:** Backlog
+**Status:** In Progress
 
 **Acceptance criteria:**
 - [ ] Replace wildcard CORS plus credentials with an explicit safe default and a documented development override.
