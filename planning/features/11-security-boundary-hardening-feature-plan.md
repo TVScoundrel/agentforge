@@ -1,9 +1,9 @@
 # Feature Plan: EP-11 Security Boundary Hardening
 
 **Epic Range:** EP-11 through EP-11
-**Status:** In Progress
-**Last Updated:** 2026-07-29
-**Active Story:** ST-11008 - In Review (PR #165)
+**Status:** Complete
+**Last Updated:** 2026-07-30
+**Active Story:** All EP-11 stories merged through ST-11008 (PR #165)
 
 ---
 

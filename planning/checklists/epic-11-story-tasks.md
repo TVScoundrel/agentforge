@@ -296,7 +296,8 @@
   - `pnpm lint` -> passed with existing warnings; `pnpm typecheck` -> passed for all 6 workspace packages.
   - Standalone example `typecheck` was attempted and remains blocked by pre-existing route/model typing incompatibilities; details are recorded in the story doc.
 - [x] Commit completed checklist items and push updates
-  - Implementation commit `bea54023` pushed to the story branch; PR #165 is open as draft.
+  - Implementation commit `bea54023` pushed to the story branch; PR #165 was opened as draft and later marked ready for review.
 - [x] Mark the PR Ready only after all story tasks are complete
   - PR #165 marked ready for review after the implementation and tracker commits.
-- [ ] Wait for merge; do not merge directly from local branch
+- [x] Wait for merge; do not merge directly from local branch
+  - PR #165 merged into `main` on 2026-07-30 as commit `32c0c3dd`; post-merge tracker synchronization completed from local `main`.

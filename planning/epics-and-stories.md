@@ -2652,15 +2652,15 @@
 **Priority:** P2 (Medium)
 **Estimate:** 3 hours
 **Dependencies:** ST-11006
-**Status:** In Review
+**Status:** Merged
 
 **Acceptance criteria:**
-- [ ] Replace wildcard CORS plus credentials with an explicit safe default and a documented development override.
-- [ ] Apply bounded JSON and URL-encoded request limits with configuration guidance for legitimate larger payloads.
-- [ ] Add focused middleware tests covering allowed origins, rejected origins, credentials behavior, and oversized request bodies.
-- [ ] Update the Express README and environment example so the security posture is clear and no default implies production authorization.
-- [ ] Run the repository-supported Express example tests, `pnpm lint`, and `pnpm typecheck`.
-- [ ] Add or update story documentation at `docs/st11008-express-request-boundaries.md`
+- [x] Replace wildcard CORS plus credentials with an explicit safe default and a documented development override.
+- [x] Apply bounded JSON and URL-encoded request limits with configuration guidance for legitimate larger payloads.
+- [x] Add focused middleware tests covering allowed origins, rejected origins, credentials behavior, and oversized request bodies.
+- [x] Update the Express README and environment example so the security posture is clear and no default implies production authorization.
+- [x] Run the repository-supported Express example tests, `pnpm lint`, and `pnpm typecheck`.
+- [x] Add or update story documentation at `docs/st11008-express-request-boundaries.md`
 
 ---
 

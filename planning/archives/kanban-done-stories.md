@@ -2,11 +2,18 @@
 
 **Purpose:** Track completed and merged stories for the Relational Database Access Tool project.
 
-**Last Updated:** 2026-07-28
+**Last Updated:** 2026-07-30
 
 ---
 
 ## Completed Stories
+
+### ST-11008: Tighten Express Example CORS and Request Limits
+- **Merged:** 2026-07-30
+- **PR:** https://github.com/TVScoundrel/agentforge/pull/165 (commit 32c0c3dd)
+- **Epic:** EP-11 (Security Boundary Hardening)
+- **Estimate:** 3 hours
+- **Outcome:** Hardened the Express integration example with an exact localhost CORS default, request-origin validation, and a documented development-only wildcard override that disables credentials. Added configurable 100 KB JSON and URL-encoded body limits with 413 responses for oversized requests, focused middleware tests, import-safe server composition, README and `.env.example` guidance, and story documentation. Focused tests passed with 8 tests; repository lint and workspace typecheck passed, with pre-existing standalone example route/model type incompatibilities documented separately.
 
 ### ST-11007: Add Model-Safe File and Web Tool Presets
 - **Merged:** 2026-07-28
