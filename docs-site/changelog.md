@@ -5,6 +5,30 @@ All notable changes to AgentForge will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.16.81] - 2026-07-30
+
+### Added
+
+#### Express API Example - Request Boundary Tests
+- Added focused middleware coverage for allowed and rejected CORS origins, credentials behavior, and oversized JSON and URL-encoded request bodies.
+- Added a tracked `.env.example` with conservative CORS and request-size defaults.
+
+### Changed
+
+#### Express API Example - Conservative Transport Defaults
+- Replaced wildcard CORS with credentials by an exact localhost default and configurable request-origin validation.
+- Added bounded 100 KB JSON and URL-encoded body limits, configurable through `JSON_BODY_LIMIT` and `URLENCODED_BODY_LIMIT`.
+- Documented the development-only wildcard override, production configuration guidance, and the example's lack of authentication.
+
+### Published
+- All packages published to npm registry at version 0.16.81:
+  - @agentforge/core@0.16.81
+  - @agentforge/skills@0.16.81
+  - @agentforge/patterns@0.16.81
+  - @agentforge/tools@0.16.81
+  - @agentforge/testing@0.16.81
+  - @agentforge/cli@0.16.81
+
 ## [0.16.80] - 2026-07-28
 
 ### Added
