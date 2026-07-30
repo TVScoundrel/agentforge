@@ -46,7 +46,7 @@ async function request(options: ExpressAppOptions, requestOptions: RequestInit &
 describe('Express request boundaries', () => {
   it('allows the explicit local development origin and credentials', async () => {
     const response = await request(
-      {},
+      { corsOrigin: 'http://localhost:3000' },
       {
         path: '/health',
         headers: { origin: 'http://localhost:3000' },
