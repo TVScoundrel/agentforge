@@ -36,9 +36,21 @@ Create a `.env` file in the repository root:
 OPENAI_API_KEY=your-api-key-here
 OPENAI_MODEL=gpt-4  # Optional
 PORT=3000  # Optional
-CORS_ORIGIN=*  # Optional
+CORS_ORIGIN=http://localhost:3000  # Optional; one exact trusted browser origin
+JSON_BODY_LIMIT=100kb  # Optional; increase only for a documented payload need
+URLENCODED_BODY_LIMIT=100kb  # Optional; increase only for a documented payload need
 NODE_ENV=development  # Optional
 ```
+
+The example defaults to `http://localhost:3000` for CORS and sends credentials only
+for that explicitly configured origin. Set `CORS_ORIGIN` to the exact frontend
+origin used by the deployment; origins outside that value are not granted CORS
+access. For local development only, `CORS_ORIGIN=*` enables wildcard access and
+disables credentials. This example does not provide authentication or authorization.
+
+JSON and URL-encoded request bodies are limited to 100 KB by default. Set
+`JSON_BODY_LIMIT` and/or `URLENCODED_BODY_LIMIT` to a larger value only when the
+application has a documented need, and keep the values bounded in production.
 
 ## Usage
 
@@ -63,6 +75,7 @@ GET /health
 ```
 
 Response:
+
 ```json
 {
   "status": "healthy",
@@ -89,6 +102,7 @@ Content-Type: application/json
 ```
 
 Response:
+
 ```json
 {
   "success": true,
@@ -114,6 +128,7 @@ Content-Type: application/json
 ```
 
 Returns Server-Sent Events stream:
+
 ```
 data: {"content":"Once"}
 data: {"content":"Once upon"}
@@ -128,6 +143,7 @@ GET /api/agent/info
 ```
 
 Response:
+
 ```json
 {
   "name": "ReAct Agent",
@@ -159,6 +175,7 @@ X-Demo-User-Id: user-123
 Conversation IDs are scoped to that owner. History, deletion, and conversation listing do not authorize access based on the caller-provided conversation ID alone; production applications must replace the demo header with a verified identity from their authentication layer.
 
 Response:
+
 ```json
 {
   "success": true,
@@ -234,10 +251,10 @@ const decoder = new TextDecoder();
 while (true) {
   const { done, value } = await reader.read();
   if (done) break;
-  
+
   const chunk = decoder.decode(value);
   const lines = chunk.split('\n');
-  
+
   for (const line of lines) {
     if (line.startsWith('data: ')) {
       const data = line.slice(6);

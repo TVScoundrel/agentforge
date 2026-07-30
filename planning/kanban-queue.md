@@ -1,12 +1,12 @@
 # Kanban Queue: AgentForge
 
-**Last Updated:** 2026-07-28
+**Last Updated:** 2026-07-29
 
 ## Queue Status Summary
 
-- **Ready:** 3 stories
+- **Ready:** 2 stories
 - **In Progress:** 0 stories
-- **In Review:** 0 stories
+- **In Review:** 1 story
 - **Blocked:** 0 stories
 - **Backlog:** 0 stories
 
@@ -14,8 +14,6 @@
 
 ## Ready
 
-- `ST-11008` - Tighten Express Example CORS and Request Limits
-  - Depends on: `ST-11006` (merged)
 - `ST-09089` - Harden CLI JSON Utility Type Boundaries
   - Depends on: None
 - `ST-09091` - Type Directory Listing Results
@@ -31,7 +29,9 @@ None currently.
 
 ## In Review
 
-None currently.
+- `ST-11008` - Tighten Express Example CORS and Request Limits
+  - Depends on: `ST-11006` (merged)
+  - PR: #165 (ready for review)
 
 ---
 
@@ -60,7 +60,8 @@ None currently.
 - ST-11003 merged on 2026-07-21 as PR #162 / commit `31e2270b`; removed from the active queue, archived as done, and left `ST-11006` as the next dependency-ready story
 - ST-11007, ST-11008, ST-09089, and ST-09091 added to Backlog on 2026-07-27 after source review identified bounded, low-risk follow-on improvements for EP-11 and EP-09; `ST-11006` was the only Ready story before moving to In Progress
 - ST-11006 merged on 2026-07-27 as PR #163 / commit `2d79621d`; removed from the active queue, archived as done, and all four accepted follow-on stories were promoted to Ready because their dependencies are now satisfied
-- ST-11007 merged on 2026-07-28 as PR #164 / commit `1607601c`; removed from the active queue, archived as done, and `ST-11008` remains the next deterministic Ready story
+- ST-11007 merged on 2026-07-28 as PR #164 / commit `1607601c`; removed from the active queue, archived as done, and `ST-11008` moved to `In Progress` as the next deterministic story on 2026-07-29
+- ST-11008 moved to `In Review` on 2026-07-29 with PR #165 after focused tests, lint, workspace typecheck, documentation, and self-review passed; standalone example typecheck remains blocked by pre-existing route/model typing incompatibilities documented in the story doc
 
 - Complete: ST-01001 - foundation established (merged 2026-02-17)
 - Complete: ST-01002 - connection manager implemented (merged 2026-02-17)
