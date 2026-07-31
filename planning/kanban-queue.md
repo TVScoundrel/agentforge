@@ -6,7 +6,7 @@
 
 - **Ready:** 1 story
 - **In Progress:** 0 stories
-- **In Review:** 1 story
+- **In Review:** 0 stories
 - **Blocked:** 0 stories
 - **Backlog:** 0 stories
 
@@ -27,9 +27,7 @@ None currently.
 
 ## In Review
 
-- `ST-09089` - Harden CLI JSON Utility Type Boundaries
-  - Depends on: None
-  - PR: #166
+None currently.
 
 ---
 
