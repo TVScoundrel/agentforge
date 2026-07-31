@@ -60,6 +60,7 @@ None currently.
 - ST-11006 merged on 2026-07-27 as PR #163 / commit `2d79621d`; removed from the active queue, archived as done, and all four accepted follow-on stories were promoted to Ready because their dependencies are now satisfied
 - ST-11007 merged on 2026-07-28 as PR #164 / commit `1607601c`; removed from the active queue, archived as done, and `ST-11008` moved to `In Progress` as the next deterministic story on 2026-07-29
 - ST-11008 merged on 2026-07-30 as PR #165 / commit `32c0c3dd`; removed from the active queue, archived as done, and the deterministic ready lane now starts with `ST-09089` followed by `ST-09091`
+- ST-09089 merged on 2026-07-31 as PR #166 / commit `9640fa1a`; removed from the active queue, archived as done, and `ST-09091` remains the next dependency-ready Ready story
 
 - Complete: ST-01001 - foundation established (merged 2026-02-17)
 - Complete: ST-01002 - connection manager implemented (merged 2026-02-17)

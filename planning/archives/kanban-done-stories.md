@@ -2,7 +2,7 @@
 
 **Purpose:** Track completed and merged stories for the Relational Database Access Tool project.
 
-**Last Updated:** 2026-07-30
+**Last Updated:** 2026-07-31
 
 ---
 
@@ -98,6 +98,13 @@
 - **Epic:** EP-09 (SOLID Micro-Refactors and Type Boundary Hardening)
 - **Estimate:** 2 hours
 - **Outcome:** Hardened `@agentforge/patterns` multi-agent runtime boundaries by replacing the bare `RunnableConfig` cast in `packages/patterns/src/multi-agent/utils-shared.ts` with sanitized key-picking via LangChain's runnable-config helpers, preserving worker-thread namespacing while dropping malformed caller keys. The story also replaced constructor-name-only GraphInterrupt detection in `packages/patterns/src/shared/error-handling.ts` with a stable name-or-constructor compatibility check, then absorbed a review-driven follow-up so hostile getters and fallback stringification can no longer break the error path. Focused regressions landed in the wrapped multi-agent utility and shared error-handling suites, the story documentation was added in `docs/st09088-multi-agent-runtime-boundary-hardening.md`, and the queue was groomed so `ST-09084` through `ST-09087` are now all dependency-ready in `Ready`.
+
+### ST-09089: Harden CLI JSON Utility Type Boundaries
+- **Merged:** 2026-07-31
+- **PR:** https://github.com/TVScoundrel/agentforge/pull/166 (commit 9640fa1a)
+- **Epic:** EP-09 (SOLID Micro-Refactors and Type Boundary Hardening)
+- **Estimate:** 2 hours
+- **Outcome:** Replaced the CLI filesystem JSON helpers' explicit `any` contracts with exported recursive JSON types, JSON-safe `writeJson(...)` input, and an unknown-first `readJson<T = unknown>(...)` default while preserving formatting, explicit generic reads, and `fs-extra` error propagation. Added focused round-trip, malformed-JSON, generic-output, and filesystem-failure coverage plus story documentation. The explicit-`any` baseline improved from `workspace 80/289`, `cli 6/24` to `workspace 78/289`, `cli 4/24`; full tests and lint passed, and `ST-09091` remains the next dependency-ready Ready story.
 
 ### ST-09081: Modularize Monitoring Alert Manager and Tests
 - **Merged:** 2026-07-08

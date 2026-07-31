@@ -2394,7 +2394,7 @@
 **Priority:** P2 (Medium)
 **Estimate:** 2 hours
 **Dependencies:** None
-**Status:** In Review (PR #166)
+**Status:** Merged (PR #166, 2026-07-31)
 
 **Acceptance criteria:**
 - [ ] Replace the explicit `any` contracts in `packages/cli/src/utils/fs.ts` with JSON-safe input and unknown-first generic output while preserving current public helper behavior.
@@ -2411,7 +2411,7 @@
 **Priority:** P2 (Medium)
 **Estimate:** 2 hours
 **Dependencies:** ST-11003 (merged)
-**Status:** Backlog
+**Status:** Ready
 
 **Acceptance criteria:**
 - [ ] Replace the `Promise<any[]>` and `any[]` directory-list result contracts with an exported typed result model while preserving existing fields and serialization.

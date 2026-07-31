@@ -3777,7 +3777,8 @@ Implementation notes:
   - Implementation commit `c6d4ad91` is pushed to `origin/refactor/st-09089-cli-json-utility-type-boundaries`; tracker synchronization follows in the review-state commit.
 - [x] Mark the PR Ready only after all story tasks are complete
   - PR #166 was marked ready for review after the validated body and review-state tracker sync were pushed.
-- [ ] Wait for merge; do not merge directly from local branch
+- [x] Wait for merge; do not merge directly from local branch
+  - PR #166 merged on 2026-07-31 as commit `9640fa1a`; post-merge tracker synchronization is being committed from `main`.
 
 ---
 
