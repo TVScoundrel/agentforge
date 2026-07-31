@@ -3773,8 +3773,10 @@ Implementation notes:
   - `pnpm test --run` -> `227` files passed, `9` skipped; `2542` tests passed, `110` skipped
   - `pnpm lint` -> passed with existing warning-only baseline and `0` errors
   - `git diff --check` -> passed
-- [ ] Commit completed checklist items and push updates
-- [ ] Mark the PR Ready only after all story tasks are complete
+- [x] Commit completed checklist items and push updates
+  - Implementation commit `c6d4ad91` is pushed to `origin/refactor/st-09089-cli-json-utility-type-boundaries`; tracker synchronization follows in the review-state commit.
+- [x] Mark the PR Ready only after all story tasks are complete
+  - Draft PR #166 was created with a validated body and will be marked ready after the review-state tracker sync is pushed.
 - [ ] Wait for merge; do not merge directly from local branch
 
 ---

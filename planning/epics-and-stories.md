@@ -2394,7 +2394,7 @@
 **Priority:** P2 (Medium)
 **Estimate:** 2 hours
 **Dependencies:** None
-**Status:** In Progress
+**Status:** In Review (PR #166)
 
 **Acceptance criteria:**
 - [ ] Replace the explicit `any` contracts in `packages/cli/src/utils/fs.ts` with JSON-safe input and unknown-first generic output while preserving current public helper behavior.
