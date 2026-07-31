@@ -5,6 +5,29 @@ All notable changes to AgentForge will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.16.82] - 2026-07-31
+
+### Changed
+
+#### @agentforge/cli - JSON Utility Type Boundaries
+- Replaced broad `any` contracts in the CLI filesystem JSON helpers with recursive JSON-safe input types and an unknown-first generic read default.
+- Preserved JSON formatting, explicit typed reads, malformed-JSON errors, and filesystem error propagation.
+
+### Added
+
+#### @agentforge/cli - JSON Utility Regression Coverage
+- Added focused coverage for JSON round trips, generic output usage, malformed JSON, and read/write filesystem failures.
+- Added story documentation for the type-boundary rationale and compatibility behavior.
+
+### Published
+- All packages published to npm registry at version 0.16.82:
+  - @agentforge/core@0.16.82
+  - @agentforge/skills@0.16.82
+  - @agentforge/patterns@0.16.82
+  - @agentforge/tools@0.16.82
+  - @agentforge/testing@0.16.82
+  - @agentforge/cli@0.16.82
+
 ## [0.16.81] - 2026-07-30
 
 ### Added
