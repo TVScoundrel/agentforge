@@ -3752,13 +3752,27 @@ Implementation notes:
 **Branch:** `refactor/st-09089-cli-json-utility-type-boundaries`
 
 ### Checklist
-- [ ] Create branch `refactor/st-09089-cli-json-utility-type-boundaries`
-- [ ] Define focused tests for JSON round trips, malformed JSON, generic output usage, and filesystem failures
-- [ ] Replace explicit `any` contracts in `packages/cli/src/utils/fs.ts` with JSON-safe input and unknown-first generic output
-- [ ] Preserve current encoding defaults, error propagation, and public helper behavior
-- [ ] Record explicit-`any` warning deltas in story documentation
-- [ ] Add or update story documentation at `docs/st09089-cli-json-utility-type-boundaries.md`
-- [ ] Run CLI tests, typecheck, lint, and the explicit-any baseline gate
+- [x] Create branch `refactor/st-09089-cli-json-utility-type-boundaries`
+- [x] Define focused tests for JSON round trips, malformed JSON, generic output usage, and filesystem failures
+  - Added round-trip, malformed JSON, generic output, and read/write failure coverage in `packages/cli/tests/utils/fs.test.ts`.
+- [x] Replace explicit `any` contracts in `packages/cli/src/utils/fs.ts` with JSON-safe input and unknown-first generic output
+  - Added exported recursive JSON types, `writeJson(..., data: JsonValue)`, and `readJson<T = unknown>(...)`; updated the project manifest model to satisfy the JSON object boundary.
+- [x] Preserve current encoding defaults, error propagation, and public helper behavior
+  - Retained `fs-extra` delegation and `{ spaces: 2 }` formatting; focused tests verify value and error propagation.
+- [x] Record explicit-`any` warning deltas in story documentation
+  - Recorded in `docs/st09089-cli-json-utility-type-boundaries.md`; baseline improved from `workspace 80/289`, `cli 6/24` to `workspace 78/289`, `cli 4/24`.
+- [x] Add or update story documentation at `docs/st09089-cli-json-utility-type-boundaries.md`
+- [x] Assess CI impact
+  - No CI workflow change required; existing CLI package validation and workspace explicit-`any` baseline coverage are sufficient.
+- [x] Run CLI tests, typecheck, lint, and the explicit-any baseline gate
+  - `pnpm --filter @agentforge/cli test --run` -> `21` files passed, `196` tests passed
+  - `pnpm --filter @agentforge/cli typecheck` -> passed
+  - `pnpm --filter @agentforge/cli lint` -> passed
+  - `pnpm lint:explicit-any:baseline` -> passed at `workspace 78/289`, `cli 4/24`
+- [x] Run the full test suite and workspace lint before finalizing the PR
+  - `pnpm test --run` -> `227` files passed, `9` skipped; `2542` tests passed, `110` skipped
+  - `pnpm lint` -> passed with existing warning-only baseline and `0` errors
+  - `git diff --check` -> passed
 - [ ] Commit completed checklist items and push updates
 - [ ] Mark the PR Ready only after all story tasks are complete
 - [ ] Wait for merge; do not merge directly from local branch

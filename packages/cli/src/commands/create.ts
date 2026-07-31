@@ -3,7 +3,15 @@ import chalk from 'chalk';
 import { logger } from '../utils/logger.js';
 import { exitWithCommandError } from '../utils/command-errors.js';
 import { promptProjectSetup } from '../utils/prompts.js';
-import { copyTemplate, ensureDir, isEmptyDir, writeJson, readJson, getTemplatePath } from '../utils/fs.js';
+import {
+  copyTemplate,
+  ensureDir,
+  isEmptyDir,
+  writeJson,
+  readJson,
+  getTemplatePath,
+  type JsonValue,
+} from '../utils/fs.js';
 import { installDependencies, getRunCommand, type PackageManager } from '../utils/package-manager.js';
 import { initGitRepository, createInitialCommit, isGitInstalled } from '../utils/git.js';
 
@@ -15,6 +23,7 @@ interface CreateOptions {
 }
 
 interface ProjectPackageJson {
+  [key: string]: JsonValue | undefined;
   name?: string;
   author?: string;
   description?: string;
