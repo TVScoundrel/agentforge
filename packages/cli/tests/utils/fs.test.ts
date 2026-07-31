@@ -11,6 +11,7 @@ import {
   findFiles,
   readFile,
   writeFile,
+  type JsonValue,
 } from '../../src/utils/fs.js';
 import fs from 'fs-extra';
 import path from 'path';
@@ -42,6 +43,31 @@ describe('File System Utils', () => {
 
       expect(fs.writeJson).toHaveBeenCalledWith('/test/package.json', data, { spaces: 2 });
     });
+
+    it('supports JSON-safe nested values for round trips', async () => {
+      const data: JsonValue = {
+        name: 'test',
+        enabled: true,
+        tags: ['cli', 'json'],
+        metadata: { count: 2, optional: null },
+      };
+      vi.mocked(fs.writeJson).mockResolvedValueOnce(undefined);
+      vi.mocked(fs.readJson).mockResolvedValueOnce(data);
+
+      await writeJson('/test/config.json', data);
+      const result = await readJson<JsonValue>('/test/config.json');
+
+      expect(result).toEqual(data);
+      expect(fs.writeJson).toHaveBeenCalledWith('/test/config.json', data, { spaces: 2 });
+      expect(fs.readJson).toHaveBeenCalledWith('/test/config.json');
+    });
+
+    it('propagates filesystem write failures', async () => {
+      const error = new Error('permission denied');
+      vi.mocked(fs.writeJson).mockRejectedValueOnce(error);
+
+      await expect(writeJson('/test/config.json', { name: 'test' })).rejects.toBe(error);
+    });
   });
 
   describe('readJson', () => {
@@ -66,6 +92,20 @@ describe('File System Utils', () => {
       const result = await readJson<PackageJson>('/test/package.json');
       expect(result.name).toBe('test');
       expect(result.version).toBe('1.0.0');
+    });
+
+    it('propagates malformed JSON errors', async () => {
+      const error = new SyntaxError('Unexpected token');
+      vi.mocked(fs.readJson).mockRejectedValueOnce(error);
+
+      await expect(readJson('/test/malformed.json')).rejects.toBe(error);
+    });
+
+    it('propagates filesystem read failures', async () => {
+      const error = new Error('file not found');
+      vi.mocked(fs.readJson).mockRejectedValueOnce(error);
+
+      await expect(readJson('/test/missing.json')).rejects.toBe(error);
     });
   });
 
@@ -251,4 +291,3 @@ describe('File System Utils', () => {
     });
   });
 });
-

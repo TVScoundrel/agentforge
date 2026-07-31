@@ -7,6 +7,11 @@ import { glob } from 'glob';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
+export type JsonPrimitive = string | number | boolean | null;
+export type JsonValue = JsonPrimitive | JsonObject | JsonValue[];
+// Optional object properties are omitted by JSON serialization.
+export type JsonObject = { [key: string]: JsonValue | undefined };
+
 export async function ensureDir(dir: string): Promise<void> {
   await fs.ensureDir(dir);
 }
@@ -50,11 +55,11 @@ export async function copyTemplate(
   }
 }
 
-export async function writeJson(filePath: string, data: any): Promise<void> {
+export async function writeJson(filePath: string, data: JsonValue): Promise<void> {
   await fs.writeJson(filePath, data, { spaces: 2 });
 }
 
-export async function readJson<T = any>(filePath: string): Promise<T> {
+export async function readJson<T = unknown>(filePath: string): Promise<T> {
   return fs.readJson(filePath);
 }
 
@@ -96,4 +101,3 @@ export async function isEmptyDir(dir: string): Promise<boolean> {
   const files = await fs.readdir(dir);
   return files.length === 0;
 }
-

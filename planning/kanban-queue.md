@@ -1,12 +1,12 @@
 # Kanban Queue: AgentForge
 
-**Last Updated:** 2026-07-30
+**Last Updated:** 2026-07-31
 
 ## Queue Status Summary
 
-- **Ready:** 2 stories
+- **Ready:** 1 story
 - **In Progress:** 0 stories
-- **In Review:** 0 stories
+- **In Review:** 1 story
 - **Blocked:** 0 stories
 - **Backlog:** 0 stories
 
@@ -14,8 +14,6 @@
 
 ## Ready
 
-- `ST-09089` - Harden CLI JSON Utility Type Boundaries
-  - Depends on: None
 - `ST-09091` - Type Directory Listing Results
   - Depends on: `ST-11003` (merged)
 
@@ -29,7 +27,9 @@ None currently.
 
 ## In Review
 
-None currently.
+- `ST-09089` - Harden CLI JSON Utility Type Boundaries
+  - Depends on: None
+  - PR: #166
 
 ---
 
