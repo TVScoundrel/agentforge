@@ -3776,7 +3776,7 @@ Implementation notes:
 - [x] Commit completed checklist items and push updates
   - Implementation commit `c6d4ad91` is pushed to `origin/refactor/st-09089-cli-json-utility-type-boundaries`; tracker synchronization follows in the review-state commit.
 - [x] Mark the PR Ready only after all story tasks are complete
-  - Draft PR #166 was created with a validated body and will be marked ready after the review-state tracker sync is pushed.
+  - PR #166 was marked ready for review after the validated body and review-state tracker sync were pushed.
 - [ ] Wait for merge; do not merge directly from local branch
 
 ---
