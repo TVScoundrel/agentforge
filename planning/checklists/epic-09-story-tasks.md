@@ -3787,13 +3787,27 @@ Implementation notes:
 **Branch:** `refactor/st-09091-directory-list-result-typing`
 
 ### Checklist
-- [ ] Create branch `refactor/st-09091-directory-list-result-typing`
-- [ ] Define focused type and runtime tests for empty, flat, nested, filtered, and detailed listings
-- [ ] Replace `Promise<any[]>` and `any[]` contracts in the directory-list tool with an exported result model
-- [ ] Preserve filesystem-policy enforcement and existing output serialization
-- [ ] Record explicit-`any` warning deltas in story documentation
-- [ ] Add or update story documentation at `docs/st09091-directory-list-result-typing.md`
-- [ ] Run tools tests, typecheck, lint, and the explicit-any baseline gate
+- [x] Create branch `refactor/st-09091-directory-list-result-typing`
+- [x] Define focused type and runtime tests for empty, flat, nested, filtered, and detailed listings
+  - Added `packages/tools/tests/file/directory-list.test.ts` with six runtime/type-boundary tests, including filesystem-policy enforcement.
+- [x] Replace `Promise<any[]>` and `any[]` contracts in the directory-list tool with an exported result model
+  - Added exported `DirectoryListEntry` and `DirectoryListResult` models and typed the recursive listing helper and result.
+- [x] Preserve filesystem-policy enforcement and existing output serialization
+  - Retained policy resolution, recursive traversal, extension filtering, detail metadata, relative paths, and count behavior.
+- [x] Record explicit-`any` warning deltas in story documentation
+  - Recorded in `docs/st09091-directory-list-result-typing.md`; baseline improved from `workspace 78/289`, `tools 53/67` to `workspace 76/289`, `tools 51/67`.
+- [x] Add or update story documentation at `docs/st09091-directory-list-result-typing.md`
+- [x] Assess CI impact
+  - No CI workflow change required; existing tools package validation and workspace explicit-`any` checks cover the changed boundary.
+- [x] Run tools tests, typecheck, lint, and the explicit-any baseline gate
+  - `pnpm --filter @agentforge/tools test --run` -> `92` files passed, `9` skipped; `1163` tests passed, `110` skipped
+  - `pnpm --filter @agentforge/tools typecheck` -> passed
+  - `pnpm --filter @agentforge/tools lint` -> passed with existing warning-only baseline and `0` errors
+  - `pnpm lint:explicit-any:baseline` -> passed at `workspace 76/289`, `tools 51/67`
+- [x] Run the full test suite and workspace lint before finalizing the PR
+  - `pnpm test --run` -> `228` files passed, `9` skipped; `2548` tests passed, `110` skipped
+  - `pnpm lint` -> passed with existing warning-only baseline and `0` errors
+  - `git diff --check` -> passed
 - [ ] Commit completed checklist items and push updates
 - [ ] Mark the PR Ready only after all story tasks are complete
 - [ ] Wait for merge; do not merge directly from local branch

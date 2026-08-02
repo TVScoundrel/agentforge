@@ -1,11 +1,11 @@
 # Kanban Queue: AgentForge
 
-**Last Updated:** 2026-07-31
+**Last Updated:** 2026-08-02
 
 ## Queue Status Summary
 
-- **Ready:** 1 story
-- **In Progress:** 0 stories
+- **Ready:** 0 stories
+- **In Progress:** 1 story
 - **In Review:** 0 stories
 - **Blocked:** 0 stories
 - **Backlog:** 0 stories
@@ -14,14 +14,14 @@
 
 ## Ready
 
-- `ST-09091` - Type Directory Listing Results
-  - Depends on: `ST-11003` (merged)
+None currently.
 
 ---
 
 ## In Progress
 
-None currently.
+- `ST-09091` - Type Directory Listing Results
+  - Depends on: `ST-11003` (merged)
 
 ---
 

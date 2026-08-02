@@ -18,6 +18,29 @@ export const directoryListSchema = z.object({
 });
 
 /**
+ * A single entry returned by the directory-list tool.
+ * Detail fields are present only when includeDetails is enabled.
+ */
+export interface DirectoryListEntry {
+  name: string;
+  path: string;
+  isFile: boolean;
+  isDirectory: boolean;
+  fullPath?: string;
+  size?: number;
+  modified?: string;
+}
+
+/**
+ * Stable result shape returned by the directory-list tool.
+ */
+export interface DirectoryListResult {
+  path: string;
+  files: DirectoryListEntry[];
+  count: number;
+}
+
+/**
  * Directory create schema
  */
 export const directoryCreateSchema = z.object({

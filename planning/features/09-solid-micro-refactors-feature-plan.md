@@ -2,8 +2,8 @@
 
 **Epic Range:** EP-09 through EP-09
 **Status:** In Progress
-**Last Updated:** 2026-07-31
-**Active Story:** ST-09091 (Ready)
+**Last Updated:** 2026-08-02
+**Active Story:** ST-09091 (In Progress)
 
 ---
 
@@ -143,6 +143,7 @@ Recent improvement snapshot:
 - `ST-09089` and `ST-09091` were added on 2026-07-27 as small follow-on type-boundary slices covering CLI JSON helpers and the directory-list result model; `ST-09091` depends on the merged filesystem-confinement work in `ST-11003`.
 - `ST-09089` moved to In Progress on 2026-07-31 as the next dependency-ready EP-09 type-boundary slice.
 - `ST-09089` merged on 2026-07-31 as PR #166 after tightening CLI JSON utility boundaries and improving the explicit-`any` baseline; `ST-09091` is now the next Ready story.
+- `ST-09091` moved to In Progress on 2026-08-02 as the next dependency-ready EP-09 type-boundary slice.
 
 ## Scope
 
