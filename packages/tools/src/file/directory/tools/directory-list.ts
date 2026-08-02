@@ -3,7 +3,7 @@
  */
 
 import { toolBuilder, ToolCategory } from '@agentforge/core';
-import { directoryListSchema } from '../types.js';
+import { directoryListSchema, type DirectoryListEntry, type DirectoryListResult } from '../types.js';
 import { promises as fs } from 'fs';
 import * as path from 'path';
 import { DEFAULT_FILE_SYSTEM_POLICY, type FileSystemPolicy } from '../../confinement.js';
@@ -25,9 +25,9 @@ export function createDirectoryListTool(
     .implementSafe(async (input) => {
       const safePath = await policy.resolvePath(input.path, 'directory listing');
       const includeDetails = input.includeDetails ?? defaultIncludeDetails;
-      const listFiles = async (dir: string, recursive: boolean): Promise<any[]> => {
+      const listFiles = async (dir: string, recursive: boolean): Promise<DirectoryListEntry[]> => {
         const entries = await fs.readdir(dir, { withFileTypes: true });
-        const files: any[] = [];
+        const files: DirectoryListEntry[] = [];
 
         for (const entry of entries) {
           const fullPath = path.join(dir, entry.name);
@@ -73,11 +73,13 @@ export function createDirectoryListTool(
       const recursive = input.recursive ?? defaultRecursive;
       const files = await listFiles(safePath, recursive);
 
-      return {
+      const result: DirectoryListResult = {
         path: input.path,
         files,
         count: files.length,
       };
+
+      return result;
     })
     .build();
 }

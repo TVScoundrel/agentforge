@@ -2411,7 +2411,7 @@
 **Priority:** P2 (Medium)
 **Estimate:** 2 hours
 **Dependencies:** ST-11003 (merged)
-**Status:** Ready
+**Status:** In Review (PR #167)
 
 **Acceptance criteria:**
 - [ ] Replace the `Promise<any[]>` and `any[]` directory-list result contracts with an exported typed result model while preserving existing fields and serialization.
