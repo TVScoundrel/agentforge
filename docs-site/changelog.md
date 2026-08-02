@@ -5,6 +5,29 @@ All notable changes to AgentForge will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.16.83] - 2026-08-02
+
+### Changed
+
+#### @agentforge/tools - Directory Listing Result Types
+- Replaced the directory-list tool's broad recursive result contracts with exported `DirectoryListEntry` and `DirectoryListResult` models.
+- Preserved recursive traversal, extension filtering, detail metadata, relative paths, counts, serialization, and filesystem-policy enforcement.
+
+### Added
+
+#### @agentforge/tools - Directory Listing Regression Coverage
+- Added focused coverage for empty, flat, nested, filtered, detailed, and policy-constrained directory listings.
+- Added story documentation for the typed result boundary.
+
+### Published
+- All packages published to npm registry at version 0.16.83:
+  - @agentforge/core@0.16.83
+  - @agentforge/skills@0.16.83
+  - @agentforge/patterns@0.16.83
+  - @agentforge/tools@0.16.83
+  - @agentforge/testing@0.16.83
+  - @agentforge/cli@0.16.83
+
 ## [0.16.82] - 2026-07-31
 
 ### Changed
