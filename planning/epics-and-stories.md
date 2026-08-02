@@ -121,7 +121,7 @@
 - Story slices are intentionally small (1 day each) so quality improvements can ship continuously
 - Lightweight quality-gate follow-ups keep release/build feedback tight by reducing stale warning caps and easy package metadata warnings
 
-**Stories:** ST-09001 through ST-09091
+**Stories:** ST-09001 through ST-09094
 
 ---
 
@@ -162,7 +162,7 @@
 - Multi-agent and skills flows preserve trust boundaries instead of treating worker or untrusted skill content as implicitly safe supervisor instructions.
 - Example integrations avoid normalizing insecure ownership or authorization patterns without prominent guidance.
 
-**Stories:** ST-11001 through ST-11008
+**Stories:** ST-11001 through ST-11009
 
 #### Feature Context: Security Boundary Hardening
 
@@ -2422,6 +2422,57 @@
 
 ---
 
+#### ST-09092: Harden Core Generic Wrapper Contracts
+**User story:** As a core maintainer, I want profiler and circuit-breaker wrappers to use unknown-first argument tuples so generic callback boundaries do not reintroduce explicit `any` contracts.
+
+**Priority:** P2 (Medium)
+**Estimate:** 2 hours
+**Dependencies:** None
+**Status:** Backlog
+
+**Acceptance criteria:**
+- [ ] Replace the `any[]` generic argument seams in `packages/core/src/monitoring/profiler.ts` and `packages/core/src/resources/circuit-breaker.ts` with unknown-first tuple contracts while preserving inference for wrapped functions.
+- [ ] Preserve callback invocation, return-value inference, error propagation, profiling metrics, retry behavior, and circuit state transitions.
+- [ ] Add focused type and runtime coverage for zero-argument, multi-argument, async, thrown-error, and rejected-promise callbacks.
+- [ ] `pnpm --filter @agentforge/core test --run`, `pnpm --filter @agentforge/core typecheck`, and `pnpm lint:explicit-any:baseline` pass with no baseline regression.
+- [ ] Add or update story documentation at `docs/st09092-core-generic-wrapper-contracts.md`
+
+---
+
+#### ST-09093: Harden Thread and LangSmith Metadata Contracts
+**User story:** As a core maintainer, I want persistence and LangSmith metadata boundaries to be unknown-first and JSON-safe so observability and thread state cannot silently depend on broad `any` maps.
+
+**Priority:** P2 (Medium)
+**Estimate:** 2 hours
+**Dependencies:** None
+**Status:** Backlog
+
+**Acceptance criteria:**
+- [ ] Replace the `Record<string, any>` metadata seams in `packages/core/src/langgraph/persistence/thread.ts` and `packages/core/src/langgraph/observability/langsmith.ts` with shared or locally defined unknown-first JSON-safe contracts.
+- [ ] Preserve metadata passthrough, optional-field behavior, LangSmith tracing compatibility, and existing thread-state serialization semantics.
+- [ ] Add focused type and runtime coverage for nested JSON values, null-prototype maps, omitted metadata, and non-JSON values at the documented boundary.
+- [ ] `pnpm --filter @agentforge/core test --run`, `pnpm --filter @agentforge/core typecheck`, and `pnpm lint:explicit-any:baseline` pass with no baseline regression.
+- [ ] Add or update story documentation at `docs/st09093-thread-langsmith-metadata-contracts.md`
+
+---
+
+#### ST-09094: Harden Neo4j Property and Query Payload Contracts
+**User story:** As a tools maintainer, I want Neo4j properties and generated query parameters to use explicit unknown-first boundaries so graph data does not rely on broad `any` payloads.
+
+**Priority:** P2 (Medium)
+**Estimate:** 3 hours
+**Dependencies:** None
+**Status:** Backlog
+
+**Acceptance criteria:**
+- [ ] Replace the remaining `Record<string, any>` and `any` payload seams in the Neo4j property types, Cypher sanitizer, node helpers, and embedding error paths with compatible unknown-first or JSON-safe contracts.
+- [ ] Preserve property serialization, parameter binding, identifier sanitization, embedding-provider error handling, and public Neo4j tool result shapes.
+- [ ] Add focused coverage for scalar, array, nested-object, null-prototype, and unsupported property values plus sanitized query parameters and provider failures.
+- [ ] `pnpm --filter @agentforge/tools test --run`, `pnpm --filter @agentforge/tools typecheck`, and `pnpm lint:explicit-any:baseline` pass with no baseline regression.
+- [ ] Add or update story documentation at `docs/st09094-neo4j-property-query-contracts.md`
+
+---
+
 #### ST-10001: Audit Markdown Emoji Usage Across Project-Owned Docs
 **User story:** As a maintainer, I want a clear inventory of markdown emoji usage so docs-only cleanup work can be prioritized and executed without noisy, repo-wide guesswork.
 
@@ -2634,7 +2685,7 @@
 **Priority:** P1 (High)
 **Estimate:** 4 hours
 **Dependencies:** ST-11002 and ST-11003 (merged)
-**Status:** Backlog
+**Status:** Merged (PR #164, 2026-07-28)
 
 **Acceptance criteria:**
 - [ ] Add explicit model-safe factory or preset APIs that combine filesystem confinement and default web destination policy for model-exposed file and web tools.
@@ -2664,15 +2715,33 @@
 
 ---
 
+#### ST-11009: Harden Skill-Powered Agent Filesystem Guidance
+**User story:** As a developer following the skill-powered-agent example, I want model-facing file tools to use the model-safe filesystem preset so the documented path does not accidentally grant unrestricted host access.
+
+**Priority:** P2 (Medium)
+**Estimate:** 2 hours
+**Dependencies:** ST-11003 and ST-11007 (merged)
+**Status:** Backlog
+
+**Acceptance criteria:**
+- [ ] Update the skill-powered-agent tutorial and example setup to use a shared filesystem policy or `createModelSafeToolPreset` for model-facing file and directory tools instead of unrestricted factories.
+- [ ] Preserve trusted workspace-skill resource loading and the example's intended file-search/read behavior while requiring an explicit workspace or allowed root.
+- [ ] Add focused example or documentation validation that the model-facing setup rejects traversal and outside-root access and clearly distinguishes trusted local automation from model-exposed tools.
+- [ ] Update the relevant README/tutorial/API guidance and cross-link the repository security policy without changing unrelated skill trust behavior.
+- [ ] Run the supported example tests, `pnpm lint`, and `pnpm typecheck` or document any pre-existing example-only incompatibility.
+- [ ] Add or update story documentation at `docs/st11009-skill-agent-filesystem-guidance.md`
+
+---
+
 ## Story Summary
 
-**Total Stories:** 100
+**Total Stories:** 104
 **By Priority:**
 - P0 (Critical): 17 stories
 - P1 (High): 31 stories
-- P2 (Medium): 52 stories
+  - P2 (Medium): 56 stories
 
-**Total Estimated Effort:** ~360 hours (45 working days)
+**Total Estimated Effort:** ~369 hours (46 working days)
 
 **Dependency Chain:**
 1. Phase 1 (Foundation): ST-01001 → ST-01002 → ST-01003 → ST-01004
@@ -2685,4 +2754,4 @@
 8. Phase 8 (Type Safety Hardening): ST-08001 → [ST-08002, ST-08003, ST-08004 parallel]
 9. Phase 9 (SOLID Micro-Refactors): ST-09001 (Merged) → ST-09002 (Merged) → ST-09003 (Merged) → ST-09004 (Merged) → ST-09005 (Merged) → ST-09006 (Merged) → ST-09007 (Merged) → ST-09008 (Merged) → ST-09009 (Merged) → ST-09010 (Merged) → ST-09011 (Merged) → ST-09012 (Merged) → ST-09013 (Merged) → ST-09014 (Merged) → ST-09015 (Merged) → ST-09016 (Merged) → ST-09017 (Merged) → ST-09018 (Merged) → ST-09019 (Merged) → ST-09020 (Merged) → ST-09021 (Merged) → ST-09022 (Merged) → ST-09023 (Merged); ST-09025 (Merged) → ST-09026 (Merged) → ST-09031 (Merged); ST-09027 (Merged) → ST-09028 (Merged) → ST-09030 (Merged); ST-09032 → ST-09033; ST-09034 (Merged) → ST-09035 (Merged) → ST-09036 (Merged) → ST-09041; ST-09023 (Merged) and ST-09029 (Merged) → ST-09037; ST-09038 independent; ST-09023 (Merged) → ST-09039; ST-09024 (Merged) → ST-09040 → ST-09042 → ST-09047; ST-09020 (Merged) → ST-09043; ST-09018 (Merged) → ST-09044; ST-09015 (Merged) → ST-09045 → ST-09048; ST-09038 (Merged) → ST-09046; ST-03002 (Merged) → ST-09055; ST-06005 (Merged) → ST-09056 (Merged) → ST-09071; ST-04001 (Merged) → ST-09057; ST-09032 (Merged) → ST-09058; ST-09037 (Merged) → ST-09059; ST-09045 (Merged) → ST-09060; ST-09050 (Merged) → ST-09061 (Merged) → ST-09062; ST-09051 (Merged) → ST-09063 (Merged) → ST-09070 → [ST-09075, ST-09076]; ST-09043 (Merged) → ST-09064 (Merged) → ST-09065 (Merged); ST-09010 (Merged) → ST-09066
 10. Phase 10 (Documentation Only Changes): ST-10001 → [ST-10002, ST-10003, ST-10004, ST-10005 parallel] → ST-10006; EP-10 remains evergreen and intentionally open for future docs-only stories even when no current stories are queued
-11. Phase 11 (Security Boundary Hardening): ST-11001 → [ST-11002, ST-11003, ST-11004, ST-11005, ST-11006 parallel] → ST-11007 → ST-11008, with ST-11001 establishing the policy baseline for the follow-on hardening and example-guidance stories
+11. Phase 11 (Security Boundary Hardening): ST-11001 → [ST-11002, ST-11003, ST-11004, ST-11005, ST-11006 parallel] → ST-11007 → ST-11008 → ST-11009, with ST-11001 establishing the policy baseline for the follow-on hardening and example-guidance stories

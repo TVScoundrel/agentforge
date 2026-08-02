@@ -3,7 +3,7 @@
 **Epic Range:** EP-09 through EP-09
 **Status:** In Progress
 **Last Updated:** 2026-08-02
-**Active Story:** No EP-09 story active; the accepted queue is empty after ST-09091 merged.
+**Active Story:** No EP-09 story active; ST-09092 through ST-09094 are queued in Backlog.
 
 ---
 
@@ -34,16 +34,16 @@
 
 Current `@typescript-eslint/no-explicit-any` baseline check (latest committed release-era tracking):
 
-- Total: `80` warnings (`src/**`)
-- By package: `cli 6`, `core 19`, `patterns 2`, `testing 0`, `tools 53`
+- Total: `76` warnings (`src/**`)
+- By package: `cli 4`, `core 19`, `patterns 2`, `testing 0`, `tools 51`
 
 Top runtime hotspots informing this feature slice:
 
-1. The remaining runtime file above the planning cutoff is `packages/tools/src/data/relational/schema/type-mapper.ts` (`325`), which still mixes large vendor maps, normalization, precision-loss notes, and schema-level aggregation helpers in one file.
-2. The next strongest remaining test-modularity hotspots are `packages/core/src/langgraph/middleware/__tests__/integration.test.ts` (`370`), `packages/tools/tests/data/relational/schema-diff.test.ts` (`299`), and several very large pattern/web suites that should be split only when paired with a clear runtime or shared-helper payoff.
-3. Shared-helper seams that still expose duplication or fragile shortcuts remain valid follow-on slices when they can be tightened without behavior changes, especially the repeated factory/controller wiring in `packages/core/src/langgraph/middleware/rate-limiting.ts` and `packages/core/src/langgraph/middleware/concurrency.ts`, plus the cross-package mock-tool duplication between `packages/core/src/tools/testing.ts` and `packages/testing/src/mocks/mock-tool.ts`.
-4. Latent type-boundary risks remain worth capturing as explicit hardening stories even when they are not regressions, especially the structural cast in `packages/patterns/src/multi-agent/utils-shared.ts` and constructor-name-only GraphInterrupt detection in `packages/patterns/src/shared/error-handling.ts`.
-5. The next follow-on slices should keep EP-09 open for another short burst of small SOLID/DRY improvements rather than creating a new epic for the same quality lane.
+1. Remaining generic wrapper seams include `TArgs extends any[]` in `packages/core/src/monitoring/profiler.ts` and `packages/core/src/resources/circuit-breaker.ts`, making a small shared type-boundary slice appropriate.
+2. Remaining metadata seams include `Record<string, any>` in `packages/core/src/langgraph/persistence/thread.ts` and `packages/core/src/langgraph/observability/langsmith.ts`, where unknown-first JSON-safe contracts can preserve compatibility while removing ambiguity.
+3. The tools package still has concentrated Neo4j payload and error-boundary `any` usage across `packages/tools/src/data/neo4j/types.ts`, `packages/tools/src/data/neo4j/utils/cypher-sanitizer.ts`, and adjacent node/embedding helpers.
+4. The strongest remaining test-modularity hotspots are `packages/patterns/tests/plan-execute/nodes.test.ts` (`802`), `packages/tools/tests/web/confluence.test.ts` (`739`), and `packages/tools/tests/web/slack.test.ts` (`600`); these should be split only when paired with a clear runtime or shared-helper payoff.
+5. The next follow-on slices should keep EP-09 open for another short burst of small type-boundary improvements rather than creating a new epic for the same quality lane.
 
 Recent improvement snapshot:
 
@@ -144,7 +144,8 @@ Recent improvement snapshot:
 - `ST-09089` moved to In Progress on 2026-07-31 as the next dependency-ready EP-09 type-boundary slice.
 - `ST-09089` merged on 2026-07-31 as PR #166 after tightening CLI JSON utility boundaries and improving the explicit-`any` baseline; `ST-09091` is now the next Ready story.
 - `ST-09091` moved to In Progress on 2026-08-02 as the next dependency-ready EP-09 type-boundary slice.
-- `ST-09091` merged on 2026-08-02 as PR #167 after typing directory-list results and adding focused listing coverage; no accepted EP-09 stories remain in Ready or Backlog.
+- `ST-09091` merged on 2026-08-02 as PR #167 after typing directory-list results and adding focused listing coverage; the prior accepted queue was empty before the next grooming batch.
+- `ST-09092` through `ST-09094` were added on 2026-08-02 as independent, low-risk type-boundary slices covering core generic wrappers, core metadata maps, and Neo4j property/query payloads.
 
 ## Scope
 
@@ -165,7 +166,7 @@ Recent improvement snapshot:
 
 ## Story Coverage by Epic
 
-- EP-09: ST-09001 through ST-09091
+- EP-09: ST-09001 through ST-09094
 
 ---
 

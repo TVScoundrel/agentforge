@@ -3814,3 +3814,60 @@ Implementation notes:
   - PR #167 was marked ready for review after the validated body and review-state tracker synchronization were pushed.
 - [x] Wait for merge; do not merge directly from local branch
   - PR #167 merged on 2026-08-02 as commit `11ed07e6`; post-merge tracker synchronization is being committed from `main`.
+
+---
+
+## ST-09092: Harden Core Generic Wrapper Contracts
+
+**Branch:** `refactor/st-09092-core-generic-wrapper-contracts`
+
+### Checklist
+- [ ] Create branch `refactor/st-09092-core-generic-wrapper-contracts` from `main`
+- [ ] Inspect and type the profiler and circuit-breaker wrapper argument tuples with unknown-first generics
+- [ ] Preserve callback inference, invocation, profiling, retry, and circuit-state behavior
+- [ ] Add focused runtime and type-boundary coverage for zero-argument, multi-argument, async, thrown-error, and rejected-promise callbacks
+- [ ] Record explicit-`any` warning deltas in story documentation
+- [ ] Add or update story documentation at `docs/st09092-core-generic-wrapper-contracts.md`
+- [ ] Run core tests, typecheck, lint, and the explicit-any baseline gate
+- [ ] Run the full test suite and workspace lint before finalizing the PR
+- [ ] Commit completed checklist items and push updates
+- [ ] Mark the PR Ready only after all story tasks are complete
+- [ ] Wait for merge; do not merge directly from local branch
+
+---
+
+## ST-09093: Harden Thread and LangSmith Metadata Contracts
+
+**Branch:** `refactor/st-09093-thread-langsmith-metadata-contracts`
+
+### Checklist
+- [ ] Create branch `refactor/st-09093-thread-langsmith-metadata-contracts` from `main`
+- [ ] Define a compatible unknown-first JSON-safe metadata contract for thread persistence and LangSmith observability
+- [ ] Preserve metadata passthrough, optional fields, tracing compatibility, and thread serialization behavior
+- [ ] Add focused coverage for nested JSON values, null-prototype maps, omitted metadata, and non-JSON boundary values
+- [ ] Record explicit-`any` warning deltas in story documentation
+- [ ] Add or update story documentation at `docs/st09093-thread-langsmith-metadata-contracts.md`
+- [ ] Run core tests, typecheck, lint, and the explicit-any baseline gate
+- [ ] Run the full test suite and workspace lint before finalizing the PR
+- [ ] Commit completed checklist items and push updates
+- [ ] Mark the PR Ready only after all story tasks are complete
+- [ ] Wait for merge; do not merge directly from local branch
+
+---
+
+## ST-09094: Harden Neo4j Property and Query Payload Contracts
+
+**Branch:** `refactor/st-09094-neo4j-property-query-contracts`
+
+### Checklist
+- [ ] Create branch `refactor/st-09094-neo4j-property-query-contracts` from `main`
+- [ ] Replace Neo4j property, Cypher parameter, node-helper, and embedding error `any` seams with compatible contracts
+- [ ] Preserve property serialization, parameter binding, sanitization, public result shapes, and provider error behavior
+- [ ] Add focused coverage for supported property values, unsupported values, null-prototype maps, sanitized parameters, and provider failures
+- [ ] Record explicit-`any` warning deltas in story documentation
+- [ ] Add or update story documentation at `docs/st09094-neo4j-property-query-contracts.md`
+- [ ] Run tools tests, typecheck, lint, and the explicit-any baseline gate
+- [ ] Run the full test suite and workspace lint before finalizing the PR
+- [ ] Commit completed checklist items and push updates
+- [ ] Mark the PR Ready only after all story tasks are complete
+- [ ] Wait for merge; do not merge directly from local branch

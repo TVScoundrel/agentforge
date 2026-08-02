@@ -301,3 +301,21 @@
   - PR #165 marked ready for review after the implementation and tracker commits.
 - [x] Wait for merge; do not merge directly from local branch
   - PR #165 merged into `main` on 2026-07-30 as commit `32c0c3dd`; post-merge tracker synchronization completed from local `main`.
+
+---
+
+## ST-11009: Harden Skill-Powered Agent Filesystem Guidance
+
+**Branch:** `fix/st-11009-skill-agent-filesystem-guidance`
+
+### Checklist
+- [ ] Create branch `fix/st-11009-skill-agent-filesystem-guidance` from `main`
+- [ ] Replace unrestricted model-facing file-tool setup in the skill-powered-agent tutorial and example with a shared filesystem policy or `createModelSafeToolPreset`
+- [ ] Preserve trusted workspace-skill resource loading and intended file-search/read behavior while requiring an explicit root
+- [ ] Add focused example or documentation validation for traversal and outside-root rejection
+- [ ] Update README/tutorial/API guidance and cross-link `SECURITY.md`
+- [ ] Add or update story documentation at `docs/st11009-skill-agent-filesystem-guidance.md`
+- [ ] Run supported example tests, lint, and typecheck; record any pre-existing example-only incompatibility
+- [ ] Commit completed checklist items and push updates
+- [ ] Mark the PR Ready only after all story tasks are complete
+- [ ] Wait for merge; do not merge directly from local branch

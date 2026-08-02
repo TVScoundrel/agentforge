@@ -1,9 +1,9 @@
 # Feature Plan: EP-11 Security Boundary Hardening
 
 **Epic Range:** EP-11 through EP-11
-**Status:** Complete
-**Last Updated:** 2026-07-30
-**Active Story:** All EP-11 stories merged through ST-11008 (PR #165)
+**Status:** In Progress
+**Last Updated:** 2026-08-02
+**Active Story:** No EP-11 story active; ST-11009 is queued in Backlog as a security-guidance follow-on.
 
 ---
 
@@ -75,6 +75,9 @@ Without an explicit repository security policy, these findings are harder to tri
 ### ST-11008: Tighten Express Example CORS and Request Limits
 - Make CORS, credentials, and body-size defaults conservative and explicitly configurable in the Express example.
 
+### ST-11009: Harden Skill-Powered Agent Filesystem Guidance
+- Replace unrestricted model-facing file-tool examples with the model-safe filesystem preset and make the required root boundary explicit.
+
 ## Recommended Execution Order
 
 1. `ST-11001` — establish policy baseline first
@@ -85,6 +88,7 @@ Without an explicit repository security policy, these findings are harder to tri
 6. `ST-11006` — example ownership cleanup after framework surfaces are addressed
 7. `ST-11007` — make the safe model-exposed framework path easy to adopt
 8. `ST-11008` — tighten adjacent Express transport defaults
+9. `ST-11009` — align the skill-powered-agent example with the model-safe filesystem path
 
 ## Success Criteria
 
@@ -92,3 +96,4 @@ Without an explicit repository security policy, these findings are harder to tri
 - The framework exposes a clearer, safer path for model-controlled web and file access.
 - Untrusted worker and skill content no longer flows into higher-privilege orchestration without an explicit boundary.
 - Example integrations stop normalizing insecure ownership assumptions.
+- Model-facing skill examples do not make unrestricted filesystem factories the documented default.
