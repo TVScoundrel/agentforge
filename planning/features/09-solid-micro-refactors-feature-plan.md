@@ -3,7 +3,7 @@
 **Epic Range:** EP-09 through EP-09
 **Status:** In Progress
 **Last Updated:** 2026-08-02
-**Active Story:** ST-09091 (In Progress)
+**Active Story:** ST-09091 (In Review, PR #167)
 
 ---
 
