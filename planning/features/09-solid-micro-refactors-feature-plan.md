@@ -3,7 +3,7 @@
 **Epic Range:** EP-09 through EP-09
 **Status:** In Progress
 **Last Updated:** 2026-08-02
-**Active Story:** ST-09091 (In Review, PR #167)
+**Active Story:** No EP-09 story active; the accepted queue is empty after ST-09091 merged.
 
 ---
 
@@ -144,6 +144,7 @@ Recent improvement snapshot:
 - `ST-09089` moved to In Progress on 2026-07-31 as the next dependency-ready EP-09 type-boundary slice.
 - `ST-09089` merged on 2026-07-31 as PR #166 after tightening CLI JSON utility boundaries and improving the explicit-`any` baseline; `ST-09091` is now the next Ready story.
 - `ST-09091` moved to In Progress on 2026-08-02 as the next dependency-ready EP-09 type-boundary slice.
+- `ST-09091` merged on 2026-08-02 as PR #167 after typing directory-list results and adding focused listing coverage; no accepted EP-09 stories remain in Ready or Backlog.
 
 ## Scope
 

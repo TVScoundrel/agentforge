@@ -3812,4 +3812,5 @@ Implementation notes:
   - Implementation commit `05450805` is pushed to `origin/refactor/st-09091-directory-list-result-typing`; review-state synchronization follows in the tracker commit.
 - [x] Mark the PR Ready only after all story tasks are complete
   - PR #167 was marked ready for review after the validated body and review-state tracker synchronization were pushed.
-- [ ] Wait for merge; do not merge directly from local branch
+- [x] Wait for merge; do not merge directly from local branch
+  - PR #167 merged on 2026-08-02 as commit `11ed07e6`; post-merge tracker synchronization is being committed from `main`.

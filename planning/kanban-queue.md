@@ -6,7 +6,7 @@
 
 - **Ready:** 0 stories
 - **In Progress:** 0 stories
-- **In Review:** 1 story
+- **In Review:** 0 stories
 - **Blocked:** 0 stories
 - **Backlog:** 0 stories
 
@@ -26,9 +26,7 @@ None currently.
 
 ## In Review
 
-- `ST-09091` - Type Directory Listing Results
-  - Depends on: `ST-11003` (merged)
-  - PR: #167
+None currently.
 
 ---
 
@@ -60,6 +58,7 @@ None currently.
 - ST-11007 merged on 2026-07-28 as PR #164 / commit `1607601c`; removed from the active queue, archived as done, and `ST-11008` moved to `In Progress` as the next deterministic story on 2026-07-29
 - ST-11008 merged on 2026-07-30 as PR #165 / commit `32c0c3dd`; removed from the active queue, archived as done, and the deterministic ready lane now starts with `ST-09089` followed by `ST-09091`
 - ST-09089 merged on 2026-07-31 as PR #166 / commit `9640fa1a`; removed from the active queue, archived as done, and `ST-09091` remains the next dependency-ready Ready story
+- ST-09091 merged on 2026-08-02 as PR #167 / commit `11ed07e6`; removed from the active queue, archived as done, and no accepted EP-09 stories remain in Ready or Backlog
 
 - Complete: ST-01001 - foundation established (merged 2026-02-17)
 - Complete: ST-01002 - connection manager implemented (merged 2026-02-17)

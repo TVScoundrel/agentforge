@@ -2,7 +2,7 @@
 
 **Purpose:** Track completed and merged stories for the Relational Database Access Tool project.
 
-**Last Updated:** 2026-07-31
+**Last Updated:** 2026-08-02
 
 ---
 
@@ -105,6 +105,13 @@
 - **Epic:** EP-09 (SOLID Micro-Refactors and Type Boundary Hardening)
 - **Estimate:** 2 hours
 - **Outcome:** Replaced the CLI filesystem JSON helpers' explicit `any` contracts with exported recursive JSON types, JSON-safe `writeJson(...)` input, and an unknown-first `readJson<T = unknown>(...)` default while preserving formatting, explicit generic reads, and `fs-extra` error propagation. Added focused round-trip, malformed-JSON, generic-output, and filesystem-failure coverage plus story documentation. The explicit-`any` baseline improved from `workspace 80/289`, `cli 6/24` to `workspace 78/289`, `cli 4/24`; full tests and lint passed, and `ST-09091` remains the next dependency-ready Ready story.
+
+### ST-09091: Type Directory Listing Results
+- **Merged:** 2026-08-02
+- **PR:** https://github.com/TVScoundrel/agentforge/pull/167 (commit 11ed07e6)
+- **Epic:** EP-09 (SOLID Micro-Refactors and Type Boundary Hardening)
+- **Estimate:** 2 hours
+- **Outcome:** Replaced the directory-list tool's recursive `Promise<any[]>` and local `any[]` contracts with exported `DirectoryListEntry` and `DirectoryListResult` models while preserving recursive traversal, extension filtering, detail metadata, relative paths, counts, serialization, and filesystem-policy enforcement. Added focused empty, flat, nested, filtered, detailed, and policy-constrained coverage plus story documentation. The explicit-`any` baseline improved from `workspace 78/289`, `tools 53/67` to `workspace 76/289`, `tools 51/67`; full tests and lint passed, leaving no remaining Ready or Backlog stories.
 
 ### ST-09081: Modularize Monitoring Alert Manager and Tests
 - **Merged:** 2026-07-08
