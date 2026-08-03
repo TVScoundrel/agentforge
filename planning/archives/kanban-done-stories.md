@@ -2,11 +2,18 @@
 
 **Purpose:** Track completed and merged stories for the Relational Database Access Tool project.
 
-**Last Updated:** 2026-08-02
+**Last Updated:** 2026-08-03
 
 ---
 
 ## Completed Stories
+
+### ST-09092: Harden Core Generic Wrapper Contracts
+- **Merged:** 2026-08-03
+- **PR:** https://github.com/TVScoundrel/agentforge/pull/168 (commit 4c7a99c1)
+- **Epic:** EP-09 (SOLID Micro-Refactors and Type Boundary Hardening)
+- **Estimate:** 2 hours
+- **Outcome:** Replaced the profiler and circuit-breaker wrapper `TArgs extends any[]` contracts with unknown-first `TArgs extends unknown[]` bounds while preserving callback inference and runtime behavior. Added focused type/runtime coverage and story documentation. Core tests passed with 648 tests, full workspace tests passed with 2552 tests, lint and typecheck passed, and the explicit-`any` baseline improved from `workspace 76/289`, `core 19/119` to `workspace 74/289`, `core 17/119`.
 
 ### ST-11008: Tighten Express Example CORS and Request Limits
 - **Merged:** 2026-07-30

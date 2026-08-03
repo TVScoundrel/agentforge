@@ -3,7 +3,7 @@
 **Epic Range:** EP-11 through EP-11
 **Status:** In Progress
 **Last Updated:** 2026-08-02
-**Active Story:** No EP-11 story active; ST-11009 is queued in Backlog as a security-guidance follow-on.
+**Active Story:** No EP-11 story active; ST-11009 is Ready as a security-guidance follow-on.
 
 ---
 

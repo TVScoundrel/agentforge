@@ -3846,7 +3846,8 @@ Implementation notes:
   - Implementation commit `3d4d2c03` pushed to `origin/refactor/st-09092-core-generic-wrapper-contracts`; draft PR #168 opened.
 - [x] Mark the PR Ready only after all story tasks are complete
   - Final self-review found no correctness, security, or scope issues; PR #168 is ready for review.
-- [ ] Wait for merge; do not merge directly from local branch
+- [x] Wait for merge; do not merge directly from local branch
+  - PR #168 merged on 2026-08-03 as commit `4c7a99c1`; post-merge tracker synchronization is being committed from `main`.
 
 ---
 
