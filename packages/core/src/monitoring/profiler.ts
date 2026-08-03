@@ -58,7 +58,7 @@ export class Profiler {
     this.maxSamples = options.maxSamples ?? 1000;
   }
 
-  profile<TArgs extends any[], TReturn>(
+  profile<TArgs extends unknown[], TReturn>(
     name: string,
     fn: (...args: TArgs) => Promise<TReturn>
   ): (...args: TArgs) => Promise<TReturn> {
@@ -198,4 +198,3 @@ export class Profiler {
 export function createProfiler(options?: ProfilerOptions): Profiler {
   return new Profiler(options);
 }
-

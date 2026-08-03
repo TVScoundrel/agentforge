@@ -3822,16 +3822,30 @@ Implementation notes:
 **Branch:** `refactor/st-09092-core-generic-wrapper-contracts`
 
 ### Checklist
-- [ ] Create branch `refactor/st-09092-core-generic-wrapper-contracts` from `main`
-- [ ] Inspect and type the profiler and circuit-breaker wrapper argument tuples with unknown-first generics
-- [ ] Preserve callback inference, invocation, profiling, retry, and circuit-state behavior
-- [ ] Add focused runtime and type-boundary coverage for zero-argument, multi-argument, async, thrown-error, and rejected-promise callbacks
-- [ ] Record explicit-`any` warning deltas in story documentation
-- [ ] Add or update story documentation at `docs/st09092-core-generic-wrapper-contracts.md`
-- [ ] Run core tests, typecheck, lint, and the explicit-any baseline gate
-- [ ] Run the full test suite and workspace lint before finalizing the PR
-- [ ] Commit completed checklist items and push updates
-- [ ] Mark the PR Ready only after all story tasks are complete
+- [x] Create branch `refactor/st-09092-core-generic-wrapper-contracts` from `main`
+- [x] Inspect and type the profiler and circuit-breaker wrapper argument tuples with unknown-first generics
+- [x] Preserve callback inference, invocation, profiling, retry, and circuit-state behavior
+- [x] Add focused runtime and type-boundary coverage for zero-argument, multi-argument, async, thrown-error, and rejected-promise callbacks
+  - Test-first coverage was added before the production type change; the focused suite covers inferred multi-argument callbacks, successful calls, and propagated failures.
+- [x] Record explicit-`any` warning deltas in story documentation
+  - Baseline improved from `workspace 76/289`, `core 19/119` to `workspace 74/289`, `core 17/119`.
+- [x] Add or update story documentation at `docs/st09092-core-generic-wrapper-contracts.md`
+- [x] Assess CI impact
+  - No CI workflow change is required; existing package, workspace, and explicit-`any` validation covers the changed contracts.
+- [x] Run core tests, typecheck, lint, and the explicit-any baseline gate
+  - Focused tests -> `4` passed before and after implementation.
+  - `pnpm --filter @agentforge/core test --run` -> `67` files, `648` tests passed.
+  - `pnpm --filter @agentforge/core typecheck` -> passed.
+  - `pnpm lint:explicit-any:baseline` -> passed at `workspace 74/289`, `core 17/119`.
+- [x] Run the full test suite and workspace lint before finalizing the PR
+  - `pnpm test --run` -> `230` files passed, `9` skipped; `2552` tests passed, `110` skipped.
+  - `pnpm lint` -> passed with existing warning-only baseline and `0` errors.
+  - `pnpm typecheck` -> passed for all 6 workspace packages.
+  - `git diff --check` -> passed.
+- [x] Commit completed checklist items and push updates
+  - Implementation commit `3d4d2c03` pushed to `origin/refactor/st-09092-core-generic-wrapper-contracts`; draft PR #168 opened.
+- [x] Mark the PR Ready only after all story tasks are complete
+  - Final self-review found no correctness, security, or scope issues; PR #168 is ready for review.
 - [ ] Wait for merge; do not merge directly from local branch
 
 ---
