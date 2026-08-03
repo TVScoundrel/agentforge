@@ -5,6 +5,29 @@ All notable changes to AgentForge will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.16.84] - 2026-08-03
+
+### Changed
+
+#### @agentforge/core - Generic Wrapper Type Boundaries
+- Replaced the profiler and circuit-breaker wrapper `TArgs extends any[]` contracts with unknown-first `TArgs extends unknown[]` bounds.
+- Preserved callback argument and return inference, profiling behavior, error propagation, retry behavior, and circuit-state transitions.
+
+### Added
+
+#### @agentforge/core - Generic Wrapper Regression Coverage
+- Added focused type and runtime tests for profiler and circuit-breaker callback inference and success/failure handling.
+- Added story documentation for the type-boundary rationale and compatibility behavior.
+
+### Published
+- All packages published to npm registry at version 0.16.84:
+  - @agentforge/core@0.16.84
+  - @agentforge/skills@0.16.84
+  - @agentforge/patterns@0.16.84
+  - @agentforge/tools@0.16.84
+  - @agentforge/testing@0.16.84
+  - @agentforge/cli@0.16.84
+
 ## [0.16.83] - 2026-08-02
 
 ### Changed
