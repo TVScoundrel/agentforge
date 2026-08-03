@@ -70,7 +70,7 @@ export class CircuitBreaker {
     }
   }
 
-  wrap<TArgs extends any[], TReturn>(
+  wrap<TArgs extends unknown[], TReturn>(
     fn: (...args: TArgs) => Promise<TReturn>
   ): (...args: TArgs) => Promise<TReturn> {
     return async (...args: TArgs) => {
@@ -191,4 +191,3 @@ export class CircuitBreaker {
 export function createCircuitBreaker(options: CircuitBreakerOptions): CircuitBreaker {
   return new CircuitBreaker(options);
 }
-

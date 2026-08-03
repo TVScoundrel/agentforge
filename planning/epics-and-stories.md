@@ -2428,7 +2428,7 @@
 **Priority:** P2 (Medium)
 **Estimate:** 2 hours
 **Dependencies:** None
-**Status:** Backlog
+**Status:** In Progress
 
 **Acceptance criteria:**
 - [ ] Replace the `any[]` generic argument seams in `packages/core/src/monitoring/profiler.ts` and `packages/core/src/resources/circuit-breaker.ts` with unknown-first tuple contracts while preserving inference for wrapped functions.
