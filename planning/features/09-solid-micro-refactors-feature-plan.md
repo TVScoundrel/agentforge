@@ -3,7 +3,7 @@
 **Epic Range:** EP-09 through EP-09
 **Status:** In Progress
 **Last Updated:** 2026-08-02
-**Active Story:** No EP-09 story active; ST-09092 through ST-09094 are queued in Backlog.
+**Active Story:** ST-09092 (In Progress)
 
 ---
 
@@ -146,6 +146,7 @@ Recent improvement snapshot:
 - `ST-09091` moved to In Progress on 2026-08-02 as the next dependency-ready EP-09 type-boundary slice.
 - `ST-09091` merged on 2026-08-02 as PR #167 after typing directory-list results and adding focused listing coverage; the prior accepted queue was empty before the next grooming batch.
 - `ST-09092` through `ST-09094` were added on 2026-08-02 as independent, low-risk type-boundary slices covering core generic wrappers, core metadata maps, and Neo4j property/query payloads.
+- `ST-09092` moved to In Progress on 2026-08-03 as the next deterministic EP-09 type-boundary slice.
 
 ## Scope
 

@@ -5,10 +5,10 @@
 ## Queue Status Summary
 
 - **Ready:** 0 stories
-- **In Progress:** 0 stories
+- **In Progress:** 1 story
 - **In Review:** 0 stories
 - **Blocked:** 0 stories
-- **Backlog:** 4 stories
+- **Backlog:** 3 stories
 
 ---
 
@@ -20,7 +20,7 @@ None currently.
 
 ## In Progress
 
-None currently.
+- `ST-09092` — Harden Core Generic Wrapper Contracts
 
 ---
 
@@ -38,7 +38,6 @@ _No stories currently blocked_
 
 ## Backlog
 
-- `ST-09092` — Harden Core Generic Wrapper Contracts (P2, 2h, independent)
 - `ST-09093` — Harden Thread and LangSmith Metadata Contracts (P2, 2h, independent)
 - `ST-09094` — Harden Neo4j Property and Query Payload Contracts (P2, 3h, independent)
 - `ST-11009` — Harden Skill-Powered Agent Filesystem Guidance (P2, 2h, depends on merged ST-11003 and ST-11007)
@@ -64,6 +63,7 @@ _No stories currently blocked_
 - ST-09091 merged on 2026-08-02 as PR #167 / commit `11ed07e6`; removed from the active queue and archived as done before the next EP-09 grooming batch
 - ST-09092, ST-09093, and ST-09094 added to Backlog on 2026-08-02 after source review identified three independent, low-risk EP-09 type-boundary improvements across core wrappers, metadata maps, and Neo4j payloads
 - ST-11009 added to Backlog on 2026-08-02 after source review found model-facing skill examples still wire unrestricted file tools despite the merged model-safe preset
+- ST-09092 moved to In Progress on 2026-08-03 as the next deterministic EP-09 story; the remaining EP-09 and EP-11 follow-ons remain in Backlog
 
 - Complete: ST-01001 - foundation established (merged 2026-02-17)
 - Complete: ST-01002 - connection manager implemented (merged 2026-02-17)
