@@ -1,12 +1,12 @@
 # Kanban Queue: AgentForge
 
-**Last Updated:** 2026-08-03
+**Last Updated:** 2026-08-04
 
 ## Queue Status Summary
 
-- **Ready:** 3 stories
+- **Ready:** 2 stories
 - **In Progress:** 0 stories
-- **In Review:** 0 stories
+- **In Review:** 1 story
 - **Blocked:** 0 stories
 - **Backlog:** 0 stories
 
@@ -14,7 +14,6 @@
 
 ## Ready
 
-- `ST-09093` — Harden Thread and LangSmith Metadata Contracts
 - `ST-09094` — Harden Neo4j Property and Query Payload Contracts
 - `ST-11009` — Harden Skill-Powered Agent Filesystem Guidance
 
@@ -28,7 +27,7 @@ None currently.
 
 ## In Review
 
-None currently.
+- `ST-09093` — Harden Thread and LangSmith Metadata Contracts
 
 ---
 
@@ -65,6 +64,8 @@ None currently.
 - ST-11009 added to Backlog on 2026-08-02 after source review found model-facing skill examples still wire unrestricted file tools despite the merged model-safe preset
 - ST-09092 moved to In Progress on 2026-08-03 as the next deterministic EP-09 story; the remaining EP-09 and EP-11 follow-ons remained in Backlog
 - ST-09092 merged on 2026-08-03 as PR #168 / commit `4c7a99c1`; removed from the active queue, archived as done, and all three dependency-ready follow-ons were promoted to Ready
+- ST-09093 moved to In Progress on 2026-08-04 as the next deterministic EP-09 metadata-boundary story; `ST-09094` and `ST-11009` remain in Ready
+- ST-09093 moved to In Review on 2026-08-04 with PR #169 after implementation, documentation, focused and full validation, lint, typecheck, baseline, and tracker synchronization; `ST-09094` and `ST-11009` remain in Ready
 
 - Complete: ST-01001 - foundation established (merged 2026-02-17)
 - Complete: ST-01002 - connection manager implemented (merged 2026-02-17)

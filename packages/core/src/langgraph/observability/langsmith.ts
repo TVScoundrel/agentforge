@@ -4,6 +4,8 @@
  * Helpers for configuring and using LangSmith tracing with LangGraph.
  */
 
+import type { JsonObject } from './payload.js';
+
 /**
  * LangSmith configuration options
  */
@@ -36,7 +38,7 @@ export interface LangSmithConfig {
   /**
    * Additional metadata to include in all traces
    */
-  metadata?: Record<string, any>;
+  metadata?: JsonObject;
 }
 
 /**
@@ -124,7 +126,7 @@ export interface TracingOptions {
   /**
    * Additional metadata to include in the trace
    */
-  metadata?: Record<string, any>;
+  metadata?: JsonObject;
 
   /**
    * Tags to categorize the trace
@@ -179,4 +181,3 @@ export function withTracing<State>(
     return await Promise.resolve(node(state));
   };
 }
-
