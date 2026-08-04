@@ -5,6 +5,29 @@ All notable changes to AgentForge will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.16.85] - 2026-08-04
+
+### Changed
+
+#### @agentforge/core - JSON-Safe Metadata Contracts
+- Replaced thread, conversation, LangSmith, and tracing metadata `Record<string, any>` seams with the shared `JsonObject` contract.
+- Preserved nested JSON values and null-prototype metadata passthrough while aligning empty and absent `sessionId` handling across generated thread IDs and metadata.
+
+### Added
+
+#### @agentforge/core - Metadata Boundary Regression Coverage
+- Added runtime coverage for nested metadata, null-prototype maps, omitted metadata, empty session IDs, and conversation serialization behavior.
+- Added compile-time assertions rejecting non-JSON metadata values such as functions and `Date` instances.
+
+### Published
+- All packages published to npm registry at version 0.16.85:
+  - @agentforge/core@0.16.85
+  - @agentforge/skills@0.16.85
+  - @agentforge/patterns@0.16.85
+  - @agentforge/tools@0.16.85
+  - @agentforge/testing@0.16.85
+  - @agentforge/cli@0.16.85
+
 ## [0.16.84] - 2026-08-03
 
 ### Changed
