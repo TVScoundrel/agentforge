@@ -1,4 +1,5 @@
 import { describe, it, expect, beforeEach, afterEach } from 'vitest';
+import type { JsonObject } from '../../../src/langgraph/observability/payload.js';
 import {
   configureLangSmith,
   getLangSmithConfig,
@@ -93,6 +94,25 @@ describe('LangSmith Integration', () => {
 
       expect(getLangSmithConfig()).toEqual(config);
     });
+
+    it('should preserve nested JSON metadata and null-prototype maps', () => {
+      const metadata = Object.create(null) as JsonObject;
+      metadata.project = {
+        labels: ['production'],
+        sampling: { rate: 0.5 },
+      };
+
+      configureLangSmith({ metadata });
+
+      expect(getLangSmithConfig()?.metadata).toBe(metadata);
+      expect(Object.getPrototypeOf(getLangSmithConfig()?.metadata)).toBeNull();
+    });
+
+    it('should preserve omitted metadata', () => {
+      configureLangSmith({ projectName: 'test-project' });
+
+      expect(getLangSmithConfig()).toEqual({ projectName: 'test-project' });
+    });
   });
 
   describe('isTracingEnabled', () => {
@@ -130,6 +150,19 @@ describe('LangSmith Integration', () => {
 
       const result = await tracedNode({ count: 0 });
       expect(result.count).toBe(1);
+    });
+
+    it('should accept nested JSON metadata at the tracing boundary', async () => {
+      const node = (state: { count: number }) => ({ count: state.count + 1 });
+
+      const tracedNode = withTracing(node, {
+        name: 'metadata-node',
+        metadata: {
+          request: { id: 'req-1', tags: ['test'] },
+        },
+      });
+
+      await expect(tracedNode({ count: 0 })).resolves.toEqual({ count: 1 });
     });
 
     it('should work with async nodes', async () => {
@@ -172,4 +205,3 @@ describe('LangSmith Integration', () => {
     });
   });
 });
-

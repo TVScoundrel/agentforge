@@ -8,6 +8,7 @@
 
 import { randomUUID } from 'crypto';
 import type { RunnableConfig } from '@langchain/core/runnables';
+import type { JsonObject } from '../observability/payload.js';
 
 /**
  * Configuration for a thread
@@ -31,7 +32,7 @@ export interface ThreadConfig {
   /**
    * Additional metadata for the thread
    */
-  metadata?: Record<string, any>;
+  metadata?: JsonObject;
 }
 
 /**
@@ -51,7 +52,7 @@ export interface ConversationConfig {
   /**
    * Additional metadata
    */
-  metadata?: Record<string, any>;
+  metadata?: JsonObject;
 }
 
 /**
@@ -164,8 +165,7 @@ export function createConversationConfig(config: ConversationConfig): RunnableCo
     metadata: {
       ...metadata,
       userId,
-      sessionId,
+      ...(sessionId === undefined ? {} : { sessionId }),
     },
   });
 }
-

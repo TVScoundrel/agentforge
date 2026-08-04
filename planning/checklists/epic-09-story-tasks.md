@@ -3856,14 +3856,30 @@ Implementation notes:
 **Branch:** `refactor/st-09093-thread-langsmith-metadata-contracts`
 
 ### Checklist
-- [ ] Create branch `refactor/st-09093-thread-langsmith-metadata-contracts` from `main`
-- [ ] Define a compatible unknown-first JSON-safe metadata contract for thread persistence and LangSmith observability
-- [ ] Preserve metadata passthrough, optional fields, tracing compatibility, and thread serialization behavior
-- [ ] Add focused coverage for nested JSON values, null-prototype maps, omitted metadata, and non-JSON boundary values
-- [ ] Record explicit-`any` warning deltas in story documentation
-- [ ] Add or update story documentation at `docs/st09093-thread-langsmith-metadata-contracts.md`
-- [ ] Run core tests, typecheck, lint, and the explicit-any baseline gate
-- [ ] Run the full test suite and workspace lint before finalizing the PR
+- [x] Create branch `refactor/st-09093-thread-langsmith-metadata-contracts` from `main`
+  - Created from clean `main` at the start of story execution.
+- [x] Define a compatible unknown-first JSON-safe metadata contract for thread persistence and LangSmith observability
+  - Reused the shared `JsonObject` contract for thread, conversation, LangSmith, and tracing metadata.
+- [x] Preserve metadata passthrough, optional fields, tracing compatibility, and thread serialization behavior
+  - Preserved direct metadata references and tracing execution; omitted absent `sessionId` instead of emitting an undefined JSON value.
+- [x] Add focused coverage for nested JSON values, null-prototype maps, omitted metadata, and non-JSON boundary values
+  - Added runtime coverage plus compile-time `@ts-expect-error` assertions for function and `Date` metadata values.
+- [x] Record explicit-`any` warning deltas in story documentation
+  - Baseline improved from `workspace 74/289`, `core 17/119` to `workspace 70/289`, `core 13/119`.
+- [x] Add or update story documentation at `docs/st09093-thread-langsmith-metadata-contracts.md`
+- [x] Assess CI impact
+  - No CI workflow change is required; existing package, workspace, typecheck, lint, and explicit-`any` validation covers the changed contracts.
+- [x] Run core tests, typecheck, lint, and the explicit-any baseline gate
+  - Focused tests -> `34` passed before and after the implementation change.
+  - `pnpm --filter @agentforge/core test --run` -> `67` files, `654` tests passed.
+  - `pnpm --filter @agentforge/core typecheck` -> passed.
+  - `pnpm --filter @agentforge/core lint` -> passed with existing warning-only baseline and `0` errors.
+  - `pnpm lint:explicit-any:baseline` -> passed at `workspace 70/289`, `core 13/119`.
+- [x] Run the full test suite and workspace lint before finalizing the PR
+  - `pnpm release:validate` -> build passed; `230` files passed, `9` skipped; `2558` tests passed, `110` skipped.
+  - `pnpm lint` -> passed with existing warning-only baseline and `0` errors.
+  - `pnpm typecheck` -> passed for all 6 workspace packages.
+  - `git diff --check` -> passed.
 - [ ] Commit completed checklist items and push updates
 - [ ] Mark the PR Ready only after all story tasks are complete
 - [ ] Wait for merge; do not merge directly from local branch

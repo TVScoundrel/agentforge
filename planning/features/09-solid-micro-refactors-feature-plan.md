@@ -2,8 +2,8 @@
 
 **Epic Range:** EP-09 through EP-09
 **Status:** In Progress
-**Last Updated:** 2026-08-03
-**Active Story:** No EP-09 story active; `ST-09093` and `ST-09094` are Ready.
+**Last Updated:** 2026-08-04
+**Active Story:** `ST-09093` — Harden Thread and LangSmith Metadata Contracts.
 
 ---
 
@@ -148,6 +148,7 @@ Recent improvement snapshot:
 - `ST-09092` through `ST-09094` were added on 2026-08-02 as independent, low-risk type-boundary slices covering core generic wrappers, core metadata maps, and Neo4j property/query payloads.
 - `ST-09092` moved to In Progress on 2026-08-03 as the next deterministic EP-09 type-boundary slice.
 - `ST-09092` merged on 2026-08-03 as PR #168 after hardening core profiler and circuit-breaker generic wrapper contracts; `ST-09093` and `ST-09094` are now Ready.
+- `ST-09093` moved to In Progress on 2026-08-04 as the next deterministic EP-09 metadata-boundary slice.
 
 ## Scope
 

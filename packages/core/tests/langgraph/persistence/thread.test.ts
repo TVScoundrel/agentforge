@@ -1,4 +1,5 @@
 import { describe, it, expect } from 'vitest';
+import type { JsonObject } from '../../../src/langgraph/observability/payload.js';
 import {
   generateThreadId,
   createThreadConfig,
@@ -84,6 +85,34 @@ describe('Thread Management', () => {
       expect(config.metadata).toEqual(metadata);
     });
 
+    it('should preserve nested JSON metadata and null-prototype maps', () => {
+      const metadata = Object.create(null) as JsonObject;
+      metadata.profile = {
+        roles: ['maintainer'],
+        preferences: { compact: true },
+      };
+
+      const config = createThreadConfig({
+        threadId: 'test-thread',
+        metadata,
+      });
+
+      expect(config.metadata).toBe(metadata);
+      expect(config.metadata).toEqual({
+        profile: {
+          roles: ['maintainer'],
+          preferences: { compact: true },
+        },
+      });
+      expect(Object.getPrototypeOf(config.metadata)).toBeNull();
+    });
+
+    it('should omit metadata when it is not provided', () => {
+      const config = createThreadConfig({ threadId: 'test-thread' });
+
+      expect(config).not.toHaveProperty('metadata');
+    });
+
     it('should create config with all options', () => {
       const config = createThreadConfig({
         threadId: 'test-thread',
@@ -142,6 +171,20 @@ describe('Thread Management', () => {
       expect(config.metadata?.custom).toBe('value');
     });
 
+    it('should preserve nested metadata values when adding conversation fields', () => {
+      const config = createConversationConfig({
+        userId: 'user-123',
+        metadata: {
+          nested: { enabled: true, labels: ['one', 'two'] },
+        },
+      });
+
+      expect(config.metadata).toEqual({
+        userId: 'user-123',
+        nested: { enabled: true, labels: ['one', 'two'] },
+      });
+    });
+
     it('should merge metadata with user and session info', () => {
       const config = createConversationConfig({
         userId: 'user-123',
@@ -157,4 +200,3 @@ describe('Thread Management', () => {
     });
   });
 });
-
