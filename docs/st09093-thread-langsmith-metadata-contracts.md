@@ -8,7 +8,7 @@ Thread persistence and LangSmith observability metadata now use the shared `Json
 
 - Reused `JsonObject` for `ThreadConfig`, `ConversationConfig`, `LangSmithConfig`, and `TracingOptions` metadata.
 - Preserved nested values and null-prototype metadata maps without cloning in direct thread and LangSmith configuration paths.
-- Omitted `sessionId` from generated conversation metadata when it is not provided, while preserving explicitly supplied values.
+- Omitted empty or absent `sessionId` from generated conversation metadata and used the same non-empty condition for thread ID derivation.
 - Added compile-time coverage rejecting functions, `Date` instances, and other non-JSON metadata values.
 
 ## Test Strategy
@@ -18,6 +18,6 @@ Focused runtime coverage was added before the production type change and passed 
 ## Compatibility Notes
 
 - Existing JSON-safe metadata remains accepted and is passed through unchanged.
-- Omitted optional metadata and `sessionId` remain omitted rather than becoming `undefined` properties.
+- Omitted or empty optional metadata and `sessionId` remain omitted rather than becoming `undefined` properties.
 - LangSmith environment configuration and tracing execution behavior are unchanged.
 - No CI workflow change is required because existing package, workspace, typecheck, lint, and explicit-`any` gates cover the changed contracts.

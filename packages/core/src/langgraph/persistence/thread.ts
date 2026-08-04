@@ -154,9 +154,10 @@ export function createThreadConfig(config: Partial<ThreadConfig> = {}): Runnable
  */
 export function createConversationConfig(config: ConversationConfig): RunnableConfig {
   const { userId, sessionId, metadata = {} } = config;
+  const hasSessionId = sessionId !== undefined && sessionId.length > 0;
 
   // Generate thread ID from user and session
-  const threadId = sessionId
+  const threadId = hasSessionId
     ? generateThreadId(`${userId}-${sessionId}`)
     : generateThreadId(userId);
 
@@ -165,7 +166,7 @@ export function createConversationConfig(config: ConversationConfig): RunnableCo
     metadata: {
       ...metadata,
       userId,
-      ...(sessionId === undefined ? {} : { sessionId }),
+      ...(hasSessionId ? { sessionId } : {}),
     },
   });
 }

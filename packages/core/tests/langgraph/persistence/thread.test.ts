@@ -161,6 +161,19 @@ describe('Thread Management', () => {
       expect(config2.metadata?.sessionId).toBe('session-2');
     });
 
+    it('should omit empty session IDs from the thread ID and metadata', () => {
+      const emptySessionConfig = createConversationConfig({
+        userId: 'user-123',
+        sessionId: '',
+      });
+      const userOnlyConfig = createConversationConfig({ userId: 'user-123' });
+
+      expect(emptySessionConfig.configurable?.thread_id).toBe(
+        userOnlyConfig.configurable?.thread_id
+      );
+      expect(emptySessionConfig.metadata).not.toHaveProperty('sessionId');
+    });
+
     it('should include additional metadata', () => {
       const config = createConversationConfig({
         userId: 'user-123',
@@ -183,6 +196,7 @@ describe('Thread Management', () => {
         userId: 'user-123',
         nested: { enabled: true, labels: ['one', 'two'] },
       });
+      expect(config.metadata).not.toHaveProperty('sessionId');
     });
 
     it('should merge metadata with user and session info', () => {
