@@ -2,11 +2,18 @@
 
 **Purpose:** Track completed and merged stories for the Relational Database Access Tool project.
 
-**Last Updated:** 2026-08-03
+**Last Updated:** 2026-08-04
 
 ---
 
 ## Completed Stories
+
+### ST-09093: Harden Thread and LangSmith Metadata Contracts
+- **Merged:** 2026-08-04
+- **PR:** https://github.com/TVScoundrel/agentforge/pull/169 (commit f54a2f5c)
+- **Epic:** EP-09 (SOLID Micro-Refactors and Type Boundary Hardening)
+- **Estimate:** 2 hours
+- **Outcome:** Replaced thread, conversation, LangSmith, and tracing metadata `Record<string, any>` seams with the shared `JsonObject` contract. Preserved nested JSON and null-prototype passthrough, aligned empty/absent session handling across thread IDs and metadata, added runtime and compile-time regression coverage, and documented the boundary. Core tests passed with 654 tests, full workspace validation passed with 2559 tests and 110 skipped, lint and typecheck passed, and the explicit-`any` baseline improved from `workspace 74/289`, `core 17/119` to `workspace 70/289`, `core 13/119`.
 
 ### ST-09092: Harden Core Generic Wrapper Contracts
 - **Merged:** 2026-08-03

@@ -3881,10 +3881,11 @@ Implementation notes:
   - `pnpm typecheck` -> passed for all 6 workspace packages.
   - `git diff --check` -> passed.
 - [x] Commit completed checklist items and push updates
-  - Implementation commit `d8fcd511` is pushed to `origin/refactor/st-09093-thread-langsmith-metadata-contracts`; draft PR #169 was opened.
+  - Implementation commit `d8fcd511`, review-state commit `dc0d88ed`, and review-fix commit `52b0a8c6` were pushed to `origin/refactor/st-09093-thread-langsmith-metadata-contracts`; PR #169 was opened and updated.
 - [x] Mark the PR Ready only after all story tasks are complete
   - PR #169 was marked ready for review after the validated body and review-state tracker synchronization.
-- [ ] Wait for merge; do not merge directly from local branch
+- [x] Wait for merge; do not merge directly from local branch
+  - PR #169 merged on 2026-08-04 as commit `f54a2f5c`; post-merge tracker synchronization is being committed from local `main`.
 
 ---
 

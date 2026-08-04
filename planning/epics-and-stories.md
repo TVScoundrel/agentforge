@@ -2445,7 +2445,7 @@
 **Priority:** P2 (Medium)
 **Estimate:** 2 hours
 **Dependencies:** None
-**Status:** In Review
+**Status:** Merged (PR #169, 2026-08-04)
 
 **Acceptance criteria:**
 - [ ] Replace the `Record<string, any>` metadata seams in `packages/core/src/langgraph/persistence/thread.ts` and `packages/core/src/langgraph/observability/langsmith.ts` with shared or locally defined unknown-first JSON-safe contracts.
