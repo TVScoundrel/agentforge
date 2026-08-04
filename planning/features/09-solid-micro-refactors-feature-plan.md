@@ -3,7 +3,7 @@
 **Epic Range:** EP-09 through EP-09
 **Status:** In Progress
 **Last Updated:** 2026-08-04
-**Active Story:** `ST-09093` — Harden Thread and LangSmith Metadata Contracts.
+**Active Story:** `ST-09093` — Harden Thread and LangSmith Metadata Contracts (In Review).
 
 ---
 
@@ -149,6 +149,7 @@ Recent improvement snapshot:
 - `ST-09092` moved to In Progress on 2026-08-03 as the next deterministic EP-09 type-boundary slice.
 - `ST-09092` merged on 2026-08-03 as PR #168 after hardening core profiler and circuit-breaker generic wrapper contracts; `ST-09093` and `ST-09094` are now Ready.
 - `ST-09093` moved to In Progress on 2026-08-04 as the next deterministic EP-09 metadata-boundary slice.
+- `ST-09093` moved to In Review on 2026-08-04 as PR #169 after hardening thread and LangSmith metadata contracts; `ST-09094` remains Ready.
 
 ## Scope
 

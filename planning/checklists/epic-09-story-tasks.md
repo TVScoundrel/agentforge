@@ -3880,8 +3880,10 @@ Implementation notes:
   - `pnpm lint` -> passed with existing warning-only baseline and `0` errors.
   - `pnpm typecheck` -> passed for all 6 workspace packages.
   - `git diff --check` -> passed.
-- [ ] Commit completed checklist items and push updates
-- [ ] Mark the PR Ready only after all story tasks are complete
+- [x] Commit completed checklist items and push updates
+  - Implementation commit `d8fcd511` is pushed to `origin/refactor/st-09093-thread-langsmith-metadata-contracts`; draft PR #169 was opened.
+- [x] Mark the PR Ready only after all story tasks are complete
+  - PR #169 was marked ready for review after the validated body and review-state tracker synchronization.
 - [ ] Wait for merge; do not merge directly from local branch
 
 ---
