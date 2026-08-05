@@ -7,7 +7,7 @@
 
 import axios from 'axios';
 import type { IEmbeddingProvider, EmbeddingResult, BatchEmbeddingResult } from '../types.js';
-import { retryWithBackoff } from '../utils.js';
+import { retryWithBackoff, withProviderErrorMetadata } from '../utils.js';
 
 /**
  * Voyage AI embedding provider
@@ -60,7 +60,7 @@ export class VoyageEmbeddingProvider implements IEmbeddingProvider {
           }
         );
 
-        const embeddings = response.data.data.map((item: any) => item.embedding);
+        const embeddings = response.data.data.map((item: { embedding: number[] }) => item.embedding);
         const dimensions = embeddings[0]?.length || 0;
 
         return {
@@ -72,27 +72,23 @@ export class VoyageEmbeddingProvider implements IEmbeddingProvider {
             totalTokens: response.data.usage.total_tokens || 0,
           } : undefined,
         };
-      } catch (error: any) {
+      } catch (error: unknown) {
         if (axios.isAxiosError(error)) {
           const status = error.response?.status;
           const message = error.response?.data?.message || error.message;
-          let wrappedError: any;
+          let messageText: string;
 
           if (status === 401) {
-            wrappedError = new Error(`Voyage AI API authentication failed. Please check your VOYAGE_API_KEY. ${message}`);
+            messageText = `Voyage AI API authentication failed. Please check your VOYAGE_API_KEY. ${message}`;
           } else if (status === 429) {
-            wrappedError = new Error(`Voyage AI API rate limit exceeded. ${message}`);
+            messageText = `Voyage AI API rate limit exceeded. ${message}`;
           } else if (status === 400) {
-            wrappedError = new Error(`Voyage AI API request invalid: ${message}`);
+            messageText = `Voyage AI API request invalid: ${message}`;
           } else {
-            wrappedError = new Error(`Voyage AI API error (${status}): ${message}`);
+            messageText = `Voyage AI API error (${status}): ${message}`;
           }
 
-          // Preserve error metadata for retry logic
-          if (error.code) wrappedError.code = error.code;
-          if (error.response) wrappedError.response = error.response;
-
-          throw wrappedError;
+          throw withProviderErrorMetadata(error, messageText);
         }
 
         throw error;
@@ -100,4 +96,3 @@ export class VoyageEmbeddingProvider implements IEmbeddingProvider {
     });
   }
 }
-

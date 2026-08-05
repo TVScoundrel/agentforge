@@ -8,7 +8,7 @@
 
 import axios from 'axios';
 import type { IEmbeddingProvider, EmbeddingResult, BatchEmbeddingResult } from '../types.js';
-import { getOpenAIApiKey, retryWithBackoff, validateText, validateBatch } from '../utils.js';
+import { getOpenAIApiKey, retryWithBackoff, validateText, validateBatch, withProviderErrorMetadata } from '../utils.js';
 
 /**
  * OpenAI API response structure for embeddings
@@ -95,31 +95,22 @@ export class OpenAIEmbeddingProvider implements IEmbeddingProvider {
             totalTokens: data.usage.total_tokens,
           },
         };
-      } catch (error: any) {
+      } catch (error: unknown) {
         // Create error with helpful message while preserving metadata for retry logic
-        let wrappedError: any;
+        let message: string;
+        const response = axios.isAxiosError(error) ? error.response : undefined;
 
-        if (error.response?.status === 401) {
-          wrappedError = new Error(
-            'Invalid OpenAI API key. Get your key at https://platform.openai.com/api-keys'
-          );
-        } else if (error.response?.status === 429) {
-          wrappedError = new Error(
-            'OpenAI API rate limit exceeded. Please try again later or upgrade your plan.'
-          );
-        } else if (error.response?.status === 400) {
-          wrappedError = new Error(
-            `OpenAI API error: ${error.response.data?.error?.message || 'Bad request'}`
-          );
+        if (response?.status === 401) {
+          message = 'Invalid OpenAI API key. Get your key at https://platform.openai.com/api-keys';
+        } else if (response?.status === 429) {
+          message = 'OpenAI API rate limit exceeded. Please try again later or upgrade your plan.';
+        } else if (response?.status === 400) {
+          message = `OpenAI API error: ${response.data?.error?.message || 'Bad request'}`;
         } else {
-          wrappedError = new Error(`OpenAI embedding generation failed: ${error.message}`);
+          message = `OpenAI embedding generation failed: ${error instanceof Error ? error.message : 'Unknown error'}`;
         }
 
-        // Preserve error metadata for retry logic
-        if (error.code) wrappedError.code = error.code;
-        if (error.response) wrappedError.response = error.response;
-
-        throw wrappedError;
+        throw withProviderErrorMetadata(error, message);
       }
     });
   }
@@ -174,33 +165,23 @@ export class OpenAIEmbeddingProvider implements IEmbeddingProvider {
             totalTokens: data.usage.total_tokens,
           },
         };
-      } catch (error: any) {
+      } catch (error: unknown) {
         // Create error with helpful message while preserving metadata for retry logic
-        let wrappedError: any;
+        let message: string;
+        const response = axios.isAxiosError(error) ? error.response : undefined;
 
-        if (error.response?.status === 401) {
-          wrappedError = new Error(
-            'Invalid OpenAI API key. Get your key at https://platform.openai.com/api-keys'
-          );
-        } else if (error.response?.status === 429) {
-          wrappedError = new Error(
-            'OpenAI API rate limit exceeded. Please try again later or upgrade your plan.'
-          );
-        } else if (error.response?.status === 400) {
-          wrappedError = new Error(
-            `OpenAI API error: ${error.response.data?.error?.message || 'Bad request'}`
-          );
+        if (response?.status === 401) {
+          message = 'Invalid OpenAI API key. Get your key at https://platform.openai.com/api-keys';
+        } else if (response?.status === 429) {
+          message = 'OpenAI API rate limit exceeded. Please try again later or upgrade your plan.';
+        } else if (response?.status === 400) {
+          message = `OpenAI API error: ${response.data?.error?.message || 'Bad request'}`;
         } else {
-          wrappedError = new Error(`OpenAI batch embedding generation failed: ${error.message}`);
+          message = `OpenAI batch embedding generation failed: ${error instanceof Error ? error.message : 'Unknown error'}`;
         }
 
-        // Preserve error metadata for retry logic
-        if (error.code) wrappedError.code = error.code;
-        if (error.response) wrappedError.response = error.response;
-
-        throw wrappedError;
+        throw withProviderErrorMetadata(error, message);
       }
     });
   }
 }
-

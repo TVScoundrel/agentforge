@@ -7,7 +7,7 @@
 
 import axios from 'axios';
 import type { IEmbeddingProvider, EmbeddingResult, BatchEmbeddingResult } from '../types.js';
-import { retryWithBackoff } from '../utils.js';
+import { retryWithBackoff, withProviderErrorMetadata } from '../utils.js';
 
 /**
  * Ollama embedding provider (local, privacy-focused)
@@ -54,27 +54,23 @@ export class OllamaEmbeddingProvider implements IEmbeddingProvider {
           model: modelToUse,
           dimensions: embedding.length,
         };
-      } catch (error: any) {
+      } catch (error: unknown) {
         if (axios.isAxiosError(error)) {
           const status = error.response?.status;
           const message = error.response?.data?.error || error.message;
-          let wrappedError: any;
+          let messageText: string;
 
           if (error.code === 'ECONNREFUSED') {
-            wrappedError = new Error(`Cannot connect to Ollama at ${this.baseUrl}. Make sure Ollama is running locally.`);
+            messageText = `Cannot connect to Ollama at ${this.baseUrl}. Make sure Ollama is running locally.`;
           } else if (status === 404) {
-            wrappedError = new Error(`Ollama model not found. Pull it with: ollama pull <model-name>`);
+            messageText = 'Ollama model not found. Pull it with: ollama pull <model-name>';
           } else if (status === 400) {
-            wrappedError = new Error(`Ollama API request invalid: ${message}`);
+            messageText = `Ollama API request invalid: ${message}`;
           } else {
-            wrappedError = new Error(`Ollama API error (${status}): ${message}`);
+            messageText = `Ollama API error (${status}): ${message}`;
           }
 
-          // Preserve error metadata for retry logic
-          if (error.code) wrappedError.code = error.code;
-          if (error.response) wrappedError.response = error.response;
-
-          throw wrappedError;
+          throw withProviderErrorMetadata(error, messageText);
         }
 
         throw error;
@@ -102,4 +98,3 @@ export class OllamaEmbeddingProvider implements IEmbeddingProvider {
     };
   }
 }
-

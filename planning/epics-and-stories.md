@@ -2465,11 +2465,11 @@
 **Status:** In Progress
 
 **Acceptance criteria:**
-- [ ] Replace the remaining `Record<string, any>` and `any` payload seams in the Neo4j property types, Cypher sanitizer, node helpers, and embedding error paths with compatible unknown-first or JSON-safe contracts.
-- [ ] Preserve property serialization, parameter binding, identifier sanitization, embedding-provider error handling, and public Neo4j tool result shapes.
-- [ ] Add focused coverage for scalar, array, nested-object, null-prototype, and unsupported property values plus sanitized query parameters and provider failures.
-- [ ] `pnpm --filter @agentforge/tools test --run`, `pnpm --filter @agentforge/tools typecheck`, and `pnpm lint:explicit-any:baseline` pass with no baseline regression.
-- [ ] Add or update story documentation at `docs/st09094-neo4j-property-query-contracts.md`
+- [x] Replace the remaining `Record<string, any>` and `any` payload seams in the Neo4j property types, Cypher sanitizer, node helpers, and embedding error paths with compatible unknown-first or JSON-safe contracts.
+- [x] Preserve property serialization, parameter binding, identifier sanitization, embedding-provider error handling, and public Neo4j tool result shapes.
+- [x] Add focused coverage for scalar, array, nested-object, null-prototype, and unsupported property values plus sanitized query parameters and provider failures.
+- [x] `pnpm --filter @agentforge/tools test --run`, `pnpm --filter @agentforge/tools typecheck`, and `pnpm lint:explicit-any:baseline` pass with no baseline regression.
+- [x] Add or update story documentation at `docs/st09094-neo4j-property-query-contracts.md`
 
 ---
 

@@ -7,6 +7,7 @@
 
 import { toolBuilder, ToolCategory } from '@agentforge/core';
 import { neo4jCreateNodeWithEmbeddingSchema } from '../types.js';
+import type { Neo4jProperties } from '../types.js';
 import { neo4jPool } from '../connection.js';
 import { formatResults } from '../utils/result-formatter.js';
 import { embeddingManager } from '../embeddings/embedding-manager.js';
@@ -68,7 +69,7 @@ export function createNeo4jCreateNodeWithEmbeddingTool() {
 
         try {
           // Build properties object with embedding
-          const allProperties: Record<string, any> = {
+          const allProperties: Neo4jProperties = {
             ...input.properties,
           };
           allProperties[input.embeddingProperty || 'embedding'] = embeddingResult.embedding;
@@ -130,4 +131,3 @@ export function createNeo4jCreateNodeWithEmbeddingTool() {
     })
     .build();
 }
-

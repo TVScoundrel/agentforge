@@ -7,7 +7,7 @@
 
 import axios from 'axios';
 import type { IEmbeddingProvider, EmbeddingResult, BatchEmbeddingResult } from '../types.js';
-import { retryWithBackoff } from '../utils.js';
+import { retryWithBackoff, withProviderErrorMetadata } from '../utils.js';
 
 /**
  * HuggingFace embedding provider
@@ -59,29 +59,25 @@ export class HuggingFaceEmbeddingProvider implements IEmbeddingProvider {
           model: modelToUse,
           dimensions: embedding.length,
         };
-      } catch (error: any) {
+      } catch (error: unknown) {
         if (axios.isAxiosError(error)) {
           const status = error.response?.status;
           const message = error.response?.data?.error || error.message;
-          let wrappedError: any;
+          let messageText: string;
 
           if (status === 401) {
-            wrappedError = new Error(`HuggingFace API authentication failed. Please check your HUGGINGFACE_API_KEY. ${message}`);
+            messageText = `HuggingFace API authentication failed. Please check your HUGGINGFACE_API_KEY. ${message}`;
           } else if (status === 429) {
-            wrappedError = new Error(`HuggingFace API rate limit exceeded. ${message}`);
+            messageText = `HuggingFace API rate limit exceeded. ${message}`;
           } else if (status === 400) {
-            wrappedError = new Error(`HuggingFace API request invalid: ${message}`);
+            messageText = `HuggingFace API request invalid: ${message}`;
           } else if (status === 503) {
-            wrappedError = new Error(`HuggingFace model is loading. Please retry in a moment. ${message}`);
+            messageText = `HuggingFace model is loading. Please retry in a moment. ${message}`;
           } else {
-            wrappedError = new Error(`HuggingFace API error (${status}): ${message}`);
+            messageText = `HuggingFace API error (${status}): ${message}`;
           }
 
-          // Preserve error metadata for retry logic
-          if (error.code) wrappedError.code = error.code;
-          if (error.response) wrappedError.response = error.response;
-
-          throw wrappedError;
+          throw withProviderErrorMetadata(error, messageText);
         }
 
         throw error;
@@ -118,29 +114,25 @@ export class HuggingFaceEmbeddingProvider implements IEmbeddingProvider {
           model: modelToUse,
           dimensions,
         };
-      } catch (error: any) {
+      } catch (error: unknown) {
         if (axios.isAxiosError(error)) {
           const status = error.response?.status;
           const message = error.response?.data?.error || error.message;
-          let wrappedError: any;
+          let messageText: string;
 
           if (status === 401) {
-            wrappedError = new Error(`HuggingFace API authentication failed. Please check your HUGGINGFACE_API_KEY. ${message}`);
+            messageText = `HuggingFace API authentication failed. Please check your HUGGINGFACE_API_KEY. ${message}`;
           } else if (status === 429) {
-            wrappedError = new Error(`HuggingFace API rate limit exceeded. ${message}`);
+            messageText = `HuggingFace API rate limit exceeded. ${message}`;
           } else if (status === 400) {
-            wrappedError = new Error(`HuggingFace API request invalid: ${message}`);
+            messageText = `HuggingFace API request invalid: ${message}`;
           } else if (status === 503) {
-            wrappedError = new Error(`HuggingFace model is loading. Please retry in a moment. ${message}`);
+            messageText = `HuggingFace model is loading. Please retry in a moment. ${message}`;
           } else {
-            wrappedError = new Error(`HuggingFace API error (${status}): ${message}`);
+            messageText = `HuggingFace API error (${status}): ${message}`;
           }
 
-          // Preserve error metadata for retry logic
-          if (error.code) wrappedError.code = error.code;
-          if (error.response) wrappedError.response = error.response;
-
-          throw wrappedError;
+          throw withProviderErrorMetadata(error, messageText);
         }
 
         throw error;
@@ -148,4 +140,3 @@ export class HuggingFaceEmbeddingProvider implements IEmbeddingProvider {
     });
   }
 }
-

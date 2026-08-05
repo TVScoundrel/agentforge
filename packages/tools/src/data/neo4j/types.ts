@@ -5,6 +5,25 @@
  */
 
 import { z } from 'zod';
+import type { JsonObject, JsonValue } from '@agentforge/core';
+
+/** JSON-compatible values accepted by Neo4j payload boundaries. */
+export type Neo4jPropertyValue = JsonValue;
+export type Neo4jProperties = JsonObject;
+
+const neo4jJsonValueSchema: z.ZodType<Neo4jPropertyValue> = z.lazy(() => z.union([
+  z.string(),
+  z.number().finite(),
+  z.boolean(),
+  z.null(),
+  z.array(neo4jJsonValueSchema),
+  z.record(z.string(), neo4jJsonValueSchema),
+])).describe('JSON-safe Neo4j property value');
+
+const neo4jPropertiesSchema: z.ZodType<Neo4jProperties> = z.record(
+  z.string(),
+  neo4jJsonValueSchema
+);
 
 /**
  * Neo4j connection configuration
@@ -23,7 +42,7 @@ export interface Neo4jConfig {
  */
 export const neo4jQuerySchema = z.object({
   cypher: z.string().describe('Cypher query to execute'),
-  parameters: z.record(z.any()).optional().describe('Query parameters for parameterized queries'),
+  parameters: neo4jPropertiesSchema.optional().describe('Query parameters for parameterized queries'),
   database: z.string().optional().describe('Database name (defaults to configured database)'),
 });
 
@@ -39,7 +58,7 @@ export const neo4jGetSchemaSchema = z.object({
  */
 export const neo4jFindNodesSchema = z.object({
   label: z.string().describe('Node label to search for'),
-  properties: z.record(z.any()).optional().describe('Properties to match (key-value pairs)'),
+  properties: neo4jPropertiesSchema.optional().describe('Properties to match (key-value pairs)'),
   limit: z.number().default(100).describe('Maximum number of nodes to return'),
   database: z.string().optional().describe('Database name (defaults to configured database)'),
 });
@@ -85,7 +104,7 @@ export const neo4jVectorSearchWithEmbeddingSchema = z.object({
  */
 export const neo4jCreateNodeWithEmbeddingSchema = z.object({
   label: z.string().describe('Node label'),
-  properties: z.record(z.string(), z.any().describe('Property value')).describe('Node properties (key-value pairs)'),
+  properties: neo4jPropertiesSchema.describe('Node properties (key-value pairs)'),
   textProperty: z.string().describe('Name of the property containing text to embed'),
   embeddingProperty: z.string().default('embedding').describe('Name of the property to store the embedding vector'),
   model: z.string().optional().describe('Embedding model to use (defaults to configured model)'),
@@ -98,7 +117,7 @@ export const neo4jCreateNodeWithEmbeddingSchema = z.object({
 export interface Neo4jNode {
   identity: string | number;
   labels: string[];
-  properties: Record<string, any>;
+  properties: Neo4jProperties;
 }
 
 /**
@@ -109,7 +128,7 @@ export interface Neo4jRelationship {
   type: string;
   start: string | number;
   end: string | number;
-  properties: Record<string, any>;
+  properties: Neo4jProperties;
 }
 
 /**
@@ -156,4 +175,3 @@ export interface Neo4jToolsConfig {
   maxConnectionPoolSize?: number;
   connectionTimeout?: number;
 }
-

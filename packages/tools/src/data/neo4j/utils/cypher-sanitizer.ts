@@ -4,6 +4,8 @@
  * Provides safe escaping and validation for Cypher identifiers to prevent injection attacks.
  */
 
+import type { Neo4jProperties, Neo4jPropertyValue } from '../types.js';
+
 /**
  * Validate and escape a Cypher identifier (label, property key, relationship type)
  * 
@@ -102,9 +104,9 @@ export function validateDirection(direction: string): 'OUTGOING' | 'INCOMING' | 
  * @returns Object with WHERE clause and parameters
  */
 export function buildPropertyFilter(
-  properties: Record<string, any>,
+  properties: Neo4jProperties,
   nodeVar: string = 'n'
-): { whereClause: string; parameters: Record<string, any> } {
+): { whereClause: string; parameters: Record<string, Neo4jPropertyValue> } {
   const keys = Object.keys(properties);
   
   if (keys.length === 0) {
@@ -121,7 +123,7 @@ export function buildPropertyFilter(
     return `${safeNodeVar}.${safeKey} = $${paramName}`;
   });
 
-  const parameters: Record<string, any> = {};
+  const parameters: Record<string, Neo4jPropertyValue> = {};
   keys.forEach((key, index) => {
     parameters[`prop_${index}`] = properties[key];
   });
@@ -131,4 +133,3 @@ export function buildPropertyFilter(
     parameters,
   };
 }
-

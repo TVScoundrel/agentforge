@@ -6,6 +6,7 @@
 
 import { toolBuilder, ToolCategory } from '@agentforge/core';
 import { neo4jFindNodesSchema } from '../types.js';
+import type { Neo4jPropertyValue } from '../types.js';
 import { neo4jPool } from '../connection.js';
 import { formatResults } from '../utils/result-formatter.js';
 import { validateLabel, buildPropertyFilter } from '../utils/cypher-sanitizer.js';
@@ -41,7 +42,7 @@ export function createNeo4jFindNodesTool() {
         try {
           // Build the Cypher query with safe identifiers
           let cypher = `MATCH (n:${safeLabel})`;
-          let parameters: Record<string, any> = {};
+          let parameters: Record<string, Neo4jPropertyValue> = {};
 
           // Add property filters if provided (using safe parameter binding)
           if (input.properties && Object.keys(input.properties).length > 0) {
@@ -52,7 +53,7 @@ export function createNeo4jFindNodesTool() {
 
           // Use parameter for limit to be extra safe
           cypher += ` RETURN n LIMIT $limit`;
-          parameters.limit = input.limit;
+          parameters.limit = input.limit ?? 100;
 
           const result = await session.run(cypher, parameters);
           const formattedResults = formatResults(result.records);
@@ -83,4 +84,3 @@ export function createNeo4jFindNodesTool() {
     })
     .build();
 }
-
