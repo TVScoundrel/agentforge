@@ -2,8 +2,8 @@
 
 **Epic Range:** EP-09 through EP-09
 **Status:** In Progress
-**Last Updated:** 2026-08-04
-**Active Story:** No EP-09 story active; `ST-09094` is next in Ready.
+**Last Updated:** 2026-08-05
+**Active Story:** `ST-09094` — Harden Neo4j Property and Query Payload Contracts (In Progress)
 
 ---
 
@@ -151,6 +151,7 @@ Recent improvement snapshot:
 - `ST-09093` moved to In Progress on 2026-08-04 as the next deterministic EP-09 metadata-boundary slice.
 - `ST-09093` moved to In Review on 2026-08-04 as PR #169 after hardening thread and LangSmith metadata contracts; `ST-09094` remains Ready.
 - `ST-09093` merged on 2026-08-04 as PR #169 after hardening thread and LangSmith metadata contracts; `ST-09094` remains the next Ready story.
+- `ST-09094` moved to In Progress on 2026-08-05 as the next deterministic EP-09 Neo4j property/query payload-boundary story.
 
 ## Scope
 

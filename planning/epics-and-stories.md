@@ -2462,7 +2462,7 @@
 **Priority:** P2 (Medium)
 **Estimate:** 3 hours
 **Dependencies:** None
-**Status:** Backlog
+**Status:** In Progress
 
 **Acceptance criteria:**
 - [ ] Replace the remaining `Record<string, any>` and `any` payload seams in the Neo4j property types, Cypher sanitizer, node helpers, and embedding error paths with compatible unknown-first or JSON-safe contracts.
