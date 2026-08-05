@@ -5,8 +5,8 @@
 ## Queue Status Summary
 
 - **Ready:** 1 story
-- **In Progress:** 1 story
-- **In Review:** 0 stories
+- **In Progress:** 0 stories
+- **In Review:** 1 story
 - **Blocked:** 0 stories
 - **Backlog:** 0 stories
 
@@ -20,13 +20,13 @@
 
 ## In Progress
 
-- `ST-09094` — Harden Neo4j Property and Query Payload Contracts
+None currently.
 
 ---
 
 ## In Review
 
-None currently.
+- `ST-09094` — Harden Neo4j Property and Query Payload Contracts (PR #170)
 
 ---
 
@@ -67,6 +67,7 @@ None currently.
 - ST-09093 moved to In Review on 2026-08-04 with PR #169 after implementation, documentation, focused and full validation, lint, typecheck, baseline, and tracker synchronization; `ST-09094` and `ST-11009` remain in Ready
 - ST-09093 merged on 2026-08-04 as PR #169 / commit `f54a2f5c`; removed from the active queue, archived as done, and `ST-09094` followed by `ST-11009` remains the dependency-ready Ready lane
 - ST-09094 moved to In Progress on 2026-08-05 as the next deterministic EP-09 Neo4j payload-boundary story; `ST-11009` remains in Ready
+- ST-09094 moved to In Review on 2026-08-05 with PR #170 after implementation, focused and full validation, lint, typecheck, build, documentation, and explicit-any baseline verification; `ST-11009` remains in Ready
 
 - Complete: ST-01001 - foundation established (merged 2026-02-17)
 - Complete: ST-01002 - connection manager implemented (merged 2026-02-17)

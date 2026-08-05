@@ -3902,6 +3902,6 @@ Implementation notes:
 - [x] Add or update story documentation at `docs/st09094-neo4j-property-query-contracts.md`
 - [x] Run tools tests, typecheck, lint, and the explicit-any baseline gate — tools 93 passed/9 skipped; typecheck, workspace lint, and baseline passed
 - [x] Run the full test suite and workspace lint before finalizing the PR — 231 passed/9 skipped files; 2564 passed/110 skipped tests; workspace lint passed
-- [ ] Commit completed checklist items and push updates
+- [x] Commit completed checklist items and push updates — implementation commit `24dce727` pushed to PR #170
 - [ ] Mark the PR Ready only after all story tasks are complete
 - [ ] Wait for merge; do not merge directly from local branch
