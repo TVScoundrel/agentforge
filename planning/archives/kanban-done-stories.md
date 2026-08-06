@@ -8,6 +8,13 @@
 
 ## Completed Stories
 
+### ST-09094: Harden Neo4j Property and Query Payload Contracts
+- **Merged:** 2026-08-06
+- **PR:** https://github.com/TVScoundrel/agentforge/pull/170 (commit 2195e7e4)
+- **Epic:** EP-09 (SOLID Micro-Refactors and Type Boundary Hardening)
+- **Estimate:** 3 hours
+- **Outcome:** Replaced Neo4j property, query-parameter, node-helper, and embedding-provider `any` seams with JSON-safe and unknown-first contracts while preserving serialization, binding, sanitization, result shapes, and retry metadata. Added focused runtime and compile-time coverage plus story documentation, and addressed the review follow-up by typing null-prototype fixtures as `Neo4jProperties`. Tools tests passed with 93 passed/9 skipped, full workspace validation passed with 2564 passed/110 skipped, lint and typecheck passed, and the explicit-`any` baseline passed.
+
 ### ST-09093: Harden Thread and LangSmith Metadata Contracts
 - **Merged:** 2026-08-04
 - **PR:** https://github.com/TVScoundrel/agentforge/pull/169 (commit f54a2f5c)

@@ -2462,7 +2462,7 @@
 **Priority:** P2 (Medium)
 **Estimate:** 3 hours
 **Dependencies:** None
-**Status:** In Review (PR #170)
+**Status:** Merged (PR #170, 2026-08-06)
 
 **Acceptance criteria:**
 - [x] Replace the remaining `Record<string, any>` and `any` payload seams in the Neo4j property types, Cypher sanitizer, node helpers, and embedding error paths with compatible unknown-first or JSON-safe contracts.
@@ -2721,7 +2721,7 @@
 **Priority:** P2 (Medium)
 **Estimate:** 2 hours
 **Dependencies:** ST-11003 and ST-11007 (merged)
-**Status:** Backlog
+**Status:** Ready
 
 **Acceptance criteria:**
 - [ ] Update the skill-powered-agent tutorial and example setup to use a shared filesystem policy or `createModelSafeToolPreset` for model-facing file and directory tools instead of unrestricted factories.

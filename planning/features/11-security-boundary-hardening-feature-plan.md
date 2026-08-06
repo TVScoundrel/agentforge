@@ -2,7 +2,7 @@
 
 **Epic Range:** EP-11 through EP-11
 **Status:** In Progress
-**Last Updated:** 2026-08-02
+**Last Updated:** 2026-08-06
 **Active Story:** No EP-11 story active; ST-11009 is Ready as a security-guidance follow-on.
 
 ---
