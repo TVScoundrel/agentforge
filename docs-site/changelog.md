@@ -5,6 +5,29 @@ All notable changes to AgentForge will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.16.86] - 2026-08-06
+
+### Changed
+
+#### @agentforge/tools - Neo4j Property and Query Contracts
+- Replaced broad Neo4j property, query-parameter, node-helper, and embedding-provider error seams with JSON-safe and unknown-first contracts.
+- Preserved property serialization, parameter binding, identifier sanitization, public result shapes, and provider retry metadata.
+
+### Added
+
+#### @agentforge/tools - Neo4j Contract Regression Coverage
+- Added focused runtime and compile-time coverage for supported and unsupported property values, null-prototype maps, sanitized parameters, and provider failures.
+- Added story documentation for the contract boundary and compatibility behavior.
+
+### Published
+- All packages published to npm registry at version 0.16.86:
+  - @agentforge/core@0.16.86
+  - @agentforge/skills@0.16.86
+  - @agentforge/patterns@0.16.86
+  - @agentforge/tools@0.16.86
+  - @agentforge/testing@0.16.86
+  - @agentforge/cli@0.16.86
+
 ## [0.16.85] - 2026-08-04
 
 ### Changed
