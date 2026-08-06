@@ -6,6 +6,7 @@ import {
   neo4jFindNodesSchema,
   neo4jQuerySchema,
 } from '../../../src/data/neo4j/types.js';
+import type { Neo4jProperties } from '../../../src/data/neo4j/types.js';
 import { buildPropertyFilter } from '../../../src/data/neo4j/utils/cypher-sanitizer.js';
 import {
   isRetryableError,
@@ -14,7 +15,7 @@ import {
 
 describe('Neo4j payload contracts', () => {
   it('accepts scalar, array, nested-object, and null-prototype payload values', () => {
-    const properties = Object.create(null) as Record<string, unknown>;
+    const properties = Object.create(null) as Neo4jProperties;
     properties.name = 'Ada';
     properties.tags = ['graph', 'json'];
     properties.profile = { active: true, score: 4 };
@@ -51,7 +52,7 @@ describe('Neo4j payload contracts', () => {
   });
 
   it('binds supported values while sanitizing property identifiers', () => {
-    const properties = Object.create(null) as Record<string, unknown>;
+    const properties = Object.create(null) as Neo4jProperties;
     properties.name = 'Ada';
     properties['profile.active'] = true;
     properties.tags = ['admin', 'reviewer'];
