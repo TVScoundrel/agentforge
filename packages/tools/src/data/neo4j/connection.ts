@@ -6,13 +6,12 @@
 
 import neo4j, { Driver, Session, auth } from 'neo4j-driver';
 import { createLogger } from '@agentforge/core';
-import type { Neo4jConfig } from './types.js';
+import type { Neo4jConfig, Neo4jPropertyValue } from './types.js';
 
 const logger = createLogger('agentforge:tools:neo4j:pool');
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any -- Keep legacy query helper compatibility for untyped callers.
-type Neo4jQueryResult = any;
-type Neo4jQueryParameters = Record<string, unknown>;
+type Neo4jQueryResult = unknown;
+type Neo4jQueryParameters = Record<string, Neo4jPropertyValue>;
 
 /**
  * Neo4j connection pool singleton

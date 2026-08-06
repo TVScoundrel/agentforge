@@ -3894,14 +3894,14 @@ Implementation notes:
 **Branch:** `refactor/st-09094-neo4j-property-query-contracts`
 
 ### Checklist
-- [ ] Create branch `refactor/st-09094-neo4j-property-query-contracts` from `main`
-- [ ] Replace Neo4j property, Cypher parameter, node-helper, and embedding error `any` seams with compatible contracts
-- [ ] Preserve property serialization, parameter binding, sanitization, public result shapes, and provider error behavior
-- [ ] Add focused coverage for supported property values, unsupported values, null-prototype maps, sanitized parameters, and provider failures
-- [ ] Record explicit-`any` warning deltas in story documentation
-- [ ] Add or update story documentation at `docs/st09094-neo4j-property-query-contracts.md`
-- [ ] Run tools tests, typecheck, lint, and the explicit-any baseline gate
-- [ ] Run the full test suite and workspace lint before finalizing the PR
-- [ ] Commit completed checklist items and push updates
+- [x] Create branch `refactor/st-09094-neo4j-property-query-contracts` from `main` — branch created and pushed; draft PR #170 opened
+- [x] Replace Neo4j property, Cypher parameter, node-helper, and embedding error `any` seams with compatible contracts
+- [x] Preserve property serialization, parameter binding, sanitization, public result shapes, and provider error behavior
+- [x] Add focused coverage for supported property values, unsupported values, null-prototype maps, sanitized parameters, and provider failures
+- [x] Record explicit-`any` warning deltas in story documentation — measured source scan improved to 45/289 warnings (`tools 26/67`)
+- [x] Add or update story documentation at `docs/st09094-neo4j-property-query-contracts.md`
+- [x] Run tools tests, typecheck, lint, and the explicit-any baseline gate — tools 93 passed/9 skipped; typecheck, workspace lint, and baseline passed
+- [x] Run the full test suite and workspace lint before finalizing the PR — 231 passed/9 skipped files; 2564 passed/110 skipped tests; workspace lint passed
+- [x] Commit completed checklist items and push updates — implementation commit `24dce727` pushed to PR #170
 - [ ] Mark the PR Ready only after all story tasks are complete
 - [ ] Wait for merge; do not merge directly from local branch

@@ -7,7 +7,7 @@
 
 import axios from 'axios';
 import type { IEmbeddingProvider, EmbeddingResult, BatchEmbeddingResult } from '../types.js';
-import { retryWithBackoff } from '../utils.js';
+import { retryWithBackoff, withProviderErrorMetadata } from '../utils.js';
 
 /**
  * Cohere embedding provider
@@ -74,27 +74,23 @@ export class CohereEmbeddingProvider implements IEmbeddingProvider {
             totalTokens: response.data.meta.billed_units.input_tokens || 0,
           } : undefined,
         };
-      } catch (error: any) {
+      } catch (error: unknown) {
         if (axios.isAxiosError(error)) {
           const status = error.response?.status;
-          const message = error.response?.data?.message || error.message;
-          let wrappedError: any;
+          const providerMessage = error.response?.data?.message || error.message;
+          let message: string;
 
           if (status === 401) {
-            wrappedError = new Error(`Cohere API authentication failed. Please check your COHERE_API_KEY. ${message}`);
+            message = `Cohere API authentication failed. Please check your COHERE_API_KEY. ${providerMessage}`;
           } else if (status === 429) {
-            wrappedError = new Error(`Cohere API rate limit exceeded. ${message}`);
+            message = `Cohere API rate limit exceeded. ${providerMessage}`;
           } else if (status === 400) {
-            wrappedError = new Error(`Cohere API request invalid: ${message}`);
+            message = `Cohere API request invalid: ${providerMessage}`;
           } else {
-            wrappedError = new Error(`Cohere API error (${status}): ${message}`);
+            message = `Cohere API error (${status}): ${providerMessage}`;
           }
 
-          // Preserve error metadata for retry logic
-          if (error.code) wrappedError.code = error.code;
-          if (error.response) wrappedError.response = error.response;
-
-          throw wrappedError;
+          throw withProviderErrorMetadata(error, message);
         }
 
         throw error;
@@ -102,4 +98,3 @@ export class CohereEmbeddingProvider implements IEmbeddingProvider {
     });
   }
 }
-

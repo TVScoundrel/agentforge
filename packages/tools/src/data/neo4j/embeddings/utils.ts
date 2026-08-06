@@ -6,6 +6,20 @@
 
 import type { EmbeddingRetryConfig } from './types.js';
 
+export type EmbeddingProviderError = Error & {
+  code?: string;
+  response?: unknown;
+};
+
+export function withProviderErrorMetadata(error: unknown, message: string): EmbeddingProviderError {
+  const wrappedError = new Error(message) as EmbeddingProviderError;
+  if (!isRecord(error)) return wrappedError;
+
+  if (typeof error.code === 'string') wrappedError.code = error.code;
+  if (error.response !== undefined) wrappedError.response = error.response;
+  return wrappedError;
+}
+
 /**
  * Default retry configuration for embedding API calls
  */
@@ -19,24 +33,35 @@ export const DEFAULT_RETRY_CONFIG: EmbeddingRetryConfig = {
 /**
  * Check if error is retryable (network errors, timeouts, 5xx errors, rate limits)
  */
-export function isRetryableError(error: any): boolean {
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return typeof value === 'object' && value !== null;
+}
+
+export function isRetryableError(error: unknown): boolean {
+  if (!isRecord(error)) return false;
+
+  const response = isRecord(error.response) ? error.response : undefined;
+  const status = typeof response?.status === 'number' ? response.status : undefined;
+  const code = typeof error.code === 'string' ? error.code : undefined;
+  const message = typeof error.message === 'string' ? error.message : undefined;
+
   // Network errors
-  if (error.code === 'ECONNRESET' || error.code === 'ETIMEDOUT' || error.code === 'ENOTFOUND') {
+  if (code === 'ECONNRESET' || code === 'ETIMEDOUT' || code === 'ENOTFOUND') {
     return true;
   }
 
   // Timeout errors
-  if (error.code === 'ECONNABORTED' || error.message?.includes('timeout')) {
+  if (code === 'ECONNABORTED' || message?.includes('timeout')) {
     return true;
   }
 
   // 5xx server errors (but not 4xx client errors)
-  if (error.response?.status >= 500 && error.response?.status < 600) {
+  if (status !== undefined && status >= 500 && status < 600) {
     return true;
   }
 
   // Rate limiting (429) - retryable with backoff
-  if (error.response?.status === 429) {
+  if (status === 429) {
     return true;
   }
 
@@ -57,13 +82,13 @@ export async function retryWithBackoff<T>(
   fn: () => Promise<T>,
   config: EmbeddingRetryConfig = DEFAULT_RETRY_CONFIG
 ): Promise<T> {
-  let lastError: any;
+  let lastError: unknown;
   let delay = config.initialDelay;
 
   for (let attempt = 0; attempt <= config.maxRetries; attempt++) {
     try {
       return await fn();
-    } catch (error: any) {
+    } catch (error: unknown) {
       lastError = error;
 
       // Don't retry if error is not retryable
@@ -172,4 +197,3 @@ export function validateBatch(texts: string[]): void {
     }
   });
 }
-
