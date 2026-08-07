@@ -2479,7 +2479,7 @@
 **Priority:** P2 (Medium)
 **Estimate:** 3 hours
 **Dependencies:** None
-**Status:** Ready
+**Status:** In Progress
 
 **Acceptance criteria:**
 - [ ] Reduce `packages/core/src/langgraph/observability/metrics.ts` to a stable public facade by extracting focused metric contracts, collector/timer runtime, and node instrumentation modules that stay below the planning cutoff.

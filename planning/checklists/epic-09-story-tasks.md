@@ -3913,17 +3913,23 @@ Implementation notes:
 **Branch:** `refactor/st-09095-metrics-collection-instrumentation`
 
 ### Checklist
-- [ ] Create branch `refactor/st-09095-metrics-collection-instrumentation` from `main`
+- [x] Create branch `refactor/st-09095-metrics-collection-instrumentation` from `main`
+  - Created from clean local `main` at commit `546727ed`.
 - [ ] Create draft PR with ST-09095 in the title
-- [ ] Define test strategy before implementation: identify collector/timer and node-instrumentation characterization coverage and the first failing test if a practical behavioral seam is found
-- [ ] Write or update the failing automated test before production changes when practical; if this remains behavior-preserving modularization, record why characterization-first coverage is safer
-- [ ] Extract metric contracts, collector/timer runtime, and node instrumentation behind the stable `metrics.ts` facade
-- [ ] Preserve public exports and counter, gauge, histogram, labels, prefixes, timers, clear, duration, invocation, and error behavior
-- [ ] Keep `packages/core/tests/langgraph/observability/metrics.test.ts` as a small discoverable entrypoint and split collector/timer, node-instrumentation, and shared fixtures into non-discoverable modules under `packages/core/tests/langgraph/observability/metrics/`
-- [ ] Add/update production code until focused tests pass, keeping test evidence in checklist notes and PR body
-- [ ] Assess residual test impact; add/update additional automated tests when needed, or document why no further tests are required
-- [ ] Add or update story documentation at `docs/st09095-metrics-collection-instrumentation-modularization.md` (or document why not required)
-- [ ] Assess CI/validation impact and update automation if required, or record why no CI change is needed
+- [x] Define test strategy before implementation: identify collector/timer and node-instrumentation characterization coverage and the first failing test if a practical behavioral seam is found
+  - Chose characterization-first coverage because the story changes module boundaries without defining new behavior.
+- [x] Write or update the failing automated test before production changes when practical; if this remains behavior-preserving modularization, record why characterization-first coverage is safer
+  - Split and expanded the characterization suite first; 9 tests passed against the unchanged implementation, avoiding a fabricated failing requirement.
+- [x] Extract metric contracts, collector/timer runtime, and node instrumentation behind the stable `metrics.ts` facade
+- [x] Preserve public exports and counter, gauge, histogram, labels, prefixes, timers, clear, duration, invocation, and error behavior
+- [x] Keep `packages/core/tests/langgraph/observability/metrics.test.ts` as a small discoverable entrypoint and split collector/timer, node-instrumentation, and shared fixtures into non-discoverable modules under `packages/core/tests/langgraph/observability/metrics/`
+- [x] Add/update production code until focused tests pass, keeping test evidence in checklist notes and PR body
+  - Focused suite passed before and after refactoring: 1 file, 9 tests; core typecheck also passed.
+- [x] Assess residual test impact; add/update additional automated tests when needed, or document why no further tests are required
+  - Added coverage for label-isolated counters, counter reset after clear, deterministic timers, disabled error tracking, and preserved error identity; no further focused cases were identified.
+- [x] Add or update story documentation at `docs/st09095-metrics-collection-instrumentation-modularization.md` (or document why not required)
+- [x] Assess CI/validation impact and update automation if required, or record why no CI change is needed
+  - No CI change is required; existing core/workspace tests, typecheck, lint, build, and explicit-any gates cover the split.
 - [ ] Run full test suite before finalizing the PR and record results
 - [ ] Run lint (`pnpm lint`) before finalizing the PR and record results
 - [ ] Commit completed checklist items and push updates
