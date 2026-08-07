@@ -1,6 +1,6 @@
 import { mkdtemp, rm, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
-import { join } from 'node:path';
+import { basename, join } from 'node:path';
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import { createWorkspaceFileTools } from './filesystem-tools.js';
 
@@ -24,15 +24,18 @@ describe('skill-aware agent filesystem tools', () => {
 
   it('preserves workspace reads while rejecting traversal and outside-root access', async () => {
     const { fileTools } = createWorkspaceFileTools(workspaceRoot);
-    const fileReader = fileTools[0] as {
+    const fileReader = fileTools.find((tool) => tool.metadata.name === 'file-reader') as {
       invoke(input: { path: string }): Promise<unknown>;
-    };
+    } | undefined;
+    if (!fileReader) {
+      throw new Error('Expected model-safe preset to include file-reader');
+    }
 
     await expect(fileReader.invoke({ path: 'inside.ts' })).resolves.toMatchObject({
       success: true,
       data: { content: 'export const inside = true;' },
     });
-    await expect(fileReader.invoke({ path: join('..', outsideRoot.split('/').at(-1)!, 'outside.ts') }))
+    await expect(fileReader.invoke({ path: join('..', basename(outsideRoot), 'outside.ts') }))
       .resolves.toMatchObject({ success: false, error: expect.stringContaining('path traversal') });
     await expect(fileReader.invoke({ path: join(outsideRoot, 'outside.ts') })).resolves.toMatchObject({
       success: false,

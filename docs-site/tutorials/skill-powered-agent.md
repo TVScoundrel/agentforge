@@ -261,7 +261,7 @@ import { createModelSafeToolPreset } from '@agentforge/tools';
 
 const [activateSkill, readSkillResource] = skillRegistry.toActivationTools();
 const { fileTools, directoryTools } = createModelSafeToolPreset({
-  fileSystem: { workspaceRoot: path.join(__dirname, '..') },
+  fileSystem: { workspaceRoot: process.cwd() },
 });
 
 // 4. Create the LLM
