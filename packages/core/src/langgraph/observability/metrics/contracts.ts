@@ -32,9 +32,29 @@ export interface Metrics {
 
 /** Options controlling automatic node instrumentation. */
 export interface MetricsNodeOptions {
+  /** Name used to identify the instrumented node. */
   name: string;
+
+  /**
+   * Whether to track execution duration.
+   * @default true
+   */
   trackDuration?: boolean;
+
+  /**
+   * Whether to track errors.
+   * @default true
+   */
   trackErrors?: boolean;
+
+  /**
+   * Whether to track invocation count.
+   * @default true
+   */
   trackInvocations?: boolean;
+
+  /**
+   * Metrics collector to use. A new collector is created when omitted.
+   */
   metrics?: Metrics;
 }
