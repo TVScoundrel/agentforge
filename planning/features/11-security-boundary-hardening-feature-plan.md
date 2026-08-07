@@ -1,9 +1,9 @@
 # Feature Plan: EP-11 Security Boundary Hardening
 
 **Epic Range:** EP-11 through EP-11
-**Status:** In Progress
+**Status:** Completed
 **Last Updated:** 2026-08-07
-**Active Story:** ST-11009 is in review in PR #171 after aligning the skill-powered-agent example with the model-safe filesystem path.
+**Active Story:** None; all planned EP-11 stories are merged after ST-11009 completed in PR #171.
 
 ---
 

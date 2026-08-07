@@ -2,11 +2,18 @@
 
 **Purpose:** Track completed and merged stories for the Relational Database Access Tool project.
 
-**Last Updated:** 2026-08-04
+**Last Updated:** 2026-08-07
 
 ---
 
 ## Completed Stories
+
+### ST-11009: Harden Skill-Powered Agent Filesystem Guidance
+- **Merged:** 2026-08-07
+- **PR:** https://github.com/TVScoundrel/agentforge/pull/171 (commit d445315c)
+- **Epic:** EP-11 (Security Boundary Hardening)
+- **Estimate:** 2 hours
+- **Outcome:** Updated the skill-powered-agent tutorial and runnable example to create model-facing file and directory tools through `createModelSafeToolPreset` with an explicit workspace root while preserving `SkillRegistry.toActivationTools()` as the trusted skill-resource path. Added focused traversal and outside-root regression coverage, registered the example for workspace validation, corrected its stale TypeScript base config, and documented the distinction between model-exposed tools and trusted local automation. Focused example lint, test, and typecheck passed; full workspace validation passed with 2564 tests and 110 skipped; review follow-ups made tool lookup order-independent, traversal construction cross-platform, and the incremental tutorial snippet standalone.
 
 ### ST-09094: Harden Neo4j Property and Query Payload Contracts
 - **Merged:** 2026-08-06

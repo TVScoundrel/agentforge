@@ -326,4 +326,5 @@
   - Implementation commit `d7e1fb20` pushed to the story branch; draft PR #171 opened on 2026-08-07.
 - [x] Mark the PR Ready only after all story tasks are complete
   - PR #171 marked ready for review on 2026-08-07 after acceptance criteria, focused validation, full validation, and self-review completed.
-- [ ] Wait for merge; do not merge directly from local branch
+- [x] Wait for merge; do not merge directly from local branch
+  - PR #171 merged into `main` on 2026-08-07 as commit `d445315c`; post-merge tracker synchronization completed from local `main`.
