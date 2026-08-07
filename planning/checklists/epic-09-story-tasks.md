@@ -3905,3 +3905,135 @@ Implementation notes:
 - [x] Commit completed checklist items and push updates — implementation commit `24dce727` and review-fix commit `f037d43b` pushed to PR #170
 - [x] Mark the PR Ready only after all story tasks are complete — PR #170 was marked ready before merge
 - [x] Wait for merge; do not merge directly from local branch — PR #170 merged on 2026-08-06 as commit `2195e7e4`
+
+---
+
+## ST-09095: Modularize Metrics Collection and Node Instrumentation
+
+**Branch:** `refactor/st-09095-metrics-collection-instrumentation`
+
+### Checklist
+- [x] Create branch `refactor/st-09095-metrics-collection-instrumentation` from `main`
+  - Created from clean local `main` at commit `546727ed`.
+- [x] Create draft PR with ST-09095 in the title
+  - Opened PR #172 with the required story, change, acceptance coverage, test strategy, validation, and status sections.
+- [x] Define test strategy before implementation: identify collector/timer and node-instrumentation characterization coverage and the first failing test if a practical behavioral seam is found
+  - Chose characterization-first coverage because the story changes module boundaries without defining new behavior.
+- [x] Write or update the failing automated test before production changes when practical; if this remains behavior-preserving modularization, record why characterization-first coverage is safer
+  - Split and expanded the characterization suite first; 9 tests passed against the unchanged implementation, avoiding a fabricated failing requirement.
+- [x] Extract metric contracts, collector/timer runtime, and node instrumentation behind the stable `metrics.ts` facade
+- [x] Preserve public exports and counter, gauge, histogram, labels, prefixes, timers, clear, duration, invocation, and error behavior
+- [x] Keep `packages/core/tests/langgraph/observability/metrics.test.ts` as a small discoverable entrypoint and split collector/timer, node-instrumentation, and shared fixtures into non-discoverable modules under `packages/core/tests/langgraph/observability/metrics/`
+- [x] Add/update production code until focused tests pass, keeping test evidence in checklist notes and PR body
+  - Focused suite passed before and after refactoring: 1 file, 9 tests; core typecheck also passed.
+- [x] Assess residual test impact; add/update additional automated tests when needed, or document why no further tests are required
+  - Added coverage for label-isolated counters, counter reset after clear, deterministic timers, disabled error tracking, and preserved error identity; no further focused cases were identified.
+- [x] Add or update story documentation at `docs/st09095-metrics-collection-instrumentation-modularization.md` (or document why not required)
+- [x] Assess CI/validation impact and update automation if required, or record why no CI change is needed
+  - No CI change is required; existing core/workspace tests, typecheck, lint, build, and explicit-any gates cover the split.
+- [x] Run full test suite before finalizing the PR and record results
+  - `pnpm release:validate` passed: build succeeded; 231 test files passed, 9 skipped; 2,559 tests passed, 110 skipped.
+  - `pnpm --filter @agentforge/core test --run` passed with 650 tests.
+  - `pnpm typecheck` passed across all six packages; `git diff --check` passed.
+- [x] Run lint (`pnpm lint`) before finalizing the PR and record results
+  - Workspace lint passed with existing warnings and zero errors; explicit-any baseline passed at 45/289 warnings.
+- [x] Commit completed checklist items and push updates
+  - Implementation commit `08015776` was pushed to `origin/refactor/st-09095-metrics-collection-instrumentation`; final review-state synchronization follows validation.
+- [x] Mark the PR Ready only after all story tasks are complete
+  - PR #172 was marked ready after its rendered body, acceptance evidence, validation results, and review-state trackers were verified.
+- [ ] Wait for merge; do not merge directly from local branch
+
+---
+
+## ST-09096: Modularize Prompt Loading, Sanitization, and Rendering
+
+**Branch:** `refactor/st-09096-prompt-loader-modularization`
+
+### Checklist
+- [ ] Create branch `refactor/st-09096-prompt-loader-modularization` from `main`
+- [ ] Create draft PR with ST-09096 in the title
+- [ ] Define test strategy before implementation: cover sanitization, trusted/untrusted precedence, conditionals, substitution, prototype safety, compatibility, and file loading, including the first failing test if a practical seam is found
+- [ ] Write or update the failing automated test before production changes when practical; if this remains behavior-preserving modularization, record why characterization-first coverage is safer
+- [ ] Extract variable sanitization/normalization, template rendering, and file loading behind the stable prompt-loader entrypoint
+- [ ] Preserve public APIs, security boundaries, conditional raw-value semantics, substitution behavior, and wrapped file errors
+- [ ] Keep `packages/core/tests/prompt-loader/index.test.ts` as a small discoverable entrypoint and split sanitization, rendering/conditionals, compatibility/security, file-loading, and shared fixtures into non-discoverable modules under `packages/core/tests/prompt-loader/`
+- [ ] Add/update production code until focused tests pass, keeping test evidence in checklist notes and PR body
+- [ ] Assess residual test impact; add/update additional automated tests when needed, or document why no further tests are required
+- [ ] Add or update story documentation at `docs/st09096-prompt-loader-modularization.md` (or document why not required)
+- [ ] Assess CI/validation impact and update automation if required, or record why no CI change is needed
+- [ ] Run full test suite before finalizing the PR and record results
+- [ ] Run lint (`pnpm lint`) before finalizing the PR and record results
+- [ ] Commit completed checklist items and push updates
+- [ ] Mark the PR Ready only after all story tasks are complete
+- [ ] Wait for merge; do not merge directly from local branch
+
+---
+
+## ST-09097: Split Multi-Agent Configuration and Routing Contracts
+
+**Branch:** `refactor/st-09097-multi-agent-contract-modularization`
+
+### Checklist
+- [ ] Create branch `refactor/st-09097-multi-agent-contract-modularization` from `main`
+- [ ] Create draft PR with ST-09097 in the title
+- [ ] Define test strategy before implementation: identify compile-time import/configuration coverage and runtime compatibility suites, including the first failing type assertion to add
+- [ ] Write or update the failing automated type test before production changes when practical; otherwise record why existing compile contracts are sufficient before refactoring
+- [ ] Extract supervisor, worker, aggregator/system, and routing contracts behind the stable `multi-agent/types.ts` facade
+- [ ] Preserve package-root and multi-agent entrypoint exports while preventing runtime import cycles
+- [ ] Keep `packages/patterns/tests/multi-agent/contracts.typecheck.ts` as the stable typecheck entrypoint and split supervisor, worker, aggregator/system, and routing assertions into matching focused modules under `packages/patterns/tests/multi-agent/contracts/`
+- [ ] Add/update production code until focused tests pass, keeping test evidence in checklist notes and PR body
+- [ ] Assess residual test impact; add/update additional automated tests when needed, or document why no further tests are required
+- [ ] Add or update story documentation at `docs/st09097-multi-agent-contract-modularization.md` (or document why not required)
+- [ ] Assess CI/validation impact and update automation if required, or record why no CI change is needed
+- [ ] Run full test suite before finalizing the PR and record results
+- [ ] Run lint (`pnpm lint`) before finalizing the PR and record results
+- [ ] Commit completed checklist items and push updates
+- [ ] Mark the PR Ready only after all story tasks are complete
+- [ ] Wait for merge; do not merge directly from local branch
+
+---
+
+## ST-09098: DRY Plan-Execute Model Parsing and Node Tests
+
+**Branch:** `refactor/st-09098-plan-execute-parsing-tests`
+
+### Checklist
+- [ ] Create branch `refactor/st-09098-plan-execute-parsing-tests` from `main`
+- [ ] Create draft PR with ST-09098 in the title
+- [ ] Define test strategy before implementation: characterize planner/replanner content parsing and error wrapping plus node-specific behavior, identifying the first failing helper-level test
+- [ ] Write or update the failing automated test before production changes when practical; otherwise record why split characterization coverage is safer before extraction
+- [ ] Extract shared typed model-content JSON parsing and contextual error wrapping for planner and replanner nodes
+- [ ] Preserve planner, executor, replanner, and finisher behavior, state transitions, logging, and serialization fallbacks
+- [ ] Keep `packages/patterns/tests/plan-execute/nodes.test.ts` as a small discoverable entrypoint and split planner, executor, replanner, finisher, and shared fixtures into non-discoverable modules under `packages/patterns/tests/plan-execute/nodes/`
+- [ ] Add/update production code until focused tests pass, keeping test evidence in checklist notes and PR body
+- [ ] Assess residual test impact; add/update additional automated tests when needed, or document why no further tests are required
+- [ ] Add or update story documentation at `docs/st09098-plan-execute-parsing-test-modularization.md` (or document why not required)
+- [ ] Assess CI/validation impact and update automation if required, or record why no CI change is needed
+- [ ] Run full test suite before finalizing the PR and record results
+- [ ] Run lint (`pnpm lint`) before finalizing the PR and record results
+- [ ] Commit completed checklist items and push updates
+- [ ] Mark the PR Ready only after all story tasks are complete
+- [ ] Wait for merge; do not merge directly from local branch
+
+---
+
+## ST-09099: Normalize Default Node Metrics Namespaces
+
+**Branch:** `fix/st-09099-default-node-metrics-namespaces`
+
+### Checklist
+- [ ] Create branch `fix/st-09099-default-node-metrics-namespaces` from `main`
+- [ ] Create draft PR with ST-09099 in the title
+- [ ] Define test strategy before implementation: cover default-collector naming, shared-collector naming, success/error/duration samples, tracking options, and the first failing regression test
+- [ ] Write the failing automated regression test for the duplicated default namespace before production changes
+- [ ] Normalize metric suffix selection so default collectors do not repeat the node name while shared collectors retain node-qualified suffixes
+- [ ] Preserve the public API, synchronous/asynchronous results, error identity, duration tracking, and disabled tracking semantics
+- [ ] Add/update production code until focused tests pass, keeping test evidence in checklist notes and PR body
+- [ ] Assess residual test impact; add/update additional automated tests when needed, or document why no further tests are required
+- [ ] Add or update story documentation at `docs/st09099-default-node-metrics-namespaces.md` (or document why not required)
+- [ ] Assess CI/validation impact and update automation if required, or record why no CI change is needed
+- [ ] Run full test suite before finalizing the PR and record results
+- [ ] Run lint (`pnpm lint`) before finalizing the PR and record results
+- [ ] Commit completed checklist items and push updates
+- [ ] Mark the PR Ready only after all story tasks are complete
+- [ ] Wait for merge; do not merge directly from local branch

@@ -4,17 +4,19 @@
 
 ## Queue Status Summary
 
-- **Ready:** 0 stories
+- **Ready:** 3 stories
 - **In Progress:** 0 stories
-- **In Review:** 0 stories
+- **In Review:** 1 story
 - **Blocked:** 0 stories
-- **Backlog:** 0 stories
+- **Backlog:** 1 story
 
 ---
 
 ## Ready
 
-None currently.
+- `ST-09096` — Modularize Prompt Loading, Sanitization, and Rendering
+- `ST-09097` — Split Multi-Agent Configuration and Routing Contracts
+- `ST-09098` — DRY Plan-Execute Model Parsing and Node Tests
 
 ---
 
@@ -26,7 +28,7 @@ None currently.
 
 ## In Review
 
-None currently.
+- `ST-09095` — Modularize Metrics Collection and Node Instrumentation (PR #172)
 
 ---
 
@@ -38,7 +40,8 @@ _No stories currently blocked_
 
 ## Backlog
 
-None currently.
+- `ST-09099` — Normalize Default Node Metrics Namespaces
+  - Depends on: ST-09095 (in review, PR #172)
 
 ---
 
@@ -70,6 +73,10 @@ None currently.
 - ST-09094 moved to In Review on 2026-08-05 with PR #170 after implementation, focused and full validation, lint, typecheck, build, documentation, and explicit-any baseline verification; `ST-11009` remains in Ready
 - ST-09094 merged on 2026-08-06 as PR #170 / commit `2195e7e4`; removed from the active queue, archived as done, and `ST-11009` remains the next dependency-ready Ready story
 - ST-11009 merged on 2026-08-07 as PR #171 / commit `d445315c`; removed from the active queue and archived as done, leaving the accepted queue empty after grooming
+- ST-09095 through ST-09098 added to Ready on 2026-08-07 after source review identified four independent, low-risk EP-09 modularization slices across metrics, prompt loading, multi-agent contracts, and plan-execute parsing/tests
+- ST-09095 moved to In Progress on 2026-08-07 as the next deterministic dependency-ready EP-09 story; ST-09096 through ST-09098 remain in Ready
+- ST-09095 moved to In Review on 2026-08-07 with PR #172 after metrics/test modularization, documentation, focused and full validation, lint, typecheck, baseline verification, and self-review; ST-09096 through ST-09098 remain in Ready
+- ST-09099 added to Backlog on 2026-08-07 after PR #172 review confirmed that default `withMetrics(...)` collectors duplicate the node namespace; it depends on ST-09095 and preserves shared-collector naming as a separate compatibility path
 
 - Complete: ST-01001 - foundation established (merged 2026-02-17)
 - Complete: ST-01002 - connection manager implemented (merged 2026-02-17)
