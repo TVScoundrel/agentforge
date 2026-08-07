@@ -3,6 +3,7 @@ packages:
   - 'docs-site'
   - 'playground'
   - 'examples/reusable-agents/*'
+  - 'examples/applications/skill-aware-agent'
 allowBuilds:
   better-sqlite3: true
   cpu-features: true

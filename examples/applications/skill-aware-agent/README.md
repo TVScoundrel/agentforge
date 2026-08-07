@@ -10,6 +10,7 @@ Demonstrates an AgentForge agent that discovers, activates, and uses skills from
 4. **Resource loading** — Agent calls `read-skill-resource` to load reference docs
 5. **Trust enforcement** — Scripts from untrusted roots are blocked
 6. **Mixed trust levels** — Workspace skills have full access, community skills are restricted
+7. **Confined model file access** — Model-facing file and directory tools use `createModelSafeToolPreset` with an explicit repository root
 
 ## Skill Roots
 
@@ -32,3 +33,13 @@ The demo runs without an actual LLM call — it demonstrates the framework integ
 3. Creating activation tools
 4. Simulating skill activation and resource loading
 5. Demonstrating trust policy enforcement (script blocked from untrusted root)
+6. Creating model-facing filesystem tools that reject traversal and paths outside the repository root
+
+`SkillRegistry.toActivationTools()` remains the trusted path for loading skill resources. Do not replace it with generic filesystem tools. Conversely, do not expose unrestricted file/directory factories to a model: use `createModelSafeToolPreset` with an explicit `workspaceRoot` or `allowedRoots`. See the repository [security policy](../../../SECURITY.md) for the boundary model.
+
+## Validation
+
+```bash
+pnpm --dir examples/applications/skill-aware-agent test
+pnpm --dir examples/applications/skill-aware-agent typecheck
+```

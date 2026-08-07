@@ -48,6 +48,31 @@ importers:
         specifier: ^3.5.13
         version: 3.5.26(typescript@5.9.3)
 
+  examples/applications/skill-aware-agent:
+    dependencies:
+      '@agentforge/core':
+        specifier: workspace:*
+        version: link:../../../packages/core
+      '@agentforge/skills':
+        specifier: workspace:*
+        version: link:../../../packages/skills
+      '@agentforge/tools':
+        specifier: workspace:*
+        version: link:../../../packages/tools
+    devDependencies:
+      '@types/node':
+        specifier: ^22.10.2
+        version: 22.19.3
+      tsx:
+        specifier: ^4.21.0
+        version: 4.21.0
+      typescript:
+        specifier: ^5.7.2
+        version: 5.9.3
+      vitest:
+        specifier: ^2.1.8
+        version: 2.1.9(@types/node@22.19.3)(@vitest/ui@2.1.9)
+
   packages/cli:
     dependencies:
       chalk:

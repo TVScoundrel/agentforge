@@ -309,13 +309,21 @@
 **Branch:** `fix/st-11009-skill-agent-filesystem-guidance`
 
 ### Checklist
-- [ ] Create branch `fix/st-11009-skill-agent-filesystem-guidance` from `main`
-- [ ] Replace unrestricted model-facing file-tool setup in the skill-powered-agent tutorial and example with a shared filesystem policy or `createModelSafeToolPreset`
-- [ ] Preserve trusted workspace-skill resource loading and intended file-search/read behavior while requiring an explicit root
-- [ ] Add focused example or documentation validation for traversal and outside-root rejection
-- [ ] Update README/tutorial/API guidance and cross-link `SECURITY.md`
-- [ ] Add or update story documentation at `docs/st11009-skill-agent-filesystem-guidance.md`
-- [ ] Run supported example tests, lint, and typecheck; record any pre-existing example-only incompatibility
-- [ ] Commit completed checklist items and push updates
-- [ ] Mark the PR Ready only after all story tasks are complete
+- [x] Create branch `fix/st-11009-skill-agent-filesystem-guidance` from `main`
+- [x] Replace unrestricted model-facing file-tool setup in the skill-powered-agent tutorial and example with a shared filesystem policy or `createModelSafeToolPreset`
+- [x] Preserve trusted workspace-skill resource loading and intended file-search/read behavior while requiring an explicit root
+- [x] Add focused example or documentation validation for traversal and outside-root rejection
+  - Test-first decision (2026-08-07): add focused automated coverage around an exported example filesystem-tool helper; the test must fail before the helper is implemented, then pass once it uses `createModelSafeToolPreset` with an explicit workspace root.
+- [x] Update README/tutorial/API guidance and cross-link `SECURITY.md`
+- [x] Add or update story documentation at `docs/st11009-skill-agent-filesystem-guidance.md`
+- [x] Run supported example tests, lint, and typecheck; record any pre-existing example-only incompatibility
+  - CI impact assessment (2026-08-07): no CI workflow file change is required; registering the existing example in `pnpm-workspace.yaml` lets the repository's recursive install/typecheck path cover it, while its package-local test script provides focused boundary validation.
+  - Red test evidence: before production implementation, root Vitest returned exit 1 because the standalone example test was outside every configured project include. This established the missing practical test seam; the example-local config was added with the implementation so the boundary test could run directly.
+  - Example evidence: `pnpm --dir examples/applications/skill-aware-agent lint`, `test` (1 passed), and `typecheck` all pass.
+  - Full validation evidence: `pnpm test` passes (231 files passed, 9 skipped; 2564 tests passed, 110 skipped), `pnpm lint` passes with existing warnings, and `pnpm typecheck` passes.
+  - Pre-existing incompatibility resolved: the example extended missing `tsconfig.base.json` and was absent from `pnpm-workspace.yaml`; it now extends the repository `tsconfig.json` and is a linked workspace project.
+- [x] Commit completed checklist items and push updates
+  - Implementation commit `d7e1fb20` pushed to the story branch; draft PR #171 opened on 2026-08-07.
+- [x] Mark the PR Ready only after all story tasks are complete
+  - PR #171 marked ready for review on 2026-08-07 after acceptance criteria, focused validation, full validation, and self-review completed.
 - [ ] Wait for merge; do not merge directly from local branch

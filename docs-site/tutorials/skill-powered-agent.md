@@ -257,11 +257,12 @@ The `toActivationTools()` method returns two tools pre-wired to the registry:
 
 ```typescript
 // 3. Get activation tools + file tools that skills reference
-import { createFileReaderTool, createFileSearchTool } from '@agentforge/tools';
+import { createModelSafeToolPreset } from '@agentforge/tools';
 
 const [activateSkill, readSkillResource] = skillRegistry.toActivationTools();
-const fileReader = createFileReaderTool();
-const fileSearch = createFileSearchTool();
+const { fileTools, directoryTools } = createModelSafeToolPreset({
+  fileSystem: { workspaceRoot: process.cwd() },
+});
 
 // 4. Create the LLM
 const llm = new ChatOpenAI({
@@ -272,7 +273,7 @@ const llm = new ChatOpenAI({
 // 5. Build the agent with skill tools + file tools
 const agent = createReActAgent({
   model: llm,
-  tools: [activateSkill, readSkillResource, fileReader, fileSearch],
+  tools: [activateSkill, readSkillResource, ...fileTools, ...directoryTools],
   systemPrompt: `You are a coding assistant with access to specialized skills.
 
 ${skillPrompt}
@@ -283,6 +284,8 @@ then follow those instructions to complete the task.
 Use read-skill-resource to load any referenced templates or files.`,
 });
 ```
+
+The activation tools intentionally remain separate: `read-skill-resource` applies the registry's skill-root trust policy to references and scripts. The preset is for model-controlled project paths and requires an explicit `workspaceRoot` (or `allowedRoots`); it rejects `..` traversal, symlink escapes, and absolute paths outside that boundary. Unrestricted filesystem factories are reserved for trusted local automation. See the repository [security policy](https://github.com/TVScoundrel/agentforge/blob/main/SECURITY.md) for the complete boundary model.
 
 ## Step 7: Run Your Skill-Powered Agent
 
@@ -393,7 +396,7 @@ Here's the full `src/index.ts` putting it all together:
 ```typescript
 import { SkillRegistry, SkillRegistryEvent } from '@agentforge/skills';
 import { createReActAgent } from '@agentforge/patterns';
-import { createFileReaderTool, createFileSearchTool } from '@agentforge/tools';
+import { createModelSafeToolPreset } from '@agentforge/tools';
 import { ChatOpenAI } from '@langchain/openai';
 import path from 'path';
 import { fileURLToPath } from 'url';
@@ -426,15 +429,16 @@ skillRegistry.on(SkillRegistryEvent.SKILL_RESOURCE_LOADED, (data) => {
 // 3. Generate prompt and tools
 const skillPrompt = skillRegistry.generatePrompt();
 const [activateSkill, readSkillResource] = skillRegistry.toActivationTools();
-const fileReader = createFileReaderTool();
-const fileSearch = createFileSearchTool();
+const { fileTools, directoryTools } = createModelSafeToolPreset({
+  fileSystem: { workspaceRoot: path.join(__dirname, '..') },
+});
 
 // 4. Create agent
 const llm = new ChatOpenAI({ modelName: 'gpt-4o', temperature: 0 });
 
 const agent = createReActAgent({
   model: llm,
-  tools: [activateSkill, readSkillResource, fileReader, fileSearch],
+  tools: [activateSkill, readSkillResource, ...fileTools, ...directoryTools],
   systemPrompt: `You are a coding assistant with access to specialized skills.
 
 ${skillPrompt}

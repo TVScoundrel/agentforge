@@ -18,8 +18,10 @@ import {
   SkillRegistryEvent,
   type SkillRegistryConfig,
 } from '@agentforge/skills';
+import { createWorkspaceFileTools } from './filesystem-tools.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
+const workspaceRoot = resolve(__dirname, '../../../..');
 
 // ─── Configuration ───────────────────────────────────────────────────────
 
@@ -68,6 +70,11 @@ async function main(): Promise<void> {
   // ── 4. Obtain activation tools ─────────────────────────────────────
   const [activateSkill, readResource] = registry.toActivationTools();
   console.log(`🔧 Activation tools ready: ${activateSkill.metadata.name}, ${readResource.metadata.name}\n`);
+
+  // These tools may receive model-controlled paths, so they require an explicit
+  // workspace boundary. Skill resources continue through the registry tools above.
+  const workspaceFileTools = createWorkspaceFileTools(workspaceRoot);
+  console.log(`🔒 Model-facing workspace file tools ready: ${workspaceFileTools.tools.length}\n`);
 
   // ── 5. Activate skills ─────────────────────────────────────────────
   console.log('── Activate workspace skill: code-review ──');
