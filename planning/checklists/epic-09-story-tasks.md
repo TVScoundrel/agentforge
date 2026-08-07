@@ -3939,7 +3939,8 @@ Implementation notes:
   - Workspace lint passed with existing warnings and zero errors; explicit-any baseline passed at 45/289 warnings.
 - [x] Commit completed checklist items and push updates
   - Implementation commit `08015776` was pushed to `origin/refactor/st-09095-metrics-collection-instrumentation`; final review-state synchronization follows validation.
-- [ ] Mark the PR Ready only after all story tasks are complete
+- [x] Mark the PR Ready only after all story tasks are complete
+  - PR #172 was marked ready after its rendered body, acceptance evidence, validation results, and review-state trackers were verified.
 - [ ] Wait for merge; do not merge directly from local branch
 
 ---
