@@ -2721,7 +2721,7 @@
 **Priority:** P2 (Medium)
 **Estimate:** 2 hours
 **Dependencies:** ST-11003 and ST-11007 (merged)
-**Status:** In Progress
+**Status:** In Review (PR #171)
 
 **Acceptance criteria:**
 - [x] Update the skill-powered-agent tutorial and example setup to use a shared filesystem policy or `createModelSafeToolPreset` for model-facing file and directory tools instead of unrestricted factories.

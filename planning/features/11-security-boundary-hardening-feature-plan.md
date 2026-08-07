@@ -3,7 +3,7 @@
 **Epic Range:** EP-11 through EP-11
 **Status:** In Progress
 **Last Updated:** 2026-08-07
-**Active Story:** ST-11009 is in progress to align the skill-powered-agent example with the model-safe filesystem path.
+**Active Story:** ST-11009 is in review in PR #171 after aligning the skill-powered-agent example with the model-safe filesystem path.
 
 ---
 

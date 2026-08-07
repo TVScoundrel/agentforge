@@ -322,6 +322,7 @@
   - Example evidence: `pnpm --dir examples/applications/skill-aware-agent lint`, `test` (1 passed), and `typecheck` all pass.
   - Full validation evidence: `pnpm test` passes (231 files passed, 9 skipped; 2564 tests passed, 110 skipped), `pnpm lint` passes with existing warnings, and `pnpm typecheck` passes.
   - Pre-existing incompatibility resolved: the example extended missing `tsconfig.base.json` and was absent from `pnpm-workspace.yaml`; it now extends the repository `tsconfig.json` and is a linked workspace project.
-- [ ] Commit completed checklist items and push updates
+- [x] Commit completed checklist items and push updates
+  - Implementation commit `d7e1fb20` pushed to the story branch; draft PR #171 opened on 2026-08-07.
 - [ ] Mark the PR Ready only after all story tasks are complete
 - [ ] Wait for merge; do not merge directly from local branch
