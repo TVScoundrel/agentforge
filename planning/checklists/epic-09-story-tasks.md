@@ -4014,3 +4014,26 @@ Implementation notes:
 - [ ] Commit completed checklist items and push updates
 - [ ] Mark the PR Ready only after all story tasks are complete
 - [ ] Wait for merge; do not merge directly from local branch
+
+---
+
+## ST-09099: Normalize Default Node Metrics Namespaces
+
+**Branch:** `fix/st-09099-default-node-metrics-namespaces`
+
+### Checklist
+- [ ] Create branch `fix/st-09099-default-node-metrics-namespaces` from `main`
+- [ ] Create draft PR with ST-09099 in the title
+- [ ] Define test strategy before implementation: cover default-collector naming, shared-collector naming, success/error/duration samples, tracking options, and the first failing regression test
+- [ ] Write the failing automated regression test for the duplicated default namespace before production changes
+- [ ] Normalize metric suffix selection so default collectors do not repeat the node name while shared collectors retain node-qualified suffixes
+- [ ] Preserve the public API, synchronous/asynchronous results, error identity, duration tracking, and disabled tracking semantics
+- [ ] Add/update production code until focused tests pass, keeping test evidence in checklist notes and PR body
+- [ ] Assess residual test impact; add/update additional automated tests when needed, or document why no further tests are required
+- [ ] Add or update story documentation at `docs/st09099-default-node-metrics-namespaces.md` (or document why not required)
+- [ ] Assess CI/validation impact and update automation if required, or record why no CI change is needed
+- [ ] Run full test suite before finalizing the PR and record results
+- [ ] Run lint (`pnpm lint`) before finalizing the PR and record results
+- [ ] Commit completed checklist items and push updates
+- [ ] Mark the PR Ready only after all story tasks are complete
+- [ ] Wait for merge; do not merge directly from local branch

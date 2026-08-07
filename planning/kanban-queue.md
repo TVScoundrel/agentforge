@@ -8,7 +8,7 @@
 - **In Progress:** 0 stories
 - **In Review:** 1 story
 - **Blocked:** 0 stories
-- **Backlog:** 0 stories
+- **Backlog:** 1 story
 
 ---
 
@@ -40,7 +40,8 @@ _No stories currently blocked_
 
 ## Backlog
 
-None currently.
+- `ST-09099` — Normalize Default Node Metrics Namespaces
+  - Depends on: ST-09095 (in review, PR #172)
 
 ---
 
@@ -75,6 +76,7 @@ None currently.
 - ST-09095 through ST-09098 added to Ready on 2026-08-07 after source review identified four independent, low-risk EP-09 modularization slices across metrics, prompt loading, multi-agent contracts, and plan-execute parsing/tests
 - ST-09095 moved to In Progress on 2026-08-07 as the next deterministic dependency-ready EP-09 story; ST-09096 through ST-09098 remain in Ready
 - ST-09095 moved to In Review on 2026-08-07 with PR #172 after metrics/test modularization, documentation, focused and full validation, lint, typecheck, baseline verification, and self-review; ST-09096 through ST-09098 remain in Ready
+- ST-09099 added to Backlog on 2026-08-07 after PR #172 review confirmed that default `withMetrics(...)` collectors duplicate the node namespace; it depends on ST-09095 and preserves shared-collector naming as a separate compatibility path
 
 - Complete: ST-01001 - foundation established (merged 2026-02-17)
 - Complete: ST-01002 - connection manager implemented (merged 2026-02-17)

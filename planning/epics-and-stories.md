@@ -2541,6 +2541,24 @@
 
 ---
 
+#### ST-09099: Normalize Default Node Metrics Namespaces
+**User story:** As a core maintainer, I want `withMetrics(...)` to emit a single node namespace when it creates its own collector so default middleware metrics are not published with duplicated names.
+
+**Priority:** P2 (Medium)
+**Estimate:** 2 hours
+**Dependencies:** ST-09095
+**Status:** Backlog
+
+**Acceptance criteria:**
+- [ ] When `withMetrics(...)` creates its default collector, invocation, success, error, and duration samples use `<node>.invocations`, `<node>.success`, `<node>.errors`, and `<node>.duration` rather than `<node>.<node>.*`.
+- [ ] When callers provide a shared collector, node names remain part of each metric suffix so multiple instrumented nodes stay distinguishable under the collector namespace.
+- [ ] Preserve the public `withMetrics(...)` API, synchronous/asynchronous node results, error identity and rethrow behavior, tracking-option defaults, and disabled tracking semantics.
+- [ ] Add failing regression coverage first for the default-collector naming path plus compatibility coverage for shared collectors, errors, duration, and disabled options.
+- [ ] `pnpm --filter @agentforge/core test --run`, `pnpm --filter @agentforge/core typecheck`, `pnpm lint`, and the full test suite pass without explicit-any baseline regression.
+- [ ] Add or update story documentation at `docs/st09099-default-node-metrics-namespaces.md`.
+
+---
+
 #### ST-10001: Audit Markdown Emoji Usage Across Project-Owned Docs
 **User story:** As a maintainer, I want a clear inventory of markdown emoji usage so docs-only cleanup work can be prioritized and executed without noisy, repo-wide guesswork.
 
