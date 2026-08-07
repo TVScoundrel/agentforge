@@ -2479,7 +2479,7 @@
 **Priority:** P2 (Medium)
 **Estimate:** 3 hours
 **Dependencies:** None
-**Status:** In Review (PR #172)
+**Status:** Merged (PR #172, 2026-08-07)
 
 **Acceptance criteria:**
 - [x] Reduce `packages/core/src/langgraph/observability/metrics.ts` to a stable public facade by extracting focused metric contracts, collector/timer runtime, and node instrumentation modules that stay below the planning cutoff.

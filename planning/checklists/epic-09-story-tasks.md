@@ -3941,7 +3941,8 @@ Implementation notes:
   - Implementation commit `08015776` was pushed to `origin/refactor/st-09095-metrics-collection-instrumentation`; final review-state synchronization follows validation.
 - [x] Mark the PR Ready only after all story tasks are complete
   - PR #172 was marked ready after its rendered body, acceptance evidence, validation results, and review-state trackers were verified.
-- [ ] Wait for merge; do not merge directly from local branch
+- [x] Wait for merge; do not merge directly from local branch
+  - PR #172 merged on 2026-08-07 as commit `23d65d9d`; post-merge tracker synchronization is being committed from updated local `main`.
 
 ---
 

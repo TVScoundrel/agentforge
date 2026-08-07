@@ -3,7 +3,7 @@
 **Epic Range:** EP-09 through EP-09
 **Status:** In Progress
 **Last Updated:** 2026-08-07
-**Active Story:** ST-09095 is In Review in PR #172, followed by ST-09096 through ST-09098 as independent low-risk modularization slices.
+**Active Story:** ST-09095 merged in PR #172; ST-09096 through ST-09099 are dependency-ready in Ready, with ST-09096 next in deterministic queue order.
 
 ---
 
@@ -40,11 +40,11 @@ Current measured `@typescript-eslint/no-explicit-any` baseline check (2026-08-07
 
 Top runtime hotspots informing this feature slice:
 
-1. `packages/core/src/langgraph/observability/metrics.ts` (`286` lines) combines public metric contracts, in-memory collection, timers, and node instrumentation in one module.
-2. `packages/core/src/prompt-loader/index.ts` (`251` lines) couples untrusted-value sanitization, variable normalization, conditional rendering, substitution, and filesystem loading behind one entrypoint.
-3. `packages/patterns/src/multi-agent/types.ts` (`285` lines) groups supervisor, worker, aggregator, system, node, and routing contracts even though the runtime and schema layers are already modularized by those domains.
-4. `packages/patterns/tests/plan-execute/nodes.test.ts` (`802` lines) is the largest remaining patterns test hotspot, while planner and replanner nodes still repeat model-content normalization and JSON parse/error wrapping.
-5. ST-09095 through ST-09098 form a dependency-free burst of behavior-preserving SOLID/DRY work; large third-party integration suites remain out of scope until a matching runtime payoff is identified.
+1. `packages/core/src/prompt-loader/index.ts` (`251` lines) couples untrusted-value sanitization, variable normalization, conditional rendering, substitution, and filesystem loading behind one entrypoint.
+2. `packages/patterns/src/multi-agent/types.ts` (`285` lines) groups supervisor, worker, aggregator, system, node, and routing contracts even though the runtime and schema layers are already modularized by those domains.
+3. `packages/patterns/tests/plan-execute/nodes.test.ts` (`802` lines) is the largest remaining patterns test hotspot, while planner and replanner nodes still repeat model-content normalization and JSON parse/error wrapping.
+4. Default `withMetrics(...)` collectors still repeat the node namespace; ST-09099 is queued as a behavior-changing follow-up while shared-collector naming remains a compatibility path.
+5. ST-09096 through ST-09099 form the dependency-ready continuation of the SOLID/DRY lane; large third-party integration suites remain out of scope until a matching runtime payoff is identified.
 
 Test modularization convention for this slice: preserve one small discoverable `*.test.ts` or source-included `*.typecheck.ts` entrypoint per public surface, and move role-aligned suites/contracts plus shared fixtures into a matching subdirectory using non-discoverable module names. Test module boundaries should mirror the production responsibility split.
 
@@ -177,7 +177,7 @@ Recent improvement snapshot:
 
 ## Story Coverage by Epic
 
-- EP-09: ST-09001 through ST-09098
+- EP-09: ST-09001 through ST-09099
 
 ---
 
@@ -193,7 +193,7 @@ Recent improvement snapshot:
 
 ## Related Planning Documents
 
-- `planning/epics-and-stories.md` (EP-09 and ST-09001 through ST-09077)
+- `planning/epics-and-stories.md` (EP-09 and ST-09001 through ST-09099)
 - `planning/checklists/epic-09-story-tasks.md`
 - `planning/kanban-queue.md`
 - `scripts/no-explicit-any-baseline.json`

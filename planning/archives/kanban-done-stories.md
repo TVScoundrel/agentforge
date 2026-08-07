@@ -8,6 +8,13 @@
 
 ## Completed Stories
 
+### ST-09095: Modularize Metrics Collection and Node Instrumentation
+- **Merged:** 2026-08-07
+- **PR:** https://github.com/TVScoundrel/agentforge/pull/172 (commit 23d65d9d)
+- **Epic:** EP-09 (SOLID Micro-Refactors and Type Boundary Hardening)
+- **Estimate:** 3 hours
+- **Outcome:** Split the metrics surface into focused public contracts, in-memory collector/timer runtime, and node-instrumentation modules behind the stable `metrics.ts` facade; modularized characterization coverage while preserving counter, gauge, histogram, label, prefix, timer, clear, duration, invocation, and error behavior; restored public option-default JSDoc during review; and queued ST-09099 for the separate default namespace behavior correction.
+
 ### ST-11009: Harden Skill-Powered Agent Filesystem Guidance
 - **Merged:** 2026-08-07
 - **PR:** https://github.com/TVScoundrel/agentforge/pull/171 (commit d445315c)
