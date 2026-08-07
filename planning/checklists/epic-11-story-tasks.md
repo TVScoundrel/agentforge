@@ -324,5 +324,6 @@
   - Pre-existing incompatibility resolved: the example extended missing `tsconfig.base.json` and was absent from `pnpm-workspace.yaml`; it now extends the repository `tsconfig.json` and is a linked workspace project.
 - [x] Commit completed checklist items and push updates
   - Implementation commit `d7e1fb20` pushed to the story branch; draft PR #171 opened on 2026-08-07.
-- [ ] Mark the PR Ready only after all story tasks are complete
+- [x] Mark the PR Ready only after all story tasks are complete
+  - PR #171 marked ready for review on 2026-08-07 after acceptance criteria, focused validation, full validation, and self-review completed.
 - [ ] Wait for merge; do not merge directly from local branch
