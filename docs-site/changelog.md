@@ -5,6 +5,34 @@ All notable changes to AgentForge will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.16.87] - 2026-08-07
+
+### Changed
+
+#### @agentforge/core - Metrics Collection and Node Instrumentation
+- Split metric contracts, the in-memory collector and timer runtime, and LangGraph node instrumentation into focused modules behind the stable `metrics.ts` facade.
+- Preserved public exports and existing counter, gauge, histogram, label, prefix, timer, clear, invocation, duration, success, and error behavior while restoring public option-default JSDoc.
+- Split metrics characterization coverage into focused collector/timer and node-instrumentation modules with shared fixtures.
+
+#### Skill-Powered Agent Example - Model-Safe Filesystem Guidance
+- Updated the tutorial and runnable example to expose file and directory operations through `createModelSafeToolPreset` with an explicit workspace root.
+- Preserved trusted skill-resource activation while documenting the boundary between model-exposed filesystem tools and trusted local automation.
+
+### Fixed
+
+#### Skill-Powered Agent Example - Filesystem Confinement
+- Added traversal and outside-root regression coverage for model-facing file operations.
+- Made tool lookup assertions order-independent, traversal fixtures cross-platform, and the incremental tutorial snippet standalone.
+
+### Published
+- All packages published to npm registry at version 0.16.87:
+  - @agentforge/core@0.16.87
+  - @agentforge/skills@0.16.87
+  - @agentforge/patterns@0.16.87
+  - @agentforge/tools@0.16.87
+  - @agentforge/testing@0.16.87
+  - @agentforge/cli@0.16.87
+
 ## [0.16.86] - 2026-08-06
 
 ### Changed
