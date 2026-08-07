@@ -3915,7 +3915,8 @@ Implementation notes:
 ### Checklist
 - [x] Create branch `refactor/st-09095-metrics-collection-instrumentation` from `main`
   - Created from clean local `main` at commit `546727ed`.
-- [ ] Create draft PR with ST-09095 in the title
+- [x] Create draft PR with ST-09095 in the title
+  - Opened PR #172 with the required story, change, acceptance coverage, test strategy, validation, and status sections.
 - [x] Define test strategy before implementation: identify collector/timer and node-instrumentation characterization coverage and the first failing test if a practical behavioral seam is found
   - Chose characterization-first coverage because the story changes module boundaries without defining new behavior.
 - [x] Write or update the failing automated test before production changes when practical; if this remains behavior-preserving modularization, record why characterization-first coverage is safer
@@ -3930,9 +3931,14 @@ Implementation notes:
 - [x] Add or update story documentation at `docs/st09095-metrics-collection-instrumentation-modularization.md` (or document why not required)
 - [x] Assess CI/validation impact and update automation if required, or record why no CI change is needed
   - No CI change is required; existing core/workspace tests, typecheck, lint, build, and explicit-any gates cover the split.
-- [ ] Run full test suite before finalizing the PR and record results
-- [ ] Run lint (`pnpm lint`) before finalizing the PR and record results
-- [ ] Commit completed checklist items and push updates
+- [x] Run full test suite before finalizing the PR and record results
+  - `pnpm release:validate` passed: build succeeded; 231 test files passed, 9 skipped; 2,559 tests passed, 110 skipped.
+  - `pnpm --filter @agentforge/core test --run` passed with 650 tests.
+  - `pnpm typecheck` passed across all six packages; `git diff --check` passed.
+- [x] Run lint (`pnpm lint`) before finalizing the PR and record results
+  - Workspace lint passed with existing warnings and zero errors; explicit-any baseline passed at 45/289 warnings.
+- [x] Commit completed checklist items and push updates
+  - Implementation commit `08015776` was pushed to `origin/refactor/st-09095-metrics-collection-instrumentation`; final review-state synchronization follows validation.
 - [ ] Mark the PR Ready only after all story tasks are complete
 - [ ] Wait for merge; do not merge directly from local branch
 

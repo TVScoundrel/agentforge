@@ -2479,14 +2479,14 @@
 **Priority:** P2 (Medium)
 **Estimate:** 3 hours
 **Dependencies:** None
-**Status:** In Progress
+**Status:** In Review (PR #172)
 
 **Acceptance criteria:**
-- [ ] Reduce `packages/core/src/langgraph/observability/metrics.ts` to a stable public facade by extracting focused metric contracts, collector/timer runtime, and node instrumentation modules that stay below the planning cutoff.
-- [ ] Preserve public `MetricType`, `MetricEntry`, `Timer`, `Metrics`, `MetricsNodeOptions`, `createMetrics(...)`, and `withMetrics(...)` exports and existing counter, gauge, histogram, label, prefix, timer, clear, duration, invocation, and error-tracking behavior.
-- [ ] Keep `packages/core/tests/langgraph/observability/metrics.test.ts` as a small discoverable public entrypoint and move collector/timer, node-instrumentation, and shared fixture coverage into focused non-discoverable modules under `packages/core/tests/langgraph/observability/metrics/`, with characterization coverage split before production refactoring.
-- [ ] `pnpm --filter @agentforge/core test --run`, `pnpm --filter @agentforge/core typecheck`, `pnpm lint`, and the full test suite pass without explicit-any baseline regression.
-- [ ] Add or update story documentation at `docs/st09095-metrics-collection-instrumentation-modularization.md`.
+- [x] Reduce `packages/core/src/langgraph/observability/metrics.ts` to a stable public facade by extracting focused metric contracts, collector/timer runtime, and node instrumentation modules that stay below the planning cutoff.
+- [x] Preserve public `MetricType`, `MetricEntry`, `Timer`, `Metrics`, `MetricsNodeOptions`, `createMetrics(...)`, and `withMetrics(...)` exports and existing counter, gauge, histogram, label, prefix, timer, clear, duration, invocation, and error-tracking behavior.
+- [x] Keep `packages/core/tests/langgraph/observability/metrics.test.ts` as a small discoverable public entrypoint and move collector/timer, node-instrumentation, and shared fixture coverage into focused non-discoverable modules under `packages/core/tests/langgraph/observability/metrics/`, with characterization coverage split before production refactoring.
+- [x] `pnpm --filter @agentforge/core test --run`, `pnpm --filter @agentforge/core typecheck`, `pnpm lint`, and the full test suite pass without explicit-any baseline regression.
+- [x] Add or update story documentation at `docs/st09095-metrics-collection-instrumentation-modularization.md`.
 
 ---
 

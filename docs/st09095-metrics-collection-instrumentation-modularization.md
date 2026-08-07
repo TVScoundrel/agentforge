@@ -24,4 +24,9 @@ No CI workflow change is required. Existing focused core tests, the core typeche
 - Characterization baseline: `pnpm --filter @agentforge/core test --run tests/langgraph/observability/metrics.test.ts` — 1 file and 9 tests passed against the unchanged implementation.
 - Post-refactor focused validation: the same command — 1 file and 9 tests passed.
 - `pnpm --filter @agentforge/core typecheck` — passed.
-- Full validation results are recorded in the story checklist and PR description before review readiness.
+- `pnpm --filter @agentforge/core test --run` — passed, 650 tests.
+- `pnpm release:validate` — build passed; 231 test files passed, 9 skipped; 2,559 tests passed, 110 skipped.
+- `pnpm lint` — passed with existing warnings and zero errors.
+- `pnpm typecheck` — passed across all six packages.
+- `pnpm lint:explicit-any:baseline` — passed at 45/289 warnings with no regression.
+- `git diff --check` — passed.

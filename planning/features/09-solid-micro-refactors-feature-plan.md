@@ -3,7 +3,7 @@
 **Epic Range:** EP-09 through EP-09
 **Status:** In Progress
 **Last Updated:** 2026-08-07
-**Active Story:** ST-09095 is In Progress, followed by ST-09096 through ST-09098 as independent low-risk modularization slices.
+**Active Story:** ST-09095 is In Review in PR #172, followed by ST-09096 through ST-09098 as independent low-risk modularization slices.
 
 ---
 

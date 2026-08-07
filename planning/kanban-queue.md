@@ -5,8 +5,8 @@
 ## Queue Status Summary
 
 - **Ready:** 3 stories
-- **In Progress:** 1 story
-- **In Review:** 0 stories
+- **In Progress:** 0 stories
+- **In Review:** 1 story
 - **Blocked:** 0 stories
 - **Backlog:** 0 stories
 
@@ -22,13 +22,13 @@
 
 ## In Progress
 
-- `ST-09095` — Modularize Metrics Collection and Node Instrumentation
+None currently.
 
 ---
 
 ## In Review
 
-None currently.
+- `ST-09095` — Modularize Metrics Collection and Node Instrumentation (PR #172)
 
 ---
 
@@ -74,6 +74,7 @@ None currently.
 - ST-11009 merged on 2026-08-07 as PR #171 / commit `d445315c`; removed from the active queue and archived as done, leaving the accepted queue empty after grooming
 - ST-09095 through ST-09098 added to Ready on 2026-08-07 after source review identified four independent, low-risk EP-09 modularization slices across metrics, prompt loading, multi-agent contracts, and plan-execute parsing/tests
 - ST-09095 moved to In Progress on 2026-08-07 as the next deterministic dependency-ready EP-09 story; ST-09096 through ST-09098 remain in Ready
+- ST-09095 moved to In Review on 2026-08-07 with PR #172 after metrics/test modularization, documentation, focused and full validation, lint, typecheck, baseline verification, and self-review; ST-09096 through ST-09098 remain in Ready
 
 - Complete: ST-01001 - foundation established (merged 2026-02-17)
 - Complete: ST-01002 - connection manager implemented (merged 2026-02-17)
