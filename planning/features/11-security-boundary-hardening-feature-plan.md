@@ -2,8 +2,8 @@
 
 **Epic Range:** EP-11 through EP-11
 **Status:** In Progress
-**Last Updated:** 2026-08-06
-**Active Story:** No EP-11 story active; ST-11009 is Ready as a security-guidance follow-on.
+**Last Updated:** 2026-08-07
+**Active Story:** ST-11009 is in progress to align the skill-powered-agent example with the model-safe filesystem path.
 
 ---
 

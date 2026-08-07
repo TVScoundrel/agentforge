@@ -1,11 +1,11 @@
 # Kanban Queue: AgentForge
 
-**Last Updated:** 2026-08-06
+**Last Updated:** 2026-08-07
 
 ## Queue Status Summary
 
-- **Ready:** 1 story
-- **In Progress:** 0 stories
+- **Ready:** 0 stories
+- **In Progress:** 1 story
 - **In Review:** 0 stories
 - **Blocked:** 0 stories
 - **Backlog:** 0 stories
@@ -14,13 +14,13 @@
 
 ## Ready
 
-- `ST-11009` — Harden Skill-Powered Agent Filesystem Guidance
+None currently.
 
 ---
 
 ## In Progress
 
-None currently.
+- `ST-11009` — Harden Skill-Powered Agent Filesystem Guidance
 
 ---
 

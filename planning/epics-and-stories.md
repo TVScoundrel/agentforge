@@ -2721,15 +2721,15 @@
 **Priority:** P2 (Medium)
 **Estimate:** 2 hours
 **Dependencies:** ST-11003 and ST-11007 (merged)
-**Status:** Ready
+**Status:** In Progress
 
 **Acceptance criteria:**
-- [ ] Update the skill-powered-agent tutorial and example setup to use a shared filesystem policy or `createModelSafeToolPreset` for model-facing file and directory tools instead of unrestricted factories.
-- [ ] Preserve trusted workspace-skill resource loading and the example's intended file-search/read behavior while requiring an explicit workspace or allowed root.
-- [ ] Add focused example or documentation validation that the model-facing setup rejects traversal and outside-root access and clearly distinguishes trusted local automation from model-exposed tools.
-- [ ] Update the relevant README/tutorial/API guidance and cross-link the repository security policy without changing unrelated skill trust behavior.
-- [ ] Run the supported example tests, `pnpm lint`, and `pnpm typecheck` or document any pre-existing example-only incompatibility.
-- [ ] Add or update story documentation at `docs/st11009-skill-agent-filesystem-guidance.md`
+- [x] Update the skill-powered-agent tutorial and example setup to use a shared filesystem policy or `createModelSafeToolPreset` for model-facing file and directory tools instead of unrestricted factories.
+- [x] Preserve trusted workspace-skill resource loading and the example's intended file-search/read behavior while requiring an explicit workspace or allowed root.
+- [x] Add focused example or documentation validation that the model-facing setup rejects traversal and outside-root access and clearly distinguishes trusted local automation from model-exposed tools.
+- [x] Update the relevant README/tutorial/API guidance and cross-link the repository security policy without changing unrelated skill trust behavior.
+- [x] Run the supported example tests, `pnpm lint`, and `pnpm typecheck` or document any pre-existing example-only incompatibility.
+- [x] Add or update story documentation at `docs/st11009-skill-agent-filesystem-guidance.md`
 
 ---
 

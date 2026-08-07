@@ -5,16 +5,20 @@
   "type": "module",
   "private": true,
   "scripts": {
+    "lint": "eslint src",
     "start": "tsx src/index.ts",
+    "test": "vitest run --config vitest.config.ts",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
     "@agentforge/core": "workspace:*",
-    "@agentforge/skills": "workspace:*"
+    "@agentforge/skills": "workspace:*",
+    "@agentforge/tools": "workspace:*"
   },
   "devDependencies": {
     "@types/node": "^22.10.2",
     "tsx": "^4.21.0",
-    "typescript": "^5.7.2"
+    "typescript": "^5.7.2",
+    "vitest": "^2.1.8"
   }
 }
