@@ -2,8 +2,8 @@
 
 **Epic Range:** EP-09 through EP-09
 **Status:** In Progress
-**Last Updated:** 2026-08-06
-**Active Story:** None; the EP-09 ready lane is empty after `ST-09094` merged
+**Last Updated:** 2026-08-07
+**Active Story:** ST-09095 is Ready, followed by ST-09096 through ST-09098 as independent low-risk modularization slices.
 
 ---
 
@@ -32,18 +32,21 @@
 
 ## Current Hotspot Snapshot
 
-Current `@typescript-eslint/no-explicit-any` baseline check (latest committed release-era tracking):
+Current measured `@typescript-eslint/no-explicit-any` baseline check (2026-08-07):
 
-- Total: `76` warnings (`src/**`)
-- By package: `cli 4`, `core 19`, `patterns 2`, `testing 0`, `tools 51`
+- Total: `45` warnings (`packages/**/src/**/*.ts`)
+- By package: `cli 4`, `core 13`, `patterns 2`, `skills 0`, `testing 0`, `tools 26`
+- The committed cap remains `289`; baseline tightening is intentionally separate from these modularization stories unless a story reduces the measured count.
 
 Top runtime hotspots informing this feature slice:
 
-1. Remaining generic wrapper seams include `TArgs extends any[]` in `packages/core/src/monitoring/profiler.ts` and `packages/core/src/resources/circuit-breaker.ts`, making a small shared type-boundary slice appropriate.
-2. Remaining metadata seams include `Record<string, any>` in `packages/core/src/langgraph/persistence/thread.ts` and `packages/core/src/langgraph/observability/langsmith.ts`, where unknown-first JSON-safe contracts can preserve compatibility while removing ambiguity.
-3. The tools package still has concentrated Neo4j payload and error-boundary `any` usage across `packages/tools/src/data/neo4j/types.ts`, `packages/tools/src/data/neo4j/utils/cypher-sanitizer.ts`, and adjacent node/embedding helpers.
-4. The strongest remaining test-modularity hotspots are `packages/patterns/tests/plan-execute/nodes.test.ts` (`802`), `packages/tools/tests/web/confluence.test.ts` (`739`), and `packages/tools/tests/web/slack.test.ts` (`600`); these should be split only when paired with a clear runtime or shared-helper payoff.
-5. The next follow-on slices should keep EP-09 open for another short burst of small type-boundary improvements rather than creating a new epic for the same quality lane.
+1. `packages/core/src/langgraph/observability/metrics.ts` (`286` lines) combines public metric contracts, in-memory collection, timers, and node instrumentation in one module.
+2. `packages/core/src/prompt-loader/index.ts` (`251` lines) couples untrusted-value sanitization, variable normalization, conditional rendering, substitution, and filesystem loading behind one entrypoint.
+3. `packages/patterns/src/multi-agent/types.ts` (`285` lines) groups supervisor, worker, aggregator, system, node, and routing contracts even though the runtime and schema layers are already modularized by those domains.
+4. `packages/patterns/tests/plan-execute/nodes.test.ts` (`802` lines) is the largest remaining patterns test hotspot, while planner and replanner nodes still repeat model-content normalization and JSON parse/error wrapping.
+5. ST-09095 through ST-09098 form a dependency-free burst of behavior-preserving SOLID/DRY work; large third-party integration suites remain out of scope until a matching runtime payoff is identified.
+
+Test modularization convention for this slice: preserve one small discoverable `*.test.ts` or source-included `*.typecheck.ts` entrypoint per public surface, and move role-aligned suites/contracts plus shared fixtures into a matching subdirectory using non-discoverable module names. Test module boundaries should mirror the production responsibility split.
 
 Recent improvement snapshot:
 
@@ -174,7 +177,7 @@ Recent improvement snapshot:
 
 ## Story Coverage by Epic
 
-- EP-09: ST-09001 through ST-09094
+- EP-09: ST-09001 through ST-09098
 
 ---
 

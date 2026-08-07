@@ -4,7 +4,7 @@
 
 ## Queue Status Summary
 
-- **Ready:** 0 stories
+- **Ready:** 4 stories
 - **In Progress:** 0 stories
 - **In Review:** 0 stories
 - **Blocked:** 0 stories
@@ -14,7 +14,10 @@
 
 ## Ready
 
-None currently.
+- `ST-09095` — Modularize Metrics Collection and Node Instrumentation
+- `ST-09096` — Modularize Prompt Loading, Sanitization, and Rendering
+- `ST-09097` — Split Multi-Agent Configuration and Routing Contracts
+- `ST-09098` — DRY Plan-Execute Model Parsing and Node Tests
 
 ---
 
@@ -70,6 +73,7 @@ None currently.
 - ST-09094 moved to In Review on 2026-08-05 with PR #170 after implementation, focused and full validation, lint, typecheck, build, documentation, and explicit-any baseline verification; `ST-11009` remains in Ready
 - ST-09094 merged on 2026-08-06 as PR #170 / commit `2195e7e4`; removed from the active queue, archived as done, and `ST-11009` remains the next dependency-ready Ready story
 - ST-11009 merged on 2026-08-07 as PR #171 / commit `d445315c`; removed from the active queue and archived as done, leaving the accepted queue empty after grooming
+- ST-09095 through ST-09098 added to Ready on 2026-08-07 after source review identified four independent, low-risk EP-09 modularization slices across metrics, prompt loading, multi-agent contracts, and plan-execute parsing/tests
 
 - Complete: ST-01001 - foundation established (merged 2026-02-17)
 - Complete: ST-01002 - connection manager implemented (merged 2026-02-17)

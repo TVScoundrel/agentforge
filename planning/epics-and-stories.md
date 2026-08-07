@@ -2473,6 +2473,74 @@
 
 ---
 
+#### ST-09095: Modularize Metrics Collection and Node Instrumentation
+**User story:** As a core maintainer, I want metric contracts, in-memory collection, and LangGraph node instrumentation separated behind a stable facade so collector behavior and middleware concerns can evolve independently.
+
+**Priority:** P2 (Medium)
+**Estimate:** 3 hours
+**Dependencies:** None
+**Status:** Ready
+
+**Acceptance criteria:**
+- [ ] Reduce `packages/core/src/langgraph/observability/metrics.ts` to a stable public facade by extracting focused metric contracts, collector/timer runtime, and node instrumentation modules that stay below the planning cutoff.
+- [ ] Preserve public `MetricType`, `MetricEntry`, `Timer`, `Metrics`, `MetricsNodeOptions`, `createMetrics(...)`, and `withMetrics(...)` exports and existing counter, gauge, histogram, label, prefix, timer, clear, duration, invocation, and error-tracking behavior.
+- [ ] Keep `packages/core/tests/langgraph/observability/metrics.test.ts` as a small discoverable public entrypoint and move collector/timer, node-instrumentation, and shared fixture coverage into focused non-discoverable modules under `packages/core/tests/langgraph/observability/metrics/`, with characterization coverage split before production refactoring.
+- [ ] `pnpm --filter @agentforge/core test --run`, `pnpm --filter @agentforge/core typecheck`, `pnpm lint`, and the full test suite pass without explicit-any baseline regression.
+- [ ] Add or update story documentation at `docs/st09095-metrics-collection-instrumentation-modularization.md`.
+
+---
+
+#### ST-09096: Modularize Prompt Loading, Sanitization, and Rendering
+**User story:** As a core maintainer, I want prompt value sanitization, template rendering, and filesystem loading separated behind the existing prompt-loader entrypoint so security-sensitive normalization and I/O behavior can be reviewed and extended independently.
+
+**Priority:** P2 (Medium)
+**Estimate:** 3 hours
+**Dependencies:** None
+**Status:** Ready
+
+**Acceptance criteria:**
+- [ ] Reduce `packages/core/src/prompt-loader/index.ts` to a stable facade by extracting focused variable normalization/sanitization, conditional/substitution rendering, and prompt-file loading helpers.
+- [ ] Preserve public `sanitizeValue(...)`, `renderTemplate(...)`, and `loadPrompt(...)` exports plus trusted/untrusted precedence, own-property handling, prototype-safety, raw-value conditional truthiness, substitution sanitization, length limits, and wrapped file errors.
+- [ ] Keep `packages/core/tests/prompt-loader/index.test.ts` as a small discoverable public entrypoint and move sanitization, rendering/conditionals, compatibility/security, file-loading, and shared fixture coverage into focused non-discoverable modules under `packages/core/tests/prompt-loader/`, with characterization tests split before production refactoring.
+- [ ] `pnpm --filter @agentforge/core test --run`, `pnpm --filter @agentforge/core typecheck`, `pnpm lint`, and the full test suite pass without explicit-any baseline regression.
+- [ ] Add or update story documentation at `docs/st09096-prompt-loader-modularization.md`.
+
+---
+
+#### ST-09097: Split Multi-Agent Configuration and Routing Contracts
+**User story:** As a patterns maintainer, I want supervisor, worker, aggregator, system, and routing contracts grouped into focused modules behind the current types entrypoint so changes in one multi-agent role do not require editing a shared type monolith.
+
+**Priority:** P2 (Medium)
+**Estimate:** 2 hours
+**Dependencies:** None
+**Status:** Ready
+
+**Acceptance criteria:**
+- [ ] Reduce `packages/patterns/src/multi-agent/types.ts` to a stable type-export facade backed by focused supervisor, worker, aggregator/system, and routing contract modules without introducing runtime import cycles.
+- [ ] Preserve all public type names and existing exports through both `multi-agent/index.ts` and the package root, including `SupervisorConfig`, `WorkerConfig`, `AggregatorConfig`, `MultiAgentSystemConfig`, node/route aliases, router, and routing strategy contracts.
+- [ ] Keep `packages/patterns/tests/multi-agent/contracts.typecheck.ts` as the stable source-included typecheck entrypoint and split representative supervisor, worker, aggregator/system, and routing assertions into matching focused contract modules under `packages/patterns/tests/multi-agent/contracts/`; retain relevant runtime suites as compatibility evidence.
+- [ ] `pnpm --filter @agentforge/patterns test --run`, `pnpm --filter @agentforge/patterns typecheck`, `pnpm lint`, and the full test suite pass without explicit-any baseline regression.
+- [ ] Add or update story documentation at `docs/st09097-multi-agent-contract-modularization.md`.
+
+---
+
+#### ST-09098: DRY Plan-Execute Model Parsing and Node Tests
+**User story:** As a patterns maintainer, I want planner and replanner model-response parsing to share one typed helper and their tests split by node so parsing fixes and node behavior are not duplicated across two runtimes and one oversized suite.
+
+**Priority:** P2 (Medium)
+**Estimate:** 3 hours
+**Dependencies:** None
+**Status:** Ready
+
+**Acceptance criteria:**
+- [ ] Extract the repeated model-content normalization, JSON parsing, and contextual parse-error wrapping from planner and replanner nodes into a focused typed helper without changing their public factories or state transitions.
+- [ ] Preserve string and array-based model content handling, planner step truncation/defaults, replanner decision behavior, current structured error messages, logging, iteration resets, and unserializable result fallbacks.
+- [ ] Keep `packages/patterns/tests/plan-execute/nodes.test.ts` as a small discoverable public entrypoint and replace its `802`-line body with focused non-discoverable planner, executor, replanner, finisher, and shared-fixture modules under `packages/patterns/tests/plan-execute/nodes/`.
+- [ ] `pnpm --filter @agentforge/patterns test --run`, `pnpm --filter @agentforge/patterns typecheck`, `pnpm lint`, and the full test suite pass without explicit-any baseline regression.
+- [ ] Add or update story documentation at `docs/st09098-plan-execute-parsing-test-modularization.md`.
+
+---
+
 #### ST-10001: Audit Markdown Emoji Usage Across Project-Owned Docs
 **User story:** As a maintainer, I want a clear inventory of markdown emoji usage so docs-only cleanup work can be prioritized and executed without noisy, repo-wide guesswork.
 
@@ -2735,13 +2803,14 @@
 
 ## Story Summary
 
-**Total Stories:** 104
+**Total Stories:** 148
 **By Priority:**
 - P0 (Critical): 17 stories
-- P1 (High): 31 stories
-  - P2 (Medium): 56 stories
+- P1 (High): 33 stories
+- P2 (Medium): 97 stories
+- P3 (Low): 1 story
 
-**Total Estimated Effort:** ~369 hours (46 working days)
+**Total Estimated Effort:** ~526 hours (66 working days)
 
 **Dependency Chain:**
 1. Phase 1 (Foundation): ST-01001 → ST-01002 → ST-01003 → ST-01004
@@ -2752,6 +2821,6 @@
 6. Phase 6 (Agent Skills): ST-06001 → ST-06002 → ST-06003 → ST-06004 → ST-06005 → ST-06006
 7. Phase 7 (Skills Extraction): ST-07001 → ST-07002 → [ST-07003, ST-07004 parallel] → ST-07005; ST-07001 → ST-07006 (independent)
 8. Phase 8 (Type Safety Hardening): ST-08001 → [ST-08002, ST-08003, ST-08004 parallel]
-9. Phase 9 (SOLID Micro-Refactors): ST-09001 (Merged) → ST-09002 (Merged) → ST-09003 (Merged) → ST-09004 (Merged) → ST-09005 (Merged) → ST-09006 (Merged) → ST-09007 (Merged) → ST-09008 (Merged) → ST-09009 (Merged) → ST-09010 (Merged) → ST-09011 (Merged) → ST-09012 (Merged) → ST-09013 (Merged) → ST-09014 (Merged) → ST-09015 (Merged) → ST-09016 (Merged) → ST-09017 (Merged) → ST-09018 (Merged) → ST-09019 (Merged) → ST-09020 (Merged) → ST-09021 (Merged) → ST-09022 (Merged) → ST-09023 (Merged); ST-09025 (Merged) → ST-09026 (Merged) → ST-09031 (Merged); ST-09027 (Merged) → ST-09028 (Merged) → ST-09030 (Merged); ST-09032 → ST-09033; ST-09034 (Merged) → ST-09035 (Merged) → ST-09036 (Merged) → ST-09041; ST-09023 (Merged) and ST-09029 (Merged) → ST-09037; ST-09038 independent; ST-09023 (Merged) → ST-09039; ST-09024 (Merged) → ST-09040 → ST-09042 → ST-09047; ST-09020 (Merged) → ST-09043; ST-09018 (Merged) → ST-09044; ST-09015 (Merged) → ST-09045 → ST-09048; ST-09038 (Merged) → ST-09046; ST-03002 (Merged) → ST-09055; ST-06005 (Merged) → ST-09056 (Merged) → ST-09071; ST-04001 (Merged) → ST-09057; ST-09032 (Merged) → ST-09058; ST-09037 (Merged) → ST-09059; ST-09045 (Merged) → ST-09060; ST-09050 (Merged) → ST-09061 (Merged) → ST-09062; ST-09051 (Merged) → ST-09063 (Merged) → ST-09070 → [ST-09075, ST-09076]; ST-09043 (Merged) → ST-09064 (Merged) → ST-09065 (Merged); ST-09010 (Merged) → ST-09066
+9. Phase 9 (SOLID Micro-Refactors): ST-09001 (Merged) → ST-09002 (Merged) → ST-09003 (Merged) → ST-09004 (Merged) → ST-09005 (Merged) → ST-09006 (Merged) → ST-09007 (Merged) → ST-09008 (Merged) → ST-09009 (Merged) → ST-09010 (Merged) → ST-09011 (Merged) → ST-09012 (Merged) → ST-09013 (Merged) → ST-09014 (Merged) → ST-09015 (Merged) → ST-09016 (Merged) → ST-09017 (Merged) → ST-09018 (Merged) → ST-09019 (Merged) → ST-09020 (Merged) → ST-09021 (Merged) → ST-09022 (Merged) → ST-09023 (Merged); ST-09025 (Merged) → ST-09026 (Merged) → ST-09031 (Merged); ST-09027 (Merged) → ST-09028 (Merged) → ST-09030 (Merged); ST-09032 → ST-09033; ST-09034 (Merged) → ST-09035 (Merged) → ST-09036 (Merged) → ST-09041; ST-09023 (Merged) and ST-09029 (Merged) → ST-09037; ST-09038 independent; ST-09023 (Merged) → ST-09039; ST-09024 (Merged) → ST-09040 → ST-09042 → ST-09047; ST-09020 (Merged) → ST-09043; ST-09018 (Merged) → ST-09044; ST-09015 (Merged) → ST-09045 → ST-09048; ST-09038 (Merged) → ST-09046; ST-03002 (Merged) → ST-09055; ST-06005 (Merged) → ST-09056 (Merged) → ST-09071; ST-04001 (Merged) → ST-09057; ST-09032 (Merged) → ST-09058; ST-09037 (Merged) → ST-09059; ST-09045 (Merged) → ST-09060; ST-09050 (Merged) → ST-09061 (Merged) → ST-09062; ST-09051 (Merged) → ST-09063 (Merged) → ST-09070 → [ST-09075, ST-09076]; ST-09043 (Merged) → ST-09064 (Merged) → ST-09065 (Merged); ST-09010 (Merged) → ST-09066; ST-09095, ST-09096, ST-09097, and ST-09098 are independent dependency-ready follow-ons ordered by expected payoff
 10. Phase 10 (Documentation Only Changes): ST-10001 → [ST-10002, ST-10003, ST-10004, ST-10005 parallel] → ST-10006; EP-10 remains evergreen and intentionally open for future docs-only stories even when no current stories are queued
 11. Phase 11 (Security Boundary Hardening): ST-11001 → [ST-11002, ST-11003, ST-11004, ST-11005, ST-11006 parallel] → ST-11007 → ST-11008 → ST-11009, with ST-11001 establishing the policy baseline for the follow-on hardening and example-guidance stories
