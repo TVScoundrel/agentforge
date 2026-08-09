@@ -3953,7 +3953,8 @@ Implementation notes:
 ### Checklist
 - [x] Create branch `refactor/st-09096-prompt-loader-modularization` from `main`
   - Created from clean synchronized `main` at release commit `13cd17c0`.
-- [ ] Create draft PR with ST-09096 in the title
+- [x] Create draft PR with ST-09096 in the title
+  - PR #173: https://github.com/TVScoundrel/agentforge/pull/173
 - [x] Define test strategy before implementation: cover sanitization, trusted/untrusted precedence, conditionals, substitution, prototype safety, compatibility, and file loading, including the first failing test if a practical seam is found
   - Chose characterization-first coverage because ST-09096 changes module boundaries without defining new behavior.
 - [x] Write or update the failing automated test before production changes when practical; if this remains behavior-preserving modularization, record why characterization-first coverage is safer
@@ -3962,15 +3963,18 @@ Implementation notes:
 - [x] Preserve public APIs, security boundaries, conditional raw-value semantics, substitution behavior, and wrapped file errors
 - [x] Keep `packages/core/tests/prompt-loader/index.test.ts` as a small discoverable entrypoint and split sanitization, rendering/conditionals, compatibility/security, file-loading, and shared fixtures into non-discoverable modules under `packages/core/tests/prompt-loader/`
 - [x] Add/update production code until focused tests pass, keeping test evidence in checklist notes and PR body
-  - Characterization baseline passed with 17 tests; post-extraction coverage passed with 19 tests after retaining explicit trusted and plain-object conditional cases; core typecheck and lint also passed.
+  - Characterization baseline passed with 17 tests; final post-extraction coverage passed with 27 tests after restoring original cases as independently discoverable tests and retaining additional characterizations; core typecheck and lint also passed.
 - [x] Assess residual test impact; add/update additional automated tests when needed, or document why no further tests are required
   - Added coverage for missing variables, own option discriminators, default prompt-directory resolution, and wrapped missing-file errors; no further focused cases were identified.
 - [x] Add or update story documentation at `docs/st09096-prompt-loader-modularization.md` (or document why not required)
 - [x] Assess CI/validation impact and update automation if required, or record why no CI change is needed
   - No CI change is required; existing core/workspace tests, typecheck, lint, release validation, and explicit-any gates cover the split.
-- [ ] Run full test suite before finalizing the PR and record results
-- [ ] Run lint (`pnpm lint`) before finalizing the PR and record results
-- [ ] Commit completed checklist items and push updates
+- [x] Run full test suite before finalizing the PR and record results
+  - `pnpm release:validate` passed: 231 test files passed, 9 skipped; 2,562 tests passed, 110 skipped. `pnpm --filter @agentforge/core test --run` also passed with 67 files and 653 tests.
+- [x] Run lint (`pnpm lint`) before finalizing the PR and record results
+  - Passed with existing warnings and zero errors; workspace typecheck and the explicit-any baseline gate also passed (45/289).
+- [x] Commit completed checklist items and push updates
+  - Initial implementation commit `ca1ac645` was pushed; final validation and tracker synchronization follow in the review-readiness commit.
 - [ ] Mark the PR Ready only after all story tasks are complete
 - [ ] Wait for merge; do not merge directly from local branch
 

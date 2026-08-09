@@ -2496,14 +2496,14 @@
 **Priority:** P2 (Medium)
 **Estimate:** 3 hours
 **Dependencies:** None
-**Status:** In Progress
+**Status:** In Review (PR #173)
 
 **Acceptance criteria:**
-- [ ] Reduce `packages/core/src/prompt-loader/index.ts` to a stable facade by extracting focused variable normalization/sanitization, conditional/substitution rendering, and prompt-file loading helpers.
-- [ ] Preserve public `sanitizeValue(...)`, `renderTemplate(...)`, and `loadPrompt(...)` exports plus trusted/untrusted precedence, own-property handling, prototype-safety, raw-value conditional truthiness, substitution sanitization, length limits, and wrapped file errors.
-- [ ] Keep `packages/core/tests/prompt-loader/index.test.ts` as a small discoverable public entrypoint and move sanitization, rendering/conditionals, compatibility/security, file-loading, and shared fixture coverage into focused non-discoverable modules under `packages/core/tests/prompt-loader/`, with characterization tests split before production refactoring.
-- [ ] `pnpm --filter @agentforge/core test --run`, `pnpm --filter @agentforge/core typecheck`, `pnpm lint`, and the full test suite pass without explicit-any baseline regression.
-- [ ] Add or update story documentation at `docs/st09096-prompt-loader-modularization.md`.
+- [x] Reduce `packages/core/src/prompt-loader/index.ts` to a stable facade by extracting focused variable normalization/sanitization, conditional/substitution rendering, and prompt-file loading helpers.
+- [x] Preserve public `sanitizeValue(...)`, `renderTemplate(...)`, and `loadPrompt(...)` exports plus trusted/untrusted precedence, own-property handling, prototype-safety, raw-value conditional truthiness, substitution sanitization, length limits, and wrapped file errors.
+- [x] Keep `packages/core/tests/prompt-loader/index.test.ts` as a small discoverable public entrypoint and move sanitization, rendering/conditionals, compatibility/security, file-loading, and shared fixture coverage into focused non-discoverable modules under `packages/core/tests/prompt-loader/`, with characterization tests split before production refactoring.
+- [x] `pnpm --filter @agentforge/core test --run`, `pnpm --filter @agentforge/core typecheck`, `pnpm lint`, and the full test suite pass without explicit-any baseline regression.
+- [x] Add or update story documentation at `docs/st09096-prompt-loader-modularization.md`.
 
 ---
 

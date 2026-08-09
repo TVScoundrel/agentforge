@@ -5,8 +5,8 @@
 ## Queue Status Summary
 
 - **Ready:** 3 stories
-- **In Progress:** 1 story
-- **In Review:** 0 stories
+- **In Progress:** 0 stories
+- **In Review:** 1 story
 - **Blocked:** 0 stories
 - **Backlog:** 0 stories
 
@@ -23,13 +23,13 @@
 
 ## In Progress
 
-- `ST-09096` — Modularize Prompt Loading, Sanitization, and Rendering
+None currently.
 
 ---
 
 ## In Review
 
-None currently.
+- `ST-09096` — Modularize Prompt Loading, Sanitization, and Rendering (PR #173)
 
 ---
 
@@ -79,6 +79,7 @@ None currently.
 - ST-09099 added to Backlog on 2026-08-07 after PR #172 review confirmed that default `withMetrics(...)` collectors duplicate the node namespace; it depends on ST-09095 and preserves shared-collector naming as a separate compatibility path
 - ST-09095 merged on 2026-08-07 as PR #172 / commit `23d65d9d`; removed from the active queue and archived as done, and dependency-ready ST-09099 was promoted from Backlog to the end of Ready behind ST-09096 through ST-09098
 - ST-09096 moved to In Progress on 2026-08-09 as the next deterministic dependency-ready EP-09 story; ST-09097 through ST-09099 remain in Ready
+- ST-09096 moved to In Review on 2026-08-09 with PR #173 after prompt-loader and test-suite modularization, characterization and full validation, lint, typecheck, explicit-any baseline verification, documentation, and self-review; ST-09097 through ST-09099 remain in Ready
 
 - Complete: ST-01001 - foundation established (merged 2026-02-17)
 - Complete: ST-01002 - connection manager implemented (merged 2026-02-17)

@@ -14,7 +14,7 @@ Split prompt contracts, variable normalization and sanitization, conditional/sub
 
 ## Test Strategy
 
-This is a behavior-preserving module split, so characterization-first coverage was used instead of inventing a failing behavioral requirement. Before production changes, the public suite was split into sanitization, rendering, compatibility/security, and file-loading modules and expanded to cover missing variables, own option discriminators, default prompt-directory resolution, and wrapped missing-file errors. The 17-test characterization baseline passed against the original implementation; post-extraction coverage has 19 tests after retaining explicit trusted and plain-object conditional cases.
+This is a behavior-preserving module split, so characterization-first coverage was used instead of inventing a failing behavioral requirement. Before production changes, the public suite was split into sanitization, rendering, compatibility/security, and file-loading modules and expanded to cover missing variables, own option discriminators, default prompt-directory resolution, and wrapped missing-file errors. The 17-test characterization baseline passed against the original implementation; final post-extraction coverage has 27 tests after restoring the original cases as independently discoverable tests and retaining the additional characterizations.
 
 ## Security and Compatibility
 
@@ -27,7 +27,12 @@ No CI workflow change is required. Existing focused/core tests, typecheck, works
 ## Validation
 
 - Characterization baseline: `pnpm --filter @agentforge/core test --run tests/prompt-loader/index.test.ts` — 1 file and 17 tests passed before production changes.
-- Post-refactor focused validation: the same command — 1 file and 19 tests passed.
+- Post-refactor focused validation: the same command — 1 file and 27 tests passed.
 - `pnpm --filter @agentforge/core typecheck` — passed.
 - `pnpm --filter @agentforge/core lint` — passed with existing warnings and zero errors.
-- Full validation results are recorded in the checklist and PR body before review readiness.
+- `pnpm --filter @agentforge/core test --run` — 67 files and 653 tests passed.
+- `pnpm release:validate` — build and release validation passed; 231 test files passed, 9 skipped, 2,562 tests passed, and 110 skipped.
+- `pnpm lint` — passed with existing warnings and zero errors.
+- `pnpm typecheck` — passed across all packages.
+- `pnpm lint:explicit-any:baseline` — passed at 45 warnings against the committed cap of 289 (`core` remained 13/119).
+- `git diff --check` — passed.
