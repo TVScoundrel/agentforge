@@ -3,7 +3,7 @@
 **Epic Range:** EP-09 through EP-09
 **Status:** In Progress
 **Last Updated:** 2026-08-09
-**Active Story:** ST-09096 is In Review in PR #173; ST-09097 through ST-09099 remain dependency-ready in Ready.
+**Active Story:** ST-09097 is next in Ready; ST-09098 and ST-09099 remain dependency-ready in Ready.
 
 ---
 
@@ -157,6 +157,7 @@ Recent improvement snapshot:
 - `ST-09094` moved to In Progress on 2026-08-05 as the next deterministic EP-09 Neo4j property/query payload-boundary story.
 - `ST-09094` moved to In Review on 2026-08-05 as PR #170 after completing implementation and validation.
 - `ST-09094` merged on 2026-08-06 as PR #170 after completing the Neo4j property/query contract hardening and review follow-up; the EP-09 ready lane is now empty.
+- `ST-09096` merged on 2026-08-09 as PR #173 after modularizing prompt loading, sanitization, rendering, file loading, and characterization coverage; ST-09097 is now the next Ready story, with ST-09098 and ST-09099 dependency-ready behind it.
 
 ## Scope
 

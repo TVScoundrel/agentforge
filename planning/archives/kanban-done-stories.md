@@ -2,11 +2,18 @@
 
 **Purpose:** Track completed and merged stories for the Relational Database Access Tool project.
 
-**Last Updated:** 2026-08-07
+**Last Updated:** 2026-08-09
 
 ---
 
 ## Completed Stories
+
+### ST-09096: Modularize Prompt Loading, Sanitization, and Rendering
+- **Merged:** 2026-08-09
+- **PR:** https://github.com/TVScoundrel/agentforge/pull/173 (commit cd7ad61d)
+- **Epic:** EP-09 (SOLID Micro-Refactors and Type Boundary Hardening)
+- **Estimate:** 3 hours
+- **Outcome:** Reduced the prompt-loader entrypoint to a stable facade backed by focused contracts, variable normalization/sanitization, template rendering, and Markdown file-loading modules. Preserved trusted/untrusted precedence, own-property and prototype safety, raw conditional truthiness, sanitized substitutions, length limits, plain-object compatibility, default/custom prompt directories, and wrapped file errors. Split the 290-line public test body into focused characterization modules with shared fixtures, restored independently discoverable original cases, added missing-variable/option/file-loading coverage, documented the refactor, and passed focused core tests (27), core tests (653), release validation (2,562 passed/110 skipped), lint, typecheck, and explicit-any baseline validation.
 
 ### ST-09095: Modularize Metrics Collection and Node Instrumentation
 - **Merged:** 2026-08-07
