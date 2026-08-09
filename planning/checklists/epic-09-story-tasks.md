@@ -3951,17 +3951,23 @@ Implementation notes:
 **Branch:** `refactor/st-09096-prompt-loader-modularization`
 
 ### Checklist
-- [ ] Create branch `refactor/st-09096-prompt-loader-modularization` from `main`
+- [x] Create branch `refactor/st-09096-prompt-loader-modularization` from `main`
+  - Created from clean synchronized `main` at release commit `13cd17c0`.
 - [ ] Create draft PR with ST-09096 in the title
-- [ ] Define test strategy before implementation: cover sanitization, trusted/untrusted precedence, conditionals, substitution, prototype safety, compatibility, and file loading, including the first failing test if a practical seam is found
-- [ ] Write or update the failing automated test before production changes when practical; if this remains behavior-preserving modularization, record why characterization-first coverage is safer
-- [ ] Extract variable sanitization/normalization, template rendering, and file loading behind the stable prompt-loader entrypoint
-- [ ] Preserve public APIs, security boundaries, conditional raw-value semantics, substitution behavior, and wrapped file errors
-- [ ] Keep `packages/core/tests/prompt-loader/index.test.ts` as a small discoverable entrypoint and split sanitization, rendering/conditionals, compatibility/security, file-loading, and shared fixtures into non-discoverable modules under `packages/core/tests/prompt-loader/`
-- [ ] Add/update production code until focused tests pass, keeping test evidence in checklist notes and PR body
-- [ ] Assess residual test impact; add/update additional automated tests when needed, or document why no further tests are required
-- [ ] Add or update story documentation at `docs/st09096-prompt-loader-modularization.md` (or document why not required)
-- [ ] Assess CI/validation impact and update automation if required, or record why no CI change is needed
+- [x] Define test strategy before implementation: cover sanitization, trusted/untrusted precedence, conditionals, substitution, prototype safety, compatibility, and file loading, including the first failing test if a practical seam is found
+  - Chose characterization-first coverage because ST-09096 changes module boundaries without defining new behavior.
+- [x] Write or update the failing automated test before production changes when practical; if this remains behavior-preserving modularization, record why characterization-first coverage is safer
+  - Split and expanded the suite first; 17 tests passed against the original implementation, avoiding a fabricated failing requirement.
+- [x] Extract variable sanitization/normalization, template rendering, and file loading behind the stable prompt-loader entrypoint
+- [x] Preserve public APIs, security boundaries, conditional raw-value semantics, substitution behavior, and wrapped file errors
+- [x] Keep `packages/core/tests/prompt-loader/index.test.ts` as a small discoverable entrypoint and split sanitization, rendering/conditionals, compatibility/security, file-loading, and shared fixtures into non-discoverable modules under `packages/core/tests/prompt-loader/`
+- [x] Add/update production code until focused tests pass, keeping test evidence in checklist notes and PR body
+  - Characterization baseline passed with 17 tests; post-extraction coverage passed with 19 tests after retaining explicit trusted and plain-object conditional cases; core typecheck and lint also passed.
+- [x] Assess residual test impact; add/update additional automated tests when needed, or document why no further tests are required
+  - Added coverage for missing variables, own option discriminators, default prompt-directory resolution, and wrapped missing-file errors; no further focused cases were identified.
+- [x] Add or update story documentation at `docs/st09096-prompt-loader-modularization.md` (or document why not required)
+- [x] Assess CI/validation impact and update automation if required, or record why no CI change is needed
+  - No CI change is required; existing core/workspace tests, typecheck, lint, release validation, and explicit-any gates cover the split.
 - [ ] Run full test suite before finalizing the PR and record results
 - [ ] Run lint (`pnpm lint`) before finalizing the PR and record results
 - [ ] Commit completed checklist items and push updates

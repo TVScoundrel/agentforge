@@ -2496,7 +2496,7 @@
 **Priority:** P2 (Medium)
 **Estimate:** 3 hours
 **Dependencies:** None
-**Status:** Ready
+**Status:** In Progress
 
 **Acceptance criteria:**
 - [ ] Reduce `packages/core/src/prompt-loader/index.ts` to a stable facade by extracting focused variable normalization/sanitization, conditional/substitution rendering, and prompt-file loading helpers.
