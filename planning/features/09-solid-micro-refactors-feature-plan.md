@@ -2,8 +2,8 @@
 
 **Epic Range:** EP-09 through EP-09
 **Status:** In Progress
-**Last Updated:** 2026-08-07
-**Active Story:** ST-09095 merged in PR #172; ST-09096 through ST-09099 are dependency-ready in Ready, with ST-09096 next in deterministic queue order.
+**Last Updated:** 2026-08-09
+**Active Story:** ST-09096 is In Review in PR #173; ST-09097 through ST-09099 remain dependency-ready in Ready.
 
 ---
 
