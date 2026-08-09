@@ -28,6 +28,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - @agentforge/testing@0.16.88
   - @agentforge/cli@0.16.88
 
+### Validation
+- `pnpm release:validate` passed with 231 test files passed, 9 skipped, 2,562 tests passed, and 110 skipped.
+- Skips are intentional opt-in coverage for Neo4j, PostgreSQL, and MySQL services, database benchmarks, PostgreSQL connection credentials, and web-search performance tests; the default release suite remains deterministic without Docker, external services, credentials, or network access.
+
 ## [0.16.87] - 2026-08-07
 
 ### Changed
