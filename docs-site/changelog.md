@@ -5,6 +5,29 @@ All notable changes to AgentForge will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.16.88] - 2026-08-09
+
+### Changed
+
+#### @agentforge/core - Prompt Loader Modularization
+- Split prompt contracts, variable normalization and sanitization, conditional/substitution rendering, and Markdown file loading into focused modules behind the stable `prompt-loader` facade.
+- Preserved trusted/untrusted precedence, own-property and prototype safety, raw conditional truthiness, sanitized substitutions, length limits, plain-object compatibility, prompt-directory resolution, and wrapped file errors.
+
+### Added
+
+#### @agentforge/core - Prompt Loader Regression Coverage
+- Split prompt-loader characterization coverage into focused sanitization, rendering, compatibility/security, file-loading, and shared-fixture modules.
+- Added coverage for missing variables, malformed option maps, prototype safety, default prompt-directory resolution, and wrapped missing-file errors.
+
+### Published
+- All packages published to npm registry at version 0.16.88:
+  - @agentforge/core@0.16.88
+  - @agentforge/skills@0.16.88
+  - @agentforge/patterns@0.16.88
+  - @agentforge/tools@0.16.88
+  - @agentforge/testing@0.16.88
+  - @agentforge/cli@0.16.88
+
 ## [0.16.87] - 2026-08-07
 
 ### Changed
