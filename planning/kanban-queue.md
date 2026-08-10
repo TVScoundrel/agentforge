@@ -1,12 +1,12 @@
 # Kanban Queue: AgentForge
 
-**Last Updated:** 2026-08-09
+**Last Updated:** 2026-08-10
 
 ## Queue Status Summary
 
-- **Ready:** 3 stories
+- **Ready:** 2 stories
 - **In Progress:** 0 stories
-- **In Review:** 0 stories
+- **In Review:** 1 story
 - **Blocked:** 0 stories
 - **Backlog:** 0 stories
 
@@ -14,7 +14,6 @@
 
 ## Ready
 
-- `ST-09097` — Split Multi-Agent Configuration and Routing Contracts
 - `ST-09098` — DRY Plan-Execute Model Parsing and Node Tests
 - `ST-09099` — Normalize Default Node Metrics Namespaces
   - Depends on: ST-09095 (merged, PR #172)
@@ -29,7 +28,7 @@ None currently.
 
 ## In Review
 
-None currently.
+- `ST-09097` — Split Multi-Agent Configuration and Routing Contracts (PR #174)
 
 ---
 

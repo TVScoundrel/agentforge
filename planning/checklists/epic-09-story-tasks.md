@@ -3987,21 +3987,30 @@ Implementation notes:
 **Branch:** `refactor/st-09097-multi-agent-contract-modularization`
 
 ### Checklist
-- [ ] Create branch `refactor/st-09097-multi-agent-contract-modularization` from `main`
-- [ ] Create draft PR with ST-09097 in the title
-- [ ] Define test strategy before implementation: identify compile-time import/configuration coverage and runtime compatibility suites, including the first failing type assertion to add
-- [ ] Write or update the failing automated type test before production changes when practical; otherwise record why existing compile contracts are sufficient before refactoring
-- [ ] Extract supervisor, worker, aggregator/system, and routing contracts behind the stable `multi-agent/types.ts` facade
-- [ ] Preserve package-root and multi-agent entrypoint exports while preventing runtime import cycles
-- [ ] Keep `packages/patterns/tests/multi-agent/contracts.typecheck.ts` as the stable typecheck entrypoint and split supervisor, worker, aggregator/system, and routing assertions into matching focused modules under `packages/patterns/tests/multi-agent/contracts/`
-- [ ] Add/update production code until focused tests pass, keeping test evidence in checklist notes and PR body
-- [ ] Assess residual test impact; add/update additional automated tests when needed, or document why no further tests are required
-- [ ] Add or update story documentation at `docs/st09097-multi-agent-contract-modularization.md` (or document why not required)
-- [ ] Assess CI/validation impact and update automation if required, or record why no CI change is needed
-- [ ] Run full test suite before finalizing the PR and record results
-- [ ] Run lint (`pnpm lint`) before finalizing the PR and record results
-- [ ] Commit completed checklist items and push updates
-- [ ] Mark the PR Ready only after all story tasks are complete
+- [x] Create branch `refactor/st-09097-multi-agent-contract-modularization` from `main`
+  - Created from synchronized `main` at the start of execution.
+- [x] Create draft PR with ST-09097 in the title
+  - Opened draft PR #174: https://github.com/TVScoundrel/agentforge/pull/174
+- [x] Define test strategy before implementation: identify compile-time import/configuration coverage and runtime compatibility suites, including the first failing type assertion to add
+  - Chose characterization-first compile-time coverage because this story preserves existing contracts; focused assertions were added before production changes.
+- [x] Write or update the failing automated type test before production changes when practical; otherwise record why existing compile contracts are sufficient before refactoring
+  - Existing contracts are behavior-preserving and typecheck cleanly before extraction, so a fabricated failing assertion would not represent a requirement.
+- [x] Extract supervisor, worker, aggregator/system, and routing contracts behind the stable `multi-agent/types.ts` facade
+- [x] Preserve package-root and multi-agent entrypoint exports while preventing runtime import cycles
+- [x] Keep `packages/patterns/tests/multi-agent/contracts.typecheck.ts` as the stable typecheck entrypoint and split supervisor, worker, aggregator/system, and routing assertions into matching focused modules under `packages/patterns/tests/multi-agent/contracts/`
+- [x] Add/update production code until focused tests pass, keeping test evidence in checklist notes and PR body
+  - Patterns typecheck passed before and after extraction; the full patterns runtime suite passed with 34 files and 301 tests.
+- [x] Assess residual test impact; add/update additional automated tests when needed, or document why no further tests are required
+  - Focused compile-time role coverage and existing runtime multi-agent suites cover the changed type boundaries; no additional runtime cases were identified.
+- [x] Add or update story documentation at `docs/st09097-multi-agent-contract-modularization.md` (or document why not required)
+- [x] Assess CI/validation impact and update automation if required, or record why no CI change is needed
+  - No CI change is required; existing typecheck, test, lint, and release validation paths cover this type-only refactor.
+- [x] Run full test suite before finalizing the PR and record results
+  - `pnpm release:validate` passed: build succeeded; 231 test files passed, 9 skipped; 2,562 tests passed, 110 skipped.
+- [x] Run lint (`pnpm lint`) before finalizing the PR and record results
+  - Workspace lint passed with existing warnings and zero errors; workspace typecheck passed and no explicit-any baseline regression was introduced.
+- [x] Commit completed checklist items and push updates
+- [x] Mark the PR Ready only after all story tasks are complete
 - [ ] Wait for merge; do not merge directly from local branch
 
 ---
