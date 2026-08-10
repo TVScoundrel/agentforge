@@ -5,6 +5,28 @@ All notable changes to AgentForge will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.16.89] - 2026-08-10
+
+### Changed
+
+#### @agentforge/patterns - Multi-Agent Contract Modularization
+- Split supervisor, worker, aggregator/system, and routing configuration contracts into focused type modules behind the stable `multi-agent/types.ts` facade.
+- Preserved package-root and multi-agent exports, runtime compatibility, and operational contract guidance for retry defaults, worker execution precedence, and checkpoint namespaces.
+
+### Added
+
+#### @agentforge/patterns - Multi-Agent Contract Coverage
+- Added role-aligned source-included compile-time contract modules and story documentation while retaining the existing multi-agent runtime suites.
+
+### Published
+- All packages published to npm registry at version 0.16.89:
+  - @agentforge/core@0.16.89
+  - @agentforge/skills@0.16.89
+  - @agentforge/patterns@0.16.89
+  - @agentforge/tools@0.16.89
+  - @agentforge/testing@0.16.89
+  - @agentforge/cli@0.16.89
+
 ## [0.16.88] - 2026-08-09
 
 ### Changed
