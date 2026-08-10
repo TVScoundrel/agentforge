@@ -17,5 +17,11 @@ export interface MultiAgentSystemConfig {
   aggregator?: AggregatorConfig;
   maxIterations?: number;
   verbose?: boolean;
+  /**
+   * Optional checkpointer for state persistence and human-in-the-loop flows.
+   * Worker agents use isolated namespaces in the form
+   * `{parent_thread_id}:worker:{workerId}` so nested interrupts can resume
+   * without looping through the parent graph.
+   */
   checkpointer?: BaseCheckpointSaver;
 }

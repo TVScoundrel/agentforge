@@ -15,6 +15,13 @@ export interface WorkerConfig {
   tools?: WorkerTool[];
   systemPrompt?: string;
   verbose?: boolean;
+  /**
+   * Custom execution function. When provided, this takes precedence over
+   * the `agent` property.
+   */
   executeFn?: (state: MultiAgentStateType, config?: WorkerExecutionConfig) => Promise<Partial<MultiAgentStateType>>;
+  /**
+   * ReAct agent instance. `executeFn` takes precedence when both are set.
+   */
   agent?: CompiledStateGraph<unknown, unknown>;
 }

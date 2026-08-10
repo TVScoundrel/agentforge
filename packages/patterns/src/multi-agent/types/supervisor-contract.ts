@@ -9,5 +9,11 @@ export interface SupervisorConfig {
   routingFn?: (state: MultiAgentStateType) => Promise<RoutingDecision>;
   verbose?: boolean;
   maxIterations?: number;
+  /**
+   * Maximum number of tool call retries before requiring a routing decision.
+   * Prevents infinite loops where the supervisor keeps calling tools without
+   * making a routing decision.
+   * @default 3
+   */
   maxToolRetries?: number;
 }

@@ -1,4 +1,7 @@
-import type { WorkerConfig, WorkerExecutionConfig } from '../../../src/multi-agent/types.js';
+import type { WorkerConfig } from '../../../src/multi-agent/index.js';
+// WorkerExecutionConfig is an internal helper type and is intentionally not
+// part of the multi-agent public index export.
+import type { WorkerExecutionConfig } from '../../../src/multi-agent/types.js';
 
 const workerConfig: WorkerConfig = {
   id: 'worker',
