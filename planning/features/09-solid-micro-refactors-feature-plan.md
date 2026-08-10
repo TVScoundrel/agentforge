@@ -3,7 +3,7 @@
 **Epic Range:** EP-09 through EP-09
 **Status:** In Progress
 **Last Updated:** 2026-08-10
-**Active Story:** ST-09097 is in progress; ST-09098 and ST-09099 remain dependency-ready in Ready.
+**Active Story:** ST-09097 is in review in PR #174; ST-09098 and ST-09099 remain dependency-ready in Ready.
 
 ---
 

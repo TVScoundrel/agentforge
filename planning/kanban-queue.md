@@ -1,12 +1,12 @@
 # Kanban Queue: AgentForge
 
-**Last Updated:** 2026-08-09
+**Last Updated:** 2026-08-10
 
 ## Queue Status Summary
 
 - **Ready:** 2 stories
-- **In Progress:** 1 story
-- **In Review:** 0 stories
+- **In Progress:** 0 stories
+- **In Review:** 1 story
 - **Blocked:** 0 stories
 - **Backlog:** 0 stories
 
@@ -22,13 +22,13 @@
 
 ## In Progress
 
-- `ST-09097` — Split Multi-Agent Configuration and Routing Contracts
+None currently.
 
 ---
 
 ## In Review
 
-None currently.
+- `ST-09097` — Split Multi-Agent Configuration and Routing Contracts (PR #174)
 
 ---
 

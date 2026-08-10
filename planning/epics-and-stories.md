@@ -2513,14 +2513,14 @@
 **Priority:** P2 (Medium)
 **Estimate:** 2 hours
 **Dependencies:** None
-**Status:** Ready
+**Status:** In Review (PR #174)
 
 **Acceptance criteria:**
-- [ ] Reduce `packages/patterns/src/multi-agent/types.ts` to a stable type-export facade backed by focused supervisor, worker, aggregator/system, and routing contract modules without introducing runtime import cycles.
-- [ ] Preserve all public type names and existing exports through both `multi-agent/index.ts` and the package root, including `SupervisorConfig`, `WorkerConfig`, `AggregatorConfig`, `MultiAgentSystemConfig`, node/route aliases, router, and routing strategy contracts.
-- [ ] Keep `packages/patterns/tests/multi-agent/contracts.typecheck.ts` as the stable source-included typecheck entrypoint and split representative supervisor, worker, aggregator/system, and routing assertions into matching focused contract modules under `packages/patterns/tests/multi-agent/contracts/`; retain relevant runtime suites as compatibility evidence.
-- [ ] `pnpm --filter @agentforge/patterns test --run`, `pnpm --filter @agentforge/patterns typecheck`, `pnpm lint`, and the full test suite pass without explicit-any baseline regression.
-- [ ] Add or update story documentation at `docs/st09097-multi-agent-contract-modularization.md`.
+- [x] Reduce `packages/patterns/src/multi-agent/types.ts` to a stable type-export facade backed by focused supervisor, worker, aggregator/system, and routing contract modules without introducing runtime import cycles.
+- [x] Preserve all public type names and existing exports through both `multi-agent/index.ts` and the package root, including `SupervisorConfig`, `WorkerConfig`, `AggregatorConfig`, `MultiAgentSystemConfig`, node/route aliases, router, and routing strategy contracts.
+- [x] Keep `packages/patterns/tests/multi-agent/contracts.typecheck.ts` as the stable source-included typecheck entrypoint and split representative supervisor, worker, aggregator/system, and routing assertions into matching focused contract modules under `packages/patterns/tests/multi-agent/contracts/`; retain relevant runtime suites as compatibility evidence.
+- [x] `pnpm --filter @agentforge/patterns test --run`, `pnpm --filter @agentforge/patterns typecheck`, `pnpm lint`, and the full test suite pass without explicit-any baseline regression.
+- [x] Add or update story documentation at `docs/st09097-multi-agent-contract-modularization.md`.
 
 ---
 
