@@ -1020,6 +1020,13 @@
 
 ---
 
+### ST-09097: Split Multi-Agent Configuration and Routing Contracts
+- **Merged:** 2026-08-10
+- **PR:** https://github.com/TVScoundrel/agentforge/pull/174
+- **Epic:** EP-09 (SOLID Micro-Refactors and Type Boundary Hardening)
+- **Estimate:** 2 hours
+- **Outcome:** Split the multi-agent supervisor, worker, aggregator/system, and routing configuration contracts into focused type modules behind the stable `multi-agent/types.ts` facade. Preserved package-root and multi-agent exports, added role-aligned source-included type contract coverage, retained runtime compatibility, and documented operational invariants such as worker execution precedence, retry defaults, and checkpoint namespaces.
+
 ## Archive Format
 
 When a story is completed and merged, it will be recorded here with:

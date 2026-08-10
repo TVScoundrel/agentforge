@@ -4011,7 +4011,8 @@ Implementation notes:
   - Workspace lint passed with existing warnings and zero errors; workspace typecheck passed and no explicit-any baseline regression was introduced.
 - [x] Commit completed checklist items and push updates
 - [x] Mark the PR Ready only after all story tasks are complete
-- [ ] Wait for merge; do not merge directly from local branch
+- [x] Wait for merge; do not merge directly from local branch
+  - PR #174 merged on 2026-08-10 as commit `3384e148`; tracker synchronization is being committed from updated `main`.
 
 ---
 

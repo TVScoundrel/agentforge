@@ -6,7 +6,7 @@
 
 - **Ready:** 2 stories
 - **In Progress:** 0 stories
-- **In Review:** 1 story
+- **In Review:** 0 stories
 - **Blocked:** 0 stories
 - **Backlog:** 0 stories
 
@@ -28,7 +28,7 @@ None currently.
 
 ## In Review
 
-- `ST-09097` — Split Multi-Agent Configuration and Routing Contracts (PR #174)
+None currently.
 
 ---
 
@@ -80,6 +80,7 @@ None currently.
 - ST-09096 moved to In Progress on 2026-08-09 as the next deterministic dependency-ready EP-09 story; ST-09097 through ST-09099 remain in Ready
 - ST-09096 moved to In Review on 2026-08-09 with PR #173 after prompt-loader and test-suite modularization, characterization and full validation, lint, typecheck, explicit-any baseline verification, documentation, and self-review; ST-09097 through ST-09099 remain in Ready
 - ST-09096 merged on 2026-08-09 as PR #173 / commit `cd7ad61d`; removed from the active queue and archived as done, leaving ST-09097, ST-09098, and ST-09099 as the dependency-ready Ready lane.
+- ST-09097 merged on 2026-08-10 as PR #174 / commit `3384e148`; removed from the active queue and archived as done, leaving `ST-09098` followed by `ST-09099` as the dependency-ready Ready lane
 
 - Complete: ST-01001 - foundation established (merged 2026-02-17)
 - Complete: ST-01002 - connection manager implemented (merged 2026-02-17)

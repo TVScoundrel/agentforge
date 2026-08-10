@@ -2513,7 +2513,7 @@
 **Priority:** P2 (Medium)
 **Estimate:** 2 hours
 **Dependencies:** None
-**Status:** In Review (PR #174)
+**Status:** Merged (PR #174, 2026-08-10)
 
 **Acceptance criteria:**
 - [x] Reduce `packages/patterns/src/multi-agent/types.ts` to a stable type-export facade backed by focused supervisor, worker, aggregator/system, and routing contract modules without introducing runtime import cycles.
