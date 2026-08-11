@@ -1,11 +1,4 @@
-import type { MessageContent } from '@langchain/core/messages';
-
-function hasTextContentPart(value: unknown): value is { text: string } {
-  return typeof value === 'object'
-    && value !== null
-    && 'text' in value
-    && typeof (value as { text?: unknown }).text === 'string';
-}
+export { normalizeModelContent } from './model-response.js';
 
 function stringifyWithFallback(value: unknown, fallbackLabel: string): string {
   try {
@@ -35,28 +28,6 @@ export function toJsonSafeValue(value: unknown): unknown {
     const reason = error instanceof Error ? error.message : String(error);
     return `[Unserializable step result: ${reason}]`;
   }
-}
-
-export function normalizeModelContent(content: MessageContent): string {
-  if (typeof content === 'string') {
-    return content;
-  }
-
-  if (Array.isArray(content)) {
-    const textParts: string[] = [];
-
-    for (const part of content) {
-      if (hasTextContentPart(part) && part.text.length > 0) {
-        textParts.push(part.text);
-      }
-    }
-
-    if (textParts.length > 0) {
-      return textParts.join('\n');
-    }
-  }
-
-  return stringifyWithFallback(content, 'Unserializable model content');
 }
 
 export function serializePlanExecuteResult(result: unknown): string {

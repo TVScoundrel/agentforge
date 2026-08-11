@@ -4021,20 +4021,26 @@ Implementation notes:
 **Branch:** `refactor/st-09098-plan-execute-parsing-tests`
 
 ### Checklist
-- [ ] Create branch `refactor/st-09098-plan-execute-parsing-tests` from `main`
-- [ ] Create draft PR with ST-09098 in the title
-- [ ] Define test strategy before implementation: characterize planner/replanner content parsing and error wrapping plus node-specific behavior, identifying the first failing helper-level test
-- [ ] Write or update the failing automated test before production changes when practical; otherwise record why split characterization coverage is safer before extraction
-- [ ] Extract shared typed model-content JSON parsing and contextual error wrapping for planner and replanner nodes
-- [ ] Preserve planner, executor, replanner, and finisher behavior, state transitions, logging, and serialization fallbacks
-- [ ] Keep `packages/patterns/tests/plan-execute/nodes.test.ts` as a small discoverable entrypoint and split planner, executor, replanner, finisher, and shared fixtures into non-discoverable modules under `packages/patterns/tests/plan-execute/nodes/`
-- [ ] Add/update production code until focused tests pass, keeping test evidence in checklist notes and PR body
-- [ ] Assess residual test impact; add/update additional automated tests when needed, or document why no further tests are required
-- [ ] Add or update story documentation at `docs/st09098-plan-execute-parsing-test-modularization.md` (or document why not required)
-- [ ] Assess CI/validation impact and update automation if required, or record why no CI change is needed
-- [ ] Run full test suite before finalizing the PR and record results
-- [ ] Run lint (`pnpm lint`) before finalizing the PR and record results
-- [ ] Commit completed checklist items and push updates
+- [x] Create branch `refactor/st-09098-plan-execute-parsing-tests` from `main`
+- [x] Create draft PR with ST-09098 in the title (PR #175)
+- [x] Define test strategy before implementation: characterize planner/replanner content parsing and error wrapping plus node-specific behavior, identifying the first failing helper-level test
+  - Added helper contract coverage before implementation; the pre-implementation run failed because `model-response.ts` did not yet exist.
+- [x] Write or update the failing automated test before production changes when practical; otherwise record why split characterization coverage is safer before extraction
+- [x] Extract shared typed model-content JSON parsing and contextual error wrapping for planner and replanner nodes
+- [x] Preserve planner, executor, replanner, and finisher behavior, state transitions, logging, and serialization fallbacks
+- [x] Keep `packages/patterns/tests/plan-execute/nodes.test.ts` as a small discoverable entrypoint and split planner, executor, replanner, finisher, and shared fixtures into non-discoverable modules under `packages/patterns/tests/plan-execute/nodes/`
+- [x] Add/update production code until focused tests pass, keeping test evidence in checklist notes and PR body
+  - Focused result: 32 tests passed.
+- [x] Assess residual test impact; add/update additional automated tests when needed, or document why no further tests are required
+  - Added parser coverage for string content, text-part arrays, and contextual parse failures; no further behavior changes were needed.
+- [x] Add or update story documentation at `docs/st09098-plan-execute-parsing-test-modularization.md` (or document why not required)
+- [x] Assess CI/validation impact and update automation if required, or record why no CI change is needed
+  - No CI change required; the public entrypoint remains discoverable and focused modules intentionally use non-test filenames.
+- [x] Run full test suite before finalizing the PR and record results
+  - `pnpm release:validate`: build passed; 231 test files passed, 9 skipped; 2,564 tests passed, 110 skipped.
+- [x] Run lint (`pnpm lint`) before finalizing the PR and record results
+  - Passed with existing warnings and zero errors. `pnpm lint:explicit-any:baseline` also passed (patterns 2 warnings; overall baseline improved to 45/289).
+- [x] Commit completed checklist items and push updates
 - [ ] Mark the PR Ready only after all story tasks are complete
 - [ ] Wait for merge; do not merge directly from local branch
 

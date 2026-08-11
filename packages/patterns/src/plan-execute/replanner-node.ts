@@ -9,7 +9,8 @@ import {
   REMAINING_STEP_TEMPLATE,
 } from './prompts.js';
 import { replannerLogger } from './node-loggers.js';
-import { normalizeModelContent, serializePlanExecuteResult } from './serialization.js';
+import { parseModelResponse } from './model-response.js';
+import { serializePlanExecuteResult } from './serialization.js';
 
 export function createReplannerNode(config: ReplannerConfig) {
   const {
@@ -72,14 +73,7 @@ export function createReplannerNode(config: ReplannerConfig) {
       ];
 
       const response = await model.invoke(messages);
-      const content = normalizeModelContent(response.content);
-
-      let decision: ReplanDecision;
-      try {
-        decision = JSON.parse(content) as ReplanDecision;
-      } catch (parseError) {
-        throw new Error(`Failed to parse replan decision from LLM response: ${parseError}`);
-      }
+      const decision = parseModelResponse<ReplanDecision>(response.content, 'replan decision');
 
       if (decision.shouldReplan) {
         replannerLogger.info('Replanning triggered', {
