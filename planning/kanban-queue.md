@@ -29,12 +29,6 @@ None currently.
 
 ---
 
-## In Review
-
-None currently.
-
----
-
 ## Blocked
 
 _No stories currently blocked_
