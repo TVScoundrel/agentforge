@@ -5,8 +5,8 @@
 ## Queue Status Summary
 
 - **Ready:** 1 story
-- **In Progress:** 1 story
-- **In Review:** 0 stories
+- **In Progress:** 0 stories
+- **In Review:** 1 story
 - **Blocked:** 0 stories
 - **Backlog:** 0 stories
 
@@ -21,7 +21,11 @@
 
 ## In Progress
 
-- `ST-09098` — DRY Plan-Execute Model Parsing and Node Tests
+None currently.
+
+## In Review
+
+- `ST-09098` — DRY Plan-Execute Model Parsing and Node Tests (PR #175)
 
 ---
 

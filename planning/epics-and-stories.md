@@ -2530,14 +2530,14 @@
 **Priority:** P2 (Medium)
 **Estimate:** 3 hours
 **Dependencies:** None
-**Status:** In Progress
+**Status:** In Review (PR #175)
 
 **Acceptance criteria:**
-- [ ] Extract the repeated model-content normalization, JSON parsing, and contextual parse-error wrapping from planner and replanner nodes into a focused typed helper without changing their public factories or state transitions.
-- [ ] Preserve string and array-based model content handling, planner step truncation/defaults, replanner decision behavior, current structured error messages, logging, iteration resets, and unserializable result fallbacks.
-- [ ] Keep `packages/patterns/tests/plan-execute/nodes.test.ts` as a small discoverable public entrypoint and replace its `802`-line body with focused non-discoverable planner, executor, replanner, finisher, and shared-fixture modules under `packages/patterns/tests/plan-execute/nodes/`.
-- [ ] `pnpm --filter @agentforge/patterns test --run`, `pnpm --filter @agentforge/patterns typecheck`, `pnpm lint`, and the full test suite pass without explicit-any baseline regression.
-- [ ] Add or update story documentation at `docs/st09098-plan-execute-parsing-test-modularization.md`.
+- [x] Extract the repeated model-content normalization, JSON parsing, and contextual parse-error wrapping from planner and replanner nodes into a focused typed helper without changing their public factories or state transitions.
+- [x] Preserve string and array-based model content handling, planner step truncation/defaults, replanner decision behavior, current structured error messages, logging, iteration resets, and unserializable result fallbacks.
+- [x] Keep `packages/patterns/tests/plan-execute/nodes.test.ts` as a small discoverable public entrypoint and replace its `802`-line body with focused non-discoverable planner, executor, replanner, finisher, and shared-fixture modules under `packages/patterns/tests/plan-execute/nodes/`.
+- [x] `pnpm --filter @agentforge/patterns test --run`, `pnpm --filter @agentforge/patterns typecheck`, `pnpm lint`, and the full test suite pass without explicit-any baseline regression.
+- [x] Add or update story documentation at `docs/st09098-plan-execute-parsing-test-modularization.md`.
 
 ---
 

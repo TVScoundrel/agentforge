@@ -4041,7 +4041,7 @@ Implementation notes:
 - [x] Run lint (`pnpm lint`) before finalizing the PR and record results
   - Passed with existing warnings and zero errors. `pnpm lint:explicit-any:baseline` also passed (patterns 2 warnings; overall baseline improved to 45/289).
 - [x] Commit completed checklist items and push updates
-- [ ] Mark the PR Ready only after all story tasks are complete
+- [x] Mark the PR Ready only after all story tasks are complete
 - [ ] Wait for merge; do not merge directly from local branch
 
 ---
