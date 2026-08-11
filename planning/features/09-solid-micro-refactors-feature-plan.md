@@ -2,8 +2,8 @@
 
 **Epic Range:** EP-09 through EP-09
 **Status:** In Progress
-**Last Updated:** 2026-08-10
-**Active Story:** ST-09097 merged in PR #174; ST-09098 is next in Ready and ST-09099 remains dependency-ready behind it.
+**Last Updated:** 2026-08-11
+**Active Story:** ST-09098 is In Progress; ST-09099 remains dependency-ready in Ready.
 
 ---
 
