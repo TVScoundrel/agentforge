@@ -5,6 +5,27 @@ All notable changes to AgentForge will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.16.90] - 2026-08-12
+
+### Changed
+
+#### @agentforge/patterns - Plan-Execute Model Parsing
+- Centralized planner and replanner model-response parsing behind a shared typed helper while preserving the existing planning and replanning behavior.
+
+### Added
+
+#### @agentforge/patterns - Plan-Execute Node Test Modularity
+- Split plan-execute node coverage into focused, non-discoverable modules with shared fixtures for clearer maintenance and faster targeted review.
+
+### Published
+- All packages published to npm registry at version 0.16.90:
+  - @agentforge/core@0.16.90
+  - @agentforge/skills@0.16.90
+  - @agentforge/patterns@0.16.90
+  - @agentforge/tools@0.16.90
+  - @agentforge/testing@0.16.90
+  - @agentforge/cli@0.16.90
+
 ## [0.16.89] - 2026-08-10
 
 ### Changed
