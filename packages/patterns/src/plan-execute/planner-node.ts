@@ -7,7 +7,7 @@ import {
   PLANNING_PROMPT_TEMPLATE,
 } from './prompts.js';
 import { plannerLogger } from './node-loggers.js';
-import { normalizeModelContent } from './serialization.js';
+import { parseModelResponse } from './model-response.js';
 
 export function createPlannerNode(config: PlannerConfig) {
   const {
@@ -43,20 +43,13 @@ export function createPlannerNode(config: PlannerConfig) {
       ];
 
       const response = await model.invoke(messages);
-      const content = normalizeModelContent(response.content);
-
-      let plan: Plan;
-      try {
-        const parsed = JSON.parse(content);
-        plan = {
-          steps: parsed.steps.slice(0, maxSteps),
-          goal: parsed.goal || state.input || '',
-          createdAt: new Date().toISOString(),
-          confidence: parsed.confidence,
-        };
-      } catch (parseError) {
-        throw new Error(`Failed to parse plan from LLM response: ${parseError}`);
-      }
+      const parsed = parseModelResponse<Plan>(response.content, 'plan');
+      const plan: Plan = {
+        steps: parsed.steps.slice(0, maxSteps),
+        goal: parsed.goal || state.input || '',
+        createdAt: new Date().toISOString(),
+        confidence: parsed.confidence,
+      };
 
       plannerLogger.info('Plan created', {
         stepCount: plan.steps.length,
