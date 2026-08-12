@@ -2,11 +2,18 @@
 
 **Purpose:** Track completed and merged stories for the Relational Database Access Tool project.
 
-**Last Updated:** 2026-08-09
+**Last Updated:** 2026-08-12
 
 ---
 
 ## Completed Stories
+
+### ST-09098: DRY Plan-Execute Model Parsing and Node Tests
+- **Merged:** 2026-08-12
+- **PR:** https://github.com/TVScoundrel/agentforge/pull/175 (commit aff4c10d)
+- **Epic:** EP-09 (SOLID Micro-Refactors and Type Boundary Hardening)
+- **Estimate:** 3 hours
+- **Outcome:** Extracted shared typed model-content normalization, JSON parsing, and contextual parse-error wrapping for planner and replanner nodes while preserving public factories, state transitions, logging, defaults, and serialization fallbacks. Replaced the 802-line plan-execute node suite with a small discoverable entrypoint and focused planner, executor, replanner, finisher, shared-fixture, and parser modules. Added story documentation and completed focused validation (32 tests), full release validation (2,564 passed/110 skipped), lint, typecheck, and explicit-any baseline checks; review follow-ups removed invalid fixture imports and a duplicate queue section.
 
 ### ST-09096: Modularize Prompt Loading, Sanitization, and Rendering
 - **Merged:** 2026-08-09

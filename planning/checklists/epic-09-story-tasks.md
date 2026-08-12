@@ -4042,7 +4042,8 @@ Implementation notes:
   - Passed with existing warnings and zero errors. `pnpm lint:explicit-any:baseline` also passed (patterns 2 warnings; overall baseline improved to 45/289).
 - [x] Commit completed checklist items and push updates
 - [x] Mark the PR Ready only after all story tasks are complete
-- [ ] Wait for merge; do not merge directly from local branch
+- [x] Wait for merge; do not merge directly from local branch
+  - PR #175 merged on 2026-08-12 as commit `aff4c10d`; tracker synchronization is being committed from updated `main`.
 
 ---
 

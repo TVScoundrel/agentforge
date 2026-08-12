@@ -2530,7 +2530,7 @@
 **Priority:** P2 (Medium)
 **Estimate:** 3 hours
 **Dependencies:** None
-**Status:** In Review (PR #175)
+**Status:** Merged (PR #175, 2026-08-12)
 
 **Acceptance criteria:**
 - [x] Extract the repeated model-content normalization, JSON parsing, and contextual parse-error wrapping from planner and replanner nodes into a focused typed helper without changing their public factories or state transitions.
