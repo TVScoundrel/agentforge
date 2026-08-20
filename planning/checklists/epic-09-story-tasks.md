@@ -4075,5 +4075,6 @@ Implementation notes:
 - [x] Commit completed checklist items and push updates
   - `88c64d30` `fix(st-09099): normalize default metrics namespaces`
   - `d9b8497d` `docs(st-09099): record validation and active tracking`
-- [ ] Mark the PR Ready only after all story tasks are complete
+- [x] Mark the PR Ready only after all story tasks are complete
+  - PR #176 marked ready for review: https://github.com/TVScoundrel/agentforge/pull/176
 - [ ] Wait for merge; do not merge directly from local branch

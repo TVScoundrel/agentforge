@@ -26,7 +26,7 @@ None currently.
 
 - `ST-09099` — Normalize Default Node Metrics Namespaces
   - Depends on: ST-09095 (merged, PR #172)
-  - PR: #176 (draft; local validation complete)
+  - PR: #176 (ready for review; local validation complete)
 
 ---
 
