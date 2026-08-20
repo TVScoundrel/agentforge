@@ -11,19 +11,22 @@ export function withMetrics<State>(
     trackDuration = true,
     trackErrors = true,
     trackInvocations = true,
-    metrics = createMetrics(name),
+    metrics: providedMetrics,
   } = options;
+  const metrics = providedMetrics ?? createMetrics(name);
+  const metricSuffix = (suffix: string): string =>
+    providedMetrics ? `${name}.${suffix}` : suffix;
 
   return async (state: State): Promise<State | Partial<State>> => {
-    if (trackInvocations) metrics.increment(`${name}.invocations`);
-    const timer = trackDuration ? metrics.startTimer(`${name}.duration`) : null;
+    if (trackInvocations) metrics.increment(metricSuffix('invocations'));
+    const timer = trackDuration ? metrics.startTimer(metricSuffix('duration')) : null;
 
     try {
       const result = await Promise.resolve(node(state));
-      metrics.increment(`${name}.success`);
+      metrics.increment(metricSuffix('success'));
       return result;
     } catch (error) {
-      if (trackErrors) metrics.increment(`${name}.errors`);
+      if (trackErrors) metrics.increment(metricSuffix('errors'));
       throw error;
     } finally {
       timer?.end();

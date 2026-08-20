@@ -4052,16 +4052,21 @@ Implementation notes:
 **Branch:** `fix/st-09099-default-node-metrics-namespaces`
 
 ### Checklist
-- [ ] Create branch `fix/st-09099-default-node-metrics-namespaces` from `main`
+- [x] Create branch `fix/st-09099-default-node-metrics-namespaces` from `main`
 - [ ] Create draft PR with ST-09099 in the title
-- [ ] Define test strategy before implementation: cover default-collector naming, shared-collector naming, success/error/duration samples, tracking options, and the first failing regression test
-- [ ] Write the failing automated regression test for the duplicated default namespace before production changes
-- [ ] Normalize metric suffix selection so default collectors do not repeat the node name while shared collectors retain node-qualified suffixes
-- [ ] Preserve the public API, synchronous/asynchronous results, error identity, duration tracking, and disabled tracking semantics
-- [ ] Add/update production code until focused tests pass, keeping test evidence in checklist notes and PR body
-- [ ] Assess residual test impact; add/update additional automated tests when needed, or document why no further tests are required
-- [ ] Add or update story documentation at `docs/st09099-default-node-metrics-namespaces.md` (or document why not required)
-- [ ] Assess CI/validation impact and update automation if required, or record why no CI change is needed
+- [x] Define test strategy before implementation: cover default-collector naming, shared-collector naming, success/error/duration samples, tracking options, and the first failing regression test
+  - Test-first automated coverage: existing shared-collector tests cover success, async results, errors, duration, and disabled tracking; a dedicated mocked default-collector suite asserts that `withMetrics` sends unqualified suffixes to the collector created for the node namespace.
+- [x] Write the failing automated regression test for the duplicated default namespace before production changes
+  - Added `default-node-instrumentation.test.ts`; focused test currently fails because `withMetrics` sends `my-node.invocations`, `my-node.success`, and `my-node.duration` to the default collector.
+- [x] Normalize metric suffix selection so default collectors do not repeat the node name while shared collectors retain node-qualified suffixes
+- [x] Preserve the public API, synchronous/asynchronous results, error identity, duration tracking, and disabled tracking semantics
+- [x] Add/update production code until focused tests pass, keeping test evidence in checklist notes and PR body
+  - `pnpm --filter @agentforge/core test --run tests/langgraph/observability/default-node-instrumentation.test.ts tests/langgraph/observability/metrics.test.ts` -> 2 files, 11 tests passed.
+- [x] Assess residual test impact; add/update additional automated tests when needed, or document why no further tests are required
+  - Added default-collector success/error coverage; existing shared-collector tests cover async results, duration, disabled tracking, and error identity.
+- [x] Add or update story documentation at `docs/st09099-default-node-metrics-namespaces.md` (or document why not required)
+- [x] Assess CI/validation impact and update automation if required, or record why no CI change is needed
+  - No CI change required; existing core and workspace validation commands cover the changed source and tests.
 - [ ] Run full test suite before finalizing the PR and record results
 - [ ] Run lint (`pnpm lint`) before finalizing the PR and record results
 - [ ] Commit completed checklist items and push updates
