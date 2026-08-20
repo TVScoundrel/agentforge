@@ -4064,7 +4064,7 @@ Implementation notes:
 - [x] Add/update production code until focused tests pass, keeping test evidence in checklist notes and PR body
   - `pnpm --filter @agentforge/core test --run tests/langgraph/observability/default-node-instrumentation.test.ts tests/langgraph/observability/metrics.test.ts` -> 2 files, 11 tests passed.
 - [x] Assess residual test impact; add/update additional automated tests when needed, or document why no further tests are required
-  - Added default-collector success/error coverage; existing shared-collector tests cover async results, duration, disabled tracking, and error identity.
+  - Added default-collector success/error coverage with exact call counts and ordered suffix assertions; existing shared-collector tests cover async results, duration, disabled tracking, and error identity.
 - [x] Add or update story documentation at `docs/st09099-default-node-metrics-namespaces.md` (or document why not required)
 - [x] Assess CI/validation impact and update automation if required, or record why no CI change is needed
   - No CI change required; existing core and workspace validation commands cover the changed source and tests.

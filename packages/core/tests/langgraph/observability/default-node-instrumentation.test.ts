@@ -37,8 +37,10 @@ describe('withMetrics default collector', () => {
     await expect(metricNode({ count: 0 })).resolves.toEqual({ count: 1 });
 
     expect(createMetricsMock).toHaveBeenCalledWith('my-node');
-    expect(metricsMock.increment).toHaveBeenCalledWith('invocations');
-    expect(metricsMock.increment).toHaveBeenCalledWith('success');
+    expect(metricsMock.increment).toHaveBeenCalledTimes(2);
+    expect(metricsMock.increment).toHaveBeenNthCalledWith(1, 'invocations');
+    expect(metricsMock.increment).toHaveBeenNthCalledWith(2, 'success');
+    expect(metricsMock.startTimer).toHaveBeenCalledTimes(1);
     expect(metricsMock.startTimer).toHaveBeenCalledWith('duration');
   });
 
@@ -50,6 +52,10 @@ describe('withMetrics default collector', () => {
 
     await expect(metricNode({ count: 0 })).rejects.toBe(error);
 
-    expect(metricsMock.increment).toHaveBeenCalledWith('errors');
+    expect(metricsMock.increment).toHaveBeenCalledTimes(2);
+    expect(metricsMock.increment).toHaveBeenNthCalledWith(1, 'invocations');
+    expect(metricsMock.increment).toHaveBeenNthCalledWith(2, 'errors');
+    expect(metricsMock.startTimer).toHaveBeenCalledTimes(1);
+    expect(metricsMock.startTimer).toHaveBeenCalledWith('duration');
   });
 });
