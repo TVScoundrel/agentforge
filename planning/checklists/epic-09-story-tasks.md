@@ -4053,7 +4053,8 @@ Implementation notes:
 
 ### Checklist
 - [x] Create branch `fix/st-09099-default-node-metrics-namespaces` from `main`
-- [ ] Create draft PR with ST-09099 in the title
+- [x] Create draft PR with ST-09099 in the title
+  - PR #176: https://github.com/TVScoundrel/agentforge/pull/176
 - [x] Define test strategy before implementation: cover default-collector naming, shared-collector naming, success/error/duration samples, tracking options, and the first failing regression test
   - Test-first automated coverage: existing shared-collector tests cover success, async results, errors, duration, and disabled tracking; a dedicated mocked default-collector suite asserts that `withMetrics` sends unqualified suffixes to the collector created for the node namespace.
 - [x] Write the failing automated regression test for the duplicated default namespace before production changes
@@ -4071,6 +4072,8 @@ Implementation notes:
   - `pnpm test --run` -> exit `0`; full workspace Vitest run passed.
 - [x] Run lint (`pnpm lint`) before finalizing the PR and record results
   - `pnpm lint` -> exit `0`; existing warnings only (`0` errors).
-- [ ] Commit completed checklist items and push updates
+- [x] Commit completed checklist items and push updates
+  - `88c64d30` `fix(st-09099): normalize default metrics namespaces`
+  - `d9b8497d` `docs(st-09099): record validation and active tracking`
 - [ ] Mark the PR Ready only after all story tasks are complete
 - [ ] Wait for merge; do not merge directly from local branch
