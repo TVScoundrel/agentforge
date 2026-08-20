@@ -5,6 +5,32 @@ All notable changes to AgentForge will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.16.91] - 2026-08-20
+
+### Fixed
+
+#### @agentforge/core - Default Node Metrics Namespaces
+- Fixed `withMetrics(...)` default collectors emitting duplicated `<node>.<node>.*` metric names.
+- Default collectors now emit `<node>.invocations`, `<node>.success`, `<node>.errors`, and `<node>.duration`, while shared collectors retain node-qualified suffixes.
+
+### Added
+
+#### @agentforge/core - Metrics Namespace Regression Coverage
+- Added test-first coverage for default collector naming, exact metric emission counts/order, error rethrow behavior, and duration tracking.
+
+### Validation
+- `pnpm release:validate` passed with 232 test files passed, 9 skipped, 2,566 tests passed, and 110 skipped.
+- Skips are intentional opt-in coverage for Neo4j, PostgreSQL, and MySQL services, database benchmarks, PostgreSQL connection credentials, and web-search performance tests; the default release suite remains deterministic without Docker, external services, credentials, or network access.
+
+### Published
+- All packages published to npm registry at version 0.16.91:
+  - @agentforge/core@0.16.91
+  - @agentforge/skills@0.16.91
+  - @agentforge/patterns@0.16.91
+  - @agentforge/tools@0.16.91
+  - @agentforge/testing@0.16.91
+  - @agentforge/cli@0.16.91
+
 ## [0.16.90] - 2026-08-12
 
 ### Changed
