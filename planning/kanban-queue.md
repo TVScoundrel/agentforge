@@ -1,12 +1,12 @@
 # Kanban Queue: AgentForge
 
-**Last Updated:** 2026-08-10
+**Last Updated:** 2026-08-20
 
 ## Queue Status Summary
 
-- **Ready:** 1 story
+- **Ready:** 0 stories
 - **In Progress:** 0 stories
-- **In Review:** 0 stories
+- **In Review:** 1 story
 - **Blocked:** 0 stories
 - **Backlog:** 0 stories
 
@@ -14,8 +14,7 @@
 
 ## Ready
 
-- `ST-09099` — Normalize Default Node Metrics Namespaces
-  - Depends on: ST-09095 (merged, PR #172)
+None currently.
 
 ---
 
@@ -25,7 +24,9 @@ None currently.
 
 ## In Review
 
-None currently.
+- `ST-09099` — Normalize Default Node Metrics Namespaces
+  - Depends on: ST-09095 (merged, PR #172)
+  - PR: #176 (ready for review; local validation complete)
 
 ---
 
