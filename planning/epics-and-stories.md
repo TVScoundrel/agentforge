@@ -2547,15 +2547,15 @@
 **Priority:** P2 (Medium)
 **Estimate:** 2 hours
 **Dependencies:** ST-09095
-**Status:** In Review
+**Status:** Merged (PR #176, 2026-08-20)
 
 **Acceptance criteria:**
-- [ ] When `withMetrics(...)` creates its default collector, invocation, success, error, and duration samples use `<node>.invocations`, `<node>.success`, `<node>.errors`, and `<node>.duration` rather than `<node>.<node>.*`.
-- [ ] When callers provide a shared collector, node names remain part of each metric suffix so multiple instrumented nodes stay distinguishable under the collector namespace.
-- [ ] Preserve the public `withMetrics(...)` API, synchronous/asynchronous node results, error identity and rethrow behavior, tracking-option defaults, and disabled tracking semantics.
-- [ ] Add failing regression coverage first for the default-collector naming path plus compatibility coverage for shared collectors, errors, duration, and disabled options.
-- [ ] `pnpm --filter @agentforge/core test --run`, `pnpm --filter @agentforge/core typecheck`, `pnpm lint`, and the full test suite pass without explicit-any baseline regression.
-- [ ] Add or update story documentation at `docs/st09099-default-node-metrics-namespaces.md`.
+- [x] When `withMetrics(...)` creates its default collector, invocation, success, error, and duration samples use `<node>.invocations`, `<node>.success`, `<node>.errors`, and `<node>.duration` rather than `<node>.<node>.*`.
+- [x] When callers provide a shared collector, node names remain part of each metric suffix so multiple instrumented nodes stay distinguishable under the collector namespace.
+- [x] Preserve the public `withMetrics(...)` API, synchronous/asynchronous node results, error identity and rethrow behavior, tracking-option defaults, and disabled tracking semantics.
+- [x] Add failing regression coverage first for the default-collector naming path plus compatibility coverage for shared collectors, errors, duration, and disabled options.
+- [x] `pnpm --filter @agentforge/core test --run`, `pnpm --filter @agentforge/core typecheck`, `pnpm lint`, and the full test suite pass without explicit-any baseline regression.
+- [x] Add or update story documentation at `docs/st09099-default-node-metrics-namespaces.md`.
 
 ---
 

@@ -3,7 +3,7 @@
 **Epic Range:** EP-09 through EP-09
 **Status:** In Progress
 **Last Updated:** 2026-08-20
-**Active Story:** ST-09099 is in review in PR #176 from `fix/st-09099-default-node-metrics-namespaces`.
+**Active Story:** None; ST-09099 merged in PR #176 on 2026-08-20.
 
 ---
 
@@ -43,7 +43,7 @@ Top runtime hotspots informing this feature slice:
 1. `packages/core/src/prompt-loader/index.ts` (`251` lines) couples untrusted-value sanitization, variable normalization, conditional rendering, substitution, and filesystem loading behind one entrypoint.
 2. `packages/patterns/src/multi-agent/types.ts` (`285` lines) groups supervisor, worker, aggregator, system, node, and routing contracts even though the runtime and schema layers are already modularized by those domains.
 3. `packages/patterns/tests/plan-execute/nodes.test.ts` (`802` lines) is the largest remaining patterns test hotspot, while planner and replanner nodes still repeat model-content normalization and JSON parse/error wrapping.
-4. Default `withMetrics(...)` collectors still repeat the node namespace; ST-09099 is queued as a behavior-changing follow-up while shared-collector naming remains a compatibility path.
+4. Default `withMetrics(...)` collector namespace duplication was addressed by ST-09099; shared-collector naming remains a compatibility path.
 5. ST-09096 through ST-09099 form the dependency-ready continuation of the SOLID/DRY lane; large third-party integration suites remain out of scope until a matching runtime payoff is identified.
 
 Test modularization convention for this slice: preserve one small discoverable `*.test.ts` or source-included `*.typecheck.ts` entrypoint per public surface, and move role-aligned suites/contracts plus shared fixtures into a matching subdirectory using non-discoverable module names. Test module boundaries should mirror the production responsibility split.
@@ -158,6 +158,9 @@ Recent improvement snapshot:
 - `ST-09094` moved to In Review on 2026-08-05 as PR #170 after completing implementation and validation.
 - `ST-09094` merged on 2026-08-06 as PR #170 after completing the Neo4j property/query contract hardening and review follow-up; the EP-09 ready lane is now empty.
 - `ST-09096` merged on 2026-08-09 as PR #173 after modularizing prompt loading, sanitization, rendering, file loading, and characterization coverage; ST-09097 is now the next Ready story, with ST-09098 and ST-09099 dependency-ready behind it.
+- `ST-09097` merged on 2026-08-10 as PR #174 after modularizing multi-agent contracts and focused type coverage; ST-09098 followed as the next Ready story.
+- `ST-09098` merged on 2026-08-12 as PR #175 after modularizing plan-execute parsing and node tests; ST-09099 followed as the next Ready story.
+- `ST-09099` merged on 2026-08-20 as PR #176 after normalizing default node metrics namespaces; the accepted EP-09 queue is now empty.
 
 ## Scope
 

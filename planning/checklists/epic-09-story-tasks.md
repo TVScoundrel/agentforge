@@ -4077,4 +4077,5 @@ Implementation notes:
   - `d9b8497d` `docs(st-09099): record validation and active tracking`
 - [x] Mark the PR Ready only after all story tasks are complete
   - PR #176 marked ready for review: https://github.com/TVScoundrel/agentforge/pull/176
-- [ ] Wait for merge; do not merge directly from local branch
+- [x] Wait for merge; do not merge directly from local branch
+  - PR #176 merged on 2026-08-20 as commit `d531f595`.

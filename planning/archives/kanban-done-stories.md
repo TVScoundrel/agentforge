@@ -2,11 +2,18 @@
 
 **Purpose:** Track completed and merged stories for the Relational Database Access Tool project.
 
-**Last Updated:** 2026-08-12
+**Last Updated:** 2026-08-20
 
 ---
 
 ## Completed Stories
+
+### ST-09099: Normalize Default Node Metrics Namespaces
+- **Merged:** 2026-08-20
+- **PR:** https://github.com/TVScoundrel/agentforge/pull/176 (commit d531f595)
+- **Epic:** EP-09 (SOLID Micro-Refactors and Type Boundary Hardening)
+- **Estimate:** 2 hours
+- **Outcome:** Normalized default `withMetrics(...)` collectors so invocation, success, error, and duration suffixes are emitted once under the collector’s node namespace while shared collectors retain node-qualified suffixes. Added test-first regression coverage with exact call-count/order assertions, preserved async/error/tracking behavior, documented the change, passed focused metrics tests (11), core typecheck, full workspace tests, lint, and explicit-any baseline validation, and completed the Copilot review follow-up.
 
 ### ST-09098: DRY Plan-Execute Model Parsing and Node Tests
 - **Merged:** 2026-08-12

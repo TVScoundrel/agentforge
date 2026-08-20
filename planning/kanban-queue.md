@@ -6,7 +6,7 @@
 
 - **Ready:** 0 stories
 - **In Progress:** 0 stories
-- **In Review:** 1 story
+- **In Review:** 0 stories
 - **Blocked:** 0 stories
 - **Backlog:** 0 stories
 
@@ -24,9 +24,7 @@ None currently.
 
 ## In Review
 
-- `ST-09099` — Normalize Default Node Metrics Namespaces
-  - Depends on: ST-09095 (merged, PR #172)
-  - PR: #176 (ready for review; local validation complete)
+None currently.
 
 ---
 
@@ -80,6 +78,7 @@ None currently.
 - ST-09096 merged on 2026-08-09 as PR #173 / commit `cd7ad61d`; removed from the active queue and archived as done, leaving ST-09097, ST-09098, and ST-09099 as the dependency-ready Ready lane.
 - ST-09097 merged on 2026-08-10 as PR #174 / commit `3384e148`; removed from the active queue and archived as done, leaving `ST-09098` followed by `ST-09099` as the dependency-ready Ready lane
 - ST-09098 merged on 2026-08-12 as PR #175 / commit `aff4c10d`; removed from the active queue and archived as done, leaving `ST-09099` as the next dependency-ready Ready story
+- ST-09099 merged on 2026-08-20 as PR #176 / commit `d531f595`; removed from the active queue and archived as done, leaving the accepted queue empty after grooming
 
 - Complete: ST-01001 - foundation established (merged 2026-02-17)
 - Complete: ST-01002 - connection manager implemented (merged 2026-02-17)
