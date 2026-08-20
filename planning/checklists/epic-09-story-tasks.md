@@ -4067,8 +4067,10 @@ Implementation notes:
 - [x] Add or update story documentation at `docs/st09099-default-node-metrics-namespaces.md` (or document why not required)
 - [x] Assess CI/validation impact and update automation if required, or record why no CI change is needed
   - No CI change required; existing core and workspace validation commands cover the changed source and tests.
-- [ ] Run full test suite before finalizing the PR and record results
-- [ ] Run lint (`pnpm lint`) before finalizing the PR and record results
+- [x] Run full test suite before finalizing the PR and record results
+  - `pnpm test --run` -> exit `0`; full workspace Vitest run passed.
+- [x] Run lint (`pnpm lint`) before finalizing the PR and record results
+  - `pnpm lint` -> exit `0`; existing warnings only (`0` errors).
 - [ ] Commit completed checklist items and push updates
 - [ ] Mark the PR Ready only after all story tasks are complete
 - [ ] Wait for merge; do not merge directly from local branch

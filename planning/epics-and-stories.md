@@ -2547,7 +2547,7 @@
 **Priority:** P2 (Medium)
 **Estimate:** 2 hours
 **Dependencies:** ST-09095
-**Status:** Backlog
+**Status:** In Progress
 
 **Acceptance criteria:**
 - [ ] When `withMetrics(...)` creates its default collector, invocation, success, error, and duration samples use `<node>.invocations`, `<node>.success`, `<node>.errors`, and `<node>.duration` rather than `<node>.<node>.*`.

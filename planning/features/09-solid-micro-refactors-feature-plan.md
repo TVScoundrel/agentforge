@@ -2,8 +2,8 @@
 
 **Epic Range:** EP-09 through EP-09
 **Status:** In Progress
-**Last Updated:** 2026-08-12
-**Active Story:** ST-09098 merged in PR #175; ST-09099 is the next dependency-ready story in Ready.
+**Last Updated:** 2026-08-20
+**Active Story:** ST-09099 is implemented locally on `fix/st-09099-default-node-metrics-namespaces`; remote PR creation is pending push authorization.
 
 ---
 
