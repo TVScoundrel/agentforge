@@ -22,12 +22,15 @@ function worker(overrides: Partial<WorkerConfig> = {}): WorkerConfig {
 }
 
 function expectLifecycleReason(action: () => unknown, reason: WorkerLifecycleError['reason']) {
-  expect(action).toThrowError(WorkerLifecycleError);
+  let thrown: unknown;
   try {
     action();
   } catch (error) {
-    expect(error).toMatchObject({ reason });
+    thrown = error;
   }
+
+  expect(thrown).toBeInstanceOf(WorkerLifecycleError);
+  expect(thrown).toMatchObject({ reason });
 }
 
 describe('Worker lifecycle admission', () => {
