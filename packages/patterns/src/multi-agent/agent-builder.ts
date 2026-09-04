@@ -2,17 +2,19 @@ import { createCompiledMultiAgentSystem } from './agent-graph.js';
 import type { BuilderWorkerInput } from './agent-types.js';
 import { toWorkerConfig } from './agent-workers.js';
 import type { MultiAgentSystemConfig, WorkerConfig } from './types.js';
+import { admitWorkerTopology, type WorkerLifecycle } from './worker-lifecycle.js';
 
 export class MultiAgentSystemBuilder {
   private config: MultiAgentSystemConfig;
-  private additionalWorkers: WorkerConfig[] = [];
+  private lifecycle: WorkerLifecycle | undefined;
   private compiled = false;
 
   constructor(config: Omit<MultiAgentSystemConfig, 'workers'> & { workers?: WorkerConfig[] }) {
     this.config = {
       ...config,
-      workers: config.workers || [],
+      workers: [],
     };
+    this.lifecycle = config.workers?.length ? admitWorkerTopology(config.workers) : undefined;
   }
 
   registerWorkers(workers: BuilderWorkerInput[]): this {
@@ -20,9 +22,17 @@ export class MultiAgentSystemBuilder {
       throw new Error('Cannot register workers after the system has been compiled');
     }
 
-    for (const worker of workers) {
-      this.additionalWorkers.push(toWorkerConfig(worker, this.config.supervisor.model));
+    if (workers.length === 0) {
+      return this;
     }
+
+    const existingWorkers = this.lifecycle?.topology ?? [];
+    const pendingWorkers = workers.map((worker) =>
+      toWorkerConfig(worker, this.config.supervisor.model)
+    );
+    const lifecycle = admitWorkerTopology([...existingWorkers, ...pendingWorkers]);
+
+    this.lifecycle = lifecycle;
 
     return this;
   }
@@ -32,17 +42,17 @@ export class MultiAgentSystemBuilder {
       throw new Error('System has already been compiled');
     }
 
-    const allWorkers = [...this.config.workers, ...this.additionalWorkers];
+    const lifecycle = this.lifecycle ?? admitWorkerTopology([]);
 
-    if (allWorkers.length === 0) {
-      throw new Error('At least one worker must be registered before building the system');
-    }
-
+    const system = createCompiledMultiAgentSystem(
+      {
+        ...this.config,
+        workers: [...lifecycle.topology],
+      },
+      lifecycle
+    );
     this.compiled = true;
 
-    return createCompiledMultiAgentSystem({
-      ...this.config,
-      workers: allWorkers,
-    });
+    return system;
   }
 }

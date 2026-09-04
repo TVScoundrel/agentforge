@@ -18,7 +18,12 @@ export function toWorkerConfig(
 ): WorkerConfig {
   return {
     id: worker.name,
-    capabilities: toWorkerCapabilities(worker),
+    capabilities: {
+      skills: worker.capabilities,
+      tools: [],
+      available: true,
+      currentWorkload: 0,
+    },
     model: worker.model || fallbackModel,
     tools: worker.tools,
     systemPrompt: worker.systemPrompt,
