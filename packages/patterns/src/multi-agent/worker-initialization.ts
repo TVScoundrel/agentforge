@@ -48,7 +48,17 @@ export function createWorkerInitializationNode(
       statusOverrideCount: Object.keys(state.workers).length,
     });
 
-    const workers = initializeWorkerState(topologyCapabilities, state.workers);
+    let workers: MultiAgentStateType['workers'];
+    try {
+      workers = initializeWorkerState(topologyCapabilities, state.workers);
+    } catch (error) {
+      logger.error('Worker initialization failed', {
+        error: error instanceof Error ? error.message : String(error),
+        invocationWorkerIds: Object.keys(state.workers),
+        topologyWorkerIds: Object.keys(topologyCapabilities),
+      });
+      throw error;
+    }
 
     logger.info('Worker initialization complete', {
       workerCount: Object.keys(workers).length,
