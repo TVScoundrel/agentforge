@@ -17,29 +17,6 @@ function mergeWorkers(
   };
 }
 
-export function wrapCompiledSystem(
-  system: MultiAgentSystemWithRegistry,
-  workerCapabilities: Readonly<Record<string, WorkerCapabilities>>
-): MultiAgentSystemWithRegistry {
-  const originalInvoke = system.invoke.bind(system);
-  system.invoke = async function (input: Partial<MultiAgentStateType>, config?: RunnableConfig) {
-    return originalInvoke(
-      mergeWorkers(input, workerCapabilities) as Parameters<typeof originalInvoke>[0],
-      config as Parameters<typeof originalInvoke>[1]
-    );
-  } as unknown as typeof system.invoke;
-
-  const originalStream = system.stream.bind(system);
-  system.stream = async function (input: Partial<MultiAgentStateType>, config?: RunnableConfig) {
-    return originalStream(
-      mergeWorkers(input, workerCapabilities) as Parameters<typeof originalStream>[0],
-      config as Parameters<typeof originalStream>[1]
-    );
-  } as unknown as typeof system.stream;
-
-  return system;
-}
-
 export function registerWorkerCapabilities(
   system: MultiAgentSystemWithRegistry,
   workers: RegisterWorkerInput[]

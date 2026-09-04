@@ -1,12 +1,6 @@
 import { describe, expect, it } from 'vitest';
-import {
-  MultiAgentState,
-  MultiAgentStateConfig,
-} from '../../src/multi-agent/state.js';
-import {
-  type AgentMessage,
-  type WorkerCapabilities,
-} from '../../src/multi-agent/schemas.js';
+import { MultiAgentState, MultiAgentStateConfig } from '../../src/multi-agent/state.js';
+import { type AgentMessage, type WorkerCapabilities } from '../../src/multi-agent/schemas.js';
 
 describe('Multi-Agent State', () => {
   describe('State Annotation', () => {
@@ -52,8 +46,26 @@ describe('Multi-Agent State', () => {
       const messagesReducer = MultiAgentStateConfig.messages.reducer;
       expect(messagesReducer).toBeDefined();
       if (messagesReducer) {
-        const left: AgentMessage[] = [{ id: '1', type: 'user_input', from: 'user', to: 'supervisor', content: 'test', timestamp: Date.now() }];
-        const right: AgentMessage[] = [{ id: '2', type: 'task_assignment', from: 'supervisor', to: 'worker-1', content: 'task', timestamp: Date.now() }];
+        const left: AgentMessage[] = [
+          {
+            id: '1',
+            type: 'user_input',
+            from: 'user',
+            to: 'supervisor',
+            content: 'test',
+            timestamp: Date.now(),
+          },
+        ];
+        const right: AgentMessage[] = [
+          {
+            id: '2',
+            type: 'task_assignment',
+            from: 'supervisor',
+            to: 'worker-1',
+            content: 'task',
+            timestamp: Date.now(),
+          },
+        ];
         const result = messagesReducer(left, right);
         expect(result).toHaveLength(2);
         expect(result[0].id).toBe('1');
@@ -68,7 +80,7 @@ describe('Multi-Agent State', () => {
       }
     });
 
-    it('should have correct reducer for workers record', () => {
+    it('replaces the workers record instead of retaining stale identities', () => {
       const workersReducer = MultiAgentStateConfig.workers.reducer;
       expect(workersReducer).toBeDefined();
       if (workersReducer) {
@@ -89,9 +101,7 @@ describe('Multi-Agent State', () => {
           },
         };
         const result = workersReducer(left, right);
-        expect(Object.keys(result)).toHaveLength(2);
-        expect(result['worker-1']).toBeDefined();
-        expect(result['worker-2']).toBeDefined();
+        expect(result).toEqual(right);
       }
     });
   });
