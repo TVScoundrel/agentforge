@@ -8,11 +8,7 @@
  */
 
 // Export state and schemas
-export {
-  MultiAgentState,
-  MultiAgentStateConfig,
-  type MultiAgentStateType,
-} from './state.js';
+export { MultiAgentState, MultiAgentStateConfig, type MultiAgentStateType } from './state.js';
 
 export {
   AgentRoleSchema,
@@ -61,10 +57,7 @@ export {
 } from './routing.js';
 
 // Export utilities
-export {
-  isReActAgent,
-  wrapReActAgent,
-} from './utils.js';
+export { isReActAgent, wrapReActAgent } from './utils.js';
 
 // Export node creators
 export {
@@ -79,4 +72,6 @@ export {
   createMultiAgentSystem,
   registerWorkers,
   MultiAgentSystemBuilder,
+  WorkerLifecycleError,
+  type WorkerLifecycleErrorReason,
 } from './agent.js';

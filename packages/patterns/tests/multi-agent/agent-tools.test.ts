@@ -1,7 +1,11 @@
 import { toolBuilder, ToolCategory } from '@agentforge/core';
 import { describe, expect, it, vi } from 'vitest';
 import { z } from 'zod';
-import { createMultiAgentSystem, registerWorkers } from '../../src/multi-agent/agent.js';
+import {
+  createMultiAgentSystem,
+  registerWorkers,
+  WorkerLifecycleError,
+} from '../../src/multi-agent/agent.js';
 import type { MultiAgentStateType } from '../../src/multi-agent/state.js';
 import type { MultiAgentSystemConfig } from '../../src/multi-agent/types.js';
 
@@ -112,25 +116,36 @@ describe('Multi-Agent tool mapping and stream registration', () => {
     });
   });
 
-  it('should handle tools without name or metadata gracefully', () => {
+  it('rejects tools without a name through lifecycle validation', () => {
     const system = createMultiAgentSystem(createBaseConfig());
 
-    registerWorkers(system, [
-      {
-        name: 'worker1',
-        capabilities: ['skill1'],
-        tools: [{}],
-      },
-    ]);
+    expect(() =>
+      registerWorkers(system, [
+        {
+          name: 'worker1',
+          capabilities: ['skill1'],
+          tools: [{}],
+        },
+      ])
+    ).toThrowError(
+      expect.objectContaining<Partial<WorkerLifecycleError>>({ reason: 'invalid-tool' })
+    );
+  });
 
-    expect(system._workerRegistry).toEqual({
-      worker1: {
-        skills: ['skill1'],
-        tools: ['unknown'],
-        available: true,
-        currentWorkload: 0,
-      },
-    });
+  it('rejects duplicate normalized tool names through lifecycle validation', () => {
+    const system = createMultiAgentSystem(createBaseConfig());
+
+    expect(() =>
+      registerWorkers(system, [
+        {
+          name: 'worker1',
+          capabilities: ['skill1'],
+          tools: [{ name: 'search' }, { name: ' search ' }],
+        },
+      ])
+    ).toThrowError(
+      expect.objectContaining<Partial<WorkerLifecycleError>>({ reason: 'invalid-tool' })
+    );
   });
 
   it('should wrap stream() method when workers are registered', async () => {

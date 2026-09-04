@@ -19,16 +19,16 @@ export {
   type ToolCall,
   type ToolResult,
   type ScratchpadEntry,
-  
+
   // Types
   type ReActAgentConfig,
   type ReActAgentOptions,
   type ReActBuilderOptions,
   type StopConditionFn,
-  
+
   // Prompts
   DEFAULT_REACT_SYSTEM_PROMPT,
-  
+
   // Agent creation
   createReActAgent,
   ReActAgentBuilder,
@@ -181,6 +181,8 @@ export {
   createMultiAgentSystem,
   registerWorkers,
   MultiAgentSystemBuilder,
+  WorkerLifecycleError,
+  type WorkerLifecycleErrorReason,
 } from './multi-agent/index.js';
 
 // Shared utilities
