@@ -60,7 +60,19 @@ export function normalizeWorkerToolNames(
   return Object.freeze(toolNames);
 }
 
-function validateIdentities(workers: readonly WorkerConfig[]): void {
+type WorkerIdentity = Pick<WorkerConfig, 'id'>;
+type WorkerRegistryInput = WorkerIdentity & { capabilities: WorkerCapabilities };
+type WorkerDeclaredCapabilities = {
+  readonly skills: readonly string[];
+  readonly tools: readonly string[];
+};
+type WorkerStatus = {
+  readonly available: boolean;
+  readonly currentWorkload: number;
+};
+type WorkerRegistryRecord = WorkerDeclaredCapabilities & WorkerStatus;
+
+function validateIdentities(workers: readonly WorkerIdentity[]): void {
   for (const worker of workers) {
     if (!worker.id || worker.id.trim() !== worker.id || worker.id.includes(',')) {
       throw new WorkerLifecycleError(
@@ -75,22 +87,50 @@ function validateIdentities(workers: readonly WorkerConfig[]): void {
     if (identities.has(worker.id)) {
       throw new WorkerLifecycleError(
         'duplicate-identity',
-        `Worker identity "${worker.id}" appears more than once in the topology.`
+        `Worker identity "${worker.id}" appears more than once in the Worker batch.`
       );
     }
     identities.add(worker.id);
   }
 }
 
-function admitWorker(worker: WorkerConfig): WorkerConfig {
-  const toolNames = normalizeWorkerToolNames(worker.id, worker.tools);
+function normalizeWorkerDeclaredCapabilities(
+  workerId: string,
+  capabilities: WorkerCapabilities,
+  tools: readonly unknown[] | undefined
+): WorkerDeclaredCapabilities {
+  return {
+    skills: Object.freeze([...capabilities.skills]),
+    tools: normalizeWorkerToolNames(workerId, tools),
+  };
+}
 
-  const capabilities = Object.freeze({
-    skills: Object.freeze([...worker.capabilities.skills]),
-    tools: toolNames,
-    available: worker.capabilities.available,
-    currentWorkload: worker.capabilities.currentWorkload,
-  }) as WorkerCapabilities;
+function normalizeWorkerStatus(capabilities: WorkerCapabilities): WorkerStatus {
+  return {
+    available: capabilities.available,
+    currentWorkload: capabilities.currentWorkload,
+  };
+}
+
+function normalizeWorkerRegistryRecord(
+  workerId: string,
+  capabilities: WorkerCapabilities,
+  tools: readonly unknown[] | undefined
+): WorkerRegistryRecord {
+  return Object.freeze({
+    ...normalizeWorkerDeclaredCapabilities(workerId, capabilities, tools),
+    ...normalizeWorkerStatus(capabilities),
+  });
+}
+
+function asCompatibleWorkerCapabilities(record: WorkerRegistryRecord): WorkerCapabilities {
+  return record as WorkerCapabilities;
+}
+
+function admitWorker(worker: WorkerConfig): WorkerConfig {
+  const capabilities = asCompatibleWorkerCapabilities(
+    normalizeWorkerRegistryRecord(worker.id, worker.capabilities, worker.tools)
+  );
   const tools = worker.tools
     ? (Object.freeze([...worker.tools]) as WorkerConfig['tools'])
     : undefined;
@@ -117,4 +157,25 @@ export function admitWorkerTopology(workers: readonly WorkerConfig[]): WorkerLif
   );
 
   return Object.freeze({ topology, workerCapabilities });
+}
+
+export function createWorkerRegistryData(
+  workers: readonly WorkerRegistryInput[]
+): Readonly<Record<string, WorkerCapabilities>> {
+  validateIdentities(workers);
+
+  return Object.freeze(
+    Object.fromEntries(
+      workers.map((worker) => [
+        worker.id,
+        asCompatibleWorkerCapabilities(
+          normalizeWorkerRegistryRecord(
+            worker.id,
+            worker.capabilities,
+            worker.capabilities.tools.map((name) => ({ name }))
+          )
+        ),
+      ])
+    )
+  );
 }
