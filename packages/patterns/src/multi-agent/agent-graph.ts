@@ -1,12 +1,12 @@
 import { END, StateGraph } from '@langchain/langgraph';
 import { createPatternLogger } from '../shared/deduplication.js';
 import { createAggregatorNode, createSupervisorNode, createWorkerNode } from './nodes.js';
-import type { WorkerCapabilities } from './schemas.js';
 import { MultiAgentState } from './state.js';
 import type { MultiAgentStateType } from './state.js';
 import type { MultiAgentSystemWithRegistry } from './agent-types.js';
 import type { MultiAgentRouter, MultiAgentSystemConfig } from './types.js';
 import { wrapCompiledSystem } from './agent-runtime.js';
+import { admitWorkerTopology, type WorkerLifecycle } from './worker-lifecycle.js';
 
 const logger = createPatternLogger('agentforge:patterns:multi-agent:system');
 
@@ -30,7 +30,7 @@ function createSupervisorRouter(): MultiAgentRouter {
 
     if (state.currentAgent && state.currentAgent !== 'supervisor') {
       if (state.currentAgent.includes(',')) {
-        const agents = state.currentAgent.split(',').map(agent => agent.trim());
+        const agents = state.currentAgent.split(',').map((agent) => agent.trim());
         logger.info('Supervisor router: parallel routing', {
           agents,
           count: agents.length,
@@ -72,35 +72,24 @@ function createAggregatorRouter(): MultiAgentRouter {
 
 export function createCompiledMultiAgentSystem(
   config: MultiAgentSystemConfig,
+  lifecycle: WorkerLifecycle = admitWorkerTopology(config.workers)
 ): MultiAgentSystemWithRegistry {
-  const {
-    supervisor,
-    workers,
-    aggregator,
-    maxIterations = 10,
-    verbose = false,
-    checkpointer,
-  } = config;
+  const { supervisor, aggregator, maxIterations = 10, verbose = false, checkpointer } = config;
 
   const workflow = new StateGraph(MultiAgentState);
   const workerIds: string[] = [];
-  const workerCapabilities: Record<string, WorkerCapabilities> = {};
 
-  workflow.addNode(
-    'supervisor',
-    createSupervisorNode({ ...supervisor, maxIterations, verbose }),
-  );
+  workflow.addNode('supervisor', createSupervisorNode({ ...supervisor, maxIterations, verbose }));
 
-  for (const workerConfig of workers) {
+  for (const workerConfig of lifecycle.topology) {
     workflow.addNode(
       workerConfig.id,
       createWorkerNode({
         ...workerConfig,
         verbose,
-      }),
+      })
     );
     workerIds.push(workerConfig.id);
-    workerCapabilities[workerConfig.id] = workerConfig.capabilities;
   }
 
   workflow.addNode(
@@ -108,7 +97,7 @@ export function createCompiledMultiAgentSystem(
     createAggregatorNode({
       ...aggregator,
       verbose,
-    }),
+    })
   );
 
   const supervisorRouter = createSupervisorRouter();
@@ -129,8 +118,8 @@ export function createCompiledMultiAgentSystem(
   workflow.addConditionalEdges('aggregator', aggregatorRouter, [END]);
 
   const compiled = workflow.compile(
-    checkpointer ? { checkpointer } : undefined,
+    checkpointer ? { checkpointer } : undefined
   ) as unknown as MultiAgentSystemWithRegistry;
 
-  return wrapCompiledSystem(compiled, workerCapabilities);
+  return wrapCompiledSystem(compiled, lifecycle.workerCapabilities);
 }

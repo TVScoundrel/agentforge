@@ -12,9 +12,11 @@ import { registerWorkerCapabilities } from './agent-runtime.js';
 import type { MultiAgentSystemWithRegistry, RegisterWorkerInput } from './agent-types.js';
 import type { WorkerCapabilities } from './schemas.js';
 import type { MultiAgentSystemConfig } from './types.js';
+import { admitWorkerTopology } from './worker-lifecycle.js';
 
 export { MultiAgentSystemBuilder } from './agent-builder.js';
 export type { MultiAgentSystemWithRegistry, RegisterWorkerInput } from './agent-types.js';
+export { WorkerLifecycleError, type WorkerLifecycleErrorReason } from './worker-lifecycle.js';
 
 const logger = createPatternLogger('agentforge:patterns:multi-agent:system');
 
@@ -102,8 +104,11 @@ const logger = createPatternLogger('agentforge:patterns:multi-agent:system');
  * );
  * ```
  */
-export function createMultiAgentSystem(config: MultiAgentSystemConfig): MultiAgentSystemWithRegistry {
-  return createCompiledMultiAgentSystem(config);
+export function createMultiAgentSystem(
+  config: MultiAgentSystemConfig
+): MultiAgentSystemWithRegistry {
+  const lifecycle = admitWorkerTopology(config.workers);
+  return createCompiledMultiAgentSystem(config, lifecycle);
 }
 
 /**
@@ -135,12 +140,12 @@ export function createMultiAgentSystem(config: MultiAgentSystemConfig): MultiAge
  */
 export function registerWorkers(
   system: MultiAgentSystemWithRegistry,
-  workers: RegisterWorkerInput[],
+  workers: RegisterWorkerInput[]
 ): void {
   logger.warn(
     '[AgentForge] registerWorkers() on a compiled system only updates worker capabilities in state.\n' +
-    'It does NOT add worker nodes to the graph. Use MultiAgentSystemBuilder for proper worker registration.\n' +
-    'See: https://github.com/TVScoundrel/agentforge/blob/main/packages/patterns/docs/multi-agent-pattern.md'
+      'It does NOT add worker nodes to the graph. Use MultiAgentSystemBuilder for proper worker registration.\n' +
+      'See: https://github.com/TVScoundrel/agentforge/blob/main/packages/patterns/docs/multi-agent-pattern.md'
   );
   registerWorkerCapabilities(system, workers);
 }
@@ -152,7 +157,9 @@ export function registerWorkers(
  * @param workers - Worker configurations with id and capabilities
  * @returns Workers registry for initial state
  */
-export function createWorkersRegistry(workers: Array<{ id: string; capabilities: WorkerCapabilities }>) {
+export function createWorkersRegistry(
+  workers: Array<{ id: string; capabilities: WorkerCapabilities }>
+) {
   const registry: Record<string, WorkerCapabilities> = {};
   for (const worker of workers) {
     registry[worker.id] = worker.capabilities;
