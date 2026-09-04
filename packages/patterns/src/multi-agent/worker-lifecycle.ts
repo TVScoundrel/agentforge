@@ -62,8 +62,15 @@ export function normalizeWorkerToolNames(
 
 type WorkerIdentity = Pick<WorkerConfig, 'id'>;
 type WorkerRegistryInput = WorkerIdentity & { capabilities: WorkerCapabilities };
-type WorkerDeclaredCapabilities = Pick<WorkerCapabilities, 'skills' | 'tools'>;
-type WorkerStatus = Pick<WorkerCapabilities, 'available' | 'currentWorkload'>;
+type WorkerDeclaredCapabilities = {
+  readonly skills: readonly string[];
+  readonly tools: readonly string[];
+};
+type WorkerStatus = {
+  readonly available: boolean;
+  readonly currentWorkload: number;
+};
+type WorkerRegistryRecord = WorkerDeclaredCapabilities & WorkerStatus;
 
 function validateIdentities(workers: readonly WorkerIdentity[]): void {
   for (const worker of workers) {
@@ -95,7 +102,7 @@ function normalizeWorkerDeclaredCapabilities(
   return {
     skills: Object.freeze([...capabilities.skills]),
     tools: normalizeWorkerToolNames(workerId, tools),
-  } as WorkerDeclaredCapabilities;
+  };
 }
 
 function normalizeWorkerStatus(capabilities: WorkerCapabilities): WorkerStatus {
@@ -109,15 +116,21 @@ function normalizeWorkerRegistryRecord(
   workerId: string,
   capabilities: WorkerCapabilities,
   tools: readonly unknown[] | undefined
-): WorkerCapabilities {
+): WorkerRegistryRecord {
   return Object.freeze({
     ...normalizeWorkerDeclaredCapabilities(workerId, capabilities, tools),
     ...normalizeWorkerStatus(capabilities),
-  }) as WorkerCapabilities;
+  });
+}
+
+function asCompatibleWorkerCapabilities(record: WorkerRegistryRecord): WorkerCapabilities {
+  return record as WorkerCapabilities;
 }
 
 function admitWorker(worker: WorkerConfig): WorkerConfig {
-  const capabilities = normalizeWorkerRegistryRecord(worker.id, worker.capabilities, worker.tools);
+  const capabilities = asCompatibleWorkerCapabilities(
+    normalizeWorkerRegistryRecord(worker.id, worker.capabilities, worker.tools)
+  );
   const tools = worker.tools
     ? (Object.freeze([...worker.tools]) as WorkerConfig['tools'])
     : undefined;
@@ -155,10 +168,12 @@ export function createWorkerRegistryData(
     Object.fromEntries(
       workers.map((worker) => [
         worker.id,
-        normalizeWorkerRegistryRecord(
-          worker.id,
-          worker.capabilities,
-          worker.capabilities.tools.map((name) => ({ name }))
+        asCompatibleWorkerCapabilities(
+          normalizeWorkerRegistryRecord(
+            worker.id,
+            worker.capabilities,
+            worker.capabilities.tools.map((name) => ({ name }))
+          )
         ),
       ])
     )
