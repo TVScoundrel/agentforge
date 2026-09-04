@@ -179,6 +179,7 @@ export {
 
   // Agent creation
   createMultiAgentSystem,
+  createWorkersRegistry,
   registerWorkers,
   MultiAgentSystemBuilder,
   WorkerLifecycleError,

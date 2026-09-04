@@ -12,7 +12,7 @@ import { registerWorkerCapabilities } from './agent-runtime.js';
 import type { MultiAgentSystemWithRegistry, RegisterWorkerInput } from './agent-types.js';
 import type { WorkerCapabilities } from './schemas.js';
 import type { MultiAgentSystemConfig } from './types.js';
-import { admitWorkerTopology } from './worker-lifecycle.js';
+import { admitWorkerTopology, createWorkerRegistryData } from './worker-lifecycle.js';
 
 export { MultiAgentSystemBuilder } from './agent-builder.js';
 export type { MultiAgentSystemWithRegistry, RegisterWorkerInput } from './agent-types.js';
@@ -151,18 +151,20 @@ export function registerWorkers(
 }
 
 /**
- * Helper function to create workers registry for initial state
+ * Construct detached Worker registry records for initial state data.
  *
- * @deprecated Use registerWorkers(system, workers) instead
- * @param workers - Worker configurations with id and capabilities
- * @returns Workers registry for initial state
+ * This helper applies Worker lifecycle normalization without admitting Workers,
+ * creating graph topology, or associating the result with a compiled system.
+ * Empty input is therefore valid. Use the factory or builder when Workers must
+ * be admitted into an executable Multi-Agent System.
+ *
+ * @deprecated Prefer the factory or builder for Worker admission. This helper
+ * remains available for callers that only need compatible registry data.
+ * @param workers - Worker identities and combined capability/status records
+ * @returns An immutable, detached Worker registry
  */
 export function createWorkersRegistry(
-  workers: Array<{ id: string; capabilities: WorkerCapabilities }>
+  workers: readonly { id: string; capabilities: WorkerCapabilities }[]
 ) {
-  const registry: Record<string, WorkerCapabilities> = {};
-  for (const worker of workers) {
-    registry[worker.id] = worker.capabilities;
-  }
-  return registry;
+  return createWorkerRegistryData(workers);
 }

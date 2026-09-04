@@ -717,6 +717,33 @@ registerWorkers(system, [
 ]);
 ```
 
+### createWorkersRegistry() (Deprecated)
+
+Constructs immutable Worker registry records for callers that need the existing
+combined data shape: declared capabilities (`skills` and `tools`) plus invocation
+status (`available` and `currentWorkload`). It normalizes those records and
+Worker identities using the same rules as lifecycle admission, but it does not
+admit a Worker, create graph topology, associate data with a compiled Multi-Agent
+System, or mutate lifecycle state. Empty input is valid for this data helper.
+
+Use `createMultiAgentSystem()` or `MultiAgentSystemBuilder` when the Workers
+must be executable. Use `registerWorkers()` only for compatible capability
+updates to Workers already present in a compiled topology.
+
+```typescript
+const registry = createWorkersRegistry([
+  {
+    id: 'researcher',
+    capabilities: {
+      skills: ['research'],
+      tools: ['search'],
+      available: true,
+      currentWorkload: 0,
+    },
+  },
+]);
+```
+
 ### createSupervisorNode()
 
 Creates a supervisor node for custom workflows.

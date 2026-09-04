@@ -418,6 +418,7 @@ import {
 ```typescript
 import {
   createMultiAgentSystem,
+  createWorkersRegistry,
   registerWorkers,
   createSupervisorNode,
   createWorkerNode,
@@ -428,6 +429,7 @@ import {
 **Main API**:
 - `createMultiAgentSystem(config)` - Create a complete Multi-Agent system
 - `MultiAgentSystemBuilder` - Builder for creating Multi-Agent systems with workers
+- `createWorkersRegistry(workers)` - Construct detached, normalized Worker registry records containing declared capabilities and invocation status without admitting Workers or creating graph topology
 - `registerWorkers(system, workers)` - Update worker capabilities in state (Note: does not add worker nodes to compiled graphs; use builder or pass workers to createMultiAgentSystem)
 
 **Configuration**:
@@ -540,4 +542,3 @@ pnpm typecheck
 ## License
 
 MIT © 2026 Tom Van Schoor
-
