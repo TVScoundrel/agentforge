@@ -39,6 +39,15 @@ function invocationWorkers(available: boolean, currentWorkload: number) {
   };
 }
 
+function expectedResearcher(available: boolean, currentWorkload: number) {
+  return {
+    skills: ['research'],
+    tools: ['search'],
+    available,
+    currentWorkload,
+  };
+}
+
 describe('Multi-Agent Worker execution initialization', () => {
   it('uses topology-owned capabilities and invocation-owned status', async () => {
     const system = createSystem();
@@ -49,32 +58,30 @@ describe('Multi-Agent Worker execution initialization', () => {
     })) as MultiAgentStateType;
 
     expect(result.workers).toEqual({
-      researcher: {
-        skills: ['research'],
-        tools: ['search'],
-        available: false,
-        currentWorkload: 7,
-      },
+      researcher: expectedResearcher(false, 7),
     });
   });
 
-  it('rejects unknown invocation Workers with the lifecycle reason', async () => {
-    const system = createSystem();
+  it.each(['intruder', 'toString'])(
+    'rejects unknown invocation Worker %j with the lifecycle reason',
+    async (workerId) => {
+      const system = createSystem();
 
-    await expect(
-      system.invoke({
-        input: 'test',
-        workers: {
-          intruder: {
-            skills: [],
-            tools: [],
-            available: true,
-            currentWorkload: 0,
+      await expect(
+        system.invoke({
+          input: 'test',
+          workers: {
+            [workerId]: {
+              skills: [],
+              tools: [],
+              available: true,
+              currentWorkload: 0,
+            },
           },
-        },
-      })
-    ).rejects.toMatchObject<Partial<WorkerLifecycleError>>({ reason: 'unknown-worker' });
-  });
+        })
+      ).rejects.toMatchObject<Partial<WorkerLifecycleError>>({ reason: 'unknown-worker' });
+    }
+  );
 
   it('initializes Worker state through streaming before Supervisor execution', async () => {
     const chunks = [];
@@ -89,12 +96,7 @@ describe('Multi-Agent Worker execution initialization', () => {
     expect(chunks[0]).toEqual({
       initializeWorkers: {
         workers: {
-          researcher: {
-            skills: ['research'],
-            tools: ['search'],
-            available: false,
-            currentWorkload: 3,
-          },
+          researcher: expectedResearcher(false, 3),
         },
       },
     });
@@ -108,18 +110,8 @@ describe('Multi-Agent Worker execution initialization', () => {
     ])) as MultiAgentStateType[];
 
     expect(results.map((result) => result.workers.researcher)).toEqual([
-      {
-        skills: ['research'],
-        tools: ['search'],
-        available: false,
-        currentWorkload: 1,
-      },
-      {
-        skills: ['research'],
-        tools: ['search'],
-        available: true,
-        currentWorkload: 4,
-      },
+      expectedResearcher(false, 1),
+      expectedResearcher(true, 4),
     ]);
   });
 
@@ -138,12 +130,7 @@ describe('Multi-Agent Worker execution initialization', () => {
     );
     expect(initializationEnd?.data.output).toEqual({
       workers: {
-        researcher: {
-          skills: ['research'],
-          tools: ['search'],
-          available: false,
-          currentWorkload: 5,
-        },
+        researcher: expectedResearcher(false, 5),
       },
     });
   });
@@ -166,12 +153,7 @@ describe('Multi-Agent Worker execution initialization', () => {
     })) as MultiAgentStateType;
 
     expect(result.workers).toEqual({
-      researcher: {
-        skills: ['research'],
-        tools: ['search'],
-        available: false,
-        currentWorkload: 6,
-      },
+      researcher: expectedResearcher(false, 6),
     });
   });
 
