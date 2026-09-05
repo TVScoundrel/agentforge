@@ -237,124 +237,72 @@ describe('Worker lifecycle snapshot capture', () => {
   });
 });
 
-describe('Worker lifecycle routing-skill updates', () => {
-  it('publishes one immutable multi-Worker snapshot without changing Worker status', () => {
-    const lifecycle = admitWorkerTopology([
-      worker(),
-      worker({
-        id: 'writer',
-        capabilities: {
-          skills: ['writing'],
+describe('Worker lifecycle routing-skill operations', () => {
+  it.each(['publishRoutingSkills', 'updateRoutingSkills'] as const)(
+    '%s publishes one immutable multi-Worker replacement',
+    (operation) => {
+      const lifecycle = admitWorkerTopology([
+        worker({ tools: [{ name: 'search' }] }),
+        worker({
+          id: 'writer',
+          capabilities: {
+            skills: ['writing'],
+            tools: [],
+            available: false,
+            currentWorkload: 4,
+          },
+        }),
+      ]);
+      const previous = lifecycle.captureWorkerSnapshot();
+      const researcherSkills = ['analysis'];
+      const writerSkills = ['editing'];
+
+      lifecycle[operation]([
+        { id: 'researcher', skills: researcherSkills, assertedTools: [{ name: 'search' }] },
+        { id: 'writer', skills: writerSkills },
+      ]);
+      researcherSkills.push('caller-mutation');
+      writerSkills.push('caller-mutation');
+
+      const published = lifecycle.captureWorkerSnapshot();
+      expect(published).not.toBe(previous);
+      expect(previous).toMatchObject({
+        researcher: { skills: ['research'] },
+        writer: { skills: ['writing'] },
+      });
+      expect(published).toEqual({
+        researcher: {
+          skills: ['analysis'],
+          tools: ['search'],
+          available: true,
+          currentWorkload: 1,
+        },
+        writer: {
+          skills: ['editing'],
           tools: [],
           available: false,
           currentWorkload: 4,
         },
-      }),
-    ]);
-    const previous = lifecycle.captureWorkerSnapshot();
-    const researcherSkills = ['analysis'];
-    const writerSkills = ['editing'];
+      });
+      expect(Object.isFrozen(published)).toBe(true);
+      expect(Object.isFrozen(published.researcher)).toBe(true);
+      expect(Object.isFrozen(published.researcher?.skills)).toBe(true);
+      expect(Object.isFrozen(published.writer)).toBe(true);
+      expect(Object.isFrozen(published.writer?.skills)).toBe(true);
+    }
+  );
 
-    lifecycle.updateRoutingSkills([
-      { id: 'researcher', skills: researcherSkills },
-      { id: 'writer', skills: writerSkills },
-    ]);
-    researcherSkills.push('caller-mutation');
-    writerSkills.push('caller-mutation');
+  it.each(['publishRoutingSkills', 'updateRoutingSkills'] as const)(
+    '%s preserves the published snapshot when its batch is empty',
+    (operation) => {
+      const lifecycle = admitWorkerTopology([worker()]);
+      const published = lifecycle.captureWorkerSnapshot();
 
-    const published = lifecycle.captureWorkerSnapshot();
-    expect(published).not.toBe(previous);
-    expect(previous).toMatchObject({
-      researcher: { skills: ['research'] },
-      writer: { skills: ['writing'] },
-    });
-    expect(published).toEqual({
-      researcher: {
-        skills: ['analysis'],
-        tools: [],
-        available: true,
-        currentWorkload: 1,
-      },
-      writer: {
-        skills: ['editing'],
-        tools: [],
-        available: false,
-        currentWorkload: 4,
-      },
-    });
-    expect(Object.isFrozen(published)).toBe(true);
-    expect(Object.isFrozen(published.researcher)).toBe(true);
-    expect(Object.isFrozen(published.researcher?.skills)).toBe(true);
-    expect(Object.isFrozen(published.writer)).toBe(true);
-    expect(Object.isFrozen(published.writer?.skills)).toBe(true);
-  });
+      lifecycle[operation]([]);
 
-  it('keeps the published capability snapshot when the update batch is empty', () => {
-    const lifecycle = admitWorkerTopology([worker()]);
-    const published = lifecycle.captureWorkerSnapshot();
-
-    lifecycle.updateRoutingSkills([]);
-
-    expect(lifecycle.captureWorkerSnapshot()).toBe(published);
-  });
-});
-
-describe('Worker lifecycle routing-skill publication', () => {
-  it('publishes one immutable multi-Worker replacement', () => {
-    const lifecycle = admitWorkerTopology([
-      worker({ tools: [{ name: 'search' }] }),
-      worker({
-        id: 'writer',
-        capabilities: {
-          skills: ['writing'],
-          tools: [],
-          available: false,
-          currentWorkload: 4,
-        },
-      }),
-    ]);
-    const previous = lifecycle.captureWorkerSnapshot();
-
-    lifecycle.publishRoutingSkills([
-      { id: 'researcher', skills: ['analysis'], assertedTools: [{ name: 'search' }] },
-      { id: 'writer', skills: ['editing'] },
-    ]);
-
-    const published = lifecycle.captureWorkerSnapshot();
-    expect(published).not.toBe(previous);
-    expect(previous).toMatchObject({
-      researcher: { skills: ['research'] },
-      writer: { skills: ['writing'] },
-    });
-    expect(published).toEqual({
-      researcher: {
-        skills: ['analysis'],
-        tools: ['search'],
-        available: true,
-        currentWorkload: 1,
-      },
-      writer: {
-        skills: ['editing'],
-        tools: [],
-        available: false,
-        currentWorkload: 4,
-      },
-    });
-    expect(Object.isFrozen(published)).toBe(true);
-    expect(Object.isFrozen(published.researcher)).toBe(true);
-    expect(Object.isFrozen(published.researcher?.skills)).toBe(true);
-    expect(Object.isFrozen(published.writer)).toBe(true);
-    expect(Object.isFrozen(published.writer?.skills)).toBe(true);
-  });
-
-  it('preserves the published snapshot when the publication is empty', () => {
-    const lifecycle = admitWorkerTopology([worker()]);
-    const published = lifecycle.captureWorkerSnapshot();
-
-    lifecycle.publishRoutingSkills([]);
-
-    expect(lifecycle.captureWorkerSnapshot()).toBe(published);
-  });
+      expect(lifecycle.captureWorkerSnapshot()).toBe(published);
+    }
+  );
 
   it('validates every publication identity before detecting duplicates', () => {
     const lifecycle = admitWorkerTopology([worker()]);
