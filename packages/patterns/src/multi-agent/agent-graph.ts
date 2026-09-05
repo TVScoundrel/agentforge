@@ -5,7 +5,11 @@ import { MultiAgentState } from './state.js';
 import type { MultiAgentStateType } from './state.js';
 import type { MultiAgentSystemWithRegistry } from './agent-types.js';
 import type { MultiAgentRouter, MultiAgentSystemConfig } from './types.js';
-import { admitWorkerTopology, type WorkerLifecycle } from './worker-lifecycle.js';
+import {
+  admitWorkerTopology,
+  associateWorkerLifecycle,
+  type WorkerLifecycle,
+} from './worker-lifecycle.js';
 import { createWorkerInitializationNode } from './worker-initialization.js';
 
 const logger = createPatternLogger('agentforge:patterns:multi-agent:system');
@@ -123,7 +127,9 @@ export function createCompiledMultiAgentSystem(
   // @ts-expect-error - LangGraph StateGraph generic mismatch with string node names
   workflow.addConditionalEdges('aggregator', aggregatorRouter, [END]);
 
-  return workflow.compile(
+  const system = workflow.compile(
     checkpointer ? { checkpointer } : undefined
   ) as unknown as MultiAgentSystemWithRegistry;
+  associateWorkerLifecycle(system, lifecycle);
+  return system;
 }

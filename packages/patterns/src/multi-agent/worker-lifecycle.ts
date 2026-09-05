@@ -22,7 +22,16 @@ export class WorkerLifecycleError extends Error {
 export interface WorkerLifecycle {
   readonly topology: readonly WorkerConfig[];
   readonly captureWorkerSnapshot: () => Readonly<Record<string, WorkerCapabilities>>;
+  readonly updateRoutingSkills: (updates: readonly WorkerRoutingSkillUpdate[]) => void;
 }
+
+export interface WorkerRoutingSkillUpdate {
+  readonly id: string;
+  readonly skills: readonly string[];
+  readonly tools?: readonly unknown[];
+}
+
+const workerLifecycles = new WeakMap<object, WorkerLifecycle>();
 
 type ToolLike = {
   metadata?: { name?: unknown };
@@ -152,14 +161,72 @@ export function admitWorkerTopology(workers: readonly WorkerConfig[]): WorkerLif
 
   validateIdentities(workers);
   const topology = Object.freeze(workers.map(admitWorker));
-  const workerCapabilities = Object.freeze(
+  let workerCapabilities = Object.freeze(
     Object.fromEntries(topology.map((worker) => [worker.id, worker.capabilities]))
   );
 
   return Object.freeze({
     topology,
     captureWorkerSnapshot: () => workerCapabilities,
+    updateRoutingSkills: (updates: readonly WorkerRoutingSkillUpdate[]) => {
+      validateIdentities(updates);
+
+      const replacements = updates.map((update) => {
+        const current = workerCapabilities[update.id];
+        if (!Object.hasOwn(workerCapabilities, update.id) || !current) {
+          throw new WorkerLifecycleError(
+            'unknown-worker',
+            `Cannot update unknown Worker "${update.id}" after compilation.`
+          );
+        }
+
+        if (update.tools !== undefined) {
+          const assertedTools = [...normalizeWorkerToolNames(update.id, update.tools)].sort();
+          const executableTools = [...current.tools].sort();
+          if (
+            assertedTools.length !== executableTools.length ||
+            assertedTools.some((toolName, index) => toolName !== executableTools[index])
+          ) {
+            throw new WorkerLifecycleError(
+              'invalid-tool',
+              `Worker "${update.id}" tools do not match its compiled executable tools.`
+            );
+          }
+        }
+
+        return [
+          update.id,
+          asCompatibleWorkerCapabilities(
+            Object.freeze({
+              ...current,
+              skills: Object.freeze([...update.skills]),
+            })
+          ),
+        ] as const;
+      });
+
+      workerCapabilities = Object.freeze({
+        ...workerCapabilities,
+        ...Object.fromEntries(replacements),
+      });
+    },
   });
+}
+
+export function associateWorkerLifecycle(system: object, lifecycle: WorkerLifecycle): void {
+  workerLifecycles.set(system, lifecycle);
+}
+
+export function resolveWorkerLifecycle(system: object): WorkerLifecycle {
+  const lifecycle = workerLifecycles.get(system);
+  if (!lifecycle) {
+    throw new WorkerLifecycleError(
+      'unsupported-system',
+      'The compiled graph was not created by the Worker lifecycle.'
+    );
+  }
+
+  return lifecycle;
 }
 
 export function createWorkerRegistryData(

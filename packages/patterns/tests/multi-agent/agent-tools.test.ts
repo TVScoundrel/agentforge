@@ -6,29 +6,44 @@ import {
   registerWorkers,
   WorkerLifecycleError,
 } from '../../src/multi-agent/agent.js';
-import type { MultiAgentSystemConfig } from '../../src/multi-agent/types.js';
+import type { MultiAgentStateType } from '../../src/multi-agent/state.js';
+import type { WorkerConfig } from '../../src/multi-agent/types.js';
 
-function createBaseConfig(): MultiAgentSystemConfig {
-  return {
-    supervisor: {
-      strategy: 'round-robin',
-    },
+function createSystem(tools: WorkerConfig['tools'] = []) {
+  return createMultiAgentSystem({
+    supervisor: { strategy: 'round-robin' },
     workers: [
       {
-        id: 'initial',
+        id: 'worker1',
         capabilities: {
           skills: ['initial'],
           tools: [],
           available: true,
           currentWorkload: 0,
         },
+        tools,
       },
     ],
-  };
+    maxIterations: 0,
+  });
 }
 
-describe('Multi-Agent tool mapping and stream registration', () => {
-  it('should correctly extract tool names from AgentForge Tools in registerWorkers', () => {
+async function registeredWorker(tools: WorkerConfig['tools'], assertedTools = tools) {
+  const system = createSystem(tools);
+  registerWorkers(system, [
+    {
+      name: 'worker1',
+      capabilities: ['updated'],
+      tools: assertedTools,
+    },
+  ]);
+
+  const result = (await system.invoke({ input: 'test' })) as MultiAgentStateType;
+  return result.workers.worker1;
+}
+
+describe('Multi-Agent legacy tool assertions', () => {
+  it('accepts matching AgentForge tool names', async () => {
     const agentforgeTool1 = toolBuilder()
       .name('agentforge-tool-1')
       .description('First AgentForge tool')
@@ -36,7 +51,6 @@ describe('Multi-Agent tool mapping and stream registration', () => {
       .schema(z.object({ input: z.string().describe('Input') }))
       .implement(async ({ input }) => input)
       .build();
-
     const agentforgeTool2 = toolBuilder()
       .name('agentforge-tool-2')
       .description('Second AgentForge tool')
@@ -45,84 +59,42 @@ describe('Multi-Agent tool mapping and stream registration', () => {
       .implement(async ({ input }) => input)
       .build();
 
-    const system = createMultiAgentSystem(createBaseConfig());
-
-    registerWorkers(system, [
-      {
-        name: 'worker1',
-        capabilities: ['skill1'],
-        tools: [agentforgeTool1, agentforgeTool2],
-      },
-    ]);
-
-    expect(system._workerRegistry).toEqual({
-      worker1: {
-        skills: ['skill1'],
-        tools: ['agentforge-tool-1', 'agentforge-tool-2'],
-        available: true,
-        currentWorkload: 0,
-      },
+    expect(await registeredWorker([agentforgeTool1, agentforgeTool2])).toMatchObject({
+      skills: ['updated'],
+      tools: ['agentforge-tool-1', 'agentforge-tool-2'],
     });
   });
 
-  it('should correctly extract tool names from LangChain tools in registerWorkers', () => {
-    const system = createMultiAgentSystem(createBaseConfig());
+  it('treats compiled tool names as an unordered set', async () => {
+    const compiledTools = [{ name: 'first' }, { name: 'second' }] as WorkerConfig['tools'];
+    const assertedTools = [{ name: ' second ' }, { name: 'first' }] as WorkerConfig['tools'];
 
-    registerWorkers(system, [
-      {
-        name: 'worker1',
-        capabilities: ['skill1'],
-        tools: [{ name: 'langchain-tool-1' }, { name: 'langchain-tool-2' }],
-      },
-    ]);
-
-    expect(system._workerRegistry).toEqual({
-      worker1: {
-        skills: ['skill1'],
-        tools: ['langchain-tool-1', 'langchain-tool-2'],
-        available: true,
-        currentWorkload: 0,
-      },
+    expect(await registeredWorker(compiledTools, assertedTools)).toMatchObject({
+      skills: ['updated'],
+      tools: ['first', 'second'],
     });
   });
 
-  it('should handle mixed AgentForge and LangChain tools in registerWorkers', () => {
-    const agentforgeTool = toolBuilder()
-      .name('agentforge-tool')
-      .description('AgentForge tool')
-      .category(ToolCategory.UTILITY)
-      .schema(z.object({ input: z.string().describe('Input') }))
-      .implement(async ({ input }) => input)
-      .build();
+  it('rejects a tool set that differs from compiled executable tools', () => {
+    const system = createSystem([{ name: 'search' }] as WorkerConfig['tools']);
 
-    const system = createMultiAgentSystem(createBaseConfig());
-
-    registerWorkers(system, [
-      {
-        name: 'worker1',
-        capabilities: ['skill1'],
-        tools: [agentforgeTool, { name: 'langchain-tool' }],
-      },
-    ]);
-
-    expect(system._workerRegistry).toEqual({
-      worker1: {
-        skills: ['skill1'],
-        tools: ['agentforge-tool', 'langchain-tool'],
-        available: true,
-        currentWorkload: 0,
-      },
-    });
+    expect(() =>
+      registerWorkers(system, [
+        { name: 'worker1', capabilities: ['updated'], tools: [{ name: 'write' }] },
+      ])
+    ).toThrowError(
+      expect.objectContaining<Partial<WorkerLifecycleError>>({ reason: 'invalid-tool' })
+    );
   });
 
   it('rejects tools without a name through lifecycle validation', () => {
-    const system = createMultiAgentSystem(createBaseConfig());
+    const system = createSystem();
 
     expect(() =>
       registerWorkers(system, [
         {
           name: 'worker1',
-          capabilities: ['skill1'],
+          capabilities: ['updated'],
           tools: [{}],
         },
       ])
@@ -132,13 +104,13 @@ describe('Multi-Agent tool mapping and stream registration', () => {
   });
 
   it('rejects duplicate normalized tool names through lifecycle validation', () => {
-    const system = createMultiAgentSystem(createBaseConfig());
+    const system = createSystem([{ name: 'search' }] as WorkerConfig['tools']);
 
     expect(() =>
       registerWorkers(system, [
         {
           name: 'worker1',
-          capabilities: ['skill1'],
+          capabilities: ['updated'],
           tools: [{ name: 'search' }, { name: ' search ' }],
         },
       ])

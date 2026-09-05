@@ -19,6 +19,7 @@ export type { MultiAgentSystemWithRegistry, RegisterWorkerInput } from './agent-
 export { WorkerLifecycleError, type WorkerLifecycleErrorReason } from './worker-lifecycle.js';
 
 const logger = createPatternLogger('agentforge:patterns:multi-agent:system');
+const systemsWarnedAboutLegacyRegistration = new WeakSet<object>();
 
 /**
  * Create a multi-agent coordination system
@@ -114,13 +115,13 @@ export function createMultiAgentSystem(
 /**
  * Register workers with a compiled multi-agent system
  *
- * **Important**: This function only registers worker *capabilities* in the state.
- * It does NOT add worker nodes to the graph (which is impossible after compilation).
+ * **Important**: This function only updates routing skills for known Workers.
+ * It does NOT add Worker nodes or change executable tools after compilation.
  *
  * This means:
- * - Workers must already exist as nodes in the compiled graph
- * - This function only updates their capabilities in the state
- * - For true dynamic worker registration, use `MultiAgentSystemBuilder` instead
+ * - Workers must already exist in the compiled Worker topology
+ * - Supplied tools, when present, must match the compiled executable tool set
+ * - Use `MultiAgentSystemBuilder` to admit Workers before compilation
  *
  * **Recommended**: Use `MultiAgentSystemBuilder` for a cleaner approach:
  * ```typescript
@@ -142,11 +143,14 @@ export function registerWorkers(
   system: MultiAgentSystemWithRegistry,
   workers: RegisterWorkerInput[]
 ): void {
-  logger.warn(
-    '[AgentForge] registerWorkers() on a compiled system only updates worker capabilities in state.\n' +
-      'It does NOT add worker nodes to the graph. Use MultiAgentSystemBuilder for proper worker registration.\n' +
-      'See: https://github.com/TVScoundrel/agentforge/blob/main/packages/patterns/docs/multi-agent-pattern.md'
-  );
+  if (!systemsWarnedAboutLegacyRegistration.has(system)) {
+    systemsWarnedAboutLegacyRegistration.add(system);
+    logger.warn(
+      '[AgentForge] registerWorkers() on a compiled system only updates routing skills for known Workers.\n' +
+        'It does NOT add Worker nodes or change compiled tools. Use MultiAgentSystemBuilder before compilation.\n' +
+        'See: https://github.com/TVScoundrel/agentforge/blob/main/packages/patterns/docs/multi-agent-pattern.md'
+    );
+  }
   registerWorkerCapabilities(system, workers);
 }
 

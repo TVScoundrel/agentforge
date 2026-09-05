@@ -430,7 +430,7 @@ import {
 - `createMultiAgentSystem(config)` - Create a complete Multi-Agent system
 - `MultiAgentSystemBuilder` - Builder for creating Multi-Agent systems with workers
 - `createWorkersRegistry(workers)` - Construct detached, normalized Worker registry records containing declared capabilities and invocation status without admitting Workers or creating graph topology
-- `registerWorkers(system, workers)` - Update worker capabilities in state (Note: does not add worker nodes to compiled graphs; use builder or pass workers to createMultiAgentSystem)
+- `registerWorkers(system, workers)` - Deprecated adapter that updates routing skills for known Workers; supplied tools must match the compiled executable tool set
 
 **Configuration**:
 ```typescript
