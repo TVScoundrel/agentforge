@@ -5,7 +5,7 @@ export function registerWorkerCapabilities(
   system: MultiAgentSystemWithRegistry,
   workers: RegisterWorkerInput[]
 ): void {
-  resolveWorkerLifecycle(system).updateRoutingSkills(
+  resolveWorkerLifecycle(system).publishRoutingSkills(
     workers.map((worker) => ({
       id: worker.name,
       skills: worker.capabilities,
