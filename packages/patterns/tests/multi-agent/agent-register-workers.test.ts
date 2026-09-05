@@ -61,6 +61,56 @@ describe('Multi-Agent worker registration', () => {
     });
   });
 
+  it('publishes a complete multi-Worker batch while preserving Worker status and input ownership', async () => {
+    const baseConfig = createBaseConfig();
+    const system = createMultiAgentSystem({
+      ...baseConfig,
+      workers: [
+        {
+          ...baseConfig.workers[0]!,
+          capabilities: {
+            ...baseConfig.workers[0]!.capabilities,
+            available: false,
+            currentWorkload: 2,
+          },
+        },
+        {
+          id: 'writer',
+          capabilities: {
+            skills: ['writing'],
+            tools: [],
+            available: true,
+            currentWorkload: 5,
+          },
+        },
+      ],
+    });
+    const initialSkills = ['updated-initial'];
+    const writerSkills = ['editing'];
+
+    registerWorkers(system, [
+      { name: 'initial', capabilities: initialSkills },
+      { name: 'writer', capabilities: writerSkills },
+    ]);
+    initialSkills.push('caller-mutation');
+    writerSkills.push('caller-mutation');
+
+    expect(await workerState(system)).toEqual({
+      initial: {
+        skills: ['updated-initial'],
+        tools: [],
+        available: false,
+        currentWorkload: 2,
+      },
+      writer: {
+        skills: ['editing'],
+        tools: [],
+        available: true,
+        currentWorkload: 5,
+      },
+    });
+  });
+
   it('uses updated routing skills for subsequent routing decisions', async () => {
     const system = createMultiAgentSystem({
       supervisor: { strategy: 'skill-based' },
@@ -91,6 +141,49 @@ describe('Multi-Agent worker registration', () => {
     const result = (await system.invoke({ input: 'write the report' })) as MultiAgentStateType;
 
     expect(result.routingHistory[0]?.targetAgent).toBe('initial');
+  });
+
+  it('isolates an in-flight execution from updates that become visible to the next execution', async () => {
+    let markWorkerStarted!: () => void;
+    let releaseWorker!: () => void;
+    const workerStarted = new Promise<void>((resolve) => {
+      markWorkerStarted = resolve;
+    });
+    const workerReleased = new Promise<void>((resolve) => {
+      releaseWorker = resolve;
+    });
+    const observedSkills: string[][] = [];
+    const system = createMultiAgentSystem({
+      supervisor: { strategy: 'round-robin' },
+      workers: [
+        {
+          id: 'initial',
+          capabilities: {
+            skills: ['initial'],
+            tools: [],
+            available: true,
+            currentWorkload: 0,
+          },
+          executeFn: async (state) => {
+            markWorkerStarted();
+            await workerReleased;
+            observedSkills.push([...state.workers.initial!.skills]);
+            return { status: 'completed' };
+          },
+        },
+      ],
+      maxIterations: 1,
+    });
+
+    const inFlight = system.invoke({ input: 'first' });
+    await workerStarted;
+    registerWorkers(system, [{ name: 'initial', capabilities: ['updated'] }]);
+    releaseWorker();
+    await inFlight;
+
+    expect(observedSkills).toEqual([['initial']]);
+    expect((await workerState(system)).initial?.skills).toEqual(['updated']);
+    expect(observedSkills).toEqual([['initial'], ['updated']]);
   });
 
   it('accepts an empty compatibility update without changing Worker state', async () => {
@@ -140,13 +233,14 @@ describe('Multi-Agent worker registration', () => {
       workers: [
         ...baseConfig.workers,
         {
-          id: 'second',
+          id: 'writer',
           capabilities: {
-            skills: ['second'],
+            skills: ['writing'],
             tools: [],
             available: true,
             currentWorkload: 0,
           },
+          tools: [{ name: 'compiled-tool' }],
         },
       ],
     });
@@ -154,15 +248,19 @@ describe('Multi-Agent worker registration', () => {
     expect(() =>
       registerWorkers(system, [
         { name: 'initial', capabilities: ['must-not-publish'] },
-        { name: 'unknown', capabilities: ['invalid'] },
+        {
+          name: 'writer',
+          capabilities: ['also-must-not-publish'],
+          tools: [{ name: 'different-tool' }],
+        },
       ])
     ).toThrowError(
-      expect.objectContaining<Partial<WorkerLifecycleError>>({ reason: 'unknown-worker' })
+      expect.objectContaining<Partial<WorkerLifecycleError>>({ reason: 'invalid-tool' })
     );
 
     expect(await workerState(system)).toMatchObject({
       initial: { skills: ['initial'] },
-      second: { skills: ['second'] },
+      writer: { skills: ['writing'] },
     });
   });
 

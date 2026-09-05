@@ -169,6 +169,10 @@ export function admitWorkerTopology(workers: readonly WorkerConfig[]): WorkerLif
     topology,
     captureWorkerSnapshot: () => workerCapabilities,
     updateRoutingSkills: (updates: readonly WorkerRoutingSkillUpdate[]) => {
+      if (updates.length === 0) {
+        return;
+      }
+
       validateIdentities(updates);
 
       const replacements = updates.map((update) => {
