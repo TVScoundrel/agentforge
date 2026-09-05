@@ -34,6 +34,16 @@ function expectLifecycleReason(action: () => unknown, reason: WorkerLifecycleErr
 }
 
 describe('Worker lifecycle admission', () => {
+  it('exposes only topology, snapshot capture, and routing-skill publication', () => {
+    const lifecycle = admitWorkerTopology([worker()]);
+
+    expect(Object.keys(lifecycle).sort()).toEqual([
+      'captureSnapshot',
+      'publishRoutingSkills',
+      'topology',
+    ]);
+  });
+
   it('rejects an empty Worker topology', () => {
     expectLifecycleReason(() => admitWorkerTopology([]), 'empty-topology');
   });
@@ -249,7 +259,7 @@ describe('Worker lifecycle snapshot capture', () => {
     const lifecycle = admitWorkerTopology([worker()]);
     const earlier = lifecycle.captureSnapshot({});
 
-    lifecycle.updateRoutingSkills([{ id: 'researcher', skills: ['analysis'] }]);
+    lifecycle.publishRoutingSkills([{ id: 'researcher', skills: ['analysis'] }]);
 
     expect(earlier.researcher?.skills).toEqual(['research']);
     expect(lifecycle.captureSnapshot({}).researcher?.skills).toEqual(['analysis']);
@@ -257,66 +267,60 @@ describe('Worker lifecycle snapshot capture', () => {
 });
 
 describe('Worker lifecycle routing-skill operations', () => {
-  it.each(['publishRoutingSkills', 'updateRoutingSkills'] as const)(
-    '%s atomically publishes one multi-Worker replacement',
-    (operation) => {
-      const lifecycle = admitWorkerTopology([
-        worker({ tools: [{ name: 'search' }] }),
-        worker({
-          id: 'writer',
-          capabilities: {
-            skills: ['writing'],
-            tools: [],
-            available: false,
-            currentWorkload: 4,
-          },
-        }),
-      ]);
-      const previousLifecycleSnapshot = lifecycle.captureSnapshot({});
-      const researcherSkills = ['analysis'];
-      const writerSkills = ['editing'];
-
-      lifecycle[operation]([
-        { id: 'researcher', skills: researcherSkills, assertedTools: [{ name: 'search' }] },
-        { id: 'writer', skills: writerSkills },
-      ]);
-      researcherSkills.push('caller-mutation');
-      writerSkills.push('caller-mutation');
-
-      const currentLifecycleSnapshot = lifecycle.captureSnapshot({});
-      expect(currentLifecycleSnapshot).not.toBe(previousLifecycleSnapshot);
-      expect(previousLifecycleSnapshot).toMatchObject({
-        researcher: { skills: ['research'] },
-        writer: { skills: ['writing'] },
-      });
-      expect(currentLifecycleSnapshot).toEqual({
-        researcher: {
-          skills: ['analysis'],
-          tools: ['search'],
-          available: true,
-          currentWorkload: 1,
-        },
-        writer: {
-          skills: ['editing'],
+  it('atomically publishes one multi-Worker replacement', () => {
+    const lifecycle = admitWorkerTopology([
+      worker({ tools: [{ name: 'search' }] }),
+      worker({
+        id: 'writer',
+        capabilities: {
+          skills: ['writing'],
           tools: [],
           available: false,
           currentWorkload: 4,
         },
-      });
-    }
-  );
+      }),
+    ]);
+    const previousLifecycleSnapshot = lifecycle.captureSnapshot({});
+    const researcherSkills = ['analysis'];
+    const writerSkills = ['editing'];
 
-  it.each(['publishRoutingSkills', 'updateRoutingSkills'] as const)(
-    '%s preserves published capabilities when its batch is empty',
-    (operation) => {
-      const lifecycle = admitWorkerTopology([worker()]);
-      const baselineLifecycleSnapshot = lifecycle.captureSnapshot({});
+    lifecycle.publishRoutingSkills([
+      { id: 'researcher', skills: researcherSkills, assertedTools: [{ name: 'search' }] },
+      { id: 'writer', skills: writerSkills },
+    ]);
+    researcherSkills.push('caller-mutation');
+    writerSkills.push('caller-mutation');
 
-      lifecycle[operation]([]);
+    const currentLifecycleSnapshot = lifecycle.captureSnapshot({});
+    expect(currentLifecycleSnapshot).not.toBe(previousLifecycleSnapshot);
+    expect(previousLifecycleSnapshot).toMatchObject({
+      researcher: { skills: ['research'] },
+      writer: { skills: ['writing'] },
+    });
+    expect(currentLifecycleSnapshot).toEqual({
+      researcher: {
+        skills: ['analysis'],
+        tools: ['search'],
+        available: true,
+        currentWorkload: 1,
+      },
+      writer: {
+        skills: ['editing'],
+        tools: [],
+        available: false,
+        currentWorkload: 4,
+      },
+    });
+  });
 
-      expect(lifecycle.captureSnapshot({})).toEqual(baselineLifecycleSnapshot);
-    }
-  );
+  it('preserves published capabilities when its batch is empty', () => {
+    const lifecycle = admitWorkerTopology([worker()]);
+    const baselineLifecycleSnapshot = lifecycle.captureSnapshot({});
+
+    lifecycle.publishRoutingSkills([]);
+
+    expect(lifecycle.captureSnapshot({})).toEqual(baselineLifecycleSnapshot);
+  });
 
   it('validates every publication identity before detecting duplicates', () => {
     const lifecycle = admitWorkerTopology([worker()]);
