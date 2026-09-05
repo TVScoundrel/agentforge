@@ -143,8 +143,26 @@ import { createMultiAgentSystem } from '@agentforge/patterns';
 const system = createMultiAgentSystem({
   supervisor: { model: llm, strategy: 'skill-based' },
   workers: [
-    { id: 'tech_support', capabilities: { skills: ['technical'], tools: [], available: true, currentWorkload: 0 } },
-    { id: 'billing_support', capabilities: { skills: ['billing'], tools: [], available: true, currentWorkload: 0 } },
+    {
+      id: 'tech_support',
+      model: llm,
+      capabilities: {
+        skills: ['technical'],
+        tools: [],
+        available: true,
+        currentWorkload: 0,
+      },
+    },
+    {
+      id: 'billing_support',
+      model: llm,
+      capabilities: {
+        skills: ['billing'],
+        tools: [],
+        available: true,
+        currentWorkload: 0,
+      },
+    },
   ],
   aggregator: { model: llm },
 });
