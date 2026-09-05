@@ -5,6 +5,46 @@ All notable changes to AgentForge will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.17.0] - 2026-09-05
+
+### Changed
+
+#### @agentforge/patterns - Fixed Multi-Agent Worker Topology
+- Unified factory and builder construction behind one Worker lifecycle that validates identities, tools, and capabilities before LangGraph compilation.
+- Fixed Worker identity, executable tools, and declared capabilities at compilation while keeping availability and workload invocation-specific.
+- Preserved checkpointed Worker snapshots across interrupted executions; later routing-skill updates apply only to subsequent executions.
+- Tightened the deprecated compiled-system `registerWorkers()` adapter to update routing skills only for known Workers and to reject tool assertions that differ from the compiled executable tool set.
+- Made invocation Worker state authoritative only for status overrides and reject unknown Worker identities instead of creating non-executable capability records.
+
+### Added
+
+#### @agentforge/patterns - Worker Lifecycle APIs and Coverage
+- Exported `createWorkersRegistry`, `WorkerLifecycleError`, and `WorkerLifecycleErrorReason` from the multi-agent and package-root entry points.
+- Added focused coverage for topology admission, registry normalization, invocation initialization, checkpoint snapshots, legacy updates, and lifecycle failures.
+
+#### Repository Agent Workflows and Domain Documentation
+- Added reusable release and dependency-grooming skills, plus canonical maintainer guidance for releases.
+- Added the AgentForge domain context and the accepted Worker-topology architecture decision record.
+
+### Fixed
+
+#### @agentforge/patterns - Worker Initialization and Legacy Updates
+- Log Worker initialization failures with topology and invocation context.
+- Apply deprecated routing-skill updates consistently to later invocations without mutating active or checkpointed executions.
+
+### Validation
+- `pnpm release:validate` passed with 237 test files passed, 9 skipped, 2,617 tests passed, and 110 skipped.
+- Skips are intentional opt-in coverage for Neo4j, PostgreSQL, and MySQL services, database benchmarks, PostgreSQL connection credentials, and web-search performance tests; the default release suite remains deterministic without Docker, external services, credentials, or network access.
+
+### Published
+- All packages published to npm registry at version 0.17.0:
+  - @agentforge/core@0.17.0
+  - @agentforge/skills@0.17.0
+  - @agentforge/patterns@0.17.0
+  - @agentforge/tools@0.17.0
+  - @agentforge/testing@0.17.0
+  - @agentforge/cli@0.17.0
+
 ## [0.16.91] - 2026-08-20
 
 ### Fixed
