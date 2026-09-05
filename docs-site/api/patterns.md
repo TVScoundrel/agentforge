@@ -295,7 +295,8 @@ interface WorkerCapabilities {
 
 **build(): CompiledStateGraph**
 
-Compiles the system into an executable graph. After calling `build()`, the system is immutable.
+Compiles the system into an executable graph. After calling `build()`, Worker
+identities and executable tools are fixed and Workers cannot be added.
 
 ### createMultiAgentSystem()
 
@@ -342,6 +343,30 @@ interface MultiAgentSystemConfig {
   verbose?: boolean;
 }
 ```
+
+### registerWorkers(system, workers) (Deprecated)
+
+The standalone `registerWorkers(system, workers)` function is a compatibility
+adapter for Workers already present in a compiled Multi-Agent System. It may
+update their routing skills for later executions, but it cannot add Worker nodes
+or replace executable tools. When `tools` are supplied, they are normalized and
+checked as an unordered assertion of the Worker's compiled executable tool set.
+
+```typescript
+import { registerWorkers } from '@agentforge/patterns';
+
+registerWorkers(system, [
+  {
+    name: 'researcher',
+    capabilities: ['research', 'source-validation'],
+    tools: [webSearch], // Must match the tool set compiled for researcher
+  },
+]);
+```
+
+Recompile a new Multi-Agent System to add a Worker or change executable tools.
+Use this deprecated adapter only when a known Worker's routing skills must change
+for subsequent executions.
 
 ## Custom Patterns
 

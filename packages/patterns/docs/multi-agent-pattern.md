@@ -40,7 +40,7 @@ Input → Supervisor → Worker(s) → Aggregator → Output
 
 ### Using MultiAgentSystemBuilder (Recommended)
 
-The builder pattern allows you to dynamically register workers before compiling the system:
+The builder pattern lets you construct the fixed Worker topology incrementally before compiling the system:
 
 ```typescript
 import { MultiAgentSystemBuilder } from '@agentforge/patterns';
@@ -59,7 +59,7 @@ const builder = new MultiAgentSystemBuilder({
   },
 });
 
-// Register workers dynamically
+// Admit Workers into the topology before compilation
 builder.registerWorkers([
   {
     name: 'math_specialist',
@@ -607,7 +607,10 @@ interface WorkerCapabilities {
 
 #### build(): CompiledStateGraph
 
-Compiles the system into an executable graph. After calling `build()`, the system is immutable and workers cannot be added.
+Compiles the system into an executable graph. After calling `build()`, Worker
+identities and executable tools are fixed and Workers cannot be added. The
+deprecated compatibility adapter may still update routing skills for known
+Workers in later executions.
 
 **Example**:
 
@@ -668,7 +671,19 @@ const system = createMultiAgentSystem({
     model: new ChatOpenAI({ modelName: 'gpt-4' }),
     strategy: 'skill-based',
   },
-  workers: [],
+  workers: [
+    {
+      id: 'researcher',
+      capabilities: {
+        skills: ['research'],
+        tools: ['search'],
+        available: true,
+        currentWorkload: 0,
+      },
+      tools: [searchTool],
+      model: llm,
+    },
+  ],
   aggregator: {
     model: new ChatOpenAI({ modelName: 'gpt-4' }),
   },
@@ -730,20 +745,15 @@ interface WorkerConfig {
 registerWorkers(system, [
   {
     name: 'researcher',
-    description: 'Conducts research and gathers information',
-    capabilities: ['research', 'data_collection'],
-    tools: [searchTool, fetchTool],
-    systemPrompt: 'You are a research specialist.',
-  },
-  {
-    name: 'analyst',
-    description: 'Analyzes data and identifies patterns',
-    capabilities: ['analysis', 'statistics'],
-    tools: [analyzeTool, validateTool],
-    systemPrompt: 'You are a data analyst.',
+    capabilities: ['research', 'source-validation'],
+    tools: [searchTool], // Assertion: must match the compiled tool set
   },
 ]);
 ```
+
+This compatibility call changes routing metadata for later executions only. It
+does not add a Worker node or replace the Worker's executable tools, model,
+prompt, or implementation.
 
 ### createWorkersRegistry() (Deprecated)
 
@@ -1246,7 +1256,10 @@ builder.registerWorkers([worker3Config]);
 const system = builder.build();
 ```
 
-**Important**: Workers must be registered BEFORE calling `build()`. Once the system is compiled, it's immutable and workers cannot be added.
+**Important**: Workers must be registered BEFORE calling `build()`. Once the
+system is compiled, Worker identities and executable tools are fixed and Workers
+cannot be added. Routing-skill compatibility updates for known Workers may still
+affect later executions.
 
 ### Worker Priority
 
@@ -1376,7 +1389,19 @@ const system = createMultiAgentSystem({
     model: llm,
     strategy: 'skill-based',
   },
-  workers: [],
+  workers: [
+    {
+      id: 'researcher',
+      capabilities: {
+        skills: ['research'],
+        tools: ['search'],
+        available: true,
+        currentWorkload: 0,
+      },
+      tools: [searchTool],
+      model: llm,
+    },
+  ],
   aggregator: { model: llm },
   verbose: true, // Enable logging
 });

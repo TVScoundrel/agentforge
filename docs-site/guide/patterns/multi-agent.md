@@ -36,6 +36,12 @@ Not sure which pattern to use? See the [Agent Patterns Overview](/guide/concepts
 
 ## Basic Usage
 
+Worker identities and executable tools form a fixed Worker topology when the
+Multi-Agent System is compiled. Use the factory directly or the builder shown
+later in this guide to admit every Worker before compilation. The deprecated
+compiled-system registration adapter cannot add Worker nodes or change tools;
+it can only update routing skills for known Workers in later executions.
+
 ```typescript
 import { createMultiAgentSystem } from '@agentforge/patterns';
 import { ChatOpenAI } from '@langchain/openai';
@@ -1062,7 +1068,7 @@ const llmBased = createMultiAgentSystem({
 | Complexity | High | Low |
 | Specialization | High (per agent) | Medium |
 | Coordination | Required | Not needed |
-| Scalability | High (add agents) | Limited |
+| Scalability | High (recompile with additional Workers) | Limited |
 | Latency | Higher (coordination) | Lower |
 | Token usage | Higher | Lower |
 | Best for | Complex, multi-domain | Simple, single-domain |

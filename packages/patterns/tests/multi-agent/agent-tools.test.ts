@@ -118,4 +118,43 @@ describe('Multi-Agent legacy tool assertions', () => {
       expect.objectContaining<Partial<WorkerLifecycleError>>({ reason: 'invalid-tool' })
     );
   });
+
+  it('preserves the observable Worker snapshot after a failed tool assertion', async () => {
+    const system = createMultiAgentSystem({
+      supervisor: { strategy: 'round-robin' },
+      workers: [
+        {
+          id: 'worker1',
+          capabilities: {
+            skills: ['initial'],
+            tools: [],
+            available: false,
+            currentWorkload: 3,
+          },
+          tools: [{ name: 'search' }],
+        },
+      ],
+      maxIterations: 0,
+    });
+
+    expect(() =>
+      registerWorkers(system, [
+        {
+          name: 'worker1',
+          capabilities: ['must-not-publish'],
+          tools: [{ name: 'write' }],
+        },
+      ])
+    ).toThrowError(
+      expect.objectContaining<Partial<WorkerLifecycleError>>({ reason: 'invalid-tool' })
+    );
+
+    const result = (await system.invoke({ input: 'test' })) as MultiAgentStateType;
+    expect(result.workers.worker1).toEqual({
+      skills: ['initial'],
+      tools: ['search'],
+      available: false,
+      currentWorkload: 3,
+    });
+  });
 });

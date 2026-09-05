@@ -84,7 +84,7 @@ The Multi-Agent pattern coordinates multiple specialized agents for complex task
 - Flexible routing strategies (LLM-based, skill-based, rule-based, round-robin, load-balanced)
 - Parallel execution support
 - Intelligent result aggregation
-- Dynamic worker registration
+- Fixed Worker topology construction before compilation
 - **22+ tests** - Comprehensive coverage
 
 ## Installation
@@ -431,6 +431,12 @@ import {
 - `MultiAgentSystemBuilder` - Builder for creating Multi-Agent systems with workers
 - `createWorkersRegistry(workers)` - Construct detached, normalized Worker registry records containing declared capabilities and invocation status without admitting Workers or creating graph topology
 - `registerWorkers(system, workers)` - Deprecated adapter that updates routing skills for known Workers; supplied tools must match the compiled executable tool set
+
+Worker identities and executable tools are fixed when the Multi-Agent System is
+compiled. The builder's `registerWorkers(workers)` method constructs that topology
+before `build()`. The deprecated `registerWorkers(system, workers)` adapter does
+not add executable Worker nodes: it may update routing skills for known Workers,
+and those updates are visible only to later executions.
 
 **Configuration**:
 ```typescript
