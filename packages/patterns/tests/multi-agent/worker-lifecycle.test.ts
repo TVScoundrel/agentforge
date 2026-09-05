@@ -121,9 +121,9 @@ describe('Worker lifecycle admission', () => {
     expect(Object.isFrozen(admitted.capabilities.skills)).toBe(true);
     expect(Object.isFrozen(admitted.capabilities.tools)).toBe(true);
     expect(Object.isFrozen(admitted.tools)).toBe(true);
-    expect(lifecycle.captureWorkerCapabilities()).toEqual({
+    expect(lifecycle.captureWorkerSnapshot()).toEqual({
       researcher: admitted.capabilities,
     });
-    expect(Object.isFrozen(lifecycle.captureWorkerCapabilities())).toBe(true);
+    expect(Object.isFrozen(lifecycle.captureWorkerSnapshot())).toBe(true);
   });
 });

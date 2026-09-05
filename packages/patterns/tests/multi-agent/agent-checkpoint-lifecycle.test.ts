@@ -40,6 +40,21 @@ function createCheckpointedSystem(checkpointer: MemorySaver) {
   });
 }
 
+function createInterruptibleGraph(
+  captureWorkerSnapshot: () => Readonly<Record<string, WorkerCapabilities>>,
+  interruptingWorker: (state: MultiAgentStateType) => Promise<Partial<MultiAgentStateType>>
+) {
+  const workflow = new StateGraph(MultiAgentState);
+
+  workflow.addNode('initializeWorkers', createWorkerInitializationNode(captureWorkerSnapshot));
+  workflow.addNode('interruptingWorker', interruptingWorker);
+  workflow.setEntryPoint('initializeWorkers');
+  workflow.addEdge('initializeWorkers', 'interruptingWorker');
+  workflow.addEdge('interruptingWorker', END);
+
+  return workflow.compile({ checkpointer: new MemorySaver() });
+}
+
 describe('Multi-Agent Worker checkpoint lifecycle', () => {
   it('preserves checkpointed Worker status across executions in one thread', async () => {
     const system = createCheckpointedSystem(new MemorySaver());
@@ -71,22 +86,11 @@ describe('Multi-Agent Worker checkpoint lifecycle', () => {
 
   it('resumes with the captured Worker snapshot and initializes the next execution afresh', async () => {
     let currentCapabilities = workerCapabilities(['research'], false, 3);
-    const captureWorkerCapabilities = vi.fn(() => currentCapabilities);
-    const workflow = new StateGraph(MultiAgentState);
-
-    workflow.addNode(
-      'initializeWorkers',
-      createWorkerInitializationNode(captureWorkerCapabilities)
-    );
-    workflow.addNode('interruptingWorker', async (state: MultiAgentStateType) => {
+    const captureWorkerSnapshot = vi.fn(() => currentCapabilities);
+    const graph = createInterruptibleGraph(captureWorkerSnapshot, async (state) => {
       const response = interrupt<string, string>('continue?');
       return { response, workers: state.workers };
     });
-    workflow.setEntryPoint('initializeWorkers');
-    workflow.addEdge('initializeWorkers', 'interruptingWorker');
-    workflow.addEdge('interruptingWorker', END);
-
-    const graph = workflow.compile({ checkpointer: new MemorySaver() });
     const interruptedConfig = { configurable: { thread_id: 'interrupted' } };
     const interrupted = await graph.invoke({ input: 'first' }, interruptedConfig);
 
@@ -96,7 +100,7 @@ describe('Multi-Agent Worker checkpoint lifecycle', () => {
       available: false,
       currentWorkload: 3,
     });
-    expect(captureWorkerCapabilities).toHaveBeenCalledTimes(1);
+    expect(captureWorkerSnapshot).toHaveBeenCalledTimes(1);
 
     currentCapabilities = workerCapabilities(['updated-research'], true, 0);
     const resumed = await graph.invoke(new Command({ resume: 'approved' }), interruptedConfig);
@@ -106,7 +110,7 @@ describe('Multi-Agent Worker checkpoint lifecycle', () => {
       available: false,
       currentWorkload: 3,
     });
-    expect(captureWorkerCapabilities).toHaveBeenCalledTimes(1);
+    expect(captureWorkerSnapshot).toHaveBeenCalledTimes(1);
 
     const later = await graph.invoke({ input: 'later' }, interruptedConfig);
 
@@ -115,34 +119,23 @@ describe('Multi-Agent Worker checkpoint lifecycle', () => {
       available: false,
       currentWorkload: 3,
     });
-    expect(captureWorkerCapabilities).toHaveBeenCalledTimes(2);
+    expect(captureWorkerSnapshot).toHaveBeenCalledTimes(2);
   });
 
   it('preserves a failure thrown while resuming an interrupted execution', async () => {
     const cause = new Error('resume cause');
     const failure = new Error('resume failure', { cause });
-    const captureWorkerCapabilities = vi.fn(() => workerCapabilities(['research']));
-    const workflow = new StateGraph(MultiAgentState);
-
-    workflow.addNode(
-      'initializeWorkers',
-      createWorkerInitializationNode(captureWorkerCapabilities)
-    );
-    workflow.addNode('interruptingWorker', async () => {
+    const captureWorkerSnapshot = vi.fn(() => workerCapabilities(['research']));
+    const graph = createInterruptibleGraph(captureWorkerSnapshot, async () => {
       interrupt('continue?');
       throw failure;
     });
-    workflow.setEntryPoint('initializeWorkers');
-    workflow.addEdge('initializeWorkers', 'interruptingWorker');
-    workflow.addEdge('interruptingWorker', END);
-
-    const graph = workflow.compile({ checkpointer: new MemorySaver() });
     const config = { configurable: { thread_id: 'resume-failure' } };
 
     await graph.invoke({ input: 'first' }, config);
 
     await expect(graph.invoke(new Command({ resume: 'approved' }), config)).rejects.toBe(failure);
     expect(failure.cause).toBe(cause);
-    expect(captureWorkerCapabilities).toHaveBeenCalledTimes(1);
+    expect(captureWorkerSnapshot).toHaveBeenCalledTimes(1);
   });
 });
