@@ -25,7 +25,6 @@ export interface WorkerLifecycle {
     statusOverrides: Readonly<Record<string, WorkerStatus>>
   ) => Record<string, WorkerCapabilities>;
   readonly publishRoutingSkills: (updates: readonly WorkerRoutingSkillUpdate[]) => void;
-  readonly updateRoutingSkills: (updates: readonly WorkerRoutingSkillUpdate[]) => void;
 }
 
 export interface WorkerRoutingSkillUpdate {
@@ -248,7 +247,6 @@ export function admitWorkerTopology(workers: readonly WorkerConfig[]): WorkerLif
       );
     },
     publishRoutingSkills,
-    updateRoutingSkills: publishRoutingSkills,
   });
 }
 
