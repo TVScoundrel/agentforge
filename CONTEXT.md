@@ -28,3 +28,6 @@ _Avoid_: Dynamic worker registration
 
 **Worker lifecycle**:
 The period from admitting a Worker into a Worker topology through making its capabilities available during execution.
+
+**Worker lifecycle snapshot**:
+The invocation-specific view of the Worker topology: fixed Worker identity, executable tools, and declared capabilities combined with the availability and workload captured for that execution. A resumed execution retains its original snapshot.

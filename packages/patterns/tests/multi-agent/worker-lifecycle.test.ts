@@ -128,6 +128,115 @@ describe('Worker lifecycle admission', () => {
   });
 });
 
+describe('Worker lifecycle snapshot capture', () => {
+  it('uses invocation-owned status while retaining every admitted Worker', () => {
+    const lifecycle = admitWorkerTopology([
+      worker(),
+      worker({
+        id: 'writer',
+        capabilities: {
+          skills: ['writing'],
+          tools: [],
+          available: false,
+          currentWorkload: 4,
+        },
+      }),
+    ]);
+
+    expect(
+      lifecycle.captureSnapshot({
+        researcher: {
+          skills: ['caller-skill'],
+          tools: ['caller-tool'],
+          available: false,
+          currentWorkload: 7,
+        },
+      })
+    ).toEqual({
+      researcher: {
+        skills: ['research'],
+        tools: [],
+        available: false,
+        currentWorkload: 7,
+      },
+      writer: {
+        skills: ['writing'],
+        tools: [],
+        available: false,
+        currentWorkload: 4,
+      },
+    });
+  });
+
+  it.each(['intruder', 'toString'])(
+    'rejects an override for unknown Worker %j with the lifecycle reason',
+    (workerId) => {
+      const lifecycle = admitWorkerTopology([worker()]);
+
+      expectLifecycleReason(
+        () =>
+          lifecycle.captureSnapshot({
+            [workerId]: { available: true, currentWorkload: 0 },
+          }),
+        'unknown-worker'
+      );
+    }
+  );
+
+  it('returns mutable records detached from lifecycle and caller-owned collections', () => {
+    const lifecycle = admitWorkerTopology([worker()]);
+    const callerSkills = ['caller-skill'];
+    const callerTools = ['caller-tool'];
+    const override = {
+      skills: callerSkills,
+      tools: callerTools,
+      available: false,
+      currentWorkload: 6,
+    };
+
+    const snapshot = lifecycle.captureSnapshot({ researcher: override });
+    const captured = snapshot.researcher!;
+
+    callerSkills.push('late-caller-skill');
+    callerTools.push('late-caller-tool');
+    override.available = true;
+    override.currentWorkload = 99;
+    captured.skills.push('snapshot-skill');
+    captured.tools.push('snapshot-tool');
+    captured.available = true;
+    captured.currentWorkload = 12;
+
+    expect(Object.isFrozen(snapshot)).toBe(false);
+    expect(Object.isFrozen(captured)).toBe(false);
+    expect(Object.isFrozen(captured.skills)).toBe(false);
+    expect(Object.isFrozen(captured.tools)).toBe(false);
+    expect(lifecycle.captureSnapshot({ researcher: override })).toEqual({
+      researcher: {
+        skills: ['research'],
+        tools: [],
+        available: true,
+        currentWorkload: 99,
+      },
+    });
+    expect(lifecycle.topology[0]?.capabilities).toEqual({
+      skills: ['research'],
+      tools: [],
+      available: true,
+      currentWorkload: 1,
+    });
+  });
+
+  it('keeps an earlier snapshot isolated from a later routing-skill publication', () => {
+    const lifecycle = admitWorkerTopology([worker()]);
+    const earlier = lifecycle.captureSnapshot({});
+
+    lifecycle.updateRoutingSkills([{ id: 'researcher', skills: ['analysis'] }]);
+
+    expect(earlier.researcher?.skills).toEqual(['research']);
+    expect(lifecycle.captureSnapshot({}).researcher?.skills).toEqual(['analysis']);
+  });
+});
+
 describe('Worker lifecycle routing-skill updates', () => {
   it('publishes one immutable multi-Worker snapshot without changing Worker status', () => {
     const lifecycle = admitWorkerTopology([
