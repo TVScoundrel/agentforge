@@ -25,6 +25,7 @@ export interface WorkerLifecycle {
   readonly captureSnapshot: (
     statusOverrides: Readonly<Record<string, WorkerStatus>>
   ) => Record<string, WorkerCapabilities>;
+  readonly publishRoutingSkills: (updates: readonly WorkerRoutingSkillUpdate[]) => void;
   readonly updateRoutingSkills: (updates: readonly WorkerRoutingSkillUpdate[]) => void;
 }
 
@@ -168,6 +169,53 @@ export function admitWorkerTopology(workers: readonly WorkerConfig[]): WorkerLif
     Object.fromEntries(topology.map((worker) => [worker.id, worker.capabilities]))
   );
 
+  const publishRoutingSkills = (updates: readonly WorkerRoutingSkillUpdate[]): void => {
+    if (updates.length === 0) {
+      return;
+    }
+
+    validateIdentities(updates);
+
+    const replacements = updates.map((update) => {
+      const current = workerCapabilities[update.id];
+      if (!Object.hasOwn(workerCapabilities, update.id) || !current) {
+        throw new WorkerLifecycleError(
+          'unknown-worker',
+          `Cannot update unknown Worker "${update.id}" after compilation.`
+        );
+      }
+
+      if (update.assertedTools !== undefined) {
+        const assertedTools = [...normalizeWorkerToolNames(update.id, update.assertedTools)].sort();
+        const executableTools = [...current.tools].sort();
+        if (
+          assertedTools.length !== executableTools.length ||
+          assertedTools.some((toolName, index) => toolName !== executableTools[index])
+        ) {
+          throw new WorkerLifecycleError(
+            'invalid-tool',
+            `Worker "${update.id}" tools do not match its compiled executable tools.`
+          );
+        }
+      }
+
+      return [
+        update.id,
+        asCompatibleWorkerCapabilities(
+          Object.freeze({
+            ...current,
+            skills: Object.freeze([...update.skills]),
+          })
+        ),
+      ] as const;
+    });
+
+    workerCapabilities = Object.freeze({
+      ...workerCapabilities,
+      ...Object.fromEntries(replacements),
+    });
+  };
+
   return Object.freeze({
     topology,
     captureWorkerSnapshot: () => workerCapabilities,
@@ -201,54 +249,8 @@ export function admitWorkerTopology(workers: readonly WorkerConfig[]): WorkerLif
         })
       );
     },
-    updateRoutingSkills: (updates: readonly WorkerRoutingSkillUpdate[]) => {
-      if (updates.length === 0) {
-        return;
-      }
-
-      validateIdentities(updates);
-
-      const replacements = updates.map((update) => {
-        const current = workerCapabilities[update.id];
-        if (!Object.hasOwn(workerCapabilities, update.id) || !current) {
-          throw new WorkerLifecycleError(
-            'unknown-worker',
-            `Cannot update unknown Worker "${update.id}" after compilation.`
-          );
-        }
-
-        if (update.assertedTools !== undefined) {
-          const assertedTools = [
-            ...normalizeWorkerToolNames(update.id, update.assertedTools),
-          ].sort();
-          const executableTools = [...current.tools].sort();
-          if (
-            assertedTools.length !== executableTools.length ||
-            assertedTools.some((toolName, index) => toolName !== executableTools[index])
-          ) {
-            throw new WorkerLifecycleError(
-              'invalid-tool',
-              `Worker "${update.id}" tools do not match its compiled executable tools.`
-            );
-          }
-        }
-
-        return [
-          update.id,
-          asCompatibleWorkerCapabilities(
-            Object.freeze({
-              ...current,
-              skills: Object.freeze([...update.skills]),
-            })
-          ),
-        ] as const;
-      });
-
-      workerCapabilities = Object.freeze({
-        ...workerCapabilities,
-        ...Object.fromEntries(replacements),
-      });
-    },
+    publishRoutingSkills,
+    updateRoutingSkills: publishRoutingSkills,
   });
 }
 
