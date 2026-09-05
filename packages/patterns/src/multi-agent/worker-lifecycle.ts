@@ -21,7 +21,6 @@ export class WorkerLifecycleError extends Error {
 
 export interface WorkerLifecycle {
   readonly topology: readonly WorkerConfig[];
-  readonly captureWorkerSnapshot: () => Readonly<Record<string, WorkerCapabilities>>;
   readonly captureSnapshot: (
     statusOverrides: Readonly<Record<string, WorkerStatus>>
   ) => Record<string, WorkerCapabilities>;
@@ -218,7 +217,6 @@ export function admitWorkerTopology(workers: readonly WorkerConfig[]): WorkerLif
 
   return Object.freeze({
     topology,
-    captureWorkerSnapshot: () => workerCapabilities,
     captureSnapshot: (statusOverrides: Readonly<Record<string, WorkerStatus>>) => {
       const publishedCapabilities = workerCapabilities;
 
