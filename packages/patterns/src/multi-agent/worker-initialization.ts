@@ -1,12 +1,11 @@
 import { createPatternLogger } from '../shared/deduplication.js';
 import type { WorkerCapabilities } from './schemas.js';
 import type { MultiAgentStateType } from './state.js';
-import { WorkerLifecycleError } from './worker-lifecycle.js';
+import { WorkerLifecycleError, type WorkerLifecycle } from './worker-lifecycle.js';
 
 const logger = createPatternLogger('agentforge:patterns:multi-agent:worker-initialization');
 
 type WorkerStatusInput = Pick<WorkerCapabilities, 'available' | 'currentWorkload'>;
-type CaptureWorkerSnapshot = () => Readonly<Record<string, WorkerCapabilities>>;
 
 export function initializeWorkerState(
   topologyCapabilities: Readonly<Record<string, WorkerCapabilities>>,
@@ -40,23 +39,23 @@ export function initializeWorkerState(
   );
 }
 
-export function createWorkerInitializationNode(captureWorkerSnapshot: CaptureWorkerSnapshot) {
+export function createWorkerInitializationNode(lifecycle: WorkerLifecycle) {
   return async (state: MultiAgentStateType): Promise<Partial<MultiAgentStateType>> => {
-    const topologyCapabilities = captureWorkerSnapshot();
+    const topologyWorkerIds = lifecycle.topology.map((worker) => worker.id);
 
     logger.info('Worker initialization started', {
-      workerCount: Object.keys(topologyCapabilities).length,
+      workerCount: topologyWorkerIds.length,
       statusOverrideCount: Object.keys(state.workers).length,
     });
 
     let workers: MultiAgentStateType['workers'];
     try {
-      workers = initializeWorkerState(topologyCapabilities, state.workers);
+      workers = lifecycle.captureSnapshot(state.workers);
     } catch (error) {
       logger.error('Worker initialization failed', {
         error: error instanceof Error ? error.message : String(error),
         invocationWorkerIds: Object.keys(state.workers),
-        topologyWorkerIds: Object.keys(topologyCapabilities),
+        topologyWorkerIds,
       });
       throw error;
     }
