@@ -81,7 +81,7 @@ export function createCompiledMultiAgentSystem(
 
   workflow.addNode(
     'initializeWorkers',
-    createWorkerInitializationNode(lifecycle.workerCapabilities)
+    createWorkerInitializationNode(lifecycle.captureWorkerSnapshot)
   );
   workflow.addNode('supervisor', createSupervisorNode({ ...supervisor, maxIterations, verbose }));
 

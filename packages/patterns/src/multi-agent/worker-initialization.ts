@@ -6,6 +6,7 @@ import { WorkerLifecycleError } from './worker-lifecycle.js';
 const logger = createPatternLogger('agentforge:patterns:multi-agent:worker-initialization');
 
 type WorkerStatusInput = Pick<WorkerCapabilities, 'available' | 'currentWorkload'>;
+type CaptureWorkerSnapshot = () => Readonly<Record<string, WorkerCapabilities>>;
 
 export function initializeWorkerState(
   topologyCapabilities: Readonly<Record<string, WorkerCapabilities>>,
@@ -39,10 +40,10 @@ export function initializeWorkerState(
   );
 }
 
-export function createWorkerInitializationNode(
-  topologyCapabilities: Readonly<Record<string, WorkerCapabilities>>
-) {
+export function createWorkerInitializationNode(captureWorkerSnapshot: CaptureWorkerSnapshot) {
   return async (state: MultiAgentStateType): Promise<Partial<MultiAgentStateType>> => {
+    const topologyCapabilities = captureWorkerSnapshot();
+
     logger.info('Worker initialization started', {
       workerCount: Object.keys(topologyCapabilities).length,
       statusOverrideCount: Object.keys(state.workers).length,

@@ -21,7 +21,7 @@ export class WorkerLifecycleError extends Error {
 
 export interface WorkerLifecycle {
   readonly topology: readonly WorkerConfig[];
-  readonly workerCapabilities: Readonly<Record<string, WorkerCapabilities>>;
+  readonly captureWorkerSnapshot: () => Readonly<Record<string, WorkerCapabilities>>;
 }
 
 type ToolLike = {
@@ -156,7 +156,10 @@ export function admitWorkerTopology(workers: readonly WorkerConfig[]): WorkerLif
     Object.fromEntries(topology.map((worker) => [worker.id, worker.capabilities]))
   );
 
-  return Object.freeze({ topology, workerCapabilities });
+  return Object.freeze({
+    topology,
+    captureWorkerSnapshot: () => workerCapabilities,
+  });
 }
 
 export function createWorkerRegistryData(
