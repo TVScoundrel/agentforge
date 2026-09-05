@@ -5,8 +5,8 @@ import { MultiAgentState } from './state.js';
 import type { MultiAgentStateType } from './state.js';
 import type { MultiAgentSystemWithRegistry } from './agent-types.js';
 import type { MultiAgentRouter, MultiAgentSystemConfig } from './types.js';
-import { wrapCompiledSystem } from './agent-runtime.js';
 import { admitWorkerTopology, type WorkerLifecycle } from './worker-lifecycle.js';
+import { createWorkerInitializationNode } from './worker-initialization.js';
 
 const logger = createPatternLogger('agentforge:patterns:multi-agent:system');
 
@@ -79,6 +79,10 @@ export function createCompiledMultiAgentSystem(
   const workflow = new StateGraph(MultiAgentState);
   const workerIds: string[] = [];
 
+  workflow.addNode(
+    'initializeWorkers',
+    createWorkerInitializationNode(lifecycle.workerCapabilities)
+  );
   workflow.addNode('supervisor', createSupervisorNode({ ...supervisor, maxIterations, verbose }));
 
   for (const workerConfig of lifecycle.topology) {
@@ -105,7 +109,9 @@ export function createCompiledMultiAgentSystem(
   const aggregatorRouter = createAggregatorRouter();
 
   // @ts-expect-error - LangGraph StateGraph generic mismatch with string node names
-  workflow.setEntryPoint('supervisor');
+  workflow.setEntryPoint('initializeWorkers');
+  // @ts-expect-error - LangGraph StateGraph generic mismatch with string node names
+  workflow.addEdge('initializeWorkers', 'supervisor');
   // @ts-expect-error - LangGraph StateGraph generic mismatch with string node names
   workflow.addConditionalEdges('supervisor', supervisorRouter, ['aggregator', END, ...workerIds]);
 
@@ -117,9 +123,7 @@ export function createCompiledMultiAgentSystem(
   // @ts-expect-error - LangGraph StateGraph generic mismatch with string node names
   workflow.addConditionalEdges('aggregator', aggregatorRouter, [END]);
 
-  const compiled = workflow.compile(
+  return workflow.compile(
     checkpointer ? { checkpointer } : undefined
   ) as unknown as MultiAgentSystemWithRegistry;
-
-  return wrapCompiledSystem(compiled, lifecycle.workerCapabilities);
 }

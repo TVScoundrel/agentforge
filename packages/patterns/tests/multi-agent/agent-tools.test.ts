@@ -1,12 +1,11 @@
 import { toolBuilder, ToolCategory } from '@agentforge/core';
-import { describe, expect, it, vi } from 'vitest';
+import { describe, expect, it } from 'vitest';
 import { z } from 'zod';
 import {
   createMultiAgentSystem,
   registerWorkers,
   WorkerLifecycleError,
 } from '../../src/multi-agent/agent.js';
-import type { MultiAgentStateType } from '../../src/multi-agent/state.js';
 import type { MultiAgentSystemConfig } from '../../src/multi-agent/types.js';
 
 function createBaseConfig(): MultiAgentSystemConfig {
@@ -146,68 +145,5 @@ describe('Multi-Agent tool mapping and stream registration', () => {
     ).toThrowError(
       expect.objectContaining<Partial<WorkerLifecycleError>>({ reason: 'invalid-tool' })
     );
-  });
-
-  it('should wrap stream() method when workers are registered', async () => {
-    const system = createMultiAgentSystem(createBaseConfig());
-
-    registerWorkers(system, [
-      {
-        name: 'worker1',
-        capabilities: ['skill1'],
-        tools: [],
-      },
-    ]);
-
-    const systemWithRegistry = system;
-    expect(systemWithRegistry._originalStream).toBeDefined();
-    expect(typeof systemWithRegistry._originalStream).toBe('function');
-    expect(systemWithRegistry._workerRegistry?.worker1?.skills).toEqual(['skill1']);
-
-    const originalStreamSpy = vi.fn(systemWithRegistry._originalStream);
-    systemWithRegistry._originalStream = originalStreamSpy;
-
-    await system.stream({
-      input: 'test',
-    });
-
-    expect(originalStreamSpy).toHaveBeenCalledTimes(1);
-    const [callArgs] = originalStreamSpy.mock.calls[0] as [Partial<MultiAgentStateType>];
-    expect(callArgs.workers?.worker1?.skills).toEqual(['skill1']);
-  });
-
-  it('should inject registered workers with AgentForge Tools when using stream() method', async () => {
-    const agentforgeTool = toolBuilder()
-      .name('stream-tool')
-      .description('Tool for streaming test')
-      .category(ToolCategory.UTILITY)
-      .schema(z.object({ input: z.string().describe('Input') }))
-      .implement(async ({ input }: { input: string }) => input)
-      .build();
-
-    const system = createMultiAgentSystem(createBaseConfig());
-
-    registerWorkers(system, [
-      {
-        name: 'worker1',
-        capabilities: ['skill1'],
-        tools: [agentforgeTool],
-      },
-    ]);
-
-    const systemWithRegistry = system;
-    expect(systemWithRegistry._originalStream).toBeDefined();
-    expect(systemWithRegistry._workerRegistry?.worker1?.tools).toEqual(['stream-tool']);
-
-    const originalStreamSpy = vi.fn(systemWithRegistry._originalStream);
-    systemWithRegistry._originalStream = originalStreamSpy;
-
-    await system.stream({
-      input: 'test',
-    });
-
-    expect(originalStreamSpy).toHaveBeenCalledTimes(1);
-    const [callArgs] = originalStreamSpy.mock.calls[0] as [Partial<MultiAgentStateType>];
-    expect(callArgs.workers?.worker1?.tools).toEqual(['stream-tool']);
   });
 });

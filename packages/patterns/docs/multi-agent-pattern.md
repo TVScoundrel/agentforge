@@ -154,6 +154,31 @@ The pattern uses `MultiAgentState` with the following channels:
 }
 ```
 
+Each new graph execution initializes `workers` before the Supervisor runs. Worker
+identities, routing skills, and executable tool names come from the topology
+compiled by `createMultiAgentSystem()` or `MultiAgentSystemBuilder`; invocation
+input cannot replace those declarations. Invocation input may set `available`
+and `currentWorkload` for known Workers:
+
+```typescript
+const result = await system.invoke({
+  input: 'Prepare the report',
+  workers: {
+    researcher: {
+      skills: [], // Ignored; the compiled topology supplies routing skills.
+      tools: [], // Ignored; executable tool names belong to the topology.
+      available: false,
+      currentWorkload: 2,
+    },
+  },
+});
+```
+
+Supplying an identity that is not in the compiled Worker topology rejects the
+execution with `WorkerLifecycleError.reason === 'unknown-worker'`. The same
+initialization applies to invoke, stream, batch, and event-streaming execution
+paths.
+
 ### Node Types
 
 #### 1. Supervisor Node

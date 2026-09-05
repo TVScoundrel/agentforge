@@ -62,13 +62,16 @@ export const MultiAgentStateConfig = {
    */
   workers: {
     schema: z.record(z.string(), WorkerCapabilitiesSchema),
-    reducer: (left: Record<string, WorkerCapabilities>, right: Record<string, WorkerCapabilities>) => ({
-      ...left,
-      ...right,
-    }),
+    reducer: (
+      _left: Record<string, WorkerCapabilities>,
+      right: Record<string, WorkerCapabilities>
+    ) => right,
     default: () => ({}),
     description: 'Available worker agents and their capabilities',
-  } satisfies StateChannelConfig<Record<string, WorkerCapabilities>, Record<string, WorkerCapabilities>>,
+  } satisfies StateChannelConfig<
+    Record<string, WorkerCapabilities>,
+    Record<string, WorkerCapabilities>
+  >,
 
   /**
    * Trusted supervisor task intent
