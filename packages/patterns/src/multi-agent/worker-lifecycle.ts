@@ -28,7 +28,7 @@ export interface WorkerLifecycle {
 export interface WorkerRoutingSkillUpdate {
   readonly id: string;
   readonly skills: readonly string[];
-  readonly tools?: readonly unknown[];
+  readonly assertedTools?: readonly unknown[];
 }
 
 const workerLifecycles = new WeakMap<object, WorkerLifecycle>();
@@ -180,8 +180,10 @@ export function admitWorkerTopology(workers: readonly WorkerConfig[]): WorkerLif
           );
         }
 
-        if (update.tools !== undefined) {
-          const assertedTools = [...normalizeWorkerToolNames(update.id, update.tools)].sort();
+        if (update.assertedTools !== undefined) {
+          const assertedTools = [
+            ...normalizeWorkerToolNames(update.id, update.assertedTools),
+          ].sort();
           const executableTools = [...current.tools].sort();
           if (
             assertedTools.length !== executableTools.length ||

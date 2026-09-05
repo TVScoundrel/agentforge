@@ -9,7 +9,7 @@ export function registerWorkerCapabilities(
     workers.map((worker) => ({
       id: worker.name,
       skills: worker.capabilities,
-      ...(worker.tools === undefined ? {} : { tools: worker.tools }),
+      ...(worker.tools === undefined ? {} : { assertedTools: worker.tools }),
     }))
   );
 }

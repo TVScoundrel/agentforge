@@ -554,7 +554,7 @@ const builder = new MultiAgentSystemBuilder({
   aggregator: { model }
 });
 
-// Register workers dynamically
+// Admit Workers before compilation
 builder.registerWorkers([
   {
     name: 'researcher',
