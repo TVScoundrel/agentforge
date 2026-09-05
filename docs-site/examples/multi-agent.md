@@ -12,6 +12,10 @@ The Multi-Agent pattern:
 
 ## Complete Example
 
+This example admits every Worker before `build()`. The resulting Worker
+identities and executable tools are fixed for the lifetime of the compiled
+Multi-Agent System.
+
 ```typescript
 import { MultiAgentSystemBuilder } from '@agentforge/patterns';
 import { ChatOpenAI } from '@langchain/openai';
@@ -155,7 +159,7 @@ Best for:
 
 - **Specialization** - Each agent has expertise
 - **Coordination** - Smart task routing
-- **Scalability** - Add more agents easily
+- **Scalability** - Recompile a topology with additional Workers as needs grow
 - **Flexibility** - Sequential, parallel, or custom workflows
 - **Efficiency** - Parallel execution when possible
 
@@ -264,4 +268,3 @@ agentInvocations.inc({ agent_name: 'researcher' });
 
 - [Custom Patterns](/tutorials/advanced-patterns) - Create your own patterns
 - [Production Deployment](/tutorials/production-deployment) - Deploy multi-agent systems
-
