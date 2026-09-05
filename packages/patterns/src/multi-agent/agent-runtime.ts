@@ -1,55 +1,15 @@
-import type { RunnableConfig } from '@langchain/core/runnables';
-import type { WorkerCapabilities } from './schemas.js';
-import type { MultiAgentStateType } from './state.js';
 import type { MultiAgentSystemWithRegistry, RegisterWorkerInput } from './agent-types.js';
-import { toWorkerCapabilities } from './agent-workers.js';
-
-function mergeWorkers(
-  input: Partial<MultiAgentStateType>,
-  workerCapabilities: Readonly<Record<string, WorkerCapabilities>>
-): Partial<MultiAgentStateType> {
-  return {
-    ...input,
-    workers: {
-      ...workerCapabilities,
-      ...(input.workers || {}),
-    },
-  };
-}
+import { resolveWorkerLifecycle } from './worker-lifecycle.js';
 
 export function registerWorkerCapabilities(
   system: MultiAgentSystemWithRegistry,
   workers: RegisterWorkerInput[]
 ): void {
-  if (!system._workerRegistry) {
-    system._workerRegistry = {};
-  }
-
-  for (const worker of workers) {
-    system._workerRegistry[worker.name] = toWorkerCapabilities(worker);
-  }
-
-  if (!system._originalInvoke) {
-    system._originalInvoke = system.invoke.bind(system);
-    system.invoke = async function (input: Partial<MultiAgentStateType>, config?: RunnableConfig) {
-      return system._originalInvoke!(
-        mergeWorkers(input, system._workerRegistry || {}) as Parameters<
-          NonNullable<typeof system._originalInvoke>
-        >[0],
-        config as Parameters<NonNullable<typeof system._originalInvoke>>[1]
-      );
-    } as unknown as typeof system.invoke;
-  }
-
-  if (!system._originalStream) {
-    system._originalStream = system.stream.bind(system);
-    system.stream = async function (input: Partial<MultiAgentStateType>, config?: RunnableConfig) {
-      return system._originalStream!(
-        mergeWorkers(input, system._workerRegistry || {}) as Parameters<
-          NonNullable<typeof system._originalStream>
-        >[0],
-        config as Parameters<NonNullable<typeof system._originalStream>>[1]
-      );
-    } as unknown as typeof system.stream;
-  }
+  resolveWorkerLifecycle(system).updateRoutingSkills(
+    workers.map((worker) => ({
+      id: worker.name,
+      skills: worker.capabilities,
+      ...(worker.tools === undefined ? {} : { assertedTools: worker.tools }),
+    }))
+  );
 }

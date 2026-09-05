@@ -138,18 +138,34 @@ const agent = createReflectionAgent({
 ### 4. Multi-Agent
 Coordinate specialized agents
 ```typescript
-import { createMultiAgentSystem, registerWorkers } from '@agentforge/patterns';
+import { createMultiAgentSystem } from '@agentforge/patterns';
 
 const system = createMultiAgentSystem({
   supervisor: { model: llm, strategy: 'skill-based' },
-  workers: [],
+  workers: [
+    {
+      id: 'tech_support',
+      model: llm,
+      capabilities: {
+        skills: ['technical'],
+        tools: [],
+        available: true,
+        currentWorkload: 0,
+      },
+    },
+    {
+      id: 'billing_support',
+      model: llm,
+      capabilities: {
+        skills: ['billing'],
+        tools: [],
+        available: true,
+        currentWorkload: 0,
+      },
+    },
+  ],
   aggregator: { model: llm },
 });
-
-registerWorkers(system, [
-  { name: 'tech_support', capabilities: ['technical'], tools: [...] },
-  { name: 'billing_support', capabilities: ['billing'], tools: [...] },
-]);
 ```
 
 See the [Pattern Comparison Guide](./packages/patterns/docs/pattern-comparison.md) to choose the right pattern.

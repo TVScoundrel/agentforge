@@ -542,7 +542,7 @@ const system = createMultiAgentSystem({
 
 ### MultiAgentSystemBuilder (Recommended)
 
-Builder class for creating multi-agent systems with dynamic worker registration.
+Builder class for admitting a fixed Worker topology before compilation.
 
 ```typescript
 class MultiAgentSystemBuilder {
@@ -679,9 +679,12 @@ const system = createMultiAgentSystem({
 
 ### registerWorkers() (Deprecated)
 
-> **DEPRECATED**: This function only updates worker capabilities in the state, but does not add worker nodes to the graph. Use `MultiAgentSystemBuilder` instead for proper dynamic worker registration.
+> **DEPRECATED**: This function updates routing skills for known Workers only. Use `MultiAgentSystemBuilder` to admit Workers before compilation.
 
-Registers workers with the multi-agent system. This function has a fundamental limitation: it can only update the worker capabilities in the state, but cannot add new nodes to the compiled graph (LangGraph graphs are immutable after compilation).
+Updates routing skills through the Worker lifecycle privately associated with a
+compiled Multi-Agent System. It cannot add Worker identities or change executable
+tools after compilation. When `tools` are supplied, their normalized names must
+match the compiled executable tool set; ordering does not matter.
 
 ```typescript
 function registerWorkers(
@@ -691,21 +694,21 @@ function registerWorkers(
 ```
 
 **Limitations**:
-- Does NOT add worker nodes to the graph
-- Only updates worker capabilities in state
-- Workers must already exist as nodes in the graph
-- Can update capabilities of existing workers
+- Does not add Worker nodes to the graph
+- Workers must already exist in the compiled Worker topology
+- Updates routing skills only; Worker status remains execution-owned
+- Treats supplied tools as assertions about the compiled executable tool set
 
 **Recommended Alternative**: Use `MultiAgentSystemBuilder` instead:
 
 ```typescript
-// ❌ Old way (deprecated)
-const system = createMultiAgentSystem({ workers: [] });
-registerWorkers(system, [worker1, worker2]); // Only updates state, no nodes added!
+// ❌ Deprecated compatibility update for an already-compiled Worker
+const system = createMultiAgentSystem({ ...config, workers: [worker1] });
+registerWorkers(system, [{ name: worker1.id, capabilities: ['new-routing-skill'] }]);
 
 // ✅ New way (recommended)
 const builder = new MultiAgentSystemBuilder({ supervisor, aggregator });
-builder.registerWorkers([worker1, worker2]); // Properly adds nodes
+builder.registerWorkers([worker1, worker2]); // Admits Workers before compilation
 const system = builder.build();
 ```
 
@@ -1223,9 +1226,9 @@ const parallelWorkflow = new StateGraph({ channels: MultiAgentState })
   .addEdge('aggregator', END);
 ```
 
-### Dynamic Worker Registration
+### Worker Topology Construction
 
-Use `MultiAgentSystemBuilder` for dynamic worker registration:
+Use `MultiAgentSystemBuilder` to construct the fixed Worker topology incrementally:
 
 ```typescript
 const builder = new MultiAgentSystemBuilder({

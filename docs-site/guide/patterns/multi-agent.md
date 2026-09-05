@@ -541,7 +541,7 @@ const finalResult = await system.invoke(
 
 ## Multi-Agent System Builder
 
-Use the builder pattern for dynamic worker registration:
+Use the builder pattern to construct the fixed Worker topology before compilation:
 
 ```typescript
 import { MultiAgentSystemBuilder } from '@agentforge/patterns';
@@ -554,7 +554,7 @@ const builder = new MultiAgentSystemBuilder({
   aggregator: { model }
 });
 
-// Register workers dynamically
+// Admit Workers before compilation
 builder.registerWorkers([
   {
     name: 'researcher',
@@ -1272,4 +1272,3 @@ Parallel routing is fully backward compatible. Existing systems continue to work
 - [AutoGen Paper](https://arxiv.org/abs/2308.08155) - Microsoft's multi-agent framework
 - [MetaGPT Paper](https://arxiv.org/abs/2308.00352) - Multi-agent collaboration
 - [Examples](/examples/multi-agent) - Working code examples
-

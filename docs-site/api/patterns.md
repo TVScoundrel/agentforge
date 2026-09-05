@@ -175,7 +175,7 @@ Coordinate multiple specialized agents with a supervisor-worker architecture.
 
 ### MultiAgentSystemBuilder (Recommended)
 
-Builder class for creating multi-agent systems with dynamic worker registration.
+Builder class for admitting a fixed Worker topology before compilation.
 
 ```typescript
 import { MultiAgentSystemBuilder } from '@agentforge/patterns';
@@ -531,4 +531,3 @@ See the [Examples](/examples/react-agent) section for complete working examples 
 ## Type Definitions
 
 All exports include full TypeScript definitions. See the [source code](https://github.com/TVScoundrel/agentforge/tree/main/packages/patterns/src) for complete type information.
-
