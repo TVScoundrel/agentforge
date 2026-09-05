@@ -83,10 +83,7 @@ export function createCompiledMultiAgentSystem(
   const workflow = new StateGraph(MultiAgentState);
   const workerIds: string[] = [];
 
-  workflow.addNode(
-    'initializeWorkers',
-    createWorkerInitializationNode(lifecycle.captureWorkerSnapshot)
-  );
+  workflow.addNode('initializeWorkers', createWorkerInitializationNode(lifecycle));
   workflow.addNode('supervisor', createSupervisorNode({ ...supervisor, maxIterations, verbose }));
 
   for (const workerConfig of lifecycle.topology) {

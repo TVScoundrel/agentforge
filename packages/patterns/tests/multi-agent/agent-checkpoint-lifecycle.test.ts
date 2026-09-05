@@ -1,23 +1,30 @@
 import { Command, END, MemorySaver, StateGraph, interrupt } from '@langchain/langgraph';
-import { describe, expect, it, vi } from 'vitest';
+import { describe, expect, it } from 'vitest';
 import { createMultiAgentSystem } from '../../src/multi-agent/agent.js';
-import type { WorkerCapabilities } from '../../src/multi-agent/schemas.js';
 import { MultiAgentState, type MultiAgentStateType } from '../../src/multi-agent/state.js';
 import { createWorkerInitializationNode } from '../../src/multi-agent/worker-initialization.js';
+import {
+  admitWorkerTopology,
+  type WorkerLifecycle,
+} from '../../src/multi-agent/worker-lifecycle.js';
 
-function workerCapabilities(
+function workerLifecycle(
   skills: readonly string[],
   available = true,
   currentWorkload = 0
-): Readonly<Record<string, WorkerCapabilities>> {
-  return Object.freeze({
-    researcher: Object.freeze({
-      skills: Object.freeze([...skills]),
-      tools: Object.freeze(['search']),
-      available,
-      currentWorkload,
-    }),
-  });
+): WorkerLifecycle {
+  return admitWorkerTopology([
+    {
+      id: 'researcher',
+      capabilities: {
+        skills: [...skills],
+        tools: ['search'],
+        available,
+        currentWorkload,
+      },
+      tools: [{ name: 'search' }],
+    },
+  ]);
 }
 
 function createCheckpointedSystem(checkpointer: MemorySaver) {
@@ -41,12 +48,12 @@ function createCheckpointedSystem(checkpointer: MemorySaver) {
 }
 
 function createInterruptibleGraph(
-  captureWorkerSnapshot: () => Readonly<Record<string, WorkerCapabilities>>,
+  lifecycle: WorkerLifecycle,
   interruptingWorker: (state: MultiAgentStateType) => Promise<Partial<MultiAgentStateType>>
 ) {
   const workflow = new StateGraph(MultiAgentState);
 
-  workflow.addNode('initializeWorkers', createWorkerInitializationNode(captureWorkerSnapshot));
+  workflow.addNode('initializeWorkers', createWorkerInitializationNode(lifecycle));
   workflow.addNode('interruptingWorker', interruptingWorker);
   workflow.setEntryPoint('initializeWorkers');
   workflow.addEdge('initializeWorkers', 'interruptingWorker');
@@ -85,9 +92,8 @@ describe('Multi-Agent Worker checkpoint lifecycle', () => {
   });
 
   it('resumes with the captured Worker snapshot and initializes the next execution afresh', async () => {
-    let currentCapabilities = workerCapabilities(['research'], false, 3);
-    const captureWorkerSnapshot = vi.fn(() => currentCapabilities);
-    const graph = createInterruptibleGraph(captureWorkerSnapshot, async (state) => {
+    const lifecycle = workerLifecycle(['research'], false, 3);
+    const graph = createInterruptibleGraph(lifecycle, async (state) => {
       const response = interrupt<string, string>('continue?');
       return { response, workers: state.workers };
     });
@@ -100,9 +106,8 @@ describe('Multi-Agent Worker checkpoint lifecycle', () => {
       available: false,
       currentWorkload: 3,
     });
-    expect(captureWorkerSnapshot).toHaveBeenCalledTimes(1);
 
-    currentCapabilities = workerCapabilities(['updated-research'], true, 0);
+    lifecycle.publishRoutingSkills([{ id: 'researcher', skills: ['updated-research'] }]);
     const resumed = await graph.invoke(new Command({ resume: 'approved' }), interruptedConfig);
 
     expect(resumed.workers.researcher).toMatchObject({
@@ -110,7 +115,6 @@ describe('Multi-Agent Worker checkpoint lifecycle', () => {
       available: false,
       currentWorkload: 3,
     });
-    expect(captureWorkerSnapshot).toHaveBeenCalledTimes(1);
 
     const later = await graph.invoke({ input: 'later' }, interruptedConfig);
 
@@ -119,14 +123,12 @@ describe('Multi-Agent Worker checkpoint lifecycle', () => {
       available: false,
       currentWorkload: 3,
     });
-    expect(captureWorkerSnapshot).toHaveBeenCalledTimes(2);
   });
 
   it('preserves a failure thrown while resuming an interrupted execution', async () => {
     const cause = new Error('resume cause');
     const failure = new Error('resume failure', { cause });
-    const captureWorkerSnapshot = vi.fn(() => workerCapabilities(['research']));
-    const graph = createInterruptibleGraph(captureWorkerSnapshot, async () => {
+    const graph = createInterruptibleGraph(workerLifecycle(['research']), async () => {
       interrupt('continue?');
       throw failure;
     });
@@ -136,6 +138,5 @@ describe('Multi-Agent Worker checkpoint lifecycle', () => {
 
     await expect(graph.invoke(new Command({ resume: 'approved' }), config)).rejects.toBe(failure);
     expect(failure.cause).toBe(cause);
-    expect(captureWorkerSnapshot).toHaveBeenCalledTimes(1);
   });
 });
