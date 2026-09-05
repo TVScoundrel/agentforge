@@ -22,6 +22,9 @@ export class WorkerLifecycleError extends Error {
 export interface WorkerLifecycle {
   readonly topology: readonly WorkerConfig[];
   readonly captureWorkerSnapshot: () => Readonly<Record<string, WorkerCapabilities>>;
+  readonly captureSnapshot: (
+    statusOverrides: Readonly<Record<string, WorkerStatus>>
+  ) => Record<string, WorkerCapabilities>;
   readonly updateRoutingSkills: (updates: readonly WorkerRoutingSkillUpdate[]) => void;
 }
 
@@ -168,6 +171,36 @@ export function admitWorkerTopology(workers: readonly WorkerConfig[]): WorkerLif
   return Object.freeze({
     topology,
     captureWorkerSnapshot: () => workerCapabilities,
+    captureSnapshot: (statusOverrides: Readonly<Record<string, WorkerStatus>>) => {
+      const publishedCapabilities = workerCapabilities;
+
+      for (const workerId of Object.keys(statusOverrides)) {
+        if (!Object.hasOwn(publishedCapabilities, workerId)) {
+          throw new WorkerLifecycleError(
+            'unknown-worker',
+            `Invocation state contains unknown Worker "${workerId}".`
+          );
+        }
+      }
+
+      return Object.fromEntries(
+        Object.entries(publishedCapabilities).map(([workerId, capabilities]) => {
+          const status = Object.hasOwn(statusOverrides, workerId)
+            ? statusOverrides[workerId]!
+            : capabilities;
+
+          return [
+            workerId,
+            {
+              skills: [...capabilities.skills],
+              tools: [...capabilities.tools],
+              available: status.available,
+              currentWorkload: status.currentWorkload,
+            },
+          ];
+        })
+      );
+    },
     updateRoutingSkills: (updates: readonly WorkerRoutingSkillUpdate[]) => {
       if (updates.length === 0) {
         return;
