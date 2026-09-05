@@ -127,3 +127,65 @@ describe('Worker lifecycle admission', () => {
     expect(Object.isFrozen(lifecycle.captureWorkerSnapshot())).toBe(true);
   });
 });
+
+describe('Worker lifecycle routing-skill updates', () => {
+  it('publishes one immutable multi-Worker snapshot without changing Worker status', () => {
+    const lifecycle = admitWorkerTopology([
+      worker(),
+      worker({
+        id: 'writer',
+        capabilities: {
+          skills: ['writing'],
+          tools: [],
+          available: false,
+          currentWorkload: 4,
+        },
+      }),
+    ]);
+    const previous = lifecycle.captureWorkerSnapshot();
+    const researcherSkills = ['analysis'];
+    const writerSkills = ['editing'];
+
+    lifecycle.updateRoutingSkills([
+      { id: 'researcher', skills: researcherSkills },
+      { id: 'writer', skills: writerSkills },
+    ]);
+    researcherSkills.push('caller-mutation');
+    writerSkills.push('caller-mutation');
+
+    const published = lifecycle.captureWorkerSnapshot();
+    expect(published).not.toBe(previous);
+    expect(previous).toMatchObject({
+      researcher: { skills: ['research'] },
+      writer: { skills: ['writing'] },
+    });
+    expect(published).toEqual({
+      researcher: {
+        skills: ['analysis'],
+        tools: [],
+        available: true,
+        currentWorkload: 1,
+      },
+      writer: {
+        skills: ['editing'],
+        tools: [],
+        available: false,
+        currentWorkload: 4,
+      },
+    });
+    expect(Object.isFrozen(published)).toBe(true);
+    expect(Object.isFrozen(published.researcher)).toBe(true);
+    expect(Object.isFrozen(published.researcher?.skills)).toBe(true);
+    expect(Object.isFrozen(published.writer)).toBe(true);
+    expect(Object.isFrozen(published.writer?.skills)).toBe(true);
+  });
+
+  it('keeps the published capability snapshot when the update batch is empty', () => {
+    const lifecycle = admitWorkerTopology([worker()]);
+    const published = lifecycle.captureWorkerSnapshot();
+
+    lifecycle.updateRoutingSkills([]);
+
+    expect(lifecycle.captureWorkerSnapshot()).toBe(published);
+  });
+});
