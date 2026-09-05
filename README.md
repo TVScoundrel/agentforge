@@ -433,7 +433,7 @@ For maintainers releasing new versions:
    ```
    This updates all package.json files, CLI templates, and documentation.
 
-2. **Manual Steps** (see [release process guide](./.ai/RELEASE_PROCESS.md)):
+2. **Manual Steps** (see the [release skill](./.agents/skills/release/SKILL.md)):
    - Update `docs-site/changelog.md` with release notes
    - Run `pnpm release:validate`
    - Review changes with `git diff`
@@ -447,7 +447,7 @@ For maintainers releasing new versions:
    ```
    This publishes all packages in the correct dependency order.
 
-See [`.ai/RELEASE_PROCESS.md`](./.ai/RELEASE_PROCESS.md) for the complete process.
+Use the [`release` skill](./.agents/skills/release/SKILL.md) for the complete process.
 
 ---
 

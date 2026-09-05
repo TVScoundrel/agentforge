@@ -3,21 +3,7 @@
 # AgentForge Release Script
 # This script automates the version bump process for all packages
 #
-# FULL RELEASE PROCESS (see .ai/RELEASE_PROCESS.md):
-# 1. Run this script: ./scripts/release.sh X.Y.Z
-# 2. Update docs-site/changelog.md with release notes (IMPORTANT!)
-# 3. Build and test: pnpm release:validate
-# 4. Review changes: git diff
-# 5. Commit: git add . && git commit -m "chore: Bump version to X.Y.Z"
-# 6. Tag: git tag -a vX.Y.Z -m "Release vX.Y.Z"
-# 7. Push: git push && git push --tags
-# 8. Publish (uses pnpm publish): ./scripts/publish.sh
-#
-# AI Assistant: When asked to do a release, ALWAYS:
-# - Read .ai/RELEASE_PROCESS.md first
-# - Use task management to track all steps
-# - Don't skip docs-site/changelog.md update
-# - Don't create git tag until docs-site/changelog.md is updated
+# Complete release workflow: .agents/skills/release/SKILL.md
 
 set -e  # Exit on error
 
@@ -166,4 +152,4 @@ echo "  6. Create tag: git tag -a v$NEW_VERSION -m 'Release v$NEW_VERSION'"
 echo "  7. Push: git push && git push --tags"
 echo "  8. Publish to npm via ./scripts/publish.sh"
 echo ""
-print_step "See .ai/RELEASE_PROCESS.md for the complete release process"
+print_step "See .agents/skills/release/SKILL.md for the complete release process"

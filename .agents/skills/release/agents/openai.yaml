@@ -1,0 +1,3 @@
+interface:
+  display_name: "Release AgentForge"
+  short_description: "Release and publish an AgentForge version"

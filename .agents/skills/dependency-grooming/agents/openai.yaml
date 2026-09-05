@@ -1,0 +1,4 @@
+interface:
+  display_name: "Dependency Grooming"
+  short_description: "Synchronize dependent tickets after closure"
+  default_prompt: "Groom all open dependents of a closed ticket and verify their live blockers."
