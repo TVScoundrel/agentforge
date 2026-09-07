@@ -5,6 +5,28 @@ All notable changes to AgentForge will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.17.1] - 2026-09-07
+
+### Changed
+
+#### @agentforge/patterns - Deepened Worker Lifecycle Internals
+- Consolidated Worker admission, immutable topology, invocation snapshot capture, validation, and atomic routing-skill publication behind one internal lifecycle interface.
+- Passed the complete Worker lifecycle through Multi-Agent System initialization and deprecated Worker registration, removing superseded callback and two-map implementation seams.
+- Preserved existing execution, streaming, checkpoint, detached-registry, and deprecated-registration behavior without adding package-root exports or changing the public API.
+
+### Validation
+- `pnpm release:validate` passed with 236 test files passed, 9 skipped, 2,631 tests passed, and 110 skipped.
+- Skips are intentional opt-in coverage for Neo4j, PostgreSQL, and MySQL services, database benchmarks, PostgreSQL connection credentials, and web-search performance tests; the default release suite remains deterministic without Docker, external services, credentials, or network access.
+
+### Published
+- All packages published to npm registry at version 0.17.1:
+  - @agentforge/core@0.17.1
+  - @agentforge/skills@0.17.1
+  - @agentforge/patterns@0.17.1
+  - @agentforge/tools@0.17.1
+  - @agentforge/testing@0.17.1
+  - @agentforge/cli@0.17.1
+
 ## [0.17.0] - 2026-09-05
 
 ### Changed
