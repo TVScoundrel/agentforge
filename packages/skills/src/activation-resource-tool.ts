@@ -1,14 +1,10 @@
-import { readFileSync, realpathSync } from 'node:fs';
-import { resolve } from 'node:path';
 import { ToolBuilder, ToolCategory } from '@agentforge/core';
 import type { Tool } from '@agentforge/core';
 import type { z } from 'zod';
 import type { SkillRegistry } from './registry.js';
-import { evaluateSkillActivationPolicy, evaluateTrustPolicy } from './trust.js';
-import { SkillRegistryEvent, TrustPolicyReason } from './types.js';
-import { resolveResourcePath } from './activation-path.js';
+import { AgentSkillAccess } from './agent-skill-access.js';
 import { readSkillResourceSchema } from './activation-schemas.js';
-import { activationLogger, buildMissingSkillMessage } from './activation-shared.js';
+import { formatMissingSkillMessage } from './activation-shared.js';
 
 /**
  * Create the `read-skill-resource` tool bound to a registry instance.
@@ -20,138 +16,34 @@ import { activationLogger, buildMissingSkillMessage } from './activation-shared.
  * @returns An AgentForge Tool
  */
 export function createReadSkillResourceTool(
-  registry: SkillRegistry,
+  registry: SkillRegistry
 ): Tool<z.infer<typeof readSkillResourceSchema>, string> {
+  const access = new AgentSkillAccess(registry);
+
   return new ToolBuilder<z.infer<typeof readSkillResourceSchema>, string>()
     .name('read-skill-resource')
     .description(
       'Read a resource file from an activated Agent Skill. ' +
-      'Returns the content of a file within the skill directory (e.g., references/, scripts/, assets/). ' +
-      'The path must be relative to the skill root and cannot traverse outside it. ' +
-      'SKILL.md is only readable from workspace or trusted roots.',
+        'Returns the content of a file within the skill directory (e.g., references/, scripts/, assets/). ' +
+        'The path must be relative to the skill root and cannot traverse outside it. ' +
+        'SKILL.md is only readable from workspace or trusted roots.'
     )
     .category(ToolCategory.SKILLS)
     .tags(['skill', 'resource', 'agent-skills'])
     .schema(readSkillResourceSchema)
     .implement(async ({ name, path: resourcePath }) => {
-      const skill = registry.get(name);
+      const result = await access.readResource(name, resourcePath);
 
-      if (!skill) {
-        const { errorMessage } = buildMissingSkillMessage(registry, name);
-        activationLogger.warn('Skill resource load failed — skill not found', { name, resourcePath });
-        return errorMessage;
-      }
-
-      const pathResult = resolveResourcePath(skill.skillPath, resourcePath);
-      if (!pathResult.success) {
-        activationLogger.warn('Skill resource load blocked — path traversal', {
-          name,
-          resourcePath,
-          error: pathResult.error,
-        });
-        return pathResult.error;
-      }
-
-      const skillInstructionsPath = resolve(skill.skillPath, 'SKILL.md');
-      let isSkillInstructions = pathResult.resolvedPath.toLowerCase() === skillInstructionsPath.toLowerCase();
-      if (!isSkillInstructions) {
-        try {
-          isSkillInstructions = realpathSync(pathResult.resolvedPath).toLowerCase() === realpathSync(skillInstructionsPath).toLowerCase();
-        } catch {
-          // The resource read below reports missing or unreadable paths.
-        }
-      }
-      if (isSkillInstructions) {
-        const activationDecision = evaluateSkillActivationPolicy(skill.trustLevel);
-        if (!activationDecision.allowed) {
-          activationLogger.warn('Skill resource load blocked — skill instructions trust policy', {
-            name,
-            resourcePath,
-            trustLevel: skill.trustLevel,
-            reason: activationDecision.reason,
-            message: activationDecision.message,
-          });
-
-          registry.emitEvent(SkillRegistryEvent.TRUST_POLICY_DENIED, {
-            name: skill.metadata.name,
-            resourcePath: 'SKILL.md',
-            trustLevel: skill.trustLevel,
-            reason: activationDecision.reason,
-            message: activationDecision.message,
-          });
-
-          return activationDecision.message;
-        }
-      }
-
-      const policyDecision = evaluateTrustPolicy(
-        resourcePath,
-        skill.trustLevel,
-        registry.getAllowUntrustedScripts(),
-      );
-
-      if (!policyDecision.allowed) {
-        activationLogger.warn('Skill resource load blocked — trust policy', {
-          name,
-          resourcePath,
-          trustLevel: skill.trustLevel,
-          reason: policyDecision.reason,
-          message: policyDecision.message,
-        });
-
-        registry.emitEvent(SkillRegistryEvent.TRUST_POLICY_DENIED, {
-          name: skill.metadata.name,
-          resourcePath,
-          trustLevel: skill.trustLevel,
-          reason: policyDecision.reason,
-          message: policyDecision.message,
-        });
-
-        return policyDecision.message;
-      }
-
-      if (policyDecision.reason !== TrustPolicyReason.NOT_SCRIPT) {
-        activationLogger.info('Skill resource trust policy — allowed', {
-          name,
-          resourcePath,
-          trustLevel: skill.trustLevel,
-          reason: policyDecision.reason,
-        });
-
-        registry.emitEvent(SkillRegistryEvent.TRUST_POLICY_ALLOWED, {
-          name: skill.metadata.name,
-          resourcePath,
-          trustLevel: skill.trustLevel,
-          reason: policyDecision.reason,
-        });
-      }
-
-      try {
-        const content = readFileSync(pathResult.resolvedPath, 'utf-8');
-
-        activationLogger.info('Skill resource loaded', {
-          name: skill.metadata.name,
-          resourcePath,
-          resolvedPath: pathResult.resolvedPath,
-          contentLength: content.length,
-        });
-
-        registry.emitEvent(SkillRegistryEvent.SKILL_RESOURCE_LOADED, {
-          name: skill.metadata.name,
-          resourcePath,
-          resolvedPath: pathResult.resolvedPath,
-          contentLength: content.length,
-        });
-
-        return content;
-      } catch (error) {
-        const message = error instanceof Error ? error.message : String(error);
-        activationLogger.warn('Skill resource load failed — file not found or unreadable', {
-          name,
-          resourcePath,
-          error: message,
-        });
-        return `Failed to read resource "${resourcePath}" from skill "${name}": ${message}`;
+      switch (result.kind) {
+        case 'success':
+          return result.content;
+        case 'skill-not-found':
+          return formatMissingSkillMessage(result.name, result.availableNames);
+        case 'access-denied':
+          return result.message;
+        case 'resource-not-found':
+        case 'read-failure':
+          return `Failed to read resource "${result.resourcePath}" from skill "${result.name}": ${result.error}`;
       }
     })
     .build();
