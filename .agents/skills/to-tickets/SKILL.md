@@ -1,6 +1,6 @@
 ---
 name: to-tickets
-description: Break a plan, spec, or the current conversation into a set of tracer-bullet tickets, each declaring its blocking edges, published to the configured tracker (edges as text in one file per ticket locally, or native blocking links on a real tracker).
+description: Break a plan, spec, or the current conversation into tracer-bullet tickets, published with native parent progress and dependency edges when the tracker supports them.
 disable-model-invocation: true
 ---
 
@@ -60,11 +60,13 @@ Iterate until the user approves the breakdown.
 Publish the approved tickets. **How** depends on the tracker `/setup-matt-pocock-skills` configured; the tickets are the same either way, only the shape of the blocking edges changes:
 
 - **Local files** → write one file per ticket under `.scratch/<feature-slug>/issues/<NN>-<slug>.md`, numbered from `01` in dependency order (blockers first). Each file's "Blocked by" lists the numbers/titles it depends on. Use the per-ticket file template below: one ticket per file, never a single combined file.
-- **A real issue tracker (GitHub, Linear, …)** → publish one issue per ticket in dependency order (blockers first) so each ticket's blocking edges can reference real identifiers. Use the platform's native blocking / sub-issue relationship where it has one; otherwise set each ticket's "Blocked by" to the blocking issues. Apply the `ready-for-agent` triage label unless instructed otherwise; the tickets are agent-grabbable by construction.
+- **A real issue tracker (GitHub, Linear, …)** → publish one issue per ticket in dependency order (blockers first) so each ticket's blocking edges can reference real identifiers. When the source is an existing parent issue and the platform supports sub-issues, attach every ticket as a native sub-issue so the parent displays completion progress. Add every declared blocker as a native dependency edge when the platform supports dependencies. Body references supplement native relationships; they do not replace them. Fall back to body references only when the tracker lacks the relevant native relationship. Apply the `ready-for-agent` triage label unless instructed otherwise; the tickets are agent-grabbable by construction.
+
+After publishing to a real tracker, read the relationships back through the tracker API. Completion requires the parent to contain the exact published child set and every ticket's native blockers to match the approved graph. If either relationship type required a fallback, state that explicitly in the handoff.
 
 Work the **frontier**: any ticket whose blockers are all done. For a purely linear chain that means top to bottom.
 
-Do NOT close or modify any parent issue.
+Preserve the parent issue's body, labels, and state. Attaching the published tickets as native sub-issues is the required relationship update, not a parent-content edit.
 
 <local-ticket-template>
 
