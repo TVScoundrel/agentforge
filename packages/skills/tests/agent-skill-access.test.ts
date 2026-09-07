@@ -307,6 +307,29 @@ describe('AgentSkillAccess', () => {
     });
   });
 
+  it('fails closed when the canonical Agent Skill root can no longer be resolved', async () => {
+    const skillDir = createSkillFixture(
+      tempDir,
+      'code-review',
+      'name: code-review\ndescription: Code review skill',
+      '\nInstructions'
+    );
+    const registry = new SkillRegistry({ skillRoots: [tempDir] });
+    rmSync(skillDir, { recursive: true });
+
+    const result = await new AgentSkillAccess(registry).readResource(
+      'code-review',
+      'references/guide.md'
+    );
+
+    expect(result).toEqual({
+      kind: 'read-failure',
+      name: 'code-review',
+      resourcePath: 'references/guide.md',
+      error: expect.stringContaining(`open '${join(skillDir, 'references/guide.md')}'`),
+    });
+  });
+
   it('normalizes a non-missing resource read failure without throwing', async () => {
     const skillDir = createSkillFixture(
       tempDir,

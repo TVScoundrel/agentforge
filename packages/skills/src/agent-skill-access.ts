@@ -1,11 +1,82 @@
 import { readFileSync, realpathSync } from 'node:fs';
-import { resolve } from 'node:path';
+import { isAbsolute, relative, resolve } from 'node:path';
 import type { SkillRegistry } from './registry.js';
 import { SkillRegistryEvent, TrustPolicyReason } from './types.js';
 import { extractBody } from './activation-content.js';
-import { resolveResourcePath } from './activation-path.js';
 import { activationLogger } from './activation-shared.js';
 import { evaluateSkillActivationPolicy, evaluateTrustPolicy } from './trust.js';
+
+const PATH_TRAVERSAL_MESSAGE =
+  'Path traversal is not allowed — resource paths must stay within the skill directory';
+const SYMLINK_ESCAPE_MESSAGE = 'Symlink target escapes the skill directory — access denied';
+
+type CanonicalResourcePathResult =
+  | { kind: 'success'; resolvedPath: string; canonicalPath: string }
+  | { kind: 'access-denied'; message: string }
+  | { kind: 'resource-not-found'; error: string }
+  | { kind: 'read-failure'; error: string };
+
+function formatError(error: unknown): string {
+  return error instanceof Error ? error.message : String(error);
+}
+
+function formatResourceReadError(error: unknown, resolvedPath: string): string {
+  const message = formatError(error);
+  const detailIndex = message.indexOf(', ');
+  const prefix = detailIndex === -1 ? message : message.slice(0, detailIndex);
+  return `${prefix}, open '${resolvedPath}'`;
+}
+
+function resolveCanonicalResourcePath(
+  skillPath: string,
+  resourcePath: string
+): CanonicalResourcePathResult {
+  if (isAbsolute(resourcePath)) {
+    return { kind: 'access-denied', message: 'Absolute resource paths are not allowed' };
+  }
+
+  if (resourcePath.split(/[/\\]/).some((segment) => segment === '..')) {
+    return { kind: 'access-denied', message: PATH_TRAVERSAL_MESSAGE };
+  }
+
+  const resolvedSkillPath = resolve(skillPath);
+  const resolvedPath = resolve(resolvedSkillPath, resourcePath);
+  const lexicalRelativePath = relative(resolvedSkillPath, resolvedPath);
+  if (
+    lexicalRelativePath.startsWith('..') ||
+    isAbsolute(lexicalRelativePath) ||
+    resolve(resolvedSkillPath, lexicalRelativePath) !== resolvedPath
+  ) {
+    return { kind: 'access-denied', message: PATH_TRAVERSAL_MESSAGE };
+  }
+
+  let canonicalSkillPath: string;
+  try {
+    canonicalSkillPath = realpathSync(resolvedSkillPath);
+  } catch (error) {
+    return { kind: 'read-failure', error: formatResourceReadError(error, resolvedPath) };
+  }
+
+  let canonicalPath: string;
+  try {
+    canonicalPath = realpathSync(resolvedPath);
+  } catch (error) {
+    if ((error as NodeJS.ErrnoException).code === 'ENOENT') {
+      return {
+        kind: 'resource-not-found',
+        error: formatResourceReadError(error, resolvedPath),
+      };
+    }
+    return { kind: 'read-failure', error: formatResourceReadError(error, resolvedPath) };
+  }
+
+  const canonicalRelativePath = relative(canonicalSkillPath, canonicalPath);
+  if (canonicalRelativePath.startsWith('..') || isAbsolute(canonicalRelativePath)) {
+    return { kind: 'access-denied', message: SYMLINK_ESCAPE_MESSAGE };
+  }
+
+  return { kind: 'success', resolvedPath, canonicalPath };
+}
 
 export type SkillActivationResult =
   | { kind: 'success'; body: string }
@@ -35,14 +106,22 @@ export class AgentSkillAccess {
       return { kind: 'skill-not-found', name, availableNames };
     }
 
-    const pathResult = resolveResourcePath(skill.skillPath, resourcePath);
-    if (!pathResult.success) {
+    const pathResult = resolveCanonicalResourcePath(skill.skillPath, resourcePath);
+    if (pathResult.kind === 'access-denied') {
       activationLogger.warn('Skill resource load blocked — path traversal', {
+        name,
+        resourcePath,
+        error: pathResult.message,
+      });
+      return pathResult;
+    }
+    if (pathResult.kind === 'resource-not-found' || pathResult.kind === 'read-failure') {
+      activationLogger.warn('Skill resource load failed — file not found or unreadable', {
         name,
         resourcePath,
         error: pathResult.error,
       });
-      return { kind: 'access-denied', message: pathResult.error };
+      return { ...pathResult, name, resourcePath };
     }
 
     const skillInstructionsPath = resolve(skill.skillPath, 'SKILL.md');
@@ -51,7 +130,7 @@ export class AgentSkillAccess {
     if (!isSkillInstructions) {
       try {
         isSkillInstructions =
-          realpathSync(pathResult.resolvedPath).toLowerCase() ===
+          pathResult.canonicalPath.toLowerCase() ===
           realpathSync(skillInstructionsPath).toLowerCase();
       } catch {
         // The resource read below reports missing or unreadable paths.
@@ -131,7 +210,7 @@ export class AgentSkillAccess {
 
     let content: string;
     try {
-      content = readFileSync(pathResult.resolvedPath, 'utf-8');
+      content = readFileSync(pathResult.canonicalPath, 'utf-8');
     } catch (error) {
       const message = error instanceof Error ? error.message : String(error);
       activationLogger.warn('Skill resource load failed — file not found or unreadable', {
