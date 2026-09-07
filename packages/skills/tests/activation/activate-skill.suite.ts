@@ -78,10 +78,11 @@ describe('activate-skill tool', () => {
     expect(await tool.invoke({ name: 'trusted-skill' })).toBe('Trusted body');
 
     const blocked = await tool.invoke({ name: 'community-skill' });
-    expect(blocked).toContain('blocked');
-    expect(blocked).toContain('untrusted');
-    expect(blocked).toContain('trusted');
-    expect(blocked).not.toContain('Untrusted body');
+    expect(blocked).toBe(
+      'Skill activation blocked — skill root is untrusted. ' +
+      'Untrusted skills remain discoverable, but their full SKILL.md bodies are blocked by default. ' +
+      "Promote the skill root to 'trusted' or 'workspace' trust level after review to allow activation.",
+    );
     expect(deniedEvents).toHaveLength(1);
     expect(deniedEvents[0]).toEqual(expect.objectContaining({
       name: 'community-skill',
@@ -97,15 +98,14 @@ describe('activate-skill tool', () => {
     const populatedRegistry = new SkillRegistry({ skillRoots: [{ path: tempDir, trust: 'workspace' }] });
     const populatedTool = createActivateSkillTool(populatedRegistry);
     const populatedResult = await populatedTool.invoke({ name: 'non-existent' });
-    expect(populatedResult).toContain('Skill "non-existent" not found');
-    expect(populatedResult).toContain('code-review');
+    expect(populatedResult).toBe('Skill "non-existent" not found. Available skills: code-review');
 
     const emptyRoot = createTempDir();
     tempDirs.push(emptyRoot);
     const emptyRegistry = new SkillRegistry({ skillRoots: [emptyRoot] });
     const emptyTool = createActivateSkillTool(emptyRegistry);
     const emptyResult = await emptyTool.invoke({ name: 'anything' });
-    expect(emptyResult).toContain('No skills are currently registered');
+    expect(emptyResult).toBe('Skill "anything" not found. No skills are currently registered.');
   });
 
   it('emits activation events and read errors correctly', async () => {

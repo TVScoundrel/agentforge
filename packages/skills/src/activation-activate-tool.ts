@@ -1,14 +1,10 @@
-import { readFileSync } from 'node:fs';
-import { resolve } from 'node:path';
 import { ToolBuilder, ToolCategory } from '@agentforge/core';
 import type { Tool } from '@agentforge/core';
 import type { z } from 'zod';
 import type { SkillRegistry } from './registry.js';
-import { SkillRegistryEvent } from './types.js';
-import { extractBody } from './activation-content.js';
+import { AgentSkillAccess } from './agent-skill-access.js';
 import { activateSkillSchema } from './activation-schemas.js';
-import { activationLogger, buildMissingSkillMessage } from './activation-shared.js';
-import { evaluateSkillActivationPolicy } from './trust.js';
+import { formatMissingSkillMessage } from './activation-shared.js';
 
 /**
  * Create the `activate-skill` tool bound to a registry instance.
@@ -22,6 +18,8 @@ import { evaluateSkillActivationPolicy } from './trust.js';
 export function createActivateSkillTool(
   registry: SkillRegistry,
 ): Tool<z.infer<typeof activateSkillSchema>, string> {
+  const access = new AgentSkillAccess(registry);
+
   return new ToolBuilder<z.infer<typeof activateSkillSchema>, string>()
     .name('activate-skill')
     .description(
@@ -34,63 +32,17 @@ export function createActivateSkillTool(
     .tags(['skill', 'activation', 'agent-skills'])
     .schema(activateSkillSchema)
     .implement(async ({ name }) => {
-      const skill = registry.get(name);
+      const result = await access.activate(name);
 
-      if (!skill) {
-        const { availableCount, errorMessage } = buildMissingSkillMessage(registry, name);
-        activationLogger.warn('Skill activation failed — not found', { name, availableCount });
-        return errorMessage;
-      }
-
-      const policyDecision = evaluateSkillActivationPolicy(skill.trustLevel);
-      if (!policyDecision.allowed) {
-        activationLogger.warn('Skill activation blocked — trust policy', {
-          name,
-          trustLevel: skill.trustLevel,
-          reason: policyDecision.reason,
-          message: policyDecision.message,
-        });
-
-        registry.emitEvent(SkillRegistryEvent.TRUST_POLICY_DENIED, {
-          name: skill.metadata.name,
-          resourcePath: 'SKILL.md',
-          trustLevel: skill.trustLevel,
-          reason: policyDecision.reason,
-          message: policyDecision.message,
-        });
-
-        return policyDecision.message;
-      }
-
-      const skillMdPath = resolve(skill.skillPath, 'SKILL.md');
-      try {
-        const content = readFileSync(skillMdPath, 'utf-8');
-        const body = extractBody(content);
-
-        activationLogger.info('Skill activated', {
-          name: skill.metadata.name,
-          skillPath: skill.skillPath,
-          bodyLength: body.length,
-          trustLevel: skill.trustLevel,
-          activationReason: policyDecision.reason,
-        });
-
-        registry.emitEvent(SkillRegistryEvent.SKILL_ACTIVATED, {
-          name: skill.metadata.name,
-          skillPath: skill.skillPath,
-          bodyLength: body.length,
-          trustLevel: skill.trustLevel,
-        });
-
-        return body;
-      } catch (error) {
-        const message = error instanceof Error ? error.message : String(error);
-        activationLogger.error('Skill activation failed — read error', {
-          name,
-          skillPath: skill.skillPath,
-          error: message,
-        });
-        return `Failed to read skill "${name}" instructions: ${message}`;
+      switch (result.kind) {
+        case 'success':
+          return result.body;
+        case 'skill-not-found':
+          return formatMissingSkillMessage(result.name, result.availableNames);
+        case 'access-denied':
+          return result.message;
+        case 'read-failure':
+          return `Failed to read skill "${result.name}" instructions: ${result.error}`;
       }
     })
     .build();

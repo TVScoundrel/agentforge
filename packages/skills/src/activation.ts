@@ -1,9 +1,9 @@
 /**
- * Skill Activation Tools
+ * Agent Skill Access Tools
  *
  * Provides `activate-skill` and `read-skill-resource` tools built with
- * the AgentForge tool builder API. These tools enable agents to load
- * skill instructions on demand and access skill resources at runtime.
+ * the AgentForge tool builder API. Skill activation makes trusted Agent
+ * Skill instructions available; resource access loads supporting files.
  *
  * @see https://agentskills.io/specification
  *

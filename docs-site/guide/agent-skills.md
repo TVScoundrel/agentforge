@@ -122,7 +122,9 @@ Runtime (agent decides):
   7. Agent follows skill instructions using its existing tools
 ```
 
-## Activation Tools
+## Agent Skill Access Tools
+
+Agent Skill access covers both instructions and supporting resources. Skill activation is the narrower operation that makes a trusted Agent Skill's instructions available for active work.
 
 ### `activate-skill`
 

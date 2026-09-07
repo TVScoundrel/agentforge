@@ -20,7 +20,7 @@ yarn add @agentforge/skills
 
 ## Overview
 
-`@agentforge/skills` provides the skill discovery, registration, activation, and trust policy engine for AgentForge agents. It implements the [Agent Skills Specification](https://agentskills.io) for composable, modular agent capabilities.
+`@agentforge/skills` provides Agent Skill discovery, registration, access, and trust policy enforcement for AgentForge agents. Within Agent Skill access, Skill activation loads trusted instructions while resource access loads supporting files. It implements the [Agent Skills Specification](https://agentskills.io) for composable, modular agent capabilities.
 
 Full source code and API will be available after ST-07002 (Move Skills Source Files). See the [AgentForge docs](https://tvscoundrel.github.io/agentforge/) for usage guides and tutorials.
 
