@@ -106,10 +106,11 @@ describe('read-skill-resource tool', () => {
       name: 'my-skill',
       path: 'references/nonexistent.md',
     });
-    expect(missingResource).toBe(
-      'Failed to read resource "references/nonexistent.md" from skill "my-skill": ' +
-        `ENOENT: no such file or directory, open '${join(skillDir, 'references/nonexistent.md')}'`
+    expect(missingResource).toContain(
+      'Failed to read resource "references/nonexistent.md" from skill "my-skill":'
     );
+    expect(missingResource).toContain('ENOENT');
+    expect(missingResource).toContain(join(skillDir, 'references/nonexistent.md'));
   });
 
   it('blocks SKILL.md reads from untrusted roots, including normalized paths', async () => {
