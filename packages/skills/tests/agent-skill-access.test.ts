@@ -213,6 +213,60 @@ describe('AgentSkillAccess', () => {
     );
   });
 
+  it('applies existing trust policies before normalizing missing sensitive resources', async () => {
+    const skillDir = createSkillFixture(
+      tempDir,
+      'community-skill',
+      'name: community-skill\ndescription: Community skill',
+      '\nInstructions'
+    );
+    const registry = new SkillRegistry({ skillRoots: [tempDir] });
+
+    const missingScript = await new AgentSkillAccess(registry).readResource(
+      'community-skill',
+      'scripts/missing.sh'
+    );
+    rmSync(join(skillDir, 'SKILL.md'));
+    const missingInstructions = await new AgentSkillAccess(registry).readResource(
+      'community-skill',
+      'SKILL.md'
+    );
+
+    expect(missingScript).toEqual({
+      kind: 'access-denied',
+      reason: TrustPolicyReason.UNTRUSTED_SCRIPT_DENIED,
+      message: expect.stringContaining('Script access denied'),
+    });
+    expect(missingInstructions).toEqual({
+      kind: 'access-denied',
+      reason: TrustPolicyReason.UNTRUSTED_SKILL_ACTIVATION_DENIED,
+      message: expect.stringContaining('Skill activation blocked'),
+    });
+  });
+
+  it('applies trust policy before normalizing a target canonicalization failure', async () => {
+    const skillDir = createSkillFixture(
+      tempDir,
+      'community-skill',
+      'name: community-skill\ndescription: Community skill',
+      '\nInstructions'
+    );
+    mkdirSync(join(skillDir, 'scripts'), { recursive: true });
+    symlinkSync('install.sh', join(skillDir, 'scripts', 'install.sh'));
+    const registry = new SkillRegistry({ skillRoots: [tempDir] });
+
+    const result = await new AgentSkillAccess(registry).readResource(
+      'community-skill',
+      'scripts/install.sh'
+    );
+
+    expect(result).toEqual({
+      kind: 'access-denied',
+      reason: TrustPolicyReason.UNTRUSTED_SCRIPT_DENIED,
+      message: expect.stringContaining('Script access denied'),
+    });
+  });
+
   it('applies Skill activation policy when resource access targets the instructions', async () => {
     const skillDir = createSkillFixture(
       tempDir,

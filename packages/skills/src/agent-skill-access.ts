@@ -13,7 +13,8 @@ const SYMLINK_ESCAPE_MESSAGE = 'Symlink target escapes the skill directory — a
 type CanonicalResourcePathResult =
   | { kind: 'success'; resolvedPath: string; canonicalPath: string }
   | { kind: 'access-denied'; message: string }
-  | { kind: 'resource-not-found'; error: string }
+  | { kind: 'resource-not-found'; resolvedPath: string; error: string }
+  | { kind: 'target-read-failure'; resolvedPath: string; error: string }
   | { kind: 'read-failure'; error: string };
 
 function formatError(error: unknown): string {
@@ -64,10 +65,15 @@ function resolveCanonicalResourcePath(
     if ((error as NodeJS.ErrnoException).code === 'ENOENT') {
       return {
         kind: 'resource-not-found',
+        resolvedPath,
         error: formatResourceReadError(error, resolvedPath),
       };
     }
-    return { kind: 'read-failure', error: formatResourceReadError(error, resolvedPath) };
+    return {
+      kind: 'target-read-failure',
+      resolvedPath,
+      error: formatResourceReadError(error, resolvedPath),
+    };
   }
 
   const canonicalRelativePath = relative(canonicalSkillPath, canonicalPath);
@@ -115,7 +121,7 @@ export class AgentSkillAccess {
       });
       return pathResult;
     }
-    if (pathResult.kind === 'resource-not-found' || pathResult.kind === 'read-failure') {
+    if (pathResult.kind === 'read-failure') {
       activationLogger.warn('Skill resource load failed — file not found or unreadable', {
         name,
         resourcePath,
@@ -127,7 +133,7 @@ export class AgentSkillAccess {
     const skillInstructionsPath = resolve(skill.skillPath, 'SKILL.md');
     let isSkillInstructions =
       pathResult.resolvedPath.toLowerCase() === skillInstructionsPath.toLowerCase();
-    if (!isSkillInstructions) {
+    if (!isSkillInstructions && pathResult.kind === 'success') {
       try {
         isSkillInstructions =
           pathResult.canonicalPath.toLowerCase() ===
@@ -206,6 +212,20 @@ export class AgentSkillAccess {
         trustLevel: skill.trustLevel,
         reason: policyDecision.reason,
       });
+    }
+
+    if (pathResult.kind === 'resource-not-found' || pathResult.kind === 'target-read-failure') {
+      activationLogger.warn('Skill resource load failed — file not found or unreadable', {
+        name,
+        resourcePath,
+        error: pathResult.error,
+      });
+      return {
+        kind: pathResult.kind === 'resource-not-found' ? 'resource-not-found' : 'read-failure',
+        name,
+        resourcePath,
+        error: pathResult.error,
+      };
     }
 
     let content: string;
