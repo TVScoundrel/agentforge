@@ -36,46 +36,89 @@ describe('read-skill-resource tool', () => {
   });
 
   it('reads resources from safe locations', async () => {
-    const skillDir = createSkillFixture(tempDir, 'my-skill', 'name: my-skill\ndescription: Test', '\nbody');
+    const skillDir = createSkillFixture(
+      tempDir,
+      'my-skill',
+      'name: my-skill\ndescription: Test',
+      '\nbody'
+    );
     createResourceFile(skillDir, 'references/guide.md', '# Reference Guide\n\nSome content.');
     createResourceFile(skillDir, 'assets/config.json', '{"key": "value"}');
     createResourceFile(skillDir, 'references/api/endpoints.md', '# Endpoints');
 
     const trustedRoot = createTempDir();
     tempDirs.push(trustedRoot);
-    const trustedSkillDir = createSkillFixture(trustedRoot, 'trusted-skill', 'name: trusted-skill\ndescription: Test', '\nbody');
+    const trustedSkillDir = createSkillFixture(
+      trustedRoot,
+      'trusted-skill',
+      'name: trusted-skill\ndescription: Test',
+      '\nbody'
+    );
     createResourceFile(trustedSkillDir, 'scripts/setup.sh', '#!/bin/bash\necho "Hello"');
 
     const regularRegistry = new SkillRegistry({ skillRoots: [tempDir] });
     const regularTool = createReadSkillResourceTool(regularRegistry);
 
-    expect(await regularTool.invoke({ name: 'my-skill', path: 'references/guide.md' })).toBe('# Reference Guide\n\nSome content.');
-    expect(await regularTool.invoke({ name: 'my-skill', path: 'assets/config.json' })).toBe('{"key": "value"}');
-    expect(await regularTool.invoke({ name: 'my-skill', path: 'references/api/endpoints.md' })).toBe('# Endpoints');
+    expect(await regularTool.invoke({ name: 'my-skill', path: 'references/guide.md' })).toBe(
+      '# Reference Guide\n\nSome content.'
+    );
+    expect(await regularTool.invoke({ name: 'my-skill', path: 'assets/config.json' })).toBe(
+      '{"key": "value"}'
+    );
+    expect(
+      await regularTool.invoke({ name: 'my-skill', path: 'references/api/endpoints.md' })
+    ).toBe('# Endpoints');
 
-    const trustedRegistry = new SkillRegistry({ skillRoots: [{ path: trustedRoot, trust: 'trusted' }] });
+    const trustedRegistry = new SkillRegistry({
+      skillRoots: [{ path: trustedRoot, trust: 'trusted' }],
+    });
     const trustedTool = createReadSkillResourceTool(trustedRegistry);
-    expect(await trustedTool.invoke({ name: 'trusted-skill', path: 'scripts/setup.sh' })).toBe('#!/bin/bash\necho "Hello"');
+    expect(await trustedTool.invoke({ name: 'trusted-skill', path: 'scripts/setup.sh' })).toBe(
+      '#!/bin/bash\necho "Hello"'
+    );
   });
 
   it('blocks invalid paths and missing skills/resources', async () => {
-    createSkillFixture(tempDir, 'my-skill', 'name: my-skill\ndescription: Test', '\nbody');
+    const skillDir = createSkillFixture(
+      tempDir,
+      'my-skill',
+      'name: my-skill\ndescription: Test',
+      '\nbody'
+    );
 
     const registry = new SkillRegistry({ skillRoots: [tempDir] });
     const tool = createReadSkillResourceTool(registry);
 
-    expect(await tool.invoke({ name: 'my-skill', path: '../SKILL.md' })).toContain('Path traversal');
-    expect(await tool.invoke({ name: 'my-skill', path: 'references/../../../etc/passwd' })).toContain('Path traversal');
-    expect(await tool.invoke({ name: 'my-skill', path: '/etc/passwd' })).toContain('Absolute resource paths');
-    expect(await tool.invoke({ name: 'ghost', path: 'file.txt' })).toContain('Skill "ghost" not found');
+    expect(await tool.invoke({ name: 'my-skill', path: '../SKILL.md' })).toBe(
+      'Path traversal is not allowed — resource paths must stay within the skill directory'
+    );
+    expect(await tool.invoke({ name: 'my-skill', path: 'references/../../../etc/passwd' })).toBe(
+      'Path traversal is not allowed — resource paths must stay within the skill directory'
+    );
+    expect(await tool.invoke({ name: 'my-skill', path: '/etc/passwd' })).toBe(
+      'Absolute resource paths are not allowed'
+    );
+    expect(await tool.invoke({ name: 'ghost', path: 'file.txt' })).toBe(
+      'Skill "ghost" not found. Available skills: my-skill'
+    );
 
-    const missingResource = await tool.invoke({ name: 'my-skill', path: 'references/nonexistent.md' });
-    expect(missingResource).toContain('Failed to read resource');
-    expect(missingResource).toContain('nonexistent.md');
+    const missingResource = await tool.invoke({
+      name: 'my-skill',
+      path: 'references/nonexistent.md',
+    });
+    expect(missingResource).toBe(
+      'Failed to read resource "references/nonexistent.md" from skill "my-skill": ' +
+        `ENOENT: no such file or directory, open '${join(skillDir, 'references/nonexistent.md')}'`
+    );
   });
 
   it('blocks SKILL.md reads from untrusted roots, including normalized paths', async () => {
-    createSkillFixture(tempDir, 'my-skill', 'name: my-skill\ndescription: Test', '\nsecret instructions');
+    createSkillFixture(
+      tempDir,
+      'my-skill',
+      'name: my-skill\ndescription: Test',
+      '\nsecret instructions'
+    );
 
     const registry = new SkillRegistry({ skillRoots: [tempDir] });
     const tool = createReadSkillResourceTool(registry);
@@ -85,7 +128,10 @@ describe('read-skill-resource tool', () => {
     const directResult = await tool.invoke({ name: 'my-skill', path: 'SKILL.md' });
     const normalizedResult = await tool.invoke({ name: 'my-skill', path: './SKILL.md' });
     const caseVariantResult = await tool.invoke({ name: 'my-skill', path: 'skill.md' });
-    symlinkSync(join(tempDir, 'my-skill', 'SKILL.md'), join(tempDir, 'my-skill', 'instructions.md'));
+    symlinkSync(
+      join(tempDir, 'my-skill', 'SKILL.md'),
+      join(tempDir, 'my-skill', 'instructions.md')
+    );
     const symlinkResult = await tool.invoke({ name: 'my-skill', path: 'instructions.md' });
 
     expect(directResult).toContain('Skill activation blocked');
@@ -98,16 +144,23 @@ describe('read-skill-resource tool', () => {
     expect(symlinkResult).not.toContain('secret instructions');
     expect(deniedEvents).toHaveLength(4);
     for (const event of deniedEvents) {
-      expect(event).toEqual(expect.objectContaining({
-        name: 'my-skill',
-        resourcePath: 'SKILL.md',
-        trustLevel: 'untrusted',
-      }));
+      expect(event).toEqual(
+        expect.objectContaining({
+          name: 'my-skill',
+          resourcePath: 'SKILL.md',
+          trustLevel: 'untrusted',
+        })
+      );
     }
   });
 
   it('emits resource events on success and not on failure', async () => {
-    const skillDir = createSkillFixture(tempDir, 'my-skill', 'name: my-skill\ndescription: Test', '\nbody');
+    const skillDir = createSkillFixture(
+      tempDir,
+      'my-skill',
+      'name: my-skill\ndescription: Test',
+      '\nbody'
+    );
     createResourceFile(skillDir, 'references/guide.md', 'Guide content');
 
     const registry = new SkillRegistry({ skillRoots: [tempDir] });
@@ -123,7 +176,7 @@ describe('read-skill-resource tool', () => {
         name: 'my-skill',
         resourcePath: 'references/guide.md',
         contentLength: expect.any(Number),
-      }),
+      })
     );
 
     handler.mockClear();
