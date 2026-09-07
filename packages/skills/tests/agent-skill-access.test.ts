@@ -213,6 +213,48 @@ describe('AgentSkillAccess', () => {
     );
   });
 
+  it('denies an ordinary-looking symlink to an executable resource using its canonical target', async () => {
+    const skillDir = createSkillFixture(
+      tempDir,
+      'community-skill',
+      'name: community-skill\ndescription: Community skill',
+      '\nInstructions'
+    );
+    createResourceFile(skillDir, 'scripts/install.sh', '#!/bin/sh');
+    mkdirSync(join(skillDir, 'references'), { recursive: true });
+    symlinkSync('../scripts/install.sh', join(skillDir, 'references', 'guide.md'));
+    const registry = new SkillRegistry({ skillRoots: [tempDir] });
+    const denied = vi.fn();
+    const warn = vi.spyOn(activationLogger, 'warn');
+    registry.on(SkillRegistryEvent.TRUST_POLICY_DENIED, denied);
+
+    const result = await new AgentSkillAccess(registry).readResource(
+      'community-skill',
+      'references/guide.md'
+    );
+
+    expect(result).toEqual({
+      kind: 'access-denied',
+      reason: TrustPolicyReason.UNTRUSTED_SCRIPT_DENIED,
+      message: expect.stringContaining('Script access denied'),
+    });
+    expect(denied).toHaveBeenCalledWith({
+      name: 'community-skill',
+      resourcePath: 'references/guide.md',
+      trustLevel: 'untrusted',
+      reason: TrustPolicyReason.UNTRUSTED_SCRIPT_DENIED,
+      message: expect.stringContaining('Script access denied'),
+    });
+    expect(warn).toHaveBeenCalledWith(
+      'Skill resource load blocked — trust policy',
+      expect.objectContaining({
+        name: 'community-skill',
+        resourcePath: 'references/guide.md',
+        reason: TrustPolicyReason.UNTRUSTED_SCRIPT_DENIED,
+      })
+    );
+  });
+
   it('applies existing trust policies before normalizing missing sensitive resources', async () => {
     const skillDir = createSkillFixture(
       tempDir,
@@ -328,6 +370,43 @@ describe('AgentSkillAccess', () => {
     expect(info).toHaveBeenCalledWith('Skill resource trust policy — allowed', {
       name: 'trusted-skill',
       resourcePath: 'scripts/install.sh',
+      trustLevel: 'trusted',
+      reason: TrustPolicyReason.TRUSTED_ROOT,
+    });
+  });
+
+  it('reads an ordinary-looking symlink to an executable resource from a trusted root', async () => {
+    const skillDir = createSkillFixture(
+      tempDir,
+      'trusted-skill',
+      'name: trusted-skill\ndescription: Trusted skill',
+      '\nInstructions'
+    );
+    createResourceFile(skillDir, 'scripts/install.sh', '#!/bin/sh');
+    mkdirSync(join(skillDir, 'references'), { recursive: true });
+    symlinkSync('../scripts/install.sh', join(skillDir, 'references', 'guide.md'));
+    const registry = new SkillRegistry({
+      skillRoots: [{ path: tempDir, trust: 'trusted' }],
+    });
+    const allowed = vi.fn();
+    const info = vi.spyOn(activationLogger, 'info');
+    registry.on(SkillRegistryEvent.TRUST_POLICY_ALLOWED, allowed);
+
+    const result = await new AgentSkillAccess(registry).readResource(
+      'trusted-skill',
+      'references/guide.md'
+    );
+
+    expect(result).toEqual({ kind: 'success', content: '#!/bin/sh' });
+    expect(allowed).toHaveBeenCalledWith({
+      name: 'trusted-skill',
+      resourcePath: 'references/guide.md',
+      trustLevel: 'trusted',
+      reason: TrustPolicyReason.TRUSTED_ROOT,
+    });
+    expect(info).toHaveBeenCalledWith('Skill resource trust policy — allowed', {
+      name: 'trusted-skill',
+      resourcePath: 'references/guide.md',
       trustLevel: 'trusted',
       reason: TrustPolicyReason.TRUSTED_ROOT,
     });

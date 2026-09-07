@@ -11,7 +11,12 @@ const PATH_TRAVERSAL_MESSAGE =
 const SYMLINK_ESCAPE_MESSAGE = 'Symlink target escapes the skill directory — access denied';
 
 type CanonicalResourcePathResult =
-  | { kind: 'success'; resolvedPath: string; canonicalPath: string }
+  | {
+      kind: 'success';
+      resolvedPath: string;
+      canonicalPath: string;
+      canonicalRelativePath: string;
+    }
   | { kind: 'access-denied'; message: string }
   | { kind: 'resource-not-found'; resolvedPath: string; error: string }
   | { kind: 'target-read-failure'; resolvedPath: string; error: string }
@@ -81,7 +86,7 @@ function resolveCanonicalResourcePath(
     return { kind: 'access-denied', message: SYMLINK_ESCAPE_MESSAGE };
   }
 
-  return { kind: 'success', resolvedPath, canonicalPath };
+  return { kind: 'success', resolvedPath, canonicalPath, canonicalRelativePath };
 }
 
 export type SkillActivationResult =
@@ -170,7 +175,7 @@ export class AgentSkillAccess {
     }
 
     const policyDecision = evaluateTrustPolicy(
-      resourcePath,
+      pathResult.kind === 'success' ? pathResult.canonicalRelativePath : resourcePath,
       skill.trustLevel,
       this.registry.getAllowUntrustedScripts()
     );
