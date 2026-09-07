@@ -5,17 +5,21 @@ export const activationLogger = createLogger('agentforge:skills:activation', {
   level: LogLevel.INFO,
 });
 
+export function formatMissingSkillMessage(name: string, availableNames: string[]): string {
+  const suggestion = availableNames.length > 0
+    ? ` Available skills: ${availableNames.join(', ')}`
+    : ' No skills are currently registered.';
+
+  return `Skill "${name}" not found.${suggestion}`;
+}
+
 export function buildMissingSkillMessage(registry: SkillRegistry, name: string): {
   availableCount: number;
   errorMessage: string;
 } {
   const availableNames = registry.getNames();
-  const suggestion = availableNames.length > 0
-    ? ` Available skills: ${availableNames.join(', ')}`
-    : ' No skills are currently registered.';
-
   return {
     availableCount: availableNames.length,
-    errorMessage: `Skill "${name}" not found.${suggestion}`,
+    errorMessage: formatMissingSkillMessage(name, availableNames),
   };
 }
