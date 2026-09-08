@@ -180,7 +180,7 @@ interface SkillMetadata {
 | `createActivateSkillTool(registry)` | `(SkillRegistry) => Tool` | Create standalone activate-skill tool |
 | `createReadSkillResourceTool(registry)` | `(SkillRegistry) => Tool` | Create standalone read-skill-resource tool |
 | `createSkillActivationTools(registry)` | `(SkillRegistry) => [Tool, Tool]` | Create both tools as a tuple |
-| `resolveResourcePath(skillDir, resourcePath)` | `(string, string) => { success: true; resolvedPath: string } \| { success: false; error: string }` | Validate and resolve a resource path (returns discriminated union) |
+| `resolveResourcePath(skillDir, resourcePath)` | `(string, string) => { success: true; resolvedPath: string } \| { success: false; error: string }` | **Deprecated.** Compatibility-only resource path validation; planned for removal in the next major release |
 | `evaluateTrustPolicy(resourcePath, trustLevel, allowUntrustedScripts?)` | `(...) => TrustPolicyDecision` | Evaluate whether a resource access is allowed |
 | `isScriptResource(resourcePath)` | `(string) => boolean` | Check if path targets `scripts/` directory |
 | `normalizeRootConfig(root)` | `(string \| SkillRootConfig) => SkillRootConfig` | Normalize string to root config |
@@ -188,6 +188,10 @@ interface SkillMetadata {
 | `validateSkillName(name)` | `(string) => SkillValidationError[]` | Validate skill name format |
 | `scanSkillRoot(rootPath)` | `(string) => SkillCandidate[]` | Scan a directory for skill candidates |
 | `scanAllSkillRoots(roots)` | `(string[]) => SkillCandidate[]` | Scan multiple root directories |
+
+::: warning Deprecated resource-path helper
+`resolveResourcePath` remains exported during the compatibility window, but Agent Skill access should use the `read-skill-resource` Tool returned by `SkillRegistry.toActivationTools()`. The standalone helper is planned for removal in the next major release.
+:::
 
 ## Type Definitions
 
