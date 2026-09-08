@@ -5,6 +5,40 @@ All notable changes to AgentForge will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.17.2] - 2026-09-08
+
+### Changed
+
+#### @agentforge/skills - Centralized Agent Skill Access
+- Consolidated Agent Skill lookup, instruction and resource reads, trust enforcement, normalized failures, logging, and registry audit events behind one package-internal access module.
+- Kept the existing activation and resource Tool names, schemas, success content, failure messages, logging moments, and audit-event payloads compatible while reducing the Tool factories to adapters.
+
+### Fixed
+
+#### @agentforge/skills - Canonical Resource Security Policy
+- Confined existing resources to the canonical Agent Skill root and classified trust from the canonical Skill-relative target, preventing ordinary-looking symlinks from bypassing executable-resource policy.
+- Failed closed when canonical confinement or trust cannot be established while preserving the documented not-found behavior for missing resources.
+- Added focused policy, adapter, conformance, and symlink regression coverage for allowed, denied, missing, and out-of-root resource access.
+
+### Deprecated
+
+#### @agentforge/skills - Standalone Resource-Path Helper
+- Marked the public resource-path helper as deprecated for removal in the next major release while preserving its export and established behavior during the compatibility window.
+- Directed package consumers toward the supported Tool-based Agent Skill access APIs.
+
+### Validation
+- `pnpm release:validate` passed with 237 test files passed, 9 skipped, 2,649 tests passed, and 110 skipped.
+- Skips are intentional opt-in coverage for Neo4j, PostgreSQL, and MySQL services, database benchmarks, PostgreSQL connection credentials, and web-search performance tests; the default release suite remains deterministic without Docker, external services, credentials, or network access.
+
+### Published
+- All packages published to npm registry at version 0.17.2:
+  - @agentforge/core@0.17.2
+  - @agentforge/skills@0.17.2
+  - @agentforge/patterns@0.17.2
+  - @agentforge/tools@0.17.2
+  - @agentforge/testing@0.17.2
+  - @agentforge/cli@0.17.2
+
 ## [0.17.1] - 2026-09-07
 
 ### Changed
