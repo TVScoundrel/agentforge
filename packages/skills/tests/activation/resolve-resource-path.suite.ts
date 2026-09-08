@@ -1,7 +1,7 @@
 import { symlinkSync, writeFileSync, rmSync } from 'node:fs';
 import { join, resolve } from 'node:path';
 import { describe, expect, it } from 'vitest';
-import { resolveResourcePath } from '../../src/activation.js';
+import { resolveResourcePath } from '../../src/index.js';
 import { createTempDir } from './shared.js';
 
 describe('resolveResourcePath', () => {

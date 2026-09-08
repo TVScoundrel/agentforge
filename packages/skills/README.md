@@ -24,6 +24,26 @@ yarn add @agentforge/skills
 
 Full source code and API will be available after ST-07002 (Move Skills Source Files). See the [AgentForge docs](https://tvscoundrel.github.io/agentforge/) for usage guides and tutorials.
 
+## Agent Skill Access
+
+Access Agent Skill instructions and supporting resources through the Tools bound
+to a `SkillRegistry`:
+
+```typescript
+import { SkillRegistry } from '@agentforge/skills';
+
+const registry = new SkillRegistry({
+  enabled: true,
+  skillRoots: [{ path: '.agentskills', trust: 'workspace' }],
+});
+
+const [activateSkill, readSkillResource] = registry.toActivationTools();
+```
+
+`resolveResourcePath` remains exported for compatibility, but it is deprecated
+and planned for removal in the next major release. Use the
+`read-skill-resource` Tool for Agent Skill resource access instead.
+
 ## License
 
 MIT — see [LICENSE](../../LICENSE) for details.

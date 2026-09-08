@@ -7,6 +7,9 @@ import { realpathSync } from 'node:fs';
  * @param skillPath - Absolute path to the skill directory
  * @param resourcePath - Relative path to the resource file
  * @returns Absolute path to the resource, or an error string
+ * @deprecated Use the `read-skill-resource` Tool from
+ * `SkillRegistry.toActivationTools()` for Agent Skill resource access. This
+ * compatibility helper is planned for removal in the next major release.
  */
 export function resolveResourcePath(
   skillPath: string,
