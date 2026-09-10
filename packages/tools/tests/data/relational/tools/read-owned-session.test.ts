@@ -1,12 +1,19 @@
-import { describe, expect, it } from 'vitest';
+import { afterEach, describe, expect, it } from 'vitest';
 import { sql } from 'drizzle-orm';
 import { ConnectionManager } from '../../../../src/data/relational/connection/connection-manager.js';
-import { SchemaCache } from '../../../../src/data/relational/schema/schema-inspector.js';
+import {
+  SchemaCache,
+  SchemaInspector,
+} from '../../../../src/data/relational/schema/schema-inspector.js';
 import { invokeRelationalGetSchema } from '../../../../src/data/relational/tools/relational-get-schema.js';
 import { invokeRelationalQuery } from '../../../../src/data/relational/tools/relational-query.js';
 import { invokeRelationalSelect } from '../../../../src/data/relational/tools/relational-select/index.js';
 
 describe('owned-session relational read execution', () => {
+  afterEach(() => {
+    SchemaInspector.clearCache();
+  });
+
   it('reuses one SQLite session across query, select, and schema operations', async () => {
     const session = new ConnectionManager({ vendor: 'sqlite', connection: ':memory:' });
     await session.connect();
@@ -73,6 +80,31 @@ describe('owned-session relational read execution', () => {
       await session.execute(sql.raw('CREATE TABLE comments (id INTEGER PRIMARY KEY)'));
       const afterOwnerClear = await invokeRelationalGetSchema(execution, {});
       expect(afterOwnerClear.success && afterOwnerClear.summary.tableCount).toBe(3);
+    } finally {
+      await session.disconnect();
+    }
+  });
+
+  it('does not clear unrelated global cache state when refreshing without an owned cache', async () => {
+    const session = new ConnectionManager({ vendor: 'sqlite', connection: ':memory:' });
+    await session.connect();
+
+    try {
+      await session.execute(sql.raw('CREATE TABLE users (id INTEGER PRIMARY KEY)'));
+      const legacyInspector = new SchemaInspector(session, 'sqlite', {
+        cacheKey: 'unrelated-legacy-session',
+      });
+      const initialLegacySchema = await legacyInspector.inspect();
+
+      await session.execute(sql.raw('CREATE TABLE posts (id INTEGER PRIMARY KEY)'));
+      await invokeRelationalGetSchema(
+        { executor: session, vendor: 'sqlite' },
+        { refreshCache: true },
+      );
+      const cachedLegacySchema = await legacyInspector.inspect();
+
+      expect(initialLegacySchema.tables).toHaveLength(1);
+      expect(cachedLegacySchema.tables).toHaveLength(1);
     } finally {
       await session.disconnect();
     }

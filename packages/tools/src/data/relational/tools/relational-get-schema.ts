@@ -119,7 +119,7 @@ export async function invokeRelationalGetSchema(
   );
 
   try {
-    if (input.refreshCache) {
+    if (input.refreshCache && cacheKey) {
       inspector.invalidateCache();
     }
 
