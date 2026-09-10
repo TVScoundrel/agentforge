@@ -38,4 +38,34 @@ describe('SchemaInspector cache behavior', () => {
     await inspector.inspect();
     expect(executeMock).toHaveBeenCalledTimes(10);
   });
+
+  it('should bypass existing cache entries when caching is disabled', async () => {
+    const queue = [
+      { rows: [{ schema_name: 'public', table_name: 'users' }] },
+      { rows: [] },
+      { rows: [] },
+      { rows: [] },
+      { rows: [] },
+      { rows: [{ schema_name: 'public', table_name: 'posts' }] },
+      { rows: [] },
+      { rows: [] },
+      { rows: [] },
+      { rows: [] },
+    ];
+    const { manager, executeMock } = createMockManager(queue);
+    const cachedInspector = new SchemaInspector(manager, 'postgresql', {
+      cacheKey: 'pg:disabled-cache-test',
+      cacheTtlMs: 60_000,
+    });
+    const uncachedInspector = new SchemaInspector(manager, 'postgresql', {
+      cacheKey: 'pg:disabled-cache-test',
+      cacheTtlMs: 0,
+    });
+
+    await cachedInspector.inspect();
+    const freshSchema = await uncachedInspector.inspect();
+
+    expect(executeMock).toHaveBeenCalledTimes(10);
+    expect(freshSchema.tables.map((table) => table.name)).toEqual(['posts']);
+  });
 });

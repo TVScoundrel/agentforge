@@ -96,7 +96,7 @@ export class SchemaInspector {
     const tableFilters = validateTableFilters(options?.tables);
     const bypassCache = options?.bypassCache ?? false;
 
-    if (!bypassCache && this.cacheKey) {
+    if (!bypassCache && this.cacheKey && this.cacheTtlMs > 0) {
       const cached = this.cache.get(this.cacheKey);
       if (cached && cached.expiresAt > Date.now()) {
         logger.debug('Schema cache hit', { vendor: this.vendor });
