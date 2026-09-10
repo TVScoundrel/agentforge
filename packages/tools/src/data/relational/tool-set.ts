@@ -77,7 +77,11 @@ type SelectTool = Tool<RelationalSelectOperationInput, SelectResponse>;
 type InsertTool = Tool<RelationalInsertOperationInput, InsertResponse>;
 type UpdateTool = Tool<RelationalUpdateOperationInput, UpdateResponse>;
 type DeleteTool = Tool<RelationalDeleteOperationInput, DeleteResponse>;
-type GetSchemaTool = Tool<RelationalGetSchemaOperationInput, GetSchemaResponse>;
+export type RelationalToolSetGetSchemaInput = Omit<
+  RelationalGetSchemaOperationInput,
+  'database' | 'cacheTtlMs'
+>;
+type GetSchemaTool = Tool<RelationalToolSetGetSchemaInput, GetSchemaResponse>;
 type ConfiguredTool = QueryTool | SelectTool | InsertTool | UpdateTool | DeleteTool | GetSchemaTool;
 
 export interface RelationalToolSet extends Iterable<ConfiguredTool> {
@@ -141,11 +145,28 @@ function cloneImmutableValue(value: unknown): unknown {
   if (Array.isArray(value)) {
     return Object.freeze(value.map(cloneImmutableValue));
   }
+  if (value instanceof Date) {
+    return new Date(value.getTime());
+  }
+  if (value instanceof ArrayBuffer) {
+    return value.slice(0);
+  }
+  if (Buffer.isBuffer(value)) {
+    return Buffer.from(value);
+  }
+  if (ArrayBuffer.isView(value)) {
+    return structuredClone(value);
+  }
   if (value && typeof value === 'object' && Object.getPrototypeOf(value) === Object.prototype) {
     return Object.freeze(
       Object.fromEntries(
         Object.entries(value).map(([key, nestedValue]) => [key, cloneImmutableValue(nestedValue)])
       )
+    );
+  }
+  if (value && typeof value === 'object') {
+    throw new RelationalToolSetConfigurationError(
+      'Database configuration contains an unsupported mutable object.'
     );
   }
   return value;
@@ -233,7 +254,7 @@ class RelationalToolSetImplementation implements RelationalToolSet {
       relationalQuerySchema.omit({ vendor: true, connectionString: true }),
       (input) =>
         execution(
-          (manager) => invokeRelationalQuery({ executor: manager, vendor: config.vendor }, input),
+          (manager) => invokeRelationalQuery(this.executionFor(manager), input),
           () => ({
             success: false,
             error: 'Failed to connect to the configured database.',
@@ -247,7 +268,7 @@ class RelationalToolSetImplementation implements RelationalToolSet {
       relationalSelectSchema.omit({ vendor: true, connectionString: true }),
       (input) =>
         execution(
-          (manager) => invokeRelationalSelect({ executor: manager, vendor: config.vendor }, input),
+          (manager) => invokeRelationalSelect(this.executionFor(manager), input),
           () => ({
             success: false,
             error:
@@ -262,7 +283,7 @@ class RelationalToolSetImplementation implements RelationalToolSet {
       relationalInsertSchema.omit({ vendor: true, connectionString: true }),
       (input) =>
         execution(
-          (manager) => invokeRelationalInsert({ executor: manager, vendor: config.vendor }, input),
+          (manager) => invokeRelationalInsert(this.executionFor(manager), input),
           () => ({
             success: false,
             error:
@@ -278,7 +299,7 @@ class RelationalToolSetImplementation implements RelationalToolSet {
       relationalUpdateOperationSchema,
       (input) =>
         execution(
-          (manager) => invokeRelationalUpdate({ executor: manager, vendor: config.vendor }, input),
+          (manager) => invokeRelationalUpdate(this.executionFor(manager), input),
           () => ({
             success: false,
             error:
@@ -292,7 +313,7 @@ class RelationalToolSetImplementation implements RelationalToolSet {
       relationalDeleteOperationSchema,
       (input) =>
         execution(
-          (manager) => invokeRelationalDelete({ executor: manager, vendor: config.vendor }, input),
+          (manager) => invokeRelationalDelete(this.executionFor(manager), input),
           () => ({
             success: false,
             error:
@@ -315,8 +336,7 @@ class RelationalToolSetImplementation implements RelationalToolSet {
           (manager) =>
             invokeRelationalGetSchema(
               {
-                executor: manager,
-                vendor: config.vendor,
+                ...this.executionFor(manager),
                 schemaCache: this.schemaCache,
                 schemaCacheKey: TOOL_SET_SCHEMA_CACHE_KEY,
               },
@@ -405,6 +425,10 @@ class RelationalToolSetImplementation implements RelationalToolSet {
         });
     }
     return this.initialization;
+  }
+
+  private executionFor(manager: ConnectionManager) {
+    return { executor: manager, vendor: this.config.vendor };
   }
 
   private async finishDisposal(): Promise<void> {
