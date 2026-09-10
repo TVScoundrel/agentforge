@@ -6,8 +6,12 @@
 import { z } from 'zod';
 import { toolBuilder, ToolCategory } from '@agentforge/core';
 import { executeQuery } from '../query/query-executor.js';
+import { QUERY_CONNECTION_FAILURE } from '../connection-failure-messages.js';
 import type { DatabaseVendor } from '../types.js';
-import { withEphemeralRelationalToolSet } from './legacy-read-adapter.js';
+import {
+  replaceConnectionFailureMessage,
+  withEphemeralRelationalToolSet,
+} from './legacy-read-adapter.js';
 import type { RelationalReadExecution } from './read-execution.js';
 
 /**
@@ -159,7 +163,12 @@ export const relationalQuery = toolBuilder()
     const { connectionString, vendor, ...operation } = input;
     return withEphemeralRelationalToolSet(
       { vendor, connectionString },
-      (toolSet) => toolSet.query.invoke(operation),
+      async (toolSet) =>
+        replaceConnectionFailureMessage(
+          await toolSet.query.invoke(operation),
+          QUERY_CONNECTION_FAILURE,
+          `Failed to initialize ${vendor} connection`,
+        ),
     );
   })
   .build();

@@ -52,6 +52,34 @@ describe('legacy Relational read Tool compatibility', () => {
     });
   });
 
+  it('preserves the legacy Query connection-failure result', async () => {
+    mockPgExecute.mockRejectedValueOnce(new Error('connection refused'));
+
+    await expectEphemeralLifecycle(async () => {
+      const result = await relationalQuery.invoke({ ...database, sql: 'SELECT 1 AS value' });
+      expect(result).toEqual({
+        success: false,
+        error: 'Failed to initialize postgresql connection',
+        rows: [],
+        rowCount: 0,
+      });
+    });
+  });
+
+  it('preserves the legacy Select connection-failure result', async () => {
+    mockPgExecute.mockRejectedValueOnce(new Error('connection refused'));
+
+    await expectEphemeralLifecycle(async () => {
+      const result = await relationalSelect.invoke({ ...database, table: 'users' });
+      expect(result).toEqual({
+        success: false,
+        error: 'Failed to execute SELECT query. Please verify your input and database connection.',
+        rows: [],
+        rowCount: 0,
+      });
+    });
+  });
+
   it('runs Select through one ephemeral Relational Tool Set', async () => {
     await expectEphemeralLifecycle(async () => {
       const result = await relationalSelect.invoke({ ...database, table: 'users' });

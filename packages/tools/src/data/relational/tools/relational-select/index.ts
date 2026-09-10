@@ -8,6 +8,7 @@
  */
 
 import { toolBuilder, ToolCategory } from '@agentforge/core';
+import { SELECT_CONNECTION_FAILURE } from '../../connection-failure-messages.js';
 import { relationalSelectSchema } from './schemas.js';
 import { executeSelect } from './executor.js';
 import type {
@@ -17,7 +18,10 @@ import type {
   SelectResponse,
 } from './types.js';
 import { isSafeValidationError } from './error-utils.js';
-import { withEphemeralRelationalToolSet } from '../legacy-read-adapter.js';
+import {
+  replaceConnectionFailureMessage,
+  withEphemeralRelationalToolSet,
+} from '../legacy-read-adapter.js';
 import type { RelationalReadExecution } from '../read-execution.js';
 
 // Re-export types and schemas for external use
@@ -141,7 +145,12 @@ export const relationalSelect = toolBuilder()
     const { connectionString, vendor, ...operation } = input;
     return withEphemeralRelationalToolSet(
       { vendor, connectionString },
-      (toolSet) => toolSet.select.invoke(operation),
+      async (toolSet) =>
+        replaceConnectionFailureMessage(
+          await toolSet.select.invoke(operation),
+          SELECT_CONNECTION_FAILURE,
+          'Failed to execute SELECT query. Please verify your input and database connection.',
+        ),
     );
   })
   .build();

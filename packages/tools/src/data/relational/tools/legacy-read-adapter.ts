@@ -10,6 +10,17 @@ interface LegacyDatabaseInput {
   connectionString: string;
 }
 
+export function replaceConnectionFailureMessage<T extends { success: boolean; error?: string }>(
+  result: T,
+  configuredMessage: string,
+  legacyMessage: string
+): T {
+  if (!result.success && result.error === configuredMessage) {
+    return { ...result, error: legacyMessage };
+  }
+  return result;
+}
+
 export async function withEphemeralRelationalToolSet<T>(
   database: LegacyDatabaseInput,
   invoke: (toolSet: RelationalToolSet) => Promise<T>,

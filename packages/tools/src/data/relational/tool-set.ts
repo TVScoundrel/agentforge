@@ -3,6 +3,10 @@ import type { z } from 'zod';
 
 import { ConnectionManager } from './connection/connection-manager.js';
 import type { ConnectionConfig } from './connection/types.js';
+import {
+  QUERY_CONNECTION_FAILURE,
+  SELECT_CONNECTION_FAILURE,
+} from './connection-failure-messages.js';
 import { SchemaCache } from './schema/schema-inspector.js';
 import { MissingPeerDependencyError } from './utils/peer-dependency-checker.js';
 import { invokeRelationalDelete } from './tools/relational-delete/index.js';
@@ -259,7 +263,7 @@ class RelationalToolSetImplementation implements RelationalToolSet {
           (manager) => invokeRelationalQuery(this.executionFor(manager), input),
           () => ({
             success: false,
-            error: 'Failed to connect to the configured database.',
+            error: QUERY_CONNECTION_FAILURE,
             rows: [],
             rowCount: 0,
           })
@@ -273,8 +277,7 @@ class RelationalToolSetImplementation implements RelationalToolSet {
           (manager) => invokeRelationalSelect(this.executionFor(manager), input),
           () => ({
             success: false,
-            error:
-              'Failed to execute SELECT query. Please verify the configured database connection.',
+            error: SELECT_CONNECTION_FAILURE,
             rows: [],
             rowCount: 0,
           })
