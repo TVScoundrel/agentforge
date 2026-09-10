@@ -1,6 +1,11 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
-import { ConnectionManager, mockPool, mockPoolEnd } from './connection-manager.mock-harness.js';
+import {
+  ConnectionManager,
+  mockPgExecute,
+  mockPool,
+  mockPoolEnd,
+} from './connection-manager.mock-harness.js';
 import {
   relationalGetSchema,
   relationalQuery,
@@ -33,6 +38,17 @@ describe('legacy Relational read Tool compatibility', () => {
     await expectEphemeralLifecycle(async () => {
       const result = await relationalQuery.invoke({ ...database, sql: 'SELECT 1 AS value' });
       expect(result.success).toBe(true);
+    });
+  });
+
+  it('disposes the ephemeral Relational Tool Set after a failed invocation', async () => {
+    mockPgExecute
+      .mockResolvedValueOnce([{ '?column?': 1 }])
+      .mockRejectedValueOnce(new Error('query failed'));
+
+    await expectEphemeralLifecycle(async () => {
+      const result = await relationalQuery.invoke({ ...database, sql: 'SELECT 1 AS value' });
+      expect(result.success).toBe(false);
     });
   });
 
