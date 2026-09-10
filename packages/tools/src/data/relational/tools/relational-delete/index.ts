@@ -11,11 +11,54 @@ import { toolBuilder, ToolCategory } from '@agentforge/core';
 import { ConnectionManager } from '../../connection/connection-manager.js';
 import { relationalDeleteSchema } from './schemas.js';
 import { executeDelete } from './executor.js';
-import type { RelationalDeleteInput, DeleteResponse } from './types.js';
+import type {
+  DeleteErrorResponse,
+  DeleteResponse,
+  RelationalDeleteInput,
+  RelationalDeleteOperationInput,
+} from './types.js';
 import { isSafeDeleteError } from './error-utils.js';
+import type { RelationalMutationExecution } from '../mutation-execution.js';
 
 export * from './types.js';
 export * from './schemas.js';
+
+function toDeleteErrorResponse(error: unknown): DeleteErrorResponse {
+  const errorMessage = isSafeDeleteError(error)
+    ? error.message
+    : 'Failed to execute DELETE query. Please verify your input and database connection.';
+
+  return {
+    success: false,
+    error: errorMessage,
+    rowCount: 0,
+    softDeleted: false,
+  };
+}
+
+/** Execute DELETE through a session owned by the caller. */
+export async function invokeRelationalDelete(
+  execution: RelationalMutationExecution,
+  input: RelationalDeleteOperationInput
+): Promise<DeleteResponse> {
+  try {
+    const result = await executeDelete(
+      execution.executor,
+      { ...input, vendor: execution.vendor },
+      execution.transaction ? { transaction: execution.transaction } : undefined
+    );
+
+    return {
+      success: true,
+      rowCount: result.rowCount,
+      executionTime: result.executionTime,
+      softDeleted: result.softDeleted,
+      batch: result.batch,
+    };
+  } catch (error) {
+    return toDeleteErrorResponse(error);
+  }
+}
 
 /**
  * LangGraph tool for type-safe DELETE queries with single and batched operation support.
@@ -80,28 +123,12 @@ export const relationalDelete = toolBuilder()
     try {
       await manager.connect();
 
-      const result = await executeDelete(manager, input);
-
-      return {
-        success: true,
-        rowCount: result.rowCount,
-        executionTime: result.executionTime,
-        softDeleted: result.softDeleted,
-        batch: result.batch,
-      };
+      return await invokeRelationalDelete(
+        { executor: manager, vendor: input.vendor },
+        input
+      );
     } catch (error) {
-      let errorMessage = 'Failed to execute DELETE query. Please verify your input and database connection.';
-
-      if (isSafeDeleteError(error)) {
-        errorMessage = error.message;
-      }
-
-      return {
-        success: false,
-        error: errorMessage,
-        rowCount: 0,
-        softDeleted: false,
-      };
+      return toDeleteErrorResponse(error);
     } finally {
       await manager.disconnect();
     }

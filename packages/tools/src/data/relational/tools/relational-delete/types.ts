@@ -47,6 +47,12 @@ export interface DeleteBatchMetadata {
 /** Validated input for the relational-delete tool. */
 export type RelationalDeleteInput = z.input<typeof relationalDeleteSchema>;
 
+/** DELETE input after database credentials have been bound by a session owner. */
+export type RelationalDeleteExecutionInput = Omit<RelationalDeleteInput, 'connectionString'>;
+
+/** Agent-facing DELETE operation input for a configured database session. */
+export type RelationalDeleteOperationInput = Omit<RelationalDeleteExecutionInput, 'vendor'>;
+
 /** Internal result from a single or batched DELETE execution. */
 export interface DeleteResult {
   rowCount: number;

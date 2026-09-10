@@ -11,12 +11,53 @@ import { toolBuilder, ToolCategory } from '@agentforge/core';
 import { ConnectionManager } from '../../connection/connection-manager.js';
 import { relationalUpdateSchema } from './schemas.js';
 import { executeUpdate } from './executor.js';
-import type { RelationalUpdateInput, UpdateResponse } from './types.js';
+import type {
+  RelationalUpdateInput,
+  RelationalUpdateOperationInput,
+  UpdateErrorResponse,
+  UpdateResponse,
+} from './types.js';
 import { isSafeUpdateError } from './error-utils.js';
+import type { RelationalMutationExecution } from '../mutation-execution.js';
 
 // Re-export types and schemas for external use
 export * from './types.js';
 export * from './schemas.js';
+
+function toUpdateErrorResponse(error: unknown): UpdateErrorResponse {
+  const errorMessage = isSafeUpdateError(error)
+    ? error.message
+    : 'Failed to execute UPDATE query. Please verify your input and database connection.';
+
+  return {
+    success: false,
+    error: errorMessage,
+    rowCount: 0,
+  };
+}
+
+/** Execute UPDATE through a session owned by the caller. */
+export async function invokeRelationalUpdate(
+  execution: RelationalMutationExecution,
+  input: RelationalUpdateOperationInput
+): Promise<UpdateResponse> {
+  try {
+    const result = await executeUpdate(
+      execution.executor,
+      { ...input, vendor: execution.vendor },
+      execution.transaction ? { transaction: execution.transaction } : undefined
+    );
+
+    return {
+      success: true,
+      rowCount: result.rowCount,
+      executionTime: result.executionTime,
+      batch: result.batch,
+    };
+  } catch (error) {
+    return toUpdateErrorResponse(error);
+  }
+}
 
 /**
  * Relational UPDATE Tool
@@ -82,26 +123,12 @@ export const relationalUpdate = toolBuilder()
     try {
       await manager.connect();
 
-      const result = await executeUpdate(manager, input);
-
-      return {
-        success: true,
-        rowCount: result.rowCount,
-        executionTime: result.executionTime,
-        batch: result.batch,
-      };
+      return await invokeRelationalUpdate(
+        { executor: manager, vendor: input.vendor },
+        input
+      );
     } catch (error) {
-      let errorMessage = 'Failed to execute UPDATE query. Please verify your input and database connection.';
-
-      if (isSafeUpdateError(error)) {
-        errorMessage = error.message;
-      }
-
-      return {
-        success: false,
-        error: errorMessage,
-        rowCount: 0,
-      };
+      return toUpdateErrorResponse(error);
     } finally {
       await manager.disconnect();
     }

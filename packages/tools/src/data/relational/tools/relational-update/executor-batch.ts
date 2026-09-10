@@ -1,7 +1,7 @@
 import { benchmarkBatchExecution, executeBatchedTask } from '../../query/batch-executor.js';
-import type { ConnectionManager } from '../../connection/connection-manager.js';
+import type { SqlExecutor } from '../../query/types.js';
 import type {
-  RelationalUpdateInput,
+  RelationalUpdateExecutionInput,
   UpdateBatchMetadata,
   UpdateBatchOperation,
   UpdateBatchOptions,
@@ -16,8 +16,8 @@ import {
 } from './executor-shared.js';
 
 export async function executeUpdateInBatchMode(
-  manager: ConnectionManager,
-  input: RelationalUpdateInput & { operations: UpdateBatchOperation[] },
+  executor: SqlExecutor,
+  input: RelationalUpdateExecutionInput & { operations: UpdateBatchOperation[] },
   context: UpdateExecutionContext | undefined,
   options: Required<UpdateBatchOptions>
 ): Promise<UpdateResult> {
@@ -34,7 +34,7 @@ export async function executeUpdateInBatchMode(
         for (const operation of operations) {
           try {
             const result = await executeSingleUpdate(
-              manager,
+              executor,
               input,
               {
                 data: operation.data,

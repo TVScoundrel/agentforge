@@ -73,6 +73,12 @@ export interface UpdateBatchMetadata {
  */
 export type RelationalUpdateInput = z.input<typeof relationalUpdateSchema>;
 
+/** UPDATE input after database credentials have been bound by a session owner. */
+export type RelationalUpdateExecutionInput = Omit<RelationalUpdateInput, 'connectionString'>;
+
+/** Agent-facing UPDATE operation input for a configured database session. */
+export type RelationalUpdateOperationInput = Omit<RelationalUpdateExecutionInput, 'vendor'>;
+
 /**
  * UPDATE execution result.
  */

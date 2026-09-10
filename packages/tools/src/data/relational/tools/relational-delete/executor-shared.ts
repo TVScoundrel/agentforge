@@ -3,7 +3,7 @@ import type { TransactionContext } from '../../query/transaction.js';
 import type {
   DeleteBatchMetadata,
   DeleteBatchOptions,
-  RelationalDeleteInput,
+  RelationalDeleteExecutionInput,
 } from './types.js';
 
 export const deleteExecutorLogger = createLogger('agentforge:tools:data:relational:delete');
@@ -18,10 +18,10 @@ export interface DeleteExecutionContext {
 }
 
 export interface SingleDeleteOperation {
-  where?: RelationalDeleteInput['where'];
-  allowFullTableDelete?: RelationalDeleteInput['allowFullTableDelete'];
-  cascade?: RelationalDeleteInput['cascade'];
-  softDelete?: RelationalDeleteInput['softDelete'];
+  where?: RelationalDeleteExecutionInput['where'];
+  allowFullTableDelete?: RelationalDeleteExecutionInput['allowFullTableDelete'];
+  cascade?: RelationalDeleteExecutionInput['cascade'];
+  softDelete?: RelationalDeleteExecutionInput['softDelete'];
 }
 
 export interface DeleteChunkExecutionResult {
@@ -78,7 +78,7 @@ export function resolveBatchOptions(batch: DeleteBatchOptions | undefined): Requ
   };
 }
 
-export function toSingleDeleteOperation(input: RelationalDeleteInput): SingleDeleteOperation {
+export function toSingleDeleteOperation(input: RelationalDeleteExecutionInput): SingleDeleteOperation {
   return {
     where: input.where,
     allowFullTableDelete: input.allowFullTableDelete,

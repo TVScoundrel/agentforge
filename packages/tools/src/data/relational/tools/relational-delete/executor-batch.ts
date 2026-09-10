@@ -2,13 +2,13 @@ import {
   benchmarkBatchExecution,
   executeBatchedTask,
 } from '../../query/batch-executor.js';
-import type { ConnectionManager } from '../../connection/connection-manager.js';
+import type { SqlExecutor } from '../../query/types.js';
 import type {
   DeleteBatchMetadata,
   DeleteBatchOperation,
   DeleteBatchOptions,
   DeleteResult,
-  RelationalDeleteInput,
+  RelationalDeleteExecutionInput,
 } from './types.js';
 import { executeSingleDelete } from './executor-single.js';
 import {
@@ -19,8 +19,8 @@ import {
 } from './executor-shared.js';
 
 export async function executeDeleteInBatchMode(
-  manager: ConnectionManager,
-  input: RelationalDeleteInput & { operations: DeleteBatchOperation[] },
+  executor: SqlExecutor,
+  input: RelationalDeleteExecutionInput & { operations: DeleteBatchOperation[] },
   context: DeleteExecutionContext | undefined,
   options: Required<DeleteBatchOptions>
 ): Promise<DeleteResult> {
@@ -38,7 +38,7 @@ export async function executeDeleteInBatchMode(
         for (const operation of operations) {
           try {
             const result = await executeSingleDelete(
-              manager,
+              executor,
               input,
               {
                 where: operation.where,

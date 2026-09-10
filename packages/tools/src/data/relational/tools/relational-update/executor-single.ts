@@ -1,6 +1,6 @@
 import { buildUpdateQuery } from '../../query/query-builder.js';
-import type { ConnectionManager } from '../../connection/connection-manager.js';
-import type { RelationalUpdateInput, UpdateResult } from './types.js';
+import type { SqlExecutor } from '../../query/types.js';
+import type { RelationalUpdateExecutionInput, UpdateResult } from './types.js';
 import {
   normalizeAffectedRows,
   type SingleUpdateOperation,
@@ -8,8 +8,8 @@ import {
 } from './executor-shared.js';
 
 export async function executeSingleUpdate(
-  manager: ConnectionManager,
-  input: RelationalUpdateInput,
+  executor: SqlExecutor,
+  input: RelationalUpdateExecutionInput,
   operation: SingleUpdateOperation,
   context?: UpdateExecutionContext
 ): Promise<UpdateResult> {
@@ -22,8 +22,8 @@ export async function executeSingleUpdate(
     vendor: input.vendor,
   });
 
-  const executor = context?.transaction ?? manager;
-  const rawResult = await executor.execute(built.query);
+  const session = context?.transaction ?? executor;
+  const rawResult = await session.execute(built.query);
   const rowCount = normalizeAffectedRows(rawResult);
 
   if (built.usesOptimisticLock && rowCount === 0) {

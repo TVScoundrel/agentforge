@@ -61,6 +61,12 @@ export interface InsertBatchMetadata {
  */
 export type RelationalInsertInput = z.input<typeof relationalInsertSchema>;
 
+/** INSERT input after database credentials have been bound by a session owner. */
+export type RelationalInsertExecutionInput = Omit<RelationalInsertInput, 'connectionString'>;
+
+/** Agent-facing INSERT operation input for a configured database session. */
+export type RelationalInsertOperationInput = Omit<RelationalInsertExecutionInput, 'vendor'>;
+
 /**
  * INSERT execution result.
  */
