@@ -1,0 +1,461 @@
+import { createTool, type Tool, type ToolMetadata } from '@agentforge/core';
+import type { z } from 'zod';
+
+import { ConnectionManager } from './connection/connection-manager.js';
+import type { ConnectionConfig } from './connection/types.js';
+import { SchemaCache } from './schema/schema-inspector.js';
+import { invokeRelationalDelete } from './tools/relational-delete/index.js';
+import { relationalDeleteSchema } from './tools/relational-delete/schemas.js';
+import type {
+  DeleteResponse,
+  RelationalDeleteOperationInput,
+} from './tools/relational-delete/types.js';
+import {
+  invokeRelationalGetSchema,
+  relationalGetSchemaInputSchema,
+  type GetSchemaResponse,
+  type RelationalGetSchemaOperationInput,
+} from './tools/relational-get-schema.js';
+import { invokeRelationalInsert } from './tools/relational-insert/index.js';
+import { relationalInsertSchema } from './tools/relational-insert/schemas.js';
+import type {
+  InsertResponse,
+  RelationalInsertOperationInput,
+} from './tools/relational-insert/types.js';
+import {
+  invokeRelationalQuery,
+  relationalQuerySchema,
+  type QueryResponse,
+  type RelationalQueryOperationInput,
+} from './tools/relational-query.js';
+import { invokeRelationalSelect } from './tools/relational-select/index.js';
+import { relationalSelectSchema } from './tools/relational-select/schemas.js';
+import type {
+  RelationalSelectOperationInput,
+  SelectResponse,
+} from './tools/relational-select/types.js';
+import { invokeRelationalUpdate } from './tools/relational-update/index.js';
+import { relationalUpdateSchema } from './tools/relational-update/schemas.js';
+import type {
+  RelationalUpdateOperationInput,
+  UpdateResponse,
+} from './tools/relational-update/types.js';
+import {
+  relationalDelete,
+  relationalGetSchema,
+  relationalInsert,
+  relationalQuery,
+  relationalSelect,
+  relationalUpdate,
+} from './tools/index.js';
+
+const DEFAULT_SCHEMA_CACHE_TTL_MS = 60_000;
+const TOOL_SET_SCHEMA_CACHE_KEY = 'relational-tool-set';
+const PREFIX_PATTERN = /^[a-z][a-z0-9]*(?:-[a-z0-9]+)*$/;
+
+export interface RelationalToolSetOptions {
+  /** Kebab-case prefix prepended to every configured Tool name. */
+  prefix?: string;
+  /** Lifetime of cached schema results. Use 0 to disable caching. */
+  schemaCacheTtlMs?: number;
+}
+
+export class RelationalToolSetConfigurationError extends Error {
+  override readonly name = 'RelationalToolSetConfigurationError';
+}
+
+export class RelationalToolSetDisposedError extends Error {
+  override readonly name = 'RelationalToolSetDisposedError';
+
+  constructor() {
+    super('The Relational Tool Set is disposing or has been disposed.');
+  }
+}
+
+type QueryTool = Tool<RelationalQueryOperationInput, QueryResponse>;
+type SelectTool = Tool<RelationalSelectOperationInput, SelectResponse>;
+type InsertTool = Tool<RelationalInsertOperationInput, InsertResponse>;
+type UpdateTool = Tool<RelationalUpdateOperationInput, UpdateResponse>;
+type DeleteTool = Tool<RelationalDeleteOperationInput, DeleteResponse>;
+export type RelationalToolSetGetSchemaInput = Omit<
+  RelationalGetSchemaOperationInput,
+  'database' | 'cacheTtlMs'
+>;
+type GetSchemaTool = Tool<RelationalToolSetGetSchemaInput, GetSchemaResponse>;
+type ConfiguredTool = QueryTool | SelectTool | InsertTool | UpdateTool | DeleteTool | GetSchemaTool;
+
+export interface RelationalToolSet extends Iterable<ConfiguredTool> {
+  readonly query: QueryTool;
+  readonly select: SelectTool;
+  readonly insert: InsertTool;
+  readonly update: UpdateTool;
+  readonly delete: DeleteTool;
+  readonly getSchema: GetSchemaTool;
+  refreshSchema(): void;
+  dispose(): Promise<void>;
+}
+
+function validateConfiguration(config: ConnectionConfig, options: RelationalToolSetOptions): void {
+  if (!config || !['postgresql', 'mysql', 'sqlite'].includes(config.vendor)) {
+    throw new RelationalToolSetConfigurationError(
+      'Database vendor must be postgresql, mysql, or sqlite.'
+    );
+  }
+  if (
+    (typeof config.connection === 'string' && config.connection.trim().length === 0) ||
+    (typeof config.connection !== 'string' &&
+      (!config.connection || Array.isArray(config.connection)))
+  ) {
+    throw new RelationalToolSetConfigurationError(
+      'Database connection must be a non-empty string or configuration object.'
+    );
+  }
+  if (
+    config.vendor === 'sqlite' &&
+    typeof config.connection !== 'string' &&
+    (typeof config.connection.url !== 'string' || config.connection.url.trim().length === 0)
+  ) {
+    throw new RelationalToolSetConfigurationError(
+      'SQLite object configuration requires a non-empty url.'
+    );
+  }
+  if (options.prefix !== undefined && !PREFIX_PATTERN.test(options.prefix)) {
+    throw new RelationalToolSetConfigurationError(
+      'Tool name prefix must be non-empty kebab-case starting with a letter.'
+    );
+  }
+  if (
+    options.schemaCacheTtlMs !== undefined &&
+    (!Number.isInteger(options.schemaCacheTtlMs) || options.schemaCacheTtlMs < 0)
+  ) {
+    throw new RelationalToolSetConfigurationError(
+      'Schema cache TTL must be a non-negative integer.'
+    );
+  }
+
+  const longestName = configuredName('relational-get-schema', options.prefix);
+  if (longestName.length > 50) {
+    throw new RelationalToolSetConfigurationError(
+      'Tool name prefix is too long; configured Tool names must not exceed 50 characters.'
+    );
+  }
+}
+
+function cloneImmutableValue(value: unknown): unknown {
+  if (Array.isArray(value)) {
+    return Object.freeze(value.map(cloneImmutableValue));
+  }
+  if (value instanceof Date) {
+    return new Date(value.getTime());
+  }
+  if (value instanceof ArrayBuffer) {
+    return value.slice(0);
+  }
+  if (Buffer.isBuffer(value)) {
+    return Buffer.from(value);
+  }
+  if (ArrayBuffer.isView(value)) {
+    return structuredClone(value);
+  }
+  if (value && typeof value === 'object' && Object.getPrototypeOf(value) === Object.prototype) {
+    return Object.freeze(
+      Object.fromEntries(
+        Object.entries(value).map(([key, nestedValue]) => [key, cloneImmutableValue(nestedValue)])
+      )
+    );
+  }
+  if (value && typeof value === 'object') {
+    throw new RelationalToolSetConfigurationError(
+      'Database configuration contains an unsupported mutable object.'
+    );
+  }
+  return value;
+}
+
+function snapshotConfiguration(config: ConnectionConfig): ConnectionConfig {
+  const connection = cloneImmutableValue(config.connection) as ConnectionConfig['connection'];
+  return Object.freeze({ vendor: config.vendor, connection }) as ConnectionConfig;
+}
+
+function configuredName(name: string, prefix?: string): string {
+  return prefix ? `${prefix}-${name}` : name;
+}
+
+function configuredMetadata(tool: { metadata: ToolMetadata }, prefix?: string): ToolMetadata {
+  return {
+    ...tool.metadata,
+    name: configuredName(tool.metadata.name, prefix),
+    examples: undefined,
+  };
+}
+
+function preserveOperationValidation<T extends Record<string, unknown>>(
+  legacySchema: z.ZodTypeAny,
+  input: T,
+  context: z.RefinementCtx
+): void {
+  const result = legacySchema.safeParse({
+    ...input,
+    vendor: 'sqlite',
+    connectionString: 'configured',
+  });
+  if (!result.success) {
+    for (const issue of result.error.issues) {
+      context.addIssue(issue);
+    }
+  }
+}
+
+const relationalUpdateOperationSchema = relationalUpdateSchema
+  .innerType()
+  .omit({ vendor: true, connectionString: true })
+  .superRefine((input, context) => {
+    preserveOperationValidation(relationalUpdateSchema, input, context);
+  }) as z.ZodSchema<RelationalUpdateOperationInput>;
+
+const relationalDeleteOperationSchema = relationalDeleteSchema
+  .innerType()
+  .omit({ vendor: true, connectionString: true })
+  .superRefine((input, context) => {
+    preserveOperationValidation(relationalDeleteSchema, input, context);
+  }) as z.ZodSchema<RelationalDeleteOperationInput>;
+
+class RelationalToolSetImplementation implements RelationalToolSet {
+  readonly query: QueryTool;
+  readonly select: SelectTool;
+  readonly insert: InsertTool;
+  readonly update: UpdateTool;
+  readonly delete: DeleteTool;
+  readonly getSchema: GetSchemaTool;
+
+  private readonly tools: readonly ConfiguredTool[];
+  private readonly schemaCache = new SchemaCache();
+  private readonly schemaCacheTtlMs: number;
+  private manager?: ConnectionManager;
+  private initialization?: Promise<ConnectionManager>;
+  private activeWork = 0;
+  private state: 'open' | 'closing' | 'closed' = 'open';
+  private drain?: Promise<void>;
+  private resolveDrain?: () => void;
+  private disposal?: Promise<void>;
+
+  constructor(
+    private readonly config: ConnectionConfig,
+    options: RelationalToolSetOptions
+  ) {
+    this.schemaCacheTtlMs = options.schemaCacheTtlMs ?? DEFAULT_SCHEMA_CACHE_TTL_MS;
+    const execution = <T>(
+      operation: (manager: ConnectionManager) => Promise<T>,
+      connectionFailure: () => T
+    ) => this.run(operation, connectionFailure);
+
+    this.query = createTool(
+      configuredMetadata(relationalQuery, options.prefix),
+      relationalQuerySchema.omit({ vendor: true, connectionString: true }),
+      (input) =>
+        execution(
+          (manager) => invokeRelationalQuery(this.executionFor(manager), input),
+          () => ({
+            success: false,
+            error: 'Failed to connect to the configured database.',
+            rows: [],
+            rowCount: 0,
+          })
+        )
+    );
+    this.select = createTool(
+      configuredMetadata(relationalSelect, options.prefix),
+      relationalSelectSchema.omit({ vendor: true, connectionString: true }),
+      (input) =>
+        execution(
+          (manager) => invokeRelationalSelect(this.executionFor(manager), input),
+          () => ({
+            success: false,
+            error:
+              'Failed to execute SELECT query. Please verify the configured database connection.',
+            rows: [],
+            rowCount: 0,
+          })
+        )
+    );
+    this.insert = createTool(
+      configuredMetadata(relationalInsert, options.prefix),
+      relationalInsertSchema.omit({ vendor: true, connectionString: true }),
+      (input) =>
+        execution(
+          (manager) => invokeRelationalInsert(this.executionFor(manager), input),
+          () => ({
+            success: false,
+            error:
+              'Failed to execute INSERT query. Please verify the configured database connection.',
+            rowCount: 0,
+            insertedIds: [],
+            rows: [],
+          })
+        )
+    );
+    this.update = createTool(
+      configuredMetadata(relationalUpdate, options.prefix),
+      relationalUpdateOperationSchema,
+      (input) =>
+        execution(
+          (manager) => invokeRelationalUpdate(this.executionFor(manager), input),
+          () => ({
+            success: false,
+            error:
+              'Failed to execute UPDATE query. Please verify the configured database connection.',
+            rowCount: 0,
+          })
+        )
+    );
+    this.delete = createTool(
+      configuredMetadata(relationalDelete, options.prefix),
+      relationalDeleteOperationSchema,
+      (input) =>
+        execution(
+          (manager) => invokeRelationalDelete(this.executionFor(manager), input),
+          () => ({
+            success: false,
+            error:
+              'Failed to execute DELETE query. Please verify the configured database connection.',
+            rowCount: 0,
+            softDeleted: false,
+          })
+        )
+    );
+    this.getSchema = createTool(
+      configuredMetadata(relationalGetSchema, options.prefix),
+      relationalGetSchemaInputSchema.omit({
+        vendor: true,
+        connectionString: true,
+        database: true,
+        cacheTtlMs: true,
+      }),
+      (input) =>
+        execution(
+          (manager) =>
+            invokeRelationalGetSchema(
+              {
+                ...this.executionFor(manager),
+                schemaCache: this.schemaCache,
+                schemaCacheKey: TOOL_SET_SCHEMA_CACHE_KEY,
+              },
+              { ...input, cacheTtlMs: this.schemaCacheTtlMs }
+            ),
+          () => ({
+            success: false,
+            error: 'Failed to inspect schema. See logs for details.',
+            schema: null,
+          })
+        )
+    );
+
+    this.tools = Object.freeze([
+      this.query,
+      this.select,
+      this.insert,
+      this.update,
+      this.delete,
+      this.getSchema,
+    ]) as readonly ConfiguredTool[];
+  }
+
+  [Symbol.iterator](): Iterator<ConfiguredTool> {
+    return this.tools[Symbol.iterator]();
+  }
+
+  refreshSchema(): void {
+    if (this.state !== 'open') {
+      throw new RelationalToolSetDisposedError();
+    }
+    this.schemaCache.delete(TOOL_SET_SCHEMA_CACHE_KEY);
+  }
+
+  dispose(): Promise<void> {
+    if (!this.disposal) {
+      this.state = 'closing';
+      this.disposal = this.finishDisposal();
+    }
+    return this.disposal;
+  }
+
+  private async run<T>(
+    operation: (manager: ConnectionManager) => Promise<T>,
+    connectionFailure: () => T
+  ): Promise<T> {
+    if (this.state !== 'open') {
+      throw new RelationalToolSetDisposedError();
+    }
+    this.activeWork += 1;
+    try {
+      let manager: ConnectionManager;
+      try {
+        manager = await this.ensureConnection();
+      } catch {
+        return connectionFailure();
+      }
+      return await operation(manager);
+    } finally {
+      this.activeWork -= 1;
+      if (this.activeWork === 0) {
+        this.resolveDrain?.();
+      }
+    }
+  }
+
+  private ensureConnection(): Promise<ConnectionManager> {
+    if (this.manager?.isConnected()) {
+      return Promise.resolve(this.manager);
+    }
+    if (!this.initialization) {
+      const manager = new ConnectionManager(this.config);
+      this.manager = manager;
+      this.initialization = manager
+        .connect()
+        .then(() => manager)
+        .catch(async (error: unknown) => {
+          this.manager = undefined;
+          this.initialization = undefined;
+          try {
+            await manager.dispose();
+          } catch {
+            // Preserve the connection failure as the outcome shared by all waiters.
+          }
+          throw error;
+        });
+    }
+    return this.initialization;
+  }
+
+  private executionFor(manager: ConnectionManager) {
+    return { executor: manager, vendor: this.config.vendor };
+  }
+
+  private async finishDisposal(): Promise<void> {
+    if (this.activeWork > 0) {
+      this.drain = new Promise<void>((resolve) => {
+        this.resolveDrain = resolve;
+      });
+      await this.drain;
+    }
+    this.schemaCache.clear();
+    try {
+      await this.manager?.dispose();
+    } finally {
+      this.state = 'closed';
+      this.resolveDrain = undefined;
+    }
+  }
+}
+
+/**
+ * Configure all six Relational Tools around one lazily connected database session or pool.
+ * Construction performs validation only and never connects to the database.
+ */
+export function createRelationalToolSet(
+  config: ConnectionConfig,
+  options: RelationalToolSetOptions = {}
+): RelationalToolSet {
+  validateConfiguration(config, options);
+  return new RelationalToolSetImplementation(snapshotConfiguration(config), { ...options });
+}
