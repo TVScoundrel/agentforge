@@ -69,6 +69,12 @@ export interface StreamingMetadata {
  */
 export type RelationalSelectInput = z.input<typeof relationalSelectSchema>;
 
+/** SELECT input after database credentials have been bound by a session owner. */
+export type RelationalSelectExecutionInput = Omit<RelationalSelectInput, 'connectionString'>;
+
+/** Agent-facing SELECT operation input for a configured database session. */
+export type RelationalSelectOperationInput = Omit<RelationalSelectExecutionInput, 'vendor'>;
+
 /**
  * SELECT query execution result
  */

@@ -4,7 +4,7 @@
  */
 
 import { createLogger } from '@agentforge/core';
-import type { ConnectionManager } from '../../connection/connection-manager.js';
+import type { SqlExecutor } from '../../query/types.js';
 import type { TransactionContext } from '../../query/transaction.js';
 import {
   DEFAULT_CHUNK_SIZE,
@@ -12,7 +12,7 @@ import {
   benchmarkStreamingSelectMemory,
   type SelectQueryInput,
 } from '../../query/index.js';
-import type { RelationalSelectInput, SelectResult } from './types.js';
+import type { RelationalSelectExecutionInput, SelectResult } from './types.js';
 import { buildSelectQuery } from './query-builder.js';
 import { isSafeValidationError } from './error-utils.js';
 
@@ -27,7 +27,7 @@ export interface SelectExecutionContext {
   transaction?: TransactionContext;
 }
 
-function toSelectQueryInput(input: RelationalSelectInput): SelectQueryInput {
+function toSelectQueryInput(input: RelationalSelectExecutionInput): SelectQueryInput {
   return {
     table: input.table,
     columns: input.columns,
@@ -43,8 +43,8 @@ function toSelectQueryInput(input: RelationalSelectInput): SelectQueryInput {
  * Execute a SELECT query using Drizzle query builder
  */
 export async function executeSelect(
-  manager: ConnectionManager,
-  input: RelationalSelectInput,
+  executor: SqlExecutor,
+  input: RelationalSelectExecutionInput,
   context?: SelectExecutionContext
 ): Promise<SelectResult> {
   const startTime = Date.now();
@@ -59,7 +59,7 @@ export async function executeSelect(
   });
 
   try {
-    const executor = context?.transaction ?? manager;
+    const session = context?.transaction ?? executor;
 
     if (input.streaming?.enabled) {
       const streamOptions = {
@@ -80,10 +80,10 @@ export async function executeSelect(
         });
       }
 
-      const streamResult = await executeStreamingSelect(executor, streamInput, streamOptions);
+      const streamResult = await executeStreamingSelect(session, streamInput, streamOptions);
 
       const benchmark = input.streaming.benchmark
-        ? await benchmarkStreamingSelectMemory(executor, streamInput, streamOptions)
+        ? await benchmarkStreamingSelectMemory(session, streamInput, streamOptions)
         : undefined;
 
       const executionTime = Date.now() - startTime;
@@ -118,7 +118,7 @@ export async function executeSelect(
     const query = buildSelectQuery(input);
 
     // Execute query
-    const result = await executor.execute(query);
+    const result = await session.execute(query);
 
     const executionTime = Date.now() - startTime;
 

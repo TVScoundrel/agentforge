@@ -8,9 +8,11 @@ import { createLogger, toolBuilder, ToolCategory } from '@agentforge/core';
 import { createHash } from 'node:crypto';
 import { ConnectionManager } from '../connection/connection-manager.js';
 import { SchemaInspector } from '../schema/schema-inspector.js';
+import type { DatabaseSchema } from '../schema/types.js';
 import { VALID_TABLE_FILTER_PATTERN } from '../schema/validation.js';
 import type { DatabaseVendor } from '../types.js';
 import { isSafeGetSchemaValidationError } from './relational-get-schema-error-utils.js';
+import type { RelationalReadExecution } from './read-execution.js';
 const logger = createLogger('agentforge:tools:data:relational:get-schema');
 
 function buildSchemaCacheKey(vendor: DatabaseVendor, connectionString: string, database?: string): string {
@@ -24,7 +26,7 @@ function buildSchemaCacheKey(vendor: DatabaseVendor, connectionString: string, d
 /**
  * Zod schema for relational-get-schema input.
  */
-const relationalGetSchemaInputSchema = z.object({
+export const relationalGetSchemaInputSchema = z.object({
   vendor: z.enum(['postgresql', 'mysql', 'sqlite']).describe('Database vendor'),
   connectionString: z
     .string()
@@ -58,6 +60,92 @@ const relationalGetSchemaInputSchema = z.object({
     .describe('Force cache invalidation before introspecting schema'),
 });
 
+export type RelationalGetSchemaInput = z.input<typeof relationalGetSchemaInputSchema>;
+export type RelationalGetSchemaOperationInput = Omit<
+  RelationalGetSchemaInput,
+  'vendor' | 'connectionString'
+>;
+
+interface SchemaSummary {
+  tableCount: number;
+  columnCount: number;
+  foreignKeyCount: number;
+  indexCount: number;
+}
+
+export type GetSchemaResponse =
+  | { success: true; schema: DatabaseSchema; summary: SchemaSummary }
+  | { success: false; error: string; schema: null };
+
+function toGetSchemaErrorResponse(
+  execution: RelationalReadExecution,
+  input: RelationalGetSchemaOperationInput,
+  error: unknown,
+): GetSchemaResponse {
+  logger.error('Schema introspection failed', {
+    vendor: execution.vendor,
+    hasTablesFilter: Array.isArray(input.tables),
+    tablesFilterCount: input.tables?.length ?? 0,
+    refreshCache: input.refreshCache ?? false,
+    error: error instanceof Error ? error.message : String(error),
+  });
+
+  const errorMessage = isSafeGetSchemaValidationError(error)
+    ? error.message
+    : 'Failed to inspect schema. See logs for details.';
+
+  return {
+    success: false,
+    error: errorMessage,
+    schema: null,
+  };
+}
+
+/** Inspect schema through a session and optional cache owned by the caller. */
+export async function invokeRelationalGetSchema(
+  execution: RelationalReadExecution,
+  input: RelationalGetSchemaOperationInput,
+): Promise<GetSchemaResponse> {
+  const cacheKey = execution.schemaCacheKey
+    ?? (execution.schemaCache ? input.database ?? 'default' : undefined);
+  const inspector = new SchemaInspector(
+    execution.transaction ?? execution.executor,
+    execution.vendor,
+    {
+      cacheTtlMs: input.cacheTtlMs,
+      cacheKey,
+      cache: execution.schemaCache,
+    },
+  );
+
+  try {
+    if (input.refreshCache && cacheKey) {
+      inspector.invalidateCache();
+    }
+
+    const schema = await inspector.inspect(
+      execution.transaction
+        ? { tables: input.tables, bypassCache: true }
+        : { tables: input.tables },
+    );
+
+    const summary = schema.tables.reduce<SchemaSummary>(
+      (accumulator, table) => {
+        accumulator.tableCount += 1;
+        accumulator.columnCount += table.columns.length;
+        accumulator.foreignKeyCount += table.foreignKeys.length;
+        accumulator.indexCount += table.indexes.length;
+        return accumulator;
+      },
+      { tableCount: 0, columnCount: 0, foreignKeyCount: 0, indexCount: 0 },
+    );
+
+    return { success: true, schema, summary };
+  } catch (error) {
+    return toGetSchemaErrorResponse(execution, input, error);
+  }
+}
+
 /**
  * Relational Get Schema Tool
  *
@@ -89,66 +177,26 @@ export const relationalGetSchema = toolBuilder()
     },
   })
   .implement(async (input) => {
+    const { connectionString, vendor, ...operation } = input;
     const manager = new ConnectionManager({
-      vendor: input.vendor,
-      connection: input.connectionString,
+      vendor,
+      connection: connectionString,
     });
 
     const cacheKey = buildSchemaCacheKey(
-      input.vendor,
-      input.connectionString,
+      vendor,
+      connectionString,
       input.database,
     );
-    const inspector = new SchemaInspector(manager, input.vendor, {
-      cacheTtlMs: input.cacheTtlMs,
-      cacheKey,
-    });
 
     try {
       await manager.connect();
-
-      if (input.refreshCache) {
-        inspector.invalidateCache();
-      }
-
-      const schema = await inspector.inspect({
-        tables: input.tables,
-      });
-
-      const summary = schema.tables.reduce(
-        (accumulator, table) => {
-          accumulator.tableCount += 1;
-          accumulator.columnCount += table.columns.length;
-          accumulator.foreignKeyCount += table.foreignKeys.length;
-          accumulator.indexCount += table.indexes.length;
-          return accumulator;
-        },
-        { tableCount: 0, columnCount: 0, foreignKeyCount: 0, indexCount: 0 },
+      return await invokeRelationalGetSchema(
+        { executor: manager, vendor, schemaCacheKey: cacheKey },
+        operation,
       );
-
-      return {
-        success: true,
-        schema,
-        summary,
-      };
     } catch (error) {
-      logger.error('Schema introspection failed', {
-        vendor: input.vendor,
-        hasTablesFilter: Array.isArray(input.tables),
-        tablesFilterCount: input.tables?.length ?? 0,
-        refreshCache: input.refreshCache ?? false,
-        error: error instanceof Error ? error.message : String(error),
-      });
-
-      const errorMessage = isSafeGetSchemaValidationError(error)
-        ? error.message
-        : 'Failed to inspect schema. See logs for details.';
-
-      return {
-        success: false,
-        error: errorMessage,
-        schema: null,
-      };
+      return toGetSchemaErrorResponse({ executor: manager, vendor }, operation, error);
     } finally {
       await manager.disconnect();
     }

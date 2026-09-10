@@ -4,8 +4,8 @@
  */
 
 import { createLogger } from '@agentforge/core';
-import type { ConnectionManager } from '../connection/connection-manager.js';
 import { executeQuery } from '../query/query-executor.js';
+import type { SqlExecutor } from '../query/types.js';
 import type { DatabaseVendor } from '../types.js';
 import { inspectMySQL } from './schema-inspector-mysql.js';
 import { inspectPostgreSQL } from './schema-inspector-postgresql.js';
@@ -18,6 +18,8 @@ import {
 import { inspectSQLite } from './schema-inspector-sqlite.js';
 import type {
   DatabaseSchema,
+  SchemaCache as SchemaCacheInterface,
+  SchemaCacheEntry,
   SchemaInspectOptions,
   SchemaInspectorConfig,
   TableSchema,
@@ -26,12 +28,28 @@ import type {
 const logger = createLogger('agentforge:tools:data:relational:schema-inspector');
 const DEFAULT_CACHE_TTL_MS = 60_000;
 
-interface CacheEntry {
-  expiresAt: number;
-  schema: DatabaseSchema;
+/** Cache state whose lifetime can be owned by a Relational Tool Set. */
+export class SchemaCache implements SchemaCacheInterface {
+  private readonly entries = new Map<string, SchemaCacheEntry>();
+
+  get(cacheKey: string): SchemaCacheEntry | undefined {
+    return this.entries.get(cacheKey);
+  }
+
+  set(cacheKey: string, entry: SchemaCacheEntry): void {
+    this.entries.set(cacheKey, entry);
+  }
+
+  delete(cacheKey: string): void {
+    this.entries.delete(cacheKey);
+  }
+
+  clear(): void {
+    this.entries.clear();
+  }
 }
 
-const schemaCache = new Map<string, CacheEntry>();
+const schemaCache = new SchemaCache();
 
 /**
  * Inspects database schemas across PostgreSQL, MySQL, and SQLite.
@@ -45,13 +63,16 @@ export class SchemaInspector {
   private readonly cacheKey?: string;
 
   constructor(
-    private readonly manager: ConnectionManager,
+    private readonly executor: SqlExecutor,
     private readonly vendor: DatabaseVendor,
     config?: SchemaInspectorConfig,
   ) {
     this.cacheTtlMs = config?.cacheTtlMs ?? DEFAULT_CACHE_TTL_MS;
     this.cacheKey = config?.cacheKey;
+    this.cache = config?.cache ?? schemaCache;
   }
+
+  private readonly cache: SchemaCacheInterface;
 
   static clearCache(cacheKey?: string): void {
     if (cacheKey) {
@@ -63,15 +84,20 @@ export class SchemaInspector {
   }
 
   invalidateCache(): void {
-    SchemaInspector.clearCache(this.cacheKey);
+    if (this.cacheKey) {
+      this.cache.delete(this.cacheKey);
+      return;
+    }
+
+    this.cache.clear();
   }
 
   async inspect(options?: SchemaInspectOptions): Promise<DatabaseSchema> {
     const tableFilters = validateTableFilters(options?.tables);
     const bypassCache = options?.bypassCache ?? false;
 
-    if (!bypassCache && this.cacheKey) {
-      const cached = schemaCache.get(this.cacheKey);
+    if (!bypassCache && this.cacheKey && this.cacheTtlMs > 0) {
+      const cached = this.cache.get(this.cacheKey);
       if (cached && cached.expiresAt > Date.now()) {
         logger.debug('Schema cache hit', { vendor: this.vendor });
         return filterSchemaTables(cloneSchema(cached.schema), tableFilters);
@@ -80,8 +106,8 @@ export class SchemaInspector {
 
     const schema = await this.inspectFromDatabase();
 
-    if (this.cacheKey && this.cacheTtlMs > 0) {
-      schemaCache.set(this.cacheKey, {
+    if (!bypassCache && this.cacheKey && this.cacheTtlMs > 0) {
+      this.cache.set(this.cacheKey, {
         schema: cloneSchema(schema),
         expiresAt: Date.now() + this.cacheTtlMs,
       });
@@ -118,7 +144,7 @@ export class SchemaInspector {
   }
 
   private async runQueryRows(query: string): Promise<QueryRow[]> {
-    const result = await executeQuery(this.manager, {
+    const result = await executeQuery(this.executor, {
       sql: query,
       vendor: this.vendor,
     });

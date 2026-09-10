@@ -71,4 +71,19 @@ export interface SchemaInspectOptions {
 export interface SchemaInspectorConfig {
   cacheTtlMs?: number;
   cacheKey?: string;
+  cache?: SchemaCache;
+}
+
+/** Cache entry retained by a schema-cache owner. */
+export interface SchemaCacheEntry {
+  expiresAt: number;
+  schema: DatabaseSchema;
+}
+
+/** Minimal cache state accepted by schema inspection. */
+export interface SchemaCache {
+  get(cacheKey: string): SchemaCacheEntry | undefined;
+  set(cacheKey: string, entry: SchemaCacheEntry): void;
+  delete(cacheKey: string): void;
+  clear(): void;
 }
