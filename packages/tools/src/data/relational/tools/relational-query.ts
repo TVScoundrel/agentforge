@@ -4,15 +4,18 @@
  */
 
 import { z } from 'zod';
-import { toolBuilder, ToolCategory } from '@agentforge/core';
+import { createLogger, toolBuilder, ToolCategory } from '@agentforge/core';
 import { ConnectionManager } from '../connection/connection-manager.js';
 import { executeQuery } from '../query/query-executor.js';
 import type { DatabaseVendor } from '../types.js';
+import type { RelationalReadExecution } from './read-execution.js';
+
+const logger = createLogger('agentforge:tools:data:relational:query');
 
 /**
  * Zod schema for relational-query tool input
  */
-const relationalQuerySchema = z.object({
+export const relationalQuerySchema = z.object({
   sql: z.string().describe('SQL query string to execute'),
   params: z.union([
     z.array(z.unknown()).describe('Positional parameters (e.g., [value1, value2])'),
@@ -24,6 +27,61 @@ const relationalQuerySchema = z.object({
     .min(1, 'Database connection string is required')
     .describe('Database connection string used to create a new connection'),
 });
+
+export type RelationalQueryInput = z.input<typeof relationalQuerySchema>;
+export type RelationalQueryOperationInput = Omit<
+  RelationalQueryInput,
+  'vendor' | 'connectionString'
+>;
+
+export type QueryResponse =
+  | {
+      success: true;
+      rows: unknown[];
+      rowCount: number;
+      executionTime: number;
+    }
+  | {
+      success: false;
+      error: string;
+      rows: [];
+      rowCount: 0;
+    };
+
+function toQueryErrorResponse(error: unknown): QueryResponse {
+  return {
+    success: false,
+    error: error instanceof Error ? error.message : 'Unknown error occurred',
+    rows: [],
+    rowCount: 0,
+  };
+}
+
+/** Execute a raw query through a session owned by the caller. */
+export async function invokeRelationalQuery(
+  execution: RelationalReadExecution,
+  input: RelationalQueryOperationInput,
+): Promise<QueryResponse> {
+  try {
+    const queryInput = {
+      sql: input.sql,
+      params: input.params,
+      vendor: execution.vendor,
+    };
+    const result = execution.transaction
+      ? await executeQuery(execution.executor, queryInput, { transaction: execution.transaction })
+      : await executeQuery(execution.executor, queryInput);
+
+    return {
+      success: true,
+      rows: result.rows,
+      rowCount: result.rowCount,
+      executionTime: result.executionTime,
+    };
+  } catch (error) {
+    return toQueryErrorResponse(error);
+  }
+}
 
 /**
  * Relational Query Tool
@@ -114,32 +172,22 @@ export const relationalQuery = toolBuilder()
       // Initialize connection
       await manager.initialize();
 
-      // Execute query
-      const result = await executeQuery(manager, {
-        sql: input.sql,
-        params: input.params,
-        vendor: input.vendor
-      });
-
-      // Return formatted result
-      return {
-        success: true,
-        rows: result.rows,
-        rowCount: result.rowCount,
-        executionTime: result.executionTime
-      };
+      return await invokeRelationalQuery(
+        { executor: manager, vendor: input.vendor },
+        {
+          sql: input.sql,
+          params: input.params,
+        },
+      );
     } catch (error) {
-      // Return error with sanitized message
-      return {
-        success: false,
-        error: error instanceof Error ? error.message : 'Unknown error occurred',
-        rows: [],
-        rowCount: 0
-      };
+      logger.error('Relational Query connection initialization failed', {
+        vendor: input.vendor,
+        error: error instanceof Error ? error.message : String(error),
+      });
+      return toQueryErrorResponse(error);
     } finally {
       // Always close connection
       await manager.close();
     }
   })
   .build();
-

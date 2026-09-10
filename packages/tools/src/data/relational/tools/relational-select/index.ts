@@ -7,16 +7,61 @@
  * @module tools/relational-select
  */
 
-import { toolBuilder, ToolCategory } from '@agentforge/core';
+import { createLogger, toolBuilder, ToolCategory } from '@agentforge/core';
 import { ConnectionManager } from '../../connection/connection-manager.js';
 import { relationalSelectSchema } from './schemas.js';
 import { executeSelect } from './executor.js';
-import type { RelationalSelectInput, SelectResponse } from './types.js';
+import type {
+  RelationalSelectInput,
+  RelationalSelectOperationInput,
+  SelectErrorResponse,
+  SelectResponse,
+} from './types.js';
 import { isSafeValidationError } from './error-utils.js';
+import type { RelationalReadExecution } from '../read-execution.js';
+
+const logger = createLogger('agentforge:tools:data:relational:select');
 
 // Re-export types and schemas for external use
 export * from './types.js';
 export * from './schemas.js';
+
+function toSelectErrorResponse(error: unknown): SelectErrorResponse {
+  const errorMessage = isSafeValidationError(error)
+    ? error.message
+    : 'Failed to execute SELECT query. Please verify your input and database connection.';
+
+  return {
+    success: false,
+    error: errorMessage,
+    rows: [],
+    rowCount: 0,
+  };
+}
+
+/** Execute SELECT through a session owned by the caller. */
+export async function invokeRelationalSelect(
+  execution: RelationalReadExecution,
+  input: RelationalSelectOperationInput,
+): Promise<SelectResponse> {
+  try {
+    const result = await executeSelect(
+      execution.executor,
+      { ...input, vendor: execution.vendor },
+      execution.transaction ? { transaction: execution.transaction } : undefined,
+    );
+
+    return {
+      success: true,
+      rows: result.rows,
+      rowCount: result.rowCount,
+      executionTime: result.executionTime,
+      streaming: result.streaming,
+    };
+  } catch (error) {
+    return toSelectErrorResponse(error);
+  }
+}
 
 /**
  * Relational SELECT Tool
@@ -92,40 +137,23 @@ export const relationalSelect = toolBuilder()
     }
   })
   .implement(async (input: RelationalSelectInput): Promise<SelectResponse> => {
+    const { connectionString, vendor, ...operation } = input;
     const manager = new ConnectionManager({
-      vendor: input.vendor,
-      connection: input.connectionString
+      vendor,
+      connection: connectionString,
     });
 
     try {
       // Connect to database
       await manager.connect();
 
-      // Build and execute SELECT query
-      const result = await executeSelect(manager, input);
-
-      // Return formatted result
-      return {
-        success: true,
-        rows: result.rows,
-        rowCount: result.rowCount,
-        executionTime: result.executionTime,
-        streaming: result.streaming,
-      };
+      return await invokeRelationalSelect({ executor: manager, vendor }, operation);
     } catch (error) {
-      let errorMessage = 'Failed to execute SELECT query. Please verify your input and database connection.';
-
-      // Propagate known-safe validation messages so callers can correct input.
-      if (isSafeValidationError(error)) {
-        errorMessage = error.message;
-      }
-
-      return {
-        success: false,
-        error: errorMessage,
-        rows: [],
-        rowCount: 0
-      };
+      logger.error('Relational SELECT connection initialization failed', {
+        vendor,
+        error: error instanceof Error ? error.message : String(error),
+      });
+      return toSelectErrorResponse(error);
     } finally {
       // Always disconnect
       await manager.disconnect();

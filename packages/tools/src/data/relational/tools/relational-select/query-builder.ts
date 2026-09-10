@@ -7,12 +7,12 @@ import {
   buildSelectQuery as buildSharedSelectQuery,
   type SelectQueryInput,
 } from '../../query/query-builder.js';
-import type { RelationalSelectInput } from './types.js';
+import type { RelationalSelectExecutionInput } from './types.js';
 
 /**
  * Build a complete SELECT query using shared query builder utilities.
  */
-export function buildSelectQuery(input: RelationalSelectInput) {
+export function buildSelectQuery(input: RelationalSelectExecutionInput) {
   const queryInput: SelectQueryInput = {
     table: input.table,
     columns: input.columns,

@@ -11,9 +11,11 @@ export type {
   DatabaseSchema,
   SchemaInspectOptions,
   SchemaInspectorConfig,
+  SchemaCacheEntry,
+  SchemaCache as SchemaCacheInterface,
 } from './types.js';
 
-export { SchemaInspector } from './schema-inspector.js';
+export { SchemaCache, SchemaInspector } from './schema-inspector.js';
 
 // Schema validation (ST-03002)
 export type { ValidationResult } from './schema-validator.js';
