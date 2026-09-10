@@ -1,7 +1,7 @@
 import { createLogger } from '@agentforge/core';
 import type { TransactionContext } from '../../query/transaction.js';
 import type {
-  RelationalUpdateInput,
+  RelationalUpdateExecutionInput,
   UpdateBatchMetadata,
   UpdateBatchOptions,
 } from './types.js';
@@ -18,10 +18,10 @@ export interface UpdateExecutionContext {
 }
 
 export interface SingleUpdateOperation {
-  data: NonNullable<RelationalUpdateInput['data']>;
-  where?: RelationalUpdateInput['where'];
-  allowFullTableUpdate?: RelationalUpdateInput['allowFullTableUpdate'];
-  optimisticLock?: RelationalUpdateInput['optimisticLock'];
+  data: NonNullable<RelationalUpdateExecutionInput['data']>;
+  where?: RelationalUpdateExecutionInput['where'];
+  allowFullTableUpdate?: RelationalUpdateExecutionInput['allowFullTableUpdate'];
+  optimisticLock?: RelationalUpdateExecutionInput['optimisticLock'];
 }
 
 export interface UpdateChunkExecutionResult {
@@ -77,7 +77,7 @@ export function resolveBatchOptions(batch: UpdateBatchOptions | undefined): Requ
   };
 }
 
-export function toSingleUpdateOperation(input: RelationalUpdateInput): SingleUpdateOperation {
+export function toSingleUpdateOperation(input: RelationalUpdateExecutionInput): SingleUpdateOperation {
   if (!input.data) {
     throw new Error('UPDATE data is required when operations[] is not provided.');
   }

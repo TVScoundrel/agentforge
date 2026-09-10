@@ -1,6 +1,6 @@
 import { buildDeleteQuery } from '../../query/query-builder.js';
-import type { ConnectionManager } from '../../connection/connection-manager.js';
-import type { DeleteResult, RelationalDeleteInput } from './types.js';
+import type { SqlExecutor } from '../../query/types.js';
+import type { DeleteResult, RelationalDeleteExecutionInput } from './types.js';
 import {
   normalizeAffectedRows,
   type DeleteExecutionContext,
@@ -8,8 +8,8 @@ import {
 } from './executor-shared.js';
 
 export async function executeSingleDelete(
-  manager: ConnectionManager,
-  input: RelationalDeleteInput,
+  executor: SqlExecutor,
+  input: RelationalDeleteExecutionInput,
   operation: SingleDeleteOperation,
   context?: DeleteExecutionContext
 ): Promise<DeleteResult> {
@@ -21,8 +21,8 @@ export async function executeSingleDelete(
     vendor: input.vendor,
   });
 
-  const executor = context?.transaction ?? manager;
-  const rawResult = await executor.execute(built.query);
+  const session = context?.transaction ?? executor;
+  const rawResult = await session.execute(built.query);
   const rowCount = normalizeAffectedRows(rawResult);
 
   return {

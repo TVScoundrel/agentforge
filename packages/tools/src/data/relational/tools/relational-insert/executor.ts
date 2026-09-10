@@ -3,11 +3,11 @@
  * @module tools/relational-insert/executor
  */
 
-import type { ConnectionManager } from '../../connection/connection-manager.js';
+import type { SqlExecutor } from '../../query/types.js';
 import type {
   InsertResult,
   InsertRow,
-  RelationalInsertInput,
+  RelationalInsertExecutionInput,
 } from './types.js';
 import { getConstraintViolationMessage, isSafeInsertValidationError } from './error-utils.js';
 import { executeInsertInBatchMode } from './executor-batch.js';
@@ -24,8 +24,8 @@ export type { InsertExecutionContext } from './executor-shared.js';
  * Execute an INSERT query using the shared query builder.
  */
 export async function executeInsert(
-  manager: ConnectionManager,
-  input: RelationalInsertInput,
+  executor: SqlExecutor,
+  input: RelationalInsertExecutionInput,
   context?: InsertExecutionContext
 ): Promise<InsertResult> {
   const startTime = Date.now();
@@ -43,12 +43,12 @@ export async function executeInsert(
 
     const result = Array.isArray(input.data) && batchOptions
       ? await executeInsertInBatchMode(
-        manager,
-        input as RelationalInsertInput & { data: InsertRow[] },
+        executor,
+        input as RelationalInsertExecutionInput & { data: InsertRow[] },
         context,
         batchOptions
       )
-      : await executeInsertOnce(manager, input, context);
+      : await executeInsertOnce(executor, input, context);
 
     const executionTime = Date.now() - startTime;
 

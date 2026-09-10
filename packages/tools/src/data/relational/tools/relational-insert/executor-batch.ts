@@ -1,18 +1,18 @@
 import { benchmarkBatchExecution, executeBatchedTask } from '../../query/batch-executor.js';
-import type { ConnectionManager } from '../../connection/connection-manager.js';
+import type { SqlExecutor } from '../../query/types.js';
 import type {
   InsertBatchMetadata,
   InsertBatchOptions,
   InsertResult,
   InsertRow,
-  RelationalInsertInput,
+  RelationalInsertExecutionInput,
 } from './types.js';
 import { executeInsertOnce } from './executor-single.js';
 import { insertExecutorLogger, type InsertExecutionContext } from './executor-shared.js';
 
 export async function executeInsertInBatchMode(
-  manager: ConnectionManager,
-  input: RelationalInsertInput & { data: InsertRow[] },
+  executor: SqlExecutor,
+  input: RelationalInsertExecutionInput & { data: InsertRow[] },
   context: InsertExecutionContext | undefined,
   options: Required<InsertBatchOptions>
 ): Promise<InsertResult> {
@@ -21,7 +21,7 @@ export async function executeInsertInBatchMode(
       operation: 'insert',
       items: input.data,
       executeBatch: async (rows) =>
-        executeInsertOnce(manager, {
+        executeInsertOnce(executor, {
           ...input,
           data: rows,
           batch: undefined,

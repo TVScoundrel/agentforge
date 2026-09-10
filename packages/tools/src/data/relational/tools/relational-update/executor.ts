@@ -3,9 +3,9 @@
  * @module tools/relational-update/executor
  */
 
-import type { ConnectionManager } from '../../connection/connection-manager.js';
+import type { SqlExecutor } from '../../query/types.js';
 import type {
-  RelationalUpdateInput,
+  RelationalUpdateExecutionInput,
   UpdateBatchOperation,
   UpdateResult,
 } from './types.js';
@@ -25,8 +25,8 @@ export type { UpdateExecutionContext } from './executor-shared.js';
  * Execute an UPDATE query using the shared query builder.
  */
 export async function executeUpdate(
-  manager: ConnectionManager,
-  input: RelationalUpdateInput,
+  executor: SqlExecutor,
+  input: RelationalUpdateExecutionInput,
   context?: UpdateExecutionContext
 ): Promise<UpdateResult> {
   const startTime = Date.now();
@@ -46,12 +46,12 @@ export async function executeUpdate(
 
     const result = input.operations && batchOptions
       ? await executeUpdateInBatchMode(
-        manager,
-        input as RelationalUpdateInput & { operations: UpdateBatchOperation[] },
+        executor,
+        input as RelationalUpdateExecutionInput & { operations: UpdateBatchOperation[] },
         context,
         batchOptions
       )
-      : await executeSingleUpdate(manager, input, toSingleUpdateOperation(input), context);
+      : await executeSingleUpdate(executor, input, toSingleUpdateOperation(input), context);
 
     const executionTime = Date.now() - startTime;
 

@@ -1,6 +1,6 @@
 import { buildInsertQuery } from '../../query/query-builder.js';
-import type { ConnectionManager } from '../../connection/connection-manager.js';
-import type { RelationalInsertInput, InsertResult } from './types.js';
+import type { SqlExecutor } from '../../query/types.js';
+import type { RelationalInsertExecutionInput, InsertResult } from './types.js';
 import {
   deriveInsertedIds,
   normalizeExecutionResult,
@@ -9,8 +9,8 @@ import {
 } from './executor-shared.js';
 
 export async function executeInsertOnce(
-  manager: ConnectionManager,
-  input: RelationalInsertInput,
+  executor: SqlExecutor,
+  input: RelationalInsertExecutionInput,
   context?: InsertExecutionContext
 ): Promise<InsertResult> {
   const built = buildInsertQuery({
@@ -20,7 +20,7 @@ export async function executeInsertOnce(
     vendor: input.vendor,
   });
 
-  const executor = context?.transaction ?? manager;
+  const session = context?.transaction ?? executor;
 
   if (Array.isArray(built.query)) {
     let totalRowCount = 0;
@@ -28,7 +28,7 @@ export async function executeInsertOnce(
     const allIds: Array<string | number> = [];
 
     for (const singleQuery of built.query) {
-      const rawResult = await executor.execute(singleQuery);
+      const rawResult = await session.execute(singleQuery);
       const normalized = normalizeExecutionResult(rawResult);
       totalRowCount += normalized.rowCount > 0 ? normalized.rowCount : 1;
       if (built.returningMode === 'row') {
@@ -55,7 +55,7 @@ export async function executeInsertOnce(
     };
   }
 
-  const rawResult = await executor.execute(built.query);
+  const rawResult = await session.execute(built.query);
   const normalized = normalizeExecutionResult(rawResult);
 
   const rowCount = normalized.rowCount > 0 ? normalized.rowCount : built.rows.length;

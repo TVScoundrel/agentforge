@@ -3,11 +3,11 @@
  * @module tools/relational-delete/executor
  */
 
-import type { ConnectionManager } from '../../connection/connection-manager.js';
+import type { SqlExecutor } from '../../query/types.js';
 import type {
   DeleteBatchOperation,
   DeleteResult,
-  RelationalDeleteInput,
+  RelationalDeleteExecutionInput,
 } from './types.js';
 import { getDeleteConstraintViolationMessage, isSafeDeleteValidationError } from './error-utils.js';
 import { executeDeleteInBatchMode } from './executor-batch.js';
@@ -25,8 +25,8 @@ export type { DeleteExecutionContext } from './executor-shared.js';
  * Execute a DELETE query using the shared query builder.
  */
 export async function executeDelete(
-  manager: ConnectionManager,
-  input: RelationalDeleteInput,
+  executor: SqlExecutor,
+  input: RelationalDeleteExecutionInput,
   context?: DeleteExecutionContext
 ): Promise<DeleteResult> {
   const startTime = Date.now();
@@ -47,12 +47,12 @@ export async function executeDelete(
 
     const result = input.operations && batchOptions
       ? await executeDeleteInBatchMode(
-        manager,
-        input as RelationalDeleteInput & { operations: DeleteBatchOperation[] },
+        executor,
+        input as RelationalDeleteExecutionInput & { operations: DeleteBatchOperation[] },
         context,
         batchOptions
       )
-      : await executeSingleDelete(manager, input, toSingleDeleteOperation(input), context);
+      : await executeSingleDelete(executor, input, toSingleDeleteOperation(input), context);
 
     const executionTime = Date.now() - startTime;
 

@@ -11,12 +11,57 @@ import { toolBuilder, ToolCategory } from '@agentforge/core';
 import { ConnectionManager } from '../../connection/connection-manager.js';
 import { relationalInsertSchema } from './schemas.js';
 import { executeInsert } from './executor.js';
-import type { InsertResponse, RelationalInsertInput } from './types.js';
+import type {
+  InsertErrorResponse,
+  InsertResponse,
+  RelationalInsertInput,
+  RelationalInsertOperationInput,
+} from './types.js';
 import { isSafeInsertError } from './error-utils.js';
+import type { RelationalMutationExecution } from '../mutation-execution.js';
 
 // Re-export types and schemas for external use
 export * from './types.js';
 export * from './schemas.js';
+
+function toInsertErrorResponse(error: unknown): InsertErrorResponse {
+  const errorMessage = isSafeInsertError(error)
+    ? error.message
+    : 'Failed to execute INSERT query. Please verify your input and database connection.';
+
+  return {
+    success: false,
+    error: errorMessage,
+    rowCount: 0,
+    insertedIds: [],
+    rows: [],
+  };
+}
+
+/** Execute INSERT through a session owned by the caller. */
+export async function invokeRelationalInsert(
+  execution: RelationalMutationExecution,
+  input: RelationalInsertOperationInput
+): Promise<InsertResponse> {
+  try {
+    const result = await executeInsert(
+      execution.executor,
+      { ...input, vendor: execution.vendor },
+      execution.transaction ? { transaction: execution.transaction } : undefined
+    );
+
+    return {
+      success: true,
+      rowCount: result.rowCount,
+      insertedIds: result.insertedIds,
+      rows: result.rows,
+      executionTime: result.executionTime,
+      batch: result.batch,
+    };
+  } catch (error) {
+    return toInsertErrorResponse(error);
+  }
+}
 
 /**
  * Relational INSERT Tool
@@ -58,38 +103,21 @@ export const relationalInsert = toolBuilder()
     },
   })
   .implement(async (input: RelationalInsertInput): Promise<InsertResponse> => {
+    const { connectionString, vendor, ...operation } = input;
     const manager = new ConnectionManager({
-      vendor: input.vendor,
-      connection: input.connectionString,
+      vendor,
+      connection: connectionString,
     });
 
     try {
       await manager.connect();
 
-      const result = await executeInsert(manager, input);
-
-      return {
-        success: true,
-        rowCount: result.rowCount,
-        insertedIds: result.insertedIds,
-        rows: result.rows,
-        executionTime: result.executionTime,
-        batch: result.batch,
-      };
+      return await invokeRelationalInsert(
+        { executor: manager, vendor },
+        operation
+      );
     } catch (error) {
-      let errorMessage = 'Failed to execute INSERT query. Please verify your input and database connection.';
-
-      if (isSafeInsertError(error)) {
-        errorMessage = error.message;
-      }
-
-      return {
-        success: false,
-        error: errorMessage,
-        rowCount: 0,
-        insertedIds: [],
-        rows: [],
-      };
+      return toInsertErrorResponse(error);
     } finally {
       await manager.disconnect();
     }
