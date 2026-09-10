@@ -72,33 +72,36 @@ const rows = await pg.execute(sql`SELECT * FROM users WHERE id = ${42}`);
 await pg.disconnect();
 ```
 
-### 4. Use the LangGraph Tools
+### 4. Use a Relational Tool Set
 
-The tools are self-contained — each invocation creates its own connection from the provided connection string, executes the operation, and closes the connection.
+Configure the database once, use the credential-free Tools, and dispose the set when the application is done with it.
 
 ```typescript
-import { relationalSelect, relationalInsert } from '@agentforge/tools';
+import { createRelationalToolSet } from '@agentforge/tools';
 
-// SELECT with WHERE, ORDER BY, and pagination
-const result = await relationalSelect.invoke({
-  table: 'users',
-  columns: ['id', 'name', 'email'],
-  where: [{ column: 'status', operator: 'eq', value: 'active' }],
-  orderBy: [{ column: 'name', direction: 'asc' }],
-  limit: 10,
+const relational = createRelationalToolSet({
   vendor: 'postgresql',
-  connectionString: 'postgresql://user:pass@localhost:5432/mydb',
+  connection: 'postgresql://user:pass@localhost:5432/mydb',
 });
 
-// INSERT with returning
-const inserted = await relationalInsert.invoke({
-  table: 'users',
-  data: { name: 'Alice', email: 'alice@example.com' },
-  returning: { mode: 'id', idColumn: 'id' },
-  vendor: 'postgresql',
-  connectionString: 'postgresql://user:pass@localhost:5432/mydb',
-});
+try {
+  const result = await relational.select.invoke({
+    table: 'users',
+    columns: ['id', 'name', 'email'],
+    where: [{ column: 'status', operator: 'eq', value: 'active' }],
+    orderBy: [{ column: 'name', direction: 'asc' }],
+    limit: 10,
+  });
+} finally {
+  await relational.dispose();
+}
 ```
+
+The credential-bearing `relationalQuery`, `relationalSelect`, and
+`relationalGetSchema` exports remain available as deprecated compatibility
+Tools. Each legacy invocation creates and disposes an ephemeral Relational Tool
+Set. Migrate new code to `createRelationalToolSet(...)` to reuse its owned
+session and keep credentials out of Tool inputs.
 
 ---
 
@@ -106,14 +109,15 @@ const inserted = await relationalInsert.invoke({
 
 | Tool                   | Description                                                              |
 | ---------------------- | ------------------------------------------------------------------------ |
-| `relationalQuery`      | Execute raw SQL with parameter binding (positional, named)               |
-| `relationalSelect`     | Type-safe SELECT with WHERE, ORDER BY, LIMIT, OFFSET, streaming         |
+| `relationalQuery`      | Deprecated credential-bearing Query compatibility Tool                  |
+| `relationalSelect`     | Deprecated credential-bearing Select compatibility Tool                 |
 | `relationalInsert`     | Type-safe INSERT (single-row and batch) with RETURNING support           |
 | `relationalUpdate`     | Type-safe UPDATE with WHERE, optimistic locking, and batch support       |
 | `relationalDelete`     | Type-safe DELETE with WHERE, soft delete mode, and batch support         |
-| `relationalGetSchema`  | Introspect tables, columns, PKs, FKs, indexes with optional caching     |
+| `relationalGetSchema`  | Deprecated credential-bearing Get Schema compatibility Tool             |
 
-Each tool accepts a `vendor` and `connectionString` parameter, making them fully self-contained for agent use.
+The deprecated compatibility Tools accept `vendor` and `connectionString` on
+every invocation. Configured Relational Tool Set inputs omit both fields.
 
 ---
 

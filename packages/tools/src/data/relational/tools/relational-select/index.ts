@@ -7,8 +7,7 @@
  * @module tools/relational-select
  */
 
-import { createLogger, toolBuilder, ToolCategory } from '@agentforge/core';
-import { ConnectionManager } from '../../connection/connection-manager.js';
+import { toolBuilder, ToolCategory } from '@agentforge/core';
 import { relationalSelectSchema } from './schemas.js';
 import { executeSelect } from './executor.js';
 import type {
@@ -18,9 +17,8 @@ import type {
   SelectResponse,
 } from './types.js';
 import { isSafeValidationError } from './error-utils.js';
+import { withEphemeralRelationalToolSet } from '../legacy-read-adapter.js';
 import type { RelationalReadExecution } from '../read-execution.js';
-
-const logger = createLogger('agentforge:tools:data:relational:select');
 
 // Re-export types and schemas for external use
 export * from './types.js';
@@ -76,6 +74,9 @@ export async function invokeRelationalSelect(
  * - Optional chunked streaming mode for large result sets
  * - Result formatting to JSON
  * - Error handling with clear messages
+ *
+ * @deprecated Configure a session-owning Relational Tool Set with
+ * `createRelationalToolSet(...)` and use its `select` Tool instead.
  * 
  * @example
  * ```typescript
@@ -138,25 +139,9 @@ export const relationalSelect = toolBuilder()
   })
   .implement(async (input: RelationalSelectInput): Promise<SelectResponse> => {
     const { connectionString, vendor, ...operation } = input;
-    const manager = new ConnectionManager({
-      vendor,
-      connection: connectionString,
-    });
-
-    try {
-      // Connect to database
-      await manager.connect();
-
-      return await invokeRelationalSelect({ executor: manager, vendor }, operation);
-    } catch (error) {
-      logger.error('Relational SELECT connection initialization failed', {
-        vendor,
-        error: error instanceof Error ? error.message : String(error),
-      });
-      return toSelectErrorResponse(error);
-    } finally {
-      // Always disconnect
-      await manager.disconnect();
-    }
+    return withEphemeralRelationalToolSet(
+      { vendor, connectionString },
+      (toolSet) => toolSet.select.invoke(operation),
+    );
   })
   .build();

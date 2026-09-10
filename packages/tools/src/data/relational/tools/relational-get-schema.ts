@@ -5,23 +5,14 @@
 
 import { z } from 'zod';
 import { createLogger, toolBuilder, ToolCategory } from '@agentforge/core';
-import { createHash } from 'node:crypto';
-import { ConnectionManager } from '../connection/connection-manager.js';
 import { SchemaInspector } from '../schema/schema-inspector.js';
 import type { DatabaseSchema } from '../schema/types.js';
 import { VALID_TABLE_FILTER_PATTERN } from '../schema/validation.js';
 import type { DatabaseVendor } from '../types.js';
 import { isSafeGetSchemaValidationError } from './relational-get-schema-error-utils.js';
+import { withEphemeralRelationalToolSet } from './legacy-read-adapter.js';
 import type { RelationalReadExecution } from './read-execution.js';
 const logger = createLogger('agentforge:tools:data:relational:get-schema');
-
-function buildSchemaCacheKey(vendor: DatabaseVendor, connectionString: string, database?: string): string {
-  const databaseScope = database ?? 'default';
-  const connectionHash = createHash('sha256')
-    .update(connectionString)
-    .digest('hex');
-  return `${vendor}:${databaseScope}:${connectionHash}`;
-}
 
 /**
  * Zod schema for relational-get-schema input.
@@ -151,6 +142,9 @@ export async function invokeRelationalGetSchema(
  *
  * Introspects database schema metadata including tables, columns, primary keys,
  * foreign keys, and indexes for PostgreSQL, MySQL, and SQLite.
+ *
+ * @deprecated Configure a session-owning Relational Tool Set with
+ * `createRelationalToolSet(...)` and use its `getSchema` Tool instead.
  */
 export const relationalGetSchema = toolBuilder()
   .name('relational-get-schema')
@@ -177,28 +171,11 @@ export const relationalGetSchema = toolBuilder()
     },
   })
   .implement(async (input) => {
-    const { connectionString, vendor, ...operation } = input;
-    const manager = new ConnectionManager({
-      vendor,
-      connection: connectionString,
-    });
-
-    const cacheKey = buildSchemaCacheKey(
-      vendor,
-      connectionString,
-      input.database,
+    const { connectionString, vendor, cacheTtlMs, tables, refreshCache } = input;
+    return withEphemeralRelationalToolSet(
+      { vendor, connectionString },
+      (toolSet) => toolSet.getSchema.invoke({ tables, refreshCache }),
+      { schemaCacheTtlMs: cacheTtlMs },
     );
-
-    try {
-      await manager.connect();
-      return await invokeRelationalGetSchema(
-        { executor: manager, vendor, schemaCacheKey: cacheKey },
-        operation,
-      );
-    } catch (error) {
-      return toGetSchemaErrorResponse({ executor: manager, vendor }, operation, error);
-    } finally {
-      await manager.disconnect();
-    }
   })
   .build();
