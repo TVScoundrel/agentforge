@@ -115,17 +115,18 @@ export const relationalDelete = toolBuilder()
     },
   })
   .implement(async (input: RelationalDeleteInput): Promise<DeleteResponse> => {
+    const { connectionString, vendor, ...operation } = input;
     const manager = new ConnectionManager({
-      vendor: input.vendor,
-      connection: input.connectionString,
+      vendor,
+      connection: connectionString,
     });
 
     try {
       await manager.connect();
 
       return await invokeRelationalDelete(
-        { executor: manager, vendor: input.vendor },
-        input
+        { executor: manager, vendor },
+        operation
       );
     } catch (error) {
       return toDeleteErrorResponse(error);

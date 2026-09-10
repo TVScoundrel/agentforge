@@ -103,17 +103,18 @@ export const relationalInsert = toolBuilder()
     },
   })
   .implement(async (input: RelationalInsertInput): Promise<InsertResponse> => {
+    const { connectionString, vendor, ...operation } = input;
     const manager = new ConnectionManager({
-      vendor: input.vendor,
-      connection: input.connectionString,
+      vendor,
+      connection: connectionString,
     });
 
     try {
       await manager.connect();
 
       return await invokeRelationalInsert(
-        { executor: manager, vendor: input.vendor },
-        input
+        { executor: manager, vendor },
+        operation
       );
     } catch (error) {
       return toInsertErrorResponse(error);

@@ -6,6 +6,26 @@ import { invokeRelationalInsert } from '../../../../src/data/relational/tools/re
 import { invokeRelationalUpdate } from '../../../../src/data/relational/tools/relational-update/index.js';
 import { invokeRelationalDelete } from '../../../../src/data/relational/tools/relational-delete/index.js';
 
+function createTransactionContext(
+  vendor: TransactionContext['vendor'],
+  executionResult: unknown
+): TransactionContext {
+  const transaction: TransactionContext = {
+    id: 'test-transaction',
+    vendor,
+    execute: vi.fn().mockResolvedValue(executionResult),
+    isActive: vi.fn().mockReturnValue(true),
+    commit: vi.fn().mockResolvedValue(undefined),
+    rollback: vi.fn().mockResolvedValue(undefined),
+    createSavepoint: vi.fn().mockResolvedValue('test-savepoint'),
+    rollbackToSavepoint: vi.fn().mockResolvedValue(undefined),
+    releaseSavepoint: vi.fn().mockResolvedValue(undefined),
+    withSavepoint: async (operation) => operation(transaction),
+  };
+
+  return transaction;
+}
+
 describe('owned-session relational mutation execution', () => {
   it('reuses one SQLite session across batch insert, update, and delete operations', async () => {
     const session = new ConnectionManager({ vendor: 'sqlite', connection: ':memory:' });
@@ -68,10 +88,10 @@ describe('owned-session relational mutation execution', () => {
   });
 
   it('keeps transaction context outside the operation input while using its session', async () => {
-    const transactionExecute = vi.fn().mockResolvedValue([{ affectedRows: 1, insertId: 73 }]);
-    const transaction = {
-      execute: transactionExecute,
-    } as unknown as TransactionContext;
+    const transaction = createTransactionContext(
+      'mysql',
+      [{ affectedRows: 1, insertId: 73 }]
+    );
 
     const result = await invokeRelationalInsert(
       {
@@ -117,9 +137,7 @@ describe('owned-session relational mutation execution', () => {
   });
 
   it('returns normalized delete results from a caller-owned transaction session', async () => {
-    const transaction = {
-      execute: vi.fn().mockResolvedValue({ rowCount: 3 }),
-    } as unknown as TransactionContext;
+    const transaction = createTransactionContext('postgresql', { rowCount: 3 });
 
     const result = await invokeRelationalDelete(
       {
