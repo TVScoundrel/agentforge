@@ -1,3 +1,4 @@
+import { randomUUID } from 'node:crypto';
 import { z } from 'zod';
 import { expect } from 'vitest';
 
@@ -15,6 +16,10 @@ function schemaFields(schema: z.ZodTypeAny): string[] {
  * the configured Tool Set it creates.
  */
 export async function expectRelationalToolSetContract(config: ConnectionConfig): Promise<void> {
+  const fixtureId = randomUUID();
+  const toolSetEmail = `tool-set-${fixtureId}@example.com`;
+  const committedEmail = `committed-${fixtureId}@example.com`;
+  const rolledBackEmail = `rolled-back-${fixtureId}@example.com`;
   const toolSet = createRelationalToolSet(config, {
     prefix: 'integration',
     schemaCacheTtlMs: 60_000,
@@ -52,20 +57,20 @@ export async function expectRelationalToolSetContract(config: ConnectionConfig):
     await expect(
       toolSet.insert.invoke({
         table: 'users',
-        data: { name: 'Tool Set User', email: 'tool-set@example.com', age: 41 },
+        data: { name: 'Tool Set User', email: toolSetEmail, age: 41 },
       })
     ).resolves.toMatchObject({ success: true, rowCount: 1 });
     await expect(
       toolSet.update.invoke({
         table: 'users',
         data: { age: 42 },
-        where: [{ column: 'email', operator: 'eq', value: 'tool-set@example.com' }],
+        where: [{ column: 'email', operator: 'eq', value: toolSetEmail }],
       })
     ).resolves.toMatchObject({ success: true, rowCount: 1 });
     await expect(
       toolSet.delete.invoke({
         table: 'users',
-        where: [{ column: 'email', operator: 'eq', value: 'tool-set@example.com' }],
+        where: [{ column: 'email', operator: 'eq', value: toolSetEmail }],
       })
     ).resolves.toMatchObject({ success: true, rowCount: 1 });
 
@@ -73,7 +78,7 @@ export async function expectRelationalToolSetContract(config: ConnectionConfig):
       toolSet.transaction(async (tools) => {
         const result = await tools.insert.invoke({
           table: 'users',
-          data: { name: 'Committed User', email: 'committed@example.com', age: 35 },
+          data: { name: 'Committed User', email: committedEmail, age: 35 },
         });
         expect(result).toMatchObject({ success: true, rowCount: 1 });
         return result;
@@ -82,7 +87,7 @@ export async function expectRelationalToolSetContract(config: ConnectionConfig):
     await expect(
       toolSet.select.invoke({
         table: 'users',
-        where: [{ column: 'email', operator: 'eq', value: 'committed@example.com' }],
+        where: [{ column: 'email', operator: 'eq', value: committedEmail }],
       })
     ).resolves.toMatchObject({ success: true, rowCount: 1 });
 
@@ -90,7 +95,7 @@ export async function expectRelationalToolSetContract(config: ConnectionConfig):
       toolSet.transaction(async (tools) => {
         await tools.insert.invoke({
           table: 'users',
-          data: { name: 'Rolled Back User', email: 'rolled-back@example.com', age: 36 },
+          data: { name: 'Rolled Back User', email: rolledBackEmail, age: 36 },
         });
         throw new Error('roll back adapter contract');
       })
@@ -98,7 +103,7 @@ export async function expectRelationalToolSetContract(config: ConnectionConfig):
     await expect(
       toolSet.select.invoke({
         table: 'users',
-        where: [{ column: 'email', operator: 'eq', value: 'rolled-back@example.com' }],
+        where: [{ column: 'email', operator: 'eq', value: rolledBackEmail }],
       })
     ).resolves.toMatchObject({ success: true, rowCount: 0 });
 
