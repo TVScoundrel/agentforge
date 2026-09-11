@@ -10,6 +10,7 @@ import type { QueryInput, QueryExecutionResult, QueryParams, SqlExecutor } from 
 import {
   validateSqlString,
   enforceParameterizedQueryUsage,
+  validateManagedTransactionSql,
 } from '../utils/sql-sanitizer.js';
 
 const logger = createLogger('agentforge:tools:data:relational:query');
@@ -179,6 +180,9 @@ export async function executeQuery(
   try {
     // Security validation before query construction/execution
     validateSqlString(input.sql, input.vendor);
+    if (context?.transaction) {
+      validateManagedTransactionSql(input.sql, input.vendor);
+    }
     enforceParameterizedQueryUsage(input.sql, input.params, input.vendor);
 
     // Build parameterized query
@@ -228,6 +232,7 @@ export async function executeQuery(
           message.includes('SQL query must not be empty') ||
           message.includes('SQL query contains null bytes') ||
           message.includes('Detected dangerous SQL operation') ||
+          message.includes('Transaction control statements are not allowed in scoped Tools') ||
           message.includes('Parameters are required for INSERT/UPDATE/DELETE queries')) {
         throw error;
       }

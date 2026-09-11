@@ -492,19 +492,19 @@ class RelationalToolSetImplementation implements RelationalToolSet {
                 (scopedOperation, failure) => scope.run(scopedOperation, failure)
               );
 
+              let result!: T;
               try {
-                const result = await operation(scopedTools);
-                await scope.settle();
-                if (scope.isRollbackOnly()) {
-                  throw new RelationalTransactionError(
-                    'The transaction was rolled back because a scoped Tool failed.',
-                    'ROLLBACK_ONLY'
-                  );
-                }
-                return result;
+                result = await operation(scopedTools);
               } finally {
                 await scope.settle();
               }
+              if (scope.isRollbackOnly()) {
+                throw new RelationalTransactionError(
+                  'The transaction was rolled back because a scoped Tool failed.',
+                  'ROLLBACK_ONLY'
+                );
+              }
+              return result;
             },
             options
           );

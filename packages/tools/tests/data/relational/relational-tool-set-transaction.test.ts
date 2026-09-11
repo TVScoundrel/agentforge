@@ -108,6 +108,38 @@ describe('Relational Tool Set transactions', () => {
     await toolSet.dispose();
   });
 
+  it.each(['BEGIN', 'COMMIT', 'ROLLBACK', 'SAVEPOINT hidden', 'RELEASE SAVEPOINT hidden'])(
+    'rejects transaction control through the scoped query Tool: %s',
+    async (statement) => {
+      const toolSet = createRelationalToolSet({
+        vendor: 'sqlite',
+        connection: temporaryDatabase(),
+      });
+
+      await expect(
+        toolSet.transaction(async (tools) => {
+          const controlResult = await tools.query.invoke({ sql: statement });
+          expect(controlResult).toMatchObject({
+            success: false,
+            error: 'Transaction control statements are not allowed in scoped Tools.',
+          });
+          await expect(
+            tools.insert.invoke({ table: 'users', data: { id: 1, name: 'Alice' } })
+          ).resolves.toMatchObject({
+            success: false,
+            error: 'Transaction is rollback-only; no database work was executed.',
+          });
+        })
+      ).rejects.toMatchObject({ code: 'ROLLBACK_ONLY' });
+
+      await expect(toolSet.query.invoke({ sql: 'SELECT * FROM users' })).resolves.toMatchObject({
+        success: true,
+        rows: [],
+      });
+      await toolSet.dispose();
+    }
+  );
+
   it('marks partial batch results rollback-only', async () => {
     const toolSet = createRelationalToolSet({
       vendor: 'sqlite',

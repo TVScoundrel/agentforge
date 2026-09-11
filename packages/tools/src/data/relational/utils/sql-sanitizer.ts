@@ -7,6 +7,8 @@ import type { QueryParams } from '../query/types.js';
 import type { DatabaseVendor } from '../types.js';
 
 const DANGEROUS_SQL_STATEMENT_PATTERN = /^(create|drop|truncate|alter)\b/i;
+const TRANSACTION_CONTROL_STATEMENT_PATTERN =
+  /^(begin|start\s+transaction|commit|end|rollback|savepoint|release\s+savepoint|set\s+transaction)\b/i;
 const NUMBERED_PLACEHOLDER_PATTERN = /\$(\d+)/;
 const QUESTION_PLACEHOLDER_PATTERN = /\?/;
 const NAMED_PLACEHOLDER_PATTERN = /(?<!:):[a-zA-Z_][a-zA-Z0-9_]*/;
@@ -192,6 +194,15 @@ function hasParameters(params?: QueryParams): boolean {
   return Object.keys(params).length > 0;
 }
 
+function sqlStatements(sqlString: string, vendor?: DatabaseVendor): string[] {
+  return stripSqlCommentsAndStrings(sqlString, {
+    backslashEscapes: vendor === 'mysql',
+  })
+    .split(';')
+    .map((statement) => statement.trim())
+    .filter((statement) => statement.length > 0);
+}
+
 /**
  * Validate raw SQL string safety constraints.
  * Rejects empty input, null bytes, and dangerous DDL operations.
@@ -205,16 +216,21 @@ export function validateSqlString(sqlString: string, vendor?: DatabaseVendor): v
     throw new Error('SQL query contains null bytes');
   }
 
-  const normalizedForSafetyCheck = stripSqlCommentsAndStrings(sqlString, {
-    backslashEscapes: vendor === 'mysql',
-  });
-  const statements = normalizedForSafetyCheck
-    .split(';')
-    .map((statement) => statement.trim())
-    .filter((statement) => statement.length > 0);
+  const statements = sqlStatements(sqlString, vendor);
 
   if (statements.some((statement) => DANGEROUS_SQL_STATEMENT_PATTERN.test(statement))) {
     throw new Error('Detected dangerous SQL operation. CREATE, DROP, TRUNCATE, and ALTER are not allowed.');
+  }
+}
+
+/** Prevent scoped raw queries from bypassing managed transaction lifecycle. */
+export function validateManagedTransactionSql(sqlString: string, vendor?: DatabaseVendor): void {
+  if (
+    sqlStatements(sqlString, vendor).some((statement) =>
+      TRANSACTION_CONTROL_STATEMENT_PATTERN.test(statement)
+    )
+  ) {
+    throw new Error('Transaction control statements are not allowed in scoped Tools.');
   }
 }
 
