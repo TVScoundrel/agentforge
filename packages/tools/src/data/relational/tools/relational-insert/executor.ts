@@ -29,6 +29,7 @@ function getCauseMetadata(error: unknown): Record<string, string> {
   return {
     causeType: error.cause instanceof Error ? error.cause.name : 'object',
     ...(typeof cause.code === 'string' ? { causeCode: cause.code } : {}),
+    ...(typeof cause.constraint === 'string' ? { causeConstraint: cause.constraint } : {}),
   };
 }
 
