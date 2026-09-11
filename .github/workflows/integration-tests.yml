@@ -8,6 +8,7 @@ on:
       - 'packages/tools/src/data/relational/**'
       - 'packages/tools/tests/data/relational/integration/**'
       - 'vitest.integration.config.ts'
+      - 'vitest.integration.workspace.ts'
       - '.github/workflows/integration-tests.yml'
   pull_request:
     branches: [main]
@@ -15,6 +16,7 @@ on:
       - 'packages/tools/src/data/relational/**'
       - 'packages/tools/tests/data/relational/integration/**'
       - 'vitest.integration.config.ts'
+      - 'vitest.integration.workspace.ts'
       - '.github/workflows/integration-tests.yml'
   workflow_dispatch:
 
@@ -26,6 +28,8 @@ jobs:
   integration-tests:
     runs-on: ubuntu-latest
     timeout-minutes: 15
+    env:
+      RUN_INTEGRATION_TESTS: 'true'
 
     steps:
       - name: Checkout
@@ -51,14 +55,12 @@ jobs:
         run: pnpm test:integration
         env:
           # Testcontainers auto-detects Docker on GitHub Actions runners
-          RUN_INTEGRATION_TESTS: 'true'
           TESTCONTAINERS_RYUK_DISABLED: 'true'
 
       - name: Run integration tests with coverage
         if: github.event_name == 'pull_request'
         run: pnpm test:integration:coverage
         env:
-          RUN_INTEGRATION_TESTS: 'true'
           TESTCONTAINERS_RYUK_DISABLED: 'true'
 
       - name: Upload coverage report

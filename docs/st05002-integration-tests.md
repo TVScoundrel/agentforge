@@ -45,11 +45,11 @@ packages/tools/tests/data/relational/integration/
 ### Commands
 
 ```bash
-# Run all integration tests
-pnpm test:integration
+# Run all relational integration tests (starts PostgreSQL/MySQL containers)
+RUN_INTEGRATION_TESTS=true pnpm test:integration
 
 # Run with coverage
-pnpm test:integration:coverage
+RUN_INTEGRATION_TESTS=true pnpm test:integration:coverage
 
 # Run a specific vendor
 npx vitest run -c vitest.integration.config.ts packages/tools/tests/data/relational/integration/sqlite/
@@ -60,7 +60,9 @@ npx vitest run -c vitest.integration.config.ts packages/tools/tests/data/relatio
 
 ### Vitest Configuration
 
-A dedicated config at `vitest.integration.config.ts` provides:
+A dedicated workspace at `vitest.integration.workspace.ts` isolates the relational
+integration project from the default monorepo test workspace. Its
+`vitest.integration.config.ts` project provides:
 - 120s test and hook timeouts (container startup)
 - Single-fork pool mode (avoids port conflicts)
 - Scoped include: only `integration/**/*.integration.test.ts`
