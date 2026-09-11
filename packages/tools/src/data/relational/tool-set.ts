@@ -1,4 +1,5 @@
 import { createLogger, createTool, type Tool, type ToolMetadata } from '@agentforge/core';
+import { AsyncLocalStorage } from 'node:async_hooks';
 import type { z } from 'zod';
 
 import { ConnectionManager } from './connection/connection-manager.js';
@@ -11,6 +12,9 @@ import {
   UPDATE_CONNECTION_FAILURE,
 } from './connection-failure-messages.js';
 import { SchemaCache, SchemaInspector } from './schema/schema-inspector.js';
+import { withTransaction } from './query/transaction-runner.js';
+import type { TransactionContext, TransactionOptions } from './query/transaction-types.js';
+import type { RelationalReadExecution } from './tools/read-execution.js';
 import { MissingPeerDependencyError } from './utils/peer-dependency-checker.js';
 import { invokeRelationalDelete } from './tools/relational-delete/index.js';
 import { relationalDeleteSchema } from './tools/relational-delete/schemas.js';
@@ -60,6 +64,7 @@ import {
 const DEFAULT_SCHEMA_CACHE_TTL_MS = 60_000;
 const TOOL_SET_SCHEMA_CACHE_KEY = 'relational-tool-set';
 const PREFIX_PATTERN = /^[a-z][a-z0-9]*(?:-[a-z0-9]+)*$/;
+const ROLLBACK_ONLY_MESSAGE = 'Transaction is rollback-only; no database work was executed.';
 const logger = createLogger('agentforge:tools:data:relational:tool-set');
 
 export interface RelationalToolSetOptions {
@@ -81,6 +86,23 @@ export class RelationalToolSetDisposedError extends Error {
   }
 }
 
+export type RelationalTransactionErrorCode =
+  | 'NESTED_TRANSACTION'
+  | 'ROLLBACK_ONLY'
+  | 'SCOPE_EXPIRED'
+  | 'START_FAILED';
+
+export class RelationalTransactionError extends Error {
+  override readonly name = 'RelationalTransactionError';
+
+  constructor(
+    message: string,
+    readonly code: RelationalTransactionErrorCode
+  ) {
+    super(message);
+  }
+}
+
 type QueryTool = Tool<RelationalQueryOperationInput, QueryResponse>;
 type SelectTool = Tool<RelationalSelectOperationInput, SelectResponse>;
 type InsertTool = Tool<RelationalInsertOperationInput, InsertResponse>;
@@ -93,15 +115,181 @@ export type RelationalToolSetGetSchemaInput = Omit<
 type GetSchemaTool = Tool<RelationalToolSetGetSchemaInput, GetSchemaResponse>;
 type ConfiguredTool = QueryTool | SelectTool | InsertTool | UpdateTool | DeleteTool | GetSchemaTool;
 
-export interface RelationalToolSet extends Iterable<ConfiguredTool> {
+export interface RelationalTransactionToolSet extends Iterable<ConfiguredTool> {
   readonly query: QueryTool;
   readonly select: SelectTool;
   readonly insert: InsertTool;
   readonly update: UpdateTool;
   readonly delete: DeleteTool;
   readonly getSchema: GetSchemaTool;
+}
+
+export interface RelationalToolSet extends RelationalTransactionToolSet {
+  transaction<T>(
+    operation: (tools: RelationalTransactionToolSet) => Promise<T>,
+    options?: TransactionOptions
+  ): Promise<T>;
   refreshSchema(): void;
   dispose(): Promise<void>;
+}
+
+type FailureFactory<T> = (message: string) => T;
+type ExecuteConfiguredOperation = <T>(
+  operation: (execution: RelationalReadExecution) => Promise<T>,
+  failure: FailureFactory<T>,
+  connectionFailureMessage: string
+) => Promise<T>;
+
+function isFailedOrPartialResult(result: unknown): boolean {
+  if (!result || typeof result !== 'object') {
+    return false;
+  }
+  const response = result as {
+    success?: boolean;
+    batch?: { failedItems?: number; partialSuccess?: boolean };
+  };
+  return (
+    response.success === false ||
+    response.batch?.partialSuccess === true ||
+    (response.batch?.failedItems ?? 0) > 0
+  );
+}
+
+class TransactionToolScope {
+  private active = true;
+  private rollbackOnly = false;
+  private tail: Promise<void> = Promise.resolve();
+
+  constructor(private readonly execution: RelationalReadExecution) {}
+
+  run<T>(
+    operation: (execution: RelationalReadExecution) => Promise<T>,
+    failure: FailureFactory<T>
+  ) {
+    const invocation = this.tail.then(async () => {
+      if (!this.active) {
+        throw new RelationalTransactionError(
+          'Transaction-scoped Tools can no longer be used because their callback has settled.',
+          'SCOPE_EXPIRED'
+        );
+      }
+      if (this.rollbackOnly) {
+        return failure(ROLLBACK_ONLY_MESSAGE);
+      }
+
+      const result = await operation(this.execution);
+      if (isFailedOrPartialResult(result)) {
+        this.rollbackOnly = true;
+      }
+      return result;
+    });
+    this.tail = invocation.then(
+      () => undefined,
+      () => undefined
+    );
+    return invocation;
+  }
+
+  async settle(): Promise<void> {
+    await this.tail;
+    this.active = false;
+  }
+
+  isRollbackOnly(): boolean {
+    return this.rollbackOnly;
+  }
+}
+
+function createConfiguredTools(
+  options: RelationalToolSetOptions,
+  execution: ExecuteConfiguredOperation
+): RelationalTransactionToolSet {
+  const query = createTool(
+    configuredMetadata(relationalQuery, options.prefix),
+    relationalQuerySchema.omit({ vendor: true, connectionString: true }),
+    (input) =>
+      execution<QueryResponse>(
+        (context) => invokeRelationalQuery(context, input),
+        (error): QueryResponse => ({ success: false, error, rows: [], rowCount: 0 }),
+        QUERY_CONNECTION_FAILURE
+      )
+  );
+  const select = createTool(
+    configuredMetadata(relationalSelect, options.prefix),
+    relationalSelectSchema.omit({ vendor: true, connectionString: true }),
+    (input) =>
+      execution<SelectResponse>(
+        (context) => invokeRelationalSelect(context, input),
+        (error): SelectResponse => ({ success: false, error, rows: [], rowCount: 0 }),
+        SELECT_CONNECTION_FAILURE
+      )
+  );
+  const insert = createTool(
+    configuredMetadata(relationalInsert, options.prefix),
+    relationalInsertSchema.omit({ vendor: true, connectionString: true }),
+    (input) =>
+      execution<InsertResponse>(
+        (context) => invokeRelationalInsert(context, input),
+        (error): InsertResponse => ({
+          success: false,
+          error,
+          rowCount: 0,
+          insertedIds: [],
+          rows: [],
+        }),
+        INSERT_CONNECTION_FAILURE
+      )
+  );
+  const update = createTool(
+    configuredMetadata(relationalUpdate, options.prefix),
+    relationalUpdateOperationSchema,
+    (input) =>
+      execution<UpdateResponse>(
+        (context) => invokeRelationalUpdate(context, input),
+        (error): UpdateResponse => ({ success: false, error, rowCount: 0 }),
+        UPDATE_CONNECTION_FAILURE
+      )
+  );
+  const deleteTool = createTool(
+    configuredMetadata(relationalDelete, options.prefix),
+    relationalDeleteOperationSchema,
+    (input) =>
+      execution<DeleteResponse>(
+        (context) => invokeRelationalDelete(context, input),
+        (error): DeleteResponse => ({ success: false, error, rowCount: 0, softDeleted: false }),
+        DELETE_CONNECTION_FAILURE
+      )
+  );
+  const getSchema = createTool(
+    configuredMetadata(relationalGetSchema, options.prefix),
+    relationalGetSchemaInputSchema.omit({
+      vendor: true,
+      connectionString: true,
+      database: true,
+      cacheTtlMs: true,
+    }),
+    (input) =>
+      execution<GetSchemaResponse>(
+        (context) =>
+          invokeRelationalGetSchema(context, {
+            ...input,
+            cacheTtlMs: options.schemaCacheTtlMs ?? DEFAULT_SCHEMA_CACHE_TTL_MS,
+          }),
+        (error): GetSchemaResponse => ({ success: false, error, schema: null }),
+        'Failed to inspect schema. See logs for details.'
+      )
+  );
+  const tools = [query, select, insert, update, deleteTool, getSchema] as const;
+
+  return Object.freeze({
+    query,
+    select,
+    insert,
+    update,
+    delete: deleteTool,
+    getSchema,
+    [Symbol.iterator]: () => tools[Symbol.iterator](),
+  });
 }
 
 function validateConfiguration(config: ConnectionConfig, options: RelationalToolSetOptions): void {
@@ -239,7 +427,9 @@ class RelationalToolSetImplementation implements RelationalToolSet {
 
   private readonly tools: readonly ConfiguredTool[];
   private readonly schemaCache = new SchemaCache();
-  private readonly schemaCacheTtlMs: number;
+  private readonly prefix?: string;
+  private readonly transactionContext = new AsyncLocalStorage<{ active: boolean }>();
+  private sqliteTransactionTail: Promise<void> = Promise.resolve();
   private manager?: ConnectionManager;
   private initialization?: Promise<ConnectionManager>;
   private activeWork = 0;
@@ -253,104 +443,16 @@ class RelationalToolSetImplementation implements RelationalToolSet {
     options: RelationalToolSetOptions,
     private readonly sharedSchemaCacheKey?: string
   ) {
-    this.schemaCacheTtlMs = options.schemaCacheTtlMs ?? DEFAULT_SCHEMA_CACHE_TTL_MS;
-    const execution = <T>(
-      operation: (manager: ConnectionManager) => Promise<T>,
-      connectionFailure: () => T
-    ) => this.run(operation, connectionFailure);
-
-    this.query = createTool(
-      configuredMetadata(relationalQuery, options.prefix),
-      relationalQuerySchema.omit({ vendor: true, connectionString: true }),
-      (input) =>
-        execution(
-          (manager) => invokeRelationalQuery(this.executionFor(manager), input),
-          () => ({
-            success: false,
-            error: QUERY_CONNECTION_FAILURE,
-            rows: [],
-            rowCount: 0,
-          })
-        )
+    this.prefix = options.prefix;
+    const configuredTools = createConfiguredTools(options, (operation, failure, failureMessage) =>
+      this.run(operation, () => failure(failureMessage))
     );
-    this.select = createTool(
-      configuredMetadata(relationalSelect, options.prefix),
-      relationalSelectSchema.omit({ vendor: true, connectionString: true }),
-      (input) =>
-        execution(
-          (manager) => invokeRelationalSelect(this.executionFor(manager), input),
-          () => ({
-            success: false,
-            error: SELECT_CONNECTION_FAILURE,
-            rows: [],
-            rowCount: 0,
-          })
-        )
-    );
-    this.insert = createTool(
-      configuredMetadata(relationalInsert, options.prefix),
-      relationalInsertSchema.omit({ vendor: true, connectionString: true }),
-      (input) =>
-        execution(
-          (manager) => invokeRelationalInsert(this.executionFor(manager), input),
-          () => ({
-            success: false,
-            error: INSERT_CONNECTION_FAILURE,
-            rowCount: 0,
-            insertedIds: [],
-            rows: [],
-          })
-        )
-    );
-    this.update = createTool(
-      configuredMetadata(relationalUpdate, options.prefix),
-      relationalUpdateOperationSchema,
-      (input) =>
-        execution(
-          (manager) => invokeRelationalUpdate(this.executionFor(manager), input),
-          () => ({
-            success: false,
-            error: UPDATE_CONNECTION_FAILURE,
-            rowCount: 0,
-          })
-        )
-    );
-    this.delete = createTool(
-      configuredMetadata(relationalDelete, options.prefix),
-      relationalDeleteOperationSchema,
-      (input) =>
-        execution(
-          (manager) => invokeRelationalDelete(this.executionFor(manager), input),
-          () => ({
-            success: false,
-            error: DELETE_CONNECTION_FAILURE,
-            rowCount: 0,
-            softDeleted: false,
-          })
-        )
-    );
-    this.getSchema = createTool(
-      configuredMetadata(relationalGetSchema, options.prefix),
-      relationalGetSchemaInputSchema.omit({
-        vendor: true,
-        connectionString: true,
-        database: true,
-        cacheTtlMs: true,
-      }),
-      (input) =>
-        execution(
-          (manager) =>
-            invokeRelationalGetSchema(
-              this.schemaExecutionFor(manager),
-              { ...input, cacheTtlMs: this.schemaCacheTtlMs }
-            ),
-          () => ({
-            success: false,
-            error: 'Failed to inspect schema. See logs for details.',
-            schema: null,
-          })
-        )
-    );
+    this.query = configuredTools.query;
+    this.select = configuredTools.select;
+    this.insert = configuredTools.insert;
+    this.update = configuredTools.update;
+    this.delete = configuredTools.delete;
+    this.getSchema = configuredTools.getSchema;
 
     this.tools = Object.freeze([
       this.query,
@@ -364,6 +466,53 @@ class RelationalToolSetImplementation implements RelationalToolSet {
 
   [Symbol.iterator](): Iterator<ConfiguredTool> {
     return this.tools[Symbol.iterator]();
+  }
+
+  async transaction<T>(
+    operation: (tools: RelationalTransactionToolSet) => Promise<T>,
+    options?: TransactionOptions
+  ): Promise<T> {
+    if (this.transactionContext.getStore()?.active) {
+      throw new RelationalTransactionError(
+        'Nested Relational Tool Set transactions are not supported.',
+        'NESTED_TRANSACTION'
+      );
+    }
+
+    return this.runTransaction((manager) => {
+      const transactionState = { active: true };
+      return this.transactionContext.run(transactionState, async () => {
+        try {
+          return await withTransaction(
+            manager,
+            async (transaction) => {
+              const scope = new TransactionToolScope(this.transactionExecutionFor(transaction));
+              const scopedTools = createConfiguredTools(
+                { prefix: this.prefix },
+                (scopedOperation, failure) => scope.run(scopedOperation, failure)
+              );
+
+              try {
+                const result = await operation(scopedTools);
+                await scope.settle();
+                if (scope.isRollbackOnly()) {
+                  throw new RelationalTransactionError(
+                    'The transaction was rolled back because a scoped Tool failed.',
+                    'ROLLBACK_ONLY'
+                  );
+                }
+                return result;
+              } finally {
+                await scope.settle();
+              }
+            },
+            options
+          );
+        } finally {
+          transactionState.active = false;
+        }
+      });
+    });
   }
 
   refreshSchema(): void {
@@ -386,7 +535,7 @@ class RelationalToolSetImplementation implements RelationalToolSet {
   }
 
   private async run<T>(
-    operation: (manager: ConnectionManager) => Promise<T>,
+    operation: (execution: RelationalReadExecution) => Promise<T>,
     connectionFailure: () => T
   ): Promise<T> {
     if (this.state !== 'open') {
@@ -403,7 +552,43 @@ class RelationalToolSetImplementation implements RelationalToolSet {
         }
         return connectionFailure();
       }
-      return await operation(manager);
+      return await operation(this.schemaExecutionFor(manager));
+    } finally {
+      this.activeWork -= 1;
+      if (this.activeWork === 0) {
+        this.resolveDrain?.();
+      }
+    }
+  }
+
+  private async runTransaction<T>(operation: (manager: ConnectionManager) => Promise<T>) {
+    if (this.state !== 'open') {
+      throw new RelationalToolSetDisposedError();
+    }
+    this.activeWork += 1;
+    try {
+      let manager: ConnectionManager;
+      try {
+        manager = await this.ensureConnection();
+      } catch (error) {
+        if (error instanceof MissingPeerDependencyError) {
+          throw error;
+        }
+        throw new RelationalTransactionError(
+          'Failed to start the managed database transaction.',
+          'START_FAILED'
+        );
+      }
+      if (this.config.vendor !== 'sqlite') {
+        return await operation(manager);
+      }
+
+      const transaction = this.sqliteTransactionTail.then(() => operation(manager));
+      this.sqliteTransactionTail = transaction.then(
+        () => undefined,
+        () => undefined
+      );
+      return await transaction;
     } finally {
       this.activeWork -= 1;
       if (this.activeWork === 0) {
@@ -442,12 +627,8 @@ class RelationalToolSetImplementation implements RelationalToolSet {
     return this.initialization;
   }
 
-  private executionFor(manager: ConnectionManager) {
-    return { executor: manager, vendor: this.config.vendor };
-  }
-
   private schemaExecutionFor(manager: ConnectionManager) {
-    const execution = this.executionFor(manager);
+    const execution = { executor: manager, vendor: this.config.vendor };
     return this.sharedSchemaCacheKey
       ? { ...execution, schemaCacheKey: this.sharedSchemaCacheKey }
       : {
@@ -455,6 +636,14 @@ class RelationalToolSetImplementation implements RelationalToolSet {
           schemaCache: this.schemaCache,
           schemaCacheKey: TOOL_SET_SCHEMA_CACHE_KEY,
         };
+  }
+
+  private transactionExecutionFor(transaction: TransactionContext): RelationalReadExecution {
+    return {
+      executor: transaction,
+      transaction,
+      vendor: this.config.vendor,
+    };
   }
 
   private async finishDisposal(): Promise<void> {

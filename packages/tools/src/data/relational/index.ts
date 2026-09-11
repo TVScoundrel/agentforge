@@ -46,11 +46,14 @@ export {
   createRelationalToolSet,
   RelationalToolSetConfigurationError,
   RelationalToolSetDisposedError,
+  RelationalTransactionError,
 } from './tool-set.js';
 export type {
   RelationalToolSet,
   RelationalToolSetGetSchemaInput,
   RelationalToolSetOptions,
+  RelationalTransactionErrorCode,
+  RelationalTransactionToolSet,
 } from './tool-set.js';
 
 // LangGraph tools
