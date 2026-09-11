@@ -4,13 +4,15 @@
  */
 
 import { z } from 'zod';
-import { createLogger, toolBuilder, ToolCategory } from '@agentforge/core';
-import { ConnectionManager } from '../connection/connection-manager.js';
+import { toolBuilder, ToolCategory } from '@agentforge/core';
 import { executeQuery } from '../query/query-executor.js';
+import { QUERY_CONNECTION_FAILURE } from '../connection-failure-messages.js';
 import type { DatabaseVendor } from '../types.js';
+import {
+  replaceConnectionFailureMessage,
+  withEphemeralRelationalToolSet,
+} from './legacy-read-adapter.js';
 import type { RelationalReadExecution } from './read-execution.js';
-
-const logger = createLogger('agentforge:tools:data:relational:query');
 
 /**
  * Zod schema for relational-query tool input
@@ -95,6 +97,9 @@ export async function invokeRelationalQuery(
  * - Supports positional ($1, ?) and named (:name) parameters
  * - Result formatting to JSON
  * - Error handling with sanitized messages
+ *
+ * @deprecated Configure a session-owning Relational Tool Set with
+ * `createRelationalToolSet(...)` and use its `query` Tool instead.
  * 
  * @example
  * ```typescript
@@ -155,39 +160,15 @@ export const relationalQuery = toolBuilder()
   .limitation('Large result sets may impact performance')
   .limitation('Placeholder characters ($n, ?, :name) inside SQL string literals are not supported. Use parameter binding for all dynamic values instead of embedding them in string literals')
   .implement(async (input) => {
-    // TODO (ST-02002 or later): Implement connection pooling/reuse to avoid creating
-    // a new ConnectionManager on every invocation. For agent workflows with multiple
-    // queries, this creates connection storms and significant overhead. Consider:
-    // - Shared connection registry keyed by connection string/config
-    // - Connection pool reuse similar to neo4jPool pattern
-    // - Lifecycle management for long-running agents
-
-    // Create connection manager
-    const manager = new ConnectionManager({
-      vendor: input.vendor,
-      connection: input.connectionString || ''
-    });
-
-    try {
-      // Initialize connection
-      await manager.initialize();
-
-      return await invokeRelationalQuery(
-        { executor: manager, vendor: input.vendor },
-        {
-          sql: input.sql,
-          params: input.params,
-        },
-      );
-    } catch (error) {
-      logger.error('Relational Query connection initialization failed', {
-        vendor: input.vendor,
-        error: error instanceof Error ? error.message : String(error),
-      });
-      return toQueryErrorResponse(error);
-    } finally {
-      // Always close connection
-      await manager.close();
-    }
+    const { connectionString, vendor, ...operation } = input;
+    return withEphemeralRelationalToolSet(
+      { vendor, connectionString },
+      async (toolSet) =>
+        replaceConnectionFailureMessage(
+          await toolSet.query.invoke(operation),
+          QUERY_CONNECTION_FAILURE,
+          `Failed to initialize ${vendor} connection`,
+        ),
+    );
   })
   .build();

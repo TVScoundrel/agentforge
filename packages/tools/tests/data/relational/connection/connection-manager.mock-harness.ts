@@ -1,8 +1,14 @@
 import { beforeEach, vi } from 'vitest';
 
-vi.mock('../../../../src/data/relational/utils/peer-dependency-checker.js', () => ({
-  checkPeerDependency: vi.fn(),
-}));
+vi.mock(
+  '../../../../src/data/relational/utils/peer-dependency-checker.js',
+  async (importOriginal) => ({
+    ...(await importOriginal<
+      typeof import('../../../../src/data/relational/utils/peer-dependency-checker.js')
+    >()),
+    checkPeerDependency: vi.fn(),
+  })
+);
 
 vi.mock('drizzle-orm', async (importOriginal) => {
   const actual = await importOriginal<typeof import('drizzle-orm')>();

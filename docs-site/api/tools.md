@@ -938,6 +938,14 @@ All relational tools return `{ success: true, ... }` on success or `{ success: f
 **Exception:** If the required vendor driver (`pg`, `mysql2`, or `better-sqlite3`) is not installed, the tool will throw a `MissingPeerDependencyError` synchronously. Ensure peer dependencies are installed to avoid this.
 :::
 
+::: warning Legacy read Tools
+`relationalQuery`, `relationalSelect`, and `relationalGetSchema` keep their
+credential-bearing inputs for compatibility, but are deprecated. Prefer
+`createRelationalToolSet(...)`; its configured Tools omit database credentials,
+reuse an owned session, and expose explicit `dispose()` cleanup. Each invocation
+of a deprecated read Tool uses and disposes an ephemeral Relational Tool Set.
+:::
+
 #### relationalQuery
 
 Execute raw SQL with parameterized binding:

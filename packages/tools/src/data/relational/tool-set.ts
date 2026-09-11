@@ -1,9 +1,14 @@
-import { createTool, type Tool, type ToolMetadata } from '@agentforge/core';
+import { createLogger, createTool, type Tool, type ToolMetadata } from '@agentforge/core';
 import type { z } from 'zod';
 
 import { ConnectionManager } from './connection/connection-manager.js';
 import type { ConnectionConfig } from './connection/types.js';
-import { SchemaCache } from './schema/schema-inspector.js';
+import {
+  QUERY_CONNECTION_FAILURE,
+  SELECT_CONNECTION_FAILURE,
+} from './connection-failure-messages.js';
+import { SchemaCache, SchemaInspector } from './schema/schema-inspector.js';
+import { MissingPeerDependencyError } from './utils/peer-dependency-checker.js';
 import { invokeRelationalDelete } from './tools/relational-delete/index.js';
 import { relationalDeleteSchema } from './tools/relational-delete/schemas.js';
 import type {
@@ -52,6 +57,7 @@ import {
 const DEFAULT_SCHEMA_CACHE_TTL_MS = 60_000;
 const TOOL_SET_SCHEMA_CACHE_KEY = 'relational-tool-set';
 const PREFIX_PATTERN = /^[a-z][a-z0-9]*(?:-[a-z0-9]+)*$/;
+const logger = createLogger('agentforge:tools:data:relational:tool-set');
 
 export interface RelationalToolSetOptions {
   /** Kebab-case prefix prepended to every configured Tool name. */
@@ -241,7 +247,8 @@ class RelationalToolSetImplementation implements RelationalToolSet {
 
   constructor(
     private readonly config: ConnectionConfig,
-    options: RelationalToolSetOptions
+    options: RelationalToolSetOptions,
+    private readonly sharedSchemaCacheKey?: string
   ) {
     this.schemaCacheTtlMs = options.schemaCacheTtlMs ?? DEFAULT_SCHEMA_CACHE_TTL_MS;
     const execution = <T>(
@@ -257,7 +264,7 @@ class RelationalToolSetImplementation implements RelationalToolSet {
           (manager) => invokeRelationalQuery(this.executionFor(manager), input),
           () => ({
             success: false,
-            error: 'Failed to connect to the configured database.',
+            error: QUERY_CONNECTION_FAILURE,
             rows: [],
             rowCount: 0,
           })
@@ -271,8 +278,7 @@ class RelationalToolSetImplementation implements RelationalToolSet {
           (manager) => invokeRelationalSelect(this.executionFor(manager), input),
           () => ({
             success: false,
-            error:
-              'Failed to execute SELECT query. Please verify the configured database connection.',
+            error: SELECT_CONNECTION_FAILURE,
             rows: [],
             rowCount: 0,
           })
@@ -335,11 +341,7 @@ class RelationalToolSetImplementation implements RelationalToolSet {
         execution(
           (manager) =>
             invokeRelationalGetSchema(
-              {
-                ...this.executionFor(manager),
-                schemaCache: this.schemaCache,
-                schemaCacheKey: TOOL_SET_SCHEMA_CACHE_KEY,
-              },
+              this.schemaExecutionFor(manager),
               { ...input, cacheTtlMs: this.schemaCacheTtlMs }
             ),
           () => ({
@@ -368,7 +370,11 @@ class RelationalToolSetImplementation implements RelationalToolSet {
     if (this.state !== 'open') {
       throw new RelationalToolSetDisposedError();
     }
-    this.schemaCache.delete(TOOL_SET_SCHEMA_CACHE_KEY);
+    if (this.sharedSchemaCacheKey) {
+      SchemaInspector.clearCache(this.sharedSchemaCacheKey);
+    } else {
+      this.schemaCache.delete(TOOL_SET_SCHEMA_CACHE_KEY);
+    }
   }
 
   dispose(): Promise<void> {
@@ -391,7 +397,10 @@ class RelationalToolSetImplementation implements RelationalToolSet {
       let manager: ConnectionManager;
       try {
         manager = await this.ensureConnection();
-      } catch {
+      } catch (error) {
+        if (error instanceof MissingPeerDependencyError) {
+          throw error;
+        }
         return connectionFailure();
       }
       return await operation(manager);
@@ -416,6 +425,12 @@ class RelationalToolSetImplementation implements RelationalToolSet {
         .catch(async (error: unknown) => {
           this.manager = undefined;
           this.initialization = undefined;
+          if (!(error instanceof MissingPeerDependencyError)) {
+            logger.error('Relational Tool Set connection initialization failed', {
+              vendor: this.config.vendor,
+              errorType: error instanceof Error ? error.name : typeof error,
+            });
+          }
           try {
             await manager.dispose();
           } catch {
@@ -429,6 +444,17 @@ class RelationalToolSetImplementation implements RelationalToolSet {
 
   private executionFor(manager: ConnectionManager) {
     return { executor: manager, vendor: this.config.vendor };
+  }
+
+  private schemaExecutionFor(manager: ConnectionManager) {
+    const execution = this.executionFor(manager);
+    return this.sharedSchemaCacheKey
+      ? { ...execution, schemaCacheKey: this.sharedSchemaCacheKey }
+      : {
+          ...execution,
+          schemaCache: this.schemaCache,
+          schemaCacheKey: TOOL_SET_SCHEMA_CACHE_KEY,
+        };
   }
 
   private async finishDisposal(): Promise<void> {
@@ -458,4 +484,17 @@ export function createRelationalToolSet(
 ): RelationalToolSet {
   validateConfiguration(config, options);
   return new RelationalToolSetImplementation(snapshotConfiguration(config), { ...options });
+}
+
+/** @internal Preserve the legacy read Tool validation and schema-cache contracts. */
+export function createLegacyRelationalReadToolSet(
+  config: ConnectionConfig,
+  options: RelationalToolSetOptions = {},
+  schemaCacheKey?: string
+): RelationalToolSet {
+  return new RelationalToolSetImplementation(
+    snapshotConfiguration(config),
+    { ...options },
+    schemaCacheKey
+  );
 }

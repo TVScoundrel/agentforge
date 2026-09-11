@@ -42,7 +42,16 @@ export * from './query/index.js';
 export * from './schema/index.js';
 
 // Configured Relational Tool Sets
-export * from './tool-set.js';
+export {
+  createRelationalToolSet,
+  RelationalToolSetConfigurationError,
+  RelationalToolSetDisposedError,
+} from './tool-set.js';
+export type {
+  RelationalToolSet,
+  RelationalToolSetGetSchemaInput,
+  RelationalToolSetOptions,
+} from './tool-set.js';
 
 // LangGraph tools
 export * from './tools/index.js';
