@@ -14,6 +14,7 @@ export class ManagedTransaction implements TransactionContext {
   private readonly executeQuery: (query: SQL) => Promise<unknown>;
   private completed = false;
   private cancelledReason: string | null = null;
+  private readonly inFlight = new Set<Promise<unknown>>();
   private savepointCounter = 0;
   private sqliteReadUncommittedOriginal: 0 | 1 | null = null;
   private shouldRestoreSqliteReadUncommitted = false;
@@ -35,6 +36,16 @@ export class ManagedTransaction implements TransactionContext {
   }
 
   async execute(query: SQL): Promise<unknown> {
+    return this.executeScopedQuery(query);
+  }
+
+  async settle(): Promise<void> {
+    while (this.inFlight.size > 0) {
+      await Promise.allSettled([...this.inFlight]);
+    }
+  }
+
+  private async executeScopedQuery(query: SQL): Promise<unknown> {
     if (this.cancelledReason) {
       throw new Error(this.cancelledReason);
     }
@@ -43,7 +54,13 @@ export class ManagedTransaction implements TransactionContext {
       throw new Error('Transaction is no longer active');
     }
 
-    return this.executeQuery(query);
+    const execution = this.executeQuery(query);
+    this.inFlight.add(execution);
+    try {
+      return await execution;
+    } finally {
+      this.inFlight.delete(execution);
+    }
   }
 
   async begin(): Promise<void> {
@@ -89,7 +106,7 @@ export class ManagedTransaction implements TransactionContext {
     }
 
     const savepointName = this.normalizeSavepointName(name ?? `sp_${++this.savepointCounter}`);
-    await this.executeQuery(sql.raw(`SAVEPOINT ${savepointName}`));
+    await this.executeScopedQuery(sql.raw(`SAVEPOINT ${savepointName}`));
     return savepointName;
   }
 
@@ -99,7 +116,7 @@ export class ManagedTransaction implements TransactionContext {
     }
 
     const savepointName = this.normalizeSavepointName(name);
-    await this.executeQuery(sql.raw(`ROLLBACK TO SAVEPOINT ${savepointName}`));
+    await this.executeScopedQuery(sql.raw(`ROLLBACK TO SAVEPOINT ${savepointName}`));
   }
 
   async releaseSavepoint(name: string): Promise<void> {
@@ -108,7 +125,7 @@ export class ManagedTransaction implements TransactionContext {
     }
 
     const savepointName = this.normalizeSavepointName(name);
-    await this.executeQuery(sql.raw(`RELEASE SAVEPOINT ${savepointName}`));
+    await this.executeScopedQuery(sql.raw(`RELEASE SAVEPOINT ${savepointName}`));
   }
 
   async withSavepoint<T>(

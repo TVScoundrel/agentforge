@@ -33,13 +33,11 @@ export async function withTransaction<T>(
       options: resolvedOptions,
     });
 
-    let operationPromise: Promise<T> | undefined;
     let timedOut = false;
     try {
       await transaction.begin();
-      operationPromise = operation(transaction);
       const result = await withTransactionTimeout(
-        operationPromise,
+        operation(transaction),
         resolvedOptions.timeoutMs,
         () => {
           if (resolvedOptions.timeoutMs) {
@@ -61,12 +59,8 @@ export async function withTransaction<T>(
 
       return result;
     } catch (error) {
-      if (timedOut && operationPromise) {
-        try {
-          await operationPromise;
-        } catch {
-          // Preserve the timeout as the transaction failure after active work drains.
-        }
+      if (timedOut) {
+        await transaction.settle();
       }
 
       if (transaction.isActive()) {

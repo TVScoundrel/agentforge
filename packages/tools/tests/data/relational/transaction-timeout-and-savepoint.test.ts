@@ -96,4 +96,21 @@ describe('transaction timeout and savepoint safety', () => {
     await timeoutResult;
     expect(executeCallCount).toBe(3);
   });
+
+  it('does not wait for non-database callback work after timeout', async () => {
+    const { manager, getExecuteCallCount } = createMockManager();
+    const transaction = withTransaction(
+      manager,
+      async () => new Promise<never>(() => undefined),
+      { timeoutMs: 5 }
+    );
+    const outcome = await Promise.race([
+      transaction.catch((error: unknown) => error),
+      new Promise<'still pending'>((resolve) => setTimeout(() => resolve('still pending'), 50)),
+    ]);
+
+    expect(outcome).toBeInstanceOf(Error);
+    expect((outcome as Error).message).toBe('Transaction timed out after 5ms');
+    expect(getExecuteCallCount()).toBe(2);
+  });
 });

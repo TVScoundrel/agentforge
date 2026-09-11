@@ -113,7 +113,20 @@ describe('SQL Sanitizer', () => {
       'CHANGE REPLICATION SOURCE TO SOURCE_HOST = \'db\'',
       "INSTALL PLUGIN plugin_name SONAME 'plugin.so'",
       "LOAD DATA INFILE 'data.csv' INTO TABLE users",
+      "LOAD XML INFILE 'data.xml' INTO TABLE users",
     ])('should reject MySQL implicit-commit statement: %s', (statement) => {
+      expect(() => validateManagedTransactionSql(statement, 'mysql')).toThrow(
+        /Transaction control statements are not allowed/
+      );
+    });
+
+    it.each([
+      'CALL mutate_and_commit()',
+      "PREPARE dynamic_sql FROM 'COMMIT'",
+      'EXECUTE dynamic_sql',
+      'DEALLOCATE PREPARE dynamic_sql',
+      "EXECUTE IMMEDIATE 'COMMIT'",
+    ])('should reject MySQL indirect execution statement: %s', (statement) => {
       expect(() => validateManagedTransactionSql(statement, 'mysql')).toThrow(
         /Transaction control statements are not allowed/
       );
