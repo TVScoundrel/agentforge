@@ -7,6 +7,7 @@
 import { describe, it, expect } from 'vitest';
 import {
   validateSqlString,
+  validateManagedTransactionSql,
   enforceParameterizedQueryUsage,
 } from '../../../src/data/relational/utils/sql-sanitizer.js';
 
@@ -80,6 +81,79 @@ describe('SQL Sanitizer', () => {
       expect(() =>
         validateSqlString("SELECT 'escape \\\\' DROP TABLE users' AS value", 'mysql'),
       ).not.toThrow();
+    });
+  });
+
+  describe('validateManagedTransactionSql', () => {
+    it.each(['ABORT', 'PREPARE TRANSACTION \'transaction-id\''])(
+      'should reject PostgreSQL transaction control: %s',
+      (statement) => {
+        expect(() => validateManagedTransactionSql(statement, 'postgresql')).toThrow(
+          /Transaction control statements are not allowed/
+        );
+      }
+    );
+
+    it('should reject transaction control after a MySQL hash comment', () => {
+      expect(() => validateManagedTransactionSql('# comment\nCOMMIT', 'mysql')).toThrow(
+        /Transaction control statements are not allowed/
+      );
+    });
+
+    it('should reject transaction control after nested PostgreSQL block comments', () => {
+      expect(() =>
+        validateManagedTransactionSql('/* outer /* inner */ */ COMMIT', 'postgresql')
+      ).toThrow(/Transaction control statements are not allowed/);
+    });
+
+    it('should apply the MySQL whitespace rule to double-dash comments', () => {
+      expect(() =>
+        validateManagedTransactionSql('SELECT 1--2; COMMIT', 'mysql')
+      ).toThrow(/Transaction control statements are not allowed/);
+    });
+
+    it('should handle PostgreSQL escape string literals', () => {
+      expect(() =>
+        validateManagedTransactionSql(String.raw`SELECT E'foo\'bar'; COMMIT`, 'postgresql')
+      ).toThrow(/Transaction control statements are not allowed/);
+    });
+
+    it('should conservatively handle MySQL NO_BACKSLASH_ESCAPES mode', () => {
+      expect(() =>
+        validateManagedTransactionSql(String.raw`SELECT 'foo\'; COMMIT`, 'mysql')
+      ).toThrow(/Transaction control statements are not allowed/);
+    });
+
+    it.each([
+      'RENAME TABLE old_name TO new_name',
+      'LOCK TABLES users WRITE',
+      'UNLOCK TABLES',
+      'GRANT SELECT ON app.* TO user',
+      "SET PASSWORD FOR user = 'secret'",
+      'ANALYZE TABLE users',
+      'FLUSH TABLES',
+      'RESET REPLICA',
+      'START REPLICA',
+      'CHANGE REPLICATION SOURCE TO SOURCE_HOST = \'db\'',
+      "INSTALL PLUGIN plugin_name SONAME 'plugin.so'",
+      "LOAD DATA INFILE 'data.csv' INTO TABLE users",
+      "LOAD XML INFILE 'data.xml' INTO TABLE users",
+    ])('should reject MySQL implicit-commit statement: %s', (statement) => {
+      expect(() => validateManagedTransactionSql(statement, 'mysql')).toThrow(
+        /Transaction control statements are not allowed/
+      );
+    });
+
+    it.each([
+      'CALL mutate_and_commit()',
+      "PREPARE dynamic_sql FROM 'COMMIT'",
+      'EXECUTE dynamic_sql',
+      'DEALLOCATE PREPARE dynamic_sql',
+      "EXECUTE IMMEDIATE 'COMMIT'",
+    ])('should reject MySQL indirect execution statement: %s', (statement) => {
+      expect(() => validateManagedTransactionSql(statement, 'mysql')).toThrow(
+        /Transaction control statements are not allowed/
+      );
     });
   });
 

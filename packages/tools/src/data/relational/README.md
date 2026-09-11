@@ -97,6 +97,34 @@ try {
 }
 ```
 
+Run related Tool calls atomically with `transaction`. The callback receives
+scoped versions of the same six credential-free Tools; commit and rollback stay
+behind the Relational Tool Set interface.
+
+```typescript
+await relational.transaction(
+  async (tools) => {
+    await tools.insert.invoke({
+      table: 'orders',
+      data: { id: 42, status: 'pending' },
+    });
+    await tools.update.invoke({
+      table: 'inventory',
+      data: { reserved: true },
+      where: [{ column: 'order_id', operator: 'eq', value: 42 }],
+    });
+  },
+  { isolationLevel: 'read committed', timeoutMs: 15_000 }
+);
+```
+
+There is no implicit transaction timeout. Set `timeoutMs` when Agent reasoning
+or other unbounded work may occur inside the callback, because an open
+transaction can retain a dedicated connection and database locks. At the
+deadline, new scoped work is cancelled; any query already in flight is drained
+before rollback and connection release, so the rejection may arrive after the
+configured deadline when a database operation is slow.
+
 The six credential-bearing Relational Tool exports remain available as
 deprecated compatibility Tools. Each legacy invocation creates and disposes an
 ephemeral Relational Tool Set. Migrate new code to

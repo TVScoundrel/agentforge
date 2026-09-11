@@ -7,6 +7,16 @@ import type { QueryParams } from '../query/types.js';
 import type { DatabaseVendor } from '../types.js';
 
 const DANGEROUS_SQL_STATEMENT_PATTERN = /^(create|drop|truncate|alter)\b/i;
+const TRANSACTION_CONTROL_STATEMENT_PATTERN =
+  /^(begin|start\s+transaction|commit|end|abort|rollback|prepare\s+transaction|savepoint|release(?:\s+savepoint)?|set\s+(?:(?:local|session|global)\s+)?(?:characteristics\s+as\s+)?transaction)\b/i;
+const AUTOCOMMIT_STATEMENT_PATTERN =
+  /^set\s+(?:(?:session|local|global)\s+|@@(?:(?:session|local|global)\.)?)?autocommit\b/i;
+const MYSQL_IMPLICIT_COMMIT_STATEMENT_PATTERN =
+  /^(?:(?:alter|create|drop)\s+|truncate\s+table\b|rename\s+(?:table|user)\b|(?:lock|unlock)\s+tables\b|(?:grant|revoke)\b|set\s+password\b|(?:analyze|check|optimize|repair)\s+table\b|cache\s+index\b|load\s+(?:data|xml|index\s+into\s+cache)\b|flush\b|reset\b|(?:start|stop)\s+(?:replica|slave)\b|change\s+(?:replication\s+source|master)\s+to\b|(?:install|uninstall)\s+(?:plugin|component)\b)/i;
+const MYSQL_INDIRECT_EXECUTION_STATEMENT_PATTERN =
+  /^(?:call\b|prepare\b|execute(?:\s+immediate)?\b|deallocate\s+prepare\b)/i;
+export const MANAGED_TRANSACTION_CONTROL_ERROR_MESSAGE =
+  'Transaction control statements are not allowed in scoped Tools.';
 const NUMBERED_PLACEHOLDER_PATTERN = /\$(\d+)/;
 const QUESTION_PLACEHOLDER_PATTERN = /\?/;
 const NAMED_PLACEHOLDER_PATTERN = /(?<!:):[a-zA-Z_][a-zA-Z0-9_]*/;
@@ -15,6 +25,45 @@ const MUTATION_PATTERN = /\b(insert|update|delete)\b/i;
 
 interface SqlStripOptions {
   backslashEscapes: boolean;
+  hashComments: boolean;
+  mysqlDashDashComments: boolean;
+  nestedBlockComments: boolean;
+  postgresEscapeStrings: boolean;
+  rejectExecutableComments?: boolean;
+}
+
+function sqlStripOptions(
+  vendor?: DatabaseVendor,
+  rejectExecutableComments = false,
+  backslashEscapes = vendor === 'mysql'
+): SqlStripOptions {
+  return {
+    backslashEscapes,
+    hashComments: vendor === 'mysql',
+    mysqlDashDashComments: vendor === 'mysql',
+    nestedBlockComments: vendor === 'postgresql',
+    postgresEscapeStrings: vendor === 'postgresql',
+    rejectExecutableComments,
+  };
+}
+
+function isPostgresEscapeStringQuote(sqlString: string, quoteIndex: number): boolean {
+  const prefixIndex = quoteIndex - 1;
+  if (prefixIndex < 0 || !/[eE]/.test(sqlString[prefixIndex])) {
+    return false;
+  }
+
+  const beforePrefix = prefixIndex - 1;
+  return beforePrefix < 0 || !/[A-Za-z0-9_$]/.test(sqlString[beforePrefix]);
+}
+
+function isWhitespaceOrControlCharacter(value: string): boolean {
+  if (!value) {
+    return false;
+  }
+
+  const codePoint = value.charCodeAt(0);
+  return /\s/u.test(value) || codePoint < 32 || codePoint === 127;
 }
 
 function stripSqlCommentsAndStrings(sqlString: string, options: SqlStripOptions): string {
@@ -27,8 +76,23 @@ function stripSqlCommentsAndStrings(sqlString: string, options: SqlStripOptions)
     const ch = sqlString[i];
     const next = i + 1 < len ? sqlString[i + 1] : '';
 
+    // MySQL line comment: # ...
+    if (options.hashComments && ch === '#') {
+      result += ' ';
+      i += 1;
+      while (i < len && sqlString[i] !== '\n') {
+        i += 1;
+      }
+      continue;
+    }
+
     // Line comment: -- ...
-    if (ch === '-' && next === '-') {
+    const afterDoubleDash = i + 2 < len ? sqlString[i + 2] : '';
+    const doubleDashStartsComment =
+      ch === '-' &&
+      next === '-' &&
+      (!options.mysqlDashDashComments || isWhitespaceOrControlCharacter(afterDoubleDash));
+    if (doubleDashStartsComment) {
       result += ' ';
       i += 2;
       while (i < len && sqlString[i] !== '\n') {
@@ -39,12 +103,30 @@ function stripSqlCommentsAndStrings(sqlString: string, options: SqlStripOptions)
 
     // Block comment: /* ... */
     if (ch === '/' && next === '*') {
+      const executableComment =
+        sqlString[i + 2] === '!' ||
+        (sqlString[i + 2]?.toLowerCase() === 'm' && sqlString[i + 3] === '!');
+      if (options.rejectExecutableComments && executableComment) {
+        throw new Error(MANAGED_TRANSACTION_CONTROL_ERROR_MESSAGE);
+      }
       result += ' ';
       i += 2;
-      while (i < len) {
-        if (sqlString[i] === '*' && i + 1 < len && sqlString[i + 1] === '/') {
+      let depth = 1;
+      while (i < len && depth > 0) {
+        if (
+          options.nestedBlockComments &&
+          sqlString[i] === '/' &&
+          i + 1 < len &&
+          sqlString[i + 1] === '*'
+        ) {
+          depth += 1;
           i += 2;
-          break;
+          continue;
+        }
+        if (sqlString[i] === '*' && i + 1 < len && sqlString[i + 1] === '/') {
+          depth -= 1;
+          i += 2;
+          continue;
         }
         i += 1;
       }
@@ -54,9 +136,12 @@ function stripSqlCommentsAndStrings(sqlString: string, options: SqlStripOptions)
     // Single-quoted string: '...'
     if (ch === '\'') {
       result += "''";
+      const singleQuoteBackslashEscapes =
+        backslashEscapes ||
+        (options.postgresEscapeStrings && isPostgresEscapeStringQuote(sqlString, i));
       i += 1;
       while (i < len) {
-        if (backslashEscapes && sqlString[i] === '\\' && i + 1 < len) {
+        if (singleQuoteBackslashEscapes && sqlString[i] === '\\' && i + 1 < len) {
           i += 2;
           continue;
         }
@@ -126,6 +211,30 @@ function stripSqlCommentsAndStrings(sqlString: string, options: SqlStripOptions)
   return result;
 }
 
+function strippedSqlVariants(
+  sqlString: string,
+  vendor?: DatabaseVendor,
+  rejectExecutableComments = false,
+  analyzeMysqlNoBackslashEscapes = false
+): string[] {
+  const variants = [
+    stripSqlCommentsAndStrings(sqlString, sqlStripOptions(vendor, rejectExecutableComments)),
+  ];
+
+  // Connection options can enable NO_BACKSLASH_ESCAPES, but this validator only
+  // receives the vendor. Analyze both modes and reject SQL unsafe in either one.
+  if (vendor === 'mysql' && analyzeMysqlNoBackslashEscapes) {
+    variants.push(
+      stripSqlCommentsAndStrings(
+        sqlString,
+        sqlStripOptions(vendor, rejectExecutableComments, false)
+      )
+    );
+  }
+
+  return [...new Set(variants)];
+}
+
 function nextNonWhitespaceChar(sqlString: string, index: number): string | null {
   for (let i = index; i < sqlString.length; i += 1) {
     if (!/\s/.test(sqlString[i])) {
@@ -192,6 +301,25 @@ function hasParameters(params?: QueryParams): boolean {
   return Object.keys(params).length > 0;
 }
 
+function sqlStatements(
+  sqlString: string,
+  vendor?: DatabaseVendor,
+  rejectExecutableComments = false,
+  analyzeMysqlNoBackslashEscapes = false,
+): string[] {
+  return strippedSqlVariants(
+    sqlString,
+    vendor,
+    rejectExecutableComments,
+    analyzeMysqlNoBackslashEscapes
+  ).flatMap((normalized) =>
+    normalized
+      .split(';')
+      .map((statement) => statement.trim())
+      .filter((statement) => statement.length > 0)
+  );
+}
+
 /**
  * Validate raw SQL string safety constraints.
  * Rejects empty input, null bytes, and dangerous DDL operations.
@@ -205,16 +333,26 @@ export function validateSqlString(sqlString: string, vendor?: DatabaseVendor): v
     throw new Error('SQL query contains null bytes');
   }
 
-  const normalizedForSafetyCheck = stripSqlCommentsAndStrings(sqlString, {
-    backslashEscapes: vendor === 'mysql',
-  });
-  const statements = normalizedForSafetyCheck
-    .split(';')
-    .map((statement) => statement.trim())
-    .filter((statement) => statement.length > 0);
+  const statements = sqlStatements(sqlString, vendor);
 
   if (statements.some((statement) => DANGEROUS_SQL_STATEMENT_PATTERN.test(statement))) {
     throw new Error('Detected dangerous SQL operation. CREATE, DROP, TRUNCATE, and ALTER are not allowed.');
+  }
+}
+
+/** Prevent scoped raw queries from bypassing managed transaction lifecycle. */
+export function validateManagedTransactionSql(sqlString: string, vendor?: DatabaseVendor): void {
+  if (
+    sqlStatements(sqlString, vendor, true, true).some(
+      (statement) =>
+        TRANSACTION_CONTROL_STATEMENT_PATTERN.test(statement) ||
+        AUTOCOMMIT_STATEMENT_PATTERN.test(statement) ||
+        (vendor === 'mysql' &&
+          (MYSQL_IMPLICIT_COMMIT_STATEMENT_PATTERN.test(statement) ||
+            MYSQL_INDIRECT_EXECUTION_STATEMENT_PATTERN.test(statement)))
+    )
+  ) {
+    throw new Error(MANAGED_TRANSACTION_CONTROL_ERROR_MESSAGE);
   }
 }
 
@@ -226,9 +364,7 @@ export function enforceParameterizedQueryUsage(
   params?: QueryParams,
   vendor?: DatabaseVendor,
 ): void {
-  const normalizedForAnalysis = stripSqlCommentsAndStrings(sqlString, {
-    backslashEscapes: vendor === 'mysql',
-  });
+  const normalizedForAnalysis = stripSqlCommentsAndStrings(sqlString, sqlStripOptions(vendor));
   const normalized = normalizedForAnalysis.trim().toLowerCase();
   const hasPlaceholders = hasSqlPlaceholders(normalizedForAnalysis, vendor);
   const hasParams = hasParameters(params);

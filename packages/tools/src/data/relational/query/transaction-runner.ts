@@ -33,18 +33,25 @@ export async function withTransaction<T>(
       options: resolvedOptions,
     });
 
-    await transaction.begin();
-
+    let timedOut = false;
     try {
+      await transaction.begin();
       const result = await withTransactionTimeout(
         operation(transaction),
         resolvedOptions.timeoutMs,
         () => {
           if (resolvedOptions.timeoutMs) {
+            timedOut = true;
             transaction.cancel(`Transaction timed out after ${resolvedOptions.timeoutMs}ms`);
           }
         }
       );
+
+      transaction.cancel('Transaction is no longer active');
+      const inFlightFailure = await transaction.settle();
+      if (inFlightFailure) {
+        throw inFlightFailure.reason;
+      }
 
       if (transaction.isActive()) {
         await transaction.commit();
@@ -58,6 +65,11 @@ export async function withTransaction<T>(
 
       return result;
     } catch (error) {
+      if (!timedOut) {
+        transaction.cancel(error instanceof Error ? error.message : 'Transaction failed');
+      }
+      await transaction.settle();
+
       if (transaction.isActive()) {
         try {
           await transaction.rollback();

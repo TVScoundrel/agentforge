@@ -61,4 +61,150 @@ describe('transaction timeout and savepoint safety', () => {
     // BEGIN + ROLLBACK only; late execute() must be blocked before hitting executor.
     expect(getExecuteCallCount()).toBe(2);
   });
+
+  it('waits for in-flight work before rolling back on timeout', async () => {
+    let releaseQuery!: () => void;
+    const queryGate = new Promise<void>((resolve) => {
+      releaseQuery = resolve;
+    });
+    let executeCallCount = 0;
+    const manager = {
+      getVendor: () => 'postgresql',
+      executeInConnection: async <T>(
+        callback: (execute: (query: ReturnType<typeof sql.raw>) => Promise<unknown>) => Promise<T>
+      ): Promise<T> =>
+        callback(async () => {
+          executeCallCount += 1;
+          if (executeCallCount === 2) {
+            await queryGate;
+          }
+          return [];
+        }),
+    } as unknown as ConnectionManager;
+
+    const transaction = withTransaction(
+      manager,
+      async (context) => context.execute(sql.raw('SELECT 1')),
+      { timeoutMs: 5 }
+    );
+    const timeoutResult = expect(transaction).rejects.toThrow('Transaction timed out after 5ms');
+
+    await new Promise((resolve) => setTimeout(resolve, 15));
+    expect(executeCallCount).toBe(2);
+
+    releaseQuery();
+    await timeoutResult;
+    expect(executeCallCount).toBe(3);
+  });
+
+  it('does not wait for non-database callback work after timeout', async () => {
+    const { manager, getExecuteCallCount } = createMockManager();
+    const transaction = withTransaction(
+      manager,
+      async () => new Promise<never>(() => undefined),
+      { timeoutMs: 5 }
+    );
+    const outcome = await Promise.race([
+      transaction.catch((error: unknown) => error),
+      new Promise<'still pending'>((resolve) => setTimeout(() => resolve('still pending'), 50)),
+    ]);
+
+    expect(outcome).toBeInstanceOf(Error);
+    expect((outcome as Error).message).toBe('Transaction timed out after 5ms');
+    expect(getExecuteCallCount()).toBe(2);
+  });
+
+  it('waits for unawaited in-flight work before rolling back a callback failure', async () => {
+    let releaseQuery!: () => void;
+    const queryGate = new Promise<void>((resolve) => {
+      releaseQuery = resolve;
+    });
+    let executeCallCount = 0;
+    const manager = {
+      getVendor: () => 'postgresql',
+      executeInConnection: async <T>(
+        callback: (execute: (query: ReturnType<typeof sql.raw>) => Promise<unknown>) => Promise<T>
+      ): Promise<T> =>
+        callback(async () => {
+          executeCallCount += 1;
+          if (executeCallCount === 2) {
+            await queryGate;
+          }
+          return [];
+        }),
+    } as unknown as ConnectionManager;
+
+    const transaction = withTransaction(manager, async (context) => {
+      void context.execute(sql.raw('SELECT 1'));
+      throw new Error('callback failed');
+    });
+    const failure = transaction.catch((error: unknown) => error);
+
+    await new Promise((resolve) => setTimeout(resolve, 10));
+    expect(executeCallCount).toBe(2);
+
+    releaseQuery();
+    const error = await failure;
+    expect(error).toBeInstanceOf(Error);
+    expect((error as Error).message).toBe('callback failed');
+    expect(executeCallCount).toBe(3);
+  });
+
+  it('waits for unawaited in-flight work before committing a successful callback', async () => {
+    let releaseQuery!: () => void;
+    const queryGate = new Promise<void>((resolve) => {
+      releaseQuery = resolve;
+    });
+    let executeCallCount = 0;
+    const manager = {
+      getVendor: () => 'postgresql',
+      executeInConnection: async <T>(
+        callback: (execute: (query: ReturnType<typeof sql.raw>) => Promise<unknown>) => Promise<T>
+      ): Promise<T> =>
+        callback(async () => {
+          executeCallCount += 1;
+          if (executeCallCount === 2) {
+            await queryGate;
+          }
+          return [];
+        }),
+    } as unknown as ConnectionManager;
+
+    const transaction = withTransaction(manager, async (context) => {
+      void context.execute(sql.raw('SELECT 1'));
+      return 'done';
+    });
+
+    await new Promise((resolve) => setTimeout(resolve, 10));
+    expect(executeCallCount).toBe(2);
+
+    releaseQuery();
+    await expect(transaction).resolves.toBe('done');
+    expect(executeCallCount).toBe(3);
+  });
+
+  it('rolls back when unawaited in-flight work fails after a successful callback', async () => {
+    let executeCallCount = 0;
+    const manager = {
+      getVendor: () => 'postgresql',
+      executeInConnection: async <T>(
+        callback: (execute: (query: ReturnType<typeof sql.raw>) => Promise<unknown>) => Promise<T>
+      ): Promise<T> =>
+        callback(async () => {
+          executeCallCount += 1;
+          if (executeCallCount === 2) {
+            throw new Error('query failed');
+          }
+          return [];
+        }),
+    } as unknown as ConnectionManager;
+
+    await expect(
+      withTransaction(manager, async (context) => {
+        void context.execute(sql.raw('SELECT 1'));
+        return 'done';
+      })
+    ).rejects.toThrow('query failed');
+    expect(executeCallCount).toBe(3);
+  });
 });
