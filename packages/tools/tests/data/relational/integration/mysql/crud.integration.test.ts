@@ -15,6 +15,7 @@ import {
   type MySQLContainerInfo,
 } from '../setup/containers.js';
 import { setupTestSchema } from '../setup/test-helpers.js';
+import { expectRelationalToolSetContract } from '../setup/relational-tool-set-contract.js';
 
 let mysqlContainer: MySQLContainerInfo;
 let manager: ConnectionManager;
@@ -48,6 +49,13 @@ describe.skipIf(!runContainerIntegrationTests)('MySQL CRUD Integration', () => {
 
   beforeEach(async () => {
     await setupTestSchema(manager, 'mysql');
+  });
+
+  it('supports the shared Relational Tool Set interface', async () => {
+    await expectRelationalToolSetContract({
+      vendor: 'mysql',
+      connection: mysqlContainer.connectionString,
+    });
   });
 
   describe('SELECT Operations', () => {
@@ -153,7 +161,7 @@ describe.skipIf(!runContainerIntegrationTests)('MySQL CRUD Integration', () => {
           sql: 'INSERT INTO users (name, email, age) VALUES (?, ?, ?)',
           params: ['Duplicate', 'alice@example.com', 20],
           vendor: 'mysql',
-        }),
+        })
       ).rejects.toThrow();
     });
 
@@ -171,7 +179,7 @@ describe.skipIf(!runContainerIntegrationTests)('MySQL CRUD Integration', () => {
       });
 
       const result = await executeQuery(manager, {
-        sql: "SELECT id FROM users WHERE name IN (?, ?) ORDER BY id",
+        sql: 'SELECT id FROM users WHERE name IN (?, ?) ORDER BY id',
         params: ['User1', 'User2'],
         vendor: 'mysql',
       });
@@ -200,13 +208,13 @@ describe.skipIf(!runContainerIntegrationTests)('MySQL CRUD Integration', () => {
 
     it('should update multiple rows', async () => {
       await executeQuery(manager, {
-        sql: "UPDATE products SET stock = ? WHERE category = ?",
+        sql: 'UPDATE products SET stock = ? WHERE category = ?',
         params: [0, 'widgets'],
         vendor: 'mysql',
       });
 
       const result = await executeQuery(manager, {
-        sql: "SELECT stock FROM products WHERE category = ?",
+        sql: 'SELECT stock FROM products WHERE category = ?',
         params: ['widgets'],
         vendor: 'mysql',
       });
@@ -240,7 +248,7 @@ describe.skipIf(!runContainerIntegrationTests)('MySQL CRUD Integration', () => {
           sql: 'DELETE FROM users WHERE id = ?',
           params: [1],
           vendor: 'mysql',
-        }),
+        })
       ).rejects.toThrow();
     });
   });

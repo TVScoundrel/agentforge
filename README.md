@@ -74,6 +74,19 @@ All packages are **published on npm** and ready for production use!
 | [@agentforge/testing](./packages/testing) | 0.17.2 | Testing utilities (mocks, assertions, fixtures) | [![npm](https://img.shields.io/npm/v/@agentforge/testing)](https://www.npmjs.com/package/@agentforge/testing) |
 | [@agentforge/cli](./packages/cli) | 0.17.2 | CLI tool (156 tests, 98.11% coverage) | [![npm](https://img.shields.io/npm/v/@agentforge/cli)](https://www.npmjs.com/package/@agentforge/cli) |
 
+### Relational Tool Sets
+
+`@agentforge/tools` exposes `createRelationalToolSet()` for PostgreSQL, MySQL,
+and SQLite. Configure credentials once in application code, pass its iterable
+credential-free Tool collection to an Agent or Tool Registry, use managed
+transactions and owned schema caching, and call `dispose()` at shutdown.
+
+Existing credential-bearing Relational Tools remain deprecated compatibility
+exports throughout the current major release; removal is eligible only in the
+next major release. See the
+[migration guide](./packages/tools/src/data/relational/docs/migrating-to-relational-tool-sets.md)
+for prefixes, transaction timeouts, cache controls, and before/after examples.
+
 ### Installation
 
 ```bash

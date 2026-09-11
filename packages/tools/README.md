@@ -170,12 +170,54 @@ Tools for data processing and transformation.
 - **`neo4jCreateNodeWithEmbedding`** - Create nodes with automatic embeddings
 
 #### Relational Database Tools
-- **`relationalQuery`** - Execute raw SQL with vendor-aware connections
-- **`relationalSelect`** - Build and execute SELECT queries
-- **`relationalInsert`** - Insert rows into relational tables
-- **`relationalUpdate`** - Update rows in relational tables
-- **`relationalDelete`** - Delete rows from relational tables
-- **`relationalGetSchema`** - Inspect relational database schema metadata
+- **`createRelationalToolSet()`** - Configure six credential-free Tools around one owned database session or pool
+- **`relationalQuery`** - Deprecated credential-bearing Query compatibility Tool
+- **`relationalSelect`** - Deprecated credential-bearing Select compatibility Tool
+- **`relationalInsert`** - Deprecated credential-bearing Insert compatibility Tool
+- **`relationalUpdate`** - Deprecated credential-bearing Update compatibility Tool
+- **`relationalDelete`** - Deprecated credential-bearing Delete compatibility Tool
+- **`relationalGetSchema`** - Deprecated credential-bearing Get Schema compatibility Tool
+
+Configure a Relational Tool Set once and dispose it explicitly when its Agent or
+application lifecycle ends:
+
+```typescript
+import { ToolRegistry } from '@agentforge/core';
+import { createReActAgent } from '@agentforge/patterns';
+import { createRelationalToolSet } from '@agentforge/tools';
+
+const relational = createRelationalToolSet(
+  { vendor: 'postgresql', connection: process.env.DATABASE_URL! },
+  { prefix: 'app', schemaCacheTtlMs: 30_000 }
+);
+
+const registry = new ToolRegistry();
+registry.registerMany(relational);
+const agent = createReActAgent({ model, tools: [...relational] });
+
+try {
+  await agent.invoke({ messages });
+  await relational.transaction(
+    async (tools) => tools.update.invoke({
+      table: 'jobs',
+      data: { status: 'complete' },
+      where: [{ column: 'id', operator: 'eq', value: 42 }],
+    }),
+    { timeoutMs: 15_000 }
+  );
+  relational.refreshSchema();
+  await relational.getSchema.invoke({ refreshCache: true });
+} finally {
+  await relational.dispose();
+}
+```
+
+Use an explicit transaction timeout whenever Agent reasoning occurs inside the
+callback, because the transaction can retain a dedicated connection and locks.
+See the [Relational Tool Set migration guide](./src/data/relational/docs/migrating-to-relational-tool-sets.md)
+for migration mappings, prefixes, cache controls, transaction behavior, and the
+compatibility timeline. The deprecated Tools remain available throughout the
+current major release and become eligible for removal only in the next major release.
 
 ### File Tools (17 tools)
 

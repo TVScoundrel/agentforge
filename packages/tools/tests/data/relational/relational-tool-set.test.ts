@@ -218,6 +218,25 @@ describe('Relational Tool Set', () => {
     await toolSet.dispose();
   });
 
+  it('sanitizes configured Tool failures without exposing credentials or driver details', async () => {
+    const databasePath = temporaryDatabase();
+    seedUsers(databasePath);
+    const toolSet = createRelationalToolSet({ vendor: 'sqlite', connection: databasePath });
+
+    const result = await toolSet.query.invoke({ sql: 'SELECT * FROM raw_driver_table_name' });
+
+    expect(result).toEqual({
+      success: false,
+      error: 'Query execution failed. See server logs for details.',
+      rows: [],
+      rowCount: 0,
+    });
+    expect(JSON.stringify(result)).not.toContain(databasePath);
+    expect(JSON.stringify(result)).not.toContain('raw_driver_table_name');
+
+    await toolSet.dispose();
+  });
+
   it('owns schema refresh and clears cached state during disposal', async () => {
     const databasePath = temporaryDatabase();
     seedUsers(databasePath);
