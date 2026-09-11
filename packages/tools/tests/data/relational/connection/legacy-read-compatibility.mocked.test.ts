@@ -80,6 +80,58 @@ describe('legacy Relational read Tool compatibility', () => {
     });
   });
 
+  it.each([
+    {
+      name: 'Query',
+      invoke: () =>
+        relationalQuery.invoke({
+          vendor: 'postgresql',
+          connectionString: '   ',
+          sql: 'SELECT 1',
+        }),
+      expected: {
+        success: false,
+        error: 'Failed to initialize postgresql connection',
+        rows: [],
+        rowCount: 0,
+      },
+    },
+    {
+      name: 'Select',
+      invoke: () =>
+        relationalSelect.invoke({
+          vendor: 'postgresql',
+          connectionString: '   ',
+          table: 'users',
+        }),
+      expected: {
+        success: false,
+        error: 'Failed to execute SELECT query. Please verify your input and database connection.',
+        rows: [],
+        rowCount: 0,
+      },
+    },
+    {
+      name: 'Get Schema',
+      invoke: () =>
+        relationalGetSchema.invoke({
+          vendor: 'postgresql',
+          connectionString: '   ',
+        }),
+      expected: {
+        success: false,
+        error: 'Failed to inspect schema. See logs for details.',
+        schema: null,
+      },
+    },
+  ])('preserves the legacy $name whitespace connection behavior', async ({ invoke, expected }) => {
+    mockPgExecute.mockRejectedValueOnce(new Error('connection refused'));
+
+    await expectEphemeralLifecycle(async () => {
+      await expect(invoke()).resolves.toEqual(expected);
+    });
+  });
+
   it('runs Select through one ephemeral Relational Tool Set', async () => {
     await expectEphemeralLifecycle(async () => {
       const result = await relationalSelect.invoke({ ...database, table: 'users' });

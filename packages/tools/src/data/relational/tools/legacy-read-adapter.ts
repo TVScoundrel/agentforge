@@ -1,6 +1,5 @@
 import {
-  createRelationalToolSet,
-  createRelationalToolSetWithSharedSchemaCache,
+  createLegacyRelationalReadToolSet,
   type RelationalToolSet,
   type RelationalToolSetOptions,
 } from '../tool-set.js';
@@ -29,9 +28,7 @@ export async function withEphemeralRelationalToolSet<T>(
   sharedSchemaCacheKey?: string
 ): Promise<T> {
   const config = { vendor: database.vendor, connection: database.connectionString } as const;
-  const toolSet = sharedSchemaCacheKey
-    ? createRelationalToolSetWithSharedSchemaCache(config, options, sharedSchemaCacheKey)
-    : createRelationalToolSet(config, options);
+  const toolSet = createLegacyRelationalReadToolSet(config, options, sharedSchemaCacheKey);
 
   try {
     return await invoke(toolSet);

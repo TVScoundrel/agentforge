@@ -101,14 +101,23 @@ export interface RelationalToolSet extends Iterable<ConfiguredTool> {
   dispose(): Promise<void>;
 }
 
-function validateConfiguration(config: ConnectionConfig, options: RelationalToolSetOptions): void {
+type ConnectionValidationMode = 'configured-tool-set' | 'legacy-read';
+
+function validateConfiguration(
+  config: ConnectionConfig,
+  options: RelationalToolSetOptions,
+  connectionValidation: ConnectionValidationMode = 'configured-tool-set'
+): void {
   if (!config || !['postgresql', 'mysql', 'sqlite'].includes(config.vendor)) {
     throw new RelationalToolSetConfigurationError(
       'Database vendor must be postgresql, mysql, or sqlite.'
     );
   }
   if (
-    (typeof config.connection === 'string' && config.connection.trim().length === 0) ||
+    (typeof config.connection === 'string' &&
+      (config.connection.length === 0 ||
+        (connectionValidation === 'configured-tool-set' &&
+          config.connection.trim().length === 0))) ||
     (typeof config.connection !== 'string' &&
       (!config.connection || Array.isArray(config.connection)))
   ) {
@@ -486,13 +495,13 @@ export function createRelationalToolSet(
   return new RelationalToolSetImplementation(snapshotConfiguration(config), { ...options });
 }
 
-/** @internal Preserve the pre-existing shared schema cache for legacy compatibility adapters. */
-export function createRelationalToolSetWithSharedSchemaCache(
+/** @internal Preserve the legacy read Tool validation and schema-cache contracts. */
+export function createLegacyRelationalReadToolSet(
   config: ConnectionConfig,
-  options: RelationalToolSetOptions,
-  schemaCacheKey: string
+  options: RelationalToolSetOptions = {},
+  schemaCacheKey?: string
 ): RelationalToolSet {
-  validateConfiguration(config, options);
+  validateConfiguration(config, options, 'legacy-read');
   return new RelationalToolSetImplementation(
     snapshotConfiguration(config),
     { ...options },
