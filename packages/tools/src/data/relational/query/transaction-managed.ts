@@ -15,6 +15,7 @@ export class ManagedTransaction implements TransactionContext {
   private completed = false;
   private cancelledReason: string | null = null;
   private readonly inFlight = new Set<Promise<unknown>>();
+  private inFlightFailure: { reason: unknown } | null = null;
   private savepointCounter = 0;
   private sqliteReadUncommittedOriginal: 0 | 1 | null = null;
   private shouldRestoreSqliteReadUncommitted = false;
@@ -35,17 +36,22 @@ export class ManagedTransaction implements TransactionContext {
     return !this.completed;
   }
 
-  async execute(query: SQL): Promise<unknown> {
-    return this.executeScopedQuery(query);
-  }
-
-  async settle(): Promise<void> {
-    while (this.inFlight.size > 0) {
-      await Promise.allSettled([...this.inFlight]);
+  execute(query: SQL): Promise<unknown> {
+    try {
+      return this.executeScopedQuery(query);
+    } catch (error) {
+      return Promise.reject(error instanceof Error ? error : new Error(String(error)));
     }
   }
 
-  private async executeScopedQuery(query: SQL): Promise<unknown> {
+  async settle(): Promise<{ reason: unknown } | null> {
+    while (this.inFlight.size > 0) {
+      await Promise.allSettled([...this.inFlight]);
+    }
+    return this.inFlightFailure;
+  }
+
+  private executeScopedQuery(query: SQL): Promise<unknown> {
     if (this.cancelledReason) {
       throw new Error(this.cancelledReason);
     }
@@ -56,11 +62,14 @@ export class ManagedTransaction implements TransactionContext {
 
     const execution = this.executeQuery(query);
     this.inFlight.add(execution);
-    try {
-      return await execution;
-    } finally {
-      this.inFlight.delete(execution);
-    }
+    void execution.then(
+      () => this.inFlight.delete(execution),
+      (reason: unknown) => {
+        this.inFlightFailure ??= { reason };
+        this.inFlight.delete(execution);
+      }
+    );
+    return execution;
   }
 
   async begin(): Promise<void> {

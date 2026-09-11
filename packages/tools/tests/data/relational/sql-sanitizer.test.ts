@@ -106,6 +106,24 @@ describe('SQL Sanitizer', () => {
       ).toThrow(/Transaction control statements are not allowed/);
     });
 
+    it('should apply the MySQL whitespace rule to double-dash comments', () => {
+      expect(() =>
+        validateManagedTransactionSql('SELECT 1--2; COMMIT', 'mysql')
+      ).toThrow(/Transaction control statements are not allowed/);
+    });
+
+    it('should handle PostgreSQL escape string literals', () => {
+      expect(() =>
+        validateManagedTransactionSql(String.raw`SELECT E'foo\'bar'; COMMIT`, 'postgresql')
+      ).toThrow(/Transaction control statements are not allowed/);
+    });
+
+    it('should conservatively handle MySQL NO_BACKSLASH_ESCAPES mode', () => {
+      expect(() =>
+        validateManagedTransactionSql(String.raw`SELECT 'foo\'; COMMIT`, 'mysql')
+      ).toThrow(/Transaction control statements are not allowed/);
+    });
+
     it.each([
       'RENAME TABLE old_name TO new_name',
       'LOCK TABLES users WRITE',

@@ -149,4 +149,62 @@ describe('transaction timeout and savepoint safety', () => {
     expect((error as Error).message).toBe('callback failed');
     expect(executeCallCount).toBe(3);
   });
+
+  it('waits for unawaited in-flight work before committing a successful callback', async () => {
+    let releaseQuery!: () => void;
+    const queryGate = new Promise<void>((resolve) => {
+      releaseQuery = resolve;
+    });
+    let executeCallCount = 0;
+    const manager = {
+      getVendor: () => 'postgresql',
+      executeInConnection: async <T>(
+        callback: (execute: (query: ReturnType<typeof sql.raw>) => Promise<unknown>) => Promise<T>
+      ): Promise<T> =>
+        callback(async () => {
+          executeCallCount += 1;
+          if (executeCallCount === 2) {
+            await queryGate;
+          }
+          return [];
+        }),
+    } as unknown as ConnectionManager;
+
+    const transaction = withTransaction(manager, async (context) => {
+      void context.execute(sql.raw('SELECT 1'));
+      return 'done';
+    });
+
+    await new Promise((resolve) => setTimeout(resolve, 10));
+    expect(executeCallCount).toBe(2);
+
+    releaseQuery();
+    await expect(transaction).resolves.toBe('done');
+    expect(executeCallCount).toBe(3);
+  });
+
+  it('rolls back when unawaited in-flight work fails after a successful callback', async () => {
+    let executeCallCount = 0;
+    const manager = {
+      getVendor: () => 'postgresql',
+      executeInConnection: async <T>(
+        callback: (execute: (query: ReturnType<typeof sql.raw>) => Promise<unknown>) => Promise<T>
+      ): Promise<T> =>
+        callback(async () => {
+          executeCallCount += 1;
+          if (executeCallCount === 2) {
+            throw new Error('query failed');
+          }
+          return [];
+        }),
+    } as unknown as ConnectionManager;
+
+    await expect(
+      withTransaction(manager, async (context) => {
+        void context.execute(sql.raw('SELECT 1'));
+        return 'done';
+      })
+    ).rejects.toThrow('query failed');
+    expect(executeCallCount).toBe(3);
+  });
 });

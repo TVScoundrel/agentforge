@@ -47,6 +47,12 @@ export async function withTransaction<T>(
         }
       );
 
+      transaction.cancel('Transaction is no longer active');
+      const inFlightFailure = await transaction.settle();
+      if (inFlightFailure) {
+        throw inFlightFailure.reason;
+      }
+
       if (transaction.isActive()) {
         await transaction.commit();
       }

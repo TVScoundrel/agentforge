@@ -25,9 +25,45 @@ const MUTATION_PATTERN = /\b(insert|update|delete)\b/i;
 
 interface SqlStripOptions {
   backslashEscapes: boolean;
-  hashComments?: boolean;
-  nestedBlockComments?: boolean;
+  hashComments: boolean;
+  mysqlDashDashComments: boolean;
+  nestedBlockComments: boolean;
+  postgresEscapeStrings: boolean;
   rejectExecutableComments?: boolean;
+}
+
+function sqlStripOptions(
+  vendor?: DatabaseVendor,
+  rejectExecutableComments = false,
+  backslashEscapes = vendor === 'mysql'
+): SqlStripOptions {
+  return {
+    backslashEscapes,
+    hashComments: vendor === 'mysql',
+    mysqlDashDashComments: vendor === 'mysql',
+    nestedBlockComments: vendor === 'postgresql',
+    postgresEscapeStrings: vendor === 'postgresql',
+    rejectExecutableComments,
+  };
+}
+
+function isPostgresEscapeStringQuote(sqlString: string, quoteIndex: number): boolean {
+  const prefixIndex = quoteIndex - 1;
+  if (prefixIndex < 0 || !/[eE]/.test(sqlString[prefixIndex])) {
+    return false;
+  }
+
+  const beforePrefix = prefixIndex - 1;
+  return beforePrefix < 0 || !/[A-Za-z0-9_$]/.test(sqlString[beforePrefix]);
+}
+
+function isWhitespaceOrControlCharacter(value: string): boolean {
+  if (!value) {
+    return false;
+  }
+
+  const codePoint = value.charCodeAt(0);
+  return /\s/u.test(value) || codePoint < 32 || codePoint === 127;
 }
 
 function stripSqlCommentsAndStrings(sqlString: string, options: SqlStripOptions): string {
@@ -51,7 +87,12 @@ function stripSqlCommentsAndStrings(sqlString: string, options: SqlStripOptions)
     }
 
     // Line comment: -- ...
-    if (ch === '-' && next === '-') {
+    const afterDoubleDash = i + 2 < len ? sqlString[i + 2] : '';
+    const doubleDashStartsComment =
+      ch === '-' &&
+      next === '-' &&
+      (!options.mysqlDashDashComments || isWhitespaceOrControlCharacter(afterDoubleDash));
+    if (doubleDashStartsComment) {
       result += ' ';
       i += 2;
       while (i < len && sqlString[i] !== '\n') {
@@ -95,9 +136,12 @@ function stripSqlCommentsAndStrings(sqlString: string, options: SqlStripOptions)
     // Single-quoted string: '...'
     if (ch === '\'') {
       result += "''";
+      const singleQuoteBackslashEscapes =
+        backslashEscapes ||
+        (options.postgresEscapeStrings && isPostgresEscapeStringQuote(sqlString, i));
       i += 1;
       while (i < len) {
-        if (backslashEscapes && sqlString[i] === '\\' && i + 1 < len) {
+        if (singleQuoteBackslashEscapes && sqlString[i] === '\\' && i + 1 < len) {
           i += 2;
           continue;
         }
@@ -165,6 +209,30 @@ function stripSqlCommentsAndStrings(sqlString: string, options: SqlStripOptions)
   }
 
   return result;
+}
+
+function strippedSqlVariants(
+  sqlString: string,
+  vendor?: DatabaseVendor,
+  rejectExecutableComments = false,
+  analyzeMysqlNoBackslashEscapes = false
+): string[] {
+  const variants = [
+    stripSqlCommentsAndStrings(sqlString, sqlStripOptions(vendor, rejectExecutableComments)),
+  ];
+
+  // Connection options can enable NO_BACKSLASH_ESCAPES, but this validator only
+  // receives the vendor. Analyze both modes and reject SQL unsafe in either one.
+  if (vendor === 'mysql' && analyzeMysqlNoBackslashEscapes) {
+    variants.push(
+      stripSqlCommentsAndStrings(
+        sqlString,
+        sqlStripOptions(vendor, rejectExecutableComments, false)
+      )
+    );
+  }
+
+  return [...new Set(variants)];
 }
 
 function nextNonWhitespaceChar(sqlString: string, index: number): string | null {
@@ -237,16 +305,19 @@ function sqlStatements(
   sqlString: string,
   vendor?: DatabaseVendor,
   rejectExecutableComments = false,
+  analyzeMysqlNoBackslashEscapes = false,
 ): string[] {
-  return stripSqlCommentsAndStrings(sqlString, {
-    backslashEscapes: vendor === 'mysql',
-    hashComments: vendor === 'mysql',
-    nestedBlockComments: vendor === 'postgresql',
+  return strippedSqlVariants(
+    sqlString,
+    vendor,
     rejectExecutableComments,
-  })
-    .split(';')
-    .map((statement) => statement.trim())
-    .filter((statement) => statement.length > 0);
+    analyzeMysqlNoBackslashEscapes
+  ).flatMap((normalized) =>
+    normalized
+      .split(';')
+      .map((statement) => statement.trim())
+      .filter((statement) => statement.length > 0)
+  );
 }
 
 /**
@@ -272,7 +343,7 @@ export function validateSqlString(sqlString: string, vendor?: DatabaseVendor): v
 /** Prevent scoped raw queries from bypassing managed transaction lifecycle. */
 export function validateManagedTransactionSql(sqlString: string, vendor?: DatabaseVendor): void {
   if (
-    sqlStatements(sqlString, vendor, true).some(
+    sqlStatements(sqlString, vendor, true, true).some(
       (statement) =>
         TRANSACTION_CONTROL_STATEMENT_PATTERN.test(statement) ||
         AUTOCOMMIT_STATEMENT_PATTERN.test(statement) ||
@@ -293,11 +364,7 @@ export function enforceParameterizedQueryUsage(
   params?: QueryParams,
   vendor?: DatabaseVendor,
 ): void {
-  const normalizedForAnalysis = stripSqlCommentsAndStrings(sqlString, {
-    backslashEscapes: vendor === 'mysql',
-    hashComments: vendor === 'mysql',
-    nestedBlockComments: vendor === 'postgresql',
-  });
+  const normalizedForAnalysis = stripSqlCommentsAndStrings(sqlString, sqlStripOptions(vendor));
   const normalized = normalizedForAnalysis.trim().toLowerCase();
   const hasPlaceholders = hasSqlPlaceholders(normalizedForAnalysis, vendor);
   const hasParams = hasParameters(params);
