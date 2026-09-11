@@ -20,6 +20,18 @@ import { executeInsertOnce } from './executor-single.js';
 
 export type { InsertExecutionContext } from './executor-shared.js';
 
+function getCauseMetadata(error: unknown): Record<string, string> {
+  if (!(error instanceof Error) || !error.cause || typeof error.cause !== 'object') {
+    return {};
+  }
+
+  const cause = error.cause as Record<string, unknown>;
+  return {
+    causeType: error.cause instanceof Error ? error.cause.name : 'object',
+    ...(typeof cause.code === 'string' ? { causeCode: cause.code } : {}),
+  };
+}
+
 /**
  * Execute an INSERT query using the shared query builder.
  */
@@ -74,6 +86,7 @@ export async function executeInsert(
       vendor: input.vendor,
       table: input.table,
       error: error instanceof Error ? error.message : String(error),
+      ...getCauseMetadata(error),
       executionTime,
     });
 
