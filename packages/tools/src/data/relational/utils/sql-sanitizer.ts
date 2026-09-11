@@ -11,6 +11,8 @@ const TRANSACTION_CONTROL_STATEMENT_PATTERN =
   /^(begin|start\s+transaction|commit|end|abort|rollback|prepare\s+transaction|savepoint|release(?:\s+savepoint)?|set\s+(?:(?:local|session|global)\s+)?(?:characteristics\s+as\s+)?transaction)\b/i;
 const AUTOCOMMIT_STATEMENT_PATTERN =
   /^set\s+(?:(?:session|local|global)\s+|@@(?:(?:session|local|global)\.)?)?autocommit\b/i;
+const MYSQL_IMPLICIT_COMMIT_STATEMENT_PATTERN =
+  /^(?:(?:alter|create|drop)\s+|truncate\s+table\b|rename\s+(?:table|user)\b|(?:lock|unlock)\s+tables\b|(?:grant|revoke)\b|set\s+password\b|(?:analyze|check|optimize|repair)\s+table\b|cache\s+index\b|load\s+(?:data|index\s+into\s+cache)\b|flush\b|reset\b|(?:start|stop)\s+(?:replica|slave)\b|change\s+(?:replication\s+source|master)\s+to\b|(?:install|uninstall)\s+(?:plugin|component)\b)/i;
 export const MANAGED_TRANSACTION_CONTROL_ERROR_MESSAGE =
   'Transaction control statements are not allowed in scoped Tools.';
 const NUMBERED_PLACEHOLDER_PATTERN = /\$(\d+)/;
@@ -257,7 +259,8 @@ export function validateManagedTransactionSql(sqlString: string, vendor?: Databa
     sqlStatements(sqlString, vendor, true).some(
       (statement) =>
         TRANSACTION_CONTROL_STATEMENT_PATTERN.test(statement) ||
-        AUTOCOMMIT_STATEMENT_PATTERN.test(statement)
+        AUTOCOMMIT_STATEMENT_PATTERN.test(statement) ||
+        (vendor === 'mysql' && MYSQL_IMPLICIT_COMMIT_STATEMENT_PATTERN.test(statement))
     )
   ) {
     throw new Error(MANAGED_TRANSACTION_CONTROL_ERROR_MESSAGE);

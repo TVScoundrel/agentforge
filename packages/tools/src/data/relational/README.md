@@ -120,7 +120,10 @@ await relational.transaction(
 
 There is no implicit transaction timeout. Set `timeoutMs` when Agent reasoning
 or other unbounded work may occur inside the callback, because an open
-transaction can retain a dedicated connection and database locks.
+transaction can retain a dedicated connection and database locks. At the
+deadline, new scoped work is cancelled; any query already in flight is drained
+before rollback and connection release, so the rejection may arrive after the
+configured deadline when a database operation is slow.
 
 The six credential-bearing Relational Tool exports remain available as
 deprecated compatibility Tools. Each legacy invocation creates and disposes an

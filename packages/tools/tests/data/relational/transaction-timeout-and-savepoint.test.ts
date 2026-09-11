@@ -61,4 +61,39 @@ describe('transaction timeout and savepoint safety', () => {
     // BEGIN + ROLLBACK only; late execute() must be blocked before hitting executor.
     expect(getExecuteCallCount()).toBe(2);
   });
+
+  it('waits for in-flight work before rolling back on timeout', async () => {
+    let releaseQuery!: () => void;
+    const queryGate = new Promise<void>((resolve) => {
+      releaseQuery = resolve;
+    });
+    let executeCallCount = 0;
+    const manager = {
+      getVendor: () => 'postgresql',
+      executeInConnection: async <T>(
+        callback: (execute: (query: ReturnType<typeof sql.raw>) => Promise<unknown>) => Promise<T>
+      ): Promise<T> =>
+        callback(async () => {
+          executeCallCount += 1;
+          if (executeCallCount === 2) {
+            await queryGate;
+          }
+          return [];
+        }),
+    } as unknown as ConnectionManager;
+
+    const transaction = withTransaction(
+      manager,
+      async (context) => context.execute(sql.raw('SELECT 1')),
+      { timeoutMs: 5 }
+    );
+    const timeoutResult = expect(transaction).rejects.toThrow('Transaction timed out after 5ms');
+
+    await new Promise((resolve) => setTimeout(resolve, 15));
+    expect(executeCallCount).toBe(2);
+
+    releaseQuery();
+    await timeoutResult;
+    expect(executeCallCount).toBe(3);
+  });
 });

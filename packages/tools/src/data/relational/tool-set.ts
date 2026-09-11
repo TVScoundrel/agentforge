@@ -156,7 +156,8 @@ function isFailedOrPartialResult(result: unknown): boolean {
   );
 }
 
-class TransactionToolScope {
+/** @internal Exported for lifecycle regression coverage. */
+export class TransactionToolScope {
   private active = true;
   private rollbackOnly = false;
   private tail: Promise<void> = Promise.resolve();
@@ -166,14 +167,17 @@ class TransactionToolScope {
   run<T>(
     operation: (execution: RelationalReadExecution) => Promise<T>,
     failure: FailureFactory<T>
-  ) {
-    const invocation = this.tail.then(async () => {
-      if (!this.active) {
-        throw new RelationalTransactionError(
+  ): Promise<T> {
+    if (!this.active) {
+      return Promise.reject(
+        new RelationalTransactionError(
           'Transaction-scoped Tools can no longer be used because their callback has settled.',
           'SCOPE_EXPIRED'
-        );
-      }
+        )
+      );
+    }
+
+    const invocation = this.tail.then(async () => {
       if (this.rollbackOnly) {
         return failure(ROLLBACK_ONLY_MESSAGE);
       }
@@ -192,8 +196,8 @@ class TransactionToolScope {
   }
 
   async settle(): Promise<void> {
-    await this.tail;
     this.active = false;
+    await this.tail;
   }
 
   isRollbackOnly(): boolean {

@@ -33,6 +33,27 @@ describe('withTransaction lifecycle', () => {
     expect(mockManager._executeQuery.mock.calls.length).toBeGreaterThanOrEqual(2);
   });
 
+  it('rolls back when transaction setup fails after BEGIN', async () => {
+    const executeQuery = vi.fn()
+      .mockResolvedValueOnce([])
+      .mockRejectedValueOnce(new Error('Isolation setup failed'))
+      .mockResolvedValueOnce([]);
+    const manager = {
+      getVendor: vi.fn().mockReturnValue('postgresql'),
+      executeInConnection: vi.fn().mockImplementation(
+        async (callback: (...args: unknown[]) => unknown) => callback(executeQuery)
+      ),
+    } as unknown as ConnectionManager;
+    const operation = vi.fn();
+
+    await expect(
+      withTransaction(manager, operation, { isolationLevel: 'serializable' })
+    ).rejects.toThrow('Isolation setup failed');
+
+    expect(operation).not.toHaveBeenCalled();
+    expect(executeQuery).toHaveBeenCalledTimes(3);
+  });
+
   it.each(['postgresql', 'mysql', 'sqlite'] as const)('passes %s vendor through the transaction context', async (vendor) => {
     const manager = createMockManager(vendor);
     await withTransaction(manager, async (tx) => {

@@ -99,6 +99,25 @@ describe('SQL Sanitizer', () => {
         /Transaction control statements are not allowed/
       );
     });
+
+    it.each([
+      'RENAME TABLE old_name TO new_name',
+      'LOCK TABLES users WRITE',
+      'UNLOCK TABLES',
+      'GRANT SELECT ON app.* TO user',
+      "SET PASSWORD FOR user = 'secret'",
+      'ANALYZE TABLE users',
+      'FLUSH TABLES',
+      'RESET REPLICA',
+      'START REPLICA',
+      'CHANGE REPLICATION SOURCE TO SOURCE_HOST = \'db\'',
+      "INSTALL PLUGIN plugin_name SONAME 'plugin.so'",
+      "LOAD DATA INFILE 'data.csv' INTO TABLE users",
+    ])('should reject MySQL implicit-commit statement: %s', (statement) => {
+      expect(() => validateManagedTransactionSql(statement, 'mysql')).toThrow(
+        /Transaction control statements are not allowed/
+      );
+    });
   });
 
   describe('enforceParameterizedQueryUsage', () => {
