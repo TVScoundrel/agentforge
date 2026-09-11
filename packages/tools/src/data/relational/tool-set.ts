@@ -4,8 +4,11 @@ import type { z } from 'zod';
 import { ConnectionManager } from './connection/connection-manager.js';
 import type { ConnectionConfig } from './connection/types.js';
 import {
+  DELETE_CONNECTION_FAILURE,
+  INSERT_CONNECTION_FAILURE,
   QUERY_CONNECTION_FAILURE,
   SELECT_CONNECTION_FAILURE,
+  UPDATE_CONNECTION_FAILURE,
 } from './connection-failure-messages.js';
 import { SchemaCache, SchemaInspector } from './schema/schema-inspector.js';
 import { MissingPeerDependencyError } from './utils/peer-dependency-checker.js';
@@ -292,8 +295,7 @@ class RelationalToolSetImplementation implements RelationalToolSet {
           (manager) => invokeRelationalInsert(this.executionFor(manager), input),
           () => ({
             success: false,
-            error:
-              'Failed to execute INSERT query. Please verify the configured database connection.',
+            error: INSERT_CONNECTION_FAILURE,
             rowCount: 0,
             insertedIds: [],
             rows: [],
@@ -308,8 +310,7 @@ class RelationalToolSetImplementation implements RelationalToolSet {
           (manager) => invokeRelationalUpdate(this.executionFor(manager), input),
           () => ({
             success: false,
-            error:
-              'Failed to execute UPDATE query. Please verify the configured database connection.',
+            error: UPDATE_CONNECTION_FAILURE,
             rowCount: 0,
           })
         )
@@ -322,8 +323,7 @@ class RelationalToolSetImplementation implements RelationalToolSet {
           (manager) => invokeRelationalDelete(this.executionFor(manager), input),
           () => ({
             success: false,
-            error:
-              'Failed to execute DELETE query. Please verify the configured database connection.',
+            error: DELETE_CONNECTION_FAILURE,
             rowCount: 0,
             softDeleted: false,
           })
@@ -497,4 +497,9 @@ export function createLegacyRelationalReadToolSet(
     { ...options },
     schemaCacheKey
   );
+}
+
+/** @internal Preserve the legacy mutation Tool validation and error contracts. */
+export function createLegacyRelationalMutationToolSet(config: ConnectionConfig): RelationalToolSet {
+  return new RelationalToolSetImplementation(snapshotConfiguration(config), {});
 }

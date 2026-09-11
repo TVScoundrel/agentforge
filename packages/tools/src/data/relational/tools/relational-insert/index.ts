@@ -8,7 +8,7 @@
  */
 
 import { toolBuilder, ToolCategory } from '@agentforge/core';
-import { ConnectionManager } from '../../connection/connection-manager.js';
+import { INSERT_CONNECTION_FAILURE } from '../../connection-failure-messages.js';
 import { relationalInsertSchema } from './schemas.js';
 import { executeInsert } from './executor.js';
 import type {
@@ -19,6 +19,10 @@ import type {
 } from './types.js';
 import { isSafeInsertError } from './error-utils.js';
 import type { RelationalMutationExecution } from '../mutation-execution.js';
+import {
+  replaceMutationConnectionFailure,
+  withEphemeralRelationalMutationToolSet,
+} from '../legacy-mutation-adapter.js';
 
 // Re-export types and schemas for external use
 export * from './types.js';
@@ -67,6 +71,9 @@ export async function invokeRelationalInsert(
  * Relational INSERT Tool
  *
  * Execute type-safe INSERT queries using Drizzle ORM query builder.
+ *
+ * @deprecated Configure a session-owning Relational Tool Set with
+ * `createRelationalToolSet(...)` and use its `insert` Tool instead.
  */
 export const relationalInsert = toolBuilder()
   .name('relational-insert')
@@ -104,22 +111,16 @@ export const relationalInsert = toolBuilder()
   })
   .implement(async (input: RelationalInsertInput): Promise<InsertResponse> => {
     const { connectionString, vendor, ...operation } = input;
-    const manager = new ConnectionManager({
-      vendor,
-      connection: connectionString,
+    return withEphemeralRelationalMutationToolSet({ vendor, connectionString }, async (toolSet) => {
+      try {
+        return replaceMutationConnectionFailure(
+          await toolSet.insert.invoke(operation),
+          INSERT_CONNECTION_FAILURE,
+          'Failed to execute INSERT query. Please verify your input and database connection.'
+        );
+      } catch (error) {
+        return toInsertErrorResponse(error);
+      }
     });
-
-    try {
-      await manager.connect();
-
-      return await invokeRelationalInsert(
-        { executor: manager, vendor },
-        operation
-      );
-    } catch (error) {
-      return toInsertErrorResponse(error);
-    } finally {
-      await manager.disconnect();
-    }
   })
   .build();

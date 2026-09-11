@@ -97,11 +97,11 @@ try {
 }
 ```
 
-The credential-bearing `relationalQuery`, `relationalSelect`, and
-`relationalGetSchema` exports remain available as deprecated compatibility
-Tools. Each legacy invocation creates and disposes an ephemeral Relational Tool
-Set. Migrate new code to `createRelationalToolSet(...)` to reuse its owned
-session and keep credentials out of Tool inputs.
+The six credential-bearing Relational Tool exports remain available as
+deprecated compatibility Tools. Each legacy invocation creates and disposes an
+ephemeral Relational Tool Set. Migrate new code to
+`createRelationalToolSet(...)` to reuse its owned session and keep credentials
+out of Tool inputs.
 
 ---
 
@@ -111,9 +111,9 @@ session and keep credentials out of Tool inputs.
 | ---------------------- | ------------------------------------------------------------------------ |
 | `relationalQuery`      | Deprecated credential-bearing Query compatibility Tool                  |
 | `relationalSelect`     | Deprecated credential-bearing Select compatibility Tool                 |
-| `relationalInsert`     | Type-safe INSERT (single-row and batch) with RETURNING support           |
-| `relationalUpdate`     | Type-safe UPDATE with WHERE, optimistic locking, and batch support       |
-| `relationalDelete`     | Type-safe DELETE with WHERE, soft delete mode, and batch support         |
+| `relationalInsert`     | Deprecated credential-bearing Insert compatibility Tool                 |
+| `relationalUpdate`     | Deprecated credential-bearing Update compatibility Tool                 |
+| `relationalDelete`     | Deprecated credential-bearing Delete compatibility Tool                 |
 | `relationalGetSchema`  | Deprecated credential-bearing Get Schema compatibility Tool             |
 
 The deprecated compatibility Tools accept `vendor` and `connectionString` on

@@ -8,7 +8,7 @@
  */
 
 import { toolBuilder, ToolCategory } from '@agentforge/core';
-import { ConnectionManager } from '../../connection/connection-manager.js';
+import { UPDATE_CONNECTION_FAILURE } from '../../connection-failure-messages.js';
 import { relationalUpdateSchema } from './schemas.js';
 import { executeUpdate } from './executor.js';
 import type {
@@ -19,6 +19,10 @@ import type {
 } from './types.js';
 import { isSafeUpdateError } from './error-utils.js';
 import type { RelationalMutationExecution } from '../mutation-execution.js';
+import {
+  replaceMutationConnectionFailure,
+  withEphemeralRelationalMutationToolSet,
+} from '../legacy-mutation-adapter.js';
 
 // Re-export types and schemas for external use
 export * from './types.js';
@@ -63,6 +67,9 @@ export async function invokeRelationalUpdate(
  * Relational UPDATE Tool
  *
  * Execute type-safe UPDATE queries using Drizzle ORM query builder.
+ *
+ * @deprecated Configure a session-owning Relational Tool Set with
+ * `createRelationalToolSet(...)` and use its `update` Tool instead.
  */
 export const relationalUpdate = toolBuilder()
   .name('relational-update')
@@ -116,22 +123,16 @@ export const relationalUpdate = toolBuilder()
   })
   .implement(async (input: RelationalUpdateInput): Promise<UpdateResponse> => {
     const { connectionString, vendor, ...operation } = input;
-    const manager = new ConnectionManager({
-      vendor,
-      connection: connectionString,
+    return withEphemeralRelationalMutationToolSet({ vendor, connectionString }, async (toolSet) => {
+      try {
+        return replaceMutationConnectionFailure(
+          await toolSet.update.invoke(operation),
+          UPDATE_CONNECTION_FAILURE,
+          'Failed to execute UPDATE query. Please verify your input and database connection.'
+        );
+      } catch (error) {
+        return toUpdateErrorResponse(error);
+      }
     });
-
-    try {
-      await manager.connect();
-
-      return await invokeRelationalUpdate(
-        { executor: manager, vendor },
-        operation
-      );
-    } catch (error) {
-      return toUpdateErrorResponse(error);
-    } finally {
-      await manager.disconnect();
-    }
   })
   .build();
