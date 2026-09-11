@@ -16,21 +16,21 @@ packages/tools/tests/data/relational/integration/
 │   └── test-helpers.ts    # Shared setup/teardown, utilities
 ├── sqlite/
 │   ├── connection.integration.test.ts   # 9 tests
-│   ├── crud.integration.test.ts         # 17 tests
+│   ├── crud.integration.test.ts         # 18 tests
 │   └── schema.integration.test.ts       # 8 tests
 ├── postgresql/
 │   ├── connection.integration.test.ts   # 10 tests
-│   ├── crud.integration.test.ts         # 19 tests
+│   ├── crud.integration.test.ts         # 20 tests
 │   └── schema.integration.test.ts       # 9 tests
 ├── mysql/
 │   ├── connection.integration.test.ts   # 8 tests
-│   ├── crud.integration.test.ts         # 18 tests
+│   ├── crud.integration.test.ts         # 19 tests
 │   └── schema.integration.test.ts       # 8 tests
 └── benchmarks/
     └── performance.integration.test.ts  # 15 tests
 ```
 
-**Total: 121 integration tests across 10 test files**
+**Total: 124 integration tests across 10 test files**
 
 ## Running Locally
 
