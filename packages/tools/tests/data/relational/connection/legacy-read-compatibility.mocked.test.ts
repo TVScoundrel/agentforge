@@ -80,13 +80,14 @@ describe('legacy Relational read Tool compatibility', () => {
     });
   });
 
-  it.each([
+  const legacyConnectionFailureCases = (connectionString: string, connectionDescription: string) => [
     {
       name: 'Query',
+      connectionDescription,
       invoke: () =>
         relationalQuery.invoke({
           vendor: 'postgresql',
-          connectionString: '   ',
+          connectionString,
           sql: 'SELECT 1',
         }),
       expected: {
@@ -98,10 +99,11 @@ describe('legacy Relational read Tool compatibility', () => {
     },
     {
       name: 'Select',
+      connectionDescription,
       invoke: () =>
         relationalSelect.invoke({
           vendor: 'postgresql',
-          connectionString: '   ',
+          connectionString,
           table: 'users',
         }),
       expected: {
@@ -113,10 +115,11 @@ describe('legacy Relational read Tool compatibility', () => {
     },
     {
       name: 'Get Schema',
+      connectionDescription,
       invoke: () =>
         relationalGetSchema.invoke({
           vendor: 'postgresql',
-          connectionString: '   ',
+          connectionString,
         }),
       expected: {
         success: false,
@@ -124,11 +127,23 @@ describe('legacy Relational read Tool compatibility', () => {
         schema: null,
       },
     },
-  ])('preserves the legacy $name whitespace connection behavior', async ({ invoke, expected }) => {
+  ];
+
+  it.each([
+    ...legacyConnectionFailureCases('', 'empty'),
+    ...legacyConnectionFailureCases('   ', 'whitespace-only'),
+  ])('preserves the legacy $name $connectionDescription connection behavior', async ({ invoke, expected }) => {
     mockPgExecute.mockRejectedValueOnce(new Error('connection refused'));
 
     await expectEphemeralLifecycle(async () => {
       await expect(invoke()).resolves.toEqual(expected);
+    });
+  });
+
+  it.each([-1, 1.5])('preserves direct legacy Get Schema cacheTtlMs=%s behavior', async (cacheTtlMs) => {
+    await expectEphemeralLifecycle(async () => {
+      const result = await relationalGetSchema.invoke({ ...database, cacheTtlMs });
+      expect(result.success).toBe(true);
     });
   });
 

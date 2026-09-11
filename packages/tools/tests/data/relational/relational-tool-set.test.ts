@@ -5,6 +5,8 @@ import { join } from 'node:path';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { z } from 'zod';
 
+import * as relationalExports from '../../../src/data/relational/index.js';
+
 import {
   ConnectionManager,
   createRelationalToolSet,
@@ -43,6 +45,10 @@ function schemaFields(schema: z.ZodTypeAny): string[] {
 }
 
 describe('Relational Tool Set', () => {
+  it('does not expose the internal legacy-read factory', () => {
+    expect(relationalExports).not.toHaveProperty('createLegacyRelationalReadToolSet');
+  });
+
   it('exposes six named and iterable credential-free Tools without connecting', () => {
     const toolSet = createRelationalToolSet(
       { vendor: 'sqlite', connection: ':memory:' },
