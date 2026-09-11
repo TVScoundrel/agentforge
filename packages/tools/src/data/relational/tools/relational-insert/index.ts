@@ -111,16 +111,15 @@ export const relationalInsert = toolBuilder()
   })
   .implement(async (input: RelationalInsertInput): Promise<InsertResponse> => {
     const { connectionString, vendor, ...operation } = input;
-    return withEphemeralRelationalMutationToolSet({ vendor, connectionString }, async (toolSet) => {
-      try {
-        return replaceMutationConnectionFailure(
+    return withEphemeralRelationalMutationToolSet(
+      { vendor, connectionString },
+      async (toolSet) =>
+        replaceMutationConnectionFailure(
           await toolSet.insert.invoke(operation),
           INSERT_CONNECTION_FAILURE,
           'Failed to execute INSERT query. Please verify your input and database connection.'
-        );
-      } catch (error) {
-        return toInsertErrorResponse(error);
-      }
-    });
+        ),
+      toInsertErrorResponse
+    );
   })
   .build();

@@ -1,5 +1,6 @@
 import { createLegacyRelationalMutationToolSet, type RelationalToolSet } from '../tool-set.js';
 import type { DatabaseVendor } from '../types.js';
+import { MissingPeerDependencyError } from '../utils/peer-dependency-checker.js';
 
 interface LegacyDatabaseInput {
   vendor: DatabaseVendor;
@@ -19,7 +20,8 @@ export function replaceMutationConnectionFailure<T extends { success: boolean; e
 
 export async function withEphemeralRelationalMutationToolSet<T>(
   database: LegacyDatabaseInput,
-  invoke: (toolSet: RelationalToolSet) => Promise<T>
+  invoke: (toolSet: RelationalToolSet) => Promise<T>,
+  toErrorResponse: (error: unknown) => T
 ): Promise<T> {
   const toolSet = createLegacyRelationalMutationToolSet({
     vendor: database.vendor,
@@ -27,7 +29,14 @@ export async function withEphemeralRelationalMutationToolSet<T>(
   });
 
   try {
-    return await invoke(toolSet);
+    try {
+      return await invoke(toolSet);
+    } catch (error) {
+      if (error instanceof MissingPeerDependencyError) {
+        throw error;
+      }
+      return toErrorResponse(error);
+    }
   } finally {
     await toolSet.dispose();
   }

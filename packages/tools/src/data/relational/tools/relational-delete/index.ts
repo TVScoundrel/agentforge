@@ -123,16 +123,15 @@ export const relationalDelete = toolBuilder()
   })
   .implement(async (input: RelationalDeleteInput): Promise<DeleteResponse> => {
     const { connectionString, vendor, ...operation } = input;
-    return withEphemeralRelationalMutationToolSet({ vendor, connectionString }, async (toolSet) => {
-      try {
-        return replaceMutationConnectionFailure(
+    return withEphemeralRelationalMutationToolSet(
+      { vendor, connectionString },
+      async (toolSet) =>
+        replaceMutationConnectionFailure(
           await toolSet.delete.invoke(operation),
           DELETE_CONNECTION_FAILURE,
           'Failed to execute DELETE query. Please verify your input and database connection.'
-        );
-      } catch (error) {
-        return toDeleteErrorResponse(error);
-      }
-    });
+        ),
+      toDeleteErrorResponse
+    );
   })
   .build();

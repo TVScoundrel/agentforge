@@ -14,6 +14,7 @@ vi.mock('../../../src/data/relational/utils/peer-dependency-checker.js', async (
 });
 
 import {
+  MissingPeerDependencyError,
   relationalDelete,
   relationalInsert,
   relationalUpdate,
@@ -30,7 +31,6 @@ describe('legacy Relational mutation Tool missing-driver compatibility', () => {
           vendor: 'postgresql',
           connectionString: 'postgresql://localhost/agentforge',
         }),
-      'Failed to execute INSERT query. Please verify your input and database connection.',
     ],
     [
       'Update',
@@ -42,7 +42,6 @@ describe('legacy Relational mutation Tool missing-driver compatibility', () => {
           vendor: 'postgresql',
           connectionString: 'postgresql://localhost/agentforge',
         }),
-      'Failed to execute UPDATE query. Please verify your input and database connection.',
     ],
     [
       'Delete',
@@ -53,9 +52,8 @@ describe('legacy Relational mutation Tool missing-driver compatibility', () => {
           vendor: 'postgresql',
           connectionString: 'postgresql://localhost/agentforge',
         }),
-      'Failed to execute DELETE query. Please verify your input and database connection.',
     ],
-  ])('%s preserves its sanitized missing-driver result', async (_name, invoke, error) => {
-    await expect(invoke()).resolves.toMatchObject({ success: false, error });
+  ])('%s preserves MissingPeerDependencyError', async (_name, invoke) => {
+    await expect(invoke()).rejects.toBeInstanceOf(MissingPeerDependencyError);
   });
 });

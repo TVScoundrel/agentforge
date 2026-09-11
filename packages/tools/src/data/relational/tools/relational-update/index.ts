@@ -123,16 +123,15 @@ export const relationalUpdate = toolBuilder()
   })
   .implement(async (input: RelationalUpdateInput): Promise<UpdateResponse> => {
     const { connectionString, vendor, ...operation } = input;
-    return withEphemeralRelationalMutationToolSet({ vendor, connectionString }, async (toolSet) => {
-      try {
-        return replaceMutationConnectionFailure(
+    return withEphemeralRelationalMutationToolSet(
+      { vendor, connectionString },
+      async (toolSet) =>
+        replaceMutationConnectionFailure(
           await toolSet.update.invoke(operation),
           UPDATE_CONNECTION_FAILURE,
           'Failed to execute UPDATE query. Please verify your input and database connection.'
-        );
-      } catch (error) {
-        return toUpdateErrorResponse(error);
-      }
-    });
+        ),
+      toUpdateErrorResponse
+    );
   })
   .build();
