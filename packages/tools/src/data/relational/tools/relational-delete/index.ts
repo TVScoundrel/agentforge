@@ -8,7 +8,7 @@
  */
 
 import { toolBuilder, ToolCategory } from '@agentforge/core';
-import { ConnectionManager } from '../../connection/connection-manager.js';
+import { DELETE_CONNECTION_FAILURE } from '../../connection-failure-messages.js';
 import { relationalDeleteSchema } from './schemas.js';
 import { executeDelete } from './executor.js';
 import type {
@@ -19,6 +19,10 @@ import type {
 } from './types.js';
 import { isSafeDeleteError } from './error-utils.js';
 import type { RelationalMutationExecution } from '../mutation-execution.js';
+import {
+  replaceMutationConnectionFailure,
+  withEphemeralRelationalMutationToolSet,
+} from '../legacy-mutation-adapter.js';
 
 export * from './types.js';
 export * from './schemas.js';
@@ -65,6 +69,9 @@ export async function invokeRelationalDelete(
  *
  * Supports WHERE conditions, full-table-delete protection, soft-delete mode,
  * batch operations with retry logic, and optional cascade hints.
+ *
+ * @deprecated Configure a session-owning Relational Tool Set with
+ * `createRelationalToolSet(...)` and use its `delete` Tool instead.
  */
 export const relationalDelete = toolBuilder()
   .name('relational-delete')
@@ -116,22 +123,15 @@ export const relationalDelete = toolBuilder()
   })
   .implement(async (input: RelationalDeleteInput): Promise<DeleteResponse> => {
     const { connectionString, vendor, ...operation } = input;
-    const manager = new ConnectionManager({
-      vendor,
-      connection: connectionString,
-    });
-
-    try {
-      await manager.connect();
-
-      return await invokeRelationalDelete(
-        { executor: manager, vendor },
-        operation
-      );
-    } catch (error) {
-      return toDeleteErrorResponse(error);
-    } finally {
-      await manager.disconnect();
-    }
+    return withEphemeralRelationalMutationToolSet(
+      { vendor, connectionString },
+      async (toolSet) =>
+        replaceMutationConnectionFailure(
+          await toolSet.delete.invoke(operation),
+          DELETE_CONNECTION_FAILURE,
+          'Failed to execute DELETE query. Please verify your input and database connection.'
+        ),
+      toDeleteErrorResponse
+    );
   })
   .build();
