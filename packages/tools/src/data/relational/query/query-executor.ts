@@ -10,6 +10,7 @@ import type { QueryInput, QueryExecutionResult, QueryParams, SqlExecutor } from 
 import {
   validateSqlString,
   enforceParameterizedQueryUsage,
+  MANAGED_TRANSACTION_CONTROL_ERROR_MESSAGE,
   validateManagedTransactionSql,
 } from '../utils/sql-sanitizer.js';
 
@@ -232,7 +233,7 @@ export async function executeQuery(
           message.includes('SQL query must not be empty') ||
           message.includes('SQL query contains null bytes') ||
           message.includes('Detected dangerous SQL operation') ||
-          message.includes('Transaction control statements are not allowed in scoped Tools') ||
+          message === MANAGED_TRANSACTION_CONTROL_ERROR_MESSAGE ||
           message.includes('Parameters are required for INSERT/UPDATE/DELETE queries')) {
         throw error;
       }

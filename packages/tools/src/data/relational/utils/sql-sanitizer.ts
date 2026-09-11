@@ -8,7 +8,9 @@ import type { DatabaseVendor } from '../types.js';
 
 const DANGEROUS_SQL_STATEMENT_PATTERN = /^(create|drop|truncate|alter)\b/i;
 const TRANSACTION_CONTROL_STATEMENT_PATTERN =
-  /^(begin|start\s+transaction|commit|end|rollback|savepoint|release\s+savepoint|set\s+transaction)\b/i;
+  /^(begin|start\s+transaction|commit|end|rollback|savepoint|release(?:\s+savepoint)?|set\s+(?:(?:local|session|global)\s+)?(?:characteristics\s+as\s+)?transaction)\b/i;
+export const MANAGED_TRANSACTION_CONTROL_ERROR_MESSAGE =
+  'Transaction control statements are not allowed in scoped Tools.';
 const NUMBERED_PLACEHOLDER_PATTERN = /\$(\d+)/;
 const QUESTION_PLACEHOLDER_PATTERN = /\?/;
 const NAMED_PLACEHOLDER_PATTERN = /(?<!:):[a-zA-Z_][a-zA-Z0-9_]*/;
@@ -230,7 +232,7 @@ export function validateManagedTransactionSql(sqlString: string, vendor?: Databa
       TRANSACTION_CONTROL_STATEMENT_PATTERN.test(statement)
     )
   ) {
-    throw new Error('Transaction control statements are not allowed in scoped Tools.');
+    throw new Error(MANAGED_TRANSACTION_CONTROL_ERROR_MESSAGE);
   }
 }
 

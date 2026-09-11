@@ -108,7 +108,18 @@ describe('Relational Tool Set transactions', () => {
     await toolSet.dispose();
   });
 
-  it.each(['BEGIN', 'COMMIT', 'ROLLBACK', 'SAVEPOINT hidden', 'RELEASE SAVEPOINT hidden'])(
+  it.each([
+    'BEGIN',
+    'START TRANSACTION',
+    'COMMIT',
+    'ROLLBACK',
+    'SAVEPOINT hidden',
+    'RELEASE hidden',
+    'RELEASE SAVEPOINT hidden',
+    'SET TRANSACTION ISOLATION LEVEL SERIALIZABLE',
+    'SET SESSION TRANSACTION ISOLATION LEVEL SERIALIZABLE',
+    'SET SESSION CHARACTERISTICS AS TRANSACTION ISOLATION LEVEL SERIALIZABLE',
+  ])(
     'rejects transaction control through the scoped query Tool: %s',
     async (statement) => {
       const toolSet = createRelationalToolSet({
