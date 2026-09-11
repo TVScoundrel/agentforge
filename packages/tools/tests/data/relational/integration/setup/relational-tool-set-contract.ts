@@ -71,10 +71,12 @@ export async function expectRelationalToolSetContract(config: ConnectionConfig):
 
     await expect(
       toolSet.transaction(async (tools) => {
-        return tools.insert.invoke({
+        const result = await tools.insert.invoke({
           table: 'users',
           data: { name: 'Committed User', email: 'committed@example.com', age: 35 },
         });
+        expect(result).toMatchObject({ success: true, rowCount: 1 });
+        return result;
       })
     ).resolves.toMatchObject({ success: true, rowCount: 1 });
     await expect(
