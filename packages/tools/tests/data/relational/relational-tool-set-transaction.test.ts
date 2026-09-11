@@ -119,6 +119,9 @@ describe('Relational Tool Set transactions', () => {
     'SET TRANSACTION ISOLATION LEVEL SERIALIZABLE',
     'SET SESSION TRANSACTION ISOLATION LEVEL SERIALIZABLE',
     'SET SESSION CHARACTERISTICS AS TRANSACTION ISOLATION LEVEL SERIALIZABLE',
+    'SET autocommit = 1',
+    'SET @@session.autocommit = 1',
+    '/*!40101 COMMIT */',
   ])(
     'rejects transaction control through the scoped query Tool: %s',
     async (statement) => {
@@ -223,12 +226,50 @@ describe('Relational Tool Set transactions', () => {
     await toolSet.dispose();
   });
 
+  it('keeps ordinary SQLite work outside an overlapping managed transaction', async () => {
+    const toolSet = createRelationalToolSet({
+      vendor: 'sqlite',
+      connection: temporaryDatabase(),
+    });
+    let releaseTransaction!: () => void;
+    const transactionGate = new Promise<void>((resolve) => {
+      releaseTransaction = resolve;
+    });
+    let reportTransactionStarted!: () => void;
+    const transactionStarted = new Promise<void>((resolve) => {
+      reportTransactionStarted = resolve;
+    });
+
+    const transaction = toolSet.transaction(async (tools) => {
+      await tools.insert.invoke({ table: 'users', data: { id: 1, name: 'Transactional' } });
+      reportTransactionStarted();
+      await transactionGate;
+      throw new Error('roll back managed work');
+    });
+
+    await transactionStarted;
+    const ordinaryInsert = toolSet.insert.invoke({
+      table: 'users',
+      data: { id: 2, name: 'Ordinary' },
+    });
+    releaseTransaction();
+
+    await expect(transaction).rejects.toThrow('roll back managed work');
+    await expect(ordinaryInsert).resolves.toMatchObject({ success: true, rowCount: 1 });
+    await expect(toolSet.query.invoke({ sql: 'SELECT id, name FROM users' })).resolves.toMatchObject({
+      success: true,
+      rows: [{ id: 2, name: 'Ordinary' }],
+    });
+    await toolSet.dispose();
+  });
+
   it('rolls back on timeout and expires scoped Tools after the callback settles', async () => {
     const toolSet = createRelationalToolSet({
       vendor: 'sqlite',
       connection: temporaryDatabase(),
     });
     let retainedTools: Parameters<Parameters<typeof toolSet.transaction>[0]>[0] | undefined;
+    let nestedTransactionError: unknown;
 
     await expect(
       toolSet.transaction(
@@ -236,12 +277,18 @@ describe('Relational Tool Set transactions', () => {
           retainedTools = tools;
           await tools.insert.invoke({ table: 'users', data: { id: 1, name: 'Alice' } });
           await new Promise((resolve) => setTimeout(resolve, 20));
+          try {
+            await toolSet.transaction(async () => undefined);
+          } catch (error) {
+            nestedTransactionError = error;
+          }
         },
         { timeoutMs: 5 }
       )
     ).rejects.toThrow('Transaction timed out after 5ms');
 
     await new Promise((resolve) => setTimeout(resolve, 30));
+    expect(nestedTransactionError).toMatchObject({ code: 'NESTED_TRANSACTION' });
     await expect(retainedTools!.query.invoke({ sql: 'SELECT 1' })).rejects.toMatchObject({
       code: 'SCOPE_EXPIRED',
     });
@@ -269,6 +316,19 @@ describe('Relational Tool Set transactions', () => {
       success: true,
       rows: [{ id: 1, name: 'Alice' }],
     });
+    await toolSet.dispose();
+  });
+
+  it('rejects unscoped Tool Set work from inside a transaction callback', async () => {
+    const toolSet = createRelationalToolSet({
+      vendor: 'sqlite',
+      connection: temporaryDatabase(),
+    });
+
+    await expect(
+      toolSet.transaction(async () => toolSet.query.invoke({ sql: 'SELECT 1' }))
+    ).rejects.toMatchObject({ code: 'UNSCOPED_TOOL_IN_TRANSACTION' });
+
     await toolSet.dispose();
   });
 

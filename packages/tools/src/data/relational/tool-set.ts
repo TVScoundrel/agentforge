@@ -90,7 +90,8 @@ export type RelationalTransactionErrorCode =
   | 'NESTED_TRANSACTION'
   | 'ROLLBACK_ONLY'
   | 'SCOPE_EXPIRED'
-  | 'START_FAILED';
+  | 'START_FAILED'
+  | 'UNSCOPED_TOOL_IN_TRANSACTION';
 
 export class RelationalTransactionError extends Error {
   override readonly name = 'RelationalTransactionError';
@@ -429,7 +430,7 @@ class RelationalToolSetImplementation implements RelationalToolSet {
   private readonly schemaCache = new SchemaCache();
   private readonly prefix?: string;
   private readonly transactionContext = new AsyncLocalStorage<{ active: boolean }>();
-  private sqliteTransactionTail: Promise<void> = Promise.resolve();
+  private sqliteWorkTail: Promise<void> = Promise.resolve();
   private manager?: ConnectionManager;
   private initialization?: Promise<ConnectionManager>;
   private activeWork = 0;
@@ -481,37 +482,37 @@ class RelationalToolSetImplementation implements RelationalToolSet {
 
     return this.runTransaction((manager) => {
       const transactionState = { active: true };
-      return this.transactionContext.run(transactionState, async () => {
-        try {
-          return await withTransaction(
-            manager,
-            async (transaction) => {
-              const scope = new TransactionToolScope(this.transactionExecutionFor(transaction));
-              const scopedTools = createConfiguredTools(
-                { prefix: this.prefix },
-                (scopedOperation, failure) => scope.run(scopedOperation, failure)
-              );
+      return this.transactionContext.run(transactionState, () =>
+        withTransaction(
+          manager,
+          async (transaction) => {
+            const scope = new TransactionToolScope(this.transactionExecutionFor(transaction));
+            const scopedTools = createConfiguredTools(
+              { prefix: this.prefix },
+              (scopedOperation, failure) => scope.run(scopedOperation, failure)
+            );
 
-              let result!: T;
+            let result!: T;
+            try {
+              result = await operation(scopedTools);
+            } finally {
               try {
-                result = await operation(scopedTools);
-              } finally {
                 await scope.settle();
+              } finally {
+                transactionState.active = false;
               }
-              if (scope.isRollbackOnly()) {
-                throw new RelationalTransactionError(
-                  'The transaction was rolled back because a scoped Tool failed.',
-                  'ROLLBACK_ONLY'
-                );
-              }
-              return result;
-            },
-            options
-          );
-        } finally {
-          transactionState.active = false;
-        }
-      });
+            }
+            if (scope.isRollbackOnly()) {
+              throw new RelationalTransactionError(
+                'The transaction was rolled back because a scoped Tool failed.',
+                'ROLLBACK_ONLY'
+              );
+            }
+            return result;
+          },
+          options
+        )
+      );
     });
   }
 
@@ -538,6 +539,12 @@ class RelationalToolSetImplementation implements RelationalToolSet {
     operation: (execution: RelationalReadExecution) => Promise<T>,
     connectionFailure: () => T
   ): Promise<T> {
+    if (this.transactionContext.getStore()?.active) {
+      throw new RelationalTransactionError(
+        'Use the scoped Tools supplied to the transaction callback.',
+        'UNSCOPED_TOOL_IN_TRANSACTION'
+      );
+    }
     if (this.state !== 'open') {
       throw new RelationalToolSetDisposedError();
     }
@@ -552,7 +559,10 @@ class RelationalToolSetImplementation implements RelationalToolSet {
         }
         return connectionFailure();
       }
-      return await operation(this.schemaExecutionFor(manager));
+      const execute = () => operation(this.schemaExecutionFor(manager));
+      return this.config.vendor === 'sqlite'
+        ? await this.serializeSqliteWork(execute)
+        : await execute();
     } finally {
       this.activeWork -= 1;
       if (this.activeWork === 0) {
@@ -583,18 +593,22 @@ class RelationalToolSetImplementation implements RelationalToolSet {
         return await operation(manager);
       }
 
-      const transaction = this.sqliteTransactionTail.then(() => operation(manager));
-      this.sqliteTransactionTail = transaction.then(
-        () => undefined,
-        () => undefined
-      );
-      return await transaction;
+      return await this.serializeSqliteWork(() => operation(manager));
     } finally {
       this.activeWork -= 1;
       if (this.activeWork === 0) {
         this.resolveDrain?.();
       }
     }
+  }
+
+  private async serializeSqliteWork<T>(operation: () => Promise<T>): Promise<T> {
+    const work = this.sqliteWorkTail.then(operation);
+    this.sqliteWorkTail = work.then(
+      () => undefined,
+      () => undefined
+    );
+    return work;
   }
 
   private ensureConnection(): Promise<ConnectionManager> {

@@ -9,6 +9,8 @@ import type { DatabaseVendor } from '../types.js';
 const DANGEROUS_SQL_STATEMENT_PATTERN = /^(create|drop|truncate|alter)\b/i;
 const TRANSACTION_CONTROL_STATEMENT_PATTERN =
   /^(begin|start\s+transaction|commit|end|rollback|savepoint|release(?:\s+savepoint)?|set\s+(?:(?:local|session|global)\s+)?(?:characteristics\s+as\s+)?transaction)\b/i;
+const AUTOCOMMIT_STATEMENT_PATTERN =
+  /^set\s+(?:(?:session|local|global)\s+|@@(?:(?:session|local|global)\.)?)?autocommit\b/i;
 export const MANAGED_TRANSACTION_CONTROL_ERROR_MESSAGE =
   'Transaction control statements are not allowed in scoped Tools.';
 const NUMBERED_PLACEHOLDER_PATTERN = /\$(\d+)/;
@@ -19,6 +21,7 @@ const MUTATION_PATTERN = /\b(insert|update|delete)\b/i;
 
 interface SqlStripOptions {
   backslashEscapes: boolean;
+  rejectExecutableComments?: boolean;
 }
 
 function stripSqlCommentsAndStrings(sqlString: string, options: SqlStripOptions): string {
@@ -43,6 +46,12 @@ function stripSqlCommentsAndStrings(sqlString: string, options: SqlStripOptions)
 
     // Block comment: /* ... */
     if (ch === '/' && next === '*') {
+      const executableComment =
+        sqlString[i + 2] === '!' ||
+        (sqlString[i + 2]?.toLowerCase() === 'm' && sqlString[i + 3] === '!');
+      if (options.rejectExecutableComments && executableComment) {
+        throw new Error(MANAGED_TRANSACTION_CONTROL_ERROR_MESSAGE);
+      }
       result += ' ';
       i += 2;
       while (i < len) {
@@ -196,9 +205,14 @@ function hasParameters(params?: QueryParams): boolean {
   return Object.keys(params).length > 0;
 }
 
-function sqlStatements(sqlString: string, vendor?: DatabaseVendor): string[] {
+function sqlStatements(
+  sqlString: string,
+  vendor?: DatabaseVendor,
+  rejectExecutableComments = false,
+): string[] {
   return stripSqlCommentsAndStrings(sqlString, {
     backslashEscapes: vendor === 'mysql',
+    rejectExecutableComments,
   })
     .split(';')
     .map((statement) => statement.trim())
@@ -228,8 +242,10 @@ export function validateSqlString(sqlString: string, vendor?: DatabaseVendor): v
 /** Prevent scoped raw queries from bypassing managed transaction lifecycle. */
 export function validateManagedTransactionSql(sqlString: string, vendor?: DatabaseVendor): void {
   if (
-    sqlStatements(sqlString, vendor).some((statement) =>
-      TRANSACTION_CONTROL_STATEMENT_PATTERN.test(statement)
+    sqlStatements(sqlString, vendor, true).some(
+      (statement) =>
+        TRANSACTION_CONTROL_STATEMENT_PATTERN.test(statement) ||
+        AUTOCOMMIT_STATEMENT_PATTERN.test(statement)
     )
   ) {
     throw new Error(MANAGED_TRANSACTION_CONTROL_ERROR_MESSAGE);
