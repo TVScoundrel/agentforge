@@ -51,12 +51,14 @@ jobs:
         run: pnpm test:integration
         env:
           # Testcontainers auto-detects Docker on GitHub Actions runners
+          RUN_INTEGRATION_TESTS: 'true'
           TESTCONTAINERS_RYUK_DISABLED: 'true'
 
       - name: Run integration tests with coverage
         if: github.event_name == 'pull_request'
         run: pnpm test:integration:coverage
         env:
+          RUN_INTEGRATION_TESTS: 'true'
           TESTCONTAINERS_RYUK_DISABLED: 'true'
 
       - name: Upload coverage report
