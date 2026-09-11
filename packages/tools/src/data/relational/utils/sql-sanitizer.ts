@@ -8,7 +8,7 @@ import type { DatabaseVendor } from '../types.js';
 
 const DANGEROUS_SQL_STATEMENT_PATTERN = /^(create|drop|truncate|alter)\b/i;
 const TRANSACTION_CONTROL_STATEMENT_PATTERN =
-  /^(begin|start\s+transaction|commit|end|rollback|savepoint|release(?:\s+savepoint)?|set\s+(?:(?:local|session|global)\s+)?(?:characteristics\s+as\s+)?transaction)\b/i;
+  /^(begin|start\s+transaction|commit|end|abort|rollback|prepare\s+transaction|savepoint|release(?:\s+savepoint)?|set\s+(?:(?:local|session|global)\s+)?(?:characteristics\s+as\s+)?transaction)\b/i;
 const AUTOCOMMIT_STATEMENT_PATTERN =
   /^set\s+(?:(?:session|local|global)\s+|@@(?:(?:session|local|global)\.)?)?autocommit\b/i;
 export const MANAGED_TRANSACTION_CONTROL_ERROR_MESSAGE =
@@ -21,6 +21,7 @@ const MUTATION_PATTERN = /\b(insert|update|delete)\b/i;
 
 interface SqlStripOptions {
   backslashEscapes: boolean;
+  hashComments?: boolean;
   rejectExecutableComments?: boolean;
 }
 
@@ -33,6 +34,16 @@ function stripSqlCommentsAndStrings(sqlString: string, options: SqlStripOptions)
   while (i < len) {
     const ch = sqlString[i];
     const next = i + 1 < len ? sqlString[i + 1] : '';
+
+    // MySQL line comment: # ...
+    if (options.hashComments && ch === '#') {
+      result += ' ';
+      i += 1;
+      while (i < len && sqlString[i] !== '\n') {
+        i += 1;
+      }
+      continue;
+    }
 
     // Line comment: -- ...
     if (ch === '-' && next === '-') {
@@ -212,6 +223,7 @@ function sqlStatements(
 ): string[] {
   return stripSqlCommentsAndStrings(sqlString, {
     backslashEscapes: vendor === 'mysql',
+    hashComments: vendor === 'mysql',
     rejectExecutableComments,
   })
     .split(';')
@@ -262,6 +274,7 @@ export function enforceParameterizedQueryUsage(
 ): void {
   const normalizedForAnalysis = stripSqlCommentsAndStrings(sqlString, {
     backslashEscapes: vendor === 'mysql',
+    hashComments: vendor === 'mysql',
   });
   const normalized = normalizedForAnalysis.trim().toLowerCase();
   const hasPlaceholders = hasSqlPlaceholders(normalizedForAnalysis, vendor);

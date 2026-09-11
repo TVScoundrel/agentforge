@@ -7,6 +7,7 @@
 import { describe, it, expect } from 'vitest';
 import {
   validateSqlString,
+  validateManagedTransactionSql,
   enforceParameterizedQueryUsage,
 } from '../../../src/data/relational/utils/sql-sanitizer.js';
 
@@ -80,6 +81,23 @@ describe('SQL Sanitizer', () => {
       expect(() =>
         validateSqlString("SELECT 'escape \\\\' DROP TABLE users' AS value", 'mysql'),
       ).not.toThrow();
+    });
+  });
+
+  describe('validateManagedTransactionSql', () => {
+    it.each(['ABORT', 'PREPARE TRANSACTION \'transaction-id\''])(
+      'should reject PostgreSQL transaction control: %s',
+      (statement) => {
+        expect(() => validateManagedTransactionSql(statement, 'postgresql')).toThrow(
+          /Transaction control statements are not allowed/
+        );
+      }
+    );
+
+    it('should reject transaction control after a MySQL hash comment', () => {
+      expect(() => validateManagedTransactionSql('# comment\nCOMMIT', 'mysql')).toThrow(
+        /Transaction control statements are not allowed/
+      );
     });
   });
 
