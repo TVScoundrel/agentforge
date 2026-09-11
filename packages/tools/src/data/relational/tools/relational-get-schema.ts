@@ -5,6 +5,7 @@
 
 import { z } from 'zod';
 import { createLogger, toolBuilder, ToolCategory } from '@agentforge/core';
+import { createHash } from 'node:crypto';
 import { SchemaInspector } from '../schema/schema-inspector.js';
 import type { DatabaseSchema } from '../schema/types.js';
 import { VALID_TABLE_FILTER_PATTERN } from '../schema/validation.js';
@@ -13,6 +14,16 @@ import { isSafeGetSchemaValidationError } from './relational-get-schema-error-ut
 import { withEphemeralRelationalToolSet } from './legacy-read-adapter.js';
 import type { RelationalReadExecution } from './read-execution.js';
 const logger = createLogger('agentforge:tools:data:relational:get-schema');
+
+function buildSchemaCacheKey(
+  vendor: DatabaseVendor,
+  connectionString: string,
+  database?: string
+): string {
+  const databaseScope = database ?? 'default';
+  const connectionHash = createHash('sha256').update(connectionString).digest('hex');
+  return `${vendor}:${databaseScope}:${connectionHash}`;
+}
 
 /**
  * Zod schema for relational-get-schema input.
@@ -171,11 +182,12 @@ export const relationalGetSchema = toolBuilder()
     },
   })
   .implement(async (input) => {
-    const { connectionString, vendor, cacheTtlMs, tables, refreshCache } = input;
+    const { connectionString, vendor, database, cacheTtlMs, tables, refreshCache } = input;
     return withEphemeralRelationalToolSet(
       { vendor, connectionString },
       (toolSet) => toolSet.getSchema.invoke({ tables, refreshCache }),
       { schemaCacheTtlMs: cacheTtlMs },
+      buildSchemaCacheKey(vendor, connectionString, database),
     );
   })
   .build();

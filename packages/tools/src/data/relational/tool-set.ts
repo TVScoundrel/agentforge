@@ -7,7 +7,7 @@ import {
   QUERY_CONNECTION_FAILURE,
   SELECT_CONNECTION_FAILURE,
 } from './connection-failure-messages.js';
-import { SchemaCache } from './schema/schema-inspector.js';
+import { SchemaCache, SchemaInspector } from './schema/schema-inspector.js';
 import { MissingPeerDependencyError } from './utils/peer-dependency-checker.js';
 import { invokeRelationalDelete } from './tools/relational-delete/index.js';
 import { relationalDeleteSchema } from './tools/relational-delete/schemas.js';
@@ -247,7 +247,8 @@ class RelationalToolSetImplementation implements RelationalToolSet {
 
   constructor(
     private readonly config: ConnectionConfig,
-    options: RelationalToolSetOptions
+    options: RelationalToolSetOptions,
+    private readonly sharedSchemaCacheKey?: string
   ) {
     this.schemaCacheTtlMs = options.schemaCacheTtlMs ?? DEFAULT_SCHEMA_CACHE_TTL_MS;
     const execution = <T>(
@@ -340,11 +341,7 @@ class RelationalToolSetImplementation implements RelationalToolSet {
         execution(
           (manager) =>
             invokeRelationalGetSchema(
-              {
-                ...this.executionFor(manager),
-                schemaCache: this.schemaCache,
-                schemaCacheKey: TOOL_SET_SCHEMA_CACHE_KEY,
-              },
+              this.schemaExecutionFor(manager),
               { ...input, cacheTtlMs: this.schemaCacheTtlMs }
             ),
           () => ({
@@ -373,7 +370,11 @@ class RelationalToolSetImplementation implements RelationalToolSet {
     if (this.state !== 'open') {
       throw new RelationalToolSetDisposedError();
     }
-    this.schemaCache.delete(TOOL_SET_SCHEMA_CACHE_KEY);
+    if (this.sharedSchemaCacheKey) {
+      SchemaInspector.clearCache(this.sharedSchemaCacheKey);
+    } else {
+      this.schemaCache.delete(TOOL_SET_SCHEMA_CACHE_KEY);
+    }
   }
 
   dispose(): Promise<void> {
@@ -445,6 +446,17 @@ class RelationalToolSetImplementation implements RelationalToolSet {
     return { executor: manager, vendor: this.config.vendor };
   }
 
+  private schemaExecutionFor(manager: ConnectionManager) {
+    const execution = this.executionFor(manager);
+    return this.sharedSchemaCacheKey
+      ? { ...execution, schemaCacheKey: this.sharedSchemaCacheKey }
+      : {
+          ...execution,
+          schemaCache: this.schemaCache,
+          schemaCacheKey: TOOL_SET_SCHEMA_CACHE_KEY,
+        };
+  }
+
   private async finishDisposal(): Promise<void> {
     if (this.activeWork > 0) {
       this.drain = new Promise<void>((resolve) => {
@@ -472,4 +484,18 @@ export function createRelationalToolSet(
 ): RelationalToolSet {
   validateConfiguration(config, options);
   return new RelationalToolSetImplementation(snapshotConfiguration(config), { ...options });
+}
+
+/** @internal Preserve the pre-existing shared schema cache for legacy compatibility adapters. */
+export function createRelationalToolSetWithSharedSchemaCache(
+  config: ConnectionConfig,
+  options: RelationalToolSetOptions,
+  schemaCacheKey: string
+): RelationalToolSet {
+  validateConfiguration(config, options);
+  return new RelationalToolSetImplementation(
+    snapshotConfiguration(config),
+    { ...options },
+    schemaCacheKey
+  );
 }

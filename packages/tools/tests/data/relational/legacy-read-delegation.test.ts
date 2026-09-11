@@ -2,6 +2,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 const mocks = vi.hoisted(() => ({
   createRelationalToolSet: vi.fn(),
+  createRelationalToolSetWithSharedSchemaCache: vi.fn(),
   query: vi.fn(),
   select: vi.fn(),
   getSchema: vi.fn(),
@@ -10,6 +11,8 @@ const mocks = vi.hoisted(() => ({
 
 vi.mock('../../../src/data/relational/tool-set.js', () => ({
   createRelationalToolSet: mocks.createRelationalToolSet,
+  createRelationalToolSetWithSharedSchemaCache:
+    mocks.createRelationalToolSetWithSharedSchemaCache,
 }));
 
 import {
@@ -22,6 +25,12 @@ describe('legacy Relational read Tool delegation', () => {
   beforeEach(() => {
     vi.clearAllMocks();
     mocks.createRelationalToolSet.mockReturnValue({
+      query: { invoke: mocks.query },
+      select: { invoke: mocks.select },
+      getSchema: { invoke: mocks.getSchema },
+      dispose: mocks.dispose,
+    });
+    mocks.createRelationalToolSetWithSharedSchemaCache.mockReturnValue({
       query: { invoke: mocks.query },
       select: { invoke: mocks.select },
       getSchema: { invoke: mocks.getSchema },
@@ -83,9 +92,10 @@ describe('legacy Relational read Tool delegation', () => {
       refreshCache: true,
     });
 
-    expect(mocks.createRelationalToolSet).toHaveBeenCalledWith(
+    expect(mocks.createRelationalToolSetWithSharedSchemaCache).toHaveBeenCalledWith(
       { vendor: 'sqlite', connection: 'database.sqlite' },
       { schemaCacheTtlMs: 5_000 },
+      expect.stringMatching(/^sqlite:legacy-cache-scope:[a-f0-9]{64}$/),
     );
     expect(mocks.getSchema).toHaveBeenCalledWith({ tables: ['users'], refreshCache: true });
     expect(mocks.dispose).toHaveBeenCalledOnce();

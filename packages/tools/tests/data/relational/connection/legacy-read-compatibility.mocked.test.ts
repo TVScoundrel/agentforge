@@ -98,4 +98,29 @@ describe('legacy Relational read Tool compatibility', () => {
       expect(result.success).toBe(true);
     });
   });
+
+  it('preserves legacy schema caching across ephemeral Relational Tool Sets', async () => {
+    const input = {
+      ...database,
+      database: 'legacy-cache-scope',
+      cacheTtlMs: 60_000,
+    };
+
+    const first = await relationalGetSchema.invoke(input);
+    const callsAfterFirstInspection = mockPgExecute.mock.calls.length;
+    const second = await relationalGetSchema.invoke(input);
+
+    expect(first).toEqual(second);
+    expect(mockPgExecute).toHaveBeenCalledTimes(callsAfterFirstInspection + 1);
+
+    await relationalGetSchema.invoke({ ...input, refreshCache: true });
+    expect(mockPgExecute.mock.calls.length).toBeGreaterThan(callsAfterFirstInspection + 2);
+
+    const callsAfterRefresh = mockPgExecute.mock.calls.length;
+    await relationalGetSchema.invoke({ ...input, database: 'other-cache-scope' });
+    expect(mockPgExecute.mock.calls.length).toBeGreaterThan(callsAfterRefresh + 1);
+
+    expect(mockPool).toHaveBeenCalledTimes(4);
+    expect(mockPoolEnd).toHaveBeenCalledTimes(4);
+  });
 });

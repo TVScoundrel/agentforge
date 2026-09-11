@@ -1,5 +1,6 @@
 import {
   createRelationalToolSet,
+  createRelationalToolSetWithSharedSchemaCache,
   type RelationalToolSet,
   type RelationalToolSetOptions,
 } from '../tool-set.js';
@@ -24,12 +25,13 @@ export function replaceConnectionFailureMessage<T extends { success: boolean; er
 export async function withEphemeralRelationalToolSet<T>(
   database: LegacyDatabaseInput,
   invoke: (toolSet: RelationalToolSet) => Promise<T>,
-  options: RelationalToolSetOptions = {}
+  options: RelationalToolSetOptions = {},
+  sharedSchemaCacheKey?: string
 ): Promise<T> {
-  const toolSet = createRelationalToolSet(
-    { vendor: database.vendor, connection: database.connectionString },
-    options
-  );
+  const config = { vendor: database.vendor, connection: database.connectionString } as const;
+  const toolSet = sharedSchemaCacheKey
+    ? createRelationalToolSetWithSharedSchemaCache(config, options, sharedSchemaCacheKey)
+    : createRelationalToolSet(config, options);
 
   try {
     return await invoke(toolSet);
