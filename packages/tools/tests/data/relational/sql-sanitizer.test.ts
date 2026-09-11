@@ -100,6 +100,12 @@ describe('SQL Sanitizer', () => {
       );
     });
 
+    it('should reject transaction control after nested PostgreSQL block comments', () => {
+      expect(() =>
+        validateManagedTransactionSql('/* outer /* inner */ */ COMMIT', 'postgresql')
+      ).toThrow(/Transaction control statements are not allowed/);
+    });
+
     it.each([
       'RENAME TABLE old_name TO new_name',
       'LOCK TABLES users WRITE',

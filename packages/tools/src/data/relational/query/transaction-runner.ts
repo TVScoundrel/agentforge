@@ -59,9 +59,10 @@ export async function withTransaction<T>(
 
       return result;
     } catch (error) {
-      if (timedOut) {
-        await transaction.settle();
+      if (!timedOut) {
+        transaction.cancel(error instanceof Error ? error.message : 'Transaction failed');
       }
+      await transaction.settle();
 
       if (transaction.isActive()) {
         try {

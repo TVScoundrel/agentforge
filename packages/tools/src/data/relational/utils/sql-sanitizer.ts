@@ -26,6 +26,7 @@ const MUTATION_PATTERN = /\b(insert|update|delete)\b/i;
 interface SqlStripOptions {
   backslashEscapes: boolean;
   hashComments?: boolean;
+  nestedBlockComments?: boolean;
   rejectExecutableComments?: boolean;
 }
 
@@ -69,10 +70,22 @@ function stripSqlCommentsAndStrings(sqlString: string, options: SqlStripOptions)
       }
       result += ' ';
       i += 2;
-      while (i < len) {
-        if (sqlString[i] === '*' && i + 1 < len && sqlString[i + 1] === '/') {
+      let depth = 1;
+      while (i < len && depth > 0) {
+        if (
+          options.nestedBlockComments &&
+          sqlString[i] === '/' &&
+          i + 1 < len &&
+          sqlString[i + 1] === '*'
+        ) {
+          depth += 1;
           i += 2;
-          break;
+          continue;
+        }
+        if (sqlString[i] === '*' && i + 1 < len && sqlString[i + 1] === '/') {
+          depth -= 1;
+          i += 2;
+          continue;
         }
         i += 1;
       }
@@ -228,6 +241,7 @@ function sqlStatements(
   return stripSqlCommentsAndStrings(sqlString, {
     backslashEscapes: vendor === 'mysql',
     hashComments: vendor === 'mysql',
+    nestedBlockComments: vendor === 'postgresql',
     rejectExecutableComments,
   })
     .split(';')
@@ -282,6 +296,7 @@ export function enforceParameterizedQueryUsage(
   const normalizedForAnalysis = stripSqlCommentsAndStrings(sqlString, {
     backslashEscapes: vendor === 'mysql',
     hashComments: vendor === 'mysql',
+    nestedBlockComments: vendor === 'postgresql',
   });
   const normalized = normalizedForAnalysis.trim().toLowerCase();
   const hasPlaceholders = hasSqlPlaceholders(normalizedForAnalysis, vendor);
