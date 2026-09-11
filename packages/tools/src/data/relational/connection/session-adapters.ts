@@ -38,7 +38,7 @@ export async function executeInDedicatedConnection<T>(
     try {
       const { drizzle } = await import('drizzle-orm/node-postgres');
       const sessionDb = drizzle({ client: poolClient as NodePgClient });
-      return await callback((query) => sessionDb.execute(query));
+      return await callback(async (query) => sessionDb.execute(query));
     } finally {
       poolClient.release();
     }

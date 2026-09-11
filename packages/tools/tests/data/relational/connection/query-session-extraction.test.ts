@@ -95,6 +95,31 @@ describe('connection query/session extraction helpers', () => {
       expect(result).toEqual([{ ok: true }]);
     });
 
+    it('memoizes the postgresql Drizzle query thenable as a native promise', async () => {
+      const release = vi.fn();
+      const connect = vi.fn().mockResolvedValue({ release });
+      const executeThenable = {
+        then: vi.fn((resolve: (value: unknown) => void) => resolve([{ ok: true }])),
+      };
+      mockPgSessionExecute.mockReturnValue(executeThenable);
+
+      await executeInDedicatedConnection(
+        {
+          vendor: 'postgresql',
+          client: { connect },
+          db: {},
+          isSqliteNonQueryError: () => false,
+        },
+        async (execute) => {
+          const execution = execute(sql`SELECT 1`);
+          await Promise.all([execution, execution]);
+        }
+      );
+
+      expect(executeThenable.then).toHaveBeenCalledTimes(1);
+      expect(release).toHaveBeenCalledTimes(1);
+    });
+
     it('uses a dedicated mysql session, unwraps rows, and releases it', async () => {
       const release = vi.fn();
       const getConnection = vi.fn().mockResolvedValue({ release });
