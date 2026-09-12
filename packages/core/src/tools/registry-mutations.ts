@@ -1,7 +1,4 @@
-import { Tool } from './types.js';
-import type { RegistryTool } from './registry-collection.js';
-
-type RegisterManyTool = Tool<never, unknown>;
+import type { RegistryInputTool, RegistryTool } from './registry-collection.js';
 
 export interface RegistryMutationEvents<TEvent> {
   registered: TEvent;
@@ -12,13 +9,13 @@ export interface RegistryMutationEvents<TEvent> {
 
 export type RegistryMutationEmitter<TEvent> = (event: TEvent, data: unknown) => void;
 
-function eraseToolType<TInput, TOutput>(tool: Tool<TInput, TOutput>): RegistryTool {
+function eraseToolType(tool: RegistryInputTool): RegistryTool {
   return tool as unknown as RegistryTool;
 }
 
-export function registerRegistryTool<TInput, TOutput, TEvent>(
+export function registerRegistryTool<TEvent>(
   tools: Map<string, RegistryTool>,
-  tool: Tool<TInput, TOutput>,
+  tool: RegistryInputTool,
   emit: RegistryMutationEmitter<TEvent>,
   events: RegistryMutationEvents<TEvent>
 ): void {
@@ -50,10 +47,10 @@ export function removeRegistryTool<TEvent>(
   return true;
 }
 
-export function updateRegistryTool<TInput, TOutput, TEvent>(
+export function updateRegistryTool<TEvent>(
   tools: Map<string, RegistryTool>,
   name: string,
-  tool: Tool<TInput, TOutput>,
+  tool: RegistryInputTool,
   emit: RegistryMutationEmitter<TEvent>,
   events: RegistryMutationEvents<TEvent>
 ): boolean {
@@ -75,7 +72,7 @@ export function updateRegistryTool<TInput, TOutput, TEvent>(
 
 export function registerManyRegistryTools<TEvent>(
   tools: Map<string, RegistryTool>,
-  toolsToRegister: Iterable<RegisterManyTool>,
+  toolsToRegister: Iterable<RegistryInputTool>,
   emit: RegistryMutationEmitter<TEvent>,
   events: RegistryMutationEvents<TEvent>
 ): void {

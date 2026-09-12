@@ -1,6 +1,10 @@
+import type { z } from 'zod';
 import { Tool, ToolCategory } from './types.js';
 
 export type RegistryTool = Tool<unknown, unknown>;
+export type RegistryInputTool = Omit<Tool<never, unknown>, 'schema'> & {
+  schema: z.ZodTypeAny;
+};
 
 export function getAllRegistryTools(tools: ReadonlyMap<string, RegistryTool>): RegistryTool[] {
   return Array.from(tools.values());
