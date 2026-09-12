@@ -7,6 +7,8 @@ on:
     paths:
       - 'package.json'
       - 'packages/tools/package.json'
+      - 'packages/tools/README.md'
+      - 'packages/tools/scripts/verify-package-surface.mjs'
       - 'packages/tools/src/data/relational/**'
       - 'packages/tools/tests/data/relational/integration/**'
       - 'vitest.integration.config.ts'
@@ -17,6 +19,8 @@ on:
     paths:
       - 'package.json'
       - 'packages/tools/package.json'
+      - 'packages/tools/README.md'
+      - 'packages/tools/scripts/verify-package-surface.mjs'
       - 'packages/tools/src/data/relational/**'
       - 'packages/tools/tests/data/relational/integration/**'
       - 'vitest.integration.config.ts'

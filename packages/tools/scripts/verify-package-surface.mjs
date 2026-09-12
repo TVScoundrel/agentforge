@@ -25,6 +25,8 @@ const declarationExports = [
   'RelationalToolSetOptions',
   'RelationalTransactionErrorCode',
   'RelationalTransactionToolSet',
+  'TransactionContext',
+  'TransactionIsolationLevel',
   'TransactionOptions',
 ];
 

@@ -55,7 +55,7 @@ RUN_INTEGRATION_TESTS=true pnpm test:integration:coverage
 npx vitest run -c vitest.integration.config.ts packages/tools/tests/data/relational/integration/sqlite/
 
 # Run benchmarks only
-npx vitest run -c vitest.integration.config.ts packages/tools/tests/data/relational/integration/benchmarks/
+RUN_INTEGRATION_TESTS=true npx vitest run -c vitest.integration.config.ts packages/tools/tests/data/relational/integration/benchmarks/
 ```
 
 ### Vitest Configuration
