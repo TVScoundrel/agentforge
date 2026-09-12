@@ -48,6 +48,9 @@ export default defineWorkspace([
         'packages/tools/tests/**/*.test.ts',
         'packages/tools/src/**/__tests__/**/*.test.ts',
       ],
+      exclude: [
+        'packages/tools/tests/data/relational/integration/**/*.integration.test.ts',
+      ],
     },
   },
 

@@ -5,16 +5,26 @@ on:
   push:
     branches: [main]
     paths:
+      - 'package.json'
+      - 'packages/tools/package.json'
+      - 'packages/tools/README.md'
+      - 'packages/tools/scripts/verify-package-surface.mjs'
       - 'packages/tools/src/data/relational/**'
       - 'packages/tools/tests/data/relational/integration/**'
       - 'vitest.integration.config.ts'
+      - 'vitest.integration.workspace.ts'
       - '.github/workflows/integration-tests.yml'
   pull_request:
     branches: [main]
     paths:
+      - 'package.json'
+      - 'packages/tools/package.json'
+      - 'packages/tools/README.md'
+      - 'packages/tools/scripts/verify-package-surface.mjs'
       - 'packages/tools/src/data/relational/**'
       - 'packages/tools/tests/data/relational/integration/**'
       - 'vitest.integration.config.ts'
+      - 'vitest.integration.workspace.ts'
       - '.github/workflows/integration-tests.yml'
   workflow_dispatch:
 
@@ -26,6 +36,8 @@ jobs:
   integration-tests:
     runs-on: ubuntu-latest
     timeout-minutes: 15
+    env:
+      RUN_INTEGRATION_TESTS: 'true'
 
     steps:
       - name: Checkout

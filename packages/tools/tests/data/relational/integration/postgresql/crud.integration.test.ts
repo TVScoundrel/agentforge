@@ -15,6 +15,7 @@ import {
   type PostgreSQLContainerInfo,
 } from '../setup/containers.js';
 import { setupTestSchema } from '../setup/test-helpers.js';
+import { expectRelationalToolSetContract } from '../setup/relational-tool-set-contract.js';
 
 let pgContainer: PostgreSQLContainerInfo;
 let manager: ConnectionManager;
@@ -42,6 +43,13 @@ describe.skipIf(!runContainerIntegrationTests)('PostgreSQL CRUD Integration', ()
 
   beforeEach(async () => {
     await setupTestSchema(manager, 'postgresql');
+  });
+
+  it('supports the shared Relational Tool Set interface', async () => {
+    await expectRelationalToolSetContract({
+      vendor: 'postgresql',
+      connection: pgContainer.connectionString,
+    });
   });
 
   describe('SELECT Operations', () => {
@@ -170,7 +178,7 @@ describe.skipIf(!runContainerIntegrationTests)('PostgreSQL CRUD Integration', ()
           sql: 'INSERT INTO users (name, email, age) VALUES ($1, $2, $3)',
           params: ['Duplicate', 'alice@example.com', 20],
           vendor: 'postgresql',
-        }),
+        })
       ).rejects.toThrow();
     });
   });
@@ -194,13 +202,13 @@ describe.skipIf(!runContainerIntegrationTests)('PostgreSQL CRUD Integration', ()
 
     it('should update multiple rows', async () => {
       await executeQuery(manager, {
-        sql: "UPDATE products SET stock = $1 WHERE category = $2",
+        sql: 'UPDATE products SET stock = $1 WHERE category = $2',
         params: [0, 'widgets'],
         vendor: 'postgresql',
       });
 
       const result = await executeQuery(manager, {
-        sql: "SELECT stock FROM products WHERE category = $1",
+        sql: 'SELECT stock FROM products WHERE category = $1',
         params: ['widgets'],
         vendor: 'postgresql',
       });
@@ -234,7 +242,7 @@ describe.skipIf(!runContainerIntegrationTests)('PostgreSQL CRUD Integration', ()
           sql: 'DELETE FROM users WHERE id = $1',
           params: [1],
           vendor: 'postgresql',
-        }),
+        })
       ).rejects.toThrow();
     });
   });
@@ -287,13 +295,13 @@ describe.skipIf(!runContainerIntegrationTests)('PostgreSQL CRUD Integration', ()
 
     it('should handle SERIAL auto-increment', async () => {
       const r1 = await executeQuery(manager, {
-        sql: "INSERT INTO users (name, email, age) VALUES ($1, $2, $3) RETURNING id",
+        sql: 'INSERT INTO users (name, email, age) VALUES ($1, $2, $3) RETURNING id',
         params: ['User1', 'u1@test.com', 20],
         vendor: 'postgresql',
       });
 
       const r2 = await executeQuery(manager, {
-        sql: "INSERT INTO users (name, email, age) VALUES ($1, $2, $3) RETURNING id",
+        sql: 'INSERT INTO users (name, email, age) VALUES ($1, $2, $3) RETURNING id',
         params: ['User2', 'u2@test.com', 21],
         vendor: 'postgresql',
       });

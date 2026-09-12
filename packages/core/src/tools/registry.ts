@@ -4,7 +4,7 @@ import {
   emitRegistryEvent,
   removeRegistryEventHandler,
 } from './registry-events.js';
-import type { RegistryTool } from './registry-collection.js';
+import type { RegistryInputTool, RegistryTool } from './registry-collection.js';
 import { createRegistryMutationApi, type RegistryMutationApi } from './registry-mutation-api.js';
 import type { RegistryMutationEvents } from './registry-mutations.js';
 import { createRegistryQueryApi, type RegistryQueryApi } from './registry-query-api.js';
@@ -66,7 +66,7 @@ export class ToolRegistry {
     return this.queries.search(query);
   }
 
-  registerMany(tools: Iterable<Tool<never, unknown>>): void {
+  registerMany(tools: Iterable<RegistryInputTool>): void {
     this.mutations.registerMany(tools);
   }
 

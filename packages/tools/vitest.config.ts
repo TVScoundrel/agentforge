@@ -10,6 +10,9 @@ export default mergeConfig(
         'tests/**/*.test.ts',
         'src/**/__tests__/**/*.test.ts',
       ],
+      exclude: [
+        'tests/data/relational/integration/**/*.integration.test.ts',
+      ],
     },
   })
 );

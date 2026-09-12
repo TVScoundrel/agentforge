@@ -1,5 +1,5 @@
 import type { Tool } from './types.js';
-import type { RegistryTool } from './registry-collection.js';
+import type { RegistryInputTool, RegistryTool } from './registry-collection.js';
 import {
   clearRegistryTools,
   registerManyRegistryTools,
@@ -10,13 +10,11 @@ import {
   type RegistryMutationEvents,
 } from './registry-mutations.js';
 
-type RegisterManyTool = Tool<never, unknown>;
-
 export interface RegistryMutationApi {
   register<TInput, TOutput>(tool: Tool<TInput, TOutput>): void;
   remove(name: string): boolean;
   update<TInput, TOutput>(name: string, tool: Tool<TInput, TOutput>): boolean;
-  registerMany(tools: Iterable<RegisterManyTool>): void;
+  registerMany(tools: Iterable<RegistryInputTool>): void;
   clear(): void;
 }
 

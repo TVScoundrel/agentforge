@@ -131,6 +131,17 @@ ephemeral Relational Tool Set. Migrate new code to
 `createRelationalToolSet(...)` to reuse its owned session and keep credentials
 out of Tool inputs.
 
+The Tool Set is iterable. Pass `[...relational]` to an Agent, or register it
+directly with `registry.registerMany(relational)`. For multiple databases, use a
+distinct kebab-case `prefix` for each Tool Set so their Tool names do not collide.
+Configure schema caching once with `schemaCacheTtlMs`, bypass one lookup with
+`getSchema.invoke({ refreshCache: true })`, or clear owned cache state with
+`refreshSchema()`.
+
+See [Migrating to Relational Tool Sets](./docs/migrating-to-relational-tool-sets.md)
+for Agent and Tool Registry examples, transaction guidance, lifecycle ownership,
+and the current-major compatibility policy.
+
 ---
 
 ## Available Tools
@@ -170,6 +181,7 @@ See the full API documentation:
 - [Query Builder](./docs/api-query-builder.md) — SELECT, INSERT, UPDATE, DELETE query building functions
 - [Schema Inspector](./docs/api-schema-inspector.md) — Runtime schema introspection and caching
 - [Security](./docs/security-best-practices.md) — SQL injection prevention, identifier quoting, DDL blocking
+- [Migration](./docs/migrating-to-relational-tool-sets.md) — Move credential-bearing calls to configured Relational Tool Sets
 
 ---
 

@@ -5,10 +5,14 @@
  */
 
 import { describe, it, expect, beforeAll, afterAll, beforeEach } from 'vitest';
+import { mkdtempSync, rmSync } from 'node:fs';
+import { tmpdir } from 'node:os';
+import { join } from 'node:path';
 import { ConnectionManager } from '../../../../../src/data/relational/connection/connection-manager.js';
 import { executeQuery } from '../../../../../src/data/relational/query/query-executor.js';
 import type { ConnectionConfig } from '../../../../../src/data/relational/connection/types.js';
 import { setupTestSchema } from '../setup/test-helpers.js';
+import { expectRelationalToolSetContract } from '../setup/relational-tool-set-contract.js';
 
 const hasSQLiteBindings = (() => {
   try {
@@ -43,6 +47,23 @@ describe.skipIf(!hasSQLiteBindings)('SQLite CRUD Integration', () => {
   // Re-seed before each test for isolation
   beforeEach(async () => {
     await setupTestSchema(manager, 'sqlite');
+  });
+
+  it('supports the shared Relational Tool Set interface', async () => {
+    const directory = mkdtempSync(join(tmpdir(), 'agentforge-integration-tool-set-'));
+    const databasePath = join(directory, 'contract.sqlite');
+    const contractManager = new ConnectionManager({
+      vendor: 'sqlite',
+      connection: databasePath,
+    });
+    try {
+      await contractManager.connect();
+      await setupTestSchema(contractManager, 'sqlite');
+      await expectRelationalToolSetContract({ vendor: 'sqlite', connection: databasePath });
+    } finally {
+      await contractManager.dispose();
+      rmSync(directory, { recursive: true, force: true });
+    }
   });
 
   describe('SELECT Operations', () => {
@@ -141,7 +162,7 @@ describe.skipIf(!hasSQLiteBindings)('SQLite CRUD Integration', () => {
           sql: 'INSERT INTO users (name, email, age) VALUES (?, ?, ?)',
           params: ['Duplicate', 'alice@example.com', 20],
           vendor: 'sqlite',
-        }),
+        })
       ).rejects.toThrow();
     });
 
@@ -235,13 +256,13 @@ describe.skipIf(!hasSQLiteBindings)('SQLite CRUD Integration', () => {
 
     it('should delete with complex WHERE', async () => {
       await executeQuery(manager, {
-        sql: "DELETE FROM orders WHERE status = ? AND quantity > ?",
+        sql: 'DELETE FROM orders WHERE status = ? AND quantity > ?',
         params: ['pending', 0],
         vendor: 'sqlite',
       });
 
       const result = await executeQuery(manager, {
-        sql: "SELECT * FROM orders WHERE status = ?",
+        sql: 'SELECT * FROM orders WHERE status = ?',
         params: ['pending'],
         vendor: 'sqlite',
       });
@@ -262,7 +283,7 @@ describe.skipIf(!hasSQLiteBindings)('SQLite CRUD Integration', () => {
           sql: 'DELETE FROM users WHERE id = ?',
           params: [1],
           vendor: 'sqlite',
-        }),
+        })
       ).rejects.toThrow();
 
       // Disable again so other tests aren't affected
