@@ -18,7 +18,8 @@
     "README.md"
   ],
   "scripts": {
-    "build": "tsup",
+    "build": "tsup && pnpm verify:package-surface",
+    "verify:package-surface": "node scripts/verify-package-surface.mjs",
     "dev": "tsup --watch",
     "test": "vitest --config vitest.config.ts",
     "test:watch": "vitest --config vitest.config.ts --watch",

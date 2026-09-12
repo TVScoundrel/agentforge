@@ -214,7 +214,7 @@ try {
 
 Use an explicit transaction timeout whenever Agent reasoning occurs inside the
 callback, because the transaction can retain a dedicated connection and locks.
-See the [Relational Tool Set migration guide](./src/data/relational/docs/migrating-to-relational-tool-sets.md)
+See the [Relational Tool Set migration guide](https://github.com/TVScoundrel/agentforge/blob/main/packages/tools/src/data/relational/docs/migrating-to-relational-tool-sets.md)
 for migration mappings, prefixes, cache controls, transaction behavior, and the
 compatibility timeline. The deprecated Tools remain available throughout the
 current major release and become eligible for removal only in the next major release.
