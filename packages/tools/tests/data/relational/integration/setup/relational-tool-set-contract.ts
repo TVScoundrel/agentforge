@@ -93,10 +93,11 @@ export async function expectRelationalToolSetContract(config: ConnectionConfig):
 
     await expect(
       toolSet.transaction(async (tools) => {
-        await tools.insert.invoke({
+        const result = await tools.insert.invoke({
           table: 'users',
           data: { name: 'Rolled Back User', email: rolledBackEmail, age: 36 },
         });
+        expect(result).toMatchObject({ success: true, rowCount: 1 });
         throw new Error('roll back adapter contract');
       })
     ).rejects.toThrow('roll back adapter contract');
