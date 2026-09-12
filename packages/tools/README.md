@@ -4,7 +4,7 @@
 
 [![npm version](https://img.shields.io/npm/v/@agentforge/tools)](https://www.npmjs.com/package/@agentforge/tools)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.9-blue)](https://www.typescriptlang.org/)
-[![License](https://img.shields.io/badge/license-MIT-green)](../../LICENSE)
+[![License](https://img.shields.io/badge/license-MIT-green)](https://github.com/TVScoundrel/agentforge/blob/main/LICENSE)
 
 ## Status: Production Ready & Published
 
@@ -213,7 +213,9 @@ try {
 ```
 
 Use an explicit transaction timeout whenever Agent reasoning occurs inside the
-callback, because the transaction can retain a dedicated connection and locks.
+callback, because the transaction retains its database connection and can hold
+locks. PostgreSQL and MySQL transactions use a dedicated pooled connection; SQLite
+transactions use the Tool Set's shared handle.
 See the [Relational Tool Set migration guide](https://github.com/TVScoundrel/agentforge/blob/main/packages/tools/src/data/relational/docs/migrating-to-relational-tool-sets.md)
 for migration mappings, prefixes, cache controls, transaction behavior, and the
 compatibility timeline. The deprecated Tools remain available throughout the

@@ -156,7 +156,9 @@ await relational.transaction(
 
 There is no implicit timeout. Always choose an explicit `timeoutMs` when Agent
 reasoning or any other unbounded work occurs inside the callback: the transaction
-holds a dedicated connection and may hold database locks while reasoning continues.
+holds its database connection and may hold database locks while reasoning continues.
+PostgreSQL and MySQL use a dedicated pooled connection for the transaction; SQLite
+uses the Tool Set's shared handle and serializes work around it.
 A failed or partial Tool result makes the transaction rollback-only, and a thrown
 callback error or timeout rolls it back automatically.
 

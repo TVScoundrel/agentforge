@@ -21,7 +21,9 @@ const runtimeExports = [
 const declarationExports = [
   ...runtimeExports,
   'RelationalToolSet',
+  'RelationalToolSetGetSchemaInput',
   'RelationalToolSetOptions',
+  'RelationalTransactionErrorCode',
   'RelationalTransactionToolSet',
   'TransactionOptions',
 ];
@@ -60,7 +62,9 @@ for (const name of declarationExports) {
 }
 
 const readme = await readFile(new URL('../README.md', import.meta.url), 'utf8');
-const relativeLinks = [...readme.matchAll(/\[[^\]]+\]\((?!https?:|mailto:|#)([^)]+)\)/g)];
+const relativeLinks = [
+  ...readme.matchAll(/\[(?:[^\]]|\[[^\]]*\]\([^)]*\))*\]\((?!https?:|mailto:|#)([^)]+)\)/g),
+];
 for (const [, target] of relativeLinks) {
   const packedPath = target.split(/[?#]/, 1)[0].replace(/^\.\//, '');
   assert.ok(packedFiles.has(packedPath), `README link target is not published: ${target}`);
