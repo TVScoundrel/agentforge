@@ -5,6 +5,44 @@ All notable changes to AgentForge will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.18.0] - 2026-09-12
+
+### Added
+
+#### @agentforge/tools - Session-Owning Relational Tool Sets
+- Added `createRelationalToolSet()` with a named-and-iterable collection of six credential-free Relational Tools backed by one immutable database configuration.
+- Added lazy, coalesced connection initialization, session and pool reuse, Tool-set-local schema caching, explicit refresh, active-work draining, and deterministic idempotent disposal.
+- Added transaction-scoped Relational Tools with dedicated sessions, automatic commit and rollback, rollback-only handling for failed and partial results, configurable isolation and timeouts, scoped-Tool expiry, and nested-transaction rejection.
+- Added public configuration, lifecycle, transaction, and typed-error contracts for application callers.
+
+### Changed
+
+#### @agentforge/core - Iterable Tool Registration
+- Broadened `ToolRegistry.registerMany()` typing so configured typed Tool collections can be registered directly while preserving existing registry behavior.
+
+#### @agentforge/tools - Relational Adapter Contracts
+- Concentrated PostgreSQL, MySQL, and SQLite session behavior behind the Relational Tool Set seam and expanded cross-vendor contract validation.
+- Kept credentials and driver details out of Agent-facing Tool inputs, results, and failure messages.
+
+### Deprecated
+
+#### @agentforge/tools - Credential-Bearing Relational Tools
+- Marked the existing credential-bearing Relational Tools as deprecated while preserving their exports, schemas, Tool names, operation semantics, and sanitized results through ephemeral compatibility adapters.
+- Added migration guidance for reusable sessions, transactions, schema caching, naming prefixes, and explicit disposal.
+
+### Validation
+- `pnpm release:validate` passed with 242 test files passed, 2 skipped, 2,708 tests passed, and 23 skipped.
+- Skips are intentional opt-in coverage for the Neo4j integration service, PostgreSQL connection credentials, and web-search performance tests; the default release suite remains deterministic without external services, credentials, or network access.
+
+### Published
+- All packages published to npm registry at version 0.18.0:
+  - @agentforge/core@0.18.0
+  - @agentforge/skills@0.18.0
+  - @agentforge/patterns@0.18.0
+  - @agentforge/tools@0.18.0
+  - @agentforge/testing@0.18.0
+  - @agentforge/cli@0.18.0
+
 ## [0.17.2] - 2026-09-08
 
 ### Changed
