@@ -13,6 +13,9 @@ A named operation with a declared input contract that an agent may invoke to act
 **Tool Registry**:
 A catalog of Tools available for lookup, selection, and presentation to agents.
 
+**Relational Tool Set**:
+A configured collection of relational database Tools that targets one database and owns their shared connection lifecycle and transaction scope.
+
 ## Agent Skills
 
 **Agent Skill**:
