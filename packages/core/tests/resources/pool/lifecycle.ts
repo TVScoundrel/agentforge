@@ -126,6 +126,56 @@ describe('ConnectionPool lifecycle flow', () => {
     }
   });
 
+  it('finalizes an idle connection when its destroyer fails during clear', async () => {
+    const destroyError = new Error('destroy failed');
+    const destroyer = vi.fn(async () => {
+      throw destroyError;
+    });
+    const pool = createConnectionPool({
+      factory: async () => ({ id: 1 }),
+      destroyer,
+      pool: { max: 1 },
+    });
+
+    const connection = await pool.acquire();
+    await pool.release(connection);
+
+    await expect(pool.clear()).rejects.toBe(destroyError);
+    expect(pool.getStats()).toMatchObject({
+      size: 0,
+      available: 0,
+      acquired: 0,
+      destroyed: 1,
+    });
+
+    await pool.clear();
+    expect(destroyer).toHaveBeenCalledTimes(1);
+    await expect(pool.release(connection)).rejects.toThrow('Connection not found in pool');
+  });
+
+  it('finalizes an acquired connection when its destroyer fails during clear', async () => {
+    const destroyError = new Error('destroy failed');
+    const pool = createConnectionPool({
+      factory: async () => ({ id: 1 }),
+      destroyer: async () => {
+        throw destroyError;
+      },
+      pool: { max: 1 },
+    });
+
+    await pool.acquire();
+
+    await expect(pool.clear()).rejects.toBe(destroyError);
+    expect(pool.getStats()).toMatchObject({
+      size: 0,
+      available: 0,
+      acquired: 0,
+      destroyed: 1,
+    });
+
+    await pool.clear();
+  });
+
   it('does not destroy a connection that becomes in use during a failing health check', async () => {
     let resumeValidator: (() => void) | undefined;
     const { pool, destroyed } = await createMockPool({
