@@ -106,6 +106,47 @@ describe('ConnectionPool acquisition flow', () => {
     }
   });
 
+  it('rejects a failed queued handoff without failing release or stranding later acquires', async () => {
+    let acquisitionCount = 0;
+    const connection = { id: 1 };
+    const pool = createConnectionPool({
+      factory: async () => connection,
+      onAcquire: () => {
+        acquisitionCount++;
+        if (acquisitionCount === 2) {
+          throw new Error('Queued acquisition hook failed');
+        }
+      },
+      pool: { max: 1, acquireTimeout: 100 },
+    });
+
+    try {
+      const first = await pool.acquire();
+      const failedAcquire = pool.acquire();
+      const laterAcquire = pool.acquire();
+      let queuedFailure: unknown;
+      const observedFailure = failedAcquire.catch((error: unknown) => {
+        queuedFailure = error;
+      });
+      await Promise.resolve();
+
+      await expect(pool.release(first)).resolves.toBeUndefined();
+      expect(queuedFailure).toEqual(new Error('Queued acquisition hook failed'));
+      await observedFailure;
+      await expect(laterAcquire).resolves.toBe(connection);
+      expect(pool.getStats()).toMatchObject({
+        size: 1,
+        available: 0,
+        pending: 0,
+        acquired: 1,
+      });
+
+      await pool.release(connection);
+    } finally {
+      await pool.clear();
+    }
+  });
+
   it('does not exceed max when concurrent acquires race while creating a connection', async () => {
     let resolveFactory: ((connection: { id: number }) => void) | undefined;
     const created: Array<{ id: number }> = [];
@@ -190,6 +231,55 @@ describe('ConnectionPool acquisition flow', () => {
       });
     } finally {
       releaseInitialConnection?.();
+      await pool.clear();
+    }
+  });
+
+  it('continues queued handoffs when a minimum-size connection fails its first acquisition hook', async () => {
+    let finishCreating: (() => void) | undefined;
+    let acquisitionCount = 0;
+    const connection = { id: 1 };
+    const pool = createConnectionPool({
+      factory: async () => {
+        await new Promise<void>((resolve) => {
+          finishCreating = resolve;
+        });
+        return connection;
+      },
+      onAcquire: () => {
+        acquisitionCount++;
+        if (acquisitionCount === 1) {
+          throw new Error('Minimum-size queued hook failed');
+        }
+      },
+      pool: { min: 1, max: 1, acquireTimeout: 100 },
+    });
+
+    try {
+      await Promise.resolve();
+      const failedAcquire = pool.acquire();
+      const laterAcquire = pool.acquire();
+      let queuedFailure: unknown;
+      const observedFailure = failedAcquire.catch((error: unknown) => {
+        queuedFailure = error;
+      });
+      await Promise.resolve();
+
+      finishCreating?.();
+
+      await expect(laterAcquire).resolves.toBe(connection);
+      expect(queuedFailure).toEqual(new Error('Minimum-size queued hook failed'));
+      await observedFailure;
+      expect(pool.getStats()).toMatchObject({
+        size: 1,
+        available: 0,
+        pending: 0,
+        acquired: 1,
+      });
+
+      await pool.release(connection);
+    } finally {
+      finishCreating?.();
       await pool.clear();
     }
   });

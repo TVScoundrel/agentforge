@@ -61,29 +61,28 @@ export async function initializeConnections<T>(
   await Promise.all(promises);
 }
 
-function assignConnectionToPendingAcquire<T>(
+export function assignConnectionToPendingAcquire<T>(
   runtime: ConnectionPoolRuntime<T>,
   connection: T
 ): void {
-  const pending = runtime.pending.shift();
-  if (!pending) {
-    return;
-  }
-
   const pooled = runtime.connections.find((item) => item.connection === connection);
   if (!pooled) {
-    runtime.pending.unshift(pending);
     return;
   }
 
-  clearTimeout(pending.timeout);
-  runtime.stats.pending--;
-  pooled.inUse = true;
-  pooled.lastUsedAt = Date.now();
-  runtime.stats.available--;
-  runtime.stats.acquired++;
-  runtime.options.onAcquire?.(connection);
-  pending.resolve(connection);
+  let pending = runtime.pending.shift();
+  while (pending) {
+    clearTimeout(pending.timeout);
+    runtime.stats.pending--;
+
+    try {
+      pending.resolve(checkoutConnection(runtime, pooled));
+      return;
+    } catch (error) {
+      pending.reject(error instanceof Error ? error : new Error(String(error)));
+      pending = runtime.pending.shift();
+    }
+  }
 }
 
 export async function createConnection<T>(runtime: ConnectionPoolRuntime<T>): Promise<T> {

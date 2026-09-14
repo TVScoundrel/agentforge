@@ -1,5 +1,6 @@
 import type { ConnectionPoolRuntime } from './pool-types.js';
 import {
+  assignConnectionToPendingAcquire,
   checkoutConnection,
   createConnection,
   destroyConnection,
@@ -72,17 +73,5 @@ export async function releaseConnection<T>(
   runtime.stats.acquired--;
   runtime.options.onRelease?.(connection);
 
-  const pending = runtime.pending.shift();
-  if (!pending) {
-    return;
-  }
-
-  clearTimeout(pending.timeout);
-  runtime.stats.pending--;
-  pooled.inUse = true;
-  pooled.lastUsedAt = Date.now();
-  runtime.stats.available--;
-  runtime.stats.acquired++;
-  runtime.options.onAcquire?.(connection);
-  pending.resolve(connection);
+  assignConnectionToPendingAcquire(runtime, connection);
 }
