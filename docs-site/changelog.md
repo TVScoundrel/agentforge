@@ -5,6 +5,34 @@ All notable changes to AgentForge will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.18.1] - 2026-09-14
+
+### Changed
+
+#### @agentforge/core - Authoritative Connection Pool Transitions
+- Consolidated immediate checkout and queued handoff state mutation in the existing pool runtime so reusable, newly created, released, and minimum-size connections share one transition protocol.
+- Preserved the public ConnectionPool, DatabasePool, and HttpPool interfaces and successful callback ordering.
+
+### Fixed
+
+#### @agentforge/core - Failure-Safe Connection Pool Lifecycle
+- Restored connections and statistics when acquisition hooks fail, allowing later acquisitions to reuse both existing and newly created connections.
+- Rejected failed queued acquisitions deterministically without failing the releasing caller or stranding later waiters, including handoffs from minimum-size initialization.
+- Finalized connection membership and statistics when a configured destroyer rejects, while propagating the error and preventing the removed connection from being reused.
+
+### Validation
+- `pnpm release:validate` passed with 242 test files passed, 2 skipped, 2,714 tests passed, and 23 skipped.
+- Skips are intentional opt-in coverage for the Neo4j integration service, PostgreSQL connection credentials, and web-search performance tests; enable them with a running Neo4j service and `RUN_INTEGRATION_TESTS=true`, `POSTGRES_CONNECTION_STRING`, or `RUN_WEB_PERFORMANCE_TESTS=true` plus network access, respectively.
+
+### Published
+- All packages published to npm registry at version 0.18.1:
+  - @agentforge/core@0.18.1
+  - @agentforge/skills@0.18.1
+  - @agentforge/patterns@0.18.1
+  - @agentforge/tools@0.18.1
+  - @agentforge/testing@0.18.1
+  - @agentforge/cli@0.18.1
+
 ## [0.18.0] - 2026-09-12
 
 ### Added
