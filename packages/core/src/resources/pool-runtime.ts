@@ -102,6 +102,19 @@ export async function createConnection<T>(runtime: ConnectionPoolRuntime<T>): Pr
   return connection;
 }
 
+function finalizeDestroyedConnection<T>(
+  runtime: ConnectionPoolRuntime<T>,
+  pooled: PooledConnection<T>
+): void {
+  runtime.stats.destroyed++;
+  runtime.stats.size--;
+  if (pooled.inUse) {
+    runtime.stats.acquired--;
+  } else {
+    runtime.stats.available--;
+  }
+}
+
 export async function destroyConnection<T>(
   runtime: ConnectionPoolRuntime<T>,
   pooled: PooledConnection<T>
@@ -112,17 +125,16 @@ export async function destroyConnection<T>(
   }
 
   if (runtime.options.destroyer) {
-    await runtime.options.destroyer(pooled.connection);
+    try {
+      await runtime.options.destroyer(pooled.connection);
+    } catch (error) {
+      finalizeDestroyedConnection(runtime, pooled);
+      throw error;
+    }
   }
 
   runtime.options.onDestroy?.(pooled.connection);
-  runtime.stats.destroyed++;
-  runtime.stats.size--;
-  if (pooled.inUse) {
-    runtime.stats.acquired--;
-  } else {
-    runtime.stats.available--;
-  }
+  finalizeDestroyedConnection(runtime, pooled);
 }
 
 export function getPoolConfig<T>(runtime: ConnectionPoolRuntime<T>) {
