@@ -13,6 +13,29 @@ export function createInitialPoolStats(): PoolStats {
   };
 }
 
+export function checkoutConnection<T>(
+  runtime: ConnectionPoolRuntime<T>,
+  pooled: PooledConnection<T>
+): T {
+  const previousLastUsedAt = pooled.lastUsedAt;
+
+  pooled.inUse = true;
+  pooled.lastUsedAt = Date.now();
+  runtime.stats.available--;
+  runtime.stats.acquired++;
+
+  try {
+    runtime.options.onAcquire?.(pooled.connection);
+    return pooled.connection;
+  } catch (error) {
+    pooled.inUse = false;
+    pooled.lastUsedAt = previousLastUsedAt;
+    runtime.stats.available++;
+    runtime.stats.acquired--;
+    throw error;
+  }
+}
+
 export async function initializeConnections<T>(
   runtime: ConnectionPoolRuntime<T>,
   count: number
@@ -38,7 +61,10 @@ export async function initializeConnections<T>(
   await Promise.all(promises);
 }
 
-function assignConnectionToPendingAcquire<T>(runtime: ConnectionPoolRuntime<T>, connection: T): void {
+function assignConnectionToPendingAcquire<T>(
+  runtime: ConnectionPoolRuntime<T>,
+  connection: T
+): void {
   const pending = runtime.pending.shift();
   if (!pending) {
     return;

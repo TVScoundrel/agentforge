@@ -1,5 +1,10 @@
 import type { ConnectionPoolRuntime } from './pool-types.js';
-import { createConnection, destroyConnection, getPoolConfig } from './pool-runtime.js';
+import {
+  checkoutConnection,
+  createConnection,
+  destroyConnection,
+  getPoolConfig,
+} from './pool-runtime.js';
 
 export async function acquireConnection<T>(runtime: ConnectionPoolRuntime<T>): Promise<T> {
   if (runtime.draining) {
@@ -8,12 +13,7 @@ export async function acquireConnection<T>(runtime: ConnectionPoolRuntime<T>): P
 
   const available = runtime.connections.find((connection) => !connection.inUse);
   if (available) {
-    available.inUse = true;
-    available.lastUsedAt = Date.now();
-    runtime.stats.available--;
-    runtime.stats.acquired++;
-    runtime.options.onAcquire?.(available.connection);
-    return available.connection;
+    return checkoutConnection(runtime, available);
   }
 
   const poolConfig = getPoolConfig(runtime);
@@ -31,12 +31,7 @@ export async function acquireConnection<T>(runtime: ConnectionPoolRuntime<T>): P
         throw new Error('Pool is draining');
       }
 
-      pooled.inUse = true;
-      pooled.lastUsedAt = Date.now();
-      runtime.stats.available--;
-      runtime.stats.acquired++;
-      runtime.options.onAcquire?.(connection);
-      return connection;
+      return checkoutConnection(runtime, pooled);
     } finally {
       runtime.creating--;
     }

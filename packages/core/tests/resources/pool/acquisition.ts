@@ -3,6 +3,75 @@ import { describe, expect, it } from 'vitest';
 import { createMockPool } from './shared.js';
 
 describe('ConnectionPool acquisition flow', () => {
+  it('restores an available connection when its acquisition hook fails', async () => {
+    let failAcquisition = false;
+    const connection = { id: 1 };
+    const pool = createConnectionPool({
+      factory: async () => connection,
+      onAcquire: () => {
+        if (failAcquisition) {
+          throw new Error('Acquisition hook failed');
+        }
+      },
+      pool: { max: 1 },
+    });
+
+    try {
+      const first = await pool.acquire();
+      await pool.release(first);
+      failAcquisition = true;
+
+      await expect(pool.acquire()).rejects.toThrow('Acquisition hook failed');
+      expect(pool.getStats()).toMatchObject({
+        size: 1,
+        available: 1,
+        acquired: 0,
+      });
+
+      failAcquisition = false;
+      const reused = await pool.acquire();
+      expect(reused).toBe(connection);
+      await pool.release(reused);
+    } finally {
+      await pool.clear();
+    }
+  });
+
+  it('makes a newly created connection reusable when its acquisition hook fails', async () => {
+    let failAcquisition = true;
+    let factoryCalls = 0;
+    const connection = { id: 1 };
+    const pool = createConnectionPool({
+      factory: async () => {
+        factoryCalls++;
+        return connection;
+      },
+      onAcquire: () => {
+        if (failAcquisition) {
+          throw new Error('Acquisition hook failed');
+        }
+      },
+      pool: { max: 1 },
+    });
+
+    try {
+      await expect(pool.acquire()).rejects.toThrow('Acquisition hook failed');
+      expect(pool.getStats()).toMatchObject({
+        size: 1,
+        available: 1,
+        acquired: 0,
+      });
+
+      failAcquisition = false;
+      const reused = await pool.acquire();
+      expect(reused).toBe(connection);
+      expect(factoryCalls).toBe(1);
+      await pool.release(reused);
+    } finally {
+      await pool.clear();
+    }
+  });
+
   it('reuses released connections for pending acquires and keeps stats in sync', async () => {
     const { pool } = await createMockPool({
       pool: { max: 1, acquireTimeout: 100 },
