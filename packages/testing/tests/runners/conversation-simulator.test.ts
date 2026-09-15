@@ -124,17 +124,22 @@ describe('conversation simulator', () => {
   });
 
   it('delays only between actual turns in both input modes', async () => {
+    let events: string[] = [];
     const delaySpy = vi
       .spyOn(globalThis, 'setTimeout')
       .mockImplementation((callback) => {
+        events.push('delay');
         callback();
         return 0 as unknown as ReturnType<typeof setTimeout>;
       });
     const simulator = createConversationSimulator(
       {
-        invoke: async (input: { messages: Array<HumanMessage | AIMessage> }) => ({
-          messages: [...input.messages, new AIMessage('ack')],
-        }),
+        invoke: async (input: { messages: Array<HumanMessage | AIMessage> }) => {
+          events.push(`invoke:${String(input.messages.at(-1)?.content)}`);
+          return {
+            messages: [...input.messages, new AIMessage('ack')],
+          };
+        },
       },
       { turnDelay: 25 }
     );
@@ -142,11 +147,22 @@ describe('conversation simulator', () => {
 
     try {
       await simulator.simulate(['first', 'second']);
-      expect(delaySpy).toHaveBeenCalledTimes(1);
+      expect(events).toEqual(['invoke:first', 'delay', 'invoke:second']);
 
-      delaySpy.mockClear();
-      await simulator.simulateDynamic(() => dynamicInputs.shift() ?? '');
-      expect(delaySpy).toHaveBeenCalledTimes(1);
+      events = [];
+      await simulator.simulateDynamic(() => {
+        const input = dynamicInputs.shift() ?? '';
+        events.push(`generate:${input || '<empty>'}`);
+        return input;
+      });
+      expect(events).toEqual([
+        'generate:first',
+        'invoke:first',
+        'generate:second',
+        'delay',
+        'invoke:second',
+        'generate:<empty>',
+      ]);
     } finally {
       delaySpy.mockRestore();
     }
