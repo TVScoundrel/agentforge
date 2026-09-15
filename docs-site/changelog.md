@@ -5,6 +5,27 @@ All notable changes to AgentForge will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.18.2] - 2026-09-15
+
+### Changed
+
+#### @agentforge/core - Unified Tool Schema Description Traversal
+- Consolidated throwing validation, safe validation, and missing-description reporting behind one lazy recursive traversal of Tool schemas.
+- Preserved wrapper and inner schema descriptions across compound Zod shapes while reporting duplicate missing paths once in first-seen order.
+
+### Validation
+- `pnpm release:validate` passed with 242 test files passed, 2 skipped, 2,718 tests passed, and 23 skipped.
+- Skips are intentional opt-in coverage for the Neo4j integration service, PostgreSQL connection credentials, and web-search performance tests; enable them with a running Neo4j service and `RUN_INTEGRATION_TESTS=true`, `POSTGRES_CONNECTION_STRING`, or `RUN_WEB_PERFORMANCE_TESTS=true` plus network access, respectively.
+
+### Published
+- All packages published to npm registry at version 0.18.2:
+  - @agentforge/core@0.18.2
+  - @agentforge/skills@0.18.2
+  - @agentforge/patterns@0.18.2
+  - @agentforge/tools@0.18.2
+  - @agentforge/testing@0.18.2
+  - @agentforge/cli@0.18.2
+
 ## [0.18.1] - 2026-09-14
 
 ### Changed
