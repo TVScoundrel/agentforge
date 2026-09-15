@@ -106,64 +106,13 @@ export class ConversationSimulator<TState = unknown> {
    * Simulate a conversation with predefined user inputs
    */
   async simulate(userInputs: string[]): Promise<ConversationResult> {
-    const startTime = Date.now();
-    const messages: BaseMessage[] = [];
-    let turns = 0;
-    let completed = true;
-    let stopReason: ConversationResult['stopReason'] = 'max_turns';
-    let error: Error | undefined;
-    
     const maxTurns = this.config.maxTurns || userInputs.length;
-    
-    try {
-      for (const input of userInputs) {
-        if (turns >= maxTurns) {
-          stopReason = 'max_turns';
-          break;
-        }
-        
-        // Add user message
-        const userMessage = new HumanMessage(input);
-        messages.push(userMessage);
-        
-        this.logVerboseTurn('User', input);
-        
-        // Get agent response
-        const result = await this.agent.invoke({ messages });
-        const aiMessage = extractLatestMessage(result);
-        messages.push(aiMessage);
-        
-        this.logVerboseTurn('AI', aiMessage.content);
-        
-        turns++;
-        
-        // Check stop condition
-        if (this.config.stopCondition && this.config.stopCondition(messages)) {
-          stopReason = 'stop_condition';
-          break;
-        }
-        
-        // Delay between turns
-        if (this.config.turnDelay) {
-          await new Promise((resolve) => setTimeout(resolve, this.config.turnDelay));
-        }
-      }
-    } catch (err) {
-      completed = false;
-      stopReason = 'error';
-      error = err as Error;
-    }
-    
-    const totalTime = Date.now() - startTime;
-    
-    return {
-      messages,
-      turns,
-      totalTime,
-      completed,
-      stopReason,
-      error,
-    };
+    let inputIndex = 0;
+
+    return this.runConversation(
+      () => ({ value: userInputs[inputIndex++]! }),
+      Math.min(maxTurns, userInputs.length)
+    );
   }
   
   /**
@@ -171,7 +120,20 @@ export class ConversationSimulator<TState = unknown> {
    */
   async simulateDynamic(
     inputGenerator: (messages: BaseMessage[]) => string | null,
-    maxTurns = 10
+    maxTurns?: number
+  ): Promise<ConversationResult> {
+    return this.runConversation(
+      (messages) => {
+        const input = inputGenerator(messages);
+        return input ? { value: input } : null;
+      },
+      maxTurns ?? this.config.maxTurns ?? 10
+    );
+  }
+
+  private async runConversation(
+    nextInput: (messages: BaseMessage[]) => { value: string } | null,
+    maxTurns: number
   ): Promise<ConversationResult> {
     const startTime = Date.now();
     const messages: BaseMessage[] = [];
@@ -179,24 +141,39 @@ export class ConversationSimulator<TState = unknown> {
     let completed = true;
     let stopReason: ConversationResult['stopReason'] = 'max_turns';
     let error: Error | undefined;
-    
+
     try {
       while (turns < maxTurns) {
-        const input = inputGenerator(messages);
+        const next = nextInput(messages);
         
-        if (!input) {
+        if (!next) {
           stopReason = 'stop_condition';
           break;
+        }
+
+        const { value: input } = next;
+
+        if (turns > 0 && this.config.turnDelay) {
+          await new Promise((resolve) => setTimeout(resolve, this.config.turnDelay));
         }
         
         const userMessage = new HumanMessage(input);
         messages.push(userMessage);
+
+        this.logVerboseTurn('User', input);
         
         const result = await this.agent.invoke({ messages });
         const aiMessage = extractLatestMessage(result);
         messages.push(aiMessage);
+
+        this.logVerboseTurn('AI', aiMessage.content);
         
         turns++;
+
+        if (this.config.stopCondition && this.config.stopCondition(messages)) {
+          stopReason = 'stop_condition';
+          break;
+        }
       }
     } catch (err) {
       completed = false;

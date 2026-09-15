@@ -41,6 +41,20 @@ describe('conversation simulator', () => {
     expect(result.messages[3]).toEqual(new AIMessage('reply 3'));
   });
 
+  it('keeps an empty fixed input as a conversation turn', async () => {
+    const simulator = createConversationSimulator({
+      invoke: async (input: { messages: Array<HumanMessage | AIMessage> }) => ({
+        messages: [...input.messages, new AIMessage('reply')],
+      }),
+    });
+
+    const result = await simulator.simulate(['']);
+
+    expect(result.stopReason).toBe('max_turns');
+    expect(result.turns).toBe(1);
+    expect(result.messages[0]).toEqual(new HumanMessage(''));
+  });
+
   it('supports dynamic input generation until the generator stops', async () => {
     const simulator = new ConversationSimulator({
       invoke: async (input: { messages: Array<HumanMessage | AIMessage> }) => ({
@@ -50,7 +64,7 @@ describe('conversation simulator', () => {
 
     const result = await simulator.simulateDynamic((messages) => {
       if (messages.length >= 4) {
-        return null;
+        return '';
       }
 
       return `turn ${messages.length}`;
@@ -60,6 +74,98 @@ describe('conversation simulator', () => {
     expect(result.stopReason).toBe('stop_condition');
     expect(result.turns).toBe(2);
     expect(result.messages).toHaveLength(4);
+  });
+
+  it('uses the configured dynamic maximum unless an explicit maximum is supplied', async () => {
+    const simulator = createConversationSimulator(
+      {
+        invoke: async (input: { messages: Array<HumanMessage | AIMessage> }) => ({
+          messages: [...input.messages, new AIMessage('ack')],
+        }),
+      },
+      { maxTurns: 1 }
+    );
+    const generateInput = () => 'continue';
+
+    const configuredResult = await simulator.simulateDynamic(generateInput);
+    const explicitResult = await simulator.simulateDynamic(generateInput, 2);
+
+    expect(configuredResult.turns).toBe(1);
+    expect(configuredResult.stopReason).toBe('max_turns');
+    expect(explicitResult.turns).toBe(2);
+    expect(explicitResult.stopReason).toBe('max_turns');
+  });
+
+  it('checks the configured stop condition after a dynamic response and before generating another input', async () => {
+    const generateInput = vi
+      .fn<() => string>()
+      .mockReturnValueOnce('hello')
+      .mockImplementation(() => {
+        throw new Error('generated another input after stopping');
+      });
+    const simulator = createConversationSimulator(
+      {
+        invoke: async (input: { messages: Array<HumanMessage | AIMessage> }) => ({
+          messages: [...input.messages, new AIMessage('done')],
+        }),
+      },
+      {
+        stopCondition: (messages) =>
+          messages[messages.length - 1]?.content === 'done',
+      }
+    );
+
+    const result = await simulator.simulateDynamic(generateInput);
+
+    expect(result.completed).toBe(true);
+    expect(result.stopReason).toBe('stop_condition');
+    expect(result.turns).toBe(1);
+    expect(generateInput).toHaveBeenCalledTimes(1);
+  });
+
+  it('delays only between actual turns in both input modes', async () => {
+    let events: string[] = [];
+    const delaySpy = vi
+      .spyOn(globalThis, 'setTimeout')
+      .mockImplementation((callback) => {
+        events.push('delay');
+        callback();
+        return 0 as unknown as ReturnType<typeof setTimeout>;
+      });
+    const simulator = createConversationSimulator(
+      {
+        invoke: async (input: { messages: Array<HumanMessage | AIMessage> }) => {
+          events.push(`invoke:${String(input.messages.at(-1)?.content)}`);
+          return {
+            messages: [...input.messages, new AIMessage('ack')],
+          };
+        },
+      },
+      { turnDelay: 25 }
+    );
+    const dynamicInputs = ['first', 'second', ''];
+
+    try {
+      await simulator.simulate(['first', 'second']);
+      expect(events).toEqual(['invoke:first', 'delay', 'invoke:second']);
+
+      events = [];
+      await simulator.simulateDynamic(() => {
+        const input = dynamicInputs.shift() ?? '';
+        events.push(`generate:${input || '<empty>'}`);
+        return input;
+      });
+      expect(events).toEqual([
+        'generate:first',
+        'invoke:first',
+        'generate:second',
+        'delay',
+        'invoke:second',
+        'generate:<empty>',
+      ]);
+    } finally {
+      delaySpy.mockRestore();
+    }
   });
 
   it('stops early when maxTurns is lower than the provided input count', async () => {
@@ -147,6 +253,28 @@ describe('conversation simulator', () => {
     expect(stream.output[0]).toContain('User: hello');
     expect(stream.output[1]).toContain('AI: reply 1');
     expect(consoleSpy).not.toHaveBeenCalled();
+  });
+
+  it('routes dynamic verbose turn output through the configured logger', async () => {
+    const stream = new CaptureStream();
+    const logger = createLogger('test-dynamic-conversation-simulator', {
+      destination: stream,
+      includeTimestamp: false,
+    });
+    const simulator = createConversationSimulator(
+      {
+        invoke: async (input: { messages: Array<HumanMessage | AIMessage> }) => ({
+          messages: [...input.messages, new AIMessage('dynamic reply')],
+        }),
+      },
+      { verbose: true, logger }
+    );
+
+    await simulator.simulateDynamic(() => 'hello', 1);
+
+    expect(stream.output).toHaveLength(2);
+    expect(stream.output[0]).toContain('User: hello');
+    expect(stream.output[1]).toContain('AI: dynamic reply');
   });
 
   it('does not emit verbose logs when verbose mode is disabled', async () => {
