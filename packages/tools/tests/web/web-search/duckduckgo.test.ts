@@ -19,6 +19,7 @@ describe('DuckDuckGo Provider', () => {
   });
 
   afterEach(() => {
+    vi.useRealTimers();
     vi.restoreAllMocks();
   });
 
@@ -136,6 +137,53 @@ describe('DuckDuckGo Provider', () => {
         'DuckDuckGo search failed: Network error'
       );
     });
+
+    it('should not retry a non-retryable client failure', async () => {
+      mockedAxios.get.mockRejectedValueOnce({
+        response: { status: 400 },
+        message: 'Bad Request',
+      });
+
+      await expect(provider.search('test', 10)).rejects.toThrow(
+        'DuckDuckGo search failed: Bad Request'
+      );
+      expect(mockedAxios.get).toHaveBeenCalledTimes(1);
+    });
+
+    it.each([
+      ['connection failure', Object.assign(new Error('socket hang up'), { code: 'ECONNRESET' })],
+      ['timeout', Object.assign(new Error('request timed out'), { code: 'ECONNABORTED' })],
+      ['rate limit', { response: { status: 429 }, message: 'Too Many Requests' }],
+      ['server failure', { response: { status: 503 }, message: 'Service Unavailable' }],
+    ])(
+      'should retry a %s and return normalized results from a later attempt',
+      async (_name, error) => {
+        vi.useFakeTimers();
+        mockedAxios.get.mockRejectedValueOnce(error).mockResolvedValueOnce({
+          data: {
+            Abstract: 'Recovered result',
+            AbstractURL: 'https://example.com/recovered',
+            Heading: 'Recovered',
+            RelatedTopics: [],
+            Results: [],
+          },
+        });
+
+        const search = provider.search('test', 10);
+        const result = expect(search).resolves.toEqual([
+          {
+            title: 'Recovered',
+            link: 'https://example.com/recovered',
+            snippet: 'Recovered result',
+            position: 1,
+          },
+        ]);
+        await vi.runAllTimersAsync();
+
+        await result;
+        expect(mockedAxios.get).toHaveBeenCalledTimes(2);
+      }
+    );
 
     it('should include User-Agent header', async () => {
       const mockResponse = {
@@ -270,4 +318,3 @@ describe('DuckDuckGo Provider', () => {
     });
   });
 });
-
