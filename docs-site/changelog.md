@@ -5,6 +5,30 @@ All notable changes to AgentForge will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.18.3] - 2026-09-16
+
+### Changed
+
+#### @agentforge/cli - Unified Named-Test Commands
+- Consolidated the agent and tool named-test command flows behind one shared runner while preserving their command-specific headings, paths, creation hints, watch behavior, and failures.
+
+#### @agentforge/testing - Unified Conversation Simulation Loop
+- Routed predefined and dynamic conversations through one simulator loop with consistent logging, stop-condition, error, timing, and maximum-turn behavior.
+- Applied configured turn delays only between turns, before the next user input, without delaying single-turn or already-completed conversations.
+
+### Validation
+- `pnpm release:validate` passed with 243 test files passed, 2 skipped, 2,721 tests passed, and 23 skipped.
+- Skips are intentional opt-in coverage for the Neo4j integration service, PostgreSQL connection credentials, and web-search performance tests; enable them with a running Neo4j service and `RUN_INTEGRATION_TESTS=true`, `POSTGRES_CONNECTION_STRING`, or `RUN_WEB_PERFORMANCE_TESTS=true` plus network access, respectively.
+
+### Published
+- All packages published to npm registry at version 0.18.3:
+  - @agentforge/core@0.18.3
+  - @agentforge/skills@0.18.3
+  - @agentforge/patterns@0.18.3
+  - @agentforge/tools@0.18.3
+  - @agentforge/testing@0.18.3
+  - @agentforge/cli@0.18.3
+
 ## [0.18.2] - 2026-09-15
 
 ### Changed
