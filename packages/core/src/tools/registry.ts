@@ -4,10 +4,24 @@ import {
   emitRegistryEvent,
   removeRegistryEventHandler,
 } from './registry-events.js';
-import type { RegistryInputTool, RegistryTool } from './registry-collection.js';
-import { createRegistryMutationApi, type RegistryMutationApi } from './registry-mutation-api.js';
-import type { RegistryMutationEvents } from './registry-mutations.js';
-import { createRegistryQueryApi, type RegistryQueryApi } from './registry-query-api.js';
+import {
+  getAllRegistryTools,
+  getRegistryToolNames,
+  getRegistryToolsByCategory,
+  getRegistryToolsByTag,
+  searchRegistryTools,
+  type RegistryInputTool,
+  type RegistryTool,
+} from './registry-collection.js';
+import {
+  clearRegistryTools,
+  registerManyRegistryTools,
+  registerRegistryTool,
+  removeRegistryTool,
+  updateRegistryTool,
+  type RegistryMutationEvents,
+} from './registry-mutations.js';
+import { convertRegistryToolsToLangChain, generateRegistryPrompt } from './registry-prompt.js';
 import { RegistryEvent, type EventHandler, type PromptOptions } from './registry-types.js';
 
 export class ToolRegistry {
@@ -22,64 +36,57 @@ export class ToolRegistry {
   private readonly emitMutation = (event: RegistryEvent, data: unknown): void => {
     this.emit(event, data);
   };
-  private readonly mutations: RegistryMutationApi;
-  private readonly queries: RegistryQueryApi;
-
-  constructor() {
-    this.mutations = createRegistryMutationApi(this.tools, this.emitMutation, this.mutationEvents);
-    this.queries = createRegistryQueryApi(this.tools);
-  }
 
   register<TInput, TOutput>(tool: Tool<TInput, TOutput>): void {
-    this.mutations.register(tool);
+    registerRegistryTool(this.tools, tool, this.emitMutation, this.mutationEvents);
   }
 
   get(name: string): RegistryTool | undefined {
-    return this.queries.get(name);
+    return this.tools.get(name);
   }
 
   has(name: string): boolean {
-    return this.queries.has(name);
+    return this.tools.has(name);
   }
 
   remove(name: string): boolean {
-    return this.mutations.remove(name);
+    return removeRegistryTool(this.tools, name, this.emitMutation, this.mutationEvents);
   }
 
   update<TInput, TOutput>(name: string, tool: Tool<TInput, TOutput>): boolean {
-    return this.mutations.update(name, tool);
+    return updateRegistryTool(this.tools, name, tool, this.emitMutation, this.mutationEvents);
   }
 
   getAll(): RegistryTool[] {
-    return this.queries.getAll();
+    return getAllRegistryTools(this.tools);
   }
 
   getByCategory(category: ToolCategory): RegistryTool[] {
-    return this.queries.getByCategory(category);
+    return getRegistryToolsByCategory(this.tools, category);
   }
 
   getByTag(tag: string): RegistryTool[] {
-    return this.queries.getByTag(tag);
+    return getRegistryToolsByTag(this.tools, tag);
   }
 
   search(query: string): RegistryTool[] {
-    return this.queries.search(query);
+    return searchRegistryTools(this.tools, query);
   }
 
   registerMany(tools: Iterable<RegistryInputTool>): void {
-    this.mutations.registerMany(tools);
+    registerManyRegistryTools(this.tools, tools, this.emitMutation, this.mutationEvents);
   }
 
   clear(): void {
-    this.mutations.clear();
+    clearRegistryTools(this.tools, this.emitMutation, this.mutationEvents);
   }
 
   size(): number {
-    return this.queries.size();
+    return this.tools.size;
   }
 
   getNames(): string[] {
-    return this.queries.getNames();
+    return getRegistryToolNames(this.tools);
   }
 
   on(event: RegistryEvent, handler: EventHandler): void {
@@ -95,11 +102,11 @@ export class ToolRegistry {
   }
 
   toLangChainTools() {
-    return this.queries.toLangChainTools();
+    return convertRegistryToolsToLangChain(getAllRegistryTools(this.tools));
   }
 
   generatePrompt(options: PromptOptions = {}): string {
-    return this.queries.generatePrompt(options);
+    return generateRegistryPrompt(getAllRegistryTools(this.tools), options);
   }
 }
 
