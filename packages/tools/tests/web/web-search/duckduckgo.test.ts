@@ -150,6 +150,22 @@ describe('DuckDuckGo Provider', () => {
       expect(mockedAxios.get).toHaveBeenCalledTimes(1);
     });
 
+    it('should retain the DuckDuckGo error after exhausting server failure retries', async () => {
+      vi.useFakeTimers();
+      mockedAxios.get.mockRejectedValue({
+        response: { status: 503 },
+        message: 'Service Unavailable',
+      });
+
+      const result = expect(provider.search('test', 10)).rejects.toThrow(
+        'DuckDuckGo search failed: Service Unavailable'
+      );
+      await vi.runAllTimersAsync();
+
+      await result;
+      expect(mockedAxios.get).toHaveBeenCalledTimes(4);
+    });
+
     it.each([
       ['connection failure', Object.assign(new Error('socket hang up'), { code: 'ECONNRESET' })],
       ['timeout', Object.assign(new Error('request timed out'), { code: 'ECONNABORTED' })],
