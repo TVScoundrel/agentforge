@@ -1,6 +1,6 @@
 /**
  * Serper Search Provider
- * 
+ *
  * Premium search provider using Serper API (Google results).
  * Requires SERPER_API_KEY environment variable.
  * Get your API key at: https://serper.dev
@@ -61,8 +61,8 @@ export class SerperProvider implements SearchProvider {
       );
     }
 
-    return retryWithBackoff(async () => {
-      try {
+    try {
+      return await retryWithBackoff(async () => {
         const response = await axios.post<SerperResponse>(
           'https://google.serper.dev/search',
           {
@@ -79,30 +79,25 @@ export class SerperProvider implements SearchProvider {
         );
 
         return this.normalizeResults(response.data, maxResults);
-      } catch (error: any) {
-        if (error.response?.status === 401) {
-          throw new Error(
-            'Invalid Serper API key. Get your key at https://serper.dev'
-          );
-        }
-        if (error.response?.status === 429) {
-          throw new Error(
-            'Serper API rate limit exceeded. Please try again later or upgrade your plan at https://serper.dev'
-          );
-        }
-        throw new Error(`Serper search failed: ${error.message}`);
+      });
+    } catch (error: any) {
+      if (error.response?.status === 401) {
+        throw new Error('Invalid Serper API key. Get your key at https://serper.dev');
       }
-    });
+      if (error.response?.status === 429) {
+        throw new Error(
+          'Serper API rate limit exceeded. Please try again later or upgrade your plan at https://serper.dev'
+        );
+      }
+      throw new Error(`Serper search failed: ${error.message}`);
+    }
   }
 
   /**
    * Normalize Serper response to SearchResult[]
    * Optimized for performance with large result sets
    */
-  private normalizeResults(
-    data: SerperResponse,
-    maxResults: number
-  ): SearchResult[] {
+  private normalizeResults(data: SerperResponse, maxResults: number): SearchResult[] {
     // Early return for empty results
     if (!data.organic || data.organic.length === 0 || maxResults <= 0) {
       return [];
@@ -145,4 +140,3 @@ export class SerperProvider implements SearchProvider {
 export function createSerperProvider(): SerperProvider {
   return new SerperProvider();
 }
-

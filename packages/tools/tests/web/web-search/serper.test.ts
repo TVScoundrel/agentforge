@@ -21,6 +21,7 @@ describe('Serper Provider', () => {
 
   afterEach(() => {
     process.env = originalEnv;
+    vi.useRealTimers();
     vi.restoreAllMocks();
   });
 
@@ -147,9 +148,7 @@ describe('Serper Provider', () => {
       delete process.env.SERPER_API_KEY;
       provider = new SerperProvider();
 
-      await expect(provider.search('test', 10)).rejects.toThrow(
-        'Serper API key not found'
-      );
+      await expect(provider.search('test', 10)).rejects.toThrow('Serper API key not found');
     });
 
     it('should handle 401 authentication errors', async () => {
@@ -158,29 +157,69 @@ describe('Serper Provider', () => {
         message: 'Unauthorized',
       });
 
-      await expect(provider.search('test', 10)).rejects.toThrow(
-        'Invalid Serper API key'
-      );
+      await expect(provider.search('test', 10)).rejects.toThrow('Invalid Serper API key');
+      expect(mockedAxios.post).toHaveBeenCalledTimes(1);
     });
 
-    it('should handle 429 rate limit errors', async () => {
-      mockedAxios.post.mockRejectedValueOnce({
+    it('should retain the Serper rate limit error after exhausting retries', async () => {
+      vi.useFakeTimers();
+      mockedAxios.post.mockRejectedValue({
         response: { status: 429 },
         message: 'Too Many Requests',
       });
 
-      await expect(provider.search('test', 10)).rejects.toThrow(
+      const result = expect(provider.search('test', 10)).rejects.toThrow(
         'Serper API rate limit exceeded'
       );
+      await vi.runAllTimersAsync();
+
+      await result;
+      expect(mockedAxios.post).toHaveBeenCalledTimes(4);
     });
 
-    it('should handle generic network errors', async () => {
-      mockedAxios.post.mockRejectedValueOnce(new Error('Network timeout'));
+    it('should retain the Serper search error after exhausting timeout retries', async () => {
+      vi.useFakeTimers();
+      mockedAxios.post.mockRejectedValue(new Error('Network timeout'));
 
-      await expect(provider.search('test', 10)).rejects.toThrow(
-        /Serper search failed/
+      const result = expect(provider.search('test', 10)).rejects.toThrow(
+        'Serper search failed: Network timeout'
       );
+      await vi.runAllTimersAsync();
+
+      await result;
+      expect(mockedAxios.post).toHaveBeenCalledTimes(4);
+    });
+
+    it('should retry a connection failure and return normalized results from a later attempt', async () => {
+      vi.useFakeTimers();
+      mockedAxios.post
+        .mockRejectedValueOnce(Object.assign(new Error('socket hang up'), { code: 'ECONNRESET' }))
+        .mockResolvedValueOnce({
+          data: {
+            organic: [
+              {
+                title: 'Recovered',
+                link: 'https://example.com/recovered',
+                snippet: 'Recovered result',
+                position: 1,
+              },
+            ],
+          },
+        });
+
+      const search = provider.search('test', 10);
+      const result = expect(search).resolves.toEqual([
+        {
+          title: 'Recovered',
+          link: 'https://example.com/recovered',
+          snippet: 'Recovered result',
+          position: 1,
+        },
+      ]);
+      await vi.runAllTimersAsync();
+
+      await result;
+      expect(mockedAxios.post).toHaveBeenCalledTimes(2);
     });
   });
 });
-

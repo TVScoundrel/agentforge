@@ -1,6 +1,6 @@
 /**
  * DuckDuckGo Search Provider
- * 
+ *
  * Free search provider using DuckDuckGo's Instant Answer API.
  * No API key required.
  */
@@ -52,38 +52,32 @@ export class DuckDuckGoProvider implements SearchProvider {
     maxResults: number,
     timeout: number = DEFAULT_TIMEOUT
   ): Promise<SearchResult[]> {
-    return retryWithBackoff(async () => {
-      try {
-        const response = await axios.get<DuckDuckGoResponse>(
-          'https://api.duckduckgo.com/',
-          {
-            params: {
-              q: query,
-              format: 'json',
-            },
-            headers: {
-              'User-Agent':
-                'Mozilla/5.0 (compatible; AgentForge/1.0; +https://github.com/agentforge)',
-            },
-            timeout,
-          }
-        );
+    try {
+      return await retryWithBackoff(async () => {
+        const response = await axios.get<DuckDuckGoResponse>('https://api.duckduckgo.com/', {
+          params: {
+            q: query,
+            format: 'json',
+          },
+          headers: {
+            'User-Agent':
+              'Mozilla/5.0 (compatible; AgentForge/1.0; +https://github.com/agentforge)',
+          },
+          timeout,
+        });
 
         return this.normalizeResults(response.data, maxResults);
-      } catch (error: any) {
-        throw new Error(`DuckDuckGo search failed: ${error.message}`);
-      }
-    });
+      });
+    } catch (error: any) {
+      throw new Error(`DuckDuckGo search failed: ${error.message}`);
+    }
   }
 
   /**
    * Normalize DuckDuckGo response to SearchResult[]
    * Optimized for performance with large result sets
    */
-  private normalizeResults(
-    data: DuckDuckGoResponse,
-    maxResults: number
-  ): SearchResult[] {
+  private normalizeResults(data: DuckDuckGoResponse, maxResults: number): SearchResult[] {
     const results: SearchResult[] = [];
 
     // Early return if maxResults is 0
@@ -159,4 +153,3 @@ export class DuckDuckGoProvider implements SearchProvider {
 export function createDuckDuckGoProvider(): DuckDuckGoProvider {
   return new DuckDuckGoProvider();
 }
-
