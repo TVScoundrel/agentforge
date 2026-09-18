@@ -5,6 +5,36 @@ All notable changes to AgentForge will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.18.4] - 2026-09-18
+
+### Changed
+
+#### @agentforge/core - Deepened Tool Registry Internals
+- Consolidated Tool Registry queries, mutations, prompt generation, and LangChain conversion behind the registry's existing collection and operation modules.
+- Removed redundant query and mutation wrapper objects while preserving the public Tool Registry API and event behavior.
+
+#### @agentforge/patterns - Removed Unreachable Agent Builder
+- Removed the unused shared Agent Builder implementation and its unreachable barrel exports, leaving active pattern construction paths unchanged.
+
+### Fixed
+
+#### @agentforge/tools - Retry-Aware Web Search Errors
+- Preserved retryable Axios errors through the retry loop for DuckDuckGo and Serper searches instead of wrapping them before classification.
+- Applied provider-specific error messages only after retry exhaustion and added coverage for transient failures, retry exhaustion, and non-retryable responses.
+
+### Validation
+- `pnpm release:validate` passed with 242 test files passed, 2 skipped, 2,726 tests passed, and 23 skipped.
+- Skips are intentional opt-in coverage for the Neo4j integration service, PostgreSQL connection credentials, and web-search performance tests; enable them with a running Neo4j service and `RUN_INTEGRATION_TESTS=true`, `POSTGRES_CONNECTION_STRING`, or `RUN_WEB_PERFORMANCE_TESTS=true` plus network access, respectively.
+
+### Published
+- All packages published to npm registry at version 0.18.4:
+  - @agentforge/core@0.18.4
+  - @agentforge/skills@0.18.4
+  - @agentforge/patterns@0.18.4
+  - @agentforge/tools@0.18.4
+  - @agentforge/testing@0.18.4
+  - @agentforge/cli@0.18.4
+
 ## [0.18.3] - 2026-09-16
 
 ### Changed
