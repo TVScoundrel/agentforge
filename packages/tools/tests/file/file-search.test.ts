@@ -49,23 +49,38 @@ describe('file-search traversal behavior', () => {
     await writeFile(join(workspaceRoot, 'second-level', 'second.txt'), 'second');
     const fileSearch = createFileSearchTool();
 
-    const nativeDepthFirstMatches = async (directory: string): Promise<string[]> => {
-      const entries = await readdir(directory, { withFileTypes: true });
-      const matches: string[] = [];
-
-      for (const entry of entries) {
-        const entryPath = join(directory, entry.name);
-        if (entry.isFile() && entry.name.endsWith('.txt')) {
-          matches.push(entryPath);
-        }
-        if (entry.isDirectory()) {
-          matches.push(...(await nativeDepthFirstMatches(entryPath)));
-        }
+    const firstLevelPath = join(workspaceRoot, 'first-level');
+    const nestedPath = join(firstLevelPath, 'nested');
+    const secondLevelPath = join(workspaceRoot, 'second-level');
+    const [rootEntries, firstLevelEntries, nestedEntries, secondLevelEntries] = await Promise.all([
+      readdir(workspaceRoot),
+      readdir(firstLevelPath),
+      readdir(nestedPath),
+      readdir(secondLevelPath),
+    ]);
+    const firstLevelMatches = firstLevelEntries.flatMap((entryName) => {
+      if (entryName === 'first.txt') {
+        return [join(firstLevelPath, entryName)];
       }
-
-      return matches;
-    };
-    const expectedMatches = await nativeDepthFirstMatches(workspaceRoot);
+      if (entryName === 'nested') {
+        return nestedEntries.map((nestedEntryName) => join(nestedPath, nestedEntryName));
+      }
+      return [];
+    });
+    const expectedMatches = rootEntries.flatMap((entryName) => {
+      if (entryName === 'root.txt') {
+        return [join(workspaceRoot, entryName)];
+      }
+      if (entryName === 'first-level') {
+        return firstLevelMatches;
+      }
+      if (entryName === 'second-level') {
+        return secondLevelEntries.map((secondLevelEntryName) =>
+          join(secondLevelPath, secondLevelEntryName)
+        );
+      }
+      return [];
+    });
 
     await expect(
       fileSearch.invoke({
