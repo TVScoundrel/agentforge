@@ -41,4 +41,3 @@ export interface ConfluenceAuth {
   ATLASSIAN_EMAIL: string;
   ATLASSIAN_SITE_URL: string;
 }
-
