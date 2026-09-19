@@ -9,6 +9,7 @@ import { neo4jTraverseSchema } from '../types.js';
 import { neo4jPool } from '../connection.js';
 import { formatResults } from '../utils/result-formatter.js';
 import { validateRelationshipType, validateDirection } from '../utils/cypher-sanitizer.js';
+import { withNeo4jSession } from './session-owner.js';
 
 /**
  * Create Neo4j traverse tool
@@ -41,9 +42,7 @@ export function createNeo4jTraverseTool() {
           ? validateRelationshipType(input.relationshipType)
           : null;
 
-        const session = neo4jPool.getSession(input.database);
-
-        try {
+        return await withNeo4jSession(input.database, async (session) => {
           // Build relationship pattern based on direction with safe identifiers
           let relPattern = '';
           if (safeDirection === 'OUTGOING') {
@@ -94,9 +93,7 @@ export function createNeo4jTraverseTool() {
               maxDepth: input.maxDepth,
             },
           };
-        } finally {
-          await session.close();
-        }
+        });
       } catch (error) {
         return {
           success: false,
@@ -111,4 +108,3 @@ export function createNeo4jTraverseTool() {
     })
     .build();
 }
-

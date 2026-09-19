@@ -8,6 +8,7 @@ import { toolBuilder, ToolCategory, createLogger } from '@agentforge/core';
 import { neo4jQuerySchema } from '../types.js';
 import { neo4jPool } from '../connection.js';
 import { formatResults } from '../utils/result-formatter.js';
+import { withNeo4jSession } from './session-owner.js';
 
 const logger = createLogger('agentforge:tools:neo4j:query');
 
@@ -43,9 +44,7 @@ export function createNeo4jQueryTool() {
       });
 
       try {
-        const session = neo4jPool.getSession(input.database);
-
-        try {
+        return await withNeo4jSession(input.database, async (session) => {
           const result = await session.run(input.cypher, input.parameters || {});
           const formattedResults = formatResults(result.records);
           const duration = Date.now() - startTime;
@@ -76,9 +75,7 @@ export function createNeo4jQueryTool() {
               },
             },
           };
-        } finally {
-          await session.close();
-        }
+        });
       } catch (error) {
         const duration = Date.now() - startTime;
         const errorMessage = error instanceof Error ? error.message : 'Failed to execute query';

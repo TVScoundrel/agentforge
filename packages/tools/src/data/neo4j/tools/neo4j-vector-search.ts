@@ -8,6 +8,7 @@ import { toolBuilder, ToolCategory } from '@agentforge/core';
 import { neo4jVectorSearchSchema } from '../types.js';
 import { neo4jPool } from '../connection.js';
 import { formatResults } from '../utils/result-formatter.js';
+import { withNeo4jSession } from './session-owner.js';
 
 /**
  * Create Neo4j vector search tool
@@ -32,9 +33,7 @@ export function createNeo4jVectorSearchTool() {
       }
 
       try {
-        const session = neo4jPool.getSession(input.database);
-        
-        try {
+        return await withNeo4jSession(input.database, async (session) => {
           // Use db.index.vector.queryNodes for vector similarity search
           const cypher = `
             CALL db.index.vector.queryNodes($indexName, $limit, $queryVector)
@@ -65,9 +64,7 @@ export function createNeo4jVectorSearchTool() {
               limit: input.limit,
             },
           };
-        } finally {
-          await session.close();
-        }
+        });
       } catch (error) {
         const errorMessage = error instanceof Error ? error.message : 'Failed to perform vector search';
         
@@ -89,4 +86,3 @@ export function createNeo4jVectorSearchTool() {
     })
     .build();
 }
-

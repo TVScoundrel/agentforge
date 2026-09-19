@@ -10,6 +10,7 @@ import { neo4jVectorSearchWithEmbeddingSchema } from '../types.js';
 import { neo4jPool } from '../connection.js';
 import { formatResults } from '../utils/result-formatter.js';
 import { embeddingManager } from '../embeddings/embedding-manager.js';
+import { withNeo4jSession } from './session-owner.js';
 
 const logger = createLogger('agentforge:tools:neo4j:vector-search');
 
@@ -61,9 +62,7 @@ export function createNeo4jVectorSearchWithEmbeddingTool() {
         const embeddingResult = await embeddingManager.generateEmbedding(input.queryText, input.model);
 
         // Perform vector search
-        const session = neo4jPool.getSession(input.database);
-
-        try {
+        return await withNeo4jSession(input.database, async (session) => {
           // Use db.index.vector.queryNodes for vector similarity search
           const cypher = `
             CALL db.index.vector.queryNodes($indexName, $limit, $queryVector)
@@ -110,9 +109,7 @@ export function createNeo4jVectorSearchWithEmbeddingTool() {
               usage: embeddingResult.usage,
             },
           };
-        } finally {
-          await session.close();
-        }
+        });
       } catch (error) {
         const duration = Date.now() - startTime;
         const errorMessage = error instanceof Error ? error.message : 'Failed to perform vector search with embedding';

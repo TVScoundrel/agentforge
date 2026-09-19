@@ -7,6 +7,7 @@
 import { toolBuilder, ToolCategory } from '@agentforge/core';
 import { neo4jGetSchemaSchema } from '../types.js';
 import { neo4jPool } from '../connection.js';
+import { withNeo4jSession } from './session-owner.js';
 
 /**
  * Create Neo4j get schema tool
@@ -31,9 +32,7 @@ export function createNeo4jGetSchemaTool() {
       }
 
       try {
-        const session = neo4jPool.getSession(input.database);
-        
-        try {
+        return await withNeo4jSession(input.database, async (session) => {
           // Get node labels
           const labelsResult = await session.run('CALL db.labels()');
           const nodeLabels = labelsResult.records.map((r) => r.get('label'));
@@ -83,9 +82,7 @@ export function createNeo4jGetSchemaTool() {
               totalIndexes: indexes.length,
             },
           };
-        } finally {
-          await session.close();
-        }
+        });
       } catch (error) {
         return {
           success: false,
@@ -95,4 +92,3 @@ export function createNeo4jGetSchemaTool() {
     })
     .build();
 }
-
