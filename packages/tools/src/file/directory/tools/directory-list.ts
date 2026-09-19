@@ -7,6 +7,7 @@ import { directoryListSchema, type DirectoryListEntry, type DirectoryListResult 
 import { promises as fs } from 'fs';
 import * as path from 'path';
 import { DEFAULT_FILE_SYSTEM_POLICY, type FileSystemPolicy } from '../../confinement.js';
+import { traverseDirectory } from './traverse-directory.js';
 
 /**
  * Create directory list tool
@@ -25,53 +26,39 @@ export function createDirectoryListTool(
     .implementSafe(async (input) => {
       const safePath = await policy.resolvePath(input.path, 'directory listing');
       const includeDetails = input.includeDetails ?? defaultIncludeDetails;
-      const listFiles = async (dir: string, recursive: boolean): Promise<DirectoryListEntry[]> => {
-        const entries = await fs.readdir(dir, { withFileTypes: true });
-        const files: DirectoryListEntry[] = [];
+      const recursive = input.recursive ?? defaultRecursive;
+      const files: DirectoryListEntry[] = [];
 
-        for (const entry of entries) {
-          const fullPath = path.join(dir, entry.name);
-          const relativePath = path.relative(safePath, fullPath);
+      for await (const entry of traverseDirectory(safePath, recursive)) {
+        const relativePath = path.relative(safePath, entry.fullPath);
 
-          // Apply extension filter if specified
-          if (input.extension && !entry.name.endsWith(input.extension)) {
-            if (!entry.isDirectory() || !recursive) {
-              continue;
-            }
-          }
-
-          if (includeDetails) {
-            const stats = await fs.lstat(fullPath);
-            files.push({
-              name: entry.name,
-              path: relativePath,
-              fullPath,
-              isFile: entry.isFile(),
-              isDirectory: entry.isDirectory(),
-              size: stats.size,
-              modified: stats.mtime.toISOString(),
-            });
-          } else {
-            files.push({
-              name: entry.name,
-              path: relativePath,
-              isFile: entry.isFile(),
-              isDirectory: entry.isDirectory(),
-            });
-          }
-
-          // Recurse into subdirectories if requested
-          if (recursive && entry.isDirectory()) {
-            const subFiles = await listFiles(fullPath, true);
-            files.push(...subFiles);
+        // Apply extension filter if specified
+        if (input.extension && !entry.name.endsWith(input.extension)) {
+          if (!entry.isDirectory || !recursive) {
+            continue;
           }
         }
 
-        return files;
-      };
-
-      const recursive = input.recursive ?? defaultRecursive;
-      const files = await listFiles(safePath, recursive);
+        if (includeDetails) {
+          const stats = await fs.lstat(entry.fullPath);
+          files.push({
+            name: entry.name,
+            path: relativePath,
+            fullPath: entry.fullPath,
+            isFile: entry.isFile,
+            isDirectory: entry.isDirectory,
+            size: stats.size,
+            modified: stats.mtime.toISOString(),
+          });
+        } else {
+          files.push({
+            name: entry.name,
+            path: relativePath,
+            isFile: entry.isFile,
+            isDirectory: entry.isDirectory,
+          });
+        }
+      }
 
       const result: DirectoryListResult = {
         path: input.path,
