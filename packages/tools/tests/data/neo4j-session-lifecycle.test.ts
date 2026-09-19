@@ -143,7 +143,9 @@ describe('Neo4j Tool session lifecycle', () => {
     '$name returns the uninitialized result without acquiring a session',
     async ({ invoke }) => {
       vi.spyOn(neo4jPool, 'isInitialized').mockReturnValue(false);
-      const getSession = vi.spyOn(neo4jPool, 'getSession');
+      const getSession = vi.spyOn(neo4jPool, 'getSession').mockImplementation(() => {
+        throw new Error('Unexpected session acquisition');
+      });
 
       await expect(invoke()).resolves.toMatchObject({
         success: false,
@@ -182,7 +184,9 @@ describe('Neo4j Tool session lifecycle', () => {
   it('performs every schema introspection query through one session', async () => {
     const { getSession, session } = arrangeInitializedSession();
 
-    await createNeo4jGetSchemaTool().invoke({ database });
+    await expect(createNeo4jGetSchemaTool().invoke({ database })).resolves.toMatchObject({
+      success: true,
+    });
 
     expect(getSession).toHaveBeenCalledOnce();
     expect(session.run.mock.calls.length).toBeGreaterThan(1);
@@ -237,6 +241,7 @@ describe('Neo4j Tool session lifecycle', () => {
       });
       expect(getSession).toHaveBeenCalledOnce();
       expect(getSession).toHaveBeenCalledWith(database);
+      expect(session.close).toHaveBeenCalledOnce();
     }
   );
 });
