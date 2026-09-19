@@ -15,11 +15,13 @@ describe('SkillRegistry query api', () => {
     cleanupTempDirs(tempDirs);
   });
 
-  it('returns discovered skills and metadata through the query helpers', () => {
+  it('returns discovered skills and metadata', () => {
     createSkillFixture(tempDir, 'alpha', `---
 name: alpha
 description: Alpha skill
 license: MIT
+allowed-tools:
+  - read_file
 ---
 Alpha body`);
     createSkillFixture(tempDir, 'beta', `---
@@ -38,12 +40,17 @@ Beta body`);
     expect(alpha?.rootPath).toBe(tempDir);
 
     expect(registry.get('nonexistent')).toBeUndefined();
-    expect(registry.getAll()).toHaveLength(2);
-    expect(registry.getAll().map((skill) => skill.metadata.name).sort()).toEqual(['alpha', 'beta']);
+    const skills = registry.getAll();
+    const names = registry.getNames();
+    expect(skills).toHaveLength(2);
+    expect(names).toEqual(skills.map((skill) => skill.metadata.name));
+    expect(registry.getAll()).not.toBe(skills);
+    expect(registry.getNames()).not.toBe(names);
     expect(registry.has('alpha')).toBe(true);
     expect(registry.has('gamma')).toBe(false);
     expect(registry.size()).toBe(2);
-    expect(registry.getNames().sort()).toEqual(['alpha', 'beta']);
+    expect(registry.getAllowedTools('alpha')).toBe(alpha?.metadata.allowedTools);
+    expect(registry.getAllowedTools('missing')).toBeUndefined();
   });
 
   it('returns an empty scan error list after a clean discovery run', () => {
@@ -54,7 +61,10 @@ description: No issues
 body`);
 
     const registry = new SkillRegistry({ skillRoots: [tempDir] });
-    expect(registry.getScanErrors()).toEqual([]);
+    const errors = registry.getScanErrors();
+
+    expect(errors).toEqual([]);
+    expect(registry.getScanErrors()).toBe(errors);
   });
 
   it('collects parse errors from invalid skills', () => {

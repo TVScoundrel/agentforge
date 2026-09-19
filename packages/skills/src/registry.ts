@@ -15,15 +15,6 @@ import {
 } from './registry-events.js';
 import type { RegistryEventHandlers } from './registry-internal.js';
 import { generateSkillPrompt } from './registry-prompt.js';
-import {
-  getAllSkills,
-  getAllowedTools,
-  getScanErrors,
-  getSkill,
-  getSkillCount,
-  getSkillNames,
-  hasSkill,
-} from './registry-query-api.js';
 
 export class SkillRegistry {
   private skills: Map<string, Skill> = new Map();
@@ -44,27 +35,27 @@ export class SkillRegistry {
   }
 
   get(name: string): Skill | undefined {
-    return getSkill(this.skills, name);
+    return this.skills.get(name);
   }
 
   getAll(): Skill[] {
-    return getAllSkills(this.skills);
+    return Array.from(this.skills.values());
   }
 
   has(name: string): boolean {
-    return hasSkill(this.skills, name);
+    return this.skills.has(name);
   }
 
   size(): number {
-    return getSkillCount(this.skills);
+    return this.skills.size;
   }
 
   getNames(): string[] {
-    return getSkillNames(this.skills);
+    return Array.from(this.skills.keys());
   }
 
   getScanErrors(): ReadonlyArray<{ path: string; error: string }> {
-    return getScanErrors(this.scanErrors);
+    return this.scanErrors;
   }
 
   getAllowUntrustedScripts(): boolean {
@@ -72,7 +63,7 @@ export class SkillRegistry {
   }
 
   getAllowedTools(name: string): string[] | undefined {
-    return getAllowedTools(this.skills, name);
+    return this.skills.get(name)?.metadata.allowedTools;
   }
 
   generatePrompt(options?: SkillPromptOptions): string {
