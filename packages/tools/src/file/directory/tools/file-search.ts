@@ -4,9 +4,8 @@
 
 import { toolBuilder, ToolCategory } from '@agentforge/core';
 import { fileSearchSchema } from '../types.js';
-import { promises as fs } from 'fs';
-import * as path from 'path';
 import { DEFAULT_FILE_SYSTEM_POLICY, type FileSystemPolicy } from '../../confinement.js';
+import { traverseDirectory } from './traverse-directory.js';
 
 /**
  * Create file search tool
@@ -26,34 +25,15 @@ export function createFileSearchTool(
       const recursive = input.recursive ?? defaultRecursive;
       const caseSensitive = input.caseSensitive ?? defaultCaseSensitive;
       const safeDirectory = await policy.resolvePath(input.directory, 'file search');
+      const regexPattern = input.pattern.replace(/\./g, '\\.').replace(/\*/g, '.*');
+      const regex = new RegExp(`^${regexPattern}$`, caseSensitive ? '' : 'i');
+      const matches: string[] = [];
 
-      const searchFiles = async (dir: string): Promise<string[]> => {
-        const entries = await fs.readdir(dir, { withFileTypes: true });
-        const matches: string[] = [];
-
-        // Convert pattern to regex
-        const regexPattern = input.pattern
-          .replace(/\./g, '\\.')
-          .replace(/\*/g, '.*');
-        const regex = new RegExp(`^${regexPattern}$`, caseSensitive ? '' : 'i');
-
-        for (const entry of entries) {
-          const fullPath = path.join(dir, entry.name);
-
-          if (entry.isFile() && regex.test(entry.name)) {
-            matches.push(fullPath);
-          }
-
-          if (recursive && entry.isDirectory()) {
-            const subMatches = await searchFiles(fullPath);
-            matches.push(...subMatches);
-          }
+      for await (const entry of traverseDirectory(safeDirectory, recursive)) {
+        if (entry.isFile && regex.test(entry.name)) {
+          matches.push(entry.fullPath);
         }
-
-        return matches;
-      };
-
-      const matches = await searchFiles(safeDirectory);
+      }
 
       return {
         directory: input.directory,
