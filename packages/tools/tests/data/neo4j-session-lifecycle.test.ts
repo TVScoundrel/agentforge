@@ -148,13 +148,15 @@ describe('Neo4j Tool session lifecycle', () => {
   );
 
   it.each(toolCases)('$name closes its session after an operation failure', async ({ invoke }) => {
-    const { session } = arrangeInitializedSession();
+    const { getSession, session } = arrangeInitializedSession();
     session.run.mockRejectedValue(new Error('operation failed'));
 
     await expect(invoke()).resolves.toMatchObject({
       success: false,
       error: expect.stringContaining('operation failed'),
     });
+    expect(getSession).toHaveBeenCalledOnce();
+    expect(getSession).toHaveBeenCalledWith(database);
     expect(session.close).toHaveBeenCalledOnce();
   });
 
@@ -168,14 +170,17 @@ describe('Neo4j Tool session lifecycle', () => {
     expect(session.close).toHaveBeenCalledOnce();
   });
 
-  it.each(toolCases)(
-    '$name does not complete until asynchronous session closure completes',
-    async ({ invoke }) => {
+  it.each(closureOutcomeCases)(
+    '$name does not complete until asynchronous session closure completes after $outcome',
+    async ({ invoke, operationError }) => {
       let finishClosing: (() => void) | undefined;
       const closePending = new Promise<void>((resolve) => {
         finishClosing = resolve;
       });
-      const { session } = arrangeInitializedSession();
+      const { getSession, session } = arrangeInitializedSession();
+      if (operationError) {
+        session.run.mockRejectedValue(operationError);
+      }
       session.close.mockReturnValue(closePending);
 
       let completed = false;
@@ -186,16 +191,22 @@ describe('Neo4j Tool session lifecycle', () => {
 
       await vi.waitFor(() => expect(session.close).toHaveBeenCalledOnce());
       expect(completed).toBe(false);
+      expect(getSession).toHaveBeenCalledOnce();
+      expect(getSession).toHaveBeenCalledWith(database);
 
       finishClosing?.();
-      await expect(invocation).resolves.toMatchObject({ success: true });
+      await expect(invocation).resolves.toMatchObject(
+        operationError
+          ? { success: false, error: expect.stringContaining('operation failed') }
+          : { success: true }
+      );
     }
   );
 
   it.each(closureOutcomeCases)(
     '$name returns the closure failure after $outcome',
     async ({ invoke, operationError }) => {
-      const { session } = arrangeInitializedSession();
+      const { getSession, session } = arrangeInitializedSession();
       if (operationError) {
         session.run.mockRejectedValue(operationError);
       }
@@ -205,6 +216,8 @@ describe('Neo4j Tool session lifecycle', () => {
         success: false,
         error: 'close failed',
       });
+      expect(getSession).toHaveBeenCalledOnce();
+      expect(getSession).toHaveBeenCalledWith(database);
     }
   );
 });
