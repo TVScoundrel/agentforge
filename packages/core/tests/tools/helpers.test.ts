@@ -66,6 +66,38 @@ describe('createTool', () => {
     ).toThrow('Invalid tool metadata');
   });
 
+  it('should report invalid metadata before missing schema descriptions', () => {
+    expect(() =>
+      createTool(
+        {
+          name: 'InvalidName',
+          description: 'Test',
+          category: ToolCategory.UTILITY,
+        },
+        z.object({
+          input: z.string(),
+        }),
+        async ({ input }) => input
+      )
+    ).toThrow('Invalid tool metadata');
+  });
+
+  it('should expose execute as the same function reference as invoke', () => {
+    const tool = createTool(
+      {
+        name: 'aliased-tool',
+        description: 'Tool with a backward-compatible execution alias',
+        category: ToolCategory.UTILITY,
+      },
+      z.object({
+        input: z.string().describe('Input'),
+      }),
+      async ({ input }) => input
+    );
+
+    expect(tool.execute).toBe(tool.invoke);
+  });
+
   it('should validate nested schema descriptions', () => {
     expect(() =>
       createTool(
@@ -114,9 +146,7 @@ describe('createTool', () => {
         category: ToolCategory.UTILITY,
       },
       z.object({
-        items: z
-          .array(z.string().describe('Item name'))
-          .describe('List of items'),
+        items: z.array(z.string().describe('Item name')).describe('List of items'),
       }),
       async ({ items }) => items
     );
@@ -159,6 +189,22 @@ describe('createToolUnsafe', () => {
         async ({ input }) => input
       )
     ).toThrow('Invalid tool metadata');
+  });
+
+  it('should expose execute as the same function reference as invoke', () => {
+    const tool = createToolUnsafe(
+      {
+        name: 'unsafe-aliased-tool',
+        description: 'Unsafe tool with a backward-compatible execution alias',
+        category: ToolCategory.UTILITY,
+      },
+      z.object({
+        input: z.string(),
+      }),
+      async ({ input }) => input
+    );
+
+    expect(tool.execute).toBe(tool.invoke);
   });
 });
 
@@ -218,4 +264,3 @@ describe('validateTool', () => {
     expect(result.errors.length).toBeGreaterThan(1);
   });
 });
-

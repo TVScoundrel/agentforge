@@ -1,6 +1,6 @@
 /**
  * Tool Creation Helpers
- * 
+ *
  * Utility functions to create tools with automatic validation.
  */
 
@@ -8,6 +8,32 @@ import { z } from 'zod';
 import { Tool, ToolMetadata } from './types.js';
 import { validateToolMetadata } from './schemas.js';
 import { validateSchemaDescriptions } from './validation.js';
+
+function constructTool<TInput, TOutput>(
+  metadata: ToolMetadata,
+  schema: z.ZodSchema<TInput>,
+  invoke: (input: TInput) => Promise<TOutput>,
+  shouldValidateSchemaDescriptions: boolean
+): Tool<TInput, TOutput> {
+  const metadataResult = validateToolMetadata(metadata);
+  if (!metadataResult.success) {
+    const errors = metadataResult.error.errors
+      .map((err) => `  - ${err.path.join('.')}: ${err.message}`)
+      .join('\n');
+    throw new Error(`Invalid tool metadata:\n${errors}`);
+  }
+
+  if (shouldValidateSchemaDescriptions) {
+    validateSchemaDescriptions(schema);
+  }
+
+  return {
+    metadata: metadataResult.data,
+    schema,
+    invoke,
+    execute: invoke,
+  };
+}
 
 /**
  * Create a tool with automatic validation
@@ -59,30 +85,7 @@ export function createTool<TInput = unknown, TOutput = unknown>(
   schema: z.ZodSchema<TInput>,
   invoke: (input: TInput) => Promise<TOutput>
 ): Tool<TInput, TOutput> {
-  // Validate metadata
-  const metadataResult = validateToolMetadata(metadata);
-  if (!metadataResult.success) {
-    const errors = metadataResult.error.errors
-      .map((err) => `  - ${err.path.join('.')}: ${err.message}`)
-      .join('\n');
-    throw new Error(`Invalid tool metadata:\n${errors}`);
-  }
-
-  // Validate schema has descriptions on all fields
-  validateSchemaDescriptions(schema);
-
-  // Create the tool with invoke as primary method (industry standard)
-  const tool: Tool<TInput, TOutput> = {
-    metadata: metadataResult.data,
-    schema,
-    invoke,
-  };
-
-  // Add execute as a deprecated alias for invoke (backward compatibility)
-  // This maintains compatibility with existing code while encouraging use of invoke()
-  (tool as any).execute = invoke;
-
-  return tool;
+  return constructTool(metadata, schema, invoke, true);
 }
 
 /**
@@ -106,36 +109,17 @@ export function createToolUnsafe<TInput = unknown, TOutput = unknown>(
   schema: z.ZodSchema<TInput>,
   invoke: (input: TInput) => Promise<TOutput>
 ): Tool<TInput, TOutput> {
-  // Only validate metadata, skip schema description validation
-  const metadataResult = validateToolMetadata(metadata);
-  if (!metadataResult.success) {
-    const errors = metadataResult.error.errors
-      .map((err) => `  - ${err.path.join('.')}: ${err.message}`)
-      .join('\n');
-    throw new Error(`Invalid tool metadata:\n${errors}`);
-  }
-
-  // Create the tool with invoke as primary method (industry standard)
-  const tool: Tool<TInput, TOutput> = {
-    metadata: metadataResult.data,
-    schema,
-    invoke,
-  };
-
-  // Add execute as a deprecated alias for invoke (backward compatibility)
-  (tool as any).execute = invoke;
-
-  return tool;
+  return constructTool(metadata, schema, invoke, false);
 }
 
 /**
  * Validate an existing tool
- * 
+ *
  * Checks both metadata and schema descriptions.
- * 
+ *
  * @param tool - The tool to validate
  * @returns Validation result with success flag and errors
- * 
+ *
  * @example
  * ```ts
  * const result = validateTool(myTool);
@@ -172,4 +156,3 @@ export function validateTool(tool: Tool): {
     errors,
   };
 }
-
