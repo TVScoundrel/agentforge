@@ -12,6 +12,7 @@ import { neo4jPool } from '../connection.js';
 import { formatResults } from '../utils/result-formatter.js';
 import { embeddingManager } from '../embeddings/embedding-manager.js';
 import { validateLabel, validatePropertyKey } from '../utils/cypher-sanitizer.js';
+import { withNeo4jSession } from './session-owner.js';
 
 /**
  * Create Neo4j create node with embedding tool
@@ -49,7 +50,7 @@ export function createNeo4jCreateNodeWithEmbeddingTool() {
       try {
         // Extract text from properties
         const textToEmbed = input.properties[input.textProperty];
-        
+
         if (!textToEmbed || typeof textToEmbed !== 'string') {
           return {
             success: false,
@@ -65,9 +66,7 @@ export function createNeo4jCreateNodeWithEmbeddingTool() {
         const safeEmbeddingProp = validatePropertyKey(input.embeddingProperty || 'embedding');
 
         // Create node with properties and embedding
-        const session = neo4jPool.getSession(input.database);
-
-        try {
+        return await withNeo4jSession(input.database, async (session) => {
           // Build properties object with embedding
           const allProperties: Neo4jProperties = {
             ...input.properties,
@@ -109,9 +108,7 @@ export function createNeo4jCreateNodeWithEmbeddingTool() {
             },
             message: `Created node with label '${input.label}' and ${embeddingResult.dimensions}-dimensional embedding`,
           };
-        } finally {
-          await session.close();
-        }
+        });
       } catch (error) {
         const errorMessage = error instanceof Error ? error.message : 'Failed to create node with embedding';
         

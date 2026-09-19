@@ -10,6 +10,7 @@ import type { Neo4jPropertyValue } from '../types.js';
 import { neo4jPool } from '../connection.js';
 import { formatResults } from '../utils/result-formatter.js';
 import { validateLabel, buildPropertyFilter } from '../utils/cypher-sanitizer.js';
+import { withNeo4jSession } from './session-owner.js';
 
 /**
  * Create Neo4j find nodes tool
@@ -37,9 +38,7 @@ export function createNeo4jFindNodesTool() {
         // Validate and escape the label to prevent injection
         const safeLabel = validateLabel(input.label);
 
-        const session = neo4jPool.getSession(input.database);
-
-        try {
+        return await withNeo4jSession(input.database, async (session) => {
           // Build the Cypher query with safe identifiers
           let cypher = `MATCH (n:${safeLabel})`;
           let parameters: Record<string, Neo4jPropertyValue> = {};
@@ -68,9 +67,7 @@ export function createNeo4jFindNodesTool() {
               limit: input.limit,
             },
           };
-        } finally {
-          await session.close();
-        }
+        });
       } catch (error) {
         return {
           success: false,
