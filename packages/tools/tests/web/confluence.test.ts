@@ -136,15 +136,28 @@ describe('Confluence Tools', () => {
       });
       const result = JSON.parse(resultString);
 
-      expect(result.success).toBe(true);
-      expect(result).toHaveProperty('results');
-      expect(result.results).toHaveLength(1);
-      expect(result.results[0].title).toBe('Test Page');
+      expect(result).toEqual({
+        success: true,
+        count: 1,
+        results: [
+          {
+            id: '123',
+            title: 'Test Page',
+            type: 'page',
+            space: 'Test Space',
+            spaceKey: 'TEST',
+            url: 'https://test.atlassian.net/wiki/wiki/spaces/TEST/pages/123',
+            lastModified: '',
+          },
+        ],
+      });
       expect(mockAxiosGet).toHaveBeenCalledWith(
         'https://test.atlassian.net/wiki/rest/api/content/search',
         expect.objectContaining({
           headers: expect.objectContaining({
-            Authorization: expect.stringContaining('Basic'),
+            Authorization: `Basic ${Buffer.from('test@example.com:test-api-key').toString(
+              'base64'
+            )}`,
             Accept: 'application/json',
           }),
           params: expect.objectContaining({
@@ -182,8 +195,7 @@ describe('Confluence Tools', () => {
       });
       const result = JSON.parse(resultString);
 
-      expect(result.success).toBe(false);
-      expect(result.error).toContain('API Error');
+      expect(result).toEqual({ success: false, error: 'API Error' });
     });
 
     it('should limit results to maximum of 25', async () => {
@@ -234,9 +246,21 @@ describe('Confluence Tools', () => {
       });
       const result = JSON.parse(resultString);
 
-      expect(result.success).toBe(true);
-      expect(result.page.title).toBe('Test Page');
-      expect(result.page.content).toContain('Test content');
+      expect(result).toEqual({
+        success: true,
+        page: {
+          id: '123',
+          title: 'Test Page',
+          type: 'page',
+          space: 'Test Space',
+          spaceKey: 'TEST',
+          content: '<p>Test content</p>',
+          url: 'https://test.atlassian.net/wiki/wiki/spaces/TEST/pages/123',
+          created: '',
+          lastModified: '',
+          version: 1,
+        },
+      });
       expect(mockAxiosGet).toHaveBeenCalledWith(
         'https://test.atlassian.net/wiki/rest/api/content/123',
         expect.objectContaining({
@@ -261,8 +285,7 @@ describe('Confluence Tools', () => {
       });
       const result = JSON.parse(resultString);
 
-      expect(result.success).toBe(false);
-      expect(result.error).toContain('Not found');
+      expect(result).toEqual({ success: false, error: 'Not found' });
     });
   });
 
@@ -290,9 +313,19 @@ describe('Confluence Tools', () => {
       });
       const result = JSON.parse(resultString);
 
-      expect(result.success).toBe(true);
-      expect(result.spaces).toHaveLength(1);
-      expect(result.spaces[0].name).toBe('Test Space');
+      expect(result).toEqual({
+        success: true,
+        count: 1,
+        spaces: [
+          {
+            key: 'TEST',
+            name: 'Test Space',
+            type: 'global',
+            description: '',
+            url: 'https://test.atlassian.net/wiki/wiki/spaces/TEST',
+          },
+        ],
+      });
     });
 
     it('should handle empty spaces list', async () => {
@@ -310,6 +343,23 @@ describe('Confluence Tools', () => {
 
       expect(result.success).toBe(true);
       expect(result.spaces).toHaveLength(0);
+    });
+
+    it('should prefer the provider message when listing spaces fails', async () => {
+      mockAxiosGet.mockRejectedValueOnce({
+        response: {
+          status: 503,
+          data: { message: 'Confluence is temporarily unavailable' },
+        },
+        message: 'Request failed with status code 503',
+      });
+
+      const resultString = await listConfluenceSpaces.invoke({});
+
+      expect(JSON.parse(resultString)).toEqual({
+        success: false,
+        error: 'Confluence is temporarily unavailable',
+      });
     });
   });
 
@@ -339,9 +389,19 @@ describe('Confluence Tools', () => {
       });
       const result = JSON.parse(resultString);
 
-      expect(result.success).toBe(true);
-      expect(result.pages).toHaveLength(1);
-      expect(result.pages[0].title).toBe('Page 1');
+      expect(result).toEqual({
+        success: true,
+        space: 'TEST',
+        count: 1,
+        pages: [
+          {
+            id: '123',
+            title: 'Page 1',
+            url: 'https://test.atlassian.net/wiki/wiki/spaces/TEST/pages/123',
+            lastModified: '',
+          },
+        ],
+      });
     });
 
     it('should handle space not found', async () => {
@@ -355,8 +415,7 @@ describe('Confluence Tools', () => {
       });
       const result = JSON.parse(resultString);
 
-      expect(result.success).toBe(false);
-      expect(result.error).toContain('Space not found');
+      expect(result).toEqual({ success: false, error: 'Space not found' });
     });
   });
 
@@ -382,9 +441,16 @@ describe('Confluence Tools', () => {
       });
       const result = JSON.parse(resultString);
 
-      expect(result.success).toBe(true);
-      expect(result.page.id).toBe('456');
-      expect(result.page.title).toBe('New Page');
+      expect(result).toEqual({
+        success: true,
+        page: {
+          id: '456',
+          title: 'New Page',
+          space: 'TEST',
+          url: 'https://test.atlassian.net/wiki/wiki/spaces/TEST/pages/456',
+          version: 1,
+        },
+      });
       expect(mockAxiosPost).toHaveBeenCalledWith(
         'https://test.atlassian.net/wiki/rest/api/content',
         expect.objectContaining({
@@ -451,8 +517,7 @@ describe('Confluence Tools', () => {
       });
       const result = JSON.parse(resultString);
 
-      expect(result.success).toBe(false);
-      expect(result.error).toContain('Invalid request');
+      expect(result).toEqual({ success: false, error: 'Invalid request' });
     });
   });
 
@@ -486,9 +551,16 @@ describe('Confluence Tools', () => {
       });
       const result = JSON.parse(resultString);
 
-      expect(result.success).toBe(true);
-      expect(result.page.title).toBe('Updated Page');
-      expect(result.page.version).toBe(6);
+      expect(result).toEqual({
+        success: true,
+        page: {
+          id: '123',
+          title: 'Updated Page',
+          url: 'https://test.atlassian.net/wiki/wiki/spaces/TEST/pages/123',
+          version: 6,
+          previousVersion: 5,
+        },
+      });
       expect(mockAxiosPut).toHaveBeenCalledWith(
         'https://test.atlassian.net/wiki/rest/api/content/123',
         expect.objectContaining({
@@ -519,8 +591,7 @@ describe('Confluence Tools', () => {
       });
       const result = JSON.parse(resultString);
 
-      expect(result.success).toBe(false);
-      expect(result.error).toContain('Page not found');
+      expect(result).toEqual({ success: false, error: 'Page not found' });
     });
   });
 
@@ -554,8 +625,17 @@ describe('Confluence Tools', () => {
       });
       const result = JSON.parse(resultString);
 
-      expect(result.success).toBe(true);
-      expect(result.archived.note).toContain('trash');
+      expect(result).toEqual({
+        success: true,
+        archived: {
+          id: '123',
+          title: 'Test Page',
+          previousVersion: 5,
+          newVersion: 6,
+          reason: 'Archived via API',
+          note: 'Page moved to trash. Space admins can restore it from the Confluence UI.',
+        },
+      });
       expect(mockAxiosGet).toHaveBeenCalled();
       expect(mockAxiosPut).toHaveBeenCalled();
     });
@@ -571,13 +651,12 @@ describe('Confluence Tools', () => {
       });
       const result = JSON.parse(resultString);
 
-      expect(result.success).toBe(false);
-      expect(result.error).toContain('Page not found');
+      expect(result).toEqual({ success: false, error: 'Page not found' });
     });
   });
 
   describe('Configuration and Error Handling', () => {
-    it('should throw error when credentials are missing', async () => {
+    it('should preserve the default tools missing-credential message', async () => {
       delete process.env.ATLASSIAN_API_KEY;
       delete process.env.ATLASSIAN_EMAIL;
       delete process.env.ATLASSIAN_SITE_URL;
@@ -587,8 +666,11 @@ describe('Confluence Tools', () => {
       });
       const result = JSON.parse(resultString);
 
-      expect(result.success).toBe(false);
-      expect(result.error).toContain('credentials not configured');
+      expect(result).toEqual({
+        success: false,
+        error:
+          'Confluence credentials not configured. Set ATLASSIAN_API_KEY, ATLASSIAN_EMAIL, and ATLASSIAN_SITE_URL in .env',
+      });
     });
 
     it('should handle network errors', async () => {
@@ -648,7 +730,7 @@ describe('Confluence Tools', () => {
       const tools = createConfluenceTools({
         apiKey: 'custom-api-key',
         email: 'custom@example.com',
-        siteUrl: 'https://custom.atlassian.net',
+        siteUrl: 'https://custom.atlassian.net/',
       });
 
       await tools.searchConfluence.invoke({
@@ -659,7 +741,9 @@ describe('Confluence Tools', () => {
         'https://custom.atlassian.net/wiki/rest/api/content/search',
         expect.objectContaining({
           headers: expect.objectContaining({
-            Authorization: expect.stringContaining('Basic'),
+            Authorization: `Basic ${Buffer.from('custom@example.com:custom-api-key').toString(
+              'base64'
+            )}`,
           }),
         })
       );
@@ -688,6 +772,49 @@ describe('Confluence Tools', () => {
       expect(mockAxiosGet).toHaveBeenCalledWith(
         'https://env.atlassian.net/wiki/rest/api/content/search',
         expect.any(Object)
+      );
+    });
+
+    it('should preserve the configured tools missing-credential message', async () => {
+      delete process.env.ATLASSIAN_API_KEY;
+      delete process.env.ATLASSIAN_EMAIL;
+      delete process.env.ATLASSIAN_SITE_URL;
+
+      const tools = createConfluenceTools({});
+      const resultString = await tools.searchConfluence.invoke({ query: 'test' });
+
+      expect(JSON.parse(resultString)).toEqual({
+        success: false,
+        error:
+          'Confluence credentials not configured. Set ATLASSIAN_API_KEY, ATLASSIAN_EMAIL, and ATLASSIAN_SITE_URL in config or environment variables.',
+      });
+    });
+
+    it('should use one credential snapshot throughout a request', async () => {
+      mockAxiosGet.mockImplementationOnce(async () => {
+        process.env.ATLASSIAN_SITE_URL = 'https://changed.atlassian.net';
+        return {
+          data: {
+            results: [
+              {
+                id: '123',
+                type: 'page',
+                title: 'Test Page',
+                space: { key: 'TEST', name: 'Test Space' },
+                version: { number: 1 },
+                _links: { webui: '/wiki/spaces/TEST/pages/123' },
+              },
+            ],
+            totalSize: 1,
+          },
+        };
+      });
+
+      const tools = createConfluenceTools({});
+      const resultString = await tools.searchConfluence.invoke({ query: 'test' });
+
+      expect(JSON.parse(resultString).results[0].url).toBe(
+        'https://test.atlassian.net/wiki/wiki/spaces/TEST/pages/123'
       );
     });
 

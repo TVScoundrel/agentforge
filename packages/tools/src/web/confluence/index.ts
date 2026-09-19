@@ -29,18 +29,19 @@
  * ```
  */
 
-import { createLogger, LogLevel } from "@agentforge/core";
-import { getConfig, getAuthHeader, createGetConfiguredAuth, createGetConfiguredAuthHeader } from "./auth.js";
-import { createSearchConfluenceTool } from "./tools/search-confluence.js";
-import { createGetConfluencePageTool } from "./tools/get-confluence-page.js";
-import { createListConfluenceSpacesTool } from "./tools/list-confluence-spaces.js";
-import { createGetSpacePagesTool } from "./tools/get-space-pages.js";
-import { createCreateConfluencePageTool } from "./tools/create-confluence-page.js";
-import { createUpdateConfluencePageTool } from "./tools/update-confluence-page.js";
-import { createArchiveConfluencePageTool } from "./tools/archive-confluence-page.js";
+import { createLogger, LogLevel } from '@agentforge/core';
+import { getConfig, createGetConfiguredAuth } from './auth.js';
+import { createConfluenceRequest } from './request.js';
+import { createSearchConfluenceTool } from './tools/search-confluence.js';
+import { createGetConfluencePageTool } from './tools/get-confluence-page.js';
+import { createListConfluenceSpacesTool } from './tools/list-confluence-spaces.js';
+import { createGetSpacePagesTool } from './tools/get-space-pages.js';
+import { createCreateConfluencePageTool } from './tools/create-confluence-page.js';
+import { createUpdateConfluencePageTool } from './tools/update-confluence-page.js';
+import { createArchiveConfluencePageTool } from './tools/archive-confluence-page.js';
 
 // Export types
-export type { ConfluenceToolsConfig, ConfluenceAuth } from "./types.js";
+export type { ConfluenceToolsConfig, ConfluenceAuth } from './types.js';
 
 // Create logger for default Confluence tools
 const logLevel = (process.env.LOG_LEVEL?.toLowerCase() as LogLevel) || LogLevel.INFO;
@@ -49,13 +50,14 @@ const logger = createLogger('[tools:confluence]', { level: logLevel });
 /**
  * Default Confluence tools using environment variables
  */
-export const searchConfluence = createSearchConfluenceTool(getConfig, getAuthHeader, logger);
-export const getConfluencePage = createGetConfluencePageTool(getConfig, getAuthHeader, logger);
-export const listConfluenceSpaces = createListConfluenceSpacesTool(getConfig, getAuthHeader, logger);
-export const getSpacePages = createGetSpacePagesTool(getConfig, getAuthHeader, logger);
-export const createConfluencePage = createCreateConfluencePageTool(getConfig, getAuthHeader, logger);
-export const updateConfluencePage = createUpdateConfluencePageTool(getConfig, getAuthHeader, logger);
-export const archiveConfluencePage = createArchiveConfluencePageTool(getConfig, getAuthHeader, logger);
+const request = createConfluenceRequest(getConfig);
+export const searchConfluence = createSearchConfluenceTool(request, logger);
+export const getConfluencePage = createGetConfluencePageTool(request, logger);
+export const listConfluenceSpaces = createListConfluenceSpacesTool(request, logger);
+export const getSpacePages = createGetSpacePagesTool(request, logger);
+export const createConfluencePage = createCreateConfluencePageTool(request, logger);
+export const updateConfluencePage = createUpdateConfluencePageTool(request, logger);
+export const archiveConfluencePage = createArchiveConfluencePageTool(request, logger);
 
 /**
  * Export all Confluence tools
@@ -108,17 +110,12 @@ export const confluenceTools = [
  * });
  * ```
  */
-export function createConfluenceTools(config: import("./types.js").ConfluenceToolsConfig = {}) {
-  const {
-    apiKey,
-    email,
-    siteUrl,
-    logLevel: customLogLevel,
-  } = config;
+export function createConfluenceTools(config: import('./types.js').ConfluenceToolsConfig = {}) {
+  const { apiKey, email, siteUrl, logLevel: customLogLevel } = config;
 
   // Create closures for getting configured auth credentials
   const getConfiguredAuth = createGetConfiguredAuth(apiKey, email, siteUrl);
-  const getConfiguredAuthHeader = createGetConfiguredAuthHeader(getConfiguredAuth);
+  const request = createConfluenceRequest(getConfiguredAuth);
 
   // Create logger with custom log level if provided
   const toolLogger = customLogLevel
@@ -126,13 +123,13 @@ export function createConfluenceTools(config: import("./types.js").ConfluenceToo
     : logger;
 
   // Build all 7 tools with configured auth/logger
-  const searchConfluence = createSearchConfluenceTool(getConfiguredAuth, getConfiguredAuthHeader, toolLogger);
-  const getConfluencePage = createGetConfluencePageTool(getConfiguredAuth, getConfiguredAuthHeader, toolLogger);
-  const listConfluenceSpaces = createListConfluenceSpacesTool(getConfiguredAuth, getConfiguredAuthHeader, toolLogger);
-  const getSpacePages = createGetSpacePagesTool(getConfiguredAuth, getConfiguredAuthHeader, toolLogger);
-  const createConfluencePage = createCreateConfluencePageTool(getConfiguredAuth, getConfiguredAuthHeader, toolLogger);
-  const updateConfluencePage = createUpdateConfluencePageTool(getConfiguredAuth, getConfiguredAuthHeader, toolLogger);
-  const archiveConfluencePage = createArchiveConfluencePageTool(getConfiguredAuth, getConfiguredAuthHeader, toolLogger);
+  const searchConfluence = createSearchConfluenceTool(request, toolLogger);
+  const getConfluencePage = createGetConfluencePageTool(request, toolLogger);
+  const listConfluenceSpaces = createListConfluenceSpacesTool(request, toolLogger);
+  const getSpacePages = createGetSpacePagesTool(request, toolLogger);
+  const createConfluencePage = createCreateConfluencePageTool(request, toolLogger);
+  const updateConfluencePage = createUpdateConfluencePageTool(request, toolLogger);
+  const archiveConfluencePage = createArchiveConfluencePageTool(request, toolLogger);
 
   // Return all configured tools
   return {
@@ -145,4 +142,3 @@ export function createConfluenceTools(config: import("./types.js").ConfluenceToo
     archiveConfluencePage,
   };
 }
-
