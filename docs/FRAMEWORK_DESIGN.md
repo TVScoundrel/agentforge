@@ -1,198 +1,93 @@
-# AgentForge Framework Design
+# AgentForge framework design
 
-> Architecture and design decisions for the AgentForge framework
+AgentForge is a TypeScript monorepo of reusable building blocks for constructing and operating agents consistently. The public architecture is organized by responsibility rather than by a single framework runtime.
 
----
+## Package map
 
-## Overview
+```text
+Applications
+    │
+    ├── @agentforge/patterns  orchestration patterns
+    ├── @agentforge/tools     operations agents can invoke
+    └── @agentforge/skills    discoverable instruction bundles
+             │
+             └── @agentforge/core  shared Tool, LangChain, LangGraph,
+                                   resource, streaming, and monitoring primitives
 
-**AgentForge** is a production-ready TypeScript framework for building autonomous agents with LangGraph. It provides rich abstractions, type safety, and developer experience improvements over raw LangGraph usage.
-
-### Core Principles
-
-1. **Developer Experience First** - Intuitive APIs, great TypeScript support, helpful error messages
-2. **Production Ready** - Built-in observability, error handling, testing utilities
-3. **Modular Architecture** - Use only what you need, extend what you want
-4. **Type Safety** - Leverage TypeScript and Zod for runtime validation
-5. **LangGraph Native** - Build on top of LangGraph, don't replace it
-
----
-
-## Architecture Layers
-
-```
-┌─────────────────────────────────────────┐
-│         Developer Experience            │
-│  (@agentforge/cli, @agentforge/testing) │
-└─────────────────────────────────────────┘
-                    ↓
-┌─────────────────────────────────────────┐
-│          Agent Patterns                 │
-│      (@agentforge/patterns)             │
-│  ReAct, Planner-Executor, Reflection    │
-└─────────────────────────────────────────┘
-                    ↓
-┌─────────────────────────────────────────┐
-│           Agent Core                    │
-│       (@agentforge/core)                │
-│  Base Agent, Middleware, State Mgmt     │
-└─────────────────────────────────────────┘
-                    ↓
-┌─────────────────────────────────────────┐
-│          Tool System                    │
-│       (@agentforge/core)                │
-│  Registry, Metadata, Prompt Generation  │
-└─────────────────────────────────────────┘
-                    ↓
-┌─────────────────────────────────────────┐
-│         Standard Tools                  │
-│      (@agentforge/tools)                │
-│   File, Web, Code, Database Tools       │
-└─────────────────────────────────────────┘
-                    ↓
-┌─────────────────────────────────────────┐
-│          LangGraph + LangChain          │
-│         (External Dependencies)         │
-└─────────────────────────────────────────┘
+@agentforge/testing supports tests across the packages.
+@agentforge/cli provides project and component workflows.
 ```
 
----
+### `@agentforge/core`
 
-## Core Components
+Owns framework primitives used across packages:
 
-### 1. Tool System (@agentforge/core)
+- Tool construction, metadata, execution, composition, and registries
+- LangChain conversion and LangGraph state utilities
+- prompt loading
+- resources and lifecycle management
+- streaming and monitoring
 
-**Purpose**: Rich metadata-driven tool system with automatic prompt generation
+Core should remain independent of provider-specific Tool implementations and higher-level agent patterns.
 
-**Key Features**:
-- Fluent builder API for tool creation
-- Rich metadata (description, examples, categories, tags)
-- Automatic prompt generation from metadata
-- Zod schema integration for validation
-- LangChain tool conversion
-- Tool registry with CRUD and query operations
+### `@agentforge/patterns`
 
-**Design Decisions**:
-- Complete: Use Zod for schema definition (runtime validation + TypeScript types)
-- Complete: Separate metadata from implementation (better organization)
-- Complete: Builder pattern for ergonomic tool creation
-- Complete: Registry pattern for centralized tool management
+Owns reusable coordination models:
 
-### 2. Agent Core (@agentforge/core)
+- ReAct
+- Plan-Execute
+- Reflection
+- Multi-Agent
 
-**Purpose**: Base abstractions for building agents
+Patterns assemble graphs from public Core contracts. Their public factories are the compatibility boundary; internal nodes, routing, and schemas stay private unless callers genuinely need them.
 
-**Key Features**:
-- Base agent class with common functionality
-- State management utilities
-- Middleware system (logging, tracing, error handling)
-- Memory management abstractions
-- Event system for observability
+### `@agentforge/tools`
 
-**Design Decisions**:
-- Complete: Composition over inheritance (use mixins/traits)
-- Complete: Middleware pattern for cross-cutting concerns
-- Complete: Event-driven architecture for observability
-- Complete: Immutable state updates (functional approach)
+Owns concrete operations in the agent, file, relational-data, Neo4j, utility, and web areas. Tools expose model-facing schemas and safe result envelopes while keeping provider clients and lifecycle details private.
 
-### 3. Agent Patterns (@agentforge/patterns)
+Model-controlled workflows should prefer the model-safe Tool presets described in [`SECURITY.md`](../SECURITY.md). Standalone unrestricted factories are for trusted operator-controlled automation.
 
-**Purpose**: Pre-built agent patterns ready to use
+### `@agentforge/skills`
 
-**Patterns**:
-- **ReAct**: Reasoning + Acting loop
-- **Planner-Executor**: Plan first, then execute
-- **Reflection**: Self-critique and improvement
-- **Multi-Agent**: Coordinated agent systems
+Owns Agent Skill discovery, trust policy, prompt presentation, activation, and supporting-resource access. Skill discovery, Agent Skill access, and Skill activation are distinct concepts; use the definitions in [`CONTEXT.md`](../CONTEXT.md).
 
-**Design Decisions**:
-- Complete: Each pattern is a factory function
-- Complete: Patterns are composable and extensible
-- Complete: Patterns use core abstractions
-- Complete: Patterns include examples and tests
+### `@agentforge/testing`
 
-### 4. Standard Tools (@agentforge/tools)
+Owns mocks, fixtures, state builders, runners, and assertion helpers for testing agents through public interfaces.
 
-**Purpose**: Production-ready tool library
+### `@agentforge/cli`
 
-**Tool Categories**:
-- **File System**: Read, write, search files
-- **Web**: HTTP requests, web scraping
-- **Code**: Execute code, analyze syntax
-- **Database**: Query databases
-- **API**: Common API integrations
+Owns command parsing and filesystem workflows for AgentForge projects. Commands should delegate reusable behavior to small internal modules rather than duplicating package runtime logic.
 
-**Design Decisions**:
-- Complete: Each tool is independently importable
-- Complete: Tools follow consistent metadata patterns
-- Complete: Tools include comprehensive examples
-- Complete: Tools have thorough error handling
+## Design principles
 
-### 5. Testing Utilities (@agentforge/testing)
+### Public facades, private depth
 
-**Purpose**: Make testing agents easy
+Public factories, registries, and package entry points should provide stable interfaces. Provider mechanics, traversal, session ownership, routing, and other detailed behavior belong behind private modules with focused responsibilities.
 
-**Features**:
-- Mock LLM responses
-- Agent test harness
-- Assertion helpers
-- Snapshot testing for agent outputs
-- Performance testing utilities
+### Observable tests
 
-### 6. CLI (@agentforge/cli)
+Tests should exercise public interfaces wherever practical. Private modules may change as the implementation deepens; observable behavior, public types, and documented compatibility are the contract.
 
-**Purpose**: Developer productivity tools
+### Explicit ownership
 
-**Commands**:
-- `agentforge init` - Initialize new project
-- `agentforge tool create` - Scaffold new tool
-- `agentforge agent create` - Scaffold new agent
-- `agentforge dev` - Development mode with hot reload
-- `agentforge test` - Run tests with agent-specific features
+Resource owners also own cleanup. Pools, sessions, transactions, streams, and registries should make lifecycle boundaries visible and deterministic.
 
----
+### Safe model-facing defaults
 
-## Technology Stack
+Inputs influenced by a model or remote user cross a trust boundary. Model-facing presets enforce confinement and policy; privileged capabilities remain explicit for trusted automation.
 
-### Core Dependencies
-- **TypeScript 5.3+** - Type safety and modern JavaScript
-- **Zod 3.x** - Runtime validation and schema definition
-- **LangGraph** - Agent orchestration framework
-- **LangChain** - LLM integration and tools
+### Domain language
 
-### Development Tools
-- **pnpm** - Fast, efficient package manager
-- **tsup** - Fast TypeScript bundler
-- **Vitest** - Fast unit testing
-- **ESLint + Prettier** - Code quality and formatting
+Use [`CONTEXT.md`](../CONTEXT.md) for canonical terms. A Multi-Agent System's Worker topology is fixed at compilation; the rationale is recorded in [ADR-0001](./adr/0001-fix-worker-topology-at-compilation.md).
 
-### Build Targets
-- **ESM** - Modern module system (primary)
-- **CommonJS** - Legacy compatibility
-- **TypeScript Declarations** - Full type support
+## Sources of truth
 
----
+- Public behavior: package entry points, exported types, and tests
+- Workspace commands and dependencies: `package.json`, package manifests, and `pnpm-workspace.yaml`
+- Domain vocabulary: `CONTEXT.md`
+- Hard-to-reverse architectural decisions: `docs/adr/`
+- Active work and delivery history: GitHub Issues and pull requests
+- User documentation: `docs-site/` and package READMEs
 
-## Design Patterns
-
-### 1. Builder Pattern
-Used for tool creation - fluent, type-safe API
-
-### 2. Registry Pattern
-Used for tool management - centralized, queryable
-
-### 3. Middleware Pattern
-Used for cross-cutting concerns - composable, reusable
-
-### 4. Factory Pattern
-Used for agent patterns - consistent creation interface
-
-### 5. Strategy Pattern
-Used for different agent behaviors - swappable implementations
-
----
-
-## Next Steps
-
-See [ROADMAP.md](./ROADMAP.md) for development phases and timeline.
-
+Avoid copying discoverable directory listings, dependency versions, test counts, or delivery status into architecture documentation; those caches become stale quickly.

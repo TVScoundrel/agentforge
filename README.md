@@ -55,7 +55,7 @@
 - **Pattern Guides** - Detailed guides for all 4 agent patterns
 - **Tutorials** - 5 step-by-step tutorials from basics to advanced
 - **Examples** - 6 complete working examples
-- **API Reference** - Full API documentation for all 5 packages
+- **API Reference** - Full API documentation for all 6 packages
 
 
 
@@ -261,8 +261,8 @@ pnpm test:coverage
 
 ### Developer Documentation (Repository)
 For contributors and advanced users:
+- [Documentation Index](./docs/README.md) - Maintained repository documentation
 - [Framework Design](./docs/FRAMEWORK_DESIGN.md) - Architecture and design decisions
-- [Roadmap](./docs/ROADMAP.md) - Development roadmap and milestones
 - [Monorepo Setup](./docs/MONOREPO_SETUP.md) - Monorepo structure and setup
 - [Codebase Learning Guide](./docs/CODEBASE_LEARNING_GUIDE.md) - Contributor onboarding
 - [Logging Standards](./docs/LOGGING_STANDARDS.md) - Internal logging standards
@@ -400,7 +400,7 @@ pnpm clean          # Clean all build artifacts
 - **Examples**: 30+ files, 2,500+ lines of real-world code
 - **Tools**: 74 production-ready tools
 - **Patterns**: 4 complete agent patterns
-- **Packages**: 5 published on npm
+- **Packages**: 6 published on npm
 
 ---
 
@@ -414,7 +414,7 @@ pnpm clean          # Clean all build artifacts
 - **Code Review Tools** - Reflection-based quality tools
 - **Enterprise Deployments** - Docker/Kubernetes ready
 
-See [ROADMAP.md](./docs/ROADMAP.md) for complete development history.
+Track current work in [GitHub Issues](https://github.com/TVScoundrel/agentforge/issues); completed delivery history is available through closed issues, merged pull requests, and Git history.
 
 ---
 
