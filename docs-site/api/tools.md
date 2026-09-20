@@ -95,7 +95,7 @@ const [internalScraper] = createScraperTools({
 });
 ```
 
-Available policy flags are `allowLocalhost`, `allowPrivateNetwork`, `allowLinkLocal`, `allowMetadata`, `allowRedirects`, and `maxRedirects`. See [`ST-11002` web egress policy hardening](https://github.com/TVScoundrel/agentforge/blob/main/docs/st11002-web-egress-policy-hardening.md) for the security rationale and migration guidance.
+Available policy flags are `allowLocalhost`, `allowPrivateNetwork`, `allowLinkLocal`, `allowMetadata`, `allowRedirects`, and `maxRedirects`. See the repository [security policy](https://github.com/TVScoundrel/agentforge/blob/main/SECURITY.md) for the trust-boundary rationale and deployment guidance.
 
 ### Web Scraping
 
