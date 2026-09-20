@@ -5,6 +5,40 @@ All notable changes to AgentForge will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.18.5] - 2026-09-20
+
+### Changed
+
+#### @agentforge/core - Unified Tool Construction
+- Routed safe and unsafe Tool creation through one shared implementation while preserving metadata validation, schema-description validation, and the deprecated `execute` alias.
+
+#### @agentforge/skills - Simplified Skill Registry Queries
+- Removed the shallow query wrapper module and kept Skill Registry lookups, enumeration, scan errors, and allowed-Tool access on the registry without changing its public API.
+
+#### @agentforge/tools - Centralized Confluence Requests
+- Routed all Confluence Tools through one private request adapter for consistent credential snapshots, authentication headers, site URLs, and provider error descriptions.
+- Preserved the public Confluence Tool configuration, inputs, results, and failure messages while expanding contract coverage.
+
+#### @agentforge/tools - Shared File-Tree Traversal
+- Consolidated directory listing and file search recursion behind one depth-first traversal implementation while preserving filtering, ordering, confinement, and symbolic-link behavior.
+
+#### @agentforge/tools - Centralized Neo4j Session Ownership
+- Routed Neo4j Tool operations through one private session owner while preserving operation results and deterministic session closure.
+- Added lifecycle coverage for session acquisition, operation failures, closure failures, and configured database selection.
+
+### Validation
+- `pnpm release:validate` passed with 244 test files passed, 2 skipped, 2,788 tests passed, and 23 skipped.
+- Skips are intentional opt-in coverage for the Neo4j integration service and web-search performance tests; enable them with a running Neo4j service and `RUN_INTEGRATION_TESTS=true`, or `RUN_WEB_PERFORMANCE_TESTS=true` plus network access, respectively.
+
+### Published
+- All packages published to npm registry at version 0.18.5:
+  - @agentforge/core@0.18.5
+  - @agentforge/skills@0.18.5
+  - @agentforge/patterns@0.18.5
+  - @agentforge/tools@0.18.5
+  - @agentforge/testing@0.18.5
+  - @agentforge/cli@0.18.5
+
 ## [0.18.4] - 2026-09-18
 
 ### Changed
