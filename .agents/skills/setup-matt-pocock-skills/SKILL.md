@@ -66,7 +66,6 @@ Show the user a draft of:
 
 - The `## Agent skills` block to add to whichever of `CLAUDE.md` / `AGENTS.md` is being edited (see step 4 for selection rules)
 - The contents of `docs/agents/issue-tracker.md`, `docs/agents/domain.md`, and `docs/agents/triage-labels.md` (the last only when `triage` is installed)
-- For GitHub, the contents of `docs/agents/ticket-claiming.md`
 
 Let them edit before writing.
 
@@ -105,7 +104,6 @@ Include the `### Triage labels` sub-block, and write `docs/agents/triage-labels.
 Then write the docs files using the seed templates in this skill folder as a starting point:
 
 - [issue-tracker-github.md](./issue-tracker-github.md): GitHub issue tracker
-- [ticket-claiming.md](./ticket-claiming.md): GitHub exclusive ticket claims; write it to `docs/agents/ticket-claiming.md` when GitHub is selected
 - [issue-tracker-gitlab.md](./issue-tracker-gitlab.md): GitLab issue tracker
 - [issue-tracker-local.md](./issue-tracker-local.md): local-markdown issue tracker
 - [triage-labels.md](./triage-labels.md): label mapping (only if `triage` is installed)

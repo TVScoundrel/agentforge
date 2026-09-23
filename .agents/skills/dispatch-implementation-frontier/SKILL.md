@@ -8,23 +8,22 @@ disable-model-invocation: true
 
 Dispatch the current ticket **frontier** into parallel, user-owned Codex tasks.
 
-This workflow requires a GitHub issue tracker and its `docs/agents/ticket-claiming.md` protocol. If the configured tracker is different or that protocol is absent, stop and explain that this dispatcher does not support it.
+This is a single-maintainer workflow: run one dispatcher at a time. GitHub assignment is its coordination signal, not a distributed lock.
 
 ## 1. Resolve the frontier
 
-Use the implementation tickets created or referenced in the current conversation. Read their current tracker state, labels, assignees, comments, and native parent and dependency relationships. When native dependencies are unavailable, use the repository's documented fallback relationships.
+Use the implementation tickets created or referenced in the current conversation. Read their current tracker state, labels, assignees, and native parent and dependency relationships. When native dependencies are unavailable, use the repository's documented fallback relationships.
 
 The frontier is every ticket that is:
 
 - open;
 - labelled `ready-for-agent`; and
 - unassigned; and
-- free of a non-released claim; and
 - free of unresolved blockers.
 
 Exclude specification issues and tickets outside the conversation's work. If the source ticket set cannot be identified, ask the user for the source spec or tickets before creating tasks.
 
-This step is complete when every candidate ticket has been accounted for as frontier, reserved, assigned, blocked, closed, or out of scope.
+This step is complete when every candidate ticket has been accounted for as frontier, assigned, blocked, closed, or out of scope.
 
 ## 2. Resolve the project
 
@@ -36,14 +35,12 @@ This step is complete when one project is resolved without guessing.
 
 For every frontier ticket, create one separate top-level Codex task with the app's task-creation tool. A dispatched ticket is a user-owned task, not a collaboration subagent; the new task may spawn its own subagents.
 
-Immediately before dispatching each ticket, refresh its state, labels, assignees, comments, and blockers. Continue only while every frontier condition still holds.
-
-Read `docs/agents/ticket-claiming.md` and acquire an exclusive claim with purpose `dispatch`. After task creation, revalidate its active dispatch gate, then publish the same claim as `dispatched` with its structured task identifier before allowing the task to edit. Follow the protocol's recovery path if creation or handoff publication fails.
+Immediately before dispatching each ticket, refresh its state, labels, assignees, and blockers. Continue only while every frontier condition still holds. Assign the ticket to the current actor, then refresh once more and continue only while it remains open, `ready-for-agent`, unblocked, and assigned only to that actor.
 
 Give each task its own managed Git worktree. Its initial prompt must:
 
 - explicitly invoke the available `$implement` skill for the derived ticket number;
-- pass the winning claim token and require `$implement` to wait for its `dispatched` state and structured task identifier before changing code;
+- state that the dispatcher already assigned the ticket to the current actor;
 - require reading the ticket, parent spec, comments, repository instructions, domain glossary, and relevant ADRs;
 - require delivery through the repository's normal ticket workflow, including the ticket-referencing pull request when repository instructions require one;
 - keep blocked follow-up tickets and unrelated changes out of scope; and
@@ -51,7 +48,9 @@ Give each task its own managed Git worktree. Its initial prompt must:
 
 Do not restate `$implement`'s internal workflow. The invoked skill is the source of truth.
 
-This step is complete when every claimed frontier ticket maps to exactly one created task, every task maps to exactly one ticket, and every creation request specifies a managed worktree.
+If task creation definitely fails, remove the assignment only when this run added it. If creation may have succeeded, leave the ticket assigned, report the ambiguity, and do not retry.
+
+This step is complete when every assigned frontier ticket maps to one creation request and every creation request specifies a managed worktree.
 
 ## 4. Verify and report
 
