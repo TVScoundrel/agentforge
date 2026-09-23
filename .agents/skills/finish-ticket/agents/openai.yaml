@@ -1,0 +1,6 @@
+interface:
+  display_name: "Finish Ticket"
+  short_description: "Finish merged tickets and clean worktrees"
+  default_prompt: "Use $finish-ticket to finish the current task's ticket after its pull request has merged."
+policy:
+  allow_implicit_invocation: false
