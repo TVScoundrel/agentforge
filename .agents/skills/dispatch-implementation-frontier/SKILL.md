@@ -1,12 +1,14 @@
 ---
 name: dispatch-implementation-frontier
-description: "Create one real worktree-backed Codex task per unassigned, unblocked implementation ticket and invoke $implement in each."
+description: "Create one real worktree-backed Codex task per unassigned, unblocked GitHub implementation ticket and invoke $implement in each."
 disable-model-invocation: true
 ---
 
 # Dispatch Implementation Frontier
 
 Dispatch the current ticket **frontier** into parallel, user-owned Codex tasks.
+
+This workflow requires a GitHub issue tracker and its `docs/agents/ticket-claiming.md` protocol. If the configured tracker is different or that protocol is absent, stop and explain that this dispatcher does not support it.
 
 ## 1. Resolve the frontier
 
@@ -17,7 +19,7 @@ The frontier is every ticket that is:
 - open;
 - labelled `ready-for-agent`; and
 - unassigned; and
-- free of an `active` or `dispatched` claim; and
+- free of a non-released claim; and
 - free of unresolved blockers.
 
 Exclude specification issues and tickets outside the conversation's work. If the source ticket set cannot be identified, ask the user for the source spec or tickets before creating tasks.
@@ -36,12 +38,12 @@ For every frontier ticket, create one separate top-level Codex task with the app
 
 Immediately before dispatching each ticket, refresh its state, labels, assignees, comments, and blockers. Continue only while every frontier condition still holds.
 
-Read `docs/agents/ticket-claiming.md` and acquire an exclusive claim with purpose `dispatch`. After task creation, mark it `dispatched` and record the created task identifier. If creation fails, release only this run's claim and assignment as that protocol permits.
+Read `docs/agents/ticket-claiming.md` and acquire an exclusive claim with purpose `dispatch`. After task creation, publish the same claim as `dispatched` with its structured task identifier before allowing the task to edit. Follow the protocol's recovery path if creation or handoff publication fails.
 
 Give each task its own managed Git worktree. Its initial prompt must:
 
 - explicitly invoke the available `$implement` skill for the derived ticket number;
-- pass the winning claim token and require `$implement` to wait for its `dispatched` state before changing code;
+- pass the winning claim token and require `$implement` to wait for its `dispatched` state and structured task identifier before changing code;
 - require reading the ticket, parent spec, comments, repository instructions, domain glossary, and relevant ADRs;
 - require delivery through the repository's normal ticket workflow, including the ticket-referencing pull request when repository instructions require one;
 - keep blocked follow-up tickets and unrelated changes out of scope; and
