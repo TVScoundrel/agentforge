@@ -35,7 +35,7 @@ This step is complete when one project is resolved without guessing.
 
 For every frontier ticket, create one separate top-level Codex task with the app's task-creation tool. A dispatched ticket is a user-owned task, not a collaboration subagent; the new task may spawn its own subagents.
 
-Immediately before dispatching each ticket, refresh its state, labels, assignees, and blockers. Continue only while every frontier condition still holds. Assign the ticket to the current actor, then refresh once more and continue only while it remains open, `ready-for-agent`, unblocked, and assigned only to that actor.
+Immediately before dispatching each ticket, refresh its state, labels, assignees, and blockers. Continue only while every frontier condition still holds. Assign the ticket to the current actor, then refresh once more and continue only while it remains open, `ready-for-agent`, unblocked, and assigned only to that actor. If this post-assignment check fails, remove the assignment added by this run and stop for that ticket.
 
 Give each task its own managed Git worktree. Its initial prompt must:
 
