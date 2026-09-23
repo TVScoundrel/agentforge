@@ -1,6 +1,6 @@
 ---
 name: dispatch-implementation-frontier
-description: "Create one real worktree-backed Codex task per unblocked implementation ticket and invoke $implement in each."
+description: "Create one real worktree-backed Codex task per unassigned, unblocked GitHub implementation ticket and invoke $implement in each."
 disable-model-invocation: true
 ---
 
@@ -8,19 +8,22 @@ disable-model-invocation: true
 
 Dispatch the current ticket **frontier** into parallel, user-owned Codex tasks.
 
+This is a single-maintainer workflow: run one dispatcher at a time. Each created task claims its ticket through `$implement`.
+
 ## 1. Resolve the frontier
 
-Use the implementation tickets created or referenced in the current conversation. Read their current tracker state and native parent and dependency relationships.
+Use the implementation tickets created or referenced in the current conversation. Read their current tracker state, labels, assignees, and native parent and dependency relationships. When native dependencies are unavailable, use the repository's documented fallback relationships.
 
 The frontier is every ticket that is:
 
 - open;
 - labelled `ready-for-agent`; and
+- unassigned; and
 - free of unresolved blockers.
 
 Exclude specification issues and tickets outside the conversation's work. If the source ticket set cannot be identified, ask the user for the source spec or tickets before creating tasks.
 
-This step is complete when every candidate ticket has been accounted for as frontier, blocked, closed, or out of scope.
+This step is complete when every candidate ticket has been accounted for as frontier, assigned, blocked, closed, or out of scope.
 
 ## 2. Resolve the project
 
@@ -32,6 +35,8 @@ This step is complete when one project is resolved without guessing.
 
 For every frontier ticket, create one separate top-level Codex task with the app's task-creation tool. A dispatched ticket is a user-owned task, not a collaboration subagent; the new task may spawn its own subagents.
 
+Immediately before dispatching each ticket, refresh its state, labels, assignees, and blockers. Create the task only while every frontier condition still holds.
+
 Give each task its own managed Git worktree. Its initial prompt must:
 
 - explicitly invoke the available `$implement` skill for the derived ticket number;
@@ -42,13 +47,15 @@ Give each task its own managed Git worktree. Its initial prompt must:
 
 Do not restate `$implement`'s internal workflow. The invoked skill is the source of truth.
 
-This step is complete when the number of created tasks equals the number of frontier tickets and every creation request specifies a managed worktree.
+If task creation fails or may have succeeded, report the outcome and do not retry it in the same run.
+
+This step is complete when every frontier ticket maps to one creation request and every creation request specifies a managed worktree.
 
 ## 4. Verify and report
 
 Check that each creation request succeeded or is queued for worktree setup. Never pass a queued client task identifier to tools that require a ready task identifier.
 
-Report the ticket-to-task mapping and confirm that every task:
+Report the one-to-one ticket-to-task mapping and confirm that every task:
 
 - is a real Codex task;
 - has a dedicated managed worktree; and
