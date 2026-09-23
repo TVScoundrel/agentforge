@@ -41,7 +41,7 @@ Read `docs/agents/ticket-claiming.md` and acquire an exclusive claim with purpos
 Give each task its own managed Git worktree. Its initial prompt must:
 
 - explicitly invoke the available `$implement` skill for the derived ticket number;
-- pass the winning claim token and require `$implement` to verify it before changing code;
+- pass the winning claim token and require `$implement` to wait for its `dispatched` state before changing code;
 - require reading the ticket, parent spec, comments, repository instructions, domain glossary, and relevant ADRs;
 - require delivery through the repository's normal ticket workflow, including the ticket-referencing pull request when repository instructions require one;
 - keep blocked follow-up tickets and unrelated changes out of scope; and
