@@ -8,7 +8,7 @@ disable-model-invocation: true
 
 Dispatch the current ticket **frontier** into parallel, user-owned Codex tasks.
 
-This is a single-maintainer workflow: run one dispatcher at a time. GitHub assignment is its coordination signal, not a distributed lock.
+This is a single-maintainer workflow: run one dispatcher at a time. Each created task claims its ticket through `$implement`.
 
 ## 1. Resolve the frontier
 
@@ -35,12 +35,11 @@ This step is complete when one project is resolved without guessing.
 
 For every frontier ticket, create one separate top-level Codex task with the app's task-creation tool. A dispatched ticket is a user-owned task, not a collaboration subagent; the new task may spawn its own subagents.
 
-Immediately before dispatching each ticket, refresh its state, labels, assignees, and blockers. Continue only while every frontier condition still holds. Assign the ticket to the current actor, then refresh once more and continue only while it remains open, `ready-for-agent`, unblocked, and assigned only to that actor. If this post-assignment check fails, remove the assignment added by this run and stop for that ticket.
+Immediately before dispatching each ticket, refresh its state, labels, assignees, and blockers. Create the task only while every frontier condition still holds.
 
 Give each task its own managed Git worktree. Its initial prompt must:
 
 - explicitly invoke the available `$implement` skill for the derived ticket number;
-- state that the dispatcher already assigned the ticket to the current actor;
 - require reading the ticket, parent spec, comments, repository instructions, domain glossary, and relevant ADRs;
 - require delivery through the repository's normal ticket workflow, including the ticket-referencing pull request when repository instructions require one;
 - keep blocked follow-up tickets and unrelated changes out of scope; and
@@ -48,9 +47,9 @@ Give each task its own managed Git worktree. Its initial prompt must:
 
 Do not restate `$implement`'s internal workflow. The invoked skill is the source of truth.
 
-If task creation definitely fails, remove the assignment only when this run added it. If creation may have succeeded, leave the ticket assigned, report the ambiguity, and do not retry.
+If task creation fails or may have succeeded, report the outcome and do not retry it in the same run.
 
-This step is complete when every assigned frontier ticket maps to one creation request and every creation request specifies a managed worktree.
+This step is complete when every frontier ticket maps to one creation request and every creation request specifies a managed worktree.
 
 ## 4. Verify and report
 
