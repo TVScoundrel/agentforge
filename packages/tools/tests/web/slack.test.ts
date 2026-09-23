@@ -40,6 +40,13 @@ import {
   getSlackMessages,
   createSlackTools,
 } from '../../src/web/slack/index.js';
+import { createGetConfiguredSlackClient } from '../../src/web/slack/auth.js';
+
+const successfulPost = {
+  ok: true,
+  channel: 'C123456',
+  ts: '1234567890.123456',
+};
 
 describe('Slack Tools', () => {
   const originalEnv = process.env;
@@ -137,8 +144,11 @@ describe('Slack Tools', () => {
         message: 'test',
       });
 
-      expect(result.success).toBe(false);
-      expect(result.error).toContain('Slack token not configured');
+      expect(result).toEqual({
+        success: false,
+        error:
+          'Slack token not configured. Please set SLACK_USER_TOKEN or SLACK_BOT_TOKEN environment variable.',
+      });
     });
 
     it('should handle API errors', async () => {
@@ -484,6 +494,42 @@ describe('Slack Tools', () => {
   });
 
   describe('createSlackTools Factory Function', () => {
+    it('should prefer a configured token over user and bot environment tokens', async () => {
+      process.env.SLACK_USER_TOKEN = 'xoxp-user-token';
+      process.env.SLACK_BOT_TOKEN = 'xoxb-bot-token';
+      mockPostMessage.mockResolvedValueOnce(successfulPost);
+
+      const tools = createSlackTools({ token: 'xoxb-configured-token' });
+
+      await tools.sendMessage.invoke({ channel: 'general', message: 'Test' });
+
+      expect(mockWebClient).toHaveBeenCalledWith('xoxb-configured-token');
+    });
+
+    it('should prefer the user environment token over the bot environment token', async () => {
+      process.env.SLACK_USER_TOKEN = 'xoxp-user-token';
+      process.env.SLACK_BOT_TOKEN = 'xoxb-bot-token';
+      mockPostMessage.mockResolvedValueOnce(successfulPost);
+
+      const tools = createSlackTools();
+
+      await tools.sendMessage.invoke({ channel: 'general', message: 'Test' });
+
+      expect(mockWebClient).toHaveBeenCalledWith('xoxp-user-token');
+    });
+
+    it('should fall back to the bot environment token', async () => {
+      delete process.env.SLACK_USER_TOKEN;
+      process.env.SLACK_BOT_TOKEN = 'xoxb-bot-token';
+      mockPostMessage.mockResolvedValueOnce(successfulPost);
+
+      const tools = createSlackTools();
+
+      await tools.sendMessage.invoke({ channel: 'general', message: 'Test' });
+
+      expect(mockWebClient).toHaveBeenCalledWith('xoxb-bot-token');
+    });
+
     it('should create tools with custom token', async () => {
       const mockResponse = {
         ok: true,
@@ -570,22 +616,30 @@ describe('Slack Tools', () => {
         message: 'Test',
       });
 
-      expect(result.success).toBe(false);
-      expect(result.error).toContain('Slack token not configured');
+      expect(result).toEqual({
+        success: false,
+        error:
+          'Slack token not configured. Please provide a token in config or set SLACK_USER_TOKEN or SLACK_BOT_TOKEN environment variable.',
+      });
     });
 
-    it('should create isolated tool instances', async () => {
+    it('should lazily reuse a client within a factory and isolate clients between factories', async () => {
       const tools1 = createSlackTools({ token: 'token1' });
       const tools2 = createSlackTools({ token: 'token2' });
 
-      expect(tools1.sendMessage).toBeDefined();
-      expect(tools2.sendMessage).toBeDefined();
-      expect(tools1.notify).toBeDefined();
-      expect(tools2.notify).toBeDefined();
-      expect(tools1.getChannels).toBeDefined();
-      expect(tools2.getChannels).toBeDefined();
-      expect(tools1.getMessages).toBeDefined();
-      expect(tools2.getMessages).toBeDefined();
+      expect(mockWebClient).not.toHaveBeenCalled();
+
+      mockPostMessage.mockResolvedValue(successfulPost);
+      await tools1.sendMessage.invoke({ channel: 'general', message: 'First' });
+      await tools1.notify.invoke({ channel: 'general', message: 'Second' });
+
+      expect(mockWebClient).toHaveBeenCalledTimes(1);
+      expect(mockWebClient).toHaveBeenLastCalledWith('token1');
+
+      await tools2.sendMessage.invoke({ channel: 'general', message: 'Third' });
+
+      expect(mockWebClient).toHaveBeenCalledTimes(2);
+      expect(mockWebClient).toHaveBeenLastCalledWith('token2');
     });
 
     it('should support all 4 tools in factory output', () => {
@@ -595,6 +649,94 @@ describe('Slack Tools', () => {
       expect(tools.notify.metadata.name).toBe('notify-slack');
       expect(tools.getChannels.metadata.name).toBe('get-slack-channels');
       expect(tools.getMessages.metadata.name).toBe('get-slack-messages');
+    });
+  });
+
+  describe('Default Slack Tools Client', () => {
+    it('should prefer the user environment token and share one lazy client', async () => {
+      process.env.SLACK_USER_TOKEN = 'xoxp-user-token';
+      process.env.SLACK_BOT_TOKEN = 'xoxb-bot-token';
+      mockPostMessage.mockResolvedValue(successfulPost);
+      vi.resetModules();
+
+      const { sendSlackMessage: freshSend, notifySlack: freshNotify } =
+        await import('../../src/web/slack/index.js');
+
+      expect(mockWebClient).not.toHaveBeenCalled();
+
+      await freshSend.invoke({ channel: 'general', message: 'First' });
+      await freshNotify.invoke({ channel: 'general', message: 'Second' });
+
+      expect(mockWebClient).toHaveBeenCalledTimes(1);
+      expect(mockWebClient).toHaveBeenCalledWith('xoxp-user-token');
+      expect(mockPostMessage).toHaveBeenLastCalledWith({
+        channel: 'general',
+        text: 'Second',
+        username: 'AgentForge Bot',
+        icon_emoji: ':robot_face:',
+      });
+    });
+
+    it('should fall back to the bot environment token', async () => {
+      delete process.env.SLACK_USER_TOKEN;
+      process.env.SLACK_BOT_TOKEN = 'xoxb-bot-token';
+      mockPostMessage.mockResolvedValueOnce(successfulPost);
+      vi.resetModules();
+
+      const { sendSlackMessage: freshSend } = await import('../../src/web/slack/index.js');
+      await freshSend.invoke({ channel: 'general', message: 'Test' });
+
+      expect(mockWebClient).toHaveBeenCalledTimes(1);
+      expect(mockWebClient).toHaveBeenCalledWith('xoxb-bot-token');
+    });
+  });
+
+  describe('Slack Client Configuration', () => {
+    it('should re-read configured environment tokens after caching the client', () => {
+      process.env.SLACK_USER_TOKEN = 'first-token';
+      const getClient = createGetConfiguredSlackClient();
+
+      const first = getClient();
+      process.env.SLACK_USER_TOKEN = 'second-token';
+      const second = getClient();
+
+      expect(second.client).toBe(first.client);
+      expect(first.config).toEqual({
+        token: 'first-token',
+        botName: 'AgentForge Bot',
+        botIcon: ':robot_face:',
+      });
+      expect(second.config).toEqual({
+        token: 'second-token',
+        botName: 'AgentForge Bot',
+        botIcon: ':robot_face:',
+      });
+      expect(mockWebClient).toHaveBeenCalledTimes(1);
+      expect(mockWebClient).toHaveBeenCalledWith('first-token');
+    });
+
+    it('should re-read default environment tokens after caching the client', async () => {
+      process.env.SLACK_USER_TOKEN = 'first-token';
+      vi.resetModules();
+      const { getDefaultSlackClient } = await import('../../src/web/slack/auth.js');
+
+      const first = getDefaultSlackClient();
+      process.env.SLACK_USER_TOKEN = 'second-token';
+      const second = getDefaultSlackClient();
+
+      expect(second.client).toBe(first.client);
+      expect(first.config).toEqual({
+        token: 'first-token',
+        botName: 'AgentForge Bot',
+        botIcon: ':robot_face:',
+      });
+      expect(second.config).toEqual({
+        token: 'second-token',
+        botName: 'AgentForge Bot',
+        botIcon: ':robot_face:',
+      });
+      expect(mockWebClient).toHaveBeenCalledTimes(1);
+      expect(mockWebClient).toHaveBeenCalledWith('first-token');
     });
   });
 });
