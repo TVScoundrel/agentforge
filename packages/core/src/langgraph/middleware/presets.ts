@@ -6,17 +6,18 @@
  * @module langgraph/middleware/presets
  */
 
-export {
-  production,
-} from './preset-production.js';
-export {
-  development,
-} from './preset-development.js';
-export {
-  testing,
-} from './preset-testing.js';
+import { development } from './preset-development.js';
+import { production } from './preset-production.js';
+import { testing } from './preset-testing.js';
 
-export { presets } from './preset-collection.js';
+export { development, production, testing };
+
+export const presets = {
+  production,
+  development,
+  testing,
+};
+
 export type {
   ProductionPresetOptions,
   DevelopmentPresetOptions,

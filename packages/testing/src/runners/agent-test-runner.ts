@@ -25,17 +25,17 @@ export interface AgentTestConfig<TState = unknown> {
    * Maximum time to wait for agent response (ms)
    */
   timeout?: number;
-  
+
   /**
    * Whether to capture intermediate steps
    */
   captureSteps?: boolean;
-  
+
   /**
    * Whether to validate state after each step
    */
   validateState?: boolean;
-  
+
   /**
    * Custom state validator
    */
@@ -50,27 +50,27 @@ export interface AgentTestResult<TState = unknown, TStep = AgentTestRunnerStep<T
    * Final state after execution
    */
   finalState: TState | undefined;
-  
+
   /**
    * Messages exchanged
    */
   messages: BaseMessage[];
-  
+
   /**
    * Execution time in milliseconds
    */
   executionTime: number;
-  
+
   /**
    * Intermediate steps (if captured)
    */
   steps?: TStep[];
-  
+
   /**
    * Whether the test passed
    */
   passed: boolean;
-  
+
   /**
    * Error if test failed
    */
@@ -79,18 +79,18 @@ export interface AgentTestResult<TState = unknown, TStep = AgentTestRunnerStep<T
 
 /**
  * Agent test runner for integration testing
- * 
+ *
  * @example
  * ```typescript
  * const runner = new AgentTestRunner(agent, {
  *   timeout: 5000,
  *   captureSteps: true
  * });
- * 
+ *
  * const result = await runner.run({
  *   messages: [new HumanMessage('Hello')]
  * });
- * 
+ *
  * expect(result.passed).toBe(true);
  * expect(result.messages.length).toBeGreaterThan(1);
  * ```
@@ -104,7 +104,7 @@ export class AgentTestRunner<
     private agent: AgentTestAgent<TInput, TState>,
     private config: AgentTestConfig<TState> = {}
   ) {}
-  
+
   /**
    * Run the agent with given input
    */
@@ -116,28 +116,20 @@ export class AgentTestRunner<
     let passed = true;
     let error: Error | undefined;
     let timeoutId: ReturnType<typeof setTimeout> | undefined;
-    
+
     try {
       // Set timeout if configured
       const timeout = this.config.timeout ?? 30000;
       const timeoutPromise = new Promise((_, reject) => {
         timeoutId = setTimeout(() => reject(new Error('Agent test timeout')), timeout);
       });
-      
+
       // Run agent
       const runPromise = (async () => {
-        if (this.config.captureSteps) {
-          // Capture intermediate steps
-          const result = await this.agent.invoke(input);
-          finalState = result;
-          messages = extractMessages(result);
-        } else {
-          // Just run to completion
-          const result = await this.agent.invoke(input);
-          finalState = result;
-          messages = extractMessages(result);
-        }
-        
+        const result = await this.agent.invoke(input);
+        finalState = result;
+        messages = extractMessages(result);
+
         // Validate state if configured
         if (this.config.validateState && this.config.stateValidator) {
           const isValid = await this.config.stateValidator(finalState);
@@ -146,7 +138,7 @@ export class AgentTestRunner<
           }
         }
       })();
-      
+
       try {
         await Promise.race([runPromise, timeoutPromise]);
       } finally {
@@ -158,9 +150,9 @@ export class AgentTestRunner<
       passed = false;
       error = err as Error;
     }
-    
+
     const executionTime = Date.now() - startTime;
-    
+
     return {
       finalState,
       messages,
@@ -170,7 +162,7 @@ export class AgentTestRunner<
       error,
     };
   }
-  
+
   /**
    * Run multiple test cases
    */

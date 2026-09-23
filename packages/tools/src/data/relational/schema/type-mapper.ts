@@ -10,7 +10,6 @@
 
 import { createLogger } from '@agentforge/core';
 import type { DatabaseVendor } from '../types.js';
-import { normaliseDbType } from './type-mapper-normalization.js';
 import { VENDOR_TYPE_MAPS } from './type-mapper-vendor-maps.js';
 
 const logger = createLogger('agentforge:tools:data:relational:type-mapper');
@@ -44,7 +43,7 @@ export interface MappedType {
 export function mapColumnType(
   vendor: DatabaseVendor,
   dbType: string,
-  nullable = false,
+  nullable = false
 ): MappedType {
   const typeMap = VENDOR_TYPE_MAPS[vendor];
   if (!typeMap) {
@@ -78,7 +77,7 @@ export function mapColumnType(
  */
 export function mapSchemaTypes(
   vendor: DatabaseVendor,
-  columns: Array<{ table: string; name: string; type: string; nullable: boolean }>,
+  columns: Array<{ table: string; name: string; type: string; nullable: boolean }>
 ): Map<string, Map<string, MappedType>> {
   const result = new Map<string, Map<string, MappedType>>();
 
@@ -116,4 +115,20 @@ function usesStringPrecisionFallback(vendor: DatabaseVendor, normalised: string)
     (normalised === 'bigint' || normalised === 'int8' || normalised === 'bigserial') &&
     (vendor === 'postgresql' || vendor === 'mysql')
   );
+}
+
+/**
+ * Normalise a raw database type string for map lookup.
+ *
+ * Strips size/precision suffixes (`(255)`, `(10,2)`) and converts to
+ * lower-case. Also handles `unsigned` and `[]` (PostgreSQL array) suffixes.
+ */
+function normaliseDbType(raw: string): string {
+  let type = raw.toLowerCase().trim();
+
+  type = type.replace(/\[\]$/, '');
+  type = type.replace(/\([\d,\s]+\)/, '');
+  type = type.replace(/\s+unsigned$/, '');
+
+  return type.trim();
 }
