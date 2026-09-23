@@ -97,8 +97,16 @@ describe('HuggingFaceEmbeddingProvider', () => {
     });
     expect(mockedAxios.post).toHaveBeenCalledWith(
       'https://api-inference.huggingface.co/pipeline/feature-extraction/organization/custom-model',
-      expect.any(Object),
-      expect.any(Object)
+      {
+        inputs: 'custom model',
+        options: { wait_for_model: true },
+      },
+      {
+        headers: {
+          Authorization: 'Bearer test-api-key',
+          'Content-Type': 'application/json',
+        },
+      }
     );
   });
 
@@ -150,8 +158,16 @@ describe('HuggingFaceEmbeddingProvider', () => {
     });
     expect(mockedAxios.post).toHaveBeenCalledWith(
       'https://api-inference.huggingface.co/pipeline/feature-extraction/organization/custom-model',
-      expect.any(Object),
-      expect.any(Object)
+      {
+        inputs: ['first', 'second'],
+        options: { wait_for_model: true },
+      },
+      {
+        headers: {
+          Authorization: 'Bearer test-api-key',
+          'Content-Type': 'application/json',
+        },
+      }
     );
   });
 
