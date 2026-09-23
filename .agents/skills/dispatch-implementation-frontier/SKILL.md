@@ -38,7 +38,7 @@ For every frontier ticket, create one separate top-level Codex task with the app
 
 Immediately before dispatching each ticket, refresh its state, labels, assignees, comments, and blockers. Continue only while every frontier condition still holds.
 
-Read `docs/agents/ticket-claiming.md` and acquire an exclusive claim with purpose `dispatch`. After task creation, publish the same claim as `dispatched` with its structured task identifier before allowing the task to edit. Follow the protocol's recovery path if creation or handoff publication fails.
+Read `docs/agents/ticket-claiming.md` and acquire an exclusive claim with purpose `dispatch`. After task creation, revalidate its active dispatch gate, then publish the same claim as `dispatched` with its structured task identifier before allowing the task to edit. Follow the protocol's recovery path if creation or handoff publication fails.
 
 Give each task its own managed Git worktree. Its initial prompt must:
 
