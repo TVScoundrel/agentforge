@@ -5,6 +5,35 @@ All notable changes to AgentForge will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.18.6] - 2026-09-23
+
+### Changed
+
+#### @agentforge/core - Simplified Middleware Presets
+- Co-located the middleware preset collection with its public exports while preserving the existing preset names, ordering, and import surface.
+
+#### @agentforge/testing - Simplified Agent Test Execution
+- Removed duplicate Agent Test Runner execution branches while preserving invocation, message extraction, validation, timeout, and result behavior.
+
+#### @agentforge/tools - Simplified Internal Boundaries
+- Co-located relational database type normalization with the type mapper while preserving schema mapping behavior and the public package surface.
+- Centralized lazy Slack client creation while preserving token precedence, client reuse, configuration snapshots, and existing error messages.
+- Routed single and batch HuggingFace embedding calls through one private request path while preserving request payloads, retries, provider errors, models, dimensions, and public provider methods.
+- Added focused Slack and HuggingFace regression coverage for the preserved behavior.
+
+### Validation
+- `pnpm release:validate` passed with 245 test files passed, 2 skipped, 2,812 tests passed, and 23 skipped.
+- Skips are intentional opt-in coverage for the Neo4j integration service and web-search performance tests; enable them with a running Neo4j service and `RUN_INTEGRATION_TESTS=true`, or `RUN_WEB_PERFORMANCE_TESTS=true` plus network access, respectively.
+
+### Published
+- All packages published to npm registry at version 0.18.6:
+  - @agentforge/core@0.18.6
+  - @agentforge/skills@0.18.6
+  - @agentforge/patterns@0.18.6
+  - @agentforge/tools@0.18.6
+  - @agentforge/testing@0.18.6
+  - @agentforge/cli@0.18.6
+
 ## [0.18.5] - 2026-09-20
 
 ### Changed
