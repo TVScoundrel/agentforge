@@ -10,11 +10,8 @@ import {
   REFLECTION_PROMPT_TEMPLATE,
 } from './prompts.js';
 import { handleNodeError } from '../shared/error-handling.js';
-import {
-  buildRevisionHistorySection,
-  reflectorLogger,
-  serializeModelContent,
-} from './node-shared.js';
+import { stringifyModelResponseContent } from '../shared/model-response-content.js';
+import { buildRevisionHistorySection, reflectorLogger } from './node-shared.js';
 
 function buildCriteriaSection(config: ReflectorConfig, state: ReflectionStateType): string {
   const criteria = config.qualityCriteria || state.qualityCriteria;
@@ -101,7 +98,7 @@ export function createReflectorNode(config: ReflectorConfig) {
         new SystemMessage(systemPrompt),
         new HumanMessage(userPrompt),
       ]);
-      const reflection = parseReflection(serializeModelContent(response.content));
+      const reflection = parseReflection(stringifyModelResponseContent(response.content) as string);
 
       reflectorLogger.info('Reflection complete', {
         attempt: state.iteration,

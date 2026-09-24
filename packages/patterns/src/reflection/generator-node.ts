@@ -3,7 +3,8 @@ import type { ReflectionStateType } from './state.js';
 import type { GeneratorConfig } from './types.js';
 import { DEFAULT_GENERATOR_SYSTEM_PROMPT, GENERATION_PROMPT_TEMPLATE } from './prompts.js';
 import { handleNodeError } from '../shared/error-handling.js';
-import { generatorLogger, serializeModelContent } from './node-shared.js';
+import { stringifyModelResponseContent } from '../shared/model-response-content.js';
+import { generatorLogger } from './node-shared.js';
 
 export function createGeneratorNode(config: GeneratorConfig) {
   const {
@@ -34,7 +35,7 @@ export function createGeneratorNode(config: GeneratorConfig) {
         new SystemMessage(systemPrompt),
         new HumanMessage(userPrompt),
       ]);
-      const content = serializeModelContent(response.content);
+      const content = stringifyModelResponseContent(response.content) as string;
 
       generatorLogger.info('Response generated', {
         attempt: state.iteration + 1,

@@ -1,5 +1,6 @@
 import type { BaseChatModel } from '@langchain/core/language_models/chat_models';
 import { type Tool, toLangChainTools } from '@agentforge/core';
+import { getModelResponseText } from '../../shared/model-response-content.js';
 import type { ReActStateType } from '../state.js';
 import {
   buildReasoningMessages,
@@ -41,7 +42,7 @@ export function createReasoningNode(
 
     const messages = buildReasoningMessages(systemPrompt, state.messages, state.scratchpad);
     const response = await llmWithTools.invoke(messages);
-    const thought = typeof response.content === 'string' ? response.content : '';
+    const thought = getModelResponseText(response.content) ?? '';
     const toolCalls = extractToolCalls(response as LlmResponseWithToolCalls);
     const shouldContinue = toolCalls.length > 0 && currentIteration + 1 < maxIterations;
 

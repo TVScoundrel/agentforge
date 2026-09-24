@@ -1,5 +1,3 @@
-export { normalizeModelContent } from './model-response.js';
-
 function stringifyWithFallback(value: unknown, fallbackLabel: string): string {
   try {
     const serialized = JSON.stringify(value);

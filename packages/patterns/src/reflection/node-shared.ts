@@ -5,10 +5,6 @@ export const generatorLogger = createPatternLogger('agentforge:patterns:reflecti
 export const reflectorLogger = createPatternLogger('agentforge:patterns:reflection:reflector');
 export const reviserLogger = createPatternLogger('agentforge:patterns:reflection:reviser');
 
-export function serializeModelContent(content: unknown): string {
-  return typeof content === 'string' ? content : JSON.stringify(content);
-}
-
 export function buildRevisionHistorySection(
   revisions: Array<{ content: string; iteration: number }>,
   heading: string

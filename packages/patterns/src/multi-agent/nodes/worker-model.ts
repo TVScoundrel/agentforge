@@ -6,7 +6,7 @@ import {
   createGeneratedId,
   createPromptMessages,
   logger,
-  serializeModelContent,
+  requireSerializedModelContent,
 } from './shared.js';
 import type { InvokableWorkerModel, TaskResultAndMessage } from './worker-types.js';
 
@@ -42,7 +42,7 @@ export async function invokeWorkerModel(
 
   logger.debug('Invoking LLM', { workerId: config.id });
   const response = await modelToUse.invoke(messages);
-  const result = serializeModelContent(response.content);
+  const result = requireSerializedModelContent(response.content);
 
   logger.info('Worker task completed', {
     workerId: config.id,

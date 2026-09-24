@@ -7,7 +7,7 @@ import {
   PLANNING_PROMPT_TEMPLATE,
 } from './prompts.js';
 import { plannerLogger } from './node-loggers.js';
-import { parseModelResponse } from './model-response.js';
+import { parseJsonModelResponse } from './response-parsing.js';
 
 export function createPlannerNode(config: PlannerConfig) {
   const {
@@ -43,7 +43,7 @@ export function createPlannerNode(config: PlannerConfig) {
       ];
 
       const response = await model.invoke(messages);
-      const parsed = parseModelResponse<Plan>(response.content, 'plan');
+      const parsed = parseJsonModelResponse<Plan>(response.content, 'plan');
       const plan: Plan = {
         steps: parsed.steps.slice(0, maxSteps),
         goal: parsed.goal || state.input || '',

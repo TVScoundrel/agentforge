@@ -1,6 +1,7 @@
 import { HumanMessage, SystemMessage } from '@langchain/core/messages';
 import { toLangChainTools, type Tool } from '@agentforge/core';
 import { createPatternLogger } from '../../shared/deduplication.js';
+import { stringifyModelResponseContent } from '../../shared/model-response-content.js';
 import type { MultiAgentStateType } from '../state.js';
 import type { AgentMessage, TaskAssignment } from '../schemas.js';
 import type { WorkerConfig } from '../types.js';
@@ -110,13 +111,9 @@ export function convertWorkerToolsForLangChain(tools: WorkerConfig['tools']) {
   return toLangChainTools(safeTools);
 }
 
-export function serializeModelContent(content: unknown): string {
-  if (typeof content === 'string') {
-    return content;
-  }
-
+export function requireSerializedModelContent(content: unknown): string {
   try {
-    const serialized = JSON.stringify(content);
+    const serialized = stringifyModelResponseContent(content);
     if (typeof serialized !== 'string') {
       const error = new Error(
         'Failed to serialize model content: JSON.stringify returned undefined'
