@@ -16,6 +16,12 @@ A catalog of Tools available for lookup, selection, and presentation to agents.
 **Relational Tool Set**:
 A configured collection of relational database Tools that targets one database and owns their shared connection lifecycle and transaction scope.
 
+**Embedding Provider**:
+An adapter that converts text into embeddings using a particular model provider.
+
+**Model Response Content**:
+The content payload returned by a model invocation before an Agent pattern assigns pattern-specific meaning to it.
+
 ## Agent Skills
 
 **Agent Skill**:
