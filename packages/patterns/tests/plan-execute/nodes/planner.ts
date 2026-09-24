@@ -68,8 +68,10 @@
       const state: Partial<PlanExecuteStateType> = { input: 'Test', status: 'planning' };
       const result = await planner(state as PlanExecuteStateType);
 
-      expect(result.status).toBe('failed');
-      expect(result.error).toContain('Failed to parse plan');
+      expect(result).toEqual({
+        status: 'failed',
+        error: expect.stringContaining('Failed to parse plan from LLM response'),
+      });
     });
 
     it('should normalize structured model content before parsing', async () => {
@@ -111,6 +113,95 @@
       expect(result.status).toBe('executing');
       expect(result.plan?.goal).toBe('Array content goal');
       expect(result.plan?.steps).toHaveLength(1);
+    });
+
+    it('should join JSON text from mixed planner content and ignore non-text parts', async () => {
+      const planner = createPlannerNode({
+        model: {
+          invoke: async () => ({
+            content: [
+              { type: 'image_url', image_url: 'https://example.com/image.png' },
+              { type: 'text', text: '{"goal":"Mixed content goal",' },
+              { type: 'tool_call', id: 'ignored' },
+              { type: 'text', text: '"steps":[{"id":"step-1","description":"Mixed content step"}]}' },
+            ],
+          }),
+        } as any,
+      });
+
+      const result = await planner({ input: 'Test', status: 'planning' } as PlanExecuteStateType);
+
+      expect(result).toEqual({
+        plan: {
+          steps: [{ id: 'step-1', description: 'Mixed content step' }],
+          goal: 'Mixed content goal',
+          createdAt: expect.any(String),
+          confidence: undefined,
+        },
+        status: 'executing',
+        currentStepIndex: 0,
+        iteration: 1,
+      });
+    });
+
+    it.each([
+      ['an array without text', [{ type: 'image_url', image_url: 'https://example.com/image.png' }]],
+      ['an empty array', []],
+    ])('should preserve the planner failure for %s', async (_description, content) => {
+      const planner = createPlannerNode({
+        model: { invoke: async () => ({ content }) } as any,
+      });
+
+      const result = await planner({ input: 'Test', status: 'planning' } as PlanExecuteStateType);
+
+      expect(result).toEqual({
+        status: 'failed',
+        error: "Cannot read properties of undefined (reading 'slice')",
+      });
+    });
+
+    it.each([
+      ['empty string content', ''],
+      ['undefined content', undefined],
+    ])('should return a contextual parse failure for %s', async (_description, content) => {
+      const planner = createPlannerNode({
+        model: { invoke: async () => ({ content }) } as any,
+      });
+
+      const result = await planner({ input: 'Test', status: 'planning' } as PlanExecuteStateType);
+
+      expect(result).toEqual({
+        status: 'failed',
+        error: expect.stringContaining('Failed to parse plan from LLM response'),
+      });
+    });
+
+    it('should preserve the non-contextual planner failure for null content', async () => {
+      const planner = createPlannerNode({
+        model: { invoke: async () => ({ content: null }) } as any,
+      });
+
+      const result = await planner({ input: 'Test', status: 'planning' } as PlanExecuteStateType);
+
+      expect(result).toEqual({
+        status: 'failed',
+        error: "Cannot read properties of null (reading 'steps')",
+      });
+    });
+
+    it('should return a contextual parse failure for circular planner content', async () => {
+      const circular: { self?: unknown } = {};
+      circular.self = circular;
+      const planner = createPlannerNode({
+        model: { invoke: async () => ({ content: circular }) } as any,
+      });
+
+      const result = await planner({ input: 'Test', status: 'planning' } as PlanExecuteStateType);
+
+      expect(result).toEqual({
+        status: 'failed',
+        error: expect.stringMatching(/Failed to parse plan from LLM response:.*\[Unserializ/),
+      });
     });
   });
 import { describe, it, expect } from 'vitest';
