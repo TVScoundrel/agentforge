@@ -1,13 +1,23 @@
 /**
  * Cohere Embedding Provider
- * 
+ *
  * Implementation of embedding generation using Cohere's API
  * https://docs.cohere.com/reference/embed
  */
 
 import axios from 'axios';
 import type { IEmbeddingProvider, EmbeddingResult, BatchEmbeddingResult } from '../types.js';
-import { retryWithBackoff, withProviderErrorMetadata } from '../utils.js';
+import { generateHostedBatchEmbeddings, generateHostedEmbedding } from './hosted.js';
+import type { HostedProviderError } from './hosted.js';
+
+function formatCohereError({ kind, status, providerMessage }: HostedProviderError): string {
+  if (kind === 'authentication') {
+    return `Cohere API authentication failed. Please check your COHERE_API_KEY. ${providerMessage}`;
+  }
+  if (kind === 'rate-limit') return `Cohere API rate limit exceeded. ${providerMessage}`;
+  if (kind === 'invalid-request') return `Cohere API request invalid: ${providerMessage}`;
+  return `Cohere API error (${status}): ${providerMessage}`;
+}
 
 /**
  * Cohere embedding provider
@@ -31,70 +41,47 @@ export class CohereEmbeddingProvider implements IEmbeddingProvider {
   }
 
   async generateEmbedding(text: string, model?: string): Promise<EmbeddingResult> {
-    // Forward model parameter to batch method
-    const result = await this.generateBatchEmbeddings([text], model);
-    return {
-      embedding: result.embeddings[0],
-      model: result.model,
-      dimensions: result.dimensions,
-      usage: result.usage,
-    };
+    return generateHostedEmbedding(text, model, (texts, batchModel) =>
+      this.generateBatchEmbeddings(texts, batchModel)
+    );
   }
 
   async generateBatchEmbeddings(texts: string[], model?: string): Promise<BatchEmbeddingResult> {
     const modelToUse = model || this.defaultModel;
 
-    return retryWithBackoff(async () => {
-      try {
+    return generateHostedBatchEmbeddings({
+      texts,
+      model: modelToUse,
+      formatError: formatCohereError,
+      request: async (requestTexts, requestModel) => {
         const response = await axios.post(
           `${this.baseUrl}/embed`,
           {
-            texts,
-            model: modelToUse,
+            texts: requestTexts,
+            model: requestModel,
             input_type: 'search_document', // For storing in vector DB
             embedding_types: ['float'],
           },
           {
             headers: {
-              'Authorization': `Bearer ${this.apiKey}`,
+              Authorization: `Bearer ${this.apiKey}`,
               'Content-Type': 'application/json',
             },
           }
         );
 
         const embeddings = response.data.embeddings.float;
-        const dimensions = embeddings[0]?.length || 0;
 
         return {
           embeddings,
-          model: modelToUse,
-          dimensions,
-          usage: response.data.meta?.billed_units ? {
-            promptTokens: response.data.meta.billed_units.input_tokens || 0,
-            totalTokens: response.data.meta.billed_units.input_tokens || 0,
-          } : undefined,
+          usage: response.data.meta?.billed_units
+            ? {
+                promptTokens: response.data.meta.billed_units.input_tokens || 0,
+                totalTokens: response.data.meta.billed_units.input_tokens || 0,
+              }
+            : undefined,
         };
-      } catch (error: unknown) {
-        if (axios.isAxiosError(error)) {
-          const status = error.response?.status;
-          const providerMessage = error.response?.data?.message || error.message;
-          let message: string;
-
-          if (status === 401) {
-            message = `Cohere API authentication failed. Please check your COHERE_API_KEY. ${providerMessage}`;
-          } else if (status === 429) {
-            message = `Cohere API rate limit exceeded. ${providerMessage}`;
-          } else if (status === 400) {
-            message = `Cohere API request invalid: ${providerMessage}`;
-          } else {
-            message = `Cohere API error (${status}): ${providerMessage}`;
-          }
-
-          throw withProviderErrorMetadata(error, message);
-        }
-
-        throw error;
-      }
+      },
     });
   }
 }
