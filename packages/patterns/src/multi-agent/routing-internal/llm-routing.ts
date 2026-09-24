@@ -1,5 +1,10 @@
 import { HumanMessage, SystemMessage } from '@langchain/core/messages';
 import { createPatternLogger } from '../../shared/deduplication.js';
+import {
+  getModelResponseText,
+  getModelResponseTextParts,
+  stringifyModelResponseContent,
+} from '../../shared/model-response-content.js';
 import { RoutingDecisionSchema } from '../schemas.js';
 import type { RoutingDecision } from '../schemas.js';
 import type { MultiAgentStateType } from '../state.js';
@@ -60,37 +65,17 @@ function isContentCarrier(value: unknown): value is ContentCarrier {
   return isRecord(value) && 'content' in value;
 }
 
-function serializeRoutingContent(content: unknown): string {
-  if (typeof content === 'string') {
-    return content;
-  }
-
-  if (Array.isArray(content)) {
-    const textParts = content.flatMap((part) => {
-      if (typeof part === 'string') {
-        return [part];
-      }
-
-      if (isRecord(part) && typeof part.text === 'string') {
-        return [part.text];
-      }
-
-      return [];
-    });
-
-    if (textParts.length > 0) {
-      return textParts.join('\n');
-    }
-
-    return JSON.stringify(content);
-  }
-
-  return JSON.stringify(content);
-}
-
 function normalizeRoutingDecisionInput(decision: unknown): unknown {
   if (isContentCarrier(decision)) {
-    return JSON.parse(serializeRoutingContent(decision.content));
+    const text = getModelResponseText(decision.content);
+    const textParts = getModelResponseTextParts(decision.content);
+    const representedContent =
+      text ??
+      (textParts.length > 0
+        ? textParts.join('\n')
+        : stringifyModelResponseContent(decision.content));
+
+    return JSON.parse(representedContent as string);
   }
 
   return decision;

@@ -3,11 +3,8 @@ import type { ReflectionStateType } from './state.js';
 import type { ReviserConfig } from './types.js';
 import { DEFAULT_REVISER_SYSTEM_PROMPT, REVISION_PROMPT_TEMPLATE } from './prompts.js';
 import { handleNodeError } from '../shared/error-handling.js';
-import {
-  buildRevisionHistorySection,
-  reviserLogger,
-  serializeModelContent,
-} from './node-shared.js';
+import { stringifyModelResponseContent } from '../shared/model-response-content.js';
+import { buildRevisionHistorySection, reviserLogger } from './node-shared.js';
 
 export function createReviserNode(config: ReviserConfig) {
   const {
@@ -48,7 +45,7 @@ export function createReviserNode(config: ReviserConfig) {
         new SystemMessage(systemPrompt),
         new HumanMessage(userPrompt),
       ]);
-      const content = serializeModelContent(response.content);
+      const content = stringifyModelResponseContent(response.content) as string;
 
       reviserLogger.info('Revision complete', {
         attempt: state.iteration,

@@ -9,8 +9,8 @@ import {
   REMAINING_STEP_TEMPLATE,
 } from './prompts.js';
 import { replannerLogger } from './node-loggers.js';
-import { parseModelResponse } from './model-response.js';
 import { serializePlanExecuteResult } from './serialization.js';
+import { parseJsonModelResponse } from './response-parsing.js';
 
 export function createReplannerNode(config: ReplannerConfig) {
   const {
@@ -73,7 +73,10 @@ export function createReplannerNode(config: ReplannerConfig) {
       ];
 
       const response = await model.invoke(messages);
-      const decision = parseModelResponse<ReplanDecision>(response.content, 'replan decision');
+      const decision = parseJsonModelResponse<ReplanDecision>(
+        response.content,
+        'replan decision'
+      );
 
       if (decision.shouldReplan) {
         replannerLogger.info('Replanning triggered', {

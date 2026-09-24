@@ -1,26 +1,29 @@
 import type { ReActResultShape } from './utils-shared.js';
-import { isRecord } from './utils-shared.js';
+import {
+  getModelResponseText,
+  getModelResponseTextParts,
+  stringifyModelResponseContent,
+} from '../shared/model-response-content.js';
 
-function safeSerializeContent(content: unknown): string | undefined {
+function getWrappedResponseContent(content: unknown): string | undefined {
   if (content === null || content === undefined) {
     return undefined;
   }
 
-  if (typeof content === 'string') {
-    return content.length > 0 ? content : undefined;
+  const text = getModelResponseText(content);
+  if (text !== undefined) {
+    return text.length > 0 ? text : undefined;
   }
 
   if (Array.isArray(content)) {
     const parts = content
       .map((part): string => {
-        if (typeof part === 'string') {
-          return part;
-        }
-        if (isRecord(part) && typeof part.text === 'string' && part.text.length > 0) {
-          return part.text;
+        const partText = getModelResponseTextParts([part])[0];
+        if (partText !== undefined && partText.length > 0) {
+          return partText;
         }
         try {
-          return JSON.stringify(part);
+          return stringifyModelResponseContent(part) as string;
         } catch {
           return String(part);
         }
@@ -31,7 +34,7 @@ function safeSerializeContent(content: unknown): string | undefined {
   }
 
   try {
-    const serialized = JSON.stringify(content);
+    const serialized = stringifyModelResponseContent(content);
     if (typeof serialized === 'string' && serialized.length > 0 && serialized !== 'null') {
       return serialized;
     }
@@ -45,7 +48,7 @@ function safeSerializeContent(content: unknown): string | undefined {
 
 export function extractResponse(resultShape: ReActResultShape): string {
   const lastMessage = resultShape.messages?.[resultShape.messages.length - 1];
-  const serialized = safeSerializeContent(lastMessage?.content);
+  const serialized = getWrappedResponseContent(lastMessage?.content);
   return serialized ?? 'No response';
 }
 
