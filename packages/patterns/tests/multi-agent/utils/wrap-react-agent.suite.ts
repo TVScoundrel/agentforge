@@ -2,6 +2,43 @@ import { describe, it, expect, vi } from 'vitest';
 import { wrapReActAgent } from '../../../src/multi-agent/utils.js';
 import { createHumanMessageResponse, createMockReActAgent, createWorkerState } from './shared.js';
 
+const circularResponseContent: Record<string, unknown> = {};
+circularResponseContent.self = circularResponseContent;
+
+const wrappedResponseCases: Array<[string, unknown, string]> = [
+  ['string', 'Plain response', 'Plain response'],
+  ['ordinary object', { answer: 'Structured response' }, '{"answer":"Structured response"}'],
+  [
+    'text-part array',
+    [
+      { type: 'text', text: 'First response part' },
+      { type: 'text', text: 'Second response part' },
+    ],
+    'First response part\nSecond response part',
+  ],
+  [
+    'mixed array',
+    [
+      { type: 'text', text: 'Structured response' },
+      { type: 'meta', source: 'tool-a' },
+    ],
+    'Structured response\n{"type":"meta","source":"tool-a"}',
+  ],
+  [
+    'array without text',
+    [
+      { type: 'tool_use', name: 'search' },
+      { type: 'meta', source: 'tool-a' },
+    ],
+    '{"type":"tool_use","name":"search"}\n{"type":"meta","source":"tool-a"}',
+  ],
+  ['empty string', '', 'No response'],
+  ['empty array', [], 'No response'],
+  ['null', null, 'No response'],
+  ['undefined', undefined, 'No response'],
+  ['circular object', circularResponseContent, '[object Object]'],
+];
+
 describe('Multi-Agent Utils wrapReActAgent', () => {
   it('uses the correct assignment task in parallel execution', async () => {
     let capturedInput: unknown;
@@ -172,6 +209,27 @@ describe('Multi-Agent Utils wrapReActAgent', () => {
     expect(taskResult?.result).toContain('Structured response');
     expect(taskResult?.result).toContain('"source":"tool-a"');
   });
+
+  it.each(wrappedResponseCases)(
+    'preserves the exact wrapped ReAct Task Result for %s content',
+    async (_label, content, expected) => {
+      const mockReActAgent = createMockReActAgent(async () => ({
+        messages: [{ content }],
+        actions: [],
+        iteration: 1,
+      }));
+
+      const wrappedAgent = wrapReActAgent('worker1', mockReActAgent);
+      const result = await wrappedAgent(createWorkerState());
+
+      expect(result.completedTasks?.[0]).toMatchObject({
+        assignmentId: 'assignment-1',
+        workerId: 'worker1',
+        success: true,
+        result: expected,
+      });
+    }
+  );
 
   it('extracts unique tool names and iteration metadata', async () => {
     const mockReActAgent = createMockReActAgent(async () => ({

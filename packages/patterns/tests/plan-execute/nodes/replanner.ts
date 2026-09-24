@@ -143,6 +143,139 @@
       expect(result.input).toBe('Array content goal');
     });
 
+    it('should join JSON text from mixed replanner content and ignore non-text parts', async () => {
+      const replanner = createReplannerNode({
+        model: {
+          invoke: async () => ({
+            content: [
+              { type: 'image_url', image_url: 'https://example.com/image.png' },
+              { type: 'text', text: '{"shouldReplan":true,' },
+              { type: 'tool_call', id: 'ignored' },
+              { type: 'text', text: '"reason":"Mixed content","newGoal":"Mixed content goal"}' },
+            ],
+          }),
+        } as any,
+      });
+      const state: Partial<PlanExecuteStateType> = {
+        plan: {
+          steps: [{ id: 'step-1', description: 'First' }],
+          goal: 'Test goal',
+          createdAt: new Date().toISOString(),
+        },
+        currentStepIndex: 0,
+        pastSteps: [],
+        status: 'replanning',
+      };
+
+      const result = await replanner(state as PlanExecuteStateType);
+
+      expect(result).toEqual({
+        status: 'planning',
+        input: 'Mixed content goal',
+        iteration: 1,
+      });
+    });
+
+    it.each([
+      ['an array without text', [{ type: 'image_url', image_url: 'https://example.com/image.png' }]],
+      ['an empty array', []],
+    ])('should continue the current plan for %s', async (_description, content) => {
+      const replanner = createReplannerNode({
+        model: { invoke: async () => ({ content }) } as any,
+      });
+      const state: Partial<PlanExecuteStateType> = {
+        plan: {
+          steps: [{ id: 'step-1', description: 'First' }],
+          goal: 'Test goal',
+          createdAt: new Date().toISOString(),
+        },
+        currentStepIndex: 0,
+        pastSteps: [],
+        status: 'replanning',
+      };
+
+      const result = await replanner(state as PlanExecuteStateType);
+
+      expect(result).toEqual({ status: 'executing' });
+    });
+
+    it.each([
+      ['empty string content', ''],
+      ['undefined content', undefined],
+    ])('should return a contextual replan parse failure for %s', async (_description, content) => {
+      const replanner = createReplannerNode({
+        model: { invoke: async () => ({ content }) } as any,
+      });
+      const state: Partial<PlanExecuteStateType> = {
+        plan: {
+          steps: [{ id: 'step-1', description: 'First' }],
+          goal: 'Test goal',
+          createdAt: new Date().toISOString(),
+        },
+        currentStepIndex: 0,
+        pastSteps: [],
+        status: 'replanning',
+      };
+
+      const result = await replanner(state as PlanExecuteStateType);
+
+      expect(result).toEqual({
+        status: 'failed',
+        error: expect.stringContaining('Failed to parse replan decision from LLM response'),
+      });
+    });
+
+    it('should preserve the non-contextual replanner failure for null content', async () => {
+      const replanner = createReplannerNode({
+        model: { invoke: async () => ({ content: null }) } as any,
+      });
+      const state: Partial<PlanExecuteStateType> = {
+        plan: {
+          steps: [{ id: 'step-1', description: 'First' }],
+          goal: 'Test goal',
+          createdAt: new Date().toISOString(),
+        },
+        currentStepIndex: 0,
+        pastSteps: [],
+        status: 'replanning',
+      };
+
+      const result = await replanner(state as PlanExecuteStateType);
+
+      expect(result).toEqual({
+        status: 'failed',
+        error: "Cannot read properties of null (reading 'shouldReplan')",
+      });
+    });
+
+    it('should return a contextual parse failure for circular replanner content', async () => {
+      const circular: { self?: unknown } = {};
+      circular.self = circular;
+      const replanner = createReplannerNode({
+        model: { invoke: async () => ({ content: circular }) } as any,
+      });
+      const state: Partial<PlanExecuteStateType> = {
+        plan: {
+          steps: [{ id: 'step-1', description: 'First' }],
+          goal: 'Test goal',
+          createdAt: new Date().toISOString(),
+        },
+        currentStepIndex: 0,
+        pastSteps: [],
+        status: 'replanning',
+      };
+
+      const result = await replanner(state as PlanExecuteStateType);
+
+      expect(result).toEqual({
+        status: 'failed',
+        error: expect.stringMatching(
+          /Failed to parse replan decision from LLM response:.*\[Unserializ/
+        ),
+      });
+    });
+
+
     it('should omit blank dependency lines for steps with empty dependency arrays', async () => {
       const invoke = vi.fn(async () => new AIMessage({
         content: JSON.stringify({
@@ -275,8 +408,10 @@
 
       const result = await replanner(state as PlanExecuteStateType);
 
-      expect(result.status).toBe('failed');
-      expect(result.error).toContain('Failed to parse replan decision');
+      expect(result).toEqual({
+        status: 'failed',
+        error: expect.stringContaining('Failed to parse replan decision from LLM response'),
+      });
     });
 
     it('should handle missing plan', async () => {

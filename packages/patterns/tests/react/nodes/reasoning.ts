@@ -5,6 +5,9 @@ import { createReasoningNode } from '../../../src/react/nodes.js';
 import { createBaseState, createMockChatModel, testTool } from './helpers.js';
 
 describe('ReAct Nodes: reasoning', () => {
+  const circularContent: Record<string, unknown> = {};
+  circularContent.self = circularContent;
+
   it('generates thoughts and tool calls', async () => {
     const reasoningNode = createReasoningNode(
       createMockChatModel(),
@@ -46,6 +49,141 @@ describe('ReAct Nodes: reasoning', () => {
 
     expect(result.shouldContinue).toBe(false);
     expect(result.response).toBe('Final answer');
+    expect(result.messages).toEqual([{ role: 'assistant', content: 'Final answer' }]);
+    expect(result.thoughts).toEqual([{ content: 'Final answer', timestamp: expect.any(Number) }]);
+  });
+
+  it('preserves string content while continuing with a tool call', async () => {
+    const reasoningNode = createReasoningNode(
+      createMockChatModel({
+        content: 'I should use the tool',
+        tool_calls: [{ id: 'call_123', name: 'test-tool', args: { input: 'test' } }],
+      }),
+      [testTool],
+      'System prompt',
+      10,
+      false
+    );
+
+    const result = await reasoningNode(createBaseState());
+
+    expect(result.messages).toEqual([{ role: 'assistant', content: 'I should use the tool' }]);
+    expect(result.thoughts).toEqual([
+      { content: 'I should use the tool', timestamp: expect.any(Number) },
+    ]);
+    expect(result.actions).toEqual([
+      {
+        id: 'call_123',
+        name: 'test-tool',
+        arguments: { input: 'test' },
+        timestamp: expect.any(Number),
+      },
+    ]);
+    expect(result.shouldContinue).toBe(true);
+    expect(result.response).toBeUndefined();
+  });
+
+  it.each([
+    ['ordinary object', { answer: 42 }],
+    ['text-part array', [{ type: 'text', text: 'Structured answer' }]],
+    [
+      'mixed array',
+      [
+        { type: 'text', text: 'Structured answer' },
+        { type: 'image_url', image_url: { url: 'https://example.com/image.png' } },
+      ],
+    ],
+    [
+      'array without text',
+      [{ type: 'image_url', image_url: { url: 'https://example.com/image.png' } }],
+    ],
+    ['empty array', []],
+    ['null', null],
+    ['undefined', undefined],
+    ['circular object', circularContent],
+  ])('discards %s content when producing a final response', async (_name, content) => {
+    const llm = {
+      bindTools() {
+        return this;
+      },
+      invoke: vi.fn().mockResolvedValue({ content, tool_calls: [] }),
+    } as unknown as BaseChatModel;
+    const reasoningNode = createReasoningNode(llm, [testTool], 'System prompt', 10, false);
+
+    const result = await reasoningNode(createBaseState());
+
+    expect(result).toEqual({
+      messages: [{ role: 'assistant', content: '' }],
+      thoughts: [],
+      actions: [],
+      iteration: 1,
+      shouldContinue: false,
+      response: '',
+    });
+  });
+
+  it.each([
+    ['ordinary object', { answer: 42 }],
+    ['text-part array', [{ type: 'text', text: 'Use the tool' }]],
+    [
+      'mixed array',
+      [
+        { type: 'text', text: 'Use the tool' },
+        { type: 'image_url', image_url: { url: 'https://example.com/image.png' } },
+      ],
+    ],
+    [
+      'array without text',
+      [{ type: 'image_url', image_url: { url: 'https://example.com/image.png' } }],
+    ],
+    ['empty array', []],
+    ['null', null],
+    ['undefined', undefined],
+    ['circular object', circularContent],
+  ])('discards %s content while preserving tool-call continuation', async (_name, content) => {
+    const llm = {
+      bindTools() {
+        return this;
+      },
+      invoke: vi.fn().mockResolvedValue({
+        content,
+        tool_calls: [{ id: 'call_123', name: 'test-tool', args: { input: 'test' } }],
+      }),
+    } as unknown as BaseChatModel;
+    const reasoningNode = createReasoningNode(llm, [testTool], 'System prompt', 10, false);
+
+    const result = await reasoningNode(createBaseState());
+
+    expect(result.messages).toEqual([{ role: 'assistant', content: '' }]);
+    expect(result.thoughts).toEqual([]);
+    expect(result.actions).toEqual([
+      {
+        id: 'call_123',
+        name: 'test-tool',
+        arguments: { input: 'test' },
+        timestamp: expect.any(Number),
+      },
+    ]);
+    expect(result.iteration).toBe(1);
+    expect(result.shouldContinue).toBe(true);
+    expect(result.response).toBeUndefined();
+  });
+
+  it('preserves an empty string as the final response', async () => {
+    const reasoningNode = createReasoningNode(
+      createMockChatModel({ content: '', tool_calls: [] }),
+      [testTool],
+      'System prompt',
+      10,
+      false
+    );
+
+    const result = await reasoningNode(createBaseState());
+
+    expect(result.messages).toEqual([{ role: 'assistant', content: '' }]);
+    expect(result.thoughts).toEqual([]);
+    expect(result.response).toBe('');
+    expect(result.shouldContinue).toBe(false);
   });
 
   it('respects the max iteration cap', async () => {

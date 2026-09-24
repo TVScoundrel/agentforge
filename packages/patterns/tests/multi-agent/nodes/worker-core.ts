@@ -4,6 +4,44 @@ import type { MultiAgentStateType } from '../../../src/multi-agent/state.js';
 import type { WorkerConfig } from '../../../src/multi-agent/types.js';
 import { createMockState } from './shared.js';
 
+function createAssignedWorkerState(): MultiAgentStateType {
+  const baseState = createMockState();
+  return {
+    ...baseState,
+    workers: {
+      ...baseState.workers,
+      worker1: {
+        ...baseState.workers.worker1,
+        currentWorkload: 1,
+      },
+    },
+    activeAssignments: [
+      {
+        id: 'task1',
+        workerId: 'worker1',
+        task: 'Test task',
+        priority: 5,
+        assignedAt: Date.now(),
+      },
+    ],
+  };
+}
+
+function createModelWorkerNode(content: unknown) {
+  return createWorkerNode({
+    id: 'worker1',
+    capabilities: {
+      skills: ['skill1'],
+      tools: [],
+      available: true,
+      currentWorkload: 0,
+    },
+    model: {
+      invoke: vi.fn().mockResolvedValue({ content }),
+    } as unknown as WorkerConfig['model'],
+  });
+}
+
 describe('Multi-Agent Nodes', () => {
   describe('createWorkerNode core behavior', () => {
     it('should create a worker node', () => {
@@ -65,6 +103,59 @@ describe('Multi-Agent Nodes', () => {
       expect(result.completedTasks).toHaveLength(1);
     });
 
+    it.each<Array<[string, unknown, string]>>([
+      ['string', 'Plain worker response', 'Plain worker response'],
+      [
+        'ordinary object',
+        { answer: 'Structured worker response' },
+        '{"answer":"Structured worker response"}',
+      ],
+      [
+        'text-part array',
+        [{ type: 'text', text: 'Structured worker response' }],
+        '[{"type":"text","text":"Structured worker response"}]',
+      ],
+      [
+        'mixed array',
+        [
+          { type: 'text', text: 'Structured worker response' },
+          { type: 'tool_use', name: 'search' },
+        ],
+        '[{"type":"text","text":"Structured worker response"},{"type":"tool_use","name":"search"}]',
+      ],
+      [
+        'array without text',
+        [{ type: 'tool_use', name: 'search' }],
+        '[{"type":"tool_use","name":"search"}]',
+      ],
+      ['empty string', '', ''],
+      ['empty array', [], '[]'],
+      ['null', null, 'null'],
+    ])(
+      'should preserve %s model content in the Task Result and message',
+      async (_label, content, expected) => {
+        const result = await createModelWorkerNode(content)(createAssignedWorkerState());
+
+        expect(result.completedTasks?.[0]).toMatchObject({
+          assignmentId: 'task1',
+          workerId: 'worker1',
+          success: true,
+          result: expected,
+        });
+        expect(result.messages?.[0]).toMatchObject({
+          from: 'worker1',
+          to: ['supervisor'],
+          type: 'task_result',
+          content: expected,
+          metadata: {
+            assignmentId: 'task1',
+            success: true,
+          },
+        });
+        expect(result.workers?.worker1.currentWorkload).toBe(0);
+      }
+    );
+
     it('should fail when model content serializes to undefined', async () => {
       const model = {
         invoke: vi.fn().mockResolvedValue({ content: undefined }),
@@ -102,10 +193,44 @@ describe('Multi-Agent Nodes', () => {
         model: model as unknown as WorkerConfig['model'],
       })(stateWithAssignment);
 
+      expect(result).toMatchObject({
+        status: 'routing',
+        currentAgent: 'supervisor',
+        completedTasks: [
+          {
+            assignmentId: 'task1',
+            workerId: 'worker1',
+            success: false,
+            result: '',
+          },
+        ],
+      });
       expect(result.status).toBe('routing');
       expect(result.completedTasks?.[0]?.error).toContain(
         'Failed to serialize model content: JSON.stringify returned undefined'
       );
+      expect(result.workers?.worker1.currentWorkload).toBe(0);
+    });
+
+    it('should create an error Task Result when model content is circular', async () => {
+      const circular: Record<string, unknown> = {};
+      circular.self = circular;
+
+      const result = await createModelWorkerNode(circular)(createAssignedWorkerState());
+
+      expect(result).toMatchObject({
+        status: 'routing',
+        currentAgent: 'supervisor',
+        completedTasks: [
+          {
+            assignmentId: 'task1',
+            workerId: 'worker1',
+            success: false,
+            result: '',
+          },
+        ],
+      });
+      expect(result.completedTasks?.[0]?.error).toMatch(/circular/i);
       expect(result.workers?.worker1.currentWorkload).toBe(0);
     });
 
