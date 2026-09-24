@@ -5,6 +5,31 @@ All notable changes to AgentForge will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.18.7] - 2026-09-24
+
+### Changed
+
+#### @agentforge/patterns - Concentrated Model Response Content Representation
+- Centralized shared textual and JSON-safe Model Response Content representation in one private module while preserving ReAct, Reflection, Plan-and-Execute, and Multi-Agent System behavior, parsing, routing, state transitions, fallbacks, errors, and public interfaces.
+- Added focused characterization and shared-contract coverage for strings, objects, structured arrays, empty and absent content, circular values, and JSON parsing outcomes.
+
+#### @agentforge/tools - Concentrated Hosted Embedding Provider Mechanics
+- Routed Cohere and Voyage embedding calls through one private hosted-provider implementation for single-to-batch conversion, retries, HTTP error classification, provider metadata, and result assembly while preserving provider-specific requests, responses, wording, models, and public interfaces.
+- Added shared behavioral-contract and provider-specific coverage for availability, model selection, request shapes, embedding results, usage metadata, retries, and error handling.
+
+### Validation
+- `pnpm release:validate` passed with 248 test files passed, 2 skipped, 2,963 tests passed, and 23 skipped.
+- Skips are intentional opt-in coverage for the Neo4j integration service and web-search performance tests; enable them with a running Neo4j service and `RUN_INTEGRATION_TESTS=true`, or `RUN_WEB_PERFORMANCE_TESTS=true` plus network access, respectively.
+
+### Published
+- All packages published to npm registry at version 0.18.7:
+  - @agentforge/core@0.18.7
+  - @agentforge/skills@0.18.7
+  - @agentforge/patterns@0.18.7
+  - @agentforge/tools@0.18.7
+  - @agentforge/testing@0.18.7
+  - @agentforge/cli@0.18.7
+
 ## [0.18.6] - 2026-09-23
 
 ### Changed
