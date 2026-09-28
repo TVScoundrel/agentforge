@@ -3,6 +3,8 @@
  * @module tools/composition
  */
 
+import { executeWithRetries, executeWithTimeout } from './execution-resilience.js';
+
 type RetryBackoffStrategy = 'linear' | 'exponential';
 
 interface RetryOptions {
@@ -22,7 +24,11 @@ export interface ComposedTool<TInput = unknown, TOutput = unknown> {
   invoke(input: TInput): Promise<TOutput>;
 }
 
-export interface ConditionalConfig<TInput = unknown, TTrueOutput = unknown, TFalseOutput = unknown> {
+export interface ConditionalConfig<
+  TInput = unknown,
+  TTrueOutput = unknown,
+  TFalseOutput = unknown,
+> {
   condition(input: TInput): boolean | Promise<boolean>;
   onTrue: ComposedTool<TInput, TTrueOutput>;
   onFalse: ComposedTool<TInput, TFalseOutput>;
@@ -40,7 +46,9 @@ export interface ComposeToolConfig<TOutput = unknown> {
   transformResult?: (result: unknown) => TOutput;
 }
 
-function isConditionalStep(step: ComposedStep): step is ConditionalConfig<unknown, unknown, unknown> {
+function isConditionalStep(
+  step: ComposedStep
+): step is ConditionalConfig<unknown, unknown, unknown> {
   return !Array.isArray(step) && 'condition' in step;
 }
 
@@ -50,10 +58,6 @@ function calculateRetryDelay(
   backoff: RetryBackoffStrategy
 ): number {
   return backoff === 'exponential' ? delay * Math.pow(2, attempt - 1) : delay * attempt;
-}
-
-function toError(error: unknown): Error {
-  return error instanceof Error ? error : new Error(String(error));
 }
 
 /**
@@ -159,24 +163,13 @@ export function retry<TInput = unknown, TOutput = unknown>(
   return {
     name: `retry(${tool.name})`,
     description: `${tool.description} (with retry)`,
-    invoke: async (input: TInput) => {
-      let lastError: Error = new Error(`Tool ${tool.name} failed without an explicit error`);
-
-      for (let attempt = 1; attempt <= maxAttempts; attempt++) {
-        try {
-          return await tool.invoke(input);
-        } catch (error) {
-          lastError = toError(error);
-
-          if (attempt < maxAttempts) {
-            const waitTime = calculateRetryDelay(attempt, delay, backoff);
-            await new Promise((resolve) => setTimeout(resolve, waitTime));
-          }
-        }
-      }
-
-      throw lastError;
-    },
+    invoke: async (input: TInput) =>
+      executeWithRetries(
+        () => tool.invoke(input),
+        maxAttempts,
+        (attempt) => calculateRetryDelay(attempt, delay, backoff),
+        () => true
+      ),
   };
 }
 
@@ -190,23 +183,12 @@ export function timeout<TInput = unknown, TOutput = unknown>(
   return {
     name: `timeout(${tool.name})`,
     description: `${tool.description} (with ${ms}ms timeout)`,
-    invoke: async (input: TInput): Promise<TOutput> => {
-      let timer: ReturnType<typeof setTimeout> | undefined;
-
-      const timeoutPromise = new Promise<never>((_, reject) => {
-        timer = setTimeout(() => {
-          reject(new Error(`Tool ${tool.name} timed out after ${ms}ms`));
-        }, ms);
-      });
-
-      try {
-        return await Promise.race([tool.invoke(input), timeoutPromise]);
-      } finally {
-        if (timer !== undefined) {
-          clearTimeout(timer);
-        }
-      }
-    },
+    invoke: async (input: TInput): Promise<TOutput> =>
+      executeWithTimeout(
+        () => tool.invoke(input),
+        ms,
+        () => new Error(`Tool ${tool.name} timed out after ${ms}ms`)
+      ),
   };
 }
 
