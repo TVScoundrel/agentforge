@@ -5,6 +5,28 @@ All notable changes to AgentForge will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.18.8] - 2026-09-28
+
+### Changed
+
+#### @agentforge/core - Concentrated Tool Execution Resilience
+- Centralized repeated Tool execution attempts, supplied retry delays and decisions, thrown-value normalization, timeout races, and timer cleanup in one private resilience module.
+- Preserved composed Tool and Tool Executor validation, backoff and filtering policies, method resolution, warnings, callbacks, metrics, error identity and wording, nesting semantics, non-cancelling timeouts, and exact-deadline ordering.
+- Added public characterization coverage for retry outcomes, invocation counts, backoff and capping, filtering, validation, error normalization, timeout cleanup, late completion, complete retry-sequence deadlines, adapter nesting, and deadline ties.
+
+### Validation
+- `pnpm release:validate` passed with 249 test files passed, 2 skipped, 2,986 tests passed, and 23 skipped.
+- Skips are intentional opt-in coverage for the Neo4j integration service and web-search performance tests; enable them with a running Neo4j service and `RUN_INTEGRATION_TESTS=true`, or `RUN_WEB_PERFORMANCE_TESTS=true` plus network access, respectively.
+
+### Published
+- All packages published to npm registry at version 0.18.8:
+  - @agentforge/core@0.18.8
+  - @agentforge/skills@0.18.8
+  - @agentforge/patterns@0.18.8
+  - @agentforge/tools@0.18.8
+  - @agentforge/testing@0.18.8
+  - @agentforge/cli@0.18.8
+
 ## [0.18.7] - 2026-09-24
 
 ### Changed
