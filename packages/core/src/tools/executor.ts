@@ -10,7 +10,7 @@ import {
   resetExecutionMetrics,
   snapshotExecutionMetrics,
 } from './executor-metrics.js';
-import { executeWithRetry, toError } from './executor-retry.js';
+import { executeWithRetry, executeWithTimeout, toError } from './executor-retry.js';
 import {
   PRIORITY_ORDER,
   type ExecutableTool,
@@ -57,17 +57,14 @@ export function createToolExecutor(config: ToolExecutorConfig = {}) {
     priority: Priority
   ): Promise<unknown> {
     const startTime = Date.now();
-    let timeoutId: ReturnType<typeof setTimeout> | undefined;
 
     try {
       onExecutionStart?.(tool, input);
 
-      const result = await Promise.race([
-        executeWithRetry(tool, input, retryPolicy, logger),
-        new Promise((_, reject) => {
-          timeoutId = setTimeout(() => reject(new Error('Tool execution timeout')), timeout);
-        }),
-      ]);
+      const result = await executeWithTimeout(
+        () => executeWithRetry(tool, input, retryPolicy, logger),
+        timeout
+      );
 
       const duration = Date.now() - startTime;
       recordExecutionResult(metrics, priority, duration, true);
@@ -81,10 +78,6 @@ export function createToolExecutor(config: ToolExecutorConfig = {}) {
       recordExecutionResult(metrics, priority, duration, false);
       onExecutionError?.(tool, input, normalizedError, duration);
       throw normalizedError;
-    } finally {
-      if (timeoutId) {
-        clearTimeout(timeoutId);
-      }
     }
   }
 

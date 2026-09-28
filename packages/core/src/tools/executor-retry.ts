@@ -1,4 +1,9 @@
 import type { ExecutableTool, RetryPolicy } from './executor-types.js';
+import {
+  executeWithRetries,
+  executeWithTimeout as executeWithSharedTimeout,
+  normalizeThrownValue,
+} from './execution-resilience.js';
 
 type WarnLogger = {
   warn: (message: string) => void;
@@ -25,11 +30,7 @@ function calculateBackoff(attempt: number, policy: RetryPolicy): number {
 }
 
 export function toError(error: unknown): Error {
-  if (error instanceof Error) {
-    return error;
-  }
-
-  return new Error(String(error));
+  return normalizeThrownValue(error);
 }
 
 function resolveExecutionMethod(tool: ExecutableTool, logger: WarnLogger) {
@@ -72,29 +73,24 @@ export async function executeWithRetry(
     );
   }
 
-  let lastError: Error | undefined;
-  for (let attempt = 1; attempt <= policy.maxAttempts; attempt++) {
-    try {
-      return await executeFn.call(tool, input);
-    } catch (error) {
-      const currentError = toError(error);
-      lastError = currentError;
+  return executeWithRetries(
+    () => executeFn.call(tool, input),
+    policy.maxAttempts,
+    (attempt) => calculateBackoff(attempt, policy),
+    (error) =>
+      !policy.retryableErrors?.length ||
+      policy.retryableErrors.some((message) => error.message.includes(message))
+  );
+}
 
-      if (policy.retryableErrors && policy.retryableErrors.length > 0) {
-        const isRetryable = policy.retryableErrors.some((message) =>
-          currentError.message.includes(message)
-        );
-        if (!isRetryable) {
-          throw currentError;
-        }
-      }
-
-      if (attempt < policy.maxAttempts) {
-        const delay = calculateBackoff(attempt, policy);
-        await new Promise((resolve) => setTimeout(resolve, delay));
-      }
-    }
-  }
-
-  throw lastError ?? new Error('Tool execution failed after retries');
+export async function executeWithTimeout<T>(
+  execute: () => Promise<T>,
+  timeout: number
+): Promise<T> {
+  return executeWithSharedTimeout(
+    execute,
+    timeout,
+    () => new Error('Tool execution timeout'),
+    'execution-first'
+  );
 }
