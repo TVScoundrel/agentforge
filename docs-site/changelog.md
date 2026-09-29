@@ -5,6 +5,28 @@ All notable changes to AgentForge will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.18.9] - 2026-09-29
+
+### Changed
+
+#### @agentforge/core - Concentrated Workflow Node Registration
+- Centralized shared graph construction, unique-name validation, LangGraph node-action adaptation, and ordered node registration in one private workflow module.
+- Preserved sequential, fluent sequential, and parallel builder interfaces, validation and error behavior, node and edge ordering, fan-out and fan-in semantics, aggregate handling, options, and schema-derived type inference.
+- Added public runtime and compile-time characterization coverage for the preserved workflow-builder contracts.
+
+### Validation
+- `pnpm release:validate` passed with 249 test files passed, 2 skipped, 2,994 tests passed, and 23 skipped.
+- Skips are intentional opt-in coverage for the Neo4j integration service, PostgreSQL connection tests, and web-search performance tests; enable them with a running Neo4j service and `RUN_INTEGRATION_TESTS=true`, `POSTGRES_CONNECTION_STRING`, or `RUN_WEB_PERFORMANCE_TESTS=true` plus network access, respectively.
+
+### Published
+- All packages published to npm registry at version 0.18.9:
+  - @agentforge/core@0.18.9
+  - @agentforge/skills@0.18.9
+  - @agentforge/patterns@0.18.9
+  - @agentforge/tools@0.18.9
+  - @agentforge/testing@0.18.9
+  - @agentforge/cli@0.18.9
+
 ## [0.18.8] - 2026-09-28
 
 ### Changed
