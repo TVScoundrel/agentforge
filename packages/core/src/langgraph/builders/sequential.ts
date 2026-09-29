@@ -8,8 +8,9 @@
  * @module langgraph/builders/sequential
  */
 
-import { StateGraph, END, START } from '@langchain/langgraph';
-import type { AnnotationRoot, StateDefinition, UpdateType } from '@langchain/langgraph';
+import { END, START } from '@langchain/langgraph';
+import type { AnnotationRoot, StateDefinition, StateGraph, UpdateType } from '@langchain/langgraph';
+import { createRegisteredWorkflowGraph } from './workflow-node-registration.js';
 
 type SequentialWorkflowState<SD extends StateDefinition> = AnnotationRoot<SD>['State'];
 type SequentialNodeResult<State> = Partial<State>;
@@ -81,17 +82,14 @@ export interface SequentialWorkflowOptions {
  * @param options - Optional configuration
  * @returns A configured StateGraph ready to compile
  */
-export function createSequentialWorkflow<
-  SD extends StateDefinition,
-  Update extends UpdateType<SD>
->(
+export function createSequentialWorkflow<SD extends StateDefinition, Update extends UpdateType<SD>>(
   stateSchema: AnnotationRoot<SD>,
   nodes: SequentialNode<SequentialWorkflowState<SD>, Update>[],
   options?: SequentialWorkflowOptions
 ): SequentialWorkflowGraph<SD, SequentialWorkflowState<SD>, Update>;
 export function createSequentialWorkflow<
   SD extends StateDefinition = StateDefinition,
-  Update extends UpdateType<SD> = UpdateType<SD>
+  Update extends UpdateType<SD> = UpdateType<SD>,
 >(
   stateSchema: AnnotationRoot<SD>,
   nodes: SequentialNode<SequentialWorkflowState<SD>, Update>[],
@@ -103,34 +101,12 @@ export function createSequentialWorkflow<
     throw new Error('Sequential workflow must have at least one node');
   }
 
-  // Validate node names are unique
-  const nodeNames = new Set<string>();
-  for (const node of nodes) {
-    if (nodeNames.has(node.name)) {
-      throw new Error(`Duplicate node name: ${node.name}`);
-    }
-    nodeNames.add(node.name);
-  }
-
-  // Create the graph
-  let graph: StateGraph<AnnotationRoot<SD>, SequentialWorkflowState<SD>, Update, string>;
-  try {
-    graph = new StateGraph<AnnotationRoot<SD>, SequentialWorkflowState<SD>, Update, string>(
-      stateSchema
-    );
-  } catch (error) {
-    throw new Error('Sequential workflow requires a LangGraph Annotation.Root schema', {
-      cause: error,
-    });
-  }
-  type GraphNodeAction = Parameters<typeof graph.addNode>[1];
-
-  // Add all nodes
-  for (const { name: nodeName, node } of nodes) {
-    // LangGraph's addNode() overloads widen update objects internally. Keep that
-    // interop localized here rather than weakening the public workflow types.
-    graph.addNode(nodeName, node as unknown as GraphNodeAction);
-  }
+  const graph = createRegisteredWorkflowGraph<SD, Update>(stateSchema, nodes, {
+    translateGraphConstructionError: (error) =>
+      new Error('Sequential workflow requires a LangGraph Annotation.Root schema', {
+        cause: error,
+      }),
+  });
 
   // Chain nodes together with edges
   if (autoStartEnd) {
@@ -172,10 +148,8 @@ export function createSequentialWorkflow<
  */
 export function sequentialBuilder<
   SD extends StateDefinition = StateDefinition,
-  Update extends UpdateType<SD> = UpdateType<SD>
->(
-  stateSchema: AnnotationRoot<SD>
-) {
+  Update extends UpdateType<SD> = UpdateType<SD>,
+>(stateSchema: AnnotationRoot<SD>) {
   type State = SequentialWorkflowState<SD>;
   const nodes: SequentialNode<State, Update>[] = [];
   let options: SequentialWorkflowOptions = {};
@@ -184,11 +158,7 @@ export function sequentialBuilder<
     /**
      * Add a node to the sequential workflow
      */
-    addNode(
-      name: string,
-      node: (state: State) => Update | Promise<Update>,
-      description?: string
-    ) {
+    addNode(name: string, node: (state: State) => Update | Promise<Update>, description?: string) {
       nodes.push({ name, node, description });
       return this;
     },

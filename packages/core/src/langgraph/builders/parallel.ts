@@ -7,8 +7,9 @@
  * @module langgraph/builders/parallel
  */
 
-import { StateGraph, END, START } from '@langchain/langgraph';
-import type { AnnotationRoot, StateDefinition, UpdateType } from '@langchain/langgraph';
+import { END, START } from '@langchain/langgraph';
+import type { AnnotationRoot, StateDefinition, StateGraph, UpdateType } from '@langchain/langgraph';
+import { createRegisteredWorkflowGraph } from './workflow-node-registration.js';
 
 type ParallelWorkflowState<SD extends StateDefinition> = AnnotationRoot<SD>['State'];
 type ParallelNodeResult<State> = Partial<State>;
@@ -115,7 +116,7 @@ export interface ParallelWorkflowConfig<State, Update = ParallelNodeResult<State
  */
 export function createParallelWorkflow<
   SD extends StateDefinition = StateDefinition,
-  Update extends UpdateType<SD> = UpdateType<SD>
+  Update extends UpdateType<SD> = UpdateType<SD>,
 >(
   stateSchema: AnnotationRoot<SD>,
   config: ParallelWorkflowConfig<ParallelWorkflowState<SD>, Update>,
@@ -128,34 +129,10 @@ export function createParallelWorkflow<
     throw new Error('Parallel workflow must have at least one parallel node');
   }
 
-  // Validate node names are unique
-  const nodeNames = new Set<string>();
-  for (const node of parallel) {
-    if (nodeNames.has(node.name)) {
-      throw new Error(`Duplicate node name: ${node.name}`);
-    }
-    nodeNames.add(node.name);
-  }
-
-  if (aggregate && nodeNames.has(aggregate.name)) {
-    throw new Error(`Duplicate node name: ${aggregate.name}`);
-  }
-
-  // Create the graph
-  const graph = new StateGraph<AnnotationRoot<SD>, ParallelWorkflowState<SD>, Update, string>(stateSchema);
-  type GraphNodeAction = Parameters<typeof graph.addNode>[1];
-
-  // Add all parallel nodes
-  for (const { name: nodeName, node } of parallel) {
-    // LangGraph's addNode() overloads widen update objects internally. Keep that
-    // interop localized here rather than weakening the public workflow types.
-    graph.addNode(nodeName, node as unknown as GraphNodeAction);
-  }
-
-  // Add aggregation node if provided
-  if (aggregate) {
-    graph.addNode(aggregate.name, aggregate.node as unknown as GraphNodeAction);
-  }
+  const graph = createRegisteredWorkflowGraph<SD, Update>(
+    stateSchema,
+    aggregate ? [...parallel, aggregate] : parallel
+  );
 
   // Connect START to all parallel nodes (fan-out)
   if (autoStartEnd) {

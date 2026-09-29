@@ -5,6 +5,19 @@ import {
   sequentialBuilder,
 } from '../../../src/langgraph/builders/sequential';
 
+function expectExactError(action: () => unknown, message: string): void {
+  let thrown: unknown;
+
+  try {
+    action();
+  } catch (error) {
+    thrown = error;
+  }
+
+  expect(thrown).toBeInstanceOf(Error);
+  expect((thrown as Error).message).toBe(message);
+}
+
 describe('Sequential Workflow Builder', () => {
   // Define a simple state for testing
   const TestState = Annotation.Root({
@@ -19,23 +32,20 @@ describe('Sequential Workflow Builder', () => {
   });
   describe('createSequentialWorkflow', () => {
     it('should create a sequential workflow with multiple nodes', async () => {
-      const workflow = createSequentialWorkflow(
-        TestState,
-        [
-          {
-            name: 'step1',
-            node: (_state) => ({ messages: ['step1'], count: 1 }),
-          },
-          {
-            name: 'step2',
-            node: (_state) => ({ messages: ['step2'], count: 1 }),
-          },
-          {
-            name: 'step3',
-            node: (_state) => ({ messages: ['step3'], count: 1 }),
-          },
-        ]
-      );
+      const workflow = createSequentialWorkflow(TestState, [
+        {
+          name: 'step1',
+          node: (_state) => ({ messages: ['step1'], count: 1 }),
+        },
+        {
+          name: 'step2',
+          node: (_state) => ({ messages: ['step2'], count: 1 }),
+        },
+        {
+          name: 'step3',
+          node: (_state) => ({ messages: ['step3'], count: 1 }),
+        },
+      ]);
 
       const app = workflow.compile();
       const result = await app.invoke({
@@ -48,25 +58,22 @@ describe('Sequential Workflow Builder', () => {
     });
 
     it('should handle async nodes', async () => {
-      const workflow = createSequentialWorkflow(
-        TestState,
-        [
-          {
-            name: 'async1',
-            node: async (_state) => {
-              await new Promise((resolve) => setTimeout(resolve, 10));
-              return { messages: ['async1'], count: 1 };
-            },
+      const workflow = createSequentialWorkflow(TestState, [
+        {
+          name: 'async1',
+          node: async (_state) => {
+            await new Promise((resolve) => setTimeout(resolve, 10));
+            return { messages: ['async1'], count: 1 };
           },
-          {
-            name: 'async2',
-            node: async (_state) => {
-              await new Promise((resolve) => setTimeout(resolve, 10));
-              return { messages: ['async2'], count: 1 };
-            },
+        },
+        {
+          name: 'async2',
+          node: async (_state) => {
+            await new Promise((resolve) => setTimeout(resolve, 10));
+            return { messages: ['async2'], count: 1 };
           },
-        ]
-      );
+        },
+      ]);
 
       const app = workflow.compile();
       const result = await app.invoke({
@@ -79,18 +86,39 @@ describe('Sequential Workflow Builder', () => {
     });
 
     it('should throw error for empty node list', () => {
-      expect(() => {
-        createSequentialWorkflow(TestState, []);
-      }).toThrow('Sequential workflow must have at least one node');
+      expectExactError(
+        () => createSequentialWorkflow(TestState, []),
+        'Sequential workflow must have at least one node'
+      );
+    });
+
+    it('should reject an empty workflow before constructing the graph', () => {
+      expectExactError(
+        () => createSequentialWorkflow({ spec: {} } as never, []),
+        'Sequential workflow must have at least one node'
+      );
     });
 
     it('should throw error for duplicate node names', () => {
-      expect(() => {
-        createSequentialWorkflow(TestState, [
-          { name: 'duplicate', node: (state) => state },
-          { name: 'duplicate', node: (state) => state },
-        ]);
-      }).toThrow('Duplicate node name: duplicate');
+      expectExactError(
+        () =>
+          createSequentialWorkflow(TestState, [
+            { name: 'duplicate', node: (state) => state },
+            { name: 'duplicate', node: (state) => state },
+          ]),
+        'Duplicate node name: duplicate'
+      );
+    });
+
+    it('should reject duplicate names before constructing the graph', () => {
+      expectExactError(
+        () =>
+          createSequentialWorkflow({ spec: {} } as never, [
+            { name: 'duplicate', node: (state) => state },
+            { name: 'duplicate', node: (state) => state },
+          ]),
+        'Duplicate node name: duplicate'
+      );
     });
 
     it('should respect autoStartEnd option', async () => {
@@ -116,17 +144,14 @@ describe('Sequential Workflow Builder', () => {
     });
 
     it('should derive state typing from the provided schema', async () => {
-      const workflow = createSequentialWorkflow(
-        TestState,
-        [
-          {
-            name: 'typed',
-            node: (state) => ({
-              messages: [`count:${state.count}`],
-            }),
-          },
-        ]
-      );
+      const workflow = createSequentialWorkflow(TestState, [
+        {
+          name: 'typed',
+          node: (state) => ({
+            messages: [`count:${state.count}`],
+          }),
+        },
+      ]);
 
       const app = workflow.compile();
       const result = await app.invoke({
@@ -139,54 +164,54 @@ describe('Sequential Workflow Builder', () => {
     });
 
     it('should reject non-annotation schemas at runtime', () => {
-      expect(() => {
-        createSequentialWorkflow({ State: { messages: [], count: 0 } } as never, [
-          {
-            name: 'invalid',
-            node: () => ({ messages: ['invalid'], count: 1 }),
-          },
-        ]);
-      }).toThrow('Sequential workflow requires a LangGraph Annotation.Root schema');
+      expectExactError(
+        () =>
+          createSequentialWorkflow({ State: { messages: [], count: 0 } } as never, [
+            {
+              name: 'invalid',
+              node: () => ({ messages: ['invalid'], count: 1 }),
+            },
+          ]),
+        'Sequential workflow requires a LangGraph Annotation.Root schema'
+      );
     });
 
     it('should reject schema-like objects with invalid spec payloads', () => {
-      expect(() => {
-        createSequentialWorkflow({ spec: {} } as never, [
-          {
-            name: 'invalid',
-            node: () => ({ messages: ['invalid'], count: 1 }),
-          },
-        ]);
-      }).toThrow('Sequential workflow requires a LangGraph Annotation.Root schema');
+      expectExactError(
+        () =>
+          createSequentialWorkflow({ spec: {} } as never, [
+            {
+              name: 'invalid',
+              node: () => ({ messages: ['invalid'], count: 1 }),
+            },
+          ]),
+        'Sequential workflow requires a LangGraph Annotation.Root schema'
+      );
     });
 
     it('should wire sequential edges when autoStartEnd is enabled', () => {
-      const workflow = createSequentialWorkflow(
-        TestState,
-        [
-          {
-            name: 'first',
-            node: (_state) => ({ messages: ['first'], count: 1 }),
-          },
-          {
-            name: 'second',
-            node: (_state) => ({ messages: ['second'], count: 1 }),
-          },
-          {
-            name: 'third',
-            node: (_state) => ({ messages: ['third'], count: 1 }),
-          },
-        ]
-      );
+      const workflow = createSequentialWorkflow(TestState, [
+        {
+          name: 'first',
+          node: (_state) => ({ messages: ['first'], count: 1 }),
+        },
+        {
+          name: 'second',
+          node: (_state) => ({ messages: ['second'], count: 1 }),
+        },
+        {
+          name: 'third',
+          node: (_state) => ({ messages: ['third'], count: 1 }),
+        },
+      ]);
 
-      expect(workflow.edges).toEqual(
-        new Set([
-          [START, 'first'],
-          ['first', 'second'],
-          ['second', 'third'],
-          ['third', END],
-        ])
-      );
+      expect(Object.keys(workflow.nodes)).toEqual(['first', 'second', 'third']);
+      expect([...workflow.edges]).toEqual([
+        [START, 'first'],
+        ['first', 'second'],
+        ['second', 'third'],
+        ['third', END],
+      ]);
     });
 
     it('should omit START and END edges when autoStartEnd is disabled', () => {
