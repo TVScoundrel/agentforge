@@ -1,6 +1,6 @@
 ---
 name: dispatch-implementation-frontier
-description: "Create one real worktree-backed Codex task per unassigned, unblocked GitHub implementation ticket and invoke $implement in each."
+description: "Create one real worktree-backed Codex task per unassigned, unblocked GitHub implementation ticket, bootstrap its repository-local skills, and invoke $implement."
 disable-model-invocation: true
 ---
 
@@ -27,9 +27,9 @@ This step is complete when every candidate ticket has been accounted for as fron
 
 ## 2. Resolve the project
 
-Find the saved Codex project whose path matches the current repository. Confirm that it is a Git repository and select a managed worktree environment starting from the project's default branch.
+Find the saved Codex project whose path matches the current repository. Confirm that it is a Git repository and select a managed worktree environment starting from the project's default branch. Record the canonical project checkout's absolute path as the source of the repository-local `.agents` bundle.
 
-This step is complete when one project is resolved without guessing.
+This step is complete when one project and one readable `.agents` source directory are resolved without guessing.
 
 ## 3. Create real tasks
 
@@ -39,11 +39,15 @@ Immediately before dispatching each ticket, refresh its state, labels, assignees
 
 Give each task its own managed Git worktree. Its initial prompt must:
 
-- explicitly invoke the available `$implement` skill for the derived ticket number;
+- first copy the canonical checkout's `.agents` contents into the task worktree's `.agents` directory, naming the resolved absolute source path in the prompt, and confirm that `.agents/skills/implement/SKILL.md` exists;
+- then explicitly invoke `$implement` for the derived ticket number by loading and following the copied `.agents/skills/implement/SKILL.md`, resolving every repository-local skill it invokes from the same copied bundle;
 - require reading the ticket, parent spec, comments, repository instructions, domain glossary, and relevant ADRs;
 - require delivery through the repository's normal ticket workflow, including the ticket-referencing pull request when repository instructions require one;
+- keep bootstrap-only `.agents` differences out of the ticket's commits and pull request unless the ticket itself changes those files;
 - keep blocked follow-up tickets and unrelated changes out of scope; and
 - allow subagents when useful.
+
+Treat failure to copy or confirm the skill bundle as a blocker: the task reports the failure without claiming or implementing the ticket.
 
 Do not restate `$implement`'s internal workflow. The invoked skill is the source of truth.
 
@@ -59,6 +63,6 @@ Report the one-to-one ticket-to-task mapping and confirm that every task:
 
 - is a real Codex task;
 - has a dedicated managed worktree; and
-- received an explicit `$implement` invocation.
+- received the `.agents` bootstrap and an explicit `$implement` invocation.
 
 Emit the app's created-task directive for every ready or queued task so the user can open it.
