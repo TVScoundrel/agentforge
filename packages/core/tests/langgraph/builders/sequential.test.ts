@@ -81,7 +81,7 @@ describe('Sequential Workflow Builder', () => {
     it('should throw error for empty node list', () => {
       expect(() => {
         createSequentialWorkflow(TestState, []);
-      }).toThrow('Sequential workflow must have at least one node');
+      }).toThrow(/^Sequential workflow must have at least one node$/);
     });
 
     it('should throw error for duplicate node names', () => {
@@ -90,7 +90,16 @@ describe('Sequential Workflow Builder', () => {
           { name: 'duplicate', node: (state) => state },
           { name: 'duplicate', node: (state) => state },
         ]);
-      }).toThrow('Duplicate node name: duplicate');
+      }).toThrow(/^Duplicate node name: duplicate$/);
+    });
+
+    it('should reject duplicate names before constructing the graph', () => {
+      expect(() => {
+        createSequentialWorkflow({ spec: {} } as never, [
+          { name: 'duplicate', node: (state) => state },
+          { name: 'duplicate', node: (state) => state },
+        ]);
+      }).toThrow(/^Duplicate node name: duplicate$/);
     });
 
     it('should respect autoStartEnd option', async () => {
@@ -179,14 +188,13 @@ describe('Sequential Workflow Builder', () => {
         ]
       );
 
-      expect(workflow.edges).toEqual(
-        new Set([
-          [START, 'first'],
-          ['first', 'second'],
-          ['second', 'third'],
-          ['third', END],
-        ])
-      );
+      expect(Array.from(workflow.edges)).toEqual([
+        [START, 'first'],
+        ['first', 'second'],
+        ['second', 'third'],
+        ['third', END],
+      ]);
+      expect(Object.keys(workflow.nodes)).toEqual(['first', 'second', 'third']);
     });
 
     it('should omit START and END edges when autoStartEnd is disabled', () => {
@@ -205,7 +213,7 @@ describe('Sequential Workflow Builder', () => {
         { autoStartEnd: false }
       );
 
-      expect(workflow.edges).toEqual(new Set([['first', 'second']]));
+      expect(Array.from(workflow.edges)).toEqual([['first', 'second']]);
     });
   });
 

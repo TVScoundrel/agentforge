@@ -8,8 +8,9 @@
  * @module langgraph/builders/sequential
  */
 
-import { StateGraph, END, START } from '@langchain/langgraph';
-import type { AnnotationRoot, StateDefinition, UpdateType } from '@langchain/langgraph';
+import { END, START } from '@langchain/langgraph';
+import type { AnnotationRoot, StateDefinition, StateGraph, UpdateType } from '@langchain/langgraph';
+import { createRegisteredWorkflowGraph } from './node-registration.js';
 
 type SequentialWorkflowState<SD extends StateDefinition> = AnnotationRoot<SD>['State'];
 type SequentialNodeResult<State> = Partial<State>;
@@ -103,34 +104,13 @@ export function createSequentialWorkflow<
     throw new Error('Sequential workflow must have at least one node');
   }
 
-  // Validate node names are unique
-  const nodeNames = new Set<string>();
-  for (const node of nodes) {
-    if (nodeNames.has(node.name)) {
-      throw new Error(`Duplicate node name: ${node.name}`);
-    }
-    nodeNames.add(node.name);
-  }
-
-  // Create the graph
-  let graph: StateGraph<AnnotationRoot<SD>, SequentialWorkflowState<SD>, Update, string>;
-  try {
-    graph = new StateGraph<AnnotationRoot<SD>, SequentialWorkflowState<SD>, Update, string>(
-      stateSchema
-    );
-  } catch (error) {
-    throw new Error('Sequential workflow requires a LangGraph Annotation.Root schema', {
-      cause: error,
-    });
-  }
-  type GraphNodeAction = Parameters<typeof graph.addNode>[1];
-
-  // Add all nodes
-  for (const { name: nodeName, node } of nodes) {
-    // LangGraph's addNode() overloads widen update objects internally. Keep that
-    // interop localized here rather than weakening the public workflow types.
-    graph.addNode(nodeName, node as unknown as GraphNodeAction);
-  }
+  const graph = createRegisteredWorkflowGraph<SD, Update>(stateSchema, nodes, {
+    onGraphConstructionError: (error) => {
+      throw new Error('Sequential workflow requires a LangGraph Annotation.Root schema', {
+        cause: error,
+      });
+    },
+  });
 
   // Chain nodes together with edges
   if (autoStartEnd) {

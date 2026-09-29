@@ -95,7 +95,7 @@ describe('Parallel Workflow Builder', () => {
         createParallelWorkflow(TestState, {
           parallel: [],
         });
-      }).toThrow('Parallel workflow must have at least one parallel node');
+      }).toThrow(/^Parallel workflow must have at least one parallel node$/);
     });
 
     it('should throw error for duplicate node names in parallel nodes', () => {
@@ -106,7 +106,7 @@ describe('Parallel Workflow Builder', () => {
             { name: 'duplicate', node: (state) => state },
           ],
         });
-      }).toThrow('Duplicate node name: duplicate');
+      }).toThrow(/^Duplicate node name: duplicate$/);
     });
 
     it('should throw error if aggregate node name conflicts with parallel node', () => {
@@ -121,7 +121,37 @@ describe('Parallel Workflow Builder', () => {
             node: (state) => state,
           },
         });
-      }).toThrow('Duplicate node name: task1');
+      }).toThrow(/^Duplicate node name: task1$/);
+    });
+
+    it('should reject duplicate names before constructing the graph', () => {
+      expect(() => {
+        createParallelWorkflow({ spec: {} } as never, {
+          parallel: [
+            { name: 'duplicate', node: (state) => state },
+            { name: 'duplicate', node: (state) => state },
+          ],
+        });
+      }).toThrow(/^Duplicate node name: duplicate$/);
+    });
+
+    it('should reject aggregate conflicts before constructing the graph', () => {
+      expect(() => {
+        createParallelWorkflow({ spec: {} } as never, {
+          parallel: [{ name: 'duplicate', node: (state) => state }],
+          aggregate: { name: 'duplicate', node: (state) => state },
+        });
+      }).toThrow(/^Duplicate node name: duplicate$/);
+    });
+
+    it('should preserve the underlying invalid-schema error', () => {
+      expect(() => {
+        createParallelWorkflow({ spec: {} } as never, {
+          parallel: [{ name: 'task', node: (state) => state }],
+        });
+      }).toThrow(
+        /^Invalid StateGraph input\. Make sure to pass a valid StateDefinition, Annotation\.Root, or Zod schema\.$/
+      );
     });
 
     it('should wire fan-out and fan-in edges when autoStartEnd is enabled', () => {
@@ -142,15 +172,14 @@ describe('Parallel Workflow Builder', () => {
         },
       });
 
-      expect(workflow.edges).toEqual(
-        new Set([
-          [START, 'task1'],
-          [START, 'task2'],
-          ['task1', 'combine'],
-          ['task2', 'combine'],
-          ['combine', END],
-        ])
-      );
+      expect(Array.from(workflow.edges)).toEqual([
+        [START, 'task1'],
+        [START, 'task2'],
+        ['task1', 'combine'],
+        ['task2', 'combine'],
+        ['combine', END],
+      ]);
+      expect(Object.keys(workflow.nodes)).toEqual(['task1', 'task2', 'combine']);
     });
 
     it('should omit START and END edges when autoStartEnd is disabled', () => {
@@ -175,12 +204,53 @@ describe('Parallel Workflow Builder', () => {
         { autoStartEnd: false }
       );
 
-      expect(workflow.edges).toEqual(
-        new Set([
-          ['task1', 'combine'],
-          ['task2', 'combine'],
-        ])
+      expect(Array.from(workflow.edges)).toEqual([
+        ['task1', 'combine'],
+        ['task2', 'combine'],
+      ]);
+    });
+
+    it('should wire parallel nodes directly to END when no aggregate is provided', () => {
+      const workflow = createParallelWorkflow(
+        TestState,
+        {
+          parallel: [
+            {
+              name: 'task1',
+              node: (_state) => ({ results: ['task1'], count: 1 }),
+              description: 'First parallel task',
+            },
+            {
+              name: 'task2',
+              node: (_state) => ({ results: ['task2'], count: 1 }),
+            },
+          ],
+        },
+        { name: 'compatibility-name' }
       );
+
+      expect(Array.from(workflow.edges)).toEqual([
+        [START, 'task1'],
+        [START, 'task2'],
+        ['task1', END],
+        ['task2', END],
+      ]);
+      expect(Object.keys(workflow.nodes)).toEqual(['task1', 'task2']);
+    });
+
+    it('should add no edges without an aggregate when autoStartEnd is disabled', () => {
+      const workflow = createParallelWorkflow(
+        TestState,
+        {
+          parallel: [
+            { name: 'task1', node: (_state) => ({ results: ['task1'], count: 1 }) },
+            { name: 'task2', node: (_state) => ({ results: ['task2'], count: 1 }) },
+          ],
+        },
+        { autoStartEnd: false }
+      );
+
+      expect(Array.from(workflow.edges)).toEqual([]);
     });
 
     it('should handle parallel nodes with different execution times', async () => {
