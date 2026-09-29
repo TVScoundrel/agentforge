@@ -22,6 +22,9 @@ An adapter that converts text into embeddings using a particular model provider.
 **Model Response Content**:
 The content payload returned by a model invocation before an Agent pattern assigns pattern-specific meaning to it.
 
+**Vector Search**:
+Finding stored records whose vector representations are most similar to a query vector.
+
 ## Agent Skills
 
 **Agent Skill**:
