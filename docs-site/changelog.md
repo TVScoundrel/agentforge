@@ -5,6 +5,28 @@ All notable changes to AgentForge will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.18.10] - 2026-09-30
+
+### Changed
+
+#### @agentforge/tools - Concentrated Neo4j Vector Search Execution
+- Centralized the node Vector Search query, parameters, record formatting, result projection, and count in one private module shared by the direct-vector and text-to-embedding Tools.
+- Preserved each Tool's public interface, defaults, database selection, result and error shapes, metadata, logging, embedding behavior, and session lifecycle.
+- Added public Tool characterization tests for initialization checks, successful searches, query parameters, metadata, error guidance, and session handling.
+
+### Validation
+- `pnpm release:validate` passed with 250 test files passed, 2 skipped, 3,010 tests passed, and 23 skipped.
+- Skips are intentional opt-in coverage for the Neo4j integration service, PostgreSQL connection tests, and web-search performance tests; enable them with a running Neo4j service and `RUN_INTEGRATION_TESTS=true`, `POSTGRES_CONNECTION_STRING`, or `RUN_WEB_PERFORMANCE_TESTS=true` plus network access, respectively.
+
+### Published
+- All packages published to npm registry at version 0.18.10:
+  - @agentforge/core@0.18.10
+  - @agentforge/skills@0.18.10
+  - @agentforge/patterns@0.18.10
+  - @agentforge/tools@0.18.10
+  - @agentforge/testing@0.18.10
+  - @agentforge/cli@0.18.10
+
 ## [0.18.9] - 2026-09-29
 
 ### Changed
