@@ -108,32 +108,37 @@ describe('Neo4j Vector Search Tools', () => {
     expect(getSession).not.toHaveBeenCalled();
   });
 
-  it.each([undefined, 4])('preserves direct Vector Search with limit %s', async (limit) => {
-    const { session, getSession } = arrangeSession();
-    const input = {
-      indexName: 'documents',
-      queryVector: vector,
-      database,
-      ...(limit === undefined ? {} : { limit }),
-    };
-    expect(await createNeo4jVectorSearchTool().invoke(input)).toEqual({
-      success: true,
-      results: expectedResults,
-      count: 2,
-      query: { indexName: 'documents', vectorDimension: 3, limit },
-    });
-    expect(getSession).toHaveBeenCalledWith(database);
-    expectVectorQuery(session, limit);
-    expect(session.close).toHaveBeenCalledOnce();
-  });
+  it.each([undefined, 4])(
+    'preserves schema-parsed direct Vector Search with limit %s',
+    async (limit) => {
+      const { session, getSession } = arrangeSession();
+      const tool = createNeo4jVectorSearchTool();
+      const input = {
+        indexName: 'documents',
+        queryVector: vector,
+        database,
+        ...(limit === undefined ? {} : { limit }),
+      };
+      expect(await tool.invoke(tool.schema.parse(input))).toEqual({
+        success: true,
+        results: expectedResults,
+        count: 2,
+        query: { indexName: 'documents', vectorDimension: 3, limit: limit ?? 10 },
+      });
+      expect(getSession).toHaveBeenCalledWith(database);
+      expectVectorQuery(session, limit ?? 10);
+      expect(session.close).toHaveBeenCalledOnce();
+    }
+  );
 
   it.each([
     [undefined, undefined],
     [4, 'requested-model'],
   ])(
-    'preserves embedding-backed Vector Search with limit %s and model %s',
+    'preserves schema-parsed embedding-backed Vector Search with limit %s and model %s',
     async (limit, model) => {
       const { session, getSession } = arrangeSession();
+      const tool = createNeo4jVectorSearchWithEmbeddingTool();
       vi.spyOn(embeddingManager, 'isInitialized').mockReturnValue(true);
       const generateEmbedding = vi.spyOn(embeddingManager, 'generateEmbedding').mockResolvedValue({
         embedding: vector,
@@ -149,7 +154,7 @@ describe('Neo4j Vector Search Tools', () => {
         database,
         ...(limit === undefined ? {} : { limit }),
       };
-      expect(await createNeo4jVectorSearchWithEmbeddingTool().invoke(input)).toEqual({
+      expect(await tool.invoke(tool.schema.parse(input))).toEqual({
         success: true,
         results: expectedResults,
         count: 2,
@@ -158,14 +163,14 @@ describe('Neo4j Vector Search Tools', () => {
           indexName: 'documents',
           embeddingModel: 'model-used',
           vectorDimension: 3,
-          limit,
+          limit: limit ?? 10,
         },
         embedding: { model: 'model-used', dimensions: 3, usage: { totalTokens: 8 } },
       });
       expect(generateEmbedding).toHaveBeenCalledOnce();
       expect(generateEmbedding).toHaveBeenCalledWith('search text', model);
       expect(getSession).toHaveBeenCalledWith(database);
-      expectVectorQuery(session, limit);
+      expectVectorQuery(session, limit ?? 10);
       expect(session.close).toHaveBeenCalledOnce();
       expect(
         write.mock.calls.some(
