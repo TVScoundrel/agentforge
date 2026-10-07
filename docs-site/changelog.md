@@ -5,6 +5,33 @@ All notable changes to AgentForge will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.18.11] - 2026-10-07
+
+### Changed
+
+#### @agentforge/tools - Concentrated Relational Mutation Execution
+- Centralized driver-result normalization, batch-option resolution, and transaction-bearing execution context in the existing private module shared by INSERT, UPDATE, and DELETE.
+- Preserved public APIs and execution-context import paths, batch defaults, INSERT identifier derivation, optimistic locking, soft deletion, cascade guidance, errors, logging, timing, and session ownership.
+- Added focused shared normalization and batch-option matrices, execution-context type compatibility coverage, and UPDATE/DELETE regression tests.
+
+### Fixed
+
+#### @agentforge/tools - Identifier-Only Mutation Metadata
+- UPDATE and DELETE now report zero affected rows for identifier-only metadata arrays instead of counting the metadata wrapper as one row. Explicit driver counts and INSERT identifier derivation and row-count fallback remain unchanged.
+
+### Validation
+- `pnpm release:validate` passed with 251 test files passed, 2 skipped, 3,057 tests passed, and 23 skipped.
+- Skips are intentional opt-in coverage for the Neo4j integration service, PostgreSQL connection tests, and web-search performance tests; enable them with a running Neo4j service and `RUN_INTEGRATION_TESTS=true`, `POSTGRES_CONNECTION_STRING`, or `RUN_WEB_PERFORMANCE_TESTS=true` plus network access, respectively.
+
+### Published
+- All packages published to npm registry at version 0.18.11:
+  - @agentforge/core@0.18.11
+  - @agentforge/skills@0.18.11
+  - @agentforge/patterns@0.18.11
+  - @agentforge/tools@0.18.11
+  - @agentforge/testing@0.18.11
+  - @agentforge/cli@0.18.11
+
 ## [0.18.10] - 2026-09-30
 
 ### Changed

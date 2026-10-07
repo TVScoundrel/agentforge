@@ -9,7 +9,7 @@
 
 ## Status: Production Ready & Published
 
-**156 tests passing** | **98.11% coverage** | **13 commands** | **4 project templates**
+**194 tests passing** | **98.11% coverage** | **13 commands** | **4 project templates**
 
 ## Installation
 

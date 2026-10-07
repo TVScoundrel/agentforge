@@ -8,7 +8,7 @@
 
 ## Status: Production Ready & Published
 
-**All 4 patterns complete** | **143 tests passing** | **Full TypeScript support** | **Comprehensive documentation**
+**All 4 patterns complete** | **475 tests passing** | **Full TypeScript support** | **Comprehensive documentation**
 
 ## Agent Patterns
 
