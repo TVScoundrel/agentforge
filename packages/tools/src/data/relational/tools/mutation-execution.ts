@@ -66,6 +66,8 @@ export function normalizeExecutionResult(result: unknown): NormalizedExecutionRe
       const lastInsertRowid = toNumber(first.lastInsertRowid);
 
       if (affectedRows !== undefined || insertId !== undefined || lastInsertRowid !== undefined) {
+        // Identifier metadata is not a returned row or evidence of an affected count.
+        // Without a reported count, use zero rather than the metadata array's length.
         return {
           rows: [],
           rowCount: affectedRows ?? 0,
