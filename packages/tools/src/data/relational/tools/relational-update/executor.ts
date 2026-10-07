@@ -3,6 +3,7 @@
  * @module tools/relational-update/executor
  */
 
+import { resolveBatchOptions } from '../mutation-execution.js';
 import type { SqlExecutor } from '../../query/types.js';
 import type {
   RelationalUpdateExecutionInput,
@@ -12,7 +13,6 @@ import type {
 import { getUpdateConstraintViolationMessage, isSafeUpdateValidationError } from './error-utils.js';
 import { executeUpdateInBatchMode } from './executor-batch.js';
 import {
-  resolveBatchOptions,
   toSingleUpdateOperation,
   updateExecutorLogger,
   type UpdateExecutionContext,
