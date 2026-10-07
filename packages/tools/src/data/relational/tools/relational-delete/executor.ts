@@ -3,6 +3,7 @@
  * @module tools/relational-delete/executor
  */
 
+import { resolveBatchOptions } from '../mutation-execution.js';
 import type { SqlExecutor } from '../../query/types.js';
 import type {
   DeleteBatchOperation,
@@ -13,7 +14,6 @@ import { getDeleteConstraintViolationMessage, isSafeDeleteValidationError } from
 import { executeDeleteInBatchMode } from './executor-batch.js';
 import {
   deleteExecutorLogger,
-  resolveBatchOptions,
   toSingleDeleteOperation,
   type DeleteExecutionContext,
 } from './executor-shared.js';

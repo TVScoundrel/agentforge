@@ -1,8 +1,8 @@
+import { normalizeExecutionResult } from '../mutation-execution.js';
 import { buildDeleteQuery } from '../../query/query-builder.js';
 import type { SqlExecutor } from '../../query/types.js';
 import type { DeleteResult, RelationalDeleteExecutionInput } from './types.js';
 import {
-  normalizeAffectedRows,
   type DeleteExecutionContext,
   type SingleDeleteOperation,
 } from './executor-shared.js';
@@ -23,7 +23,7 @@ export async function executeSingleDelete(
 
   const session = context?.transaction ?? executor;
   const rawResult = await session.execute(built.query);
-  const rowCount = normalizeAffectedRows(rawResult);
+  const rowCount = normalizeExecutionResult(rawResult).rowCount;
 
   return {
     rowCount,

@@ -3,6 +3,7 @@
  * @module tools/relational-insert/executor
  */
 
+import { resolveBatchOptions } from '../mutation-execution.js';
 import type { SqlExecutor } from '../../query/types.js';
 import type {
   InsertResult,
@@ -13,7 +14,6 @@ import { getConstraintViolationMessage, isSafeInsertValidationError } from './er
 import { executeInsertInBatchMode } from './executor-batch.js';
 import {
   insertExecutorLogger,
-  resolveBatchOptions,
   type InsertExecutionContext,
 } from './executor-shared.js';
 import { executeInsertOnce } from './executor-single.js';

@@ -1,9 +1,9 @@
+import { normalizeExecutionResult } from '../mutation-execution.js';
 import { buildInsertQuery } from '../../query/query-builder.js';
 import type { SqlExecutor } from '../../query/types.js';
 import type { RelationalInsertExecutionInput, InsertResult } from './types.js';
 import {
   deriveInsertedIds,
-  normalizeExecutionResult,
   toSingleInsertRows,
   type InsertExecutionContext,
 } from './executor-shared.js';

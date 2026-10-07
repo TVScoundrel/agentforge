@@ -1,8 +1,8 @@
+import { normalizeExecutionResult } from '../mutation-execution.js';
 import { buildUpdateQuery } from '../../query/query-builder.js';
 import type { SqlExecutor } from '../../query/types.js';
 import type { RelationalUpdateExecutionInput, UpdateResult } from './types.js';
 import {
-  normalizeAffectedRows,
   type SingleUpdateOperation,
   type UpdateExecutionContext,
 } from './executor-shared.js';
@@ -24,7 +24,7 @@ export async function executeSingleUpdate(
 
   const session = context?.transaction ?? executor;
   const rawResult = await session.execute(built.query);
-  const rowCount = normalizeAffectedRows(rawResult);
+  const rowCount = normalizeExecutionResult(rawResult).rowCount;
 
   if (built.usesOptimisticLock && rowCount === 0) {
     throw new Error('Update failed: optimistic lock check failed.');

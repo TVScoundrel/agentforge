@@ -18,6 +18,19 @@ describe('relational-update > executor > result shaping', () => {
     expect(manager.execute).toHaveBeenCalledOnce();
   });
 
+  it.each([{ insertId: 7 }, { lastInsertRowid: 7 }, { insertId: 0 }])(
+    'does not count identifier-only metadata as an affected row: %j', async (metadata) => {
+      const manager = createMockManager([metadata]);
+      const result = await executeUpdate(manager, {
+        table: 'users',
+        data: { active: true },
+        where: [{ column: 'id', operator: 'eq', value: 7 }],
+        vendor: 'mysql',
+      });
+      expect(result.rowCount).toBe(0);
+    }
+  );
+
   it('should handle object-style result with rowCount property', async () => {
     const manager = createMockManager({ rowCount: 5, rows: [] });
 

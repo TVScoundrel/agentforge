@@ -1,79 +1,18 @@
 import { createLogger } from '@agentforge/core';
-import type { TransactionContext } from '../../query/transaction.js';
-import type {
-  InsertBatchOptions,
-  InsertRow,
-} from './types.js';
+import type { RelationalMutationExecutionContext } from '../mutation-execution.js';
+import type { InsertRow } from './types.js';
 
 export const insertExecutorLogger = createLogger('agentforge:tools:data:relational:insert');
-
-interface NormalizedExecutionResult {
-  rows: unknown[];
-  rowCount: number;
-  insertId?: number;
-  lastInsertRowid?: number;
-}
 
 /**
  * Execution context for INSERT operations.
  *
  * @property transaction - Optional active transaction to execute within
  */
-export interface InsertExecutionContext {
-  transaction?: TransactionContext;
-}
-
-function toNumber(value: unknown): number | undefined {
-  return typeof value === 'number' && Number.isFinite(value) ? value : undefined;
-}
+export type InsertExecutionContext = RelationalMutationExecutionContext;
 
 function isPlainObject(value: unknown): value is Record<string, unknown> {
   return !!value && typeof value === 'object' && !Array.isArray(value);
-}
-
-export function normalizeExecutionResult(result: unknown): NormalizedExecutionResult {
-  if (Array.isArray(result)) {
-    if (result.length > 0 && isPlainObject(result[0])) {
-      const first = result[0];
-      const affectedRows = toNumber(first.affectedRows) ?? toNumber(first.rowCount) ?? toNumber(first.changes);
-      const insertId = toNumber(first.insertId);
-      const lastInsertRowid = toNumber(first.lastInsertRowid);
-
-      if (affectedRows !== undefined || insertId !== undefined || lastInsertRowid !== undefined) {
-        return {
-          rows: [],
-          rowCount: affectedRows ?? 0,
-          insertId,
-          lastInsertRowid,
-        };
-      }
-    }
-
-    return {
-      rows: result,
-      rowCount: result.length,
-    };
-  }
-
-  if (isPlainObject(result)) {
-    const rows = Array.isArray(result.rows) ? result.rows : [];
-    const rowCount = toNumber(result.rowCount)
-      ?? toNumber(result.affectedRows)
-      ?? toNumber(result.changes)
-      ?? rows.length;
-
-    return {
-      rows,
-      rowCount,
-      insertId: toNumber(result.insertId),
-      lastInsertRowid: toNumber(result.lastInsertRowid),
-    };
-  }
-
-  return {
-    rows: [],
-    rowCount: 0,
-  };
 }
 
 export function deriveInsertedIds(options: {
@@ -110,21 +49,6 @@ export function deriveInsertedIds(options: {
   }
 
   return [];
-}
-
-export function resolveBatchOptions(batch: InsertBatchOptions | undefined): Required<InsertBatchOptions> | undefined {
-  if (!batch || batch.enabled === false) {
-    return undefined;
-  }
-
-  return {
-    enabled: batch.enabled ?? true,
-    batchSize: batch.batchSize ?? 100,
-    continueOnError: batch.continueOnError ?? true,
-    maxRetries: batch.maxRetries ?? 0,
-    retryDelayMs: batch.retryDelayMs ?? 0,
-    benchmark: batch.benchmark ?? false,
-  };
 }
 
 export function toSingleInsertRows(row: InsertRow): Array<Record<string, unknown>> {
