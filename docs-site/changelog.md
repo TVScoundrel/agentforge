@@ -5,6 +5,29 @@ All notable changes to AgentForge will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.18.12] - 2026-10-08
+
+### Changed
+
+#### @agentforge/tools - Concentrated Relational Mutation Failure Policy
+- Centralized INSERT, UPDATE, and DELETE executor failure translation, safe or opaque Tool-response message selection, and UPDATE/DELETE batch-failure text in one private module with explicit operation-specific policies.
+- Preserved exact messages, validation Error identity, original causes, constraint matching priority, direct-cause inspection, DELETE safe-prefix exposure and cascade guidance, and non-Error handling.
+- Preserved public APIs, response shapes, logging, timing, INSERT cause metadata, retries, partial-success behavior, transaction participation, and session ownership.
+- Added executor and Tool characterization tests and focused policy coverage for validation allowlists, constraint variants and precedence, wrapped errors, opaque outcomes, and batch failures.
+
+### Validation
+- `pnpm release:validate` passed with 249 test files passed, 2 skipped, 3,176 tests passed, and 23 skipped.
+- Skips are intentional opt-in coverage for the Neo4j integration service (13 tests), PostgreSQL connection tests (4 tests), and web-search performance tests (6 tests); enable them with a running Neo4j service and `RUN_INTEGRATION_TESTS=true`, `POSTGRES_CONNECTION_STRING`, or `RUN_WEB_PERFORMANCE_TESTS=true` plus network access, respectively.
+
+### Published
+- All packages published to npm registry at version 0.18.12:
+  - @agentforge/core@0.18.12
+  - @agentforge/skills@0.18.12
+  - @agentforge/patterns@0.18.12
+  - @agentforge/tools@0.18.12
+  - @agentforge/testing@0.18.12
+  - @agentforge/cli@0.18.12
+
 ## [0.18.11] - 2026-10-07
 
 ### Changed
