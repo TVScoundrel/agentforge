@@ -1,3 +1,4 @@
+import { mutationBatchFailureMessage } from '../mutation-failure-policy.js';
 import {
   benchmarkBatchExecution,
   executeBatchedTask,
@@ -13,7 +14,6 @@ import type {
 import { executeSingleDelete } from './executor-single.js';
 import {
   deleteExecutorLogger,
-  toErrorMessage,
   type DeleteChunkExecutionResult,
   type DeleteExecutionContext,
 } from './executor-shared.js';
@@ -65,7 +65,7 @@ export async function executeDeleteInBatchMode(
               batchIndex,
               batchSize: operations.length,
               attempts: 1,
-              error: toErrorMessage(error),
+              error: mutationBatchFailureMessage(error),
             });
           }
         }

@@ -17,7 +17,7 @@ import type {
   RelationalDeleteInput,
   RelationalDeleteOperationInput,
 } from './types.js';
-import { isSafeDeleteError } from './error-utils.js';
+import { mutationToolFailureMessage } from '../mutation-failure-policy.js';
 import type { RelationalMutationExecution } from '../mutation-execution.js';
 import {
   replaceMutationConnectionFailure,
@@ -28,9 +28,7 @@ export * from './types.js';
 export * from './schemas.js';
 
 function toDeleteErrorResponse(error: unknown): DeleteErrorResponse {
-  const errorMessage = isSafeDeleteError(error)
-    ? error.message
-    : 'Failed to execute DELETE query. Please verify your input and database connection.';
+  const errorMessage = mutationToolFailureMessage('delete', error);
 
   return {
     success: false,
@@ -129,7 +127,7 @@ export const relationalDelete = toolBuilder()
         replaceMutationConnectionFailure(
           await toolSet.delete.invoke(operation),
           DELETE_CONNECTION_FAILURE,
-          'Failed to execute DELETE query. Please verify your input and database connection.'
+          mutationToolFailureMessage('delete', undefined)
         ),
       toDeleteErrorResponse
     );

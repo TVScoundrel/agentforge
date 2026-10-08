@@ -17,7 +17,7 @@ import type {
   RelationalInsertInput,
   RelationalInsertOperationInput,
 } from './types.js';
-import { isSafeInsertError } from './error-utils.js';
+import { mutationToolFailureMessage } from '../mutation-failure-policy.js';
 import type { RelationalMutationExecution } from '../mutation-execution.js';
 import {
   replaceMutationConnectionFailure,
@@ -29,9 +29,7 @@ export * from './types.js';
 export * from './schemas.js';
 
 function toInsertErrorResponse(error: unknown): InsertErrorResponse {
-  const errorMessage = isSafeInsertError(error)
-    ? error.message
-    : 'Failed to execute INSERT query. Please verify your input and database connection.';
+  const errorMessage = mutationToolFailureMessage('insert', error);
 
   return {
     success: false,
@@ -117,7 +115,7 @@ export const relationalInsert = toolBuilder()
         replaceMutationConnectionFailure(
           await toolSet.insert.invoke(operation),
           INSERT_CONNECTION_FAILURE,
-          'Failed to execute INSERT query. Please verify your input and database connection.'
+          mutationToolFailureMessage('insert', undefined)
         ),
       toInsertErrorResponse
     );

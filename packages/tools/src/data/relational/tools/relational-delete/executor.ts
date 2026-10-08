@@ -10,7 +10,7 @@ import type {
   DeleteResult,
   RelationalDeleteExecutionInput,
 } from './types.js';
-import { getDeleteConstraintViolationMessage, isSafeDeleteValidationError } from './error-utils.js';
+import { translateMutationFailure } from '../mutation-failure-policy.js';
 import { executeDeleteInBatchMode } from './executor-batch.js';
 import {
   deleteExecutorLogger,
@@ -83,15 +83,6 @@ export async function executeDelete(
       softDelete: !!input.softDelete,
     });
 
-    const constraintMessage = getDeleteConstraintViolationMessage(error, input.cascade ?? false);
-    if (constraintMessage) {
-      throw new Error(constraintMessage, { cause: error });
-    }
-
-    if (isSafeDeleteValidationError(error)) {
-      throw error;
-    }
-
-    throw new Error('DELETE query failed. See logs for details.', { cause: error });
+    throw translateMutationFailure('delete', error, input.cascade ?? false);
   }
 }

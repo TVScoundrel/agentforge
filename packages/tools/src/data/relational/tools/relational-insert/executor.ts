@@ -10,7 +10,7 @@ import type {
   InsertRow,
   RelationalInsertExecutionInput,
 } from './types.js';
-import { getConstraintViolationMessage, isSafeInsertValidationError } from './error-utils.js';
+import { translateMutationFailure } from '../mutation-failure-policy.js';
 import { executeInsertInBatchMode } from './executor-batch.js';
 import {
   insertExecutorLogger,
@@ -91,15 +91,6 @@ export async function executeInsert(
       executionTime,
     });
 
-    const constraintMessage = getConstraintViolationMessage(error);
-    if (constraintMessage) {
-      throw new Error(constraintMessage, { cause: error });
-    }
-
-    if (isSafeInsertValidationError(error)) {
-      throw error;
-    }
-
-    throw new Error('INSERT query failed. See logs for details.', { cause: error });
+    throw translateMutationFailure('insert', error);
   }
 }

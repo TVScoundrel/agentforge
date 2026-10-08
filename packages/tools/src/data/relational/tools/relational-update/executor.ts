@@ -10,7 +10,7 @@ import type {
   UpdateBatchOperation,
   UpdateResult,
 } from './types.js';
-import { getUpdateConstraintViolationMessage, isSafeUpdateValidationError } from './error-utils.js';
+import { translateMutationFailure } from '../mutation-failure-policy.js';
 import { executeUpdateInBatchMode } from './executor-batch.js';
 import {
   toSingleUpdateOperation,
@@ -78,15 +78,6 @@ export async function executeUpdate(
       executionTime,
     });
 
-    const constraintMessage = getUpdateConstraintViolationMessage(error);
-    if (constraintMessage) {
-      throw new Error(constraintMessage, { cause: error });
-    }
-
-    if (isSafeUpdateValidationError(error)) {
-      throw error;
-    }
-
-    throw new Error('UPDATE query failed. See logs for details.', { cause: error });
+    throw translateMutationFailure('update', error);
   }
 }
