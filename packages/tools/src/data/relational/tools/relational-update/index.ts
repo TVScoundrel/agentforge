@@ -17,7 +17,7 @@ import type {
   UpdateErrorResponse,
   UpdateResponse,
 } from './types.js';
-import { isSafeUpdateError } from './error-utils.js';
+import { mutationToolFailureMessage } from '../mutation-failure-policy.js';
 import type { RelationalMutationExecution } from '../mutation-execution.js';
 import {
   replaceMutationConnectionFailure,
@@ -29,9 +29,7 @@ export * from './types.js';
 export * from './schemas.js';
 
 function toUpdateErrorResponse(error: unknown): UpdateErrorResponse {
-  const errorMessage = isSafeUpdateError(error)
-    ? error.message
-    : 'Failed to execute UPDATE query. Please verify your input and database connection.';
+  const errorMessage = mutationToolFailureMessage('update', error);
 
   return {
     success: false,
@@ -129,7 +127,7 @@ export const relationalUpdate = toolBuilder()
         replaceMutationConnectionFailure(
           await toolSet.update.invoke(operation),
           UPDATE_CONNECTION_FAILURE,
-          'Failed to execute UPDATE query. Please verify your input and database connection.'
+          mutationToolFailureMessage('update', undefined)
         ),
       toUpdateErrorResponse
     );

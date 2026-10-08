@@ -28,10 +28,6 @@ export interface UpdateChunkExecutionResult {
   failures: UpdateBatchMetadata['failures'];
 }
 
-export function toErrorMessage(error: unknown): string {
-  return error instanceof Error ? error.message : String(error);
-}
-
 export function toSingleUpdateOperation(input: RelationalUpdateExecutionInput): SingleUpdateOperation {
   if (!input.data) {
     throw new Error('UPDATE data is required when operations[] is not provided.');

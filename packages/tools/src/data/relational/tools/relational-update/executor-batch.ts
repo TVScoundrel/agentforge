@@ -1,3 +1,4 @@
+import { mutationBatchFailureMessage } from '../mutation-failure-policy.js';
 import { benchmarkBatchExecution, executeBatchedTask } from '../../query/batch-executor.js';
 import type { SqlExecutor } from '../../query/types.js';
 import type {
@@ -9,7 +10,6 @@ import type {
 } from './types.js';
 import { executeSingleUpdate } from './executor-single.js';
 import {
-  toErrorMessage,
   updateExecutorLogger,
   type UpdateChunkExecutionResult,
   type UpdateExecutionContext,
@@ -58,7 +58,7 @@ export async function executeUpdateInBatchMode(
               batchIndex,
               batchSize: operations.length,
               attempts: 1,
-              error: toErrorMessage(error),
+              error: mutationBatchFailureMessage(error),
             });
           }
         }
