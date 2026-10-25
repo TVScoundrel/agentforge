@@ -5,7 +5,7 @@
  */
 
 import { toolBuilder, ToolCategory } from '@agentforge/core';
-import * as cheerio from 'cheerio';
+import { createHtmlDocument } from '../../html-document.js';
 import { htmlParserSchema } from '../types.js';
 
 /**
@@ -30,33 +30,8 @@ export function createHtmlParserTool() {
     .tags(['html', 'parser', 'css', 'selector', 'extract'])
     .schema(htmlParserSchema)
     .implement(async (input) => {
-      const $ = cheerio.load(input.html);
-      const $selected = $(input.selector);
-
-      const results = $selected.map((_, el) => {
-        const $el = $(el);
-        const item: any = {};
-
-        if (input.extractText) {
-          item.text = $el.text().trim();
-        }
-
-        if (input.extractHtml) {
-          item.html = $el.html();
-        }
-
-        if (input.extractAttributes && input.extractAttributes.length > 0) {
-          item.attributes = {};
-          for (const attr of input.extractAttributes) {
-            const value = $el.attr(attr);
-            if (value !== undefined) {
-              item.attributes[attr] = value;
-            }
-          }
-        }
-
-        return item;
-      }).get();
+      // Keep the published permissive result type while extraction stays precisely typed.
+      const results: any[] = createHtmlDocument(input.html).select(input.selector).elements(input);
 
       return {
         count: results.length,

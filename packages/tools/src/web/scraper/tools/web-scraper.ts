@@ -5,7 +5,7 @@
  */
 
 import { toolBuilder, ToolCategory } from '@agentforge/core';
-import * as cheerio from 'cheerio';
+import { createHtmlDocument } from '../../html-document.js';
 import { requestWithDestinationPolicy } from '../../egress-policy.js';
 import type { DestinationPolicy } from '../../egress-policy.js';
 import { webScraperSchema, type ScraperResult } from '../types.js';
@@ -49,89 +49,43 @@ export function createWebScraperTool(
         },
       }, destinationPolicy);
 
-      const html = response.data;
-      const $ = cheerio.load(html);
+      const document = createHtmlDocument(response.data);
 
       const result: ScraperResult = {
         url: response.config.url ?? input.url,
       };
 
       // Apply selector if provided
-      const $selected = input.selector ? $(input.selector) : $('body');
+      const selected = document.select(input.selector || 'body');
 
       // Extract text
       if (input.extractText) {
-        result.text = $selected.text().trim();
+        result.text = selected.text();
       }
 
       // Extract HTML
       if (input.extractHtml) {
-        result.html = $selected.html() || '';
+        result.html = selected.html() || '';
       }
 
       // Extract links
       if (input.extractLinks) {
-        result.links = [];
-        $('a[href]').each((_, el) => {
-          const href = $(el).attr('href');
-          if (href) {
-            // Convert relative URLs to absolute
-            try {
-              const absoluteUrl = new URL(href, input.url).href;
-              result.links!.push(absoluteUrl);
-            } catch {
-              result.links!.push(href);
-            }
-          }
-        });
+        result.links = document.links(input.url).filter(({ href }) => href).map(({ href }) => href);
       }
 
       // Extract images
       if (input.extractImages) {
-        result.images = [];
-        $('img[src]').each((_, el) => {
-          const src = $(el).attr('src');
-          if (src) {
-            // Convert relative URLs to absolute
-            try {
-              const absoluteUrl = new URL(src, input.url).href;
-              result.images!.push(absoluteUrl);
-            } catch {
-              result.images!.push(src);
-            }
-          }
-        });
+        result.images = document.images(input.url).filter(({ src }) => src).map(({ src }) => src);
       }
 
       // Extract metadata
       if (input.extractMetadata) {
-        result.metadata = {};
-        
-        // Title
-        const title = $('title').text() || $('meta[property="og:title"]').attr('content');
-        if (title) result.metadata.title = title;
-
-        // Description
-        const description = $('meta[name="description"]').attr('content') || 
-                           $('meta[property="og:description"]').attr('content');
-        if (description) result.metadata.description = description;
-
-        // Other meta tags
-        $('meta[name], meta[property]').each((_, el) => {
-          const name = $(el).attr('name') || $(el).attr('property');
-          const content = $(el).attr('content');
-          if (name && content) {
-            result.metadata![name] = content;
-          }
-        });
+        result.metadata = document.metadata();
       }
 
       // If selector was provided, return the selected elements
       if (input.selector) {
-        result.selected = $selected.map((_, el) => ({
-          text: $(el).text().trim(),
-          html: $(el).html(),
-        })).get();
+        result.selected = selected.elements({ extractText: true, extractHtml: true });
       }
 
       return result;
