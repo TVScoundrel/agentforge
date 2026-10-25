@@ -5,7 +5,7 @@
  */
 
 import { toolBuilder, ToolCategory } from '@agentforge/core';
-import * as cheerio from 'cheerio';
+import { createHtmlDocument } from '../../html-document.js';
 import { extractImagesSchema } from '../types.js';
 
 /**
@@ -30,30 +30,7 @@ export function createExtractImagesTool() {
     .tags(['html', 'images', 'extract', 'img'])
     .schema(extractImagesSchema)
     .implement(async (input) => {
-      const $ = cheerio.load(input.html);
-      const images: Array<{ src: string; alt?: string; title?: string; width?: string; height?: string }> = [];
-
-      $('img[src]').each((_, el) => {
-        const $el = $(el);
-        let src = $el.attr('src') || '';
-        
-        // Resolve relative URLs if baseUrl is provided
-        if (input.baseUrl && src) {
-          try {
-            src = new URL(src, input.baseUrl).href;
-          } catch {
-            // Keep original src if URL parsing fails
-          }
-        }
-
-        images.push({
-          src,
-          alt: $el.attr('alt'),
-          title: $el.attr('title'),
-          width: $el.attr('width'),
-          height: $el.attr('height'),
-        });
-      });
+      const images: Array<{ src: string; alt?: string; title?: string; width?: string; height?: string }> = createHtmlDocument(input.html).images(input.baseUrl);
 
       return {
         count: images.length,

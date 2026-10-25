@@ -5,7 +5,7 @@
  */
 
 import { toolBuilder, ToolCategory } from '@agentforge/core';
-import * as cheerio from 'cheerio';
+import { createHtmlDocument } from '../../html-document.js';
 import { extractLinksSchema } from '../types.js';
 
 /**
@@ -30,28 +30,7 @@ export function createExtractLinksTool() {
     .tags(['html', 'links', 'extract', 'anchor'])
     .schema(extractLinksSchema)
     .implement(async (input) => {
-      const $ = cheerio.load(input.html);
-      const links: Array<{ text: string; href: string; title?: string }> = [];
-
-      $('a[href]').each((_, el) => {
-        const $el = $(el);
-        let href = $el.attr('href') || '';
-        
-        // Resolve relative URLs if baseUrl is provided
-        if (input.baseUrl && href) {
-          try {
-            href = new URL(href, input.baseUrl).href;
-          } catch {
-            // Keep original href if URL parsing fails
-          }
-        }
-
-        links.push({
-          text: $el.text().trim(),
-          href,
-          title: $el.attr('title'),
-        });
-      });
+      const links: Array<{ text: string; href: string; title?: string }> = createHtmlDocument(input.html).links(input.baseUrl);
 
       return {
         count: links.length,
