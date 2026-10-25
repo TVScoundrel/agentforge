@@ -16,6 +16,9 @@ A catalog of Tools available for lookup, selection, and presentation to agents.
 **Relational Tool Set**:
 A configured collection of relational database Tools that targets one database and owns their shared connection lifecycle and transaction scope.
 
+**Relational Mutation**:
+A database-changing operation performed by a relational Tool, currently INSERT, UPDATE, or DELETE.
+
 **Embedding Provider**:
 An adapter that converts text into embeddings using a particular model provider.
 
