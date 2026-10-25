@@ -1,4 +1,6 @@
 import assert from 'node:assert/strict';
+import ts from 'typescript';
+import { fileURLToPath } from 'node:url';
 import { execFileSync } from 'node:child_process';
 import { createRequire } from 'node:module';
 import process from 'node:process';
@@ -6,6 +8,22 @@ import { readFile } from 'node:fs/promises';
 import { URL } from 'node:url';
 
 const runtimeExports = [
+  'createHtmlParserTool',
+  'createExtractLinksTool',
+  'createExtractImagesTool',
+  'createWebScraperTool',
+  'htmlParser',
+  'extractLinks',
+  'extractImages',
+  'webScraper',
+  'createHtmlParserTools',
+  'createScraperTools',
+  'htmlParserTools',
+  'scraperTools',
+  'htmlParserSchema',
+  'extractLinksSchema',
+  'extractImagesSchema',
+  'webScraperSchema',
   'createRelationalToolSet',
   'RelationalToolSetConfigurationError',
   'RelationalToolSetDisposedError',
@@ -20,6 +38,9 @@ const runtimeExports = [
 
 const declarationExports = [
   ...runtimeExports,
+  'HtmlParserToolsConfig',
+  'ScraperToolsConfig',
+  'ScraperResult',
   'RelationalToolSet',
   'RelationalToolSetGetSchemaInput',
   'RelationalToolSetOptions',
@@ -71,3 +92,26 @@ for (const [, target] of relativeLinks) {
   const packedPath = target.split(/[?#]/, 1)[0].replace(/^\.\//, '');
   assert.ok(packedFiles.has(packedPath), `README link target is not published: ${target}`);
 }
+
+// Check consumer-visible inference from the generated package, including intentional permissiveness.
+const compatibilityProgram = ts.createProgram(
+  [fileURLToPath(new URL('../tests/compatibility/html-extraction.types.ts', import.meta.url))],
+  {
+    noEmit: true,
+    strict: true,
+    skipLibCheck: true,
+    target: ts.ScriptTarget.ES2022,
+    module: ts.ModuleKind.NodeNext,
+    moduleResolution: ts.ModuleResolutionKind.NodeNext,
+  }
+);
+const compatibilityDiagnostics = ts.getPreEmitDiagnostics(compatibilityProgram);
+assert.equal(
+  compatibilityDiagnostics.length,
+  0,
+  ts.formatDiagnosticsWithColorAndContext(compatibilityDiagnostics, {
+    getCanonicalFileName: (name) => name,
+    getCurrentDirectory: () => process.cwd(),
+    getNewLine: () => '\n',
+  })
+);
