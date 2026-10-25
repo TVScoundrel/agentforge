@@ -5,6 +5,29 @@ All notable changes to AgentForge will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.18.13] - 2026-10-25
+
+### Changed
+
+#### @agentforge/tools - Concentrated HTML Document Extraction
+- Centralized HTML parsing, element extraction, link/image traversal, URL resolution, and metadata extraction in one private document module shared by Web Scraper, HTML Parser, Extract Links, and Extract Images. Each invocation parses its HTML once.
+- Preserved public factories, exports, schemas, defaults, Tool metadata, result shapes, and published TypeScript inference, including existing permissive result types.
+- Preserved ordering, duplicates, empty and missing attributes, text and HTML selection behavior, URL-base selection and resolution fallback, metadata precedence, HTTP request handling, and destination checks.
+- Added public Tool characterization tests and generated declaration/package-surface compatibility coverage for spec #314.
+
+### Validation
+- `pnpm release:validate` passed with 251 test files passed, 2 skipped, 3,202 tests passed, and 23 skipped.
+- Skips are intentional opt-in coverage for the Neo4j integration service (13 tests), PostgreSQL connection tests (4 tests), and web-search performance tests (6 tests); enable them with a running Neo4j service and `RUN_INTEGRATION_TESTS=true`, `POSTGRES_CONNECTION_STRING`, or `RUN_WEB_PERFORMANCE_TESTS=true` plus network access, respectively.
+
+### Published
+- All packages published to npm registry at version 0.18.13:
+  - @agentforge/core@0.18.13
+  - @agentforge/skills@0.18.13
+  - @agentforge/patterns@0.18.13
+  - @agentforge/tools@0.18.13
+  - @agentforge/testing@0.18.13
+  - @agentforge/cli@0.18.13
+
 ## [0.18.12] - 2026-10-08
 
 ### Changed
